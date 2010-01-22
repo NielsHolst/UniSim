@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="numSteps" value="380"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="field"/>
+		</sequence>
+	</controller>
+	
+	<model name="calendar" type="unisim::Calendar">
+		<parameter name="latitude" value="52"/>
+		<parameter name="startingDayInYear" value="244"/>
+	</model>
+	
+	<model name="weather" type="intercom::Weather">
+		<parameter name="fileName" value="weather/Rothamstead-2006.prn"/>
+		<parameter name="colTmax" value="3"/>
+		<parameter name="colTmin" value="4"/>
+		<parameter name="colIrradiation" value="7"/>
+	</model>
+
+	<model name="field" type="Community">
+		<model name="cirsium" type="intercom::Plant">
+		
+			<model name="photoThermalTime" type="UniSim::PhotoThermalTime"/>
+			
+			<model name="height" type="intercom::Height"/>
+			
+			<model name="leafStemRatio" type="intercom::LeafStemRatio"/>
+
+			<model name="leaves" type="intercom::Organ">
+				<model name="area" type="intercom::Area">
+					<model name="specificLeafArea" type="SpecificLeafArea"/>
+					<model name="amax" type="AssimilationMaxGivenTempSla"/>
+					<parameter name="kDiffuse" value="0.7" comment="Same as klv"/>
+				</model>
+			</model>
+			
+			<model name="stem" type="intercom::Organ">
+				<model name="area" type="intercom::Area">
+					<model name="amax" type="AssimilationMaxGivenTemp"/>
+					<parameter name="kDiffuse" value="0.3"/>
+				</model>
+			</model>
+			
+			<model name="flowers" type="intercom::Organ">
+				<model name="area" type="intercom::Area">
+					<model name="amax" type="AssimilationMaxGivenTemp"/>
+					<parameter name="kDiffuse" value="0.4"/>
+				</model>
+			</model>
+		</model>
+	</model>
+
+    <output type="plot">
+        <title value="Day length"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="Day length" variable="calendar[dayLength]"/>
+        </xyvariables>
+	</output>
+    
+	<output type="plot">
+        <title value="Sun angle"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="cosLD" variable="calendar[cosLD]"/>
+            <y name="sinLD" variable="calendar[sinLD]"/>
+        </xyvariables>
+	</output>
+    
+	<output type="plot">
+        <title value="Temperature"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="Tmin" variable="weather[Tmin]"/>
+            <y name="Tavg" variable="weather[Tavg]"/>
+            <y name="Tday" variable="weather[Tday]"/>
+            <y name="Tmax" variable="weather[Tmax]"/>
+        </xyvariables>
+    </output>
+
+    <output type="plot">
+        <title value="Irradiation"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="Irradiation" variable="weather[IrradiationMJ]"/>
+        </xyvariables>
+    </output>
+
+    <output type="plot">
+        <title value="PAR at noon"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="Total" variable="weather[parTotal12h]"/>
+            <y name="Diffuse" variable="weather[parDiffuse12h]"/>
+            <y name="Direct" variable="weather[parDirect12h]"/>
+        </xyvariables>
+    </output>
+
+
+    <output type="plot">
+        <title value="Cirsium photosyntesis"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="Absorption" variable="cirsium[absorption]"/>
+            <y name="Assimilation" variable="cirsium[assimilation]"/>
+        </xyvariables>
+    </output>
+
+    <output type="plot">
+        <title value="Cirsium LAI"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="leaves" variable="cirsium/leaves/area[lai]"/>
+            <y name="stem" variable="cirsium/stem/area[lai]"/>
+            <y name="flowers" variable="cirsium/flowers/area[lai]"/>
+        </xyvariables>
+    </output>
+
+    <output type="plot">
+        <title value="Plant height"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="Cirsium" variable="cirsium/height[height]"/>
+        </xyvariables>
+    </output>
+	
+	<output type="plot">
+        <title value="Photothermal time"/>
+        <xyvariables>
+            <x name="Day" variable="calendar[daysTotal]"/>
+            <y name="total" variable="cirsium/photoThermalTime[total]"/>
+        </xyvariables>
+    </output>
+</simulation>

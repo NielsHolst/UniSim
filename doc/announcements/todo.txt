@@ -1,0 +1,31 @@
++ = done
+- = pending
+
++ automatize destruction of singletons
++ establish GIT update to Qt Creator
++ implement build+AF8-all script
++ implement File settings editor
++ implement information on file location dialog
++ implement separate setting for deployment and development UniSim versions
++ implement text file output
++ make intelligent lookup of modelmakers  namespace
++ make log window scrollable
++ move random+AF8-uniform and file+AF8-locations back to usbase
++ move some models to test plugin
++ refactor all +AF8-maker classes to share common maker base class
++ restructure unisim folder into necessary and ephemeral content
++ simplify LiveSimulation
++ make intelligent lookup of models by name and class
+- implement XML editor
+- add options node to xml input to scale diagram.
+- implement $random-normal(avg=9.8,var=2.3) and stratified hypercube controller
+- implement graph zoom 
+- implement prototyping
+- implement references in XML
+- implement scaleable graph
+- include weather.h and .cpp in output from prototype maker.
+- refactor MainWindow
+- try QCoreApplication::addLibraryPath instead of system path
+- try UniSim::findChild and UniSim::findChildren in utilities.h
+- make lookup of dot tool fail proof
+

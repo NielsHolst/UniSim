@@ -1,0 +1,39 @@
+Authors
+=======
+
+Universal Simulator Project Leader
+==================================
+
+* Niels Holst, Aarhus University, Denmark
+  [niels.holst@agrsci.dk]
+
+Universal Simulator Main Module
+===============================
+
+* Niels Holst, Aarhus University, Denmark
+  [niels.holst@agrsci.dk]
+
+Universal Simulator Plug-in Libraries
+=====================================
+
+* Jonathan Storkey, Rothamsted International, England
+  [jonathan.storkey@bbsrc.ac.uk]
+
+* Niels Holst, Aarhus University, Denmark
+  [niels.holst@agrsci.dk]
+
+* Marleen Riemens, Plant Research International, Netherlands
+  [marleen.riemens@wur.nl]
+
+* Mette Sønderskov, Aarhus University, Denmark
+  [mette.sonderskov@agrsci.dk] (from Spring 2010)
+
+* Gionata Bocci, Sant’Anna School of Advanced Studies, Italy 
+  [g.bocci@sssup.it] (from Feb 2010)
+
+* Roberta Masin, University of Padua, Italy 
+  [roberta.masin@unipd.it] (from autumn 2010)
+
+* William Meikle, USDA, Weslaco, Texas
+  william.meikle@ars.usda.gov (from Spring 2010)
+

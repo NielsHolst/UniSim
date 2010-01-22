@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="numSteps" value="400"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="maize"/>
+			<model name="prostephanus"/>
+		</sequence>
+	</controller>
+	
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="4"/>
+		<parameter name="startingDayInYear" value="244" comment="1 Sep"/>
+	</model>
+	
+	<model name="weather" type="grainstore::Weather">
+		<parameter name="fileName" value="weather/iita9495.wth"/>
+		<parameter name="colGmc" value="3"/>
+		<parameter name="colTmin" value="4"/>
+		<parameter name="colTmax" value="5"/>
+		<parameter name="colMarketPrice" value="6"/>
+	</model>
+	
+	<model name="maize" type="Maize">
+	</model>
+	
+	<model name="prostephanus" type="Prostephanus">
+
+		<model name="immigration" type="PtImmigration">
+		</model>
+
+		<model name="development" type="PtDevelopment">
+
+			<model name="egg" type="Stage">
+				<model name="time" type="LactinTime">
+					<parameter name="a" value="0.12487"/>
+					<parameter name="b" value="41.7802"/>
+					<parameter name="c" value="7.97212"/>
+					<parameter name="d" value="-0.053245"/>
+				</model>
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="72"/>
+			</model>
+
+			<model name="larva" type="Stage">
+				<model name="time" type="LarvaTime">
+					<model name="time" type="LactinTime">
+						<parameter name="a" value="0.098864"/>
+						<parameter name="b" value="41.6285"/>
+						<parameter name="c" value="10.0671"/>
+						<parameter name="d" value="-0.050082"/>
+					</model>
+				</model>
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+			</model>
+			
+			<model name="pupa" type="Stage">
+				<model name="time" type="LactinTime">
+					<parameter name="a" value="0.125756"/>
+					<parameter name="b" value="41.4933"/>
+					<parameter name="c" value="7.91935"/>
+					<parameter name="d" value="-0.073723"/>
+				</model>
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="35"/>
+			</model>
+
+			<model name="adult" type="Stage">
+				<model name="time" type="Days"/>
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="30"/>
+			</model>
+		</model>
+		
+		<model name="reproduction" type="PtReproduction">
+			<parameter name="applyDensityDependence" value="yes"/>
+		</model>
+
+		<model name="emigration" type="PtEmigration">
+		</model>
+			
+	</model> 
+
+	<output type="plot">
+		<title value="Grainstore"/>
+		<xyvariables>
+			<x name="Day" variable="calendar[daysTotal]"/>
+			<y name="gmc" variable="weather[gmc]"/>
+			<y name="Tavg" variable="weather[Tavg]"/>
+		</xyvariables>
+	</output>
+
+	<output type="plot">
+		<title value="Prostephanus stages"/>
+		<xyvariables>
+			<x name="Day" variable="calendar[daysTotal]"/>
+			<y name="egg" variable="egg[number]"/>
+			<y name="larva" variable="larva[number]"/>
+			<y name="pupa" variable="pupa[number]"/>
+			<y name="adult" variable="adult[number]"/>
+		</xyvariables>
+	</output>
+
+	<output type="plot">
+		<title value="Prostephanus eggs per day"/>
+		<xyvariables>
+			<x name="Day" variable="calendar[daysTotal]"/>
+			<y name="Eggs per day" variable="reproduction[fecundity]"/>
+		</xyvariables>
+	</output>
+
+	<output type="plot">
+		<title value="Prostephanus fecundity dens.dep."/>
+		<xyvariables>
+			<x name="Day" variable="calendar[daysTotal]"/>
+			<y name="Density dependence" variable="reproduction[densityDependence]"/>
+		</xyvariables>
+	</output>
+
+	<output type="plot">
+		<title value="Maize injury"/>
+		<xyvariables>
+			<x name="Day" variable="calendar[daysTotal]"/>
+			<y name="Loss" variable="maize[lossPct]"/>
+			<y name="Damage" variable="maize[damagePct]"/>
+		</xyvariables>
+	</output>
+</simulation>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+
+    <controller type="Simple">
+    	<parameter name="numSteps" value="730"/>
+        <sequence>
+            <model name="calendar"/>
+            <model name="weather"/>
+        </sequence>
+    </controller>
+
+    <model name="calendar" type="Calendar"/>
+
+    <model name="weather" type="ess2009::Weather"/>
+
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Temperature" axis="y" value="weather[T]"/>
+    </output>
+
+</simulation>

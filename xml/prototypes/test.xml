@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="test" type="model">
+    <class name="ConstantWorld">
+		<model name="world"/>
+	</class> 
+    <class name="LifeCycle">
+		<model name="cycle"/>
+	</class>		
+    <class name="LifeStage">
+		<model name="stage"/>
+	</class>		
+</plugin>

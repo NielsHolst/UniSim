@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="numSteps" value="60"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="cats"/>
+			<model name="mice"/>
+			<model name="rats"/>
+		</sequence>
+	</controller>
+	<model name="calendar" type="Calendar"/>
+	<model name="cats" type="Predator">
+		<parameter name="Ninit" value="2.49816"/>
+		<parameter name="r" value="1.09965"/>
+		<parameter name="K" value="146.057"/>
+	</model>
+	<model name="mice" type="Prey">
+		<parameter name="Ninit" value="1.73374"/>
+		<parameter name="r" value="1.0932"/>
+		<parameter name="K" value="132.375"/>
+	</model>
+	<model name="rats" type="Prey">
+		<parameter name="Ninit" value="3.39463"/>
+		<parameter name="r" value="1.07969"/>
+		<parameter name="K" value="82.4815"/>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value ="Cats"/>
+			<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+			<variable axis="y" label="Density" value="cats[N]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Mice"/>
+			<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+			<variable axis="y" label="Density" value="mice[N]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Rats"/>
+			<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+			<variable axis="y" label="Density" value="rats[N]"/>
+	</output>
+</simulation>

@@ -1,0 +1,16 @@
+digraph G {
+	graph [rankdir=LR, label="Universal Simulator 1.0 directories", labelloc="t", fontsize=18];
+	node [shape=box];
+	
+	appl->{bin;models;output;appl_plugins;temp};
+	appl_plugins[label="plugins"];
+	
+	dev->{applications;library;dev_plugins};
+	applications->{unisim;test_unisim;test_library};
+	library->{base;engine;utilities};
+	dev_plugins->{ess2009;intercom;standard_controllers;standard_models;standard_outputs;test_models};
+	dev_plugins[label="plugins"];
+	
+	appl[label="UNISIM_APPL_ROOT\n(c:/Program Files/Universal Simulator)"];
+	dev[label="UNISIM_DEV_ROOT\n(c:/QDev/unisim)"];
+}

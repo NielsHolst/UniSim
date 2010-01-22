@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="grainstore" type="model">
+    <class name="Prostephanus">
+		<model name="prostephanus"/>
+	</class> 
+    <class name="PtDevelopment">
+		<model name="development"/>
+	</class> 
+    <class name="PtReproduction">
+		<model name="reproduction"/>
+	</class> 
+    <class name="PtEmigration">
+		<model name="emigration"/>
+	</class> 
+    <class name="Maize">
+		<model name="maize"/>
+	</class>		
+</plugin>

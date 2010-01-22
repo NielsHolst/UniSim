@@ -1,0 +1,18 @@
+digraph G {
+	graph [rankdir=LR, label="Universal Simulator 1.0 directories", labelloc="t", fontsize=18];
+	node [shape=box,color=white];
+	
+	root[label="UniSim",color="black"];
+	root->{src;doc;vendor};
+	src->{applications;library;plugins};
+	applications->{unisim;test_unisim;test_library};
+	library->{base;engine;utilities};
+	plugins->{ess2009;intercom;standard_controllers;standard_models;standard_outputs;test_models};
+	vendor->Qwt;
+	Qwt->{lib;include}
+	
+	node[fontcolor=blue,shape=ellipse,color=blue];
+	edge[color=blue];
+	appl_module->{applications;library;Qwt};
+	plugin_module->{library;plugins};
+}

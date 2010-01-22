@@ -1,0 +1,14 @@
+/*!
+\mainpage Universal Simulator Base Library (usbase) 
+This document describes the usbase library which can be used to create plug-in libraries for the Universal Simulator.
+
+The library is a collection of C++ header and source files. To create a plug-in derive your own maker class from UniSim::ModelMakerPlugIn 
+or UniSim::ControlMakerPlugIn. A maker class is a factory which can manufacture either UniSim::Model or UniSim::Controller objects. 
+
+Derive your own classes from UniSim::Model and UniSim::Controller to define the desired functionality.
+
+\author 	Niels Holst, Aarhus University
+\date		30 September 2009
+
+*/
+

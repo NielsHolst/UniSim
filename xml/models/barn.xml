@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="numSteps" value="10000"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="cats"/>
+			<model name="mice"/>
+			<model name="rats"/>
+		</sequence>
+	</controller>
+	<model name="calendar" type="Calendar"/>
+	<model name="cats" type="Predator">
+		<parameter name="Ninit" value="2.49816"/>
+		<parameter name="r" value="1.09965"/>
+		<parameter name="K" value="146.057"/>
+		<parameter name="convEfficiency" value="0.01"/>
+		<parameter name="mortality" value="0.0005"/>
+</model>
+	<model name="mice" type="Prey">
+		<parameter name="Ninit" value="1.73374"/>
+		<parameter name="r" value="1.0932"/>
+		<parameter name="K" value="132.375"/>
+		<parameter name="apparency" value="0.8"/>
+	</model>
+	<model name="rats" type="Prey">
+		<parameter name="Ninit" value="3.39463"/>
+		<parameter name="r" value="1.07969"/>
+		<parameter name="K" value="82.4815"/>
+		<parameter name="apparency" value="0.1"/>
+	</model>
+
+<output type="plot">
+	<title value="Cats"/>
+	<xyvariables>
+		<x name="Day" variable="calendar[daysTotal]"/>
+		<y name="Density" variable="cats[N]"/>
+	</xyvariables>
+</output>
+<output type="plot">
+	<title value="Predation"/>
+	<xyvariables>
+		<x name="Day" variable="calendar[daysTotal]"/>
+		<y name="Predation rate" variable="cats[predationRate]"/>
+	</xyvariables>
+</output>
+<output type="plot">
+	<title value="Mice"/>
+	<xyvariables>
+		<x name="Day" variable="calendar[daysTotal]"/>
+		<y name="Density" variable="mice[N]"/>
+	</xyvariables>
+</output>
+<output type="plot">
+	<title value="Rats"/>
+	<xyvariables>
+		<x name="Day" variable="calendar[daysTotal]"/>
+		<y name="Density" variable="rats[N]"/>
+	</xyvariables>
+</output>
+</simulation>

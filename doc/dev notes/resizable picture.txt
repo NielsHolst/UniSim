@@ -1,0 +1,341 @@
+From: qt-creator-bounces@trolltech.com on behalf of
+qt-creator-request@trolltech.com
+Sent: 06 July 2009 09:46
+To: qt-creator@trolltech.com
+Subject: Qt-creator Digest, Vol 10, Issue 13
+
+Send Qt-creator mailing list submissions to
+	qt-creator@trolltech.com
+
+To subscribe or unsubscribe via the World Wide Web, visit
+	http://lists.trolltech.com/mailman/listinfo/qt-creator
+or, via email, send a message with subject or body 'help' to
+	qt-creator-request@trolltech.com
+
+You can reach the person managing the list at
+	qt-creator-owner@trolltech.com
+
+When replying, please edit your Subject line so it is more specific
+than "Re: Contents of Qt-creator digest..."
+
+
+Today's Topics:
+
+   1. Re: Drawing on QWidget (Andre Poenitz)
+   2. Re: Drawing on QWidget (Coda Highland)
+   3. Re: Build Issue in Qt Creator: collect2: ld returned 1	exit
+      status (Ladnar, Marc)
+   4. Re: Drawing on QWidget (Alex Williams)
+
+
+----------------------------------------------------------------------
+
+Message: 1
+Date: Mon, 6 Jul 2009 02:08:40 +0200
+From: Andre Poenitz <andre.poenitz@mathematik.tu-chemnitz.de>
+Subject: Re: [Qt-creator] Drawing on QWidget
+To: qt-creator@trolltech.com
+Message-ID: <20090706000840.GB5032@tu-chemnitz.de>
+Content-Type: text/plain; charset=us-ascii
+
+On Mon, Jul 06, 2009 at 02:57:39AM +0400, Alex Williams wrote:
+> > I understand that this touches a fundamental problem of epistemology
+> > but most people I am aware of distinguish between "I cannot observe it"
+> > and "it does not exist". Those people might also be tempted to take
+> > http://doc.trolltech.com/4.5/designer-using-custom-widgets.html as an
+> > indication that your proposition is wrong.
+> 
+> If something is not clear enough or hard to find = it's almost same as
+> "it does not exists"... I did know that for such primitive action as
+> drawing something - I nedd create widget...
+
+The induction from "I could not find it" to "it is (generally) hard to find"
+is lacking a proof. [I doubt there is one as I have a counter example:
+I found that page within two minutes without ever seing it before]
+
+>From a theoretical point we can stop here, but for the sake of completeness:
+The definition of "is almost the same" is missing. I don't think there is
+such a concept generally known in logic (but feel free to prove me wrong...)
+
+And, as a really subjective point: Given your wxWidgets code below I am
+fairly sure you knew that you had to create a widget for "such a
+primitive action as drawing something". wxPanel is a widget, isn't it?
+
+Anyway: What exactly did you look for in the documentation?
+
+> > This seems to use definition of 'analog/competitor' that I would not
+> > actively use myself, but out of curiosity: How would that work with
+> > wxWidgets?
+> 
+> In wxWidgets everything is simple:
+> 
+> void Draw(wxPanel *DS)
+> {
+>   wxSize DC_Size;
+>   DC_Size = DS->GetSize();
+>   wxClientDC CDC(DS);
+>   wxBufferedDC DC(&CDC, DC_Size);
+>   wxBrush BackBrush(*wxWHITE);
+>   DC.SetBackground(BackBrush);
+>   DC.Clear();
+> }
+
+In Qt:
+
+  void paintEvent(QPaintEvent *)
+  {
+    QPainter p(this);
+    QPixmap pm("paint.png");
+    p.drawPixmap(0, 0, pm.scaled(size()));
+  }
+
+or possibly:
+
+  void paintEvent(QPaintEvent *)
+  {
+      QPainter p(this);
+      QImage i = QImage("paint.png").scaled(size());
+      p.drawPixmap(0, 0, QPixmap::fromImage(i));
+  }
+
+Obviously, simplicity lies in the eye of the beholder.
+
+Andre'
+
+
+PS: For reference the full "application":
+
+  #include <QtGui>
+
+  struct Widget : public QWidget
+  {
+    void paintEvent(QPaintEvent *)
+    {
+      QPainter p(this);
+      p.drawPixmap(0, 0, QPixmap("paint.png").scaled(size()));
+    }
+  };
+
+  int main(int argc, char *argv[])
+  {
+    QApplication a(argc, argv);
+    Widget w;
+    w.show();
+    return a.exec();
+  }
+
+
+PPS: If you don't need resizing, the following is shorter:
+
+  #include <QtGui>
+
+  int main(int argc, char *argv[])
+  {
+    QApplication a(argc, argv);
+    QLabel l;
+    l.setPixmap(QPixmap("paint.png"));
+    l.show();
+    return a.exec();
+  }
+
+
+
+------------------------------
+
+Message: 2
+Date: Sun, 5 Jul 2009 19:37:04 -0500
+From: Coda Highland <coda@bobandgeorge.com>
+Subject: Re: [Qt-creator] Drawing on QWidget
+To: qt-creator@trolltech.com
+Message-ID:
+	<96bf3de10907051737n44993c79v5ca893af13b8851b@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+
+Qt3 supported painting on widgets outside of paintEvent(), but the
+technique wasn't portable -- it didn't work on Mac at all, for
+instance -- and it was difficult to cache the results for performance.
+Qt4 has a flag that re-enables this old behavior for the sake of
+porting old code, on supported platforms, but it's not recommended for
+this reason.
+
+Qt4's technique is overall cleaner by constraining painting operations
+to a centralized point of access.
+
+One thing to observe about Qt4 compared to other toolkits is that it
+puts more emphasis on being consistent, correct, cleanly
+object-oriented, and portable, even if it means there's a little bit
+more work to do a few things that some other toolkits make easy. The
+upshot of this is that in the end, due to these design goals, Qt makes
+a lot of other things a lot more straightforward and elegant. It's a
+serious development tool.
+
+/s/ Adam
+
+On 7/5/09, Alex Williams <linuxfpga@gmail.com> wrote:
+>> I understand that this touches a fundamental problem of epistemology
+>> but most people I am aware of distinguish between "I cannot observe it"
+>> and "it does not exist". Those people might also be tempted to take
+>> http://doc.trolltech.com/4.5/designer-using-custom-widgets.html as an
+>> indication that your proposition is wrong.
+>
+> If something is not clear enough or hard to find = it's almost same as
+> "it does not exists"... I did know that for such primitive action as
+> drawing something - I nedd create widget...
+>
+>> This seems to use definition of 'analog/competitor' that I would not
+>> actively use myself, but out of curiosity: How would that work with
+>> wxWidgets?
+>
+> In wxWidgets everything is simple:
+>
+> void Draw(wxPanel *DS)
+> {
+> 	wxSize DC_Size;
+> 	DC_Size = DS->GetSize();
+> 	wxClientDC CDC(DS);
+> 	wxBufferedDC DC(&CDC, DC_Size);
+> 	wxBrush BackBrush(*wxWHITE);
+> 	DC.SetBackground(BackBrush);
+> 	DC.Clear();
+> }
+>
+> that's all, no problems, no widgets, just paint on everything you want...
+> _______________________________________________
+> Qt-creator mailing list
+> Qt-creator@trolltech.com
+> http://lists.trolltech.com/mailman/listinfo/qt-creator
+>
+
+
+------------------------------
+
+Message: 3
+Date: Mon, 6 Jul 2009 07:15:43 +0200
+From: "Ladnar, Marc" <Marc.Ladnar@ksab.kroschu.com>
+Subject: Re: [Qt-creator] Build Issue in Qt Creator: collect2: ld
+	returned 1	exit status
+To: qt-creator <qt-creator@trolltech.com>
+Message-ID:
+	<H000008901bdad42.1246857343.ksabscalix01.ksab.kroschu.com@MHS>
+Content-Type: text/plain; charset="us-ascii"
+
+This error mostly occurs when the linker is not able to link the
+program.
+ 
+That you are not able to get debugging output shows me, that you may be
+still running your application while recompiling it.
+So your linker is not allowed on Windows to link your binary (it is in
+use) and on windows you only can get once the debugging output with
+creator. Starting a seccond instance cuases exactly this message with
+the debugging output.
+ 
+Cu,
+Marc Ladnar
+
+  _____  
+
+Von: Sam Dutton [mailto:Sam.Dutton@bbc.co.uk] 
+Gesendet: Freitag, 3. Juli 2009 08:17
+An: qt-creator@trolltech.com
+Betreff: [Qt-creator] Build Issue in Qt Creator: collect2: ld returned 1
+exit status
+
+
+I just installed Qt SDK 2009.03 on Windows XP SP3.
+ 
+In Qt Creator, I sometimes get the following error when I attempt to
+build a project: 
+ 
+   collect2: ld returned 1 exit status
+ 
+What does this error mean? I've found reference to it on the web in
+relation to Linux-based applications, but not for Windows.
+ 
+It's intermittent, in the sense that I can't work out what's causing it!
+It seems to occur always when building one particular (simple) project
+I've created and then with others built subsequently. Sorry to be
+vague... Restarting Qt Creator and creating and building a new Qt GUI
+project works without error.
+ 
+Two things that may be involved: 
+- I installed Debugging Tools for Windows before installing the Qt SDK
+- I previously installed qt-4.5.2-tower (but I've checked my PATH and
+QTDIR variables and Qt Creator options and these both refer to
+C:\Qt\2009.03\qt)
+ 
+I also noticed the following at one point:
+ 
+   Starting C:\src\test\debug\test.exe...
+
+   Cannot retrieve debugging output!
+
+   C:\src\test\debug\test.exe exited with code 0s
+
+ 
+
+Is this related? Why can't debugging output be retrieved?
+
+ 
+
+Thanks
+
+ 
+
+Sam Dutton
+
+
+http://www.bbc.co.uk
+This e-mail (and any attachments) is confidential and may contain
+personal views which are not the views of the BBC unless specifically
+stated.
+If you have received it in error, please delete it from your system.
+Do not use, copy or disclose the information in any way nor act in
+reliance on it and notify the sender immediately.
+Please note that the BBC monitors e-mails sent or received.
+Further communication will signify your consent to this. 
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.trolltech.com/pipermail/qt-creator/attachments/20090706/edee3898/attachment-0001.html 
+
+------------------------------
+
+Message: 4
+Date: Mon, 6 Jul 2009 11:46:09 +0400
+From: Alex Williams <linuxfpga@gmail.com>
+Subject: Re: [Qt-creator] Drawing on QWidget
+To: qt-creator@trolltech.com
+Message-ID:
+	<d741b6090907060046r48f2a3c3k29102b2c56d3dbcc@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+
+> The induction from "I could not find it" to "it is (generally) hard to find"
+> is lacking a proof. [I doubt there is one as I have a counter example:
+> I found that page within two minutes without ever seing it before]
+
+> And, as a really subjective point: Given your wxWidgets code below I am
+> fairly sure you knew that you had to create a widget for "such a
+> primitive action as drawing something". wxPanel is a widget, isn't it?
+
+Please, stop this... don't worry & relax... :) wxPanel - i'm just
+dropping this widget on form and no more actions required. I didn't
+knew that NOW for painting we must create our own widget. That's all.
+Thanks to Coda Highland, I know that this is for performance reason.
+
+Anyway, there is no clear path from QPainter to QWidget, and no
+information about painting in context of Qt Creator. Just search in
+samples and internet - if you find this info you will be a hero and I
+you deserve medal ^_^
+
+
+------------------------------
+
+_______________________________________________
+Qt-creator mailing list
+Qt-creator@trolltech.com
+http://lists.trolltech.com/mailman/listinfo/qt-creator
+
+
+End of Qt-creator Digest, Vol 10, Issue 13
+******************************************

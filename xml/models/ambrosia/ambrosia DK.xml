@@ -14,7 +14,7 @@
 		<parameter name="startingDayInYear" value="1"/>
 	</model>
 	<model name="weather" type="ambrosia::Weather">
-		<parameter name="fileName" value="weather/flakkebjerg 2009.txt"/>
+		<parameter name="fileName" value="../weather/flakkebjerg 2009.txt"/>
 		<parameter name="colTavg" value="3"/>
 	</model>
 	

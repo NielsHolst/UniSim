@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS = \
 	ambrosia_models \
-	barn_models \
 	beehive_models \
 	ess2009_models \
 	grainstore_models \

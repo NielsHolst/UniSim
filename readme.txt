@@ -24,7 +24,7 @@ already been used to teach students modelling, both at graduate and
 post-graduate level.
 
 The academic use of UniSim is reflected by the author list (see 
-‘authors.txt’).
+authors.txt).
 
 Future Plans
 ============
@@ -70,22 +70,22 @@ Installation
 
 3. On Windows make certain the installed software packages are on 
 the system path (i.e. the PATH system variable). For example,
-* ‘C:\Qt\2009.05\qt\bin’
-* ‘C:\Program Files\Graphviz2.20\Bin’
+* C:\Qt\2009.05\qt\bin
+* C:\Program Files\Graphviz2.20\Bin
 
 4. On Windows set up these new environment variables:
-* BOOST_ROOT (e.g. ‘C:\Program Files\boost_1_41_0’)
-* UNISIM_ROOT (e.g. ‘C:\qdev\unisim’)
+* BOOST_ROOT (e.g. C:\Program Files\boost_1_41_0)
+* UNISIM_ROOT (e.g. C:\qdev\unisim)
 
 5. Make sure all the needed dynamic link libraries are accessible. 
 The Qwt library was packaged together with the UniSim source and 
 resides in UNISIM/vendor/qwt/lib. On Windows you can make this 
 library acessible by putting the folder on the system path (thus 
 extending step 3 above). For example,
-* ‘C:\qdev\unisim\vendor\qwt\lib’
+* C:\qdev\unisim\vendor\qwt\lib
 
-6. For Git users: The Git repository resides in the ‘.git’ sub-
-folder of UNISIM_ROOT.
+6. For Git users: The Git repository resides in the .git sub-folder 
+of UNISIM_ROOT.
 
 Building
 ========
@@ -93,13 +93,13 @@ Building
 1. Do either 1a or 1b below.
 
 1a. Automatic Building
-The project file ‘build_all.pro’ in UNISIM_ROOT/src initiates a 
+The project file build_all.pro in UNISIM_ROOT/src initiates a 
 cascade of makefiles which together builds both the UniSim main 
 module and all the plug-ins. Windows users can simply execute the 
-‘build_all.bat’ batch file and everything should build 
-automatically. Users of other platforms can aither study the batch 
-file and implement one for their own platform (and send a copy to me 
-for the benefit of other users), or they can forgo the option of the 
+build_all.bat batch file and everything should build automatically. 
+Users of other platforms can aither study the batch file and 
+implement one for their own platform (and send a copy to me for the 
+benefit of other users), or they can forgo the option of the 
 automatic build and obtain the same result with some mouse-clicking 
 in Qt Creator.
 
@@ -110,16 +110,21 @@ Load the following projects into Qt Creator and then hit Build All.
 * UNISIM_ROOT/src/plugins/*/*.pro
 
 The second line cannot be carried out as one operation. You must 
-visit the sub-folders of the ‘plugins’ folder one by one and load 
-the project file found in each.
+visit the sub-folders of the plugins folder one by one and load the 
+project file found in each.
 
-2. You do not need to edit the configuration file ‘config.pri’ in 
+2. You do not need to edit the configuration file config.pri in 
 UNISIM_ROOT/src but you may study it to learn how the build 
 environent is set up. It is not that complicated.
 
 3. After building UniSim you will find the UniSim executable file in
 UNISIM_ROOT/src/applications and the plug-in libraries in 
 UNISIM_ROOT/src/plugins
+
+Running
+=======
+
+Instructions for running UniSim are found in readme-for-users.txt.
 
 ---------------------------------------
 Niels Holst, Aarhus University, Denmark

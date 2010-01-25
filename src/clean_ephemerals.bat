@@ -2,7 +2,6 @@
 call cmd\clean_proj applications\unisim
 call cmd\clean_proj applications\unisim\test
 call cmd\clean_proj plugins\ambrosia_models
-call cmd\clean_proj plugins\barn_models
 call cmd\clean_proj plugins\beehive_models
 call cmd\clean_proj plugins\ess2009_models
 call cmd\clean_proj plugins\grainstore_models

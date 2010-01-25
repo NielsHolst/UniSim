@@ -1,0 +1,5 @@
+*.backup
+bin/*.*
+output/*.*
+plugins/*.*
+temp/*.*

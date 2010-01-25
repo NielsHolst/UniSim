@@ -15,7 +15,7 @@
 	</model>
 	
 	<model name="weather" type="ambrosia::Weather">
-		<parameter name="fileName" value="weather/braunschweig 2009.txt"/>
+		<parameter name="fileName" value="../weather/braunschweig 2009.txt"/>
 		<parameter name="colTavg" value="2"/>
 	</model>
 		

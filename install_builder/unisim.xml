@@ -1,0 +1,148 @@
+<project>
+    <shortName>UniSim</shortName>
+    <fullName>Universal Simulator</fullName>
+    <version>1.1</version>
+    <installerFilename></installerFilename>
+    <licenseFile>C:/data/QDev/UniSim/install_builder/gpl-3.0.txt</licenseFile>
+    <logoImage>C:/data/QDev/UniSim/doc/icons/N86-icon-32.png</logoImage>
+    <postInstallationActionList>
+        <registrySet>
+            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
+            <name>Model files</name>
+            <type>REG_SZ</type>
+            <value>${windows_folder_personal}\UniSim\models</value>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
+            <name>Output files</name>
+            <type>REG_SZ</type>
+            <value>${windows_folder_personal}\UniSim\output</value>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
+            <name>Temporary files</name>
+            <type>REG_SZ</type>
+            <value>${windows_folder_personal}\UniSim\temp</value>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
+            <name>Plugin files</name>
+            <type>REG_SZ</type>
+            <value>${installdir}\plugins</value>
+        </registrySet>
+    </postInstallationActionList>
+    <enableRollback>1</enableRollback>
+    <enableTimestamp>1</enableTimestamp>
+    <vendor>Aarhus University</vendor>
+    <componentList>
+        <component>
+            <name>default</name>
+            <description>Default Component</description>
+            <canBeEdited>1</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfiles</name>
+                    <platforms>all</platforms>
+                    <shortcutList>
+                        <shortcut>
+                            <comment>Uninstall</comment>
+                            <exec>${installdir}/${uninstallerName}</exec>
+                            <icon></icon>
+                            <name>Uninstall ${product_fullname}</name>
+                            <path>${installdir}</path>
+                            <platforms>all</platforms>
+                            <runInTerminal>0</runInTerminal>
+                            <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+                            <windowsExecArgs></windowsExecArgs>
+                            <windowsIcon></windowsIcon>
+                            <windowsPath>${installdir}</windowsPath>
+                        </shortcut>
+                    </shortcutList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>C:/data/QDev/UniSim/install_builder/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>C:/data/QDev/UniSim/install_builder/plugins</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesosx</name>
+                    <platforms>osx</platforms>
+                </folder>
+                <folder>
+                    <description>New Folder</description>
+                    <destination>${windows_folder_personal}/UniSim</destination>
+                    <name>newfolder</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>C:/data/QDev/UniSim/xml/models</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>C:/data/QDev/UniSim/install_builder/output</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>C:/data/QDev/UniSim/install_builder/temp</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <comment>Uninstall ${product_fullname}</comment>
+                    <name>Uninstall ${product_fullname}</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}/</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment></comment>
+                    <name>Universal Simulator 1.1</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/bin/unisim.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+        </component>
+    </componentList>
+    <parameterList>
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value></value>
+            <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+        </directoryParameter>
+    </parameterList>
+</project>
+

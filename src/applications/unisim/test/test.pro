@@ -3,7 +3,7 @@ include($$(UNISIM_ROOT)/src/config.pri)
 
 TEMPLATE = app
 DESTDIR = $${US_APPLICATIONS}
-TARGET = test_$${SUFFIX_STR}
+TARGET = test$${SUFFIX_STR}
 CONFIG += console
 QT += testlib
 

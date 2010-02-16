@@ -11,7 +11,7 @@
 
 namespace UniSim{
 
-QList<Identifier> StandardOutputMaker::outputTypes() const
+QList<Identifier> StandardOutputMaker::supportedTypes() const
 {
     return QList<Identifier>()
         << Identifier("Plot")

@@ -5,12 +5,12 @@
 DEBUG_SUFFIX        = d				# Debug libraries and applications will have this suffix added
 RELEASE_SUFFIX      = 					# Release libraries and applications will have this suffix added
 
-#CONFIG += debug							# Activate this to build debug version
-CONFIG += release 						# Or, this to build release version
+CONFIG += debug							# Activate this to build debug version
+#CONFIG += release 						# Or, this to build release version
 #CONFIG += debug_and_release build_all 	# Or, this to build both versions
 
-#CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
-CONFIG += unisim_deployment     # Or, activate this if targets will be used to produce an installation file
+CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
+#CONFIG += unisim_deployment     # Or, activate this if targets will be used to produce an installation file
 
 #
 # Ensuing configuration (should not be edited)

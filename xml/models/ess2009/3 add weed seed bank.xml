@@ -11,7 +11,9 @@
         </sequence>
     </controller>
 
-    <model name="calendar" type="Calendar"/>
+    <model name="calendar" type="Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>
     
     <model name="weather" type="ess2009::Weather"/>
 

@@ -26,7 +26,7 @@ public:
     virtual ~ModelMakerPlugIn() { }
 	
 	//! Returns a list of the model types supported by this model maker
-    virtual Identifiers modelTypes() const = 0;
+    virtual Identifiers supportedTypes() const = 0;
 	
     //! Returns name of this plugin
     virtual Identifier plugInName() const = 0;

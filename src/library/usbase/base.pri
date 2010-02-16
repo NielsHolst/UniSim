@@ -4,6 +4,7 @@ HEADERS += \
 		$${US_BASE}/component.h \
 		$${US_BASE}/controller.h \
 		$${US_BASE}/controller_maker_plug_in.h \
+  		$${US_BASE}/debug_output.h \
   		$${US_BASE}/exception.h \
 		$${US_BASE}/file_locations.h \
         $${US_BASE}/identifier.h \
@@ -22,6 +23,7 @@ HEADERS += \
 SOURCES += \
 		$${US_BASE}/component.cpp \
   		$${US_BASE}/controller.cpp \
+  		$${US_BASE}/debug_output.cpp \
   		$${US_BASE}/exception.cpp \
 		$${US_BASE}/file_locations.cpp \
         $${US_BASE}/identifier.cpp \

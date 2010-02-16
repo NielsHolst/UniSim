@@ -33,14 +33,13 @@ void Plant::reset()
 void Plant::prepareUpdate() {
     for (int i = 0; i < childrenToUpdate.size(); ++i)
         childrenToUpdate[i]->update();
+    plantHeight = height->state("height");
     absorption.reset();
     assimilation.reset();
 }
 
 void Plant::update()
 {
-    plantHeight = height->state("height");
-
     for (int i = 0; i < organs.size(); ++i)
         organs[i]->update();
 

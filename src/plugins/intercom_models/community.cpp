@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/debug_output.h>
 #include <usbase/utilities.h>
 #include "../standard_models/calendar.h"
 #include "community.h"
@@ -56,6 +57,9 @@ void Community::updatePlantsByHours() {
 
 void Community::updatePlantsByLayers(int time) {
     for (int layer = 0; layer < 5; ++layer) {
+        debugStream() << calendar->state("dayInYear") << "\t"
+                      << time << "\t"
+                      << layer << "\t";
         s.absorptionExponents.reset();
         for (int i = 0; i < plants.size(); ++i)
             s.absorptionExponents.accumulate( plants[i]->absorptionExponents(layer) );
@@ -63,7 +67,9 @@ void Community::updatePlantsByLayers(int time) {
         for (int i = 0; i < plants.size(); ++i) {
            plants[i]->update();
            plants[i]->accumulateLightUseByLayer(layer);
-       }
+        }
+        debugOutput()->writeBuffer();
+        debugOutput()->write("\n");
     }
 }
 

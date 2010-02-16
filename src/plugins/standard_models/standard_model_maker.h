@@ -18,7 +18,7 @@ class StandardModelMaker : public QObject, public ModelMakerPlugIn
 	Q_OBJECT
     Q_INTERFACES(UniSim::ModelMakerPlugIn)
 public:
-    QList<Identifier> modelTypes() const;
+    QList<Identifier> supportedTypes() const;
     UniSim::Identifier plugInName() const;
     void useObjectPool(ObjectPool *pool) const;
     Model* create(Identifier modelType, Identifier objectName, QObject *parent=0);

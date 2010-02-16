@@ -17,7 +17,7 @@ class FileLocations : public QObject
     Q_OBJECT
 
 public:
-    enum FileType {Plugins, DotTool, Models, Output, Prototypes, Temporary, NumLocations};
+    enum FileType {Plugins, DotTool, Models, Output, Prototypes, Temporary, Weather, NumLocations};
     FileLocations();
     static QString id();
     virtual ~FileLocations() { }
@@ -25,6 +25,7 @@ public:
     static QString label(FileType fileType);
     static QString hint(FileType fileType);
     static QDir location(FileType fileType);
+    static bool lookup(FileType fileType, QString message = QString());
     static QDir possibleLocation(FileType fileType);
     static void setLocation(FileType fileType, QDir location);
     static void setLocation(FileType fileType, QString filePath);
@@ -32,6 +33,7 @@ protected:
     QMap<FileType, QDir> locations;
 private:
     virtual QDir locationImpl(FileType fileType) = 0;
+    virtual bool lookupImpl(FileType fileType, QString message = QString()) = 0;
     static FileLocations* me();
 
     void setLabels();

@@ -15,7 +15,7 @@ AbsorptionExponents::AbsorptionExponents()
 
 void AbsorptionExponents::reset() {
     for (int i = 0; i < NumLightComponents; ++i)
-        exponents[i] += 0.;
+        exponents[i] = 0.;
 }
 
 void AbsorptionExponents::accumulate(const AbsorptionExponents &increments) {

@@ -14,7 +14,7 @@ using namespace UniSim;
 
 namespace test{
 
-QList<Identifier> TestModelMaker::modelTypes() const
+QList<Identifier> TestModelMaker::supportedTypes() const
 {
 	return QList<Identifier>()
 		<< Identifier("ConstantWorld")

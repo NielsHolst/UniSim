@@ -8,13 +8,17 @@
 
 #include <cmath>
 #include <cfloat>
-#include <QObject>
+#include <QDir>
 #include <QList>
 #include <QMap>
+#include <QObject>
+#include <QPluginLoader>
 #include <QString>
 #include <QStringList>
 #include "exception.h"
+#include "file_locations.h"
 #include "identifier.h"
+#include "object_pool.h"
 
 #include <iostream>
 using std::cout;
@@ -67,6 +71,12 @@ int toDayOfYear(int day, int month);
 //@{
 QStringList decodeSimpleList(QString parenthesizedList, QString errorContext = QString());
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
+//@}
+
+//! @name PlugIn handling
+//@{
+template <class TPlugin>
+void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers);
 //@}
 
 //! @name Testing
@@ -220,6 +230,39 @@ template <class T> QList<T> find(QString path, const QList<QObject*> &candidates
         }
     }
     return result;
+}
+
+template <class TPlugin>
+void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers) {
+    bool keepLooking = true;
+    do {
+        QDir dir = FileLocations::location(FileLocations::Plugins);
+        foreach (QString filename, dir.entryList(QDir::Files)) {
+
+            QPluginLoader loader(dir.absoluteFilePath(filename));
+
+            TPlugin *plugin = qobject_cast<TPlugin*>(loader.instance());
+            if (plugin) {
+                plugin->useObjectPool(objectPool());
+                foreach (Identifier id, plugin->supportedTypes()) {
+                    (*makers)[id] = plugin;
+                    Identifier idWithNamespace = plugin->plugInName().label() + "::" + id.label();
+                    (*makers)[idWithNamespace] = plugin;
+
+                }
+            }
+        }
+
+        if (makers->size() > 0) {
+            keepLooking = false;
+        }
+        else {
+            QString msg = "Found no plugins for: " + makerId + " in: " + dir.absolutePath();
+            if (!dir.exists())
+                msg += ".\nThe folder does not exist.";
+            keepLooking = FileLocations::lookup(FileLocations::Plugins, msg);
+        }
+    } while (keepLooking);
 }
 
 } //namespace

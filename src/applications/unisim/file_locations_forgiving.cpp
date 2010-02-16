@@ -14,19 +14,25 @@ FileLocationsForgiving::FileLocationsForgiving()
     : FileLocations() {
 }
 
-
-
 QDir FileLocationsForgiving::locationImpl(FileType fileType) {
     if (contain(fileType)) {
         QDir dir = locations[fileType];
         if (dir.exists()) return dir;
     }
-    else {
-        QMessageBox::information(0, "Guidance", hint(fileType));
-    }
+    else if (lookupImpl(fileType))
+        return locationImpl(fileType);
+    return QDir();
+}
+
+bool FileLocationsForgiving::lookupImpl(FileType fileType, QString message) {
+    QString msg = message + (message.isEmpty() ? "" : "\n\n") + hint(fileType);
+    QMessageBox::information(0, "Guidance", msg);
 
     FileLocationDialog dialog(fileType);
-    if (dialog.exec())
+    if (dialog.exec()) {
         setLocation(fileType, dialog.location());
-    return dialog.location();
+        return true;
+    }
+    return false;
 }
+

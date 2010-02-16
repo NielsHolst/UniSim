@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="numSteps" value="20"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+		</sequence>
+	</controller>
+	
+	<model name="calendar" type="unisim::Calendar">	
+		<parameter name="followers" value="weather"/>
+	</model>
+	<model name="weather" type="intercom::weather">
+		<parameter name="fileName" value="rothamsted-2006.prn"/>
+	</model>
+	
+	<output type="table">
+		<parameter name="fileName" value="test_calendar.prn"/>
+		<parameter name="title" value="Day length"/>
+		<variable label="daysTotal" axis="x" value="calendar[daysTotal]"/>
+		<variable label="day" axis="x" value="calendar[day]"/>
+		<variable label="month" axis="x" value="calendar[month]"/>
+		<variable label="year" axis="x" value="calendar[year]"/>
+		<variable label="dayLength" axis="y" value="calendar[dayLength]"/>
+		<variable label="Tmax" axis="y" value="weather[Tmax]"/>
+		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
+	</output>
+</simulation>

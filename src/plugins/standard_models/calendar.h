@@ -24,11 +24,33 @@ public:
     double sinb(double hour) const;
 
 private:
+    // data
+    enum FirstDateDiagnose {
+        NoneNoFollowers,
+        NoneWithFollowersWithFirstDate,
+        NoneWithFollowersWithoutFirstDate,
+        PresentNoFollowers,
+        PresentWithFollowers,
+        FollowersConflicting
+    };
+    UniSim::Models followers;
+    QList<QDate> followerFirstDates;
+
+    // methods
+    void getFollowerFirstDates();
+    FirstDateDiagnose firstDateDiagnose();
+    bool sameFollowerFirstDates();
+    void synchronizeWithFollowers();
+
 	// parameters
-    double latitude, startingDayInYear;
+    double latitude;
+    QDate firstDate;
+    QString followersAsString;
 
 	// state
-    double dayInYear, daysTotal, year, dayLength, sinLD, cosLD;
+    QDate date;
+    double day, month, year, dayInYear, daysTotal,
+        dayLength, sinLD, cosLD;
 
 };
 

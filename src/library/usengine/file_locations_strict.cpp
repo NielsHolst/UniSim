@@ -19,4 +19,11 @@ QDir FileLocationsStrict::locationImpl(FileType fileType) {
     return locations[fileType];
 }
 
+bool FileLocationsStrict::lookupImpl(FileType fileType, QString message) {
+    Q_ASSERT_X(false,
+               "FileLocationsStrict::lookupImpl",
+               qPrintable("File type missing: " + label(fileType)));
+    return false;
 }
+
+} //namespace

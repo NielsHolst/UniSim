@@ -10,7 +10,7 @@
 
 namespace UniSim{
 
-QList<Identifier> StandardControllerMaker::controllerTypes() const
+QList<Identifier> StandardControllerMaker::supportedTypes() const
 {
     return QList<Identifier>()
         << Identifier("Simple");

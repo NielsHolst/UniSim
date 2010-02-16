@@ -153,10 +153,17 @@ namespace local {
 */
 QStringList decodeSimpleList(QString parenthesizedList, QString errorContext) {
     QString s = parenthesizedList.simplified();
-    if (s.size() == 0) throw UniSim::Exception(local::stringDefault(errorContext, "Value list") +
-                                               " is empty");
+    if (s.size() == 0)
+        return QStringList();
+    if (s[0] != '(') {
+        if (s.endsWith(')'))
+            throw UniSim::Exception(local::stringDefault(errorContext,
+                                    "Value list misses left parenthesis"));
+        else
+            return QStringList() << s;
+    }
     local::chopParentheses(s, errorContext);
-    return s.split(" ");
+    return s.split(" ", QString::SkipEmptyParts);
 }
 
 //

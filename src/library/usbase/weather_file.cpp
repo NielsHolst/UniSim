@@ -44,8 +44,6 @@ void WeatherFile::Column::updateState(const QStringList &items) {
 
 namespace UniSim{
 
-const double pi = 3.14159265;
-
 WeatherFile::WeatherFile(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
@@ -62,12 +60,13 @@ void WeatherFile::initialize()
     for (Columns::iterator co = columns.begin(); co != columns.end(); ++co)
         co.value()->setParameter(this);
     setParameter("fileName", &fileName, QString());
+    setParameter("firstDate", &firstDate, QDate());
 }
 
 void WeatherFile::reset()
 {
     if (file.isOpen()) file.close();
-    QString filePath = FileLocations::location(FileLocations::Models).absolutePath() +
+    QString filePath = FileLocations::location(FileLocations::Weather).absolutePath() +
                        "/" + fileName;
     file.setFileName(filePath);
 

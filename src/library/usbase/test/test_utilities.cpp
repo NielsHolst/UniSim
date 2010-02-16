@@ -1,11 +1,107 @@
 #include <iostream>
 #include <QSet>
+#include <QStringList>
 #include <usbase/component.h>
 #include <usbase/model.h>
 #include <usbase/utilities.h>
 #include "test_utilities.h"
 
 using namespace UniSim;
+
+
+void TestUtilities::testDecodeSimpleListEmpty() {
+    QStringList list;
+    try {
+        list = decodeSimpleList("");
+        QVERIFY(list.isEmpty());
+
+        list = decodeSimpleList("()");
+        QVERIFY(list.isEmpty());
+
+        list = decodeSimpleList("( )");
+        QVERIFY(list.isEmpty());
+    }
+    catch (Exception &ex) {
+        QString msg = "Wrong diagnose: " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+}
+
+void TestUtilities::testDecodeSimpleListOne() {
+    QStringList list;
+    try {
+        list = decodeSimpleList("abc");
+        QCOMPARE(list.size(), 1);
+        QCOMPARE(list.value(0), QString("abc"));
+
+        list = decodeSimpleList("(abc)");
+        QCOMPARE(list.size(), 1);
+        QCOMPARE(list.value(0), QString("abc"));
+
+        list = decodeSimpleList("a b c");
+        QCOMPARE(list.size(), 1);
+        QCOMPARE(list.value(0), QString("a b c"));
+    }
+    catch (Exception &ex) {
+        QString msg = "Wrong diagnose: " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+}
+
+void TestUtilities::testDecodeSimpleListMany() {
+    QStringList list;
+
+    try {
+        list = decodeSimpleList("(a b c)");
+        QCOMPARE(list.size(), 3);
+        QCOMPARE(list.value(0), QString("a"));
+        QCOMPARE(list.value(1), QString("b"));
+        QCOMPARE(list.value(2), QString("c"));
+
+        list = decodeSimpleList(" ( a  b  c  ) ");
+        QCOMPARE(list.size(), 3);
+        QCOMPARE(list.value(0), QString("a"));
+        QCOMPARE(list.value(1), QString("b"));
+        QCOMPARE(list.value(2), QString("c"));
+    }
+    catch (Exception &ex) {
+        QString msg = "Wrong diagnose: " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+}
+
+void TestUtilities::testDecodeSimpleListFaulty() {
+    QStringList list;
+
+    try {
+        list = decodeSimpleList("(");
+        QFAIL("Faulty list not diagnosed");
+    }
+    catch (Exception &ex) {
+    }
+
+    try {
+        list = decodeSimpleList(")");
+        QFAIL("Faulty list not diagnosed");
+    }
+    catch (Exception &ex) {
+    }
+
+    try {
+        list = decodeSimpleList("(a b c");
+        QFAIL("Faulty list not diagnosed");
+    }
+    catch (Exception &ex) {    
+    }
+
+    try {
+        list = decodeSimpleList("a b c)");
+        QFAIL("Faulty list not diagnosed");
+    }
+    catch (Exception &ex) {
+    }
+}
+
 
 void TestUtilities::testSplitAtNamespace()
 {

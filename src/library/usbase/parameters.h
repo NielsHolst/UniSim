@@ -120,10 +120,12 @@ template <class T> T Parameters::parameter(Identifier name) const {
 
 template <class T> T* Parameters::validatedValuePtr(Identifier name) const {
     if (!_parameters.contains(name))
-        throw Exception("Attempt to access non-existing parameter with key '" + name.key() +"'");
+        throw Exception("Attempt to access non-existing parameter with key '" +
+                        name.key() + "'");
 		
 	if (!_parameters[name].valuePtr)	
-        throw Exception("Attempt to access parameter named '" + name.label() +"' but its value pointer has not been set previously.");
+        throw Exception("Attempt to access parameter named '" + name.label() +
+                        "' but its value pointer has not been set previously.");
 
 	QVariant::Type wantedType = _parameters[name].typePointedTo;
 	if ( wantedType != getType<T>())

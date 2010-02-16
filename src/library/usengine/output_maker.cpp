@@ -11,6 +11,7 @@
 #include <usbase/output.h>
 #include <usbase/output_maker_plug_in.h>
 #include <usbase/object_pool.h>
+#include <usbase/utilities.h>
 #include "output_maker.h"
 
 namespace UniSim{
@@ -19,25 +20,7 @@ OutputMaker *OutputMaker::_me = 0;
 
 OutputMaker::OutputMaker()
 {
-	QDir dir = FileLocations::location(FileLocations::Plugins);
-	
-	foreach (QString filename, dir.entryList(QDir::Files))  {
-		QPluginLoader loader(dir.absoluteFilePath(filename));
-        OutputMakerPlugIn *outputMaker = qobject_cast<OutputMakerPlugIn*>(loader.instance());
-        if (outputMaker) {
-            outputMaker->useObjectPool(objectPool());
-            foreach (Identifier outputType, outputMaker->outputTypes()) {
-                _outputMakers[outputType] = outputMaker;
-                Identifier nsModelType = outputMaker->plugInName().label()+"::"+outputType.label();
-                _outputMakers[nsModelType] = outputMaker;
-			}
-		}
-	}
-    if (_outputMakers.size() == 0) {
-        QString msg = "Found no output plugins in: " + dir.absolutePath();
-        if (!dir.exists()) msg += ".\nThe folder does not exist.";
-        throw Exception(msg);
-    }
+    lookupPlugIns<OutputMakerPlugIn>(id(), &_outputMakers);
 }
 
 QString OutputMaker::id() {

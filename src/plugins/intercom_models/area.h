@@ -47,7 +47,7 @@ private:
 
     // parameters
     int distribution;
-    double scatteringCoeff;
+    double initial, scatteringCoeff;
 
 	// state
     double lai, amax, assimEfficiency, layerHeight;

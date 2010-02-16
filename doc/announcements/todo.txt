@@ -17,15 +17,17 @@
 + simplify LiveSimulation
 + make intelligent lookup of models by name and class
 - implement XML editor
-- add options node to xml input to scale diagram.
 - implement $random-normal(avg=9.8,var=2.3) and stratified hypercube controller
 - implement graph zoom 
 - implement prototyping
 - implement references in XML
-- implement scaleable graph
+- implement scaleable diagram
+  - maybe add options node to xml input to scale diagram.
+  - try SVG format for diagram
 - include weather.h and .cpp in output from prototype maker.
 - refactor MainWindow
 - try QCoreApplication::addLibraryPath instead of system path
 - try UniSim::findChild and UniSim::findChildren in utilities.h
 - make lookup of dot tool fail proof
+
 

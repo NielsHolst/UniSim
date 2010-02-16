@@ -30,6 +30,7 @@ public:
 private:
     // parameters
     QString fileName;
+    QDate firstDate;
 
     // file columns
     class Column {

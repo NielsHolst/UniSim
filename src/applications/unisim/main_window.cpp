@@ -110,7 +110,7 @@ void MainWindow::setTitle(QString subTitle) {
     QString title;
     if (!subTitle.isEmpty()) title = subTitle + "  -  ";
 
-    title += "Universal Simulator for Collaborative Ecological Modelling 1.0";
+    title += "Universal Simulator";
     setWindowTitle(title);
 }
 

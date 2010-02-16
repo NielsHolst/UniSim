@@ -3,6 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QMessageBox>
+#include <usbase/debug_output.h>
 #include <usbase/exception.h>
 #include <usbase/utilities.h>
 #include "../standard_models/calendar.h"
@@ -31,6 +33,7 @@ Area::Area(UniSim::Identifier name, QObject *parent)
 }
 
 void Area::initialize() {
+    setParameter("initial", &initial, 0.01);
     setParameter("distribution", &distText, QString("Symmetric"));
     setParameter("scatteringCoeff", &scatteringCoeff, 0.2);
     setParameter("kDiffuse", &k[Diffuse], 0.7);
@@ -49,7 +52,7 @@ void Area::initialize() {
 }
 
 void Area::reset() {
-    lai = 0.;
+    lai = initial;
 }
 
 void Area::update() {
@@ -63,15 +66,19 @@ void Area::update() {
 }
 
 AbsorptionExponents Area::absorptionExponents(double layerHeight_) {
+    QString name = parent()->objectName();
+
     layerHeight = layerHeight_;
     double scat = sqrt(1 - scatteringCoeff);
     k[Direct] = 0.5/cs->sinb*k[Diffuse]/0.8/scat;
     k[DirectTotal] = k[Direct]*scat;
 
     AbsorptionExponents exponents;
+    double areaAbove = aboveHeight(layerHeight);
+    debugStream() << name << ":\t" << areaAbove << "aa\t";
     for (int i = 0; i < NumLightComponents; ++i) {
-        double areaAbove = aboveHeight(layerHeight);
         exponents[i] = k[i]*areaAbove;
+        debugStream() << k[i] << "k\t" << exponents[i] << "exp\t";
     }
 
     return exponents;
@@ -79,23 +86,38 @@ AbsorptionExponents Area::absorptionExponents(double layerHeight_) {
 
 void Area::updateLightUseInShade()
 {
-    double refh = (1 - sqrt(0.8))/(1 + sqrt(0.8));
-    double refs = refh*2./(1. + 1.6*cs->sinb);
+    QString name = parent()->objectName();
 
-    double absorbed[NumLightComponents], par[NumLightComponents];
+    double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
+    double refSphec = refHorz*2./(1. + 1.6*cs->sinb);
+
+    double absorbed[NumLightComponents], par[NumLightComponents], reflected[NumLightComponents];
     par[Diffuse] = cs->par.diffuse;
     par[Direct] = cs->par.direct;
     par[DirectTotal] = cs->par.direct;
-    for (int lc = 0; lc < NumLightComponents; ++lc)
-        absorbed[lc] = (1. - refs) * par[lc] * k[lc] * exp(-cs->absorptionExponents.value(lc));
+    reflected[Diffuse] = refHorz;
+    reflected[Direct] = refSphec;
+    reflected[DirectTotal] = scatteringCoeff;
+
+    debugStream() << name << ":\t";
+    for (int lc = 0; lc < NumLightComponents; ++lc) {
+        absorbed[lc] = k[lc] * (1. - reflected[lc]) * par[lc] * exp(-cs->absorptionExponents.value(lc));
+        debugStream()
+                << lc << "lc\t"
+                << k[lc] << "k\t"
+                << par[lc] << "par\t"
+                << exp(-cs->absorptionExponents.value(lc)) << "expall\t"
+                << absorbed[lc] << "abs\t";
+    }
 
     absorption.inShade = absorbed[Diffuse] + absorbed[DirectTotal] - absorbed[Direct];
     if (absorption.inShade < 0) {
-        if (absorption.inShade > -1e-4)
+        absorption.inShade = 0.;
+        /*if (absorption.inShade > -1e-4)
             absorption.inShade = 0.;
         else
             throw Exception("Shaded absorption (" + QString::number(absorption.inShade) + ")" +
-                            " < 0 in area of " + plant->objectName());
+                            " < 0 in area of " + plant->objectName());*/
     }
     assimilation.inShade =
         amax == 0. ? 0. :

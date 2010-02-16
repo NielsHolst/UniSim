@@ -3,14 +3,13 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <QDir>
-#include <QMessageBox>
-#include <QPluginLoader>
+#include <QMap>
 #include <usbase/controller.h>
 #include <usbase/controller_maker_plug_in.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/object_pool.h>
+#include <usbase/utilities.h>
 #include "controller_maker.h"
 
 namespace UniSim{
@@ -18,24 +17,7 @@ namespace UniSim{
 ControllerMaker *ControllerMaker::_me = 0;
 
 ControllerMaker::ControllerMaker() {
-	QDir dir = FileLocations::location(FileLocations::Plugins);
-
-	foreach (QString filename, dir.entryList(QDir::Files)) {
-		QPluginLoader loader(dir.absoluteFilePath(filename));
-        ControllerMakerPlugIn *ControllerMaker = qobject_cast<ControllerMakerPlugIn*>(loader.instance());
-        if (ControllerMaker) {
-            ControllerMaker->useObjectPool(objectPool());
-            foreach (Identifier controllerType, ControllerMaker->controllerTypes()) {
-				Q_ASSERT(_ControllerMakers.find(controllerType) == _ControllerMakers.end());
-				_ControllerMakers[controllerType] = ControllerMaker;
-			}
-		}
-    }
-    if (_ControllerMakers.size() == 0) {
-        QString msg = "Found no controller plugins in: " + dir.absolutePath();
-        if (!dir.exists()) msg += ".\nThe folder does not exist.";
-        throw Exception(msg);
-    }
+    lookupPlugIns<ControllerMakerPlugIn>(id(), &_ControllerMakers);
 }
 
 QString ControllerMaker::id() {

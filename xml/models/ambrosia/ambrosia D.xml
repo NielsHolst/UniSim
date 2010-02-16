@@ -11,11 +11,12 @@
 
 	<model name="calendar" type="UniSim::Calendar">
 		<parameter name="latitude" value="52.2" comment="Braunschweig"/>
-		<parameter name="startingDayInYear" value="89"/>
+		<parameter name="followers" value="weather"/>
 	</model>
 	
 	<model name="weather" type="ambrosia::Weather">
-		<parameter name="fileName" value="../weather/braunschweig 2009.txt"/>
+		<parameter name="fileName" value="braunschweig 2009.txt"/>
+		<parameter name="firstDate" value="1/4/2009"/>
 		<parameter name="colTavg" value="2"/>
 	</model>
 		

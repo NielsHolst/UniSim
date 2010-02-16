@@ -14,7 +14,7 @@ using namespace UniSim;
 
 namespace ambrosia{
 
-QList<Identifier> AmbrosiaModelMaker::modelTypes() const
+QList<Identifier> AmbrosiaModelMaker::supportedTypes() const
 {
 	return QList<Identifier>()
         << Identifier("Plant")

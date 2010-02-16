@@ -19,7 +19,7 @@ using namespace UniSim;
 
 namespace ess2009 {
 
-QList<Identifier> Ess2009ModelMaker::modelTypes() const
+QList<Identifier> Ess2009ModelMaker::supportedTypes() const
 {
     return QList<Identifier>()
         << Identifier("Crop")

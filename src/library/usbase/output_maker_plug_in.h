@@ -26,7 +26,7 @@ public:
 	virtual ~OutputMakerPlugIn() { }	
 	
 	//! Returns a list of the output types supported by this output maker
-    virtual Identifiers outputTypes() const = 0;
+    virtual Identifiers supportedTypes() const = 0;
 	
     //! Returns name of this plugin
     virtual Identifier plugInName() const = 0;

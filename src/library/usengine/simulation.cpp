@@ -74,8 +74,7 @@ void Simulation::initialize(const Identifiers &sequence) throw(Exception)
 	}
 	Q_ASSERT(controllers.size() == 1);
 	Q_ASSERT(models.size() > 0);
-	Q_ASSERT(_outputs.size() >= 0);
-	Q_ASSERT(children().size() == controllers.size() + models.size() + _outputs.size());
+    Q_ASSERT(children().size() == controllers.size() + models.size() + _outputs.size());
 	
 	_controller = controllers[0];
 

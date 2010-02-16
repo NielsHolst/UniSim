@@ -17,6 +17,11 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
+    void testDecodeSimpleListEmpty();
+    void testDecodeSimpleListOne();
+    void testDecodeSimpleListMany();
+    void testDecodeSimpleListFaulty();
+
     void testSplitAtNamespace();
 
     void testFindAtomicGloballyAll();

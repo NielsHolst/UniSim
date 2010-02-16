@@ -11,11 +11,13 @@
 	
 	<model name="calendar" type="unisim::Calendar">
 		<parameter name="latitude" value="52"/>
-		<parameter name="startingDayInYear" value="244"/>
+		<parameter name="firstDate" value="1/1/2007"/>
+		<parameter name="followers" value="weather"/>
 	</model>
 	
 	<model name="weather" type="intercom::Weather">
-		<parameter name="fileName" value="weather/Rothamstead-2006.prn"/>
+		<parameter name="fileName" value="rothamsted-2006.prn"/>
+		<parameter name="fileDate" value="1/9/2006"/>
 		<parameter name="colTmax" value="3"/>
 		<parameter name="colTmin" value="4"/>
 		<parameter name="colIrradiation" value="7"/>
@@ -51,88 +53,96 @@
 					<parameter name="kDiffuse" value="0.4"/>
 				</model>
 			</model>
+			
 		</model>
 	</model>
 
+	<!-- Outputs on screen -->
+
     <output type="plot">
-        <title value="Day length"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="Day length" variable="calendar[dayLength]"/>
-        </xyvariables>
+		<parameter name="title" value="Day length"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day length" axis="y" value="calendar[dayLength]"/>
 	</output>
     
 	<output type="plot">
-        <title value="Sun angle"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="cosLD" variable="calendar[cosLD]"/>
-            <y name="sinLD" variable="calendar[sinLD]"/>
-        </xyvariables>
+		<parameter name="title" value="Sun angle"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="cosLD" axis="y" value="calendar[cosLD]"/>
+		<variable label="sinLD" axis="y" value="calendar[sinLD]"/>
 	</output>
     
 	<output type="plot">
-        <title value="Temperature"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="Tmin" variable="weather[Tmin]"/>
-            <y name="Tavg" variable="weather[Tavg]"/>
-            <y name="Tday" variable="weather[Tday]"/>
-            <y name="Tmax" variable="weather[Tmax]"/>
-        </xyvariables>
+		<parameter name="title" value="Temperature"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
+		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
+		<variable label="Tday" axis="y" value="weather[Tday]"/>
+		<variable label="Tmax" axis="y" value="weather[Tmax]"/>
     </output>
 
     <output type="plot">
-        <title value="Irradiation"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="Irradiation" variable="weather[IrradiationMJ]"/>
-        </xyvariables>
+		<parameter name="title" value="Irradiation"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Irradiation" axis="y" value="weather[IrradiationMJ]"/>
     </output>
 
     <output type="plot">
-        <title value="PAR at noon"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="Total" variable="weather[parTotal12h]"/>
-            <y name="Diffuse" variable="weather[parDiffuse12h]"/>
-            <y name="Direct" variable="weather[parDirect12h]"/>
-        </xyvariables>
-    </output>
-
-
-    <output type="plot">
-        <title value="Cirsium photosyntesis"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="Absorption" variable="cirsium[absorption]"/>
-            <y name="Assimilation" variable="cirsium[assimilation]"/>
-        </xyvariables>
+		<parameter name="title" value="PAR at noon"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Total" axis="y" value="weather[parTotal12h]"/>
+		<variable label="Diffuse" axis="y" value="weather[parDiffuse12h]"/>
+		<variable label="Direct" axis="y" value="weather[parDirect12h]"/>
     </output>
 
     <output type="plot">
-        <title value="Cirsium LAI"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="leaves" variable="cirsium/leaves/area[lai]"/>
-            <y name="stem" variable="cirsium/stem/area[lai]"/>
-            <y name="flowers" variable="cirsium/flowers/area[lai]"/>
-        </xyvariables>
+		<parameter name="title" value="PAR from Irradiation"/>
+		<variable label="Irradiation" axis="x" value="weather[IrradiationMJ]"/>
+		<variable label="Total PAR at noon" axis="y" value="weather[parTotal12h]"/>
+    </output>
+
+	<output type="table">
+		<parameter name="fileName" value="PAR from Irradiation.prn"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Irradiation" axis="y" value="weather[IrradiationMJ]"/>
+		<variable label="Total PAR at noon" axis="y" value="weather[parTotal12h]"/>
     </output>
 
     <output type="plot">
-        <title value="Plant height"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="Cirsium" variable="cirsium/height[height]"/>
-        </xyvariables>
+		<parameter name="title" value="Cirsium absorption"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="total" axis="y" value="cirsium[absorption]"/>
+		<variable label="leaves" axis="y" value="cirsium/leaves[absorption]"/>
+		<variable label="stem" axis="y" value="cirsium/stem[absorption]"/>
+		<variable label="flowers" axis="y" value="cirsium/flowers[absorption]"/>
+    </output>
+
+    <output type="table">
+		<parameter name="fileName" value="Cirsium absorption.prn"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="total" axis="y" value="cirsium[absorption]"/>
+		<variable label="leaves" axis="y" value="cirsium/leaves[absorption]"/>
+		<variable label="stem" axis="y" value="cirsium/stem[absorption]"/>
+		<variable label="flowers" axis="y" value="cirsium/flowers[absorption]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Cirsium LAI"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="leaves" axis="y" value="cirsium/leaves/area[lai]"/>
+		<variable label="stem" axis="y" value="cirsium/stem/area[lai]"/>
+		<variable label="flowers" axis="y" value="cirsium/flowers/area[lai]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Plant height"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Cirsium" axis="y" value="cirsium/height[height]"/>
     </output>
 	
 	<output type="plot">
-        <title value="Photothermal time"/>
-        <xyvariables>
-            <x name="Day" variable="calendar[daysTotal]"/>
-            <y name="total" variable="cirsium/photoThermalTime[total]"/>
-        </xyvariables>
+		<parameter name="title" value="Photothermal time"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="total" axis="y" value="cirsium/photoThermalTime[total]"/>
     </output>
 </simulation>

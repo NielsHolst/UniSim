@@ -16,6 +16,7 @@ public:
     FileLocationsStrict();
 private:
 	QDir locationImpl(FileType fileType);
+    bool lookupImpl(FileType fileType, QString message);
 };
 
 }

@@ -6,6 +6,7 @@
 #ifndef CONTROLLER_MAKER_H
 #define CONTROLLER_MAKER_H
 
+#include <QDir>
 #include <QMap>
 #include <QObject>
 
@@ -50,7 +51,7 @@ public:
 	*/
     static bool canCreate(Identifier controllerType);
 
-	private:
+private:
     static ControllerMaker* me();
     static ControllerMaker *_me;
 

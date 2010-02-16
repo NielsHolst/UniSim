@@ -12,7 +12,7 @@ using namespace UniSim;
 
 namespace beehive{
 
-QList<Identifier> BeehiveModelMaker::modelTypes() const
+QList<Identifier> BeehiveModelMaker::supportedTypes() const
 {
 	return QList<Identifier>()
 		<< Identifier("Aethina")

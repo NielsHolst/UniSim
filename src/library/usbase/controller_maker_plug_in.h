@@ -29,7 +29,7 @@ public:
 	virtual ~ControllerMakerPlugIn() { }	
 	
 	//! Returns a list of the controller types supported by this controller maker
-    virtual Identifiers controllerTypes() const = 0;
+    virtual Identifiers supportedTypes() const = 0;
 	
     //! Returns name of this plugin
     virtual Identifier plugInName() const = 0;

@@ -23,7 +23,7 @@ namespace intercom{
 
 bool initialized = false;
 
-QList<Identifier> IntercomModelMaker::modelTypes() const
+QList<Identifier> IntercomModelMaker::supportedTypes() const
 {
 	return QList<Identifier>()
         << Identifier("Area")

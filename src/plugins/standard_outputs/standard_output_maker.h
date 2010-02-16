@@ -17,7 +17,7 @@ class StandardOutputMaker : public QObject, public OutputMakerPlugIn
 	Q_OBJECT
     Q_INTERFACES(UniSim::OutputMakerPlugIn)
 public:
-    QList<Identifier> outputTypes() const;
+    QList<Identifier> supportedTypes() const;
     UniSim::Identifier plugInName() const;
     void useObjectPool(ObjectPool *pool) const;
     Output* create(Identifier outputType, Identifier objectName, QObject *parent=0);

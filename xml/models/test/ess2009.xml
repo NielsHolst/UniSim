@@ -11,7 +11,9 @@
         </sequence>
     </controller>
 
-    <model name="calendar" type="Calendar"/>
+    <model name="calendar" type="Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>
     
     <model name="weather" type="ess2009::Weather"/>
 
@@ -27,6 +29,19 @@
             <parameter name="maxYieldLossPct" value="80"/>
             <parameter name="slopeYieldLossPct" value="0.5"/>
             <parameter name="laiCalendar" value="((0 0)(200 0)(620 0.5)(700 0.9)(800 1.8)(940 5)(1200 5)(1808 5)(2572 3))"/>
+
+            <model type="Treatments">
+                <model name="split_spraying_1" type="InstantMortality">
+                    <parameter name="day" value="15"/>
+                    <parameter name="month" value="5"/>
+                    <parameter name="mortalities" value="((seedling 100)(juvenile 80)(mature 10))"/>
+                </model>
+                <model name="split_spraying_2" type="InstantMortality">
+                    <parameter name="day" value="30"/>
+                    <parameter name="month" value="5"/>
+                    <parameter name="mortalities" value="((seedling 100)(juvenile 80)(mature 10))"/>
+                </model>
+            </model>
         </model>
 
         <model name="wheat" type="Crop">
@@ -38,71 +53,73 @@
             <parameter name="maxYieldLossPct" value="40"/>
             <parameter name="slopeYieldLossPct" value="0.1"/>
             <parameter name="laiCalendar" value="((0 0)(110 0)(210 0.3)(310 0.8)(410 1.6)(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"/>
+
+            <model type="Treatments">
+                <model name="single_spraying" type="InstantMortality">
+                    <parameter name="day" value="30"/>
+                    <parameter name="month" value="4"/>
+                    <parameter name="mortalities" value="((seedling 100)(juvenile 30)(mature 10))"/>
+                </model>
+            </model>
         </model>
     </model>
     
     <model name="weed" type="Weed">
-        <parameter name="seedProdSlope" value="0" note="number of seeds produced per g final weed biomass"/>
+        <parameter name="seedProdSlope" value="100" note="number of seeds produced per g final weed biomass"/>
 
         <model name="seedBank" type="SeedBank">
 			<parameter name="initialDensity" value="1000"/>
-			<parameter name="yearlyMortalityRate" value="0.1"/>
-			<parameter name="yearlyEmergenceRate" value="0.2"/>
+            <parameter name="yearlyMortalityRate" value="0.1"/>
+            <parameter name="yearlyEmergenceRate" value="0.2"/>
 	        <parameter name="emergenceCalendar" value ="(0 5 30 60 70 50 10 0 0 0 0 0)"/>
 	    </model>
 
 		<model name="seedling" type="PlantGrowthStage">
-			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+			<model name="density" type="Stage">
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="40"/>
 			</model>
-			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+			<model name="densityEqs" type="Stage">
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="40"/>
 			</model>
         </model>
 
 		<model name="juvenile" type="PlantGrowthStage">
-			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-               <parameter name="duration" value="600"/>
+			<model name="density" type="Stage">
+				<model name="time" type="DayDegrees"/>
+				<parameter name="duration" value="600"/>
 			</model>
-			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-               <parameter name="duration" value="600"/>
+			<model name="densityEqs" type="Stage">
+				<model name="time" type="DayDegrees"/>
+              <parameter name="duration" value="600"/>
 			</model>
         </model>
 
 		<model name="mature" type="PlantGrowthStage">
-			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+			<model name="density" type="Stage">
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="300"/>
 			</model>
-			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+			<model name="densityEqs" type="Stage">
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="300"/>
 			</model>
 		</model>
 
-		<model name="seedsOnPlant" type="UniSim::Stage">
-			<model name="time" type="Days"/>
+		<model name="seedsOnPlant" type="Stage">
+			<model name="time" type="DayDegrees"/>
 			<parameter name="duration" value="150"/>
 			<parameter name="seedProdSlope" value="10"/>
 		</model>
     </model>
     
-	<output type="plot">
-		<parameter name="title" value="Temperature"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Temperature" axis="y" value="weather[T]"/>
-    </output>
 	
-    <output type="table">
-		<parameter name="fileName" value="5 add life stages.prn"/>
+	<output type="table">
+		<parameter name="filename" value="test_plugins.prn"/>
 		<variable label="Year" axis="x" value="calendar[year]"/>
 		<variable label="Temperature" axis="y" value="weather[T]"/>
-		<variable label="Crop LAI" axis="y" value="rotation[lai]"/>
-		<variable label="Seed bank" axis="y" value="seedBank[number]"/>
     </output>
+
 
 </simulation>

@@ -16,7 +16,7 @@
 
 namespace UniSim{
 
-QList<Identifier> StandardModelMaker::modelTypes() const
+QList<Identifier> StandardModelMaker::supportedTypes() const
 {
     return QList<Identifier>()
         << "Anonymous"

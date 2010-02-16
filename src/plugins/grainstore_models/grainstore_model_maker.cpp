@@ -19,7 +19,7 @@ using namespace UniSim;
 
 namespace grainstore{
 
-QList<Identifier> GrainstoreModelMaker::modelTypes() const
+QList<Identifier> GrainstoreModelMaker::supportedTypes() const
 {
 	return QList<Identifier>()
         << Identifier("LarvaTime")

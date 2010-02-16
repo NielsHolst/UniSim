@@ -8,8 +8,9 @@
 
 #include <usbase/model_maker_plug_in.h>
 
-class UniSim::ObjectPool;
-
+namespace UniSim {
+    class ObjectPool;
+}
 
 namespace beehive{
 
@@ -18,7 +19,7 @@ class BeehiveModelMaker : public QObject, public UniSim::ModelMakerPlugIn
 	Q_OBJECT
 	Q_INTERFACES(UniSim::ModelMakerPlugIn)
 public:
-	QList<UniSim::Identifier> modelTypes() const;
+    QList<UniSim::Identifier> supportedTypes() const;
 	UniSim::Identifier plugInName() const;
 	void useObjectPool(UniSim::ObjectPool *pool) const;
 	UniSim::Model* create(UniSim::Identifier modelType,

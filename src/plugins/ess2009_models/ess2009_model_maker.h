@@ -19,7 +19,7 @@ class Ess2009ModelMaker : public QObject, public UniSim::ModelMakerPlugIn
 	Q_OBJECT
 	Q_INTERFACES(UniSim::ModelMakerPlugIn)
 public:
-    QList<UniSim::Identifier> modelTypes() const;
+    QList<UniSim::Identifier> supportedTypes() const;
     UniSim::Identifier plugInName() const;
     void useObjectPool(UniSim::ObjectPool *pool) const;
     UniSim::Model* create(UniSim::Identifier modelType, UniSim::Identifier objectName, QObject *parent=0);

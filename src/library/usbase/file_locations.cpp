@@ -44,12 +44,12 @@ void FileLocations::setLabels() {
     labels[Output] = "Output files";
     labels[DotTool] = "Dot tool";
     labels[Temporary] = "Temporary files";
+    labels[Weather] = "Weather files";
 }
 
 void FileLocations::setHints() {
     QString beginning, ending = "\n\nYou need to supply the information only this once.";
     hints[Plugins] = beginning +
-                    "This is the first time you open a model XML file. "
                     "Universal Simulator needs to know where the plugin files are "
                     "because the plugin files define model behaviour.\n\n"
                     "They are located in a folder called 'plugins'."
@@ -57,12 +57,10 @@ void FileLocations::setHints() {
     hints[Models] = "Could not find model folder from your previous session";
     hints[Prototypes] = "Could not find prototype folder from your previous session";
     hints[Output] = beginning +
-                    "This is the first time you run a model. "
                     "Universal Simulator needs to know where to put the output files.\n\n"
                     "For this purpose create or select any folder."
                     + ending;
     hints[DotTool] = beginning +
-                    "This is the first time you open a model XML file. "
                     "Universal Simulator needs to know where the 'dot' tool is "
                     "because this tool is used to draw model diagrams.\n\n"
                     "The 'dot' tool is likely located in a folder called 'graphvizx.xx/bin', "
@@ -71,6 +69,9 @@ void FileLocations::setHints() {
     hints[Temporary] = beginning +
                     "Universal Simulator needs to store temporary files somewhere.\n\n"
                     "For this purpose create or select any folder."
+                    + ending;
+    hints[Weather] = beginning +
+                    "Universal Simulator needs to know where you have put the weather files.\n\n"
                     + ending;
 }
 
@@ -98,6 +99,10 @@ QString FileLocations::hint(FileType fileType) {
 
 QDir FileLocations::location(FileType fileType) {
     return me()->locationImpl(fileType);
+}
+
+bool FileLocations::lookup(FileType fileType, QString message) {
+    return me()->lookupImpl(fileType, message);
 }
 
 QDir FileLocations::possibleLocation(FileType fileType) {

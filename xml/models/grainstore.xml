@@ -12,11 +12,12 @@
 	
 	<model name="calendar" type="UniSim::Calendar">
 		<parameter name="latitude" value="4"/>
-		<parameter name="startingDayInYear" value="244" comment="1 Sep"/>
+		<parameter name="followers" value="weather"/>
 	</model>
 	
 	<model name="weather" type="grainstore::Weather">
-		<parameter name="fileName" value="weather/iita9495.wth"/>
+		<parameter name="fileName" value="iita9495.wth"/>
+		<parameter name="firstDate" value="1/9/1994"/>
 		<parameter name="colGmc" value="3"/>
 		<parameter name="colTmin" value="4"/>
 		<parameter name="colTmax" value="5"/>
@@ -85,47 +86,38 @@
 	</model> 
 
 	<output type="plot">
-		<title value="Grainstore"/>
-		<xyvariables>
-			<x name="Day" variable="calendar[daysTotal]"/>
-			<y name="gmc" variable="weather[gmc]"/>
-			<y name="Tavg" variable="weather[Tavg]"/>
-		</xyvariables>
+		<parameter name="title" value="Grain store"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="gmc" axis="y" value="weather[gmc]"/>
+		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
+
 	</output>
 
 	<output type="plot">
-		<title value="Prostephanus stages"/>
-		<xyvariables>
-			<x name="Day" variable="calendar[daysTotal]"/>
-			<y name="egg" variable="egg[number]"/>
-			<y name="larva" variable="larva[number]"/>
-			<y name="pupa" variable="pupa[number]"/>
-			<y name="adult" variable="adult[number]"/>
-		</xyvariables>
+		<parameter name="title" value="Prostephanus stages"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="egg" axis="y" value="egg[number]"/>
+		<variable label="larva" axis="y" value="larva[number]"/>
+		<variable label="pupa" axis="y" value="pupa[number]"/>
+		<variable label="adult" axis="y" value="adult[number]"/>
 	</output>
 
 	<output type="plot">
-		<title value="Prostephanus eggs per day"/>
-		<xyvariables>
-			<x name="Day" variable="calendar[daysTotal]"/>
-			<y name="Eggs per day" variable="reproduction[fecundity]"/>
-		</xyvariables>
+		<parameter name="title" value="Prostephanus eggs per day"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Eggs per day" axis="y" value="reproduction[fecundity]"/>
 	</output>
 
 	<output type="plot">
-		<title value="Prostephanus fecundity dens.dep."/>
-		<xyvariables>
-			<x name="Day" variable="calendar[daysTotal]"/>
-			<y name="Density dependence" variable="reproduction[densityDependence]"/>
-		</xyvariables>
+		<parameter name="title" value="Prostephanus fecundity dens.dep."/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Density dependence" axis="y" value="reproduction[densityDependence]"/>
 	</output>
 
 	<output type="plot">
-		<title value="Maize injury"/>
-		<xyvariables>
-			<x name="Day" variable="calendar[daysTotal]"/>
-			<y name="Loss" variable="maize[lossPct]"/>
-			<y name="Damage" variable="maize[damagePct]"/>
-		</xyvariables>
+		<parameter name="title" value="Maize injury"/>
+		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Loss" axis="y" value="maize[lossPct]"/>
+		<variable label="Damage" axis="y" value="maize[damagePct]"/>	
 	</output>
 </simulation>

@@ -11,6 +11,7 @@
 #include <usbase/model.h>
 #include <usbase/model_maker_plug_in.h>
 #include <usbase/object_pool.h>
+#include <usbase/utilities.h>
 #include "model_maker.h"
 
 namespace UniSim{
@@ -19,25 +20,7 @@ ModelMaker *ModelMaker::_me = 0;
 
 ModelMaker::ModelMaker()
 {
-	QDir dir = FileLocations::location(FileLocations::Plugins);
-	
-	foreach (QString filename, dir.entryList(QDir::Files))  {
-		QPluginLoader loader(dir.absoluteFilePath(filename));
-		ModelMakerPlugIn *modelMaker = qobject_cast<ModelMakerPlugIn*>(loader.instance());
-		if (modelMaker) {
-            modelMaker->useObjectPool(objectPool());
-            foreach (Identifier modelType, modelMaker->modelTypes()) {
-				_modelMakers[modelType] = modelMaker;
-                Identifier nsModelType = modelMaker->plugInName().label()+"::"+modelType.label();
-                _modelMakers[nsModelType] = modelMaker;
-			}
-		}
-	}
-    if (_modelMakers.size() == 0) {
-        QString msg = "Found no model plugins in: " + dir.absolutePath();
-        if (!dir.exists()) msg += ".\nThe folder does not exist.";
-        throw Exception(msg);
-    }
+    lookupPlugIns<ModelMakerPlugIn>(id(), &_modelMakers);
 }
 
 QString ModelMaker::id() {

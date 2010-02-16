@@ -26,6 +26,8 @@ HEADERS += \
     $${US_ENGINE}/test/trickle_sequence.h \
     $${US_PLUGINS}/standard_controllers/simple_controller.h \
     $${US_PLUGINS}/standard_models/anonymous_model.h \
+    $${US_PLUGINS}/standard_models/calendar.h \
+    $${US_PLUGINS}/standard_models/test/test_calendar.h \
     $${US_PLUGINS}/standard_models/test/test_life_stage.h \
     $${US_PLUGINS}/standard_models/test/test_life_cycle.h \
 	../graph_generator.h \
@@ -33,7 +35,8 @@ HEADERS += \
 	../log_base.h \
     frequency_distribution.h \
     test_frequency_distribution.h \
-    test_live_simulation.h
+    test_live_simulation.h \
+	test_plugins.h
 
 SOURCES += \
     $${US_BASE}/test/test_identifier.cpp \
@@ -47,6 +50,8 @@ SOURCES += \
     $${US_ENGINE}/test/trickle_sequence.cpp \
     $${US_PLUGINS}/standard_controllers/simple_controller.cpp \
     $${US_PLUGINS}/standard_models/anonymous_model.cpp \
+    $${US_PLUGINS}/standard_models/calendar.cpp \
+    $${US_PLUGINS}/standard_models/test/test_calendar.cpp \
     $${US_PLUGINS}/standard_models/test/test_life_stage.cpp \
     $${US_PLUGINS}/standard_models/test/test_life_cycle.cpp \
 	../graph_generator.cpp \
@@ -55,4 +60,5 @@ SOURCES += \
     frequency_distribution.cpp \
     test_frequency_distribution.cpp \
     test_live_simulation.cpp \
+	test_plugins.cpp \
 	main.cpp 

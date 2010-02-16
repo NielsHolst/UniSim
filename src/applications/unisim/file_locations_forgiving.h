@@ -13,6 +13,7 @@ public:
     FileLocationsForgiving();
 private:
 	QDir locationImpl(FileType fileType);
+    bool lookupImpl(FileType fileType, QString message = QString());
 };
 
 #endif

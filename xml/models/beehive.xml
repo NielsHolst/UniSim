@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
 	<controller type="Simple">
-		<parameter name="numSteps" value="60"/>
+		<parameter name="numSteps" value="30"/>
 		<sequence>
 			<model name="calendar"/>
 			<model name="shb"/>
 		</sequence>
 	</controller>
-	<model name="calendar" type="Calendar"/>
+	<model name="calendar" type="Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>
 	<model name="shb" type="Aethina">
 		<parameter name="Ninit" value="2.49816"/>
 		<parameter name="r" value="1.09965"/>
 		<parameter name="K" value="146.057"/>
 	</model>
-
-<output type="plot">
-	<title value="Shb"/>
-	<xyvariables>
-		<x name="Day" variable="calendar[dayInYear]"/>
-		<y name="Density" variable="shb[N]"/>
-	</xyvariables>
-</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Shb"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Density" axis="y" value="shb[N]"/>
+	</output>
 </simulation>

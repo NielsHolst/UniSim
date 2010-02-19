@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS = \
 	ambrosia_models \
 	beehive_models \
+	conductance_models \
 	ess2009_models \
 	grainstore_models \
 	intercom_models \

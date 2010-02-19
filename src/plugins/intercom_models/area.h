@@ -8,7 +8,7 @@
 #include <QMap>
 #include <QObject>
 #include <usbase/model.h>
-#include "absorption_exponents.h"
+#include "light_components.h"
 #include "community.h"
 #include "light_use.h"
 
@@ -23,7 +23,6 @@ class Area : public UniSim::Model
 	Q_OBJECT
 public: 
     typedef enum {Symmetric, Even, Tapering, TopHeavy} Distribution;
-    typedef enum {Diffuse, Direct, DirectTotal, NumLightComponents} LightComponent;
 
     Area(UniSim::Identifier name, QObject *parent=0);
 
@@ -33,7 +32,7 @@ public:
 	void update();
 
     // special methods
-    AbsorptionExponents absorptionExponents(double layerHeight);
+    LightComponents weightedAreaAboveLayer(double layerHeight);
     double atHeight(double height);
     double aboveHeight(double height);
 
@@ -43,7 +42,7 @@ private:
     QString distText;
 
     // parameters/state
-    double k[NumLightComponents];
+    LightComponents k;
 
     // parameters
     int distribution;

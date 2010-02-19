@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="numSteps" value="60"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="community"/>
+		</sequence>
+	</controller>
+	
+	<model name="calendar" type="Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>
+	
+	<model name="weather" type="conductance::Weather">
+	</model>
+
+	<model name="community" type="conductance::Community">
+		<model name="cabbage" type="conductance::Plant">
+			<parameter name="n" value="10"/>
+			<parameter name="initWeight" value="0.2"/>
+			<parameter name="theta" value="0.8"/>
+		</model>
+		<model name="cheal" type="conductance::Plant">
+			<parameter name="n" value="40"/>
+			<parameter name="initWeight" value="0.1"/>
+			<parameter name="theta" value="0.8"/>
+		</model>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value ="conductance_sz.prn"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[sz]"/>
+		<variable axis="y" label="cheal" value="cheal[sz]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Weather"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="Tavg" value="weather[Tavg]"/>
+		<variable axis="y" label="irradiation" value="weather[irradiation]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Phase"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[phase]"/>
+		<variable axis="y" label="cheal" value="cheal[phase]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Weight per plant"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[weight]"/>
+		<variable axis="y" label="cheal" value="cheal[weight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Weight per m2"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[totalWeight]"/>
+		<variable axis="y" label="cheal" value="cheal[totalWeight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Growth rate"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[dweight]"/>
+		<variable axis="y" label="cheal" value="cheal[dweight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Crown Zone Area (CZA)"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[sz]"/>
+		<variable axis="y" label="cheal" value="cheal[sz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="CZA LAI"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[Lz]"/>
+		<variable axis="y" label="cheal" value="cheal[Lz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="PAR intercepted in CZA"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[fz]"/>
+		<variable axis="y" label="cheal" value="cheal[fz]"/>
+	</output>
+</simulation>

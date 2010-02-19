@@ -20,6 +20,7 @@ Requirements
 
 * Graphviz software (tested with 2.20)
 * Currently available for Microsoft Windows only.
+  - Linux and Mac OS versions are scheduled.
 
 Acknowledgements
 ================

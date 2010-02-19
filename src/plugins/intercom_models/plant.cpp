@@ -49,16 +49,16 @@ void Plant::update()
     }
 }
 
-AbsorptionExponents Plant::absorptionExponents(int layer) {
-    double layerHeight = Wgauss1[layer]*plantHeight;
-    AbsorptionExponents exponents;
+LightComponents Plant::weightedAreaAboveLayer(int layerStep) {
+    double layerHeight = Wgauss1[layerStep]*plantHeight;
+    LightComponents wa;
     for (int i = 0; i < organs.size(); ++i)
-        exponents.accumulate( organs[i]->absorptionExponents(layerHeight) );
-    return exponents;
+        wa.accumulate( organs[i]->weightedAreaAboveLayer(layerHeight) );
+    return wa;
 }
 
-void Plant::accumulateLightUseByLayer(int layer) {
-    double layerHeight = Wgauss1[layer]*plantHeight;
+void Plant::accumulateLightUseByLayer(int layerStep) {
+    double layerHeight = Wgauss1[layerStep]*plantHeight;
 
     absorption.layer += absorption.organ*layerHeight;
     absorption.organ = 0.;
@@ -67,11 +67,11 @@ void Plant::accumulateLightUseByLayer(int layer) {
     assimilation.organ = 0.;
 }
 
-void Plant::accumulateLightUseByTime(int time) {
-    absorption.time += absorption.layer*Wgauss2[time];
+void Plant::accumulateLightUseByTime(int timeStep) {
+    absorption.time += absorption.layer*Wgauss2[timeStep];
     absorption.layer = 0.;
 
-    assimilation.time += assimilation.layer*Wgauss2[time];
+    assimilation.time += assimilation.layer*Wgauss2[timeStep];
     assimilation.layer = 0.;
 }
 

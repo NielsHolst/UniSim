@@ -3,28 +3,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef INTERCOM_ABSORPTION_EXPONENTS
-#define INTERCOM_ABSORPTION_EXPONENTS
-
-#include <QVector>
+#ifndef INTERCOM_LIGHT_COMPONENTS
+#define INTERCOM_LIGHT_COMPONENTS
 
 namespace intercom{
 
-class AbsorptionExponents
+typedef enum {Diffuse, DirectDirect, DirectTotal} LightComponent;
+
+class LightComponents
 {
 public: 
-    typedef enum {Diffuse, Direct, DirectTotal, NumLightComponents} LightComponent;
-
-    AbsorptionExponents();
+    LightComponents();
     void reset();
-    void accumulate(const AbsorptionExponents &increments);
+    void accumulate(const LightComponents &increment);
     double value(int lc) const;
     double value(LightComponent lc) const;
 
     double& operator[] (int lc);
     double& operator[] (LightComponent lc);
 private:
-    QVector<double> exponents;
+    double components[3];
 };
 
 } //namespace

@@ -37,39 +37,41 @@ void Community::update()
     for (int i = 0; i < plants.size(); ++i)
        plants[i]->prepareUpdate();
 
+    updateWeightedAreaAboveLayer();
     updatePlantsByHours();
+}
+
+void Community::updateWeightedAreaAboveLayer() {
+    for (int layerStep = 0; layerStep < 5; ++layerStep) {
+        s.weightedAreaAboveLayer[layerStep].reset();
+        for (int i = 0; i < plants.size(); ++i) {
+            s.weightedAreaAboveLayer[layerStep].accumulate(
+                    plants[i]->weightedAreaAboveLayer(layerStep) );
+        }
+    }
 }
 
 void Community::updatePlantsByHours() {
     double dayLength = calendar->state("dayLength");
 
-    for (int time = 0; time < 3; ++time) {
-        s.hour = 12. + 0.5*dayLength*Xgauss2[time];
+    for (s.timeStep = 0; s.timeStep < 3; ++s.timeStep) {
+        s.hour = 12. + 0.5*dayLength*Xgauss2[s.timeStep];
         s.par = weather->par(s.hour);
         s.sinb = calendar->sinb(s.hour);
 
-        updatePlantsByLayers(time);
+        updatePlantsByLayers();
 
         for (int i = 0; i < plants.size(); ++i)
-            plants[i]->accumulateLightUseByTime(time);
+            plants[i]->accumulateLightUseByTime(s.timeStep);
     }
 }
 
-void Community::updatePlantsByLayers(int time) {
-    for (int layer = 0; layer < 5; ++layer) {
-        debugStream() << calendar->state("dayInYear") << "\t"
-                      << time << "\t"
-                      << layer << "\t";
-        s.absorptionExponents.reset();
-        for (int i = 0; i < plants.size(); ++i)
-            s.absorptionExponents.accumulate( plants[i]->absorptionExponents(layer) );
-
+void Community::updatePlantsByLayers() {
+    for (s.layerStep = 0; s.layerStep < 5; ++s.layerStep) {
         for (int i = 0; i < plants.size(); ++i) {
            plants[i]->update();
-           plants[i]->accumulateLightUseByLayer(layer);
+           plants[i]->accumulateLightUseByLayer(s.layerStep);
         }
-        debugOutput()->writeBuffer();
-        debugOutput()->write("\n");
     }
 }
 

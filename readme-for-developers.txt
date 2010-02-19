@@ -74,8 +74,9 @@ the system path (i.e. the PATH system variable). For example,
 * C:\Program Files\Graphviz2.20\Bin
 
 4. On Windows set up these new environment variables:
+* QT_ROOT (e.g. C:\Qt\2009.05
 * BOOST_ROOT (e.g. C:\Program Files\boost_1_41_0)
-* UNISIM_ROOT (e.g. C:\qdev\unisim)
+* UNISIM_ROOT (e.g. C:\qdev\unisim_1_3)
 
 5. Make sure all the needed dynamic link libraries are accessible. 
 The Qwt library was packaged together with the UniSim source and 
@@ -124,7 +125,15 @@ UNISIM_ROOT/src/plugins
 Running
 =======
 
-Instructions for running UniSim are found in readme-for-users.txt.
+Instructions for running UniSim are found in readme-for-users.txt. 
+
+UniSim will ask for the location of various folders first time you 
+run it. Beforehand you might as well create two folders to hold
+
+* temporary files (e.g. C:\unisim\temp)
+* output files (e.g. C:\unisim\output)
+
+The exact location of these folders is not important.
 
 ---------------------------------------
 Niels Holst, Aarhus University, Denmark

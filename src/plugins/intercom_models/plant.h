@@ -8,7 +8,7 @@
 #include <QList>
 #include <QObject>
 #include <usbase/model.h>
-#include "absorption_exponents.h"
+#include "light_components.h"
 
 namespace intercom{
 
@@ -25,10 +25,10 @@ public:
 	void update();
 
     // special methods
-    AbsorptionExponents absorptionExponents(int layer);
+    LightComponents weightedAreaAboveLayer(int layerStep);
     void prepareUpdate();
-    void accumulateLightUseByLayer(int layer);
-    void accumulateLightUseByTime(int time);
+    void accumulateLightUseByLayer(int layerStep);
+    void accumulateLightUseByTime(int timeStep);
 
 private:
 	// parameters

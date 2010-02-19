@@ -32,8 +32,8 @@ void Organ::update()
     assimilation = area->state("assimilation");
 }
 
-AbsorptionExponents Organ::absorptionExponents(double layerHeight) {
-    return area->absorptionExponents(layerHeight);
+LightComponents Organ::weightedAreaAboveLayer(double layerHeight) {
+    return area->weightedAreaAboveLayer(layerHeight);
 }
 
 } //namespace

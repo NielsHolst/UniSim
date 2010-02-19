@@ -7,7 +7,7 @@
 #define INTERCOM_COMMUNITY
 #include <QObject>
 #include <usbase/model.h>
-#include "absorption_exponents.h"
+#include "light_components.h"
 #include "weather.h"
 
 namespace UniSim {
@@ -31,9 +31,10 @@ public:
 
     // special methods
     struct State {
+        int timeStep, layerStep;
         double hour, sinb;
         Weather::Par par;
-        AbsorptionExponents absorptionExponents;
+        LightComponents weightedAreaAboveLayer[5];
     };
 
     const State* statePtr() const;
@@ -42,7 +43,6 @@ private:
 	// parameters
 
 	// state
-    AbsorptionExponents absorptionExponents;
     State s;
 
     // models
@@ -51,8 +51,9 @@ private:
     QList<Plant*> plants;
 
     // methods
+    void updateWeightedAreaAboveLayer();
     void updatePlantsByHours();
-    void updatePlantsByLayers(int time);
+    void updatePlantsByLayers();
 };
 
 } //namespace

@@ -291,7 +291,7 @@ void PrototypeMaker::writeMakerHeaderFile() const {
         << "\tQ_OBJECT" << '\n'
         << "\tQ_INTERFACES(UniSim::ModelMakerPlugIn)" << '\n'
         << "public:" << '\n'
-        << "\tQList<UniSim::Identifier> modelTypes() const;" << '\n'
+        << "\tQList<UniSim::Identifier> supportedTypes() const;" << '\n'
         << "\tUniSim::Identifier plugInName() const;" << '\n'
         << "\tvoid useObjectPool(UniSim::ObjectPool *pool) const;" << '\n'
         << "\tUniSim::Model* create(UniSim::Identifier modelType," << '\n'
@@ -324,7 +324,7 @@ void PrototypeMaker::writeMakerSourceFile() const {
         << '\n'
         << "namespace " << pluginName << "{" << '\n'
         << '\n'
-        << "QList<Identifier> " << classMakerName << "::modelTypes() const" << '\n'
+        << "QList<Identifier> " << classMakerName << "::supportedTypes() const" << '\n'
         << "{" << '\n'
         << "\treturn QList<Identifier>()" << '\n'
         << modelIdentifiers()
@@ -465,11 +465,13 @@ QString PrototypeMaker::xmlModelNames() const {
 
 QString PrototypeMaker::xmlModelClasses() const {
     QString s;
-    s += "\t<model name=\"calendar\" type=\"Calendar\"/>\n";
+    s += "\t<model name=\"calendar\" type=\"Calendar\"/>\n"
+         "\t\t<parameter name=\"firstDate\" value=\"1/1/2010\" >\n"
+         "\t</model>\n";
     for (Classes::const_iterator cl = classes.begin(); cl != classes.end(); ++cl) {
         const ObjectNames &objectNames(cl.value());
         for (int i = 0; i < objectNames.size(); ++i) {
-            s += "\t<model name=\"" + objectNames[i] + "\" type=\""+ cl.key() + "\">\n";
+            s += "\t<model name=\"" + objectNames[i] + "\" type=\"" + pluginName + "::" + cl.key() + "\">\n";
             s += parameter("Ninit", 1, 5);
             s += parameter("r", 1.02, 1.12);
             s += parameter("K", 70, 150);

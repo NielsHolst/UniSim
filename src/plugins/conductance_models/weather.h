@@ -3,38 +3,28 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef INTERCOM_ORGAN
-#define INTERCOM_ORGAN
+#ifndef CONDUCTANCE_WEATHER
+#define CONDUCTANCE_WEATHER
 #include <QObject>
 #include <usbase/model.h>
-#include "light_components.h"
 
-namespace intercom{
+namespace conductance {
 
-class Area;
-
-class Organ : public UniSim::Model
+class Weather : public UniSim::Model
 {
 	Q_OBJECT
 public: 
-    Organ(UniSim::Identifier name, QObject *parent=0);
-	//standard methods
+	Weather(UniSim::Identifier name, QObject *parent=0);
+	// standard methods
 	void initialize();
 	void reset();
 	void update();
-
-    // special methods
-    LightComponents weightedAreaAboveLayer(double layerHeight);
 
 private:
 	// parameters
 
 	// state
-    double absorption, assimilation;
-
-    // models
-    Area *area;
-
+    double Tavg, irradiation;
 };
 
 } //namespace

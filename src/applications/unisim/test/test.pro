@@ -24,6 +24,7 @@ HEADERS += \
     $${US_ENGINE}/test/test_simulation_trickle.h \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
+#    $${US_PLUGINS}/intercom_models/test_intercom.h \
     $${US_PLUGINS}/standard_controllers/simple_controller.h \
     $${US_PLUGINS}/standard_models/anonymous_model.h \
     $${US_PLUGINS}/standard_models/calendar.h \
@@ -48,6 +49,7 @@ SOURCES += \
     $${US_ENGINE}/test/test_simulation_trickle.cpp \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
+#    $${US_PLUGINS}/intercom_models/test_intercom.cpp \
     $${US_PLUGINS}/standard_controllers/simple_controller.cpp \
     $${US_PLUGINS}/standard_models/anonymous_model.cpp \
     $${US_PLUGINS}/standard_models/calendar.cpp \

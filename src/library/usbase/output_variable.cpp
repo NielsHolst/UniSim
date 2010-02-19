@@ -68,8 +68,11 @@ void OutputVariable::appendVariable(OutputVariable::Raw raw, QObject *parent) {
             }
         }
     }
-    if (numVariables == 0)
-        throw Exception("Could not find variable: " + raw.label);
+    if (numVariables == 0) {
+        QString msg = "Could not find variable: label=\"" + raw.label +
+                      "\" value=\"" + raw.modelName + "[" + raw.stateNameInModel + "]\"";
+        throw Exception(msg);
+    }
 
 }
 

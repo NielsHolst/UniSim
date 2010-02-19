@@ -3,37 +3,39 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef INTERCOM_ORGAN
-#define INTERCOM_ORGAN
+#ifndef CONDUCTANCE_COMMUNITY
+#define CONDUCTANCE_COMMUNITY
 #include <QObject>
 #include <usbase/model.h>
-#include "light_components.h"
+#include "phase.h"
 
-namespace intercom{
+namespace conductance {
 
-class Area;
+class Plant;
 
-class Organ : public UniSim::Model
+class Community : public UniSim::Model
 {
 	Q_OBJECT
 public: 
-    Organ(UniSim::Identifier name, QObject *parent=0);
-	//standard methods
+    Community(UniSim::Identifier name, QObject *parent=0);
+	// standard methods
 	void initialize();
 	void reset();
 	void update();
 
-    // special methods
-    LightComponents weightedAreaAboveLayer(double layerHeight);
-
 private:
+    // methods
+    void updateUnlimited();
+    void updateUnderCompression();
+
 	// parameters
 
 	// state
-    double absorption, assimilation;
+    Phase phase;
+    int smallest;
 
-    // models
-    Area *area;
+    // links
+    QList<Plant*> plants;
 
 };
 

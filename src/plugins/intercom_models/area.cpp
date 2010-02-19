@@ -65,59 +65,46 @@ void Area::update() {
     updateLightUseTotal();
 }
 
-AbsorptionExponents Area::absorptionExponents(double layerHeight_) {
-    QString name = parent()->objectName();
-
+LightComponents Area::weightedAreaAboveLayer(double layerHeight_) {
     layerHeight = layerHeight_;
     double scat = sqrt(1 - scatteringCoeff);
-    k[Direct] = 0.5/cs->sinb*k[Diffuse]/0.8/scat;
-    k[DirectTotal] = k[Direct]*scat;
+    k[DirectDirect] = 0.5/cs->sinb*k[Diffuse]/0.8/scat;
+    k[DirectTotal] = k[DirectDirect]*scat;
 
-    AbsorptionExponents exponents;
+    LightComponents wa;
     double areaAbove = aboveHeight(layerHeight);
-    debugStream() << name << ":\t" << areaAbove << "aa\t";
-    for (int i = 0; i < NumLightComponents; ++i) {
-        exponents[i] = k[i]*areaAbove;
-        debugStream() << k[i] << "k\t" << exponents[i] << "exp\t";
+    for (int i = 0; i < 3; ++i) {
+        wa[i] = k[i]*areaAbove;
     }
 
-    return exponents;
+    return wa;
 }
 
 void Area::updateLightUseInShade()
 {
-    QString name = parent()->objectName();
-
     double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
     double refSphec = refHorz*2./(1. + 1.6*cs->sinb);
 
-    double absorbed[NumLightComponents], par[NumLightComponents], reflected[NumLightComponents];
+    LightComponents par, reflected, absorbed;
     par[Diffuse] = cs->par.diffuse;
-    par[Direct] = cs->par.direct;
+    par[DirectDirect] = cs->par.direct;
     par[DirectTotal] = cs->par.direct;
     reflected[Diffuse] = refHorz;
-    reflected[Direct] = refSphec;
+    reflected[DirectDirect] = refSphec;
     reflected[DirectTotal] = scatteringCoeff;
 
-    debugStream() << name << ":\t";
-    for (int lc = 0; lc < NumLightComponents; ++lc) {
-        absorbed[lc] = k[lc] * (1. - reflected[lc]) * par[lc] * exp(-cs->absorptionExponents.value(lc));
-        debugStream()
-                << lc << "lc\t"
-                << k[lc] << "k\t"
-                << par[lc] << "par\t"
-                << exp(-cs->absorptionExponents.value(lc)) << "expall\t"
-                << absorbed[lc] << "abs\t";
+    for (int lc = 0; lc < 3; ++lc) {
+        LightComponents waal = cs->weightedAreaAboveLayer[cs->layerStep];
+        absorbed[lc] = k[lc] * (1. - reflected[lc]) * par[lc] * exp(-waal.value(lc));
     }
 
-    absorption.inShade = absorbed[Diffuse] + absorbed[DirectTotal] - absorbed[Direct];
+    absorption.inShade = absorbed[Diffuse] + absorbed[DirectTotal] - absorbed[DirectDirect];
     if (absorption.inShade < 0) {
-        absorption.inShade = 0.;
-        /*if (absorption.inShade > -1e-4)
+        if (absorption.inShade > -1e-4)
             absorption.inShade = 0.;
         else
             throw Exception("Shaded absorption (" + QString::number(absorption.inShade) + ")" +
-                            " < 0 in area of " + plant->objectName());*/
+                            " < 0 in area of " + plant->objectName());
     }
     assimilation.inShade =
         amax == 0. ? 0. :
@@ -142,7 +129,8 @@ void Area::updateLightUseInSun()
 void Area::updateLightUseTotal()
 {
     double leafDensity = atHeight(layerHeight);
-    double sunlitFraction = exp(-cs->absorptionExponents.value(Direct));
+    LightComponents waal = cs->weightedAreaAboveLayer[cs->layerStep];
+    double sunlitFraction = exp(-waal.value(DirectDirect));
     assimilation.total = (sunlitFraction*assimilation.inSun +
                         (1 - sunlitFraction)*assimilation.inShade)*leafDensity;
     absorption.total = (sunlitFraction*absorption.inSun +

@@ -26,14 +26,14 @@ Universal Simulator Plug-in Libraries
   [marleen.riemens@wur.nl]
 
 * Mette Sønderskov, Aarhus University, Denmark
-  [mette.sonderskov@agrsci.dk] (from Spring 2010)
+  [mette.sonderskov@agrsci.dk]
 
 * Gionata Bocci, Sant’Anna School of Advanced Studies, Italy 
-  [g.bocci@sssup.it] (from Feb 2010)
+  [g.bocci@sssup.it]
 
 * Roberta Masin, University of Padua, Italy 
   [roberta.masin@unipd.it] (from autumn 2010)
 
 * William Meikle, USDA, Weslaco, Texas
-  william.meikle@ars.usda.gov (from Spring 2010)
+  william.meikle@ars.usda.gov
 

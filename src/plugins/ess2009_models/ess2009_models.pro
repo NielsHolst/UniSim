@@ -1,5 +1,4 @@
-# Make ess2009_models plugin library
-include($$(UNISIM_ROOT)/src/config.pri)
+include(../../config.pri)
 
 TEMPLATE = lib
 DESTDIR = $${US_PLUGINS}

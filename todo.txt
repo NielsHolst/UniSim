@@ -1,5 +1,6 @@
 + = done
 - = pending
+? = tentative
 
 + automatize destruction of singletons
 + establish GIT update to Qt Creator
@@ -16,19 +17,19 @@
 + restructure unisim folder into necessary and ephemeral content
 + simplify LiveSimulation
 + make intelligent lookup of models by name and class
++ implement prototyping
 - implement XML editor
 - add options node to xml input to scale diagram.
 - implement $random-normal(avg=9.8,var=2.3) and stratified hypercube controller
 - implement graph zoom 
-- implement prototyping
 - implement references in XML
 - implement scaleable graph
-- include weather.h and .cpp in output from prototype maker.
+? include weather.h and .cpp in output from prototype maker.
 - refactor MainWindow
 - try QCoreApplication::addLibraryPath instead of system path
 - try UniSim::findChild and UniSim::findChildren in utilities.h
 - make lookup of dot tool fail proof
-- maker jokers work in output variables, e.g. "community/*[weight]
+- make jokers work in output variables, e.g. "community/*[weight]
 - add About menu with version number, authors and link to ecolmod.org
 - implement command line tool to build automatically: 
   - clean_ephemerals.bat

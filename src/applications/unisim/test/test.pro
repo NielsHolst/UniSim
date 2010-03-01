@@ -1,5 +1,4 @@
-# Make test application
-include($$(UNISIM_ROOT)/src/config.pri)
+include(../../../config.pri)
 
 TEMPLATE = app
 DESTDIR = $${US_APPLICATIONS}
@@ -8,7 +7,7 @@ CONFIG += console
 QT += testlib
 
 # Load application icon
-RC_FILE = ../unisim.rc
+RC_FILE = ../../../icon/unisim.rc
 
 # Input
 include ($${US_BASE}/base.pri)

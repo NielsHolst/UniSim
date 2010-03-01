@@ -16,6 +16,8 @@ CONFIG += unisim_development     # Activate this if targets are under developmen
 # Ensuing configuration (should not be edited)
 #
 
+include(unisim_root.pri)
+
 CONFIG(debug, debug|release) {
     SUFFIX_STR = $${DEBUG_SUFFIX}
 }
@@ -34,11 +36,11 @@ QT += xml xmlpatterns
 
 DEFINES += QT_FATAL_ASSERT
 
-US_ROOT = $$(UNISIM_ROOT)
-US_BASE = $$(UNISIM_ROOT)/src/library/usbase
-US_ENGINE = $$(UNISIM_ROOT)/src/library/usengine
-US_APPLICATIONS = $$(UNISIM_ROOT)/src/applications
-US_PLUGINS = $$(UNISIM_ROOT)/src/plugins
-US_QWT = $$(UNISIM_ROOT)/vendor/qwt
+US_ROOT = $${UNISIM_ROOT}
+US_BASE = $${UNISIM_ROOT}/src/library/usbase
+US_ENGINE = $${UNISIM_ROOT}/src/library/usengine
+US_APPLICATIONS = $${UNISIM_ROOT}/src/applications
+US_PLUGINS = $${UNISIM_ROOT}/src/plugins
+US_QWT = $${UNISIM_ROOT}/vendor/qwt
 
-INCLUDEPATH += "$$(BOOST_ROOT)" "$$(UNISIM_ROOT)/src/library" "$${US_PLUGINS}"
+INCLUDEPATH += "$$(BOOST_ROOT)" "$${UNISIM_ROOT}/src/library" "$${US_PLUGINS}"

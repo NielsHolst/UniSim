@@ -1,4 +1,4 @@
-include($$(UNISIM_ROOT)/src/config.pri)
+include(../../config.pri)
 
 TEMPLATE = lib
 DESTDIR = $${US_PLUGINS}

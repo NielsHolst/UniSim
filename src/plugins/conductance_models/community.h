@@ -25,14 +25,18 @@ public:
 
 private:
     // methods
+    void updatePlants();
+    void updateTotalCrownZoneArea();
     void updateUnlimited();
     void updateUnderCompression();
 
 	// parameters
+    double dt;
 
 	// state
     Phase phase;
     int smallest;
+    double sum_sz;
 
     // links
     QList<Plant*> plants;

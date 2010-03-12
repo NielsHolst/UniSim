@@ -14,10 +14,14 @@ using namespace UniSim;
 namespace conductance {
 
 Community::Community(UniSim::Identifier name, QObject *parent)
-    : Model(name, parent), phase(Unlimited) {
+    : Model(name, parent), phase(Unlimited)
+{
+    setRecursionPolicy(Component::Update, Component::ChildrenNot);
+    setState("sum_sz", &sum_sz);
 }
 
 void Community::initialize() {
+    setParameter("dt", &dt, 1.);
     plants = UniSim::findChildren<Plant*>("*", this);
 	if (plants.isEmpty())
 		throw Exception("Community has no plants");
@@ -27,20 +31,43 @@ void Community::initialize() {
 
 void Community::reset() {
     smallest = -1;
+
+    updateTotalCrownZoneArea();
+    if (sum_sz > 1) {
+        QString msg = "Total crown zone area must be < 1 m2 on day 0; sum_sz = " +
+                      QString::number(sum_sz);
+        throw Exception(msg);
+    }
 }
 
 void Community::update() {
-    if (phase == Unlimited)
-        updateUnlimited();
-    else if (phase == UnderCompression)
-        updateUnderCompression();
+    int steps = (int) (1. + 1e-6)/dt;
+    for (int i = 0; i < steps; ++i) {
+        bool phaseChanged = true;
+        while (phaseChanged) {
+            updatePlants();
+            updateTotalCrownZoneArea();
+            Phase prevPhase = phase;
+            if (phase == Unlimited)
+                updateUnlimited();
+            else if (phase == UnderCompression && plants.size() == 2)
+                updateUnderCompression();
+            phaseChanged = prevPhase != phase;
+        }
+    }
 }
 
-void Community::updateUnlimited() {
-    double sum_sz = 0.;
+void Community::updatePlants() {
+    for (int i = 0; i < plants.size(); ++i)
+        plants[i]->updateByDt(dt);
+}
+
+void Community::updateTotalCrownZoneArea() {
+    sum_sz = 0.;
     for (int i = 0; i < plants.size(); ++i)
         sum_sz += plants[i]->state("total_sz");
-
+}
+void Community::updateUnlimited() {
     if (sum_sz >= 1.) {
         smallest = (plants.size() == 1
                    || plants[1]->state("weight") > plants[0]->state("weight")) ? 0: 1;

@@ -128,7 +128,7 @@ Building
 folder, e.g. ‘C:\qdev\unisim_1_4’]
 
 1. Automatic Building
-The project file build_all.pro found in UNISIM_ROOT/src/build/win 
+The script file build_all.bat found in UNISIM_ROOT/src/build/win 
 initiates a cascade of makefiles which in concert build both the 
 UniSim main module and all the plug-ins. Build scripts for Linux and 
 Mac OS have not yet been implemented

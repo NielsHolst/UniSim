@@ -18,6 +18,7 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
     setState("total_sz", &total_sz);
     setState("Lz", &Lz);
     setState("fz", &fz);
+    setState("LA_per_plant", &LA_per_plant);
     setState("dweight", &dweight);
     setState("phase", &_phase);
 }
@@ -48,19 +49,20 @@ void Plant::initialize() {
 void Plant::reset() {
     weight = initWeight;
     changePhase(Unlimited);
+    updateCrownZoneArea();
 }
 
-void Plant::update() {
+void Plant::updateByDt(double dt) {
     updateCrownZoneArea();
 
-    Lz = F*pow(weight, theta)/sz;
+    LA_per_plant = F*pow(weight, theta);
+    Lz = LA_per_plant/sz;
     fz = 1. - exp(-k*Lz);
 
     double I = weather->state("irradiation");
-    dweight = eps*I*sz*fz;
+    dweight = eps*I*sz*fz*dt;
     weight += dweight;
     totalWeight = n*weight;
-    total_sz = n*sz;
 }
 
 void Plant::changePhase(Phase newPhase) {
@@ -75,10 +77,30 @@ void Plant::updateCrownZoneArea() {
             sz = A*pow(weight, phi);
             break;
         case UnderCompression:
-            sz = (1. - other->state("total_sz"))/n;
+            sz = other ? (1. - other->state("total_sz"))/n : 1./n;
             break;
         case WeightProportional:
+            Q_ASSERT(other);
             sz = weight/(totalWeight + other->state("totalWeight"));
+    }
+    total_sz = n*sz;
+    if (total_sz < 0) {
+        if (total_sz > 1e-6)
+            total_sz = 0.;
+        else {
+            QString msg = "Decrease time step. Total crown zone area is negative; total_sz = " +
+                          QString::number(total_sz);
+            throw Exception(msg);
+        }
+    }
+    if (total_sz > 1) {
+        if (total_sz < 1. + 1e-6)
+            total_sz = 1.;
+        else {
+            QString msg = "Decrease time step. Total crown zone area > 1 m2; total_sz = " +
+                          QString::number(total_sz);
+            throw Exception(msg);
+        }
     }
 }
 

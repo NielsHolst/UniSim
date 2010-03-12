@@ -19,10 +19,10 @@ public:
 	// standard methods
 	void initialize();
 	void reset();
-	void update();
 
     // special methods
     void changePhase(Phase newPhase);
+    void updateByDt(double dt);
 
 private:
     // methods
@@ -32,7 +32,7 @@ private:
     double initWeight, A, phi, F, theta, k, eps, n;
 
 	// state
-    double weight, dweight, totalWeight, sz, total_sz, Lz, fz, _phase;
+    double weight, dweight, totalWeight, sz, total_sz, Lz, fz, _phase, LA_per_plant;
     Phase phase;
 
     // links

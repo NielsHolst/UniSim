@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="numSteps" value="90"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="insect"/>
+		</sequence>
+	</controller>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>
+
+	<model name="insect" type="Beehive::Insect3">
+		<parameter name="initEggs" value="100"/>
+		<model name="egg" type="UniSim::Stage">
+			<parameter name="duration" value="7"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="larva" type="UniSim::Stage">
+			<parameter name="duration" value="21"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="pupa" type="UniSim::Stage">
+			<parameter name="duration" value="7"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="adult" type="UniSim::Stage">
+			<model name="fecundity" type="Beehive::Fecundity">
+				<parameter name="ageBegin" value="7"/>
+				<parameter name="ageEnd" value="14"/>
+				<parameter name="dailyFecundity" value="10"/>				
+				<parameter name="sexRatio" value="0.6"/>				
+			</model>
+			<parameter name="duration" value="28"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Insect stages"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Egg" axis="y" value="insect/egg[number]"/>
+		<variable label="Larva" axis="y" value="insect/larva[number]"/>
+		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
+		<variable label="Adult" axis="y" value="insect/adult[number]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Number of eggs laid"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Egg" axis="y" value="fecundity[eggsLaid]"/>
+	</output>
+</simulation>

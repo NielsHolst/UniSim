@@ -21,8 +21,8 @@ void LarvaTime::initialize()
     setParameter("minimum", &minimum, 0.001);
     setParameter("optimum", &optimum, 15.14);
     setParameter("spread", &spread, 5.169);
-    weather = findOne<Model*>("weather");
-    lactin = findChild<Model*>("time");
+    weather = seekOne<Model*>("weather");
+    lactin = seekOneChild<Model*>("time");
 }
 
 void LarvaTime::reset() {

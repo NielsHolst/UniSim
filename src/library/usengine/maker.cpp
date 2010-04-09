@@ -6,12 +6,12 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QPluginLoader>
-#include <usbase/controller.h>
-#include <usbase/controller_maker_plug_in.h>
+#include <usbase/integrator.h>
+#include <usbase/integrator_maker_plug_in.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/object_pool.h>
-#include "controller_maker.h"
+#include "integrator_maker.h"
 
 namespace UniSim{
 
@@ -25,30 +25,30 @@ Maker::Maker() {
         MakerPlugIn *Maker = qobject_cast<MakerPlugIn*>(loader.instance());
         if (Maker) {
             Maker->useObjectPool(objectPool());
-            foreach (Identifier controllerType, Maker->controllerTypes()) {
-                Q_ASSERT(_Makers.find(controllerType) == _Makers.end());
-                _Makers[controllerType] = Maker;
+            foreach (Identifier integratorType, Maker->integratorTypes()) {
+                Q_ASSERT(_Makers.find(integratorType) == _Makers.end());
+                _Makers[integratorType] = Maker;
 			}
 		}
     }
     if (_Makers.size() == 0) {
-        QString msg = "Found no controller plugins in: " + dir.absolutePath();
+        QString msg = "Found no integrator plugins in: " + dir.absolutePath();
         if (!dir.exists()) msg += ".\nThe folder does not exist.";
         throw Exception(msg);
     }
 }
 
-UniSim::Controller* Maker::create(Identifier controllerType, Identifier objectName, QObject *parent) {
-    MakerPlugIn *maker = me()->find(controllerType);
-	return maker ? maker->create(controllerType, objectName, parent) : 0;
+UniSim::Integrator* Maker::create(Identifier integratorType, Identifier objectName, QObject *parent) {
+    MakerPlugIn *maker = me()->find(integratorType);
+	return maker ? maker->create(integratorType, objectName, parent) : 0;
 }
 
-bool Maker::canCreate(Identifier controllerType) {
-    return me()->find(controllerType);
+bool Maker::canCreate(Identifier integratorType) {
+    return me()->find(integratorType);
 }
 
-MakerPlugIn* Maker::find(Identifier controllerType) {
-    Makers::iterator mm = _Makers.find(controllerType);
+MakerPlugIn* Maker::find(Identifier integratorType) {
+    Makers::iterator mm = _Makers.find(integratorType);
     return (mm == _Makers.end()) ? 0 : mm.value();
 }
 

@@ -8,7 +8,7 @@
 #include <QString>
 #include <QStringList>
 #include <usbase/model.h>
-#include <usbase/controller.h>
+#include <usbase/integrator.h>
 #include <usbase/output.h>
 #include <usbase/utilities.h>
 #include "simulation.h"
@@ -23,7 +23,7 @@
     You can also create all components in C++ via the constructors and put them all together in a simulation
     object. This is most useful for testing.
 
-    The children of a Simulation object must comprise one Controller, at least one Model and at least one Output,
+    The children of a Simulation object must comprise one Integrator, at least one Model and at least one Output,
 */
 
 namespace UniSim{
@@ -35,7 +35,7 @@ Simulation::Simulation(QString name, QString version, QObject *parent)
 }
 
 //! Sorts children and sets the sequence of model updating
-/*! The children are seggregated into three types: Controller, Model and Output. There must be one child of
+/*! The children are seggregated into three types: Integrator, Model and Output. There must be one child of
     the first type and one or more of the others.
 
     If sequence is empty then only one top-level Model child is allowed. Otherwise sequence tells in
@@ -59,31 +59,31 @@ void Simulation::initialize(const Identifiers &sequence) throw(Exception)
     _outputs.clear();
 
 	// Segregate my children
-	QList<Controller*> controllers;
+	QList<Integrator*> integrators;
 	QList<Model*> models;
 	for (QList<QObject*>::const_iterator ch = children().begin(); ch != children().end(); ++ch) {
-		Controller *controller = dynamic_cast<Controller*>(*ch);
+		Integrator *integrator = dynamic_cast<Integrator*>(*ch);
 		Model *model = dynamic_cast<Model*>(*ch);
 		Output *output = dynamic_cast<Output*>(*ch);
-		if (controller)
-			controllers.append(controller);
+		if (integrator)
+			integrators.append(integrator);
 		else if (model)
 			models.append(model);
 		else if (output)
 			_outputs.append(output);
 	}
-	Q_ASSERT(controllers.size() == 1);
+	Q_ASSERT(integrators.size() == 1);
 	Q_ASSERT(models.size() > 0);
-    Q_ASSERT(children().size() == controllers.size() + models.size() + _outputs.size());
+    Q_ASSERT(children().size() == integrators.size() + models.size() + _outputs.size());
 	
-	_controller = controllers[0];
+	_integrator = integrators[0];
 
 	// Put models in sequence		
 	if (sequence.size() == 0) {
 		if (models.size() == 1) 
 			_models.append(models[0]);
 		else 
-			throw Exception("Sequence of models must be specified in 'controller' element");
+			throw Exception("Sequence of models must be specified in 'integrator' element");
 	} 
 	else {
         for (Identifiers::const_iterator se = sequence.begin(); se != sequence.end(); ++se) {
@@ -104,8 +104,8 @@ void Simulation::initialize(const Identifiers &sequence) throw(Exception)
 		}
 	}
 
-	// Initialize controller, models and outputs
-	_controller->initialize();
+	// Initialize integrator, models and outputs
+	_integrator->initialize();
     for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepInitialize();
     for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepInitialize();
 	
@@ -113,9 +113,9 @@ void Simulation::initialize(const Identifiers &sequence) throw(Exception)
 	_runCount = _stepCount = 0;
 }
 
-//! Executes one or more runs of the simulation as determined by the controller
-/*!	The controller determines through nextRun() and nextStep() the two controlling loops of the simulation:
-    - Before every run: first the controller, then the top-level models and then the outputs are reset().
+//! Executes one or more runs of the simulation as determined by the integrator
+/*!	The integrator determines through nextRun() and nextStep() the two controlling loops of the simulation:
+    - Before every run: first the integrator, then the top-level models and then the outputs are reset().
         - For each time step: first the top-level models then the outputs are update()'ed.
     - After every run: first the top-level models then the outputs are cleanup()'ed.
     - After the last run: first the top-level models then the outputs are debrief()'ed.
@@ -129,16 +129,16 @@ void Simulation::execute() throw(Exception)
 	_runCount = 0;
 	_stopCurrentRun = _stopAllRuns = false;
 	
-    _controller->resetRuns();
-    while (_controller->nextRun() && !_stopAllRuns) {
+    _integrator->resetRuns();
+    while (_integrator->nextRun() && !_stopAllRuns) {
 		++_runCount;
 		_stepCount = 0;
 		
         for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepReset();
         for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepReset();
 		
-        _controller->resetSteps();
-        while (_controller->nextStep() && !_stopCurrentRun) {
+        _integrator->resetSteps();
+        while (_integrator->nextStep() && !_stopCurrentRun) {
 			++_stepCount;
 			//std::cout << _stepCount << "\n";
             for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepUpdate();

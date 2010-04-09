@@ -64,7 +64,7 @@ private:
     // methods
     bool nextElementDelim();
 	
-	bool readControllerElement(QObject* parent);
+	bool readIntegratorElement(QObject* parent);
 	void readSequenceElement(QObject *parent);
 
 	bool readModelElement(QObject *parent);

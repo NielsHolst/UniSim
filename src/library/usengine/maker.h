@@ -16,7 +16,7 @@ class QString;
 
 namespace UniSim{
 	
-class Controller;
+class Integrator;
 class MakerPlugIn;
 
 template <class MakerPlugIn>
@@ -26,9 +26,9 @@ class Maker : public QObject
 public:
     Maker();
     template <class createType>
-    create(Identifier controllerType, Identifier objectName, QObject *parent=0);
+    create(Identifier integratorType, Identifier objectName, QObject *parent=0);
 
-    bool canCreate(Identifier controllerType);
+    bool canCreate(Identifier integratorType);
 
     Maker* findOne(Identifier id);
 
@@ -36,7 +36,7 @@ public:
 	private:
     static Maker *_me;
 
-    MakerPlugIn* find(Identifier controllerType);
+    MakerPlugIn* find(Identifier integratorType);
 
     typedef QMap<Identifier, MakerPlugIn*> Makers;
     QMap<Identifier, MakerPlugIn*> _Makers;

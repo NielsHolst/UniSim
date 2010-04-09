@@ -1,6 +1,6 @@
 #include <iostream>
 #include <QSignalSpy>
-#include <usbase/controller.h>
+#include <usbase/integrator.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/utilities.h>
@@ -179,7 +179,7 @@ void TestLiveSimulation::showSpyStates() {
 /*
 void TestLiveSimulation::testStopCurrentRun()
 {
-	_liveSim->simulation()->controller()->changeParameter("numSteps",1000);
+	_liveSim->simulation()->integrator()->changeParameter("numSteps",1000);
     std::cout << "\nbefore " << _liveSim->simulation()->stepCount() << "\n";
 	_liveSim->beginRunning();
     waitForStateChange(LiveSimulation::Running);

@@ -61,7 +61,7 @@ void GraphGenerator::generateDot()
 	_nodeNumber = 0;
     f.write("digraph G {size=\"16,24\";graph[rankdir=LR];\n");
 
-    Models models = UniSim::findChildren<Model*>("*", _simulation);
+    Models models = seekChildren<Model*>("*", _simulation);
     for (Models::const_iterator mo = models.begin(); mo != models.end(); ++mo) {
 		writeModel(&f, _simulation, *mo, 0);
 	}

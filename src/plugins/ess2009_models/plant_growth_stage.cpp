@@ -23,8 +23,8 @@ PlantGrowthStage::PlantGrowthStage(UniSim::Identifier name, QObject *parent)
 }
 
 void PlantGrowthStage::initialize() {
-    _density = UniSim::findChild<Stage*>("density", this);
-    _densityEqs = UniSim::findChild<Stage*>("densityEqs", this);
+    _density = seekOneChild<Stage*>("density");
+    _densityEqs = seekOneChild<Stage*>("densityEqs");
 }
 
 void PlantGrowthStage::reset() {

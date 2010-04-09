@@ -33,17 +33,13 @@ void Plant::initialize() {
     setParameter("eps", &eps, 1.);
     setParameter("n", &n, 20.);
 
-    weather = findOne<Model*>("weather");
+    weather = seekOne<Model*>("weather");
 
     other = 0;
-    QList<Plant*> plants = UniSim::findChildren<Plant*>("*", parent());
-    if (plants.size() > 2)
+    QList<Plant*> siblings = seekSiblings<Plant*>("*");
+    if (siblings.size() > 1)
         throw Exception("Max. 2 plants are allowed in community");
-    for (int i = 0; i < plants.size(); ++i) {
-        if (plants[i] != this)
-            other = plants[i];
-    }
-
+    other = siblings.isEmpty() ? 0 : siblings[0];
 }
 
 void Plant::reset() {

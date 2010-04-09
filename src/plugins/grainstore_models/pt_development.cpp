@@ -19,13 +19,13 @@ PtDevelopment::PtDevelopment(UniSim::Identifier name, QObject *parent)
 
 void PtDevelopment::initialize()
 {
-    egg = findChild<Model*>("egg");
-    larva = findChild<Model*>("larva");
-    pupa = findChild<Model*>("pupa");
-    adult = findChild<Model*>("adult");
-    calendar = findOne<Model*>("calendar");
-    weather = findOne<Model*>("weather");
-    immigration = findSibling<Model*>("immigration");
+    egg = seekOneChild<Model*>("egg");
+    larva = seekOneChild<Model*>("larva");
+    pupa = seekOneChild<Model*>("pupa");
+    adult = seekOneChild<Model*>("adult");
+    calendar = seekOne<Model*>("calendar");
+    weather = seekOne<Model*>("weather");
+    immigration = seekOneSibling<Model*>("immigration");
 }
 
 void PtDevelopment::reset()

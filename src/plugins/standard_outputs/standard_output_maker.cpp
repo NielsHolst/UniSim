@@ -28,7 +28,7 @@ void StandardOutputMaker::useObjectPool(ObjectPool *pool) const {
 
 Output* StandardOutputMaker::create(Identifier outputType, Identifier objectName, QObject *parent)
 {
-	// Remember to add controllerType to the list above as well
+	// Remember to add integratorType to the list above as well
     UniSim::setSimulationObjectFromDescendent(parent);
     Output *output = 0;
     if (outputType.equals("Table"))

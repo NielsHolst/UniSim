@@ -20,7 +20,7 @@ void DayDegrees::initialize()
     setParameter("T0", &T0, 0.);
     setParameter("Topt", &Topt, 100.);
     setParameter("Tmax", &Tmax, 100.);
-    weather = findOne<Model*>("weather");
+    weather = seekOne<Model*>("weather");
 }
 
 void DayDegrees::reset() {

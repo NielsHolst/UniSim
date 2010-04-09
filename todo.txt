@@ -23,6 +23,7 @@
   + plugins.pro
 - implement XML editor
 - add options node to xml input to scale diagram.
+- implement sensitivity analysis
 - implement $random-normal(avg=9.8,var=2.3) and stratified hypercube controller
 - implement graph zoom 
 - implement references in XML
@@ -33,5 +34,7 @@
 - make lookup of dot tool fail proof
 - make jokers work in output variables, e.g. "community/*[weight]
 - add About menu with version number, authors and link to ecolmod.org
-- remove generation of clean.bat from prototype_generator
++ remove generation of clean.bat from prototype_generator
++ rename Controller to Integrator
+- replace 'type' keyword with 'class' keyword in XML files ('type' is thereby deprecated)
 

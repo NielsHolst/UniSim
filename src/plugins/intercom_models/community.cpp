@@ -23,9 +23,9 @@ Community::Community(UniSim::Identifier name, QObject *parent)
 
 void Community::initialize()
 {
-    calendar = findOne<Calendar*>("calendar");
-    weather = findOne<Weather*>("weather");
-    plants = findChildren<Plant*>("*");
+    calendar = seekOne<Calendar*>("calendar");
+    weather = seekOne<Weather*>("weather");
+    plants = seekChildren<Plant*>("*");
 }
 
 void Community::reset()

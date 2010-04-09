@@ -43,7 +43,7 @@ const QVector<double>* OutputVariable::data() const {
 }
 
 void OutputVariable::appendVariable(OutputVariable::Raw raw, QObject *parent) {
-    Models models = find<Model*>(raw.modelName);
+    Models models = UniSim::seekDescendants<Model*>(raw.modelName, 0);
 
     int numVariables = 0;
     for (Models::iterator mo = models.begin(); mo != models.end(); ++mo) {

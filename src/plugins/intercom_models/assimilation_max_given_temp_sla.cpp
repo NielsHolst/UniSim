@@ -20,9 +20,9 @@ AssimilationMaxGivenTempSla::AssimilationMaxGivenTempSla(UniSim::Identifier name
 void AssimilationMaxGivenTempSla::initialize()
 {
     setParameter("pctN", &pctN, 0.040);
-    weather = findOne<Model*>("weather");
-    Model *plant = findAscendant<Plant*>("*");
-    specificLeafArea = findOne<Model*>("specificLeafArea", plant);
+    weather = seekOne<Model*>("weather");
+    Model *plant = seekOneAscendant<Plant*>("*");
+    specificLeafArea = plant->seekOneDescendant<Model*>("specificLeafArea");
 }
 
 void AssimilationMaxGivenTempSla::reset() {

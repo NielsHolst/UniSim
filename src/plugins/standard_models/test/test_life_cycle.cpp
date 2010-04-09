@@ -44,21 +44,10 @@ void TestLifeCycle::testUpdate()
 	
     weed->deepReset();
 	
-    Model *first = UniSim::findChild<Model*>("seedling", weed);
-    Model *last = UniSim::findChild<Model*>("mature", weed);
+    Model *first = seekOneChild<Model*>("seedling", weed);
+    Model *last = seekOneChild<Model*>("mature", weed);
     QVERIFY(first);
     QVERIFY(last);
-
-    Model *none;
-    bool found;
-    try {
-        none = weed->findChild<Model*>("no way");
-        found = true;
-    }
-    catch (Exception &ex) {
-        found = false;
-    }
-    QVERIFY(!found);
 	
 	double myInput = 1000;
 	first->setInput("input", myInput);

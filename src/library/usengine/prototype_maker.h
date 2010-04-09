@@ -37,7 +37,6 @@ private:
     void writeOutput();
     void createDestFolder();
     bool openOutputFile(QString fileName, QFile *file) const;
-    void writeCleanCommand();
     void writeClassHeaderFile(ClassName className) const;
     void writeClassSourceFile(ClassName className) const;
     void writeMakerHeaderFile() const;
@@ -62,7 +61,7 @@ private:
     QString inputFilePath, destFolderPath, pluginName, classMakerName;
     Classes classes;
 
-    enum PluginType {ModelPlugin, ControllerPlugin};
+    enum PluginType {ModelPlugin, IntegratorPlugin};
     PluginType pluginType;
     QMap<PluginType, QString> pluginTypeNames;
 };

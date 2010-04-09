@@ -25,9 +25,9 @@ void Plant::initialize() {
     for (int i = 0; i < NumStages; ++i)
         setParameter(bd + ('A' + i) , &bioDays[i], 0.);
 
-    calendar = findOne<Model*>("calendar");
-    timeABDE = findChild<Model*>("timeABDE");
-    timeC = findChild<Model*>("timeC");
+    calendar = seekOne<Model*>("calendar");
+    timeABDE = seekOneChild<Model*>("timeABDE");
+    timeC = seekOneChild<Model*>("timeC");
 }
 
 void Plant::reset() {

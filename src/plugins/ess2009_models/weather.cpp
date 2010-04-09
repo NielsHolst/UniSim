@@ -27,7 +27,7 @@ void Weather::initialize()
     setParameter("tempB", &_tempB, 17.20);
     setParameter("tempC", &_tempC, 2.901);
     setParameter("tempD", &_tempD, 722.7);
-    _calendar = findOne<Model*>("calendar");
+    _calendar = seekOne<Model*>("calendar");
 }	
 
 void Weather::reset()

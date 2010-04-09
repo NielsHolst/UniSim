@@ -39,8 +39,8 @@ void SeedBank::initialize()
     setParameter("yearlyMortalityRate", &_yearlyMortalityRate, 0.10);
     setParameter("cropLaiExp", &_cropLaiExp, 0.04282);
 
-    _calendar = findOne<Model*>("calendar");
-    _rotation = findOne<Model*>("rotation");
+    _calendar = seekOne<Model*>("calendar");
+    _rotation = seekOne<Model*>("rotation");
 
     _dailySurvivalRate = pow(1. - _yearlyMortalityRate, 1./365.);
     decodeEmergence();

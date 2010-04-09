@@ -40,7 +40,7 @@ void Calendar::initialize()
     followers.clear();
     QStringList followersAsStrings = decodeSimpleList(followersAsString, "Calendar::initialize");
     for (int i = 0; i < followersAsStrings.size(); ++i)
-        followers.append(UniSim::findOne<Model*>(followersAsStrings.value(i)));
+        followers.append(seekOne<Model*>(followersAsStrings.value(i)));
 }
 
 void Calendar::reset() {

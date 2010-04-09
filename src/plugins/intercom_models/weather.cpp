@@ -30,7 +30,7 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
 
 void Weather::initialize() {
     WeatherFile::initialize();
-    calendar = findOne<Calendar*>("calendar");
+    calendar = seekOne<Calendar*>("calendar");
 }
 
 void Weather::update()

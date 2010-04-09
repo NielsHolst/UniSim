@@ -42,8 +42,8 @@ void Crop::initialize() {
     //_weather = findOneModelByType<Weather*>(this);
     //_calendar = findOneModelByType<Calendar*>(this);
 
-    _weather = findOne<Model*>("weather");
-    _calendar = findOne<Model*>("calendar");
+    _weather = seekOne<Model*>("weather");
+    _calendar = seekOne<Model*>("calendar");
 }
 
 void Crop::reset() {

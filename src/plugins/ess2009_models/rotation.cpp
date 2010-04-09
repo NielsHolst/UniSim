@@ -25,14 +25,14 @@ Rotation::Rotation(UniSim::Identifier name, QObject *parent)
 void Rotation::initialize() {
     setParameter("crops", &_cropsString, QString());
     decodeCrops();
-    _calendar = findOne<Model*>("calendar");
+    _calendar = seekOne<Model*>("calendar");
     collectRotation();
     connectCrops();
 }
 
 void Rotation::collectRotation() {
    for (int i = 0; i < _cropNames.size(); ++i) {
-        Model *crop = findOne<Model*>(_cropNames[i]);
+        Model *crop = seekOne<Model*>(_cropNames[i]);
         _crops.append(crop);
     }
  }

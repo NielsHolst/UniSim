@@ -2,7 +2,7 @@ include(../../config.pri)
 
 TEMPLATE = lib
 DESTDIR = $${US_PLUGINS}
-TARGET = test_models$${SUFFIX_STR}
+TARGET = test_models_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += plugin
 
 include ($${US_BASE}/base.pri)

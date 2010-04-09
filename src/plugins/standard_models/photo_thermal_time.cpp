@@ -16,7 +16,7 @@ PhotoThermalTime::PhotoThermalTime(UniSim::Identifier name, QObject *parent)
 void PhotoThermalTime::initialize()
 {
     DayDegrees::initialize();
-    calendar = findOne<Model*>("calendar");
+    calendar = seekOne<Model*>("calendar");
 }
 
 void PhotoThermalTime::update()

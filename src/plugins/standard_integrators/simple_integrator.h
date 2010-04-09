@@ -6,13 +6,13 @@
 #ifndef UniSim_SIMPLE_CONTROLLER_H
 #define UniSim_SIMPLE_CONTROLLER_H
 
-#include <usbase/controller.h>
+#include <usbase/integrator.h>
 
 namespace UniSim{
 	
 //! \addtogroup UniSim
 //@{
-//! The %SimpleController class lets the Simulation run once with a fixed number of time steps
+//! The %SimpleIntegrator class lets the Simulation run once with a fixed number of time steps
 /*!
 	\htmlonly
 		<table class="UniSim_parameters">
@@ -21,7 +21,7 @@ namespace UniSim{
 		</table>
 	\endhtmlonly
 */
-class SimpleController : public Controller
+class SimpleIntegrator : public Integrator
 {
 	Q_OBJECT
 public:
@@ -31,7 +31,7 @@ public:
       \param parent of this object.
       \return This object.
     */
-    SimpleController(Identifier name, QObject *parent=0);
+    SimpleIntegrator(Identifier name, QObject *parent=0);
 	
 	//! Initializes this once, before the first execution of the simulation.
 	void initialize();

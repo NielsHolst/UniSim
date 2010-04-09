@@ -24,8 +24,8 @@ void Time::initialize() {
     setParameter("alfa", &alfa, 50.);
     setParameter("T0", &T0, 0.9);
     setParameter("Tmax", &Tmax, 31.7);
-    calendar = findOne<Model*>("calendar");
-    weather = findOne<Model*>("weather");
+    calendar = seekOne<Model*>("calendar");
+    weather = seekOne<Model*>("weather");
 }
 
 void Time::reset() {

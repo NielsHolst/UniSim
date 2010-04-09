@@ -5,7 +5,7 @@
 
 namespace UniSim {
     class Simulation;
-    class Controller;
+    class Integrator;
 }
 class TrickleBox;
 
@@ -20,7 +20,7 @@ private:
     void executeAndTest(int steps, int check0, int check1, int check2);
     void textBox(int boxNumber, int contents);
     UniSim::Simulation *simulation;
-    UniSim::Controller *controller;
+    UniSim::Integrator *integrator;
     TrickleBox	 *boxes[3];
 
 };

@@ -36,13 +36,15 @@ class Model;
 //@{
 void setSimulationObjectFromDescendent(QObject *object);
 
-template <class T> QList<T> find(QString path, QObject *root = 0);
-template <class T> T findOne(QString path, QObject *root = 0);
-template <class T> QList<T> findChildren(QString name, QObject *parent = 0);
-template <class T> T findChild(QString name, QObject *parent = 0);
-template <class T> T findAscendant(QString name, QObject *child);
+template <class T> T seekOneChild(QString name, QObject *parent);
+template <class T> QList<T> seekChildren(QString name, QObject *parent);
 
-template <class T> QList<T> find(QString path, const QList<QObject*> &candidates);
+template <class T> T seekOneDescendant(QString name, QObject *root);
+template <class T> QList<T> seekManyDescendants(QString name, QObject *root);
+
+template <class T> T seekOneAscendant(QString name, QObject *child);
+
+template <class T> QList<T> filterByName(QString name, const QList<QObject*> &candidates);
 //@}
 
 //! \cond
@@ -91,58 +93,31 @@ void writeStandardTestFile(QString filePath);
 //! Finds any number of objects
 /*!
 
-  The path identifying the object(s) can be atomic:
-  <ul>
-    <li>QList<Model*> weeds = find<Model*>("daisy");
-        - finds globally all models named "daisy"
-    <li>QList<Model*> weeds = find<Model*>("daisy", field);
-        - finds, among descendants of 'field', all models named "daisy"
-    <li>QList<Weed*> weeds = find<Weed*>("*");
-        - finds globally all models of class 'Weed'
-    <li>QList<Weed*> weeds = find<Weed*>("*", field);
-        -finds, among descendants of 'field', all models of class 'Weed'
-    <li>QList<Weed*> weeds = find<Weed*>("daisy");
-        - finds globally all models of class 'Weed' that are named "daisy"
-    <li>QList<Weed*> weeds = find<Weed*>("daisy", field);
-        -finds, among descendants of 'field', all models of class 'Weed' that are named "daisy"
-   </ul>
-
-   Or, it can specify a path relative to the root (any initial '/' is ignored):
-   <ul>
-    <li>QList<Model*> weeds = find<Model*>("daisy/leaves");
-        - finds globally all models named "leaves" that are children of an object named 'daisy'
-    <li>QList<Model*> weeds = find<Model*>("daisy/ * /cells");
-        -finds globally all models named "cells" that are grandchildren of an object named 'daisy'
-    <li>QList<Model*> weeds = find<Model*>("daisy/ *");
-        - finds globally all models  that are children of an object named 'daisy'
-    <li>QList<Model*> weeds = find<Model*>("daisy/leaves", field);
-        - finds, among descendants of 'field', all models named "leaves" that are children of an object named 'daisy'
-    <li>QList<Model*> weeds = find<Model*>("daisy/ * /cells", field);
-        - finds, among descendants of 'field', all models named "cells" that are grandchildren of an object named 'daisy'
-    <li>QList<Model*> weeds = find<Model*>("daisy/ *", field);
-        - finds, among descendants of 'field', all models  that are children of an object named 'daisy'
-
+  The path identifying the object(s) can be atomic ("elephant"),
+  or, it can specify a path relative to the root ("mammals/elephant").
+  Jokers are also allowed ("*", "mammals/ *", "* /leaves)
 */
-template <class T> QList<T> find(QString path, QObject *root) {
-    //cout << "***find " << qPrintable(path) << "\n";
+template <class T> QList<T> seekDescendants(QString name, QObject *root) {
     QObject *useRoot = root ? root : simulationObject();
     QList<QObject*> candidates = useRoot->findChildren<QObject*>();
     if (!root)
         candidates.prepend(useRoot);
-    return find<T>(path, candidates);
+    return filterByName<T>(name, candidates);
 }
 
 //! Finds exactly one object
 /*!
   Works like find but throws an Exception if not exactly one object is found
 */
- template <class T> T findOne(QString path, QObject *root) {
+ template <class T> T seekOneDescendant(QString name, QObject *root) {
     QObject *useRoot = root ? root : simulationObject();
-    QList<T> matches = find<T>(path, useRoot);
+    QList<T> matches = seekDescendants<T>(name, useRoot);
     if (matches.size() == 0)
-        throw Exception("'" + useRoot->objectName() + "' has no descendant called '" + path + "'");
+        throw Exception("'" + useRoot->objectName() +
+                        "' has no descendant called '" + name + "'");
     else if (matches.size() > 1)
-        throw Exception("'" + useRoot->objectName() + "' has more than one descendant called '" + path + "'");
+        throw Exception("'" + useRoot->objectName() +
+                        "' has more than one descendant called '" + name + "'");
     return matches[0];
 }
 
@@ -154,31 +129,33 @@ template <class T> QList<T> find(QString path, QObject *root) {
     If parent is null then the root is the assumed parent,
 */
 
- template <class T> QList<T> findChildren(QString name, QObject *parent) {
+ template <class T> QList<T> seekChildren(QString name, QObject *parent) {
     QObject *useParent = parent ? parent : simulationObject();
     QList<QObject*> candidates = useParent->children();
-    return find<T>(name, candidates);
+    return filterByName<T>(name, candidates);
 }
 
 //! Finds exactly one child
 /*!
   Works like findChildren but throws an Exception if not exactly one object is found
 */
-template <class T> T findChild(QString name, QObject *parent) {
+template <class T> T seekOneChild(QString name, QObject *parent) {
     QObject *useParent = parent ? parent : simulationObject();
-    QList<T> matches = findChildren<T>(name, useParent);
+    QList<T> matches = seekChildren<T>(name, useParent);
     if (matches.size() == 0)
-        throw Exception("'" + useParent->objectName() + "' has no child called '" + name + "'");
+        throw Exception("'" + useParent->objectName() +
+                        "' has no child called '" + name + "'");
     else if (matches.size() > 1)
-        throw Exception("'" + useParent->objectName() + "' has more than one child called '" + name + "'");
+        throw Exception("'" + useParent->objectName() +
+                        "' has more than one child called '" + name + "'");
     return matches[0];
 }
 
 //! Finds an ascendant of child or throws an exception
 /*!
-    Finds the most proximate ascendant matching name and type
+    Finds one ascendant matching name and type, or throws an Exception
 */
-template <class T> T findAscendant(QString name, QObject *child) {
+template <class T> T seekOneAscendant(QString name, QObject *child) {
     if (!child)
         throw Exception("findAscendant called with null pointer");
 
@@ -189,44 +166,41 @@ template <class T> T findAscendant(QString name, QObject *child) {
         p = p->parent();
     }
 
-    QList<T> ascendants = find<T>(name, candidates);
+    QList<T> ascendants = filterByName<T>(name, candidates);
     if (ascendants.size() == 0)
-        throw Exception("'" + child->objectName() +"' has no ascendants called '" + name + "', "
-                        " or it is not of the expected type");
+        throw Exception("'" + child->objectName() +"' has no ascendants called '" +
+                        name + "', or it is not of the expected type");
+    if (ascendants.size() > 1)
+        throw Exception("'" + child->objectName() +"' has more than one ascendant called '" +
+                        name);
     return ascendants.at(0);
 }
 
-//! Finds any number of objects in list of candidates
-template <class T> QList<T> find(QString path, const QList<QObject*> &candidates) {
-    //cout << "-->find " << candidates.size();
+//! Selects objects in candidate list matching name
+template <class T> QList<T> filterByName(QString name, const QList<QObject*> &candidates) {
     QList<T> result;
-    QStringList names = Identifier(path).key().split("/");
+    QStringList names = Identifier(name).key().split("/");
     if (!names.isEmpty() && names.first().isEmpty())
         names.removeFirst();
     if (!names.isEmpty() && names.last().isEmpty())
         names.removeLast();
     if (names.isEmpty())
         return result;
-    //cout << "-->removed being/end slash " << candidates.size() << "\n";
 
     for (int ca = 0; ca < candidates.size(); ++ca) {
         int i = names.size()-1;
         QObject *candidate, *p;
         candidate = p = candidates.at(ca);
-        //cout << qPrintable(p->objectName() + "==" + names[i]) << "\n";
         while (i > 0 && p->parent() && (p->objectName() == names[i] || names[i] == "*")) {
             --i;
             p = p->parent();
-            //cout << qPrintable("--> " + p->objectName() + "==" + names[i]) << "\n";
         }
         if (names[i].isEmpty())
-            throw Exception("Path to component contains an empty name: " + path);
+            throw Exception("Composite component name contains an empty name: " + name);
         bool isT = dynamic_cast<T>(candidate) != 0;
         bool pathOk  =	i == 0 && (p->objectName() == names[0] || names[0] == "*");
-        //cout << "==> " << (isT ? "OK type" : "wrong type") << " " << (pathOk ? "OK path" : "wrong path") << "\n";
         if (isT && pathOk) {
             result.append(dynamic_cast<T>(candidate));
-            //cout << "APPEND\n";
         }
     }
     return result;

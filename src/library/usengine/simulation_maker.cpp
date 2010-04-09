@@ -9,12 +9,12 @@
 #include <QTextStream>
 #include <QtXml/QXmlStreamReader>
 #include <usbase/model.h>
-#include <usbase/controller.h>
+#include <usbase/integrator.h>
 #include <usbase/exception.h>
 #include <usbase/output.h>
 #include <usbase/output_variable.h>
 #include <usbase/utilities.h>
-#include "controller_maker.h"
+#include "integrator_maker.h"
 #include "model_maker.h"
 #include "output_maker.h"
 #include "simulation.h"
@@ -75,8 +75,8 @@ Simulation* SimulationMaker::parse(QString fileName_)
 	nextElementDelim();
     int iCon=0, iMod=0, iOut=0;
     while (!reader->hasError() && reader->isStartElement()) {
-        if (elementNameEquals("controller")) {
-			if (readControllerElement(sim)) ++iCon;
+        if (elementNameEquals("integrator") || elementNameEquals("controller")) {
+			if (readIntegratorElement(sim)) ++iCon;
         } else if (elementNameEquals("model")) {
 			if (readModelElement(sim)) ++iMod;
         } else if (elementNameEquals("output")) {
@@ -87,8 +87,8 @@ Simulation* SimulationMaker::parse(QString fileName_)
 	}
 	Q_ASSERT(reader->isEndElement());
     if (reader->hasError()) throw Exception(message(""));
-    if (iCon==0) throw Exception(message("Missing 'controller' element in 'simulation'"));
-    else if (iCon>1) throw Exception(message("Only one 'controller' element allowed in 'simulation'"));
+    if (iCon==0) throw Exception(message("Missing 'integrator' element in 'simulation'"));
+    else if (iCon>1) throw Exception(message("Only one 'integrator' element allowed in 'simulation'"));
     if (iMod==0) throw Exception(message("Missing 'model' element in 'simulation'"));
     if (iOut==0) throw Exception(message("Missing 'output' element in 'simulation'"));
 
@@ -100,20 +100,20 @@ Simulation* SimulationMaker::parse(QString fileName_)
     return sim;
 }
 
-bool SimulationMaker::readControllerElement(QObject* parent)
+bool SimulationMaker::readIntegratorElement(QObject* parent)
 {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
     QString type = attributeValue("type");
 	if (type.isEmpty())
-        throw Exception(message("Missing 'type' attribute for 'controller' element"));
+        throw Exception(message("Missing 'type' attribute for 'integrator' element"));
  	
     QString name = attributeValue("name");
 	if (name.isEmpty()) name = "anonymous";
 
-    Controller *controller;
+    Integrator *integrator;
     try {
-        controller = ControllerMaker::create(type, name, parent);
+        integrator = IntegratorMaker::create(type, name, parent);
     }
     catch (Exception &ex) {
         throw Exception(message(ex.message()));
@@ -123,10 +123,10 @@ bool SimulationMaker::readControllerElement(QObject* parent)
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("sequence")) {
-			readSequenceElement(controller);
+			readSequenceElement(integrator);
         }
         else if (elementNameEquals("parameter")){
-			readParameterElement(dynamic_cast<Parameters*>(controller));
+			readParameterElement(dynamic_cast<Parameters*>(integrator));
         }
         else {
             throw Exception(message(
@@ -136,7 +136,7 @@ bool SimulationMaker::readControllerElement(QObject* parent)
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
 	
-	return controller;
+	return integrator;
 }	
 
 void SimulationMaker::readSequenceElement(QObject* parent)

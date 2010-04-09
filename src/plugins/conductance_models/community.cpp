@@ -22,7 +22,7 @@ Community::Community(UniSim::Identifier name, QObject *parent)
 
 void Community::initialize() {
     setParameter("dt", &dt, 1.);
-    plants = UniSim::findChildren<Plant*>("*", this);
+    plants = seekChildren<Plant*>("*");
 	if (plants.isEmpty())
 		throw Exception("Community has no plants");
 	else if (plants.size() > 2)

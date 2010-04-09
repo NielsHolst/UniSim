@@ -201,9 +201,9 @@ void writeObjectTree(QObject *obj, int level) {
 //! \cond
 namespace local {
 	
-	void writeController(QXmlStreamWriter *xw)
+	void writeIntegrator(QXmlStreamWriter *xw)
 	{
-		xw->writeStartElement("controller");
+		xw->writeStartElement("integrator");
 		xw->writeAttribute("type", "Simple");
 		xw->writeEmptyElement("parameter");
 		xw->writeAttribute("name", "duration");
@@ -329,7 +329,7 @@ namespace local {
 		xw->writeStartElement("simulation");
 		xw->writeAttribute("version", "1.0");
 	
-		writeController(xw);
+		writeIntegrator(xw);
 		writeWorld(xw);
 		writeModel(xw);
 		writeOutput(xw, "butterfly");

@@ -21,8 +21,8 @@ void SpecificLeafArea::initialize()
 {
     setParameter("initial", &initial, 0.024);
     setParameter("slope", &slope, -7.5e-6);
-    Plant* plant = findAscendant<Plant*>("*");
-    photoThermalTime = UniSim::findOne<Model*>("photoThermalTime", plant);
+    Plant* plant = seekOneAscendant<Plant*>("*");
+    photoThermalTime = plant->seekOneDescendant<Model*>("photoThermalTime");
 }
 
 void SpecificLeafArea::update()

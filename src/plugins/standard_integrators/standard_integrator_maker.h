@@ -6,21 +6,21 @@
 #ifndef CONTROLLER_MODEL_MAKER_H
 #define CONTROLLER_MODEL_MAKER_H
 
-#include <usbase/controller_maker_plug_in.h>
+#include <usbase/integrator_maker_plug_in.h>
 
 namespace UniSim{
 
 class ObjectPool;
 
-class StandardControllerMaker : public QObject, public ControllerMakerPlugIn
+class StandardIntegratorMaker : public QObject, public IntegratorMakerPlugIn
 {
 	Q_OBJECT
-    Q_INTERFACES(UniSim::ControllerMakerPlugIn)
+    Q_INTERFACES(UniSim::IntegratorMakerPlugIn)
 public:
     QList<Identifier> supportedTypes() const;
     UniSim::Identifier plugInName() const;
     void useObjectPool(ObjectPool *pool) const;
-    Controller* create(Identifier controllerType, Identifier objectName, QObject *parent=0);
+    Integrator* create(Identifier integratorType, Identifier objectName, QObject *parent=0);
 };
 
 } //namespace

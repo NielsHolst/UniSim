@@ -19,7 +19,7 @@ void Height::initialize()
     setParameter("b", &b, 0.0085);
     setParameter("c", &c, 77.9);
     setParameter("m", &m, 624.);
-    photoThermalTime = findSibling<Model*>("photoThermalTime");
+    photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
 }
 
     void Height::update()

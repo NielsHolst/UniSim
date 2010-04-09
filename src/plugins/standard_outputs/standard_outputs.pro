@@ -2,13 +2,13 @@ include(../../config.pri)
 
 TEMPLATE	= lib
 DESTDIR	= 	$${US_PLUGINS}
-TARGET 	= standard_outputs$${SUFFIX_STR}
+TARGET 	= standard_outputs_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 INCLUDEPATH += $${US_QWT}/include
 
 CONFIG		+= plugin
 
 LIBS += -L$${US_QWT}/lib \
-    -lqwt$${SUFFIX_STR}5
+    -lqwt$${DEBUG_SUFFIX}5
 
 
 include ($${US_BASE}/base.pri)

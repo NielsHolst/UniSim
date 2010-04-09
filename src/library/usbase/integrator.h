@@ -3,8 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UniSim_CONTROLLER_H
-#define UniSim_CONTROLLER_H
+#ifndef UNISIM_INTEGRATOR_H
+#define UNISIM_INTEGRATOR_H
 
 #include <QObject>
 #include "identifier.h"
@@ -12,11 +12,11 @@
 
 namespace UniSim{
 	
-class Controller : public QObject, public UniSim::Parameters
+class Integrator : public QObject, public UniSim::Parameters
 {
 	Q_OBJECT
 public:
-    Controller(Identifier name, QObject *parent=0);
+    Integrator(Identifier name, QObject *parent=0);
 	
 	//! Will be called once, before the first execution of the simulation.
     virtual void initialize() { }

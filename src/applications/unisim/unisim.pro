@@ -2,7 +2,7 @@ include(../../config.pri)
 
 TEMPLATE = app
 DESTDIR = $${US_APPLICATIONS}
-TARGET = unisim$${SUFFIX_STR}
+TARGET = unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 
 # Load application icon
 RC_FILE = ../../icon/unisim.rc

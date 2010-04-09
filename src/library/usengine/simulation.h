@@ -13,7 +13,7 @@
 
 namespace UniSim{
 
-class Controller;
+class Integrator;
 class Component;
 class Model;
 class Output;
@@ -41,7 +41,7 @@ public:
     void stopAllRuns();
 
 protected:
-    Controller *_controller;
+    Integrator *_integrator;
 
 private:
     QList<Model*> _models;  // models ordered in sequence of execution

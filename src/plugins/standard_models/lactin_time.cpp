@@ -21,7 +21,7 @@ void LactinTime::initialize()
     setParameter("b", &b, 42.);
     setParameter("c", &c, 8.);
     setParameter("d", &d, -0.1);
-    weather = findOne<Model*>("weather");
+    weather = seekOne<Model*>("weather");
 }
 
 void LactinTime::reset() {

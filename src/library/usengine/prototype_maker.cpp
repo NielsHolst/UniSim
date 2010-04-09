@@ -57,7 +57,7 @@ PrototypeMaker::PrototypeMaker()
     : QObject(), destFolderPath() {
     reader = new XmlElementsReader;
     pluginTypeNames[ModelPlugin] = "models";
-    pluginTypeNames[ControllerPlugin] = "controllers";
+    pluginTypeNames[IntegratorPlugin] = "integrators";
 }
 
 PrototypeMaker::~PrototypeMaker() {
@@ -84,10 +84,10 @@ void PrototypeMaker::readPlugin() {
     type = type.toLower();
     if (type == "model")
         pluginType = ModelPlugin;
-    else if (type == "controller")
-        pluginType = ControllerPlugin;
+    else if (type == "integrator")
+        pluginType = IntegratorPlugin;
     else
-        reader->hurl("'plugin' type must be 'model' or 'controller'");
+        reader->hurl("'plugin' type must be 'model' or 'integrator'");
     pluginName = name;
     classMakerName = makeClassName(pluginName) + "ModelMaker";
 
@@ -128,7 +128,6 @@ void PrototypeMaker::readModel(ClassName className) {
 
 void PrototypeMaker::writeOutput() {
     createDestFolder();
-    writeCleanCommand();
     for (int i = 0; i < classes.size();++i) {
         writeClassHeaderFile(classes.keys()[i]);
         writeClassSourceFile(classes.keys()[i]);
@@ -156,14 +155,6 @@ void PrototypeMaker::createDestFolder() {
     if (!QDir().mkpath(destFolderPath) || !destDir.exists()) {
         reader->hurl("Could not create destination folder:\n\n" + destFolderPath);
     }
-}
-
-void PrototypeMaker::writeCleanCommand() {
-    QFile file;
-    if (!openOutputFile("clean.bat", &file)) return;
-    QString code;
-    code = "call %UNISIM_ROOT%\\src\\cmd\\clean_proj\n";
-    file.write(qPrintable(code));
 }
 
 bool PrototypeMaker::openOutputFile(QString fileName, QFile *file) const {
@@ -402,7 +393,7 @@ void PrototypeMaker::writeProjectFile() const {
         << '\n'
         << "TEMPLATE = lib" << '\n'
         << "DESTDIR = $${US_PLUGINS}" << '\n'
-        << "TARGET = " << projectName << "$${SUFFIX_STR}" << '\n'
+        << "TARGET = " << projectName << "_$${UNISIM_VERSION}$${DEBUG_SUFFIX}" << '\n'
         << "CONFIG += plugin" << '\n'
         << '\n'
         << "include ($${US_BASE}/base.pri)" << '\n'
@@ -440,12 +431,12 @@ void PrototypeMaker::WriteXmlModelFile() const {
     text
         << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << '\n'
         << "<simulation version=\"1.0\">" << '\n'
-        << "\t<controller type=\"Simple\">" << '\n'
+        << "\t<integrator type=\"Simple\">" << '\n'
         << "\t\t<parameter name=\"numSteps\" value=\"60\"/>" << '\n'
         << "\t\t<sequence>" << '\n'
         << xmlModelNames()
         << "\t\t</sequence>" << '\n'
-        << "\t</controller>" << '\n'
+        << "\t</integrator>" << '\n'
         << xmlModelClasses() << '\n'
         << xmlOutputs()
         << "</simulation>" << '\n';

@@ -5,37 +5,37 @@
 */
 #include <iostream>
 #include <QString>
-#include "simple_controller.h"
+#include "simple_integrator.h"
 
 namespace UniSim{
 	
-SimpleController::SimpleController(Identifier name, QObject *parent)
-	: Controller(name, parent), _runs(0), _steps(0)
+SimpleIntegrator::SimpleIntegrator(Identifier name, QObject *parent)
+	: Integrator(name, parent), _runs(0), _steps(0)
 {
 }
 
-void SimpleController::initialize()
+void SimpleIntegrator::initialize()
 { 
     setParameter("numSteps", &_numSteps, 10);
 }
 
-void SimpleController::resetRuns()
+void SimpleIntegrator::resetRuns()
 {
     _runs = 0;
 }
 
-void SimpleController::resetSteps()
+void SimpleIntegrator::resetSteps()
 {
     _steps = 0;
 }
 
-bool SimpleController::nextRun()
+bool SimpleIntegrator::nextRun()
 {
 	++_runs;
 	return _runs == 1;
 }
 
-bool SimpleController::nextStep()
+bool SimpleIntegrator::nextStep()
 {
 	++_steps;
 	return _steps <= _numSteps;

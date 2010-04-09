@@ -5,7 +5,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/output.h>
 #include <usbase/utilities.h>
-#include <standard_controllers/simple_controller.h>
+#include <standard_integrators/simple_integrator.h>
 #include <standard_models/anonymous_model.h>
 #include <usengine/simulation_maker.h>
 #include "../simulation.h"
@@ -58,7 +58,7 @@ void TestSimulation::testFindModels()
 {
     Simulation *sim = new Simulation("apple-tree", "1.0");
     setSimulationObject(sim);
-	new SimpleController("controller", sim);
+	new SimpleIntegrator("integrator", sim);
 	
 	AnonymousModel *butterfly, *mite;
 	
@@ -77,52 +77,52 @@ void TestSimulation::testFindModels()
 	QCOMPARE(_simulation->state(), Simulation::Initialized);
 
     QList<Model*> models;
-    models = find<Model*>("adult");
+    models = seekDescendants<Model*>("adult", 0);
 	QCOMPARE(models.size(), 2);
 	QVERIFY(models[0]->parent());
 	QCOMPARE(models[0]->parent()->objectName(), QString("butterfly"));
 	QVERIFY(models[1]->parent());
 	QCOMPARE(models[1]->parent()->objectName(), QString("mite"));
 	
-    models = find<Model*>("mite/egg");
+    models = seekDescendants<Model*>("mite/egg", 0);
 	QCOMPARE(models.size(), 1);
 	QCOMPARE(models[0]->objectName(), QString("egg"));
 	QVERIFY(models[0]->parent());
 	QCOMPARE(models[0]->parent()->objectName(), QString("mite"));
 	
     QList<Model*> same;
-    same = find<Model*>("/mite/egg");
+    same = seekDescendants<Model*>("/mite/egg", 0);
 	QCOMPARE(same.size(), 1);
 	QCOMPARE(models[0], same[0]);
 	
-    models = find<Model*>("/mite");
+    models = seekDescendants<Model*>("/mite", 0);
 	QCOMPARE(same.size(), 1);
 	QCOMPARE(models[0]->objectName(), QString("mite"));
 
-    models = find<Model*>("/");
+    models = seekDescendants<Model*>("/", 0);
 	QCOMPARE(models.size(), 0);
 	
-    models = find<Model*>("");
+    models = seekDescendants<Model*>("", 0);
 	QCOMPARE(models.size(), 0);
 
-    models = find<Model*>("/ghost/egg");
+    models = seekDescendants<Model*>("/ghost/egg", 0);
 	QCOMPARE(models.size(), 0);
 
-    models = find<Model*>("ghost/egg");
+    models = seekDescendants<Model*>("ghost/egg", 0);
 	QCOMPARE(models.size(), 0);
 
 	// Jokers
-    models = find<Model*>("butterfly/*");
+    models = seekDescendants<Model*>("butterfly/*", 0);
 	QCOMPARE(models.size(), 4);
 	QCOMPARE(models[0]->objectName(), QString("egg"));
 	QCOMPARE(models[3]->objectName(), QString("adult"));
 	
-    models = find<Model*>("/butterfly/*");
+    models = seekDescendants<Model*>("/butterfly/*", 0);
 	QCOMPARE(models.size(), 4);
 	QCOMPARE(models[0]->objectName(), QString("egg"));
 	QCOMPARE(models[3]->objectName(), QString("adult"));
 		
-    models = UniSim::findChildren<Model*>("*");
+    models = UniSim::seekChildren<Model*>("*", 0);
 	QCOMPARE(models.size(), 2);
 	QCOMPARE(models[0]->objectName(), QString("butterfly"));
 	QCOMPARE(models[1]->objectName(), QString("mite"));
@@ -133,7 +133,7 @@ void TestSimulation::testFindModels()
 void TestSimulation::testFindOutputs()
 {
     QList<Output*> outputs;
-    outputs = find<Output*>("butterflyTable");
+    outputs = seekDescendants<Output*>("butterflyTable", 0);
     QCOMPARE(outputs.size(), 1);
     QVERIFY(Identifier("butterflyTable").equals(outputs[0]->objectName()));
 }
@@ -141,11 +141,11 @@ void TestSimulation::testFindOutputs()
 void TestSimulation::testExecute()
 {
     QList<Model*> search;
-    search = find<Model*>("/butterfly/egg");
+    search = seekDescendants<Model*>("/butterfly/egg", 0);
     QCOMPARE(search.size(), 1);
     search[0]->setInput("input", 15);
 
-    search = find<Model*>("/wasp/egg");
+    search = seekDescendants<Model*>("/wasp/egg", 0);
     QCOMPARE(search.size(), 1);
     search[0]->setInput("input", 80);
 

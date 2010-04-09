@@ -4,9 +4,9 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 /*! \class UniSim::OutputMakerPlugIn
-    \brief The %OutputMakerPlugIn provides an abstract interface for the creation of plug-in controllers.
+    \brief The %OutputMakerPlugIn provides an abstract interface for the creation of plug-in integrators.
 
-    Consult the existing controller plugins for examples how to derive your own plug-in controllers.
+    Consult the existing integrator plugins for examples how to derive your own plug-in integrators.
 */
 
 #ifndef OUTPUT_MAKER_PLUG_IN_H
@@ -39,7 +39,7 @@ public:
 		\param outputType type of output to create
 		\param objectName given to the created output 
 		\param parent of the created output
-        \return Output created, or null if controllerType was unknown
+        \return Output created, or null if integratorType was unknown
 	*/
     virtual UniSim::Output* create(Identifier outputType, Identifier objectName, QObject *parent=0) = 0;
 };

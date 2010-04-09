@@ -5,7 +5,7 @@
 #include <usengine/simulation_maker.h>
 #include "../anonymous_model.h"
 #include "../calendar.h"
-#include "../../standard_controllers/simple_controller.h"
+#include "../../standard_integrators/simple_integrator.h"
 #include "test_calendar.h"
 
 using namespace UniSim;
@@ -201,9 +201,9 @@ void TestCalendar::createSimulation(QString fileName, int numFollowers) {
         sequence << "weather2";
     sim->initialize(sequence);
 
-    calendar = findOne<Model*>("calendar");
+    calendar = seekOneDescendant<Model*>("calendar", 0);
     try {
-        weather = findOne<Model*>("weather");
+        weather = seekOneDescendant<Model*>("weather", 0);
     }
     catch (Exception &ex) {
         weather = 0;
@@ -390,7 +390,7 @@ void TestCalendar::testFirstDatePresentFollowerAfter() {
 void TestCalendar::testFirstDateFollowersConflicting() {
     createSimulation("test_calendar_with_two_followers.xml", 2);
 
-    Model *weather2 = findOne<Model*>("weather2");
+    Model *weather2 = seekOneDescendant<Model*>("weather2", 0);
 
     calendar->changeParameter("firstDate", QDate(2010, 4, 1));
     weather->changeParameter("firstDate", QDate(2010, 6, 15));
@@ -408,7 +408,7 @@ void TestCalendar::testFirstDateFollowersConflicting() {
 void TestCalendar::testFirstDateFollowersNotConflicting() {
     createSimulation("test_calendar_with_two_followers.xml", 2);
 
-    Model *weather2 = findOne<Model*>("weather2");
+    Model *weather2 = seekOneDescendant<Model*>("weather2", 0);
 
     calendar->changeParameter("firstDate", QDate(2010, 4, 1));
     weather->changeParameter("firstDate", WEATHER_DATE);

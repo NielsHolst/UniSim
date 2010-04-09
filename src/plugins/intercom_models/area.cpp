@@ -42,12 +42,12 @@ void Area::initialize() {
         throw Exception("Unknown distribution type: " + distText);
     distribution = lookupDist.value(distText);
 
-    calendar = findOne<UniSim::Calendar*>("calendar");
-    weather = findOne<Weather*>("weather");
-    plant = findAscendant<Plant*>("*");
-    plantHeight = plant->findChild<Model*>("height");
-    assimilationMax = findChild<Model*>("amax");
-    Community *community = findAscendant<Community*>("*");
+    calendar = seekOne<UniSim::Calendar*>("calendar");
+    weather = seekOne<Weather*>("weather");
+    plant = seekOneAscendant<Plant*>("*");
+    plantHeight = plant->seekOneDescendant<Model*>("height");
+    assimilationMax = seekOneChild<Model*>("amax");
+    Community *community = seekOneAscendant<Community*>("*");
     cs = community->statePtr();
 }
 

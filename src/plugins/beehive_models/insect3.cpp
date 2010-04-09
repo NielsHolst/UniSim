@@ -20,10 +20,10 @@ Insect3::Insect3(UniSim::Identifier name, QObject *parent)
 void Insect3::initialize() {
     setParameter("initEggs", &initEggs, 30.);
 
-    egg = UniSim::findChild<Model*>("egg", this);
-    larva = UniSim::findChild<Model*>("larva", this);
-    pupa = UniSim::findChild<Model*>("pupa", this);
-    adult = UniSim::findChild<Model*>("adult", this);
+    egg = seekOneChild<Model*>("egg");
+    larva = seekOneChild<Model*>("larva");
+    pupa = seekOneChild<Model*>("pupa");
+    adult = seekOneChild<Model*>("adult");
 }
 
 void Insect3::reset() {

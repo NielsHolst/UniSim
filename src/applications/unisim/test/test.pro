@@ -2,7 +2,7 @@ include(../../../config.pri)
 
 TEMPLATE = app
 DESTDIR = $${US_APPLICATIONS}
-TARGET = test$${SUFFIX_STR}
+TARGET = test_unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += console
 QT += testlib
 
@@ -14,6 +14,7 @@ include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
 
 HEADERS += \
+    $${US_BASE}/test/test_component.h \
     $${US_BASE}/test/test_identifier.h \
     $${US_BASE}/test/test_parameters.h \
     $${US_BASE}/test/test_utilities.h \
@@ -24,7 +25,7 @@ HEADERS += \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
 #    $${US_PLUGINS}/intercom_models/test_intercom.h \
-    $${US_PLUGINS}/standard_controllers/simple_controller.h \
+    $${US_PLUGINS}/standard_integrators/simple_integrator.h \
     $${US_PLUGINS}/standard_models/anonymous_model.h \
     $${US_PLUGINS}/standard_models/calendar.h \
     $${US_PLUGINS}/standard_models/test/test_calendar.h \
@@ -39,6 +40,7 @@ HEADERS += \
 	test_plugins.h
 
 SOURCES += \
+    $${US_BASE}/test/test_component.cpp \
     $${US_BASE}/test/test_identifier.cpp \
     $${US_BASE}/test/test_parameters.cpp \
     $${US_BASE}/test/test_utilities.cpp \
@@ -49,7 +51,7 @@ SOURCES += \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
 #    $${US_PLUGINS}/intercom_models/test_intercom.cpp \
-    $${US_PLUGINS}/standard_controllers/simple_controller.cpp \
+    $${US_PLUGINS}/standard_integrators/simple_integrator.cpp \
     $${US_PLUGINS}/standard_models/anonymous_model.cpp \
     $${US_PLUGINS}/standard_models/calendar.cpp \
     $${US_PLUGINS}/standard_models/test/test_calendar.cpp \

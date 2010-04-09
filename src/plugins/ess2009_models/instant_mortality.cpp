@@ -25,7 +25,7 @@ void InstantMortality::initialize() {
     _dayOfYear = UniSim::toDayOfYear(_day, _month);
     decodeMortalities();
 
-    _calendar = findOne<Model*>("calendar");
+    _calendar = seekOne<Model*>("calendar");
 }
 
 void InstantMortality::update() {
@@ -60,7 +60,7 @@ void InstantMortality::decodeMortalities() {
         QStringList pair = part.split(" ");
         bool ok = pair.size() == 2;
         if (ok) {
-            Model *target = findOne<Model*>("weed/" + pair[0]);
+            Model *target = seekOne<Model*>("weed/" + pair[0]);
             double value = pair[1].toDouble(&ok);
             if (ok) {
                 TargetMortality tm = {target, value};

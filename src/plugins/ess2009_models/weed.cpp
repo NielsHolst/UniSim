@@ -35,15 +35,15 @@ void Weed::initialize() {
 	setParameter("seedProdExp", &_seedProdExp, 1.);
     setParameter("seedSpillAtHarvestPct", &_seedSpillAtHarvestPct, 100.);
 
-    _seedBank = findOne<Model*>("seedBank");
-    _seedling = findOne<Model*>("seedling");
-    _juvenile = findOne<Model*>("juvenile");
-    _mature   = findOne<Model*>("mature");
-    _seedsOnPlant = findOne<Model*>("seedsOnPlant");
+    _seedBank = seekOneChild<Model*>("seedBank");
+    _seedling = seekOneChild<Model*>("seedling");
+    _juvenile = seekOneChild<Model*>("juvenile");
+    _mature   = seekOneChild<Model*>("mature");
+    _seedsOnPlant = seekOneChild<Model*>("seedsOnPlant");
 
-    _calendar = findOne<Model*>("calendar");
-    _rotation = findOne<Rotation*>("rotation");
-    _weather = findOne<Model*>("weather");
+    _calendar = seekOne<Model*>("calendar");
+    _rotation = seekOneAscendant<Rotation*>("rotation");
+    _weather = seekOne<Model*>("weather");
 
     if (!_rotation) throw Exception("Weed could not find rotation model");
 
@@ -104,9 +104,9 @@ void Weed::projectCompetitionOutcome() {
 }
 
 double Weed::projectedDeqs() {
-    Model *seedlingDEqs = UniSim::findChild<Model*>("densityEqs",_seedling),
-          *juvenileDEqs = UniSim::findChild<Model*>("densityEqs", _juvenile),
-          *matureDEqs   = UniSim::findChild<Model*>("densityEqs", _mature);
+    Model *seedlingDEqs = _seedling->seekOneChild<Model*>("densityEqs"),
+          *juvenileDEqs = _juvenile->seekOneChild<Model*>("densityEqs"),
+          *matureDEqs   = _mature->seekOneChild<Model*>("densityEqs");
 
 	return seedlingDEqs->state("number") +
 		   juvenileDEqs->state("number") +
@@ -135,7 +135,7 @@ double Weed::proportionDeqsEnteringMaturity() const {
 }
 
 void Weed::handleEvent(QObject *sender, QString event) {
-    Model *matureDeqs = UniSim::findChild<Model*>("densityEqs", _mature);
+    Model *matureDeqs = _mature->seekOneChild<Model*>("densityEqs");
     if (event == "sowing") {
         kill(_seedling, 100);
         kill(_juvenile, 100);

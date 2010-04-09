@@ -63,13 +63,13 @@ void TestSimulationMaker::testSimulation()
     QCOMPARE(_simulation->children().size(), 6);
 	QVERIFY(_simulation->parent()==0);
 	
-    Model *butterfly = findOne<Model*>("butterfly");
+    Model *butterfly = seekOneDescendant<Model*>("butterfly", 0);
 	QVERIFY(butterfly);
 }
 
 void TestSimulationMaker::testModel()
 {
-    QList<Model*> models = find<Model*>("butterfly");
+    QList<Model*> models = seekDescendants<Model*>("butterfly", 0);
     QCOMPARE(models.size(), 1);
     Model *butterfly = models[0];
     QVERIFY(butterfly);
@@ -82,14 +82,10 @@ void TestSimulationMaker::testModel()
 
 void TestSimulationMaker::testParameters()
 {
-    QList<Model*> models = find<Model*>("butterfly");
-    QCOMPARE(models.size(), 1);
-    Model *butterfly = models[0];
+    Model *butterfly = seekOneDescendant<Model*>("butterfly", 0);
     QVERIFY(butterfly);
 
-    models = UniSim::findChildren<Model*>("larva", butterfly);
-    QCOMPARE(models.size(), 1);
-    Model *larva = models[0];
+    Model *larva = UniSim::seekOneChild<Model*>("larva", butterfly);
     QVERIFY(larva);
 
     try {

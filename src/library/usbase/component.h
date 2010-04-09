@@ -48,11 +48,19 @@ public:
     void setRecursionPolicy(Function function, RecursionPolicy policy);
     RecursionPolicy recursionPolicy(Function function) const;
 
-    template <class T> QList<T> findChildren(QString name);
-    template <class T> T findChild(QString name);
-    template <class T> QList<T> findSiblings(QString name);
-    template <class T> T findSibling(QString name);
-    template <class T> T findAscendant(QString name);
+    template <class T> T seekOne(QString name);
+    template <class T> QList<T> seekMany(QString name);
+
+    template <class T> T seekOneChild(QString name);
+    template <class T> QList<T> seekChildren(QString name);
+
+    template <class T> T seekOneSibling(QString name);
+    template <class T> QList<T> seekSiblings(QString name);
+
+    template <class T> T seekOneDescendant(QString name);
+    template <class T> QList<T> seekDescendants(QString name);
+
+    template <class T> T seekOneAscendant(QString name);
 
 signals:
     //! Signal provided for derived classes
@@ -70,48 +78,66 @@ private:
 
 typedef QList<Component*> Components;
 
-//! Finds any number of children
-/*!
-    Works like UniSim::find but searches only the children of this component.
-    Note: This overrides QObject::findChildren<T> which is less flexible.
-*/
-template <class T> QList<T> Component::findChildren(QString name) {
-    return UniSim::findChildren<T>(name, this);
+
+
+//! Finds exactly one object (n==0) anywhere in simulation object tree
+template <class T> T Component::seekOne(QString name) {
+    return UniSim::seekOneDescendant<T>(name, 0);
 }
 
-//! Finds exactly one child
-/*!
-  Works like findChildren but throws an Exception if not exactly one child is found.
-  Note: This overrides QObject::findChild<T> which is less flexible.
-*/
-template <class T> T Component::findChild(QString name) {
-    return UniSim::findChild<T>(name, this);
+//! Finds a number (n>=0) of objects anywhere in simulation object tree
+template <class T> QList<T> Component::seekMany(QString name) {
+    return UniSim::seekDescendants<T>(name, 0);
 }
 
-//! Finds siblings
-/*! Applies findChildren to parent
-*/
-template <class T> QList<T> Component::findSiblings(QString name) {
+//! Finds exactly one child (n==1)
+template <class T> T Component::seekOneChild(QString name) {
+    return UniSim::seekOneChild<T>(name, this);
+}
+
+//! Finds a number (n>=0) of children
+template <class T> QList<T> Component::seekChildren(QString name) {
+    return UniSim::seekChildren<T>(name, this);
+}
+
+//! Finds exactly one sibling (n==1)
+template <class T> T Component::seekOneSibling(QString name) {
     if (!parent())
         throw UniSim::Exception(objectName() + " has no siblings");
-    return UniSim::findChildren<T>(name, parent());
+    T sibling = UniSim::seekOneChild<T>(name, parent());
+    if (sibling == this)
+        throw UniSim::Exception(objectName() + " has no sibling with name " + name);
+    return sibling;
 }
 
-//! Finds exactly one sibling
-/*! Applies findChild to parent
-*/
-template <class T> T Component::findSibling(QString name) {
+//! Finds a number (n>=0) of siblings
+template <class T> QList<T> Component::seekSiblings(QString name) {
     if (!parent())
         throw UniSim::Exception(objectName() + " has no siblings");
-    return UniSim::findChild<T>(name, parent());
+    QList<T> siblingsAndMe = UniSim::seekChildren<T>(name, parent());
+
+    QList<T> siblings;
+    for (int i=0; i < siblingsAndMe.size(); ++i) {
+        T sib = siblingsAndMe[i];
+        if (sib != this)
+            siblings.append(sib);
+    }
+    return siblings;
 }
 
-//! Finds an ascendant of this component or throws an exception
-/*!
-    Finds the most proximate ascendant matching name and type
-*/
-template <class T> T Component::findAscendant(QString name) {
-    return UniSim::findAscendant<T>(name, this);
+//! Finds exactly one descendant (n==1)
+template <class T> T Component::seekOneDescendant(QString name) {
+    return UniSim::seekOneDescendant<T>(name, this);
+}
+
+//! Finds a number (n>=0) of descendant
+template <class T> QList<T> Component::seekDescendants(QString name) {
+    return UniSim::seekDescendants<T>(name, this);
+}
+
+//! Finds exactly one ascendant (n==1)
+template <class T> T Component::seekOneAscendant(QString name) {
+    return UniSim::seekOneAscendant<T>(name, this);
 }
 
 

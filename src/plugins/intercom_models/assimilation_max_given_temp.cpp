@@ -20,7 +20,7 @@ void AssimilationMaxGivenTemp::initialize()
 {
     setParameter("slope", &slope, 0.04);
     setParameter("maxAmax", &maxAmax, 1.);
-    weather = findOne<Model*>("weather");
+    weather = seekOne<Model*>("weather");
 }
 void AssimilationMaxGivenTemp::reset() {
     amax = 0.;

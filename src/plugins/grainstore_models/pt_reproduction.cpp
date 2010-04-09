@@ -36,10 +36,10 @@ void PtReproduction::initialize()
     setParameter("scale_b", &scale_b, -0.1116);
     setParameter("scale_c", &scale_c, 0.202);
 
-    weather = findOne<Model*>("weather");
-    Model *development = findSibling<Model*>("development");
-    egg = UniSim::findChild<Model*>("egg", development);
-    adult = UniSim::findChild<Stage*>("adult", development);
+    weather = seekOne<Model*>("weather");
+    Model *development = seekOneSibling<Model*>("development");
+    egg = development->seekOneChild<Model*>("egg");
+    adult = development->seekOneChild<Stage*>("adult");
 
     // Solve: scale_a*log(x)*log(x) + scale_b*log(x) + scale_c == rm_opt
     double D = scale_b*scale_b - 4.*scale_a*(scale_c - rm_opt);

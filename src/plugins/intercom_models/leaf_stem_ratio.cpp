@@ -17,7 +17,7 @@ void LeafStemRatio::initialize()
 {
     setParameter("initial", &initial, 0.73);
     setParameter("slope", &slope, 5.7e-4);
-    photoThermalTime = findSibling<Model*>("photoThermalTime");
+    photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
 }
 
 void LeafStemRatio::update()

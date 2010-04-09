@@ -1,8 +1,8 @@
-#include <usbase/controller.h>
+#include <usbase/integrator.h>
 #include <usbase/identifier.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
-#include <standard_controllers/simple_controller.h>
+#include <standard_integrators/simple_integrator.h>
 #include "test_simulation_trickle.h"
 #include "trickle_box.h"
 #include "trickle_sequence.h"
@@ -12,7 +12,7 @@ using namespace UniSim;
 void TestSimulationTrickle::initTestCase() {
     simulation = new Simulation("trickles", "1.0");
     setSimulationObject(simulation);
-    controller = new SimpleController("controller", simulation);
+    integrator = new SimpleIntegrator("integrator", simulation);
 
     TrickleSequence *seq;
     seq = new TrickleSequence("sequence", simulation);
@@ -39,7 +39,7 @@ void TestSimulationTrickle::testExecute() {
 }
 
 void TestSimulationTrickle::executeAndTest(int steps, int check0, int check1, int check2) {
-    controller->changeParameter("numSteps", steps);
+    integrator->changeParameter("numSteps", steps);
     simulation->execute();
     textBox(0, check0);
     textBox(1, check1);
@@ -47,7 +47,8 @@ void TestSimulationTrickle::executeAndTest(int steps, int check0, int check1, in
 }
 
 void TestSimulationTrickle::textBox(int boxNumber, int contents) {
-    QList<Model*> models = UniSim::find<Model*>("box"+QString::number(boxNumber));
+    QString name = "box"+QString::number(boxNumber);
+    QList<Model*> models = UniSim::seekDescendants<Model*>(name, 0);
     QCOMPARE(models.size(), 1);
     QVERIFY(models[0]->statePtr("contents") != 0);
     QCOMPARE(models[0]->state("contents"), double(contents));

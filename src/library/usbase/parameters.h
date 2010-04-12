@@ -114,8 +114,21 @@ template <class T> void Parameters::changeParameter(Identifier name, T value) {
 }
 
 template <class T> T Parameters::parameter(Identifier name) const {
-    T* valuePtr = validatedValuePtr<T>(name);
-    return *valuePtr;
+    T* valuePtr;
+    T value;
+    // get parameter value from value pointed to
+    try {
+        valuePtr = validatedValuePtr<T>(name);
+        value = *valuePtr;
+    }
+    // or else try converting it from its string value if it exists
+    catch (UniSim::Exception &ex) {
+        if (_parameters.contains(name))
+            value = QVariant(_parameters[name].stringValue).value<T>();
+        else
+            throw;
+    }
+    return value;
 }
 
 template <class T> T* Parameters::validatedValuePtr(Identifier name) const {

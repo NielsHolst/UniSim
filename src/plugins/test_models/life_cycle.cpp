@@ -34,6 +34,7 @@ void LifeCycle::reset()
 
 void LifeCycle::update()
 {
+    //cout << "LifeCycle::update() A\n";
     if (stages.size() > 0) {
         stages[0]->update();
         sum = stages[0]->state("contents");
@@ -43,6 +44,7 @@ void LifeCycle::update()
 			sum += stages[i]->state("contents");
 		}
 	}
+    //cout << "LifeCycle::update() Z\n";
 }
 
 } //namespace

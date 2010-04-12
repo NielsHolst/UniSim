@@ -8,6 +8,7 @@
 #include "../../standard_integrators/simple_integrator.h"
 #include "test_calendar.h"
 
+using std::cout;
 using namespace UniSim;
 
 const QDate WEATHER_DATE = QDate(2009, 9, 1);

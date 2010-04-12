@@ -42,7 +42,7 @@ void Weed::initialize() {
     _seedsOnPlant = seekOneChild<Model*>("seedsOnPlant");
 
     _calendar = seekOne<Model*>("calendar");
-    _rotation = seekOneAscendant<Rotation*>("rotation");
+    _rotation = seekOne<Rotation*>("rotation");
     _weather = seekOne<Model*>("weather");
 
     if (!_rotation) throw Exception("Weed could not find rotation model");

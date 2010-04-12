@@ -4,7 +4,7 @@ echo Did you remember to add and commit latest changes?
 if [ $# = 0 ] 
 then
 	echo Missing version argument!
-	echo Write ship-snapshot.sk 1.7
+	echo Write ship-snapshot.sh 1.7 (or similar)
 else
 	version=$1
 	version_underscored=`echo $1 | sed -e 's/\./_/'`

@@ -2,7 +2,7 @@
 # Configuration of make process (can be edited)
 #
 
-UNISIM_VERSION      = 1_7
+UNISIM_VERSION      = 1_8
 
 CONFIG += debug							# Activate this to build debug version
 #CONFIG += release 						# Or, this to build release version

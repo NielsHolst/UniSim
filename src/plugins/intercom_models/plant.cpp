@@ -23,7 +23,7 @@ void Plant::initialize()
     childrenToUpdate.append( findChild<Model*>("photoThermalTime") );
     childrenToUpdate.append( findChild<Model*>("leafStemRatio") );
     childrenToUpdate.append( height = findChild<Model*>("height") );
-    organs = findChildren<Organ*>("*");
+    organs = seekChildren<Organ*>("*");
 }
 
 void Plant::reset()

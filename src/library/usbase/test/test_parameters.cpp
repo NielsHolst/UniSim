@@ -186,3 +186,35 @@ void TestParameters::testConflictingStringValueType() {
 	QVERIFY(excepted);
 }
 
+void TestParameters::testMissing() {
+    UniSim::Parameters p;
+    try {
+        p.parameter<int>("missing");
+        QFAIL("Missing parameter not detected. Exception expected.");
+    }
+    catch (const Exception &ex) {
+    }
+}
+
+void TestParameters::testNotSet() {
+    UniSim::Parameters p;
+    QString name("test_int");
+    p.initParameter(name,  QString("100"));
+
+    try {
+        QString value = p.parameter<QString>(name);
+        QCOMPARE(value, QString("100"));
+    }
+    catch (const Exception &ex) {
+        QFAIL("Could not retrieve QString value from unset parameter");
+    }
+
+    try {
+        int value = p.parameter<int>(name);
+        QCOMPARE(value, 100);
+    }
+    catch (const Exception &ex) {
+        QFAIL("Could not retrieve int value from unset parameter");
+    }
+}
+

@@ -60,7 +60,8 @@ void LifeStage::reset()
 
 void LifeStage::update()
 {
-	_input += input("input");
+    //cout << "LifeStage::update() A\n";
+    _input += input("input");
 	_inputTotal += input("input");
 	setInput("input", 0);
 	
@@ -130,6 +131,7 @@ void LifeStage::update()
 	_dirtySum = true;
 	sum(); // update state
 	//std::cout << "Update end: " << qPrintable(objectName()) << "\n";
+    //cout << "LifeStage::update() Z\n";
 }
 
 

@@ -78,7 +78,7 @@ QList<Model*> Rotation::cropRotation(){
 }
 
 QList<Model*> Rotation::cropModels(){
-    return findChildren<Model*>("*");
+    return seekChildren<Model*>("*");
 }
 
 }

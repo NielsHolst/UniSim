@@ -251,8 +251,7 @@ bool SimulationMaker::readOutputElement(QObject* parent)
 	}	
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
-		
-	return output;
+    return output;
 }	
 
 void SimulationMaker::readVariableElement(QObject* parent)

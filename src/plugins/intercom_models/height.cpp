@@ -13,8 +13,7 @@ Height::Height(UniSim::Identifier name, QObject *parent)
     setState("height", &height);
 }
 
-void Height::initialize()
-{
+void Height::initialize() {
     setParameter("a", &a, 7.5);
     setParameter("b", &b, 0.0085);
     setParameter("c", &c, 77.9);
@@ -22,8 +21,7 @@ void Height::initialize()
     photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
 }
 
-    void Height::update()
-{
+void Height::update() {
     double pt = photoThermalTime->state("total");
     height = a + c/(1. + exp(-b*(pt-m)));
     if (height < 0.5)

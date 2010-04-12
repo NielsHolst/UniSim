@@ -24,6 +24,7 @@ public:
     // special methods
     const QList<OutputVariable *>& xVariables() const;
     const QList<OutputVariable *>& yVariables() const;
+    void standardizeLabels();
 private:
     // parameters
     QString title;

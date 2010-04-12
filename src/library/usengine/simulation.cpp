@@ -50,7 +50,7 @@ Simulation::Simulation(QString name, QString version, QObject *parent)
 
     \param sequence list of top-level models in the order they will be managed
 */
-void Simulation::initialize(const Identifiers &sequence) throw(Exception)
+void Simulation::initialize(const Identifiers &sequence)
 {
 	if (_state == Initialized)  return;
 	
@@ -107,8 +107,8 @@ void Simulation::initialize(const Identifiers &sequence) throw(Exception)
 	// Initialize integrator, models and outputs
 	_integrator->initialize();
     for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepInitialize();
-    for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepInitialize();
-	
+    for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou) (*ou)->deepInitialize();
+
 	_state = Initialized;
 	_runCount = _stepCount = 0;
 }
@@ -120,10 +120,10 @@ void Simulation::initialize(const Identifiers &sequence) throw(Exception)
     - After every run: first the top-level models then the outputs are cleanup()'ed.
     - After the last run: first the top-level models then the outputs are debrief()'ed.
 */
-void Simulation::execute() throw(Exception)
+void Simulation::execute()
 {
     initialize(Identifiers()); // Try initializing with empty sequence at the least
-	if (_state != Initialized) 
+    if (_state != Initialized)
 		throw Exception("Simulation could not be inialized. Correct the model specification file(s).");
 
 	_runCount = 0;
@@ -131,7 +131,7 @@ void Simulation::execute() throw(Exception)
 	
     _integrator->resetRuns();
     while (_integrator->nextRun() && !_stopAllRuns) {
-		++_runCount;
+        ++_runCount;
 		_stepCount = 0;
 		
         for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepReset();
@@ -140,15 +140,14 @@ void Simulation::execute() throw(Exception)
         _integrator->resetSteps();
         while (_integrator->nextStep() && !_stopCurrentRun) {
 			++_stepCount;
-			//std::cout << _stepCount << "\n";
             for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepUpdate();
             for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepUpdate();
 		}
-		
+
         for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepCleanup();
         for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepCleanup();
-	}
-	
+    }
+
     for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepDebrief();
     for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepDebrief();
 }

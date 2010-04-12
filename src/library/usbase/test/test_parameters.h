@@ -27,6 +27,8 @@ private slots:
     void testChangeDate();
     void testChangeBool();
 
+    void testMissing();
+    void testNotSet();
     
 };
 

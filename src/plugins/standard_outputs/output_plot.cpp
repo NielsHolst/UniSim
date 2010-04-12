@@ -35,6 +35,22 @@ OutputPlot::~OutputPlot() {
 void OutputPlot::initialize() {
     Output::initialize();
     setParameter("title", &title, QString());
+
+    const QList<OutputVariable *> &xs(xVariables()), &ys(yVariables());
+    if (ys.size() == 0) {
+        QString msg = "Output plot has no y-series: " + objectName();
+        throw Exception(msg);
+    }
+    if (xs.size() == 0) {
+        QString msg = "Output plot has no x-series: " + objectName();
+        throw Exception(msg);
+    }
+    else if (xs.size() > 1) {
+        QString msg = "Output plot has more than one x-series:";
+        for (int i = 0; i < xs.size(); ++ i)
+            msg += "\n" + xs.at(i)->longName();
+        throw Exception(msg);
+    }
 }
 
 void OutputPlot::cleanup() {
@@ -62,12 +78,6 @@ void OutputPlot::fillPlotWidget() {
     QList<OutputVariable *> xs, ys;
     xs = xVariables();
     ys = yVariables();
-    if (xs.size() > 1) {
-        QString msg = "Output plot has more than one x-series:";
-        for (int i = 0; i < xs.size(); ++ i)
-            msg += "\n" + xs[i]->longName();
-        throw Exception(msg);
-    }
     OutputVariable *x = xs[0];
 
     QString yAxisTitle = ys.size() == 1 ? ys[0]->label() : QString();

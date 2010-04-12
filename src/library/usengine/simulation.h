@@ -30,8 +30,8 @@ public:
 	};
 		
 	Simulation(QString name, QString version="1.0", QObject *parent=0);
-    void initialize(const Identifiers &sequence) throw(Exception);
-    virtual void execute() throw(Exception);
+    void initialize(const Identifiers &sequence);
+    virtual void execute();
 	QString version() const;
 	State state() const;
 

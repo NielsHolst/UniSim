@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <iostream>
 #include <usbase/file_locations.h>
 #include <usbase/output_variable.h>
 #include "output_table.h"
@@ -16,13 +17,8 @@ OutputTable::OutputTable(Identifier name, QObject *parent)
 
 void OutputTable::initialize() {
     Output::initialize();
-
-    for (int  i = 0; i < xVariables().size(); ++i)
-        xVariables()[i]->standardizeLabel();
-    for (int  i = 0; i < yVariables().size(); ++i)
-        yVariables()[i]->standardizeLabel();
-
     setParameter("fileName", &fileName, QString("output_table.prn"));
+    standardizeLabels();
 }
 
 void OutputTable::cleanup() {
@@ -53,6 +49,8 @@ void OutputTable::openFile() {
 }
 
 void OutputTable::writeLabels(const OutputVariables &variables) {
+    if (variables.isEmpty())
+        return;
     QString s;
     QTextStream text(&s);
     text << variables[0]->label();
@@ -81,6 +79,8 @@ int OutputTable::checkDataSize(const OutputVariables &variables, int dataSize) c
 }
 
 void OutputTable::writeData(const OutputVariables &variables, int dataIx) {
+    if (variables.isEmpty())
+        return;
     QString s;
     QTextStream text(&s);
     text << variables[0]->data()->value(dataIx);

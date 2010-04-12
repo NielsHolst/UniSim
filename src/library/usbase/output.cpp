@@ -16,7 +16,7 @@ Output::Output(Identifier name, QObject *parent)
 void Output::initialize() {
     setParameter("title", &title, QString("untitled"));
 
-    variables = findChildren<OutputVariable*>("*");
+    variables = seekChildren<OutputVariable*>("*");
     extendLabels();
     segmentVariables();
 }
@@ -51,6 +51,13 @@ const OutputVariables& Output::xVariables() const {
 
 const OutputVariables& Output::yVariables() const {
     return y;
+}
+
+void Output::standardizeLabels() {
+    for (int  i = 0; i < x.size(); ++i)
+        x[i]->standardizeLabel();
+    for (int  i = 0; i < y.size(); ++i)
+        y[i]->standardizeLabel();
 }
 
 } //namespace

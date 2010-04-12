@@ -33,7 +33,9 @@ void ConstantWorld::reset()
 
 void ConstantWorld::update()
 {
-	day += 1;
+    //cout << "ConstantWorld::update() A\n";
+    day += 1;
+    //cout << "ConstantWorld::update() Z\n";
 }
 
 } //namespace

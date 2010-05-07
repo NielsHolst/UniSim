@@ -34,6 +34,7 @@ public:
     virtual void execute();
 	QString version() const;
 	State state() const;
+    const QList<Model*>& sequence() const;
 
     int runCount() const;
 	int stepCount() const;

@@ -1,9 +1,11 @@
 #ifndef UNISIM_TEST_AREA_H
 #define UNISIM_TEST_AREA_H
 
+#include <QList>
 #include <usbase/test/autotest.h>
 
 namespace UniSim {
+    class Model;
     class Simulation;
 }
 
@@ -17,13 +19,20 @@ class TestArea : public QObject
 private slots:
 	void initTestCase();
     void cleanupTestCase();
-    void testWeightedAreaAboveLayer();
-    void testLightUseInShade();
-    void testLightUseInSun();
-    void testLightUseTotal();
+
+    void testAtHeight();
+    void testAboveHeight();
+    void testCalcEffectiveAreaAbove();
+    void testCalcAbsorptionInShade();
+    void testCalcPhotosynthesisInShade();
+    void testCalcPhotosynthesisInSun();
+    void testCalcPhotosynthesisInTotal();
 private:
+    void reset();
+
     UniSim::Simulation *simulation;
-    intercom::Area *area;
+    UniSim::Model *calendar, *weather, *height, *lightUseEfficiency, *assimilationMax;
+    intercom::Area *leafArea;
 };
 
 DECLARE_TEST(TestArea)

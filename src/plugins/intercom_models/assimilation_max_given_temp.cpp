@@ -3,7 +3,6 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/utilities.h>
 #include "assimilation_max_given_temp.h"
 
 using namespace UniSim;

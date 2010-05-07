@@ -13,6 +13,7 @@
 #include "height.h"
 #include "intercom_model_maker.h"
 #include "leaf_stem_ratio.h"
+#include "light_use_efficiency_given_temp.h"
 #include "plant.h"
 #include "specific_leaf_area.h"
 #include "weather.h"
@@ -32,6 +33,7 @@ QList<Identifier> IntercomModelMaker::supportedTypes() const
         << Identifier("Community")
         << Identifier("Height")
         << Identifier("LeafStemRatio")
+        << Identifier("LightUseEfficiencyGivenTemp")
         << Identifier("Organ")
         << Identifier("Plant")
         << Identifier("SpecificLeafArea")
@@ -66,6 +68,8 @@ Model* IntercomModelMaker::create(Identifier modelType, Identifier objectName, Q
         model = new LeafStemRatio(objectName, parent);
     else if (modelType.equals("Organ"))
         model = new Organ(objectName, parent);
+    else if (modelType.equals("LightUseEfficiencyGivenTemp"))
+        model = new LightUseEfficiencyGivenTemp(objectName, parent);
     else if (modelType.equals("Plant"))
 		model = new Plant(objectName, parent);
     else if (modelType.equals("SpecificLeafArea"))

@@ -7,6 +7,7 @@
 #include <QString>
 #include <QTextStream>
 #include <usbase/exception.h>
+#include <usbase/utilities.h>
 #include "stage.h"
 	
 namespace UniSim {
@@ -41,7 +42,7 @@ void Stage::initialize()
 	setParameter("k", &_k, 30);
 	setParameter("duration", &_L, 100.);
 
-    time = findChild<Model*>("time");
+    time = seekOneChild<Model*>("time");
 }
 
 

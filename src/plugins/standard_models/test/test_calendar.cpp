@@ -1,5 +1,6 @@
 #include <iostream>
 #include <QDir>
+#include <usbase/clock.h>
 #include <usbase/file_locations.h>
 #include <usengine/simulation.h>
 #include <usengine/simulation_maker.h>
@@ -227,7 +228,8 @@ void TestCalendar::testSolarElevation() {
             }
             for (int ho = 0; ho < hours.size(); ++ho) {
                 double astroHour = hours[ho] - solarNoonDiff[lo][da];
-                double sinb = cal->sinb(astroHour);
+                clock()->doTick(astroHour);
+                double sinb = cal->state("sinb");
                 double estSolarElev = asin(sinb)/PI*180.;
                 QVERIFY(fabs(estSolarElev - solarElev[lo][da][ho]) < 1.);
             }

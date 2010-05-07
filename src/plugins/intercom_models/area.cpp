@@ -3,13 +3,13 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <iostream>
 #include <QMessageBox>
 #include <usbase/debug_output.h>
 #include <usbase/exception.h>
 #include <usbase/utilities.h>
 #include "../standard_models/calendar.h"
 #include "area.h"
-#include "community.h"
 #include "constants.h"
 #include "plant.h"
 #include "weather.h"
@@ -22,9 +22,6 @@ Area::Area(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     setState("lai", &lai);
-    setState("absorption", &absorption.total);
-    setState("assimilation", &assimilation.total);
-    setState("assimEfficiency", &assimEfficiency);
 
     lookupDist["Symmetric"] = Symmetric;
     lookupDist["Even"] = Even;
@@ -36,116 +33,140 @@ void Area::initialize() {
     setParameter("initial", &initial, 0.01);
     setParameter("distribution", &distText, QString("Symmetric"));
     setParameter("scatteringCoeff", &scatteringCoeff, 0.2);
-    setParameter("kDiffuse", &k[Diffuse], 0.7);
+    setParameter("kDiffuse", &kDiffuse, 0.7);
 
-    if (!lookupDist.contains(distText))
-        throw Exception("Unknown distribution type: " + distText);
-    distribution = lookupDist.value(distText);
-
-    calendar = seekOne<UniSim::Calendar*>("calendar");
-    weather = seekOne<Weather*>("weather");
+    calendar = seekOne<Model*>("calendar");
+    weather = seekOne<Model*>("weather");
     plant = seekOneAscendant<Plant*>("*");
     plantHeight = plant->seekOneDescendant<Model*>("height");
+    lightUseEfficiency = seekOneChild<Model*>("lightUseEfficiency");
     assimilationMax = seekOneChild<Model*>("amax");
-    Community *community = seekOneAscendant<Community*>("*");
-    cs = community->statePtr();
 }
 
 void Area::reset() {
     lai = initial;
 }
 
-void Area::update() {
-    amax = assimilationMax->state("amax");
-    double Tday = weather->state("Tday");
-    assimEfficiency = (-0.0095*Tday + 0.635)/10.;
-
-    updateLightUseInShade();
-    updateLightUseInSun();
-    updateLightUseTotal();
+Area::Distribution Area::distribution() const {
+    if (!lookupDist.contains(distText))
+        throw Exception("Unknown distribution type: " + distText);
+    return lookupDist.value(distText);
 }
 
-LightComponents Area::weightedAreaAboveLayer(double layerHeight_) {
-    layerHeight = layerHeight_;
-    double scat = sqrt(1 - scatteringCoeff);
-    k[DirectDirect] = 0.5/cs->sinb*k[Diffuse]/0.8/scat;
-    k[DirectTotal] = k[DirectDirect]*scat;
+LightComponents Area::calcEffectiveAreaAbove(double height) {
+    LightComponents k = calc_k();
 
-    LightComponents wa;
-    double areaAbove = aboveHeight(layerHeight);
-    for (int i = 0; i < 3; ++i) {
-        wa[i] = k[i]*areaAbove;
-    }
-
-    return wa;
-}
-
-void Area::updateLightUseInShade()
-{
-    double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
-    double refSphec = refHorz*2./(1. + 1.6*cs->sinb);
-
-    LightComponents par, reflected, absorbed;
-    par[Diffuse] = cs->par.diffuse;
-    par[DirectDirect] = cs->par.direct;
-    par[DirectTotal] = cs->par.direct;
-    reflected[Diffuse] = refHorz;
-    reflected[DirectDirect] = refSphec;
-    reflected[DirectTotal] = scatteringCoeff;
-
+    LightComponents eaa;
+    double areaAbove = aboveHeight(height);
     for (int lc = 0; lc < 3; ++lc) {
-        LightComponents waal = cs->weightedAreaAboveLayer[cs->layerStep];
-        absorbed[lc] = k[lc] * (1. - reflected[lc]) * par[lc] * exp(-waal.value(lc));
+        eaa[lc] = k[lc]*areaAbove;
     }
 
-    absorption.inShade = absorbed[Diffuse] + absorbed[DirectTotal] - absorbed[DirectDirect];
-    if (absorption.inShade < 0) {
-        if (absorption.inShade > -1e-4)
-            absorption.inShade = 0.;
+    return eaa;
+}
+
+LightComponents Area::calc_k() const {
+    double scat = sqrt(1 - scatteringCoeff);
+    double sinb = calendar->state("sinb");
+    Q_ASSERT(sinb > 0.);
+    LightComponents k;
+    k[Diffuse] = kDiffuse;
+    k[DirectDirect] = 0.5/sinb*kDiffuse/0.8/scat;
+    k[DirectTotal] = k[DirectDirect]*scat;
+    return k;
+}
+
+PhotosyntheticRate Area::calcPhotosynthesis(LightComponents eaa) {
+    PhotosyntheticRate psInShade = calcPhotosynthesisInShade(eaa);
+    PhotosyntheticRate psInSun = calcPhotosynthesisInSun(psInShade);
+    PhotosyntheticRate psTotal = calcPhotosynthesisTotal(eaa, psInShade, psInSun);
+    cout << " Area::calcPhotosynthesis() psTotal = " << psTotal.absorption() << " " << psTotal.assimilation() << "\n";
+    return psTotal;
+}
+
+PhotosyntheticRate Area::calcPhotosynthesisInShade(LightComponents eaa) {
+    LightComponents absorbedComp = calcAbsorptionInShade(eaa);
+    double absorption = netAbsorption(absorbedComp);
+    double assimilation = assimilationRate(absorption);
+    return PhotosyntheticRate(absorption, assimilation);
+}
+
+LightComponents Area::calcAbsorptionInShade(LightComponents eaa) {
+    double sinb = calendar->state("sinb");
+    double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
+    double refSphec = refHorz*2./(1. + 1.6*sinb);
+
+    LightComponents k = calc_k();
+
+    LightComponents par;
+    par[Diffuse] = weather->state("parDiffuse");
+    par[DirectDirect] = weather->state("parDirect");
+    par[DirectTotal] = weather->state("parDirect");
+
+    LightComponents reflected;
+    reflected[Diffuse] = refHorz;
+    reflected[DirectDirect] = scatteringCoeff;
+    reflected[DirectTotal] = refSphec;
+
+    LightComponents absorbed;
+    for (int lc = 0; lc < 3; ++lc)
+        absorbed[lc] = k[lc] * (1. - reflected[lc]) * par[lc] * exp(-eaa.value(lc));
+    return absorbed;
+}
+
+double Area::netAbsorption(const LightComponents &absorbed) const {
+    double netAbsorbed = absorbed.value(Diffuse) + absorbed.value(DirectTotal)
+                         - absorbed.value(DirectDirect);
+    if (netAbsorbed < 0) {
+        if (netAbsorbed > -1e-4)
+            netAbsorbed = 0.;
         else
-            throw Exception("Shaded absorption (" + QString::number(absorption.inShade) + ")" +
+            throw Exception("Shaded absorption (" + QString::number(netAbsorbed) + ")" +
                             " < 0 in area of " + plant->objectName());
     }
-    assimilation.inShade =
-        amax == 0. ? 0. :
-        amax*(1. - exp(-absorption.inShade*assimEfficiency/amax));
+    return netAbsorbed;
 }
 
-void Area::updateLightUseInSun()
-{
-    double perpendicular = (1. - 0.2)*cs->par.direct/cs->sinb;
-    absorption.inSun = 0;
-    assimilation.inSun = 0.;
-    for (int i = 0; i<3; i++)
-    {
-        double absorp = absorption.inShade + perpendicular*Xgauss2[i];
-        double assim = amax*(1. - exp(-absorp*assimEfficiency/amax));
-        absorption.inSun += absorp*Wgauss2[i];
-        assimilation.inSun += assim*Wgauss2[i];
+double Area::assimilationRate(double absorption) const {
+    double efficiency = lightUseEfficiency->state("efficiency");
+    double amax = assimilationMax->state("amax");
+    return amax == 0. ? 0. : amax*(1. - exp(-absorption*efficiency/amax));
+}
+
+PhotosyntheticRate Area::calcPhotosynthesisInSun(PhotosyntheticRate psInShade) {
+    double sinb = calendar->state("sinb");
+    double parDirect = weather->state("parDirect");
+    double perpendicular = (1. - scatteringCoeff)*parDirect/sinb;
+
+    double absorbed = 0;
+    double assimilated = 0.;
+    // integrate over leaf angles
+    for (int i = 0; i<3; i++) {
+        double abso = psInShade.absorption() + perpendicular*XGAUSS3[i];
+        double assi = assimilationRate(abso);
+        absorbed += abso*WGAUSS3[i];
+        assimilated += assi*WGAUSS3[i];
     }
-
+    return PhotosyntheticRate(absorbed, assimilated);
 }
 
-void Area::updateLightUseTotal()
-{
-    double leafDensity = atHeight(layerHeight);
-    LightComponents waal = cs->weightedAreaAboveLayer[cs->layerStep];
-    double sunlitFraction = exp(-waal.value(DirectDirect));
-    assimilation.total = (sunlitFraction*assimilation.inSun +
-                        (1 - sunlitFraction)*assimilation.inShade)*leafDensity;
-    absorption.total = (sunlitFraction*absorption.inSun +
-                       (1 - sunlitFraction)*absorption.inShade)*leafDensity;
+PhotosyntheticRate Area::calcPhotosynthesisTotal(LightComponents eaa, PhotosyntheticRate psInShade, PhotosyntheticRate psInSun) {
+    double sunlit = exp(-eaa.value(DirectDirect));
+    double absorbed = sunlit*psInSun.absorption() + (1 - sunlit)*psInShade.absorption();
+    double assimilated = sunlit*psInSun.assimilation() + (1 - sunlit)*psInShade.assimilation();
+    // Finally, convert J/m2/s to MJ/m2/d
+    return PhotosyntheticRate(/*3600.*1e-6*/absorbed, assimilated);
 }
 
-double Area::atHeight(double height) {
+double Area::atHeight(double height) const {
     double ph = plantHeight->state("height");
     if (ph == 0. || height > ph)
         return 0.;
 
     double area;
-    switch (distribution) {
+    switch (distribution()) {
         case Symmetric:
-            area = lai*6./pow(ph,3)*ph*(ph-height);
+            area = lai*6./pow(ph,3)*height*(ph-height);
             break;
         case Even:
             area = lai/ph;
@@ -160,13 +181,13 @@ double Area::atHeight(double height) {
     return area;
 }
 
-double Area::aboveHeight(double height) {
+double Area::aboveHeight(double height) const {
     double ph = plantHeight->state("height");
     if (ph == 0. || height > ph)
         return 0.;
 
     double area;
-    switch (distribution) {
+    switch (distribution()) {
         case Symmetric:
             area = lai - lai/pow(ph,3)*height*height*(3.*ph - 2.*height);
             break;
@@ -182,6 +203,7 @@ double Area::aboveHeight(double height) {
     }
     return area;
 }
+
 
 } //namespace
 

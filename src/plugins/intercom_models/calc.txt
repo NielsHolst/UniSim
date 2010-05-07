@@ -1,0 +1,42 @@
+	struct Result {
+		double absorbed, assimilated;
+	};	
+	CalcBase();
+	Result calculate(double point = 0) = 0;
+private:
+	Result result;
+};
+
+
+Results results[3];
+Result CalcAssimilation::calculate() {
+	Result total;
+	for (int i = 0; i < 3; ++i) {
+        double hour = 12. + 0.5*dayLength*Xgauss2[i];
+        clock()->emitToll(hour);
+		total += results[i] = calcDaySteps[i]->calculate(hour);
+	}
+	return total;
+}
+
+Results results[5];
+Result CalcDayStep::calculate(double hour) {
+	Result total;
+	for (int i = 0; i < 5; ++i) {
+		double height = ;
+		total += results[i] = calcLayer[i]->calculate(height);
+	}
+	return total;
+}
+
+Results results[areas.size()];
+Result CalcLayer::calculate(double height) {
+	Result total;
+	for (int i = 0; i < areas.size(); ++i) {
+		double height = ;
+		areas[i]->updateLightUse();
+		total.absorbed += result[i].absorbed = areas[i]->absorbed(); 		
+		total.assimilated += result[i].assimilated = areas[i]->assimilated();
+	}
+	return total;
+}

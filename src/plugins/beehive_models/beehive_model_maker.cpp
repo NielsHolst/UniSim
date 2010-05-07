@@ -12,6 +12,7 @@
 #include "insect2.h"
 #include "insect3.h"
 #include "insect4.h"
+#include "weather.h"
 
 using namespace UniSim;
 
@@ -26,6 +27,7 @@ QList<Identifier> BeehiveModelMaker::supportedTypes() const
         << Identifier("Insect2")
         << Identifier("Insect3")
         << Identifier("Insect4")
+        << Identifier("Weather")
 ;
 }
 
@@ -53,6 +55,8 @@ Model* BeehiveModelMaker::create(Identifier modelType, Identifier objectName, QO
         model = new Insect3(objectName, parent);
     else if (modelType.equals("insect4"))
         model = new Insect4(objectName, parent);
+    else if (modelType.equals("weather"))
+        model = new Weather(objectName, parent);
     return model;
 }
 

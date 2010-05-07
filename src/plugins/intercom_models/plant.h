@@ -9,9 +9,11 @@
 #include <QObject>
 #include <usbase/model.h>
 #include "light_components.h"
+#include "photosynthetic_rate.h"
 
 namespace intercom{
 
+class CanopyLayer;
 class Organ;
 
 class Plant : public UniSim::Model
@@ -22,31 +24,21 @@ public:
 	//standard methods
 	void initialize();
 	void reset();
-	void update();
 
     // special methods
-    LightComponents weightedAreaAboveLayer(int layerStep);
-    void prepareUpdate();
-    void accumulateLightUseByLayer(int layerStep);
-    void accumulateLightUseByTime(int timeStep);
+    PhotosyntheticRate calcPhotosynthesis();
 
 private:
 	// parameters
 
 	// state
-    struct AccumLightUse {
-        double organ, layer, time;
-        void reset() {
-            organ = layer = time = 0.;
-        }
-    };
-    AccumLightUse absorption, assimilation;
+    PhotosyntheticRate photosyntheticRate;
+
+    // children
+    QList<CanopyLayer*> canopyLayers;
 
     // links
     UniSim::Models childrenToUpdate;
-    UniSim::Model *height;
-    QList<Organ*> organs;
-    double plantHeight;
 };
 
 } //namespace

@@ -18,23 +18,7 @@ class Organ : public UniSim::Model
 	Q_OBJECT
 public: 
     Organ(UniSim::Identifier name, QObject *parent=0);
-	//standard methods
-	void initialize();
-	void reset();
-	void update();
-
-    // special methods
-    LightComponents weightedAreaAboveLayer(double layerHeight);
-
 private:
-	// parameters
-
-	// state
-    double absorption, assimilation;
-
-    // models
-    Area *area;
-
 };
 
 } //namespace

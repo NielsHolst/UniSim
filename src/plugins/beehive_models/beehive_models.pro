@@ -15,7 +15,8 @@ HEADERS += \
 	insect1.h \
 	insect2.h \
     insect3.h \
-    insect4.h
+    insect4.h \
+    weather.h
 
 SOURCES += \
     ../standard_models/stage.cpp \
@@ -25,5 +26,6 @@ SOURCES += \
 	insect1.cpp \
     insect2.cpp \
     insect3.cpp \
-    insect4.cpp
+    insect4.cpp \
+    weather.cpp
 

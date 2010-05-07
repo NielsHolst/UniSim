@@ -14,8 +14,7 @@ class LightComponents
 {
 public: 
     LightComponents();
-    void reset();
-    void accumulate(const LightComponents &increment);
+    LightComponents& operator+=(LightComponents a);
     double value(int lc) const;
     double value(LightComponent lc) const;
 

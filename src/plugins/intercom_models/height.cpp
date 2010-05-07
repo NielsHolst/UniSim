@@ -18,15 +18,24 @@ void Height::initialize() {
     setParameter("b", &b, 0.0085);
     setParameter("c", &c, 77.9);
     setParameter("m", &m, 624.);
+    setParameter("minHeight", &minHeight, 0.5);
     photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
+}
+
+void Height::reset() {
+    updateHeight(0.);
 }
 
 void Height::update() {
     double pt = photoThermalTime->state("total");
-    height = a + c/(1. + exp(-b*(pt-m)));
-    if (height < 0.5)
-        height = 0.5;
-    height = height/100;
+    updateHeight(pt);
+}
+
+void Height::updateHeight(double time) {
+    height = a + c/(1. + exp(-b*(time - m)));
+    if (height < minHeight)
+        height = minHeight;
+    height = height/100;  // from cm to m
 }
 
 } //namespace

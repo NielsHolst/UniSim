@@ -5,6 +5,7 @@
 */
 #include <QApplication>
 #include <QtGui>
+#include <usbase/clock.h>
 #include <usbase/debug_output.h>
 #include <usbase/object_pool.h>
 #include <usbase/random_uniform.h>
@@ -28,6 +29,7 @@ void createSingletons(){
     objectPool()->attach(ModelMaker::id(), new ModelMaker);
     objectPool()->attach(OutputMaker::id(), new OutputMaker);
     objectPool()->attach(RandomUniform::id(), new RandomUniform);
+    objectPool()->attach(Clock::id(), new Clock);
 }
 
 int main(int arbc, char *argv[])

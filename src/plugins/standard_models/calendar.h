@@ -20,8 +20,8 @@ public:
 	void reset();
 	void update();
 
-    // special methods
-    double sinb(double hour) const;
+private slots:
+    void handleClockTick(double hour);
 
 private:
     // data
@@ -50,7 +50,7 @@ private:
 	// state
     QDate date;
     double day, month, year, dayInYear, daysTotal,
-        dayLength, sinLD, cosLD;
+        dayLength, sinb, sinLD, cosLD;
 
 };
 

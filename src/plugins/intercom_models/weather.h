@@ -17,20 +17,26 @@ class Weather : public UniSim::WeatherFile
 {
 	Q_OBJECT
 public: 
-	Weather(UniSim::Identifier name, QObject *parent=0);
+    struct Par {
+        double total, diffuse, direct;
+    };
+
+    Weather(UniSim::Identifier name, QObject *parent=0);
     // standard methods
     void initialize();
     void update();
 
-    // special methods
-    struct Par {
-        double total, diffuse, direct;
-    };
-    Par par(double hour);
+private slots:
+    void handleClockTick(double hour);
+
 private:
     // state (in addition to columns from weather file)
     double Tavg, Tday, irradiation;
-    Par par12h;
+    Par par;
+
+    // methods
+    void verifySequence();
+    void updatePar();
 
     // models
     UniSim::Calendar *calendar;

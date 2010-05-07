@@ -75,13 +75,10 @@ void TestLiveSimulation::testViewBuilding() {
 }
 
 void TestLiveSimulation::testRunning() {
-    cout << "Running A\n";
     _liveSim->run();
-    cout << "Running B\n";
     waitForStateChange(LiveSimulation::Running);
     waitForStateChange(LiveSimulation::EndRunning);
     waitForStateChange(LiveSimulation::Ready);
-    cout << "Running Z\n";
 
     QCOMPARE(_spy->count(), 3);
     QCOMPARE(_liveSim->state(), LiveSimulation::Ready);

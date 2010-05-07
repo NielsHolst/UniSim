@@ -53,6 +53,7 @@ example: C:\Program Files\Graphviz2.20\bin.
 4. Models are in various stages of development. Currently, these 
 work:
 * ambrosia (ambrosia development)
+* conductance model (plant growth under competition)
 * ess2009 (annual weed population dynamics).
 
 5. To edit parameter settings:

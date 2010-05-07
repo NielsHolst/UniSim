@@ -1,7 +1,8 @@
 # Depends on include($$(UNISIM_ROOT)/src/config.pri)
 
 HEADERS += \
-		$${US_BASE}/component.h \
+        $${US_BASE}/clock.h \
+        $${US_BASE}/component.h \
 		$${US_BASE}/integrator.h \
 		$${US_BASE}/integrator_maker_plug_in.h \
   		$${US_BASE}/debug_output.h \
@@ -21,7 +22,8 @@ HEADERS += \
 
 
 SOURCES += \
-		$${US_BASE}/component.cpp \
+        $${US_BASE}/clock.cpp \
+        $${US_BASE}/component.cpp \
   		$${US_BASE}/integrator.cpp \
   		$${US_BASE}/debug_output.cpp \
   		$${US_BASE}/exception.cpp \

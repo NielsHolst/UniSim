@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/utilities.h>
 #include "prostephanus.h"
 
 namespace grainstore{
@@ -20,10 +21,10 @@ void Prostephanus::initialize()
     setParameter("damageDemandRate", &damageDemandRate, 0.00317);
     setParameter("damageSearchRate", &damageSearchRate, 0.0301);
 
-    immigration = findChild<Model*>("immigration");
-    development = findChild<Model*>("development");
-    reproduction = findChild<Model*>("reproduction");
-    emigration = findChild<Model*>("emigration");
+    immigration = seekOneChild<Model*>("immigration");
+    development = seekOneChild<Model*>("development");
+    reproduction = seekOneChild<Model*>("reproduction");
+    emigration = seekOneChild<Model*>("emigration");
 }
 
 void Prostephanus::reset()

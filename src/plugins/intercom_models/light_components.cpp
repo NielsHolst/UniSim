@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <iostream>
 #include <QtGlobal>
 #include "light_components.h"
 
@@ -10,30 +11,28 @@ namespace intercom{
 
 LightComponents::LightComponents()
 {
-    reset();
-}
-
-void LightComponents::reset() {
-    for (int i = 0; i < 0; ++i)
+    for (int i = 0; i < 3; ++i)
         components[i] = 0.;
 }
 
-void LightComponents::accumulate(const LightComponents &increment) {
+LightComponents& LightComponents::operator+=(LightComponents a) {
     for (int i = 0; i < 3; ++i)
-        components[i] += increment.value(i);
+        components[i] += a.value(i);
+    return *this;
 }
+
 
 double LightComponents::value(LightComponent lc) const {
     return components[lc];
 }
 
 double LightComponents::value(int lc) const {
-    Q_ASSERT(lc > 0 && lc < 4);
+    Q_ASSERT(lc >= 0 && lc <= 2);
     return components[lc];
 }
 
 double& LightComponents::operator[] (int lc) {
-    Q_ASSERT(lc > 0 && lc < 4);
+    Q_ASSERT(lc >= 0 && lc <= 2);
     return components[lc];
 }
 

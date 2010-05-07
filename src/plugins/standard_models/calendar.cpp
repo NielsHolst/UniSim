@@ -11,6 +11,7 @@
 #include <QTextStream>
 #include <cfloat>
 #include <cmath>
+#include <usbase/clock.h>
 #include "calendar.h"
 
 using namespace std;
@@ -27,6 +28,7 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     setState("month", &month);
     setState("year", &year);
     setState("dayLength", &dayLength);
+    setState("sinb", &sinb);
     setState("sinLD", &sinLD);
     setState("cosLD", &cosLD);
 }
@@ -41,6 +43,8 @@ void Calendar::initialize()
     QStringList followersAsStrings = decodeSimpleList(followersAsString, "Calendar::initialize");
     for (int i = 0; i < followersAsStrings.size(); ++i)
         followers.append(seekOne<Model*>(followersAsStrings.value(i)));
+
+    connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
 }
 
 void Calendar::reset() {
@@ -73,8 +77,9 @@ void Calendar::reset() {
     if (!msg.isEmpty())
         throw Exception(msg);
 
-    date = firstDate.addDays(-1);
-    daysTotal = 0;
+    date = firstDate.addDays(-2);
+    daysTotal = 1;
+    update();
 }
 
 void Calendar::getFollowerFirstDates() {
@@ -87,7 +92,7 @@ void Calendar::getFollowerFirstDates() {
                 followerFirstDates.append(date);
         }
         catch (Exception &ex) {
-            throw Exception("Follower of calendar must have parameter firstDatw");
+            throw Exception("Follower of calendar must have parameter firstDate");
         }
     }
 }
@@ -159,10 +164,9 @@ void Calendar::update()
 
 }
 
-
-double Calendar::sinb(double hour) const {
-    double sb = sinLD + cosLD*cos(2.*PI*(hour + 12.)/24.);
-    return sb > 0. ? sb : 0.;
+void Calendar::handleClockTick(double hour) {
+    sinb = sinLD + cosLD*cos(2.*PI*(hour + 12.)/24.);
+    if (sinb < 0.) sinb = 0.;
 }
 
 } //namespace

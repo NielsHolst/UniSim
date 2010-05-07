@@ -24,7 +24,7 @@ private:
 	// parameters
     double initEggs, sexRatio;
 
-	// state
+	// links
     UniSim::Model *egg, *larva, *pupa, *adult;
 
 };

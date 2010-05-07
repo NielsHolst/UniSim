@@ -153,36 +153,34 @@ void Simulation::execute()
 }
 
 //! Gets version number
-QString Simulation::version() const
-{
+QString Simulation::version() const {
 	return _version;
 }
 
 //! Gets state of the simulation
-Simulation::State Simulation::state() const
-{
+Simulation::State Simulation::state() const {
 	return _state;
 }
 
+const QList<Model*>& Simulation::sequence() const {
+    return _models;
+}
+
 //! Get number of runs simulated
-int Simulation::runCount() const
-{
+int Simulation::runCount() const {
 	return _runCount;
 }
 	
 //! Get number of steps simulated in current run
-int Simulation::stepCount() const
-{
+int Simulation::stepCount() const {
 	return _stepCount;
 }
 
-void Simulation::stopCurrentRun()
-{
+void Simulation::stopCurrentRun() {
     _stopCurrentRun = true;
 }
 
-void Simulation::stopAllRuns()
-{
+void Simulation::stopAllRuns() {
     _stopAllRuns = _stopCurrentRun = true;
 }
 

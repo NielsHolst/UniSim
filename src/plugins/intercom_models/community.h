@@ -7,7 +7,6 @@
 #define INTERCOM_COMMUNITY
 #include <QObject>
 #include <usbase/model.h>
-#include "light_components.h"
 #include "weather.h"
 
 namespace UniSim {
@@ -16,8 +15,9 @@ namespace UniSim {
 
 namespace intercom{
 
+class Area;
+class Photosynthesis;
 class Plant;
-class Weather;
 
 class Community : public UniSim::Model
 {
@@ -29,31 +29,17 @@ public:
 	void reset();
 	void update();
 
-    // special methods
-    struct State {
-        int timeStep, layerStep;
-        double hour, sinb;
-        Weather::Par par;
-        LightComponents weightedAreaAboveLayer[5];
-    };
-
-    const State* statePtr() const;
 
 private:
 	// parameters
 
 	// state
-    State s;
+    double grossLightAbsorption, grossAssimilation;
 
     // models
-    UniSim::Calendar *calendar;
-    Weather *weather;
+    Photosynthesis *photosynthesis;
     QList<Plant*> plants;
-
-    // methods
-    void updateWeightedAreaAboveLayer();
-    void updatePlantsByHours();
-    void updatePlantsByLayers();
+    QList<Area*> areas;
 };
 
 } //namespace

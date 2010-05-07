@@ -17,11 +17,16 @@ public:
     Height(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
 	void initialize();
+    void reset();
 	void update();
 
 private:
+    // methods
+    void updateHeight(double time);
+
 	// parameters
-    double a, b, c, m;
+    double a, b, c, m, minHeight;
+;
 
 	// state
     double height;

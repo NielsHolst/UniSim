@@ -1,10 +1,10 @@
 <project>
     <shortName>UniSim</shortName>
     <fullName>Universal Simulator</fullName>
-    <version>1.1</version>
-    <installerFilename></installerFilename>
-    <licenseFile>C:/data/QDev/UniSim/install_builder/gpl-3.0.txt</licenseFile>
-    <logoImage>C:/data/QDev/UniSim/doc/icons/N86-icon-32.png</logoImage>
+    <version>1.9</version>
+    <readmeFile>C:\data\QDev\UniSim\readme-for-users.txt</readmeFile>
+    <licenseFile>C:/data/QDev/UniSim/ship/gpl-3.0.txt</licenseFile>
+    <logoImage>C:\data\sites\ecolmod\root-html\squirrel.gif</logoImage>
     <postInstallationActionList>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
@@ -29,6 +29,12 @@
             <name>Plugin files</name>
             <type>REG_SZ</type>
             <value>${installdir}\plugins</value>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
+            <name>Weather files</name>
+            <type>REG_SZ</type>
+            <value>${windows_folder_personal}\UniSim\weather</value>
         </registrySet>
     </postInstallationActionList>
     <enableRollback>1</enableRollback>
@@ -76,10 +82,10 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/install_builder/bin</origin>
+                            <origin>C:/data/QDev/UniSim/ship/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/install_builder/plugins</origin>
+                            <origin>C:/data/QDev/UniSim/ship/plugins</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -99,10 +105,13 @@
                             <origin>C:/data/QDev/UniSim/xml/models</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/install_builder/output</origin>
+                            <origin>C:/data/QDev/UniSim/ship/output</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/install_builder/temp</origin>
+                            <origin>C:/data/QDev/UniSim/ship/temp</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>C:/data/QDev/UniSim/ship/weather</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -118,10 +127,10 @@
                     <windowsPath>${installdir}/</windowsPath>
                 </startMenuShortcut>
                 <startMenuShortcut>
-                    <comment></comment>
-                    <name>Universal Simulator 1.1</name>
+                    <comment>Run Universal Simulator</comment>
+                    <name>Universal Simulator 1.9</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}/bin/unisim.exe</windowsExec>
+                    <windowsExec>${installdir}/bin/unisim_1_9.exe</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
                     <windowsIcon></windowsIcon>
                     <windowsPath>${installdir}</windowsPath>

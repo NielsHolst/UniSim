@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "days.h"
 
@@ -11,8 +12,8 @@ namespace UniSim{
 Days::Days(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("step", &step);
-    setState("total", &total);
+    new PullVariable("step", &step, this);
+    new PullVariable("total", &total, this);
 }
 
 void Days::reset() {

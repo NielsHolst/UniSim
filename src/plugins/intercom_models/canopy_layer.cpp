@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "area.h"
 #include "canopy_layer.h"
@@ -22,7 +23,7 @@ CanopyLayer::CanopyLayer(int layer_, QObject *parent)
 PhotosyntheticRate CanopyLayer::calcPhotosynthesis() {
     lookup();
 
-    double plHeight = plantHeight->state("height");
+    double plHeight = plantHeight->pullVariable("height");
     double height = plHeight*XGAUSS5[layer];
 
     LightComponents eaa = calcEffectiveAreaAbove(height);

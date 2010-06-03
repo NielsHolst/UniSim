@@ -2,7 +2,7 @@
 <simulation version="1.0">
 
     <controller type="Simple">
-    	<parameter name="numSteps" value="730"/>
+    	<parameter name="maxSteps" value="730"/>
         <sequence>
             <model name="calendar"/>
             <model name="weather"/>

@@ -4,10 +4,13 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <cmath>
+#include <usbase/pull_variable.h>
+#include <usbase/push_variable.h>
 #include <iostream>
 #include "life_stage.h"
 
 using namespace std;
+using namespace UniSim;
 
 namespace test{
 
@@ -20,14 +23,14 @@ LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
 	_firstUpdate = true;
 	_dirtySum = true;
 	
-	setInput("input", 0.);
-	
-	setState("contents", &_sum);
-	setState("fgr", &_fgr);
-	setState("input", &_input);
-	setState("output", &_output);
-	setState("inputTotal", &_inputTotal);
-	setState("outputTotal", &_outputTotal);
+    new PullVariable("contents", &_sum, this);
+    new PullVariable("fgr", &_fgr, this);
+    new PullVariable("input", &_input, this);
+    new PullVariable("output", &_output, this);
+    new PullVariable("inputTotal", &_inputTotal, this);
+    new PullVariable("outputTotal", &_outputTotal, this);
+
+    new PushVariable("input", &_inflow, this);
 }
 
 LifeStage::~LifeStage()
@@ -55,15 +58,15 @@ void LifeStage::reset()
 	_firstUpdate = true;
 	_dirtySum = false;
 
-    setInput("input", _initialInput);
+    _inflow = _initialInput;
 }
 
 void LifeStage::update()
 {
     //cout << "LifeStage::update() A\n";
-    _input += input("input");
-	_inputTotal += input("input");
-	setInput("input", 0);
+    _input += _inflow;
+    _inputTotal += _inflow;
+    _inflow = 0.;
 	
 	const double dt = 1;
 		

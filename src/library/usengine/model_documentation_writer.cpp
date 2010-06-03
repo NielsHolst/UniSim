@@ -3,9 +3,11 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QList>
 #include <QtAlgorithms>
 #include <QXmlStreamWriter>
 #include <usbase/model.h>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "model_documentation_writer.h"
 #include "model_maker.h"
@@ -109,20 +111,23 @@ Model* ModelDocumentationWriter::createModel(Identifier id) {
     return model;
 }
 
-void ModelDocumentationWriter::writeStates(const Model *model) {
+void ModelDocumentationWriter::writeStates(const Model *cmodel) {
     xml->writeStartElement("h3");
     xml->writeCharacters("State");
     xml->writeEndElement();
 
-    Model::States states = model->states();
-    for (Model::States::const_iterator st = states.begin();
-        st != states.end(); ++st)
+    Model *model = const_cast<Model*>(cmodel);
+    QList<PullVariable*> pullVars = model->seekChildren<PullVariable*>("*");
+    for (QList<PullVariable*>::const_iterator
+        st = pullVars.begin();
+        st != pullVars.end();
+        ++st)
     {
         xml->writeStartElement("p");
-        xml->writeCharacters(st.key().label());
+        xml->writeCharacters((*st)->id().label());
         xml->writeEndElement();
     }
-    if (states.isEmpty())
+    if (pullVars.isEmpty())
     {
         xml->writeStartElement("p");
         xml->writeCharacters("(none)");

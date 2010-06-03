@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/file_locations.h>
+#include <usbase/pull_variable.h>
 #include "constant_world.h"
 #include <iostream>
 
@@ -14,8 +15,8 @@ namespace test{
 ConstantWorld::ConstantWorld(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-	setState("temperature", &temperature);
-	setState("day", &day);
+    new PullVariable("temperature", &temperature, this);
+    new PullVariable("day", &day, this);
     QDir dir = FileLocations::location(FileLocations::Plugins);
     Q_ASSERT(dir.absolutePath().contains("plugins"));
 }

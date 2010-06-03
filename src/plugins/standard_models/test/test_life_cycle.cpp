@@ -8,6 +8,7 @@
 #include <usengine/model_maker.h>
 #include "test_life_cycle.h"
 
+using namespace std;
 using namespace UniSim;
 
 void TestLifeCycle::initTestCase()
@@ -29,7 +30,7 @@ void TestLifeCycle::testUpdate()
 	QVERIFY(juvenile);
 	Model *mature = ModelMaker::create("LifeStage", "mature", weed);
 	QVERIFY(mature);
-	QCOMPARE(weed->children().size(), 3);
+    QCOMPARE(weed->seekChildren<Model*>("*").size(), 3);
 
     weed->deepInitialize();
 	
@@ -50,7 +51,7 @@ void TestLifeCycle::testUpdate()
     QVERIFY(last);
 	
 	double myInput = 1000;
-	first->setInput("input", myInput);
+    first->pushVariable("input", myInput);
 	
     static double EPS = std::min(myInput*1000*std::numeric_limits<double>::epsilon(),  1e-6);
 
@@ -58,47 +59,47 @@ void TestLifeCycle::testUpdate()
 		weed->update();
 	}
 
-	QVERIFY2((fabs(first->state("inputTotal") - myInput) < EPS), 
+    QVERIFY2((fabs(first->pullVariable("inputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-			+ " Got: "+QString::number(first->state("inputTotal"))  
-			+ " Diff: "+QString::number(fabs(first->state("inputTotal") - myInput)) 
+            + " Got: "+QString::number(first->pullVariable("inputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable("inputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-	QVERIFY2((fabs(first->state("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullVariable("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-			+ " Got: "+QString::number(first->state("outputTotal")) 
-			+ " Diff: "+QString::number(fabs(first->state("outputTotal") - myInput)) 
+            + " Got: "+QString::number(first->pullVariable("outputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-	QVERIFY2((fabs(last->state("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(last->pullVariable("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-			+ " Got: "+QString::number(last->state("outputTotal"))  
-			+ " Diff: "+QString::number(fabs(last->state("outputTotal") - myInput))
+            + " Got: "+QString::number(last->pullVariable("outputTotal"))
+            + " Diff: "+QString::number(fabs(last->pullVariable("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
 
     weed->deepReset();
-	first->setInput("input", myInput);
+    first->pushVariable("input", myInput);
 	for (int i = 0; i < 10000; ++i) {
         weed->deepUpdate();
 	}
 
-	QVERIFY2((fabs(first->state("inputTotal") - myInput) < EPS), 
+    QVERIFY2((fabs(first->pullVariable("inputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-			+ " Got: "+QString::number(first->state("inputTotal"))  
-			+ " Diff: "+QString::number(fabs(first->state("inputTotal") - myInput)) 
+            + " Got: "+QString::number(first->pullVariable("inputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable("inputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-	QVERIFY2((fabs(first->state("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullVariable("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-			+ " Got: "+QString::number(first->state("outputTotal")) 
-			+ " Diff: "+QString::number(fabs(first->state("outputTotal") - myInput)) 
+            + " Got: "+QString::number(first->pullVariable("outputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-	QVERIFY2((fabs(last->state("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(last->pullVariable("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-			+ " Got: "+QString::number(last->state("outputTotal"))  
-			+ " Diff: "+QString::number(fabs(last->state("outputTotal") - myInput))
+            + " Got: "+QString::number(last->pullVariable("outputTotal"))
+            + " Diff: "+QString::number(fabs(last->pullVariable("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
 

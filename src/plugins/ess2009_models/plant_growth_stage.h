@@ -22,8 +22,11 @@ public:
 	void reset();
 	void update();
 private:
-	// state
+    // pull variables
 	double _outflowAsDensity, _outflowAsDensityEqs;
+
+    // push variables
+    double inflowAsDensity, inflowAsDensityEqs, instantMortality;
 
 	//links
     Model *_density, *_densityEqs;

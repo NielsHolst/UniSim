@@ -12,6 +12,7 @@
 #include <cfloat>
 #include <cmath>
 #include <usbase/clock.h>
+#include <usbase/pull_variable.h>
 #include "calendar.h"
 
 using namespace std;
@@ -21,16 +22,16 @@ namespace UniSim{
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("daysTotal", &daysTotal);
-    setState("dayInYear", &dayInYear);
-    setState("dayOfYear", &dayInYear);
-    setState("day", &day);
-    setState("month", &month);
-    setState("year", &year);
-    setState("dayLength", &dayLength);
-    setState("sinb", &sinb);
-    setState("sinLD", &sinLD);
-    setState("cosLD", &cosLD);
+    new PullVariable("daysTotal", &daysTotal, this);
+    new PullVariable("dayInYear", &dayInYear, this);
+    new PullVariable("dayOfYear", &dayInYear, this);
+    new PullVariable("day", &day, this);
+    new PullVariable("month", &month, this);
+    new PullVariable("year", &year, this);
+    new PullVariable("dayLength", &dayLength, this);
+    new PullVariable("sinb", &sinb, this);
+    new PullVariable("sinLD", &sinLD, this);
+    new PullVariable("cosLD", &cosLD, this);
 }
 
 void Calendar::initialize()

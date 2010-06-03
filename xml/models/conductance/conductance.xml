@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-	<controller type="Simple">
-		<parameter name="numSteps" value="60"/>
-		<sequence>
-			<model name="calendar"/>
-			<model name="weather"/>
-			<model name="community"/>
-		</sequence>
-	</controller>
+    <integrator type="TimeStepLimited">
+        <parameter name="maxSteps" value="60"/>
+        <sequence>
+            <model name="calendar"/>
+            <model name="weather"/>
+            <model name="community"/>
+        </sequence>
+    </integrator>
 	
 	<model name="calendar" type="Calendar">
 		<parameter name="firstDate" value="1/1/2010"/>

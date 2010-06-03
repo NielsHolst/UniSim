@@ -9,6 +9,8 @@
 
 #include <cmath>
 #include <usbase/exception.h>
+#include <usbase/pull_variable.h>
+#include <usbase/push_variable.h>
 #include <usbase/utilities.h>
 #include "seed_bank.h"
 
@@ -19,16 +21,18 @@ namespace ess2009 {
 SeedBank::SeedBank(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    setState("number", &_total);
-    setState("dormant", &_dormant);
-    setState("nonDormant", &_density);
-    setState("dailyEmergenceRatio", &_dailyEmergenceRatio);
-    setState("totalEmergenceRatio", &_totalEmergenceRatio);
-    setState("dailyEmergenceDensity", &_dailyEmergenceDensity);
-    setState("totalEmergenceDensity", &_totalEmergenceDensity);
-    setState("cropEffectOnEmergence", &_cropEffectOnEmergence);
-    setState("dailyEmergenceRatioPotential", &_dailyEmergenceRatioPotantial);
-    QString s;
+    new PullVariable("number", &_total, this);
+    new PullVariable("dormant", &_dormant, this);
+    new PullVariable("nonDormant", &_density, this);
+    new PullVariable("dailyEmergenceRatio", &_dailyEmergenceRatio, this);
+    new PullVariable("totalEmergenceRatio", &_totalEmergenceRatio, this);
+    new PullVariable("dailyEmergenceDensity", &_dailyEmergenceDensity, this);
+    new PullVariable("totalEmergenceDensity", &_totalEmergenceDensity, this);
+    new PullVariable("cropEffectOnEmergence", &_cropEffectOnEmergence, this);
+    new PullVariable("dailyEmergenceRatioPotential", &_dailyEmergenceRatioPotential, this);
+
+    new PushVariable("dormantInflow", &dormantInflow, this);
+    new PushVariable("instantMortality", &instantMortality, this);
 }
 
 void SeedBank::initialize()
@@ -52,18 +56,18 @@ void SeedBank::reset()
     _density = _initialDensity;
     _dailyEmergenceRatio = _totalEmergenceRatio =
     _dailyEmergenceDensity = _totalEmergenceDensity = 0;
-    setInput("dormantInflow", 0);
-    setInput("instantMortality", 0);
+    dormantInflow = 0.;
+    instantMortality = 0.;
 }
 
 void SeedBank::update()
 {
     applyInstantMortality();
     addInflow();
-    int dayOfYear = int(_calendar->state("dayOfYear"));
-    _dailyEmergenceRatioPotantial = lookupEmergence(dayOfYear);
+    int dayOfYear = int(_calendar->pullVariable("dayOfYear"));
+    _dailyEmergenceRatioPotential = lookupEmergence(dayOfYear);
     _cropEffectOnEmergence = cropEffectOnEmergence();
-    _dailyEmergenceRatio = _dailyEmergenceRatioPotantial*_cropEffectOnEmergence;
+    _dailyEmergenceRatio = _dailyEmergenceRatioPotential*_cropEffectOnEmergence;
     _dailyEmergenceDensity = _dailyEmergenceRatio*_density;
     _density -= _dailyEmergenceDensity;
     _density *= _dailySurvivalRate;
@@ -80,19 +84,19 @@ void SeedBank::update()
 }
 
 void SeedBank::applyInstantMortality() {
-    double survival = 1. - input("instantMortality")/100.;
+    double survival = 1. - instantMortality/100.;
     if (survival < 1.) {
         _density *= survival;
         _dormant *= survival;
-        setInput("instantMortality", 0.);
+        instantMortality = 0;
     }
 }
 
 void SeedBank::addInflow() {
-    _dormant += input("dormantInflow");
-    setInput("dormantInflow", 0);
+    _dormant += dormantInflow;
+    dormantInflow = 0.;
 
-    int dayOfYear = int(_calendar->state("dayOfYear"));
+    int dayOfYear = int(_calendar->pullVariable("dayOfYear"));
     if (dayOfYear == 1) {
         _density += _dormant;
         _dormant = 0.;
@@ -100,7 +104,7 @@ void SeedBank::addInflow() {
 }
 
 double SeedBank::cropEffectOnEmergence() const {
-    return exp(-_cropLaiExp*UniSim::pow0(_rotation->state("lai"),2.5));
+    return exp(-_cropLaiExp*UniSim::pow0(_rotation->pullVariable("lai"),2.5));
 }
 
 void SeedBank::decodeEmergence() {

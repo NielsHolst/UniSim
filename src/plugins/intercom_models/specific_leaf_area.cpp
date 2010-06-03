@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "plant.h"
 #include "specific_leaf_area.h"
@@ -14,7 +15,7 @@ namespace intercom{
 SpecificLeafArea::SpecificLeafArea(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("sla", &sla);
+    new PullVariable("sla", &sla, this);
 }
 
 void SpecificLeafArea::initialize()
@@ -27,7 +28,7 @@ void SpecificLeafArea::initialize()
 
 void SpecificLeafArea::update()
 {
-    double pt = photoThermalTime->state("total");
+    double pt = photoThermalTime->pullVariable("total");
     sla = initial + slope*pt;
 }
 

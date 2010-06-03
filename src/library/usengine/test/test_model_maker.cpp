@@ -24,7 +24,7 @@ void TestModelMaker::testCreation()
 
 	QVERIFY(seed);
 	QVERIFY(seed->parent()==model);
-	QCOMPARE(model->children().size(), 3);
+    QCOMPARE(model->seekChildren<Model*>("*").size(), 3);
 
     seed->setRecursionPolicy(Model::Update, Model::ChildrenNot);
 	QMap<QString, QString> param;

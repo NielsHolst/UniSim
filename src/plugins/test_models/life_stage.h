@@ -29,11 +29,16 @@ private:
 	int _k;
     double _initialInput;
 
-	// state
-	double *_x;
+    // pull variables
 	double _fgr, _prevDel;
 	mutable bool _dirtySum, _firstUpdate;
 	mutable double _sum, _input, _output, _inputTotal, _outputTotal;
+
+    // push variables
+    double _inflow;
+
+    // state
+    double *_x;
 };
 
 }

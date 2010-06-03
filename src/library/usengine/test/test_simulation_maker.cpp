@@ -77,7 +77,7 @@ void TestSimulationMaker::testModel()
     QCOMPARE(butterfly->metaObject()->className(), "test::LifeCycle");
 	QCOMPARE(butterfly->metaObject()->superClass()->className(), "UniSim::Model");
 	QCOMPARE(butterfly->parent()->metaObject()->className(), "UniSim::Simulation");
-	QCOMPARE(butterfly->children().size(), 4);
+    QCOMPARE(butterfly->seekChildren<Model*>("*").size(), 4);
 }
 
 void TestSimulationMaker::testParameters()

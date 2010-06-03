@@ -5,8 +5,8 @@
 */
 #include <iostream>
 #include <QMessageBox>
-#include <usbase/debug_output.h>
 #include <usbase/exception.h>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "../standard_models/calendar.h"
 #include "area.h"
@@ -21,7 +21,7 @@ namespace intercom{
 Area::Area(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("lai", &lai);
+    new PullVariable("lai", &lai, this);
 
     lookupDist["Symmetric"] = Symmetric;
     lookupDist["Even"] = Even;
@@ -67,7 +67,7 @@ LightComponents Area::calcEffectiveAreaAbove(double height) {
 
 LightComponents Area::calc_k() const {
     double scat = sqrt(1 - scatteringCoeff);
-    double sinb = calendar->state("sinb");
+    double sinb = calendar->pullVariable("sinb");
     Q_ASSERT(sinb > 0.);
     LightComponents k;
     k[Diffuse] = kDiffuse;
@@ -92,16 +92,16 @@ PhotosyntheticRate Area::calcPhotosynthesisInShade(LightComponents eaa) {
 }
 
 LightComponents Area::calcAbsorptionInShade(LightComponents eaa) {
-    double sinb = calendar->state("sinb");
+    double sinb = calendar->pullVariable("sinb");
     double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
     double refSphec = refHorz*2./(1. + 1.6*sinb);
 
     LightComponents k = calc_k();
 
     LightComponents par;
-    par[Diffuse] = weather->state("parDiffuse");
-    par[DirectDirect] = weather->state("parDirect");
-    par[DirectTotal] = weather->state("parDirect");
+    par[Diffuse] = weather->pullVariable("parDiffuse");
+    par[DirectDirect] = weather->pullVariable("parDirect");
+    par[DirectTotal] = weather->pullVariable("parDirect");
 
     LightComponents reflected;
     reflected[Diffuse] = refHorz;
@@ -128,14 +128,14 @@ double Area::netAbsorption(const LightComponents &absorbed) const {
 }
 
 double Area::assimilationRate(double absorption) const {
-    double efficiency = lightUseEfficiency->state("efficiency");
-    double amax = assimilationMax->state("amax");
+    double efficiency = lightUseEfficiency->pullVariable("efficiency");
+    double amax = assimilationMax->pullVariable("amax");
     return amax == 0. ? 0. : amax*(1. - exp(-absorption*efficiency/amax));
 }
 
 PhotosyntheticRate Area::calcPhotosynthesisInSun(PhotosyntheticRate psInShade) {
-    double sinb = calendar->state("sinb");
-    double parDirect = weather->state("parDirect");
+    double sinb = calendar->pullVariable("sinb");
+    double parDirect = weather->pullVariable("parDirect");
     double perpendicular = (1. - scatteringCoeff)*parDirect/sinb;
 
     double absorbed = 0;
@@ -159,7 +159,7 @@ PhotosyntheticRate Area::calcPhotosynthesisTotal(LightComponents eaa, Photosynth
 }
 
 double Area::atHeight(double height) const {
-    double ph = plantHeight->state("height");
+    double ph = plantHeight->pullVariable("height");
     if (ph == 0. || height > ph)
         return 0.;
 
@@ -182,7 +182,7 @@ double Area::atHeight(double height) const {
 }
 
 double Area::aboveHeight(double height) const {
-    double ph = plantHeight->state("height");
+    double ph = plantHeight->pullVariable("height");
     if (ph == 0. || height > ph)
         return 0.;
 

@@ -36,14 +36,14 @@ void PtDevelopment::update()
 {
     egg->deepUpdate();
 
-    larva->setInput("inflow", egg->state("outflow"));
+    larva->pushVariable("inflow", egg->pullVariable("outflow"));
     larva->deepUpdate();
 
-    pupa->setInput("inflow", larva->state("outflow"));
+    pupa->pushVariable("inflow", larva->pullVariable("outflow"));
     pupa->deepUpdate();
 
-    double immRate = immigration->state("current");
-    adult->setInput("inflow", immRate + pupa->state("outflow"));
+    double immRate = immigration->pullVariable("current");
+    adult->pushVariable("inflow", immRate + pupa->pullVariable("outflow"));
     adult->deepUpdate();
 }
 

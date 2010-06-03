@@ -6,7 +6,7 @@
 #include <usengine/simulation_maker.h>
 #include "../anonymous_model.h"
 #include "../calendar.h"
-#include "../../standard_integrators/simple_integrator.h"
+#include "../../standard_integrators/time_limited.h"
 #include "test_calendar.h"
 
 using std::cout;
@@ -49,9 +49,9 @@ namespace local {
 }
 
 QDate TestCalendar::finalCalendarDate() {
-    int day = (int) calendar->state("day");
-    int month = (int) calendar->state("month");
-    int year = (int) calendar->state("year");
+    int day = (int) calendar->pullVariable("day");
+    int month = (int) calendar->pullVariable("month");
+    int year = (int) calendar->pullVariable("year");
     return QDate(year, month, day);
 }
 
@@ -223,13 +223,13 @@ void TestCalendar::testSolarElevation() {
     for (int lo = 0; lo < locations.size(); ++lo) {
         calendar->changeParameter("latitude", locations[lo].latitude);
         for (int da = 0; da < days.size(); ++da) {
-            while (fabs(calendar->state("dayOfYear") - days[da])> 1e-6) {
+            while (fabs(calendar->pullVariable("dayOfYear") - days[da])> 1e-6) {
                 calendar->update();
             }
             for (int ho = 0; ho < hours.size(); ++ho) {
                 double astroHour = hours[ho] - solarNoonDiff[lo][da];
                 clock()->doTick(astroHour);
-                double sinb = cal->state("sinb");
+                double sinb = cal->pullVariable("sinb");
                 double estSolarElev = asin(sinb)/PI*180.;
                 QVERIFY(fabs(estSolarElev - solarElev[lo][da][ho]) < 1.);
             }
@@ -246,11 +246,11 @@ void TestCalendar::testDayLength() {
     for (int lo = 0; lo < locations.size(); ++lo) {
         calendar->changeParameter("latitude", locations[lo].latitude);
         for (int da = 0; da < days.size(); ++da) {
-            while (fabs(calendar->state("dayOfYear") - days[da])> 1e-6) {
+            while (fabs(calendar->pullVariable("dayOfYear") - days[da])> 1e-6) {
                 calendar->update();
             }
         double trueDayLength = QTime(0,0,0).secsTo(dayLength[lo][da])/60./60.;
-        double estDayLength = calendar->state("dayLength");
+        double estDayLength = calendar->pullVariable("dayLength");
         QVERIFY(fabs(estDayLength - trueDayLength) < 1.5);
         }
     }
@@ -259,7 +259,6 @@ void TestCalendar::testDayLength() {
 
 void TestCalendar::testFirstDateNoneNoFollower() {
     createSimulation("test_calendar_no_follower.xml", 0);
-
     try {
         sim->execute();
         QString msg = "Should not execute";

@@ -203,7 +203,7 @@ bool SimulationMaker::readModelElement(QObject* parent)
 
 void SimulationMaker::readParameterElement(Parameters* parent)
 {
-	Q_ASSERT(reader->isStartElement() && parent);
+        Q_ASSERT(reader->isStartElement() && parent);
 
     QString name = attributeValue("name");
     QString value = attributeValue("value");

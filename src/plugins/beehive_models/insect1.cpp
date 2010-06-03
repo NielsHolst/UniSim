@@ -26,7 +26,7 @@ void Insect1::initialize() {
 }
 
 void Insect1::reset() {
-    egg->setInput("inflow", initEggs);
+    egg->pushVariable("inflow", initEggs);
 }
 
 void Insect1::update() {

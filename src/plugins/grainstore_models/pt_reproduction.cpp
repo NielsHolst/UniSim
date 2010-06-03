@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QMessageBox>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "../standard_models/stage.h"
 #include "pt_reproduction.h"
@@ -15,8 +16,8 @@ namespace grainstore{
 PtReproduction::PtReproduction(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("fecundity", &fecundity);
-    setState("densityDependence", &_densityDependence);
+    new PullVariable("fecundity", &fecundity, this);
+    new PullVariable("densityDependence", &_densityDependence, this);
 }
 
 void PtReproduction::initialize()
@@ -61,7 +62,7 @@ void PtReproduction::update() {
     double duration = adult->parameter<double>("duration");
     const double *ageClasses = adult->ageClasses();
 
-    temp = weather->state("Tavg");
+    temp = weather->pullVariable("Tavg");
     if (temp > tempMax)  temp = tempMax;
 
     double a, b;
@@ -73,14 +74,14 @@ void PtReproduction::update() {
     }
 
     if (applyDensityDependence) {
-        _densityDependence = densityDependence(adult->state("number"));
+        _densityDependence = densityDependence(adult->pullVariable("number"));
         fecundity *= _densityDependence;
     }
     else {
         _densityDependence = 1.;
     }
 
-    egg->setInput("inflow", fecundity);
+    egg->pushVariable("inflow", fecundity);
 }
 
 double PtReproduction::fecundityAtAge(double age) {

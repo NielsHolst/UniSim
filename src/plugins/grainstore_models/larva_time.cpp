@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "larva_time.h"
 
@@ -11,8 +12,8 @@ namespace UniSim{
 LarvaTime::LarvaTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("step", &step);
-    setState("total", &total);
+    new PullVariable("step", &step, this);
+    new PullVariable("total", &total, this);
 }
 
 void LarvaTime::initialize()
@@ -31,8 +32,8 @@ void LarvaTime::reset() {
 
 void LarvaTime::update()
 {
-    double gmc = weather->state("gmc");
-    step = lactin->state("step");
+    double gmc = weather->pullVariable("gmc");
+    step = lactin->pullVariable("step");
     double scaling = exp(-0.5*pow0(fabs(gmc - optimum)/spread, exponent));
     step *= scaling;
     if (step < minimum)

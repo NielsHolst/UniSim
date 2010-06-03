@@ -204,7 +204,7 @@ namespace local {
 	void writeIntegrator(QXmlStreamWriter *xw)
 	{
 		xw->writeStartElement("integrator");
-		xw->writeAttribute("type", "Simple");
+        xw->writeAttribute("type", "TimeStepLimited");
 		xw->writeEmptyElement("parameter");
 		xw->writeAttribute("name", "duration");
 		xw->writeAttribute("value", "365");

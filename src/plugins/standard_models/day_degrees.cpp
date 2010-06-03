@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "day_degrees.h"
 
@@ -11,8 +12,8 @@ namespace UniSim{
 DayDegrees::DayDegrees(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("step", &step);
-    setState("total", &total);
+    new PullVariable("step", &step, this);
+    new PullVariable("total", &total, this);
 }
 
 void DayDegrees::initialize()
@@ -29,7 +30,7 @@ void DayDegrees::reset() {
 
 void DayDegrees::update()
 {
-    double T = weather->state("Tavg");
+    double T = weather->pullVariable("Tavg");
     if (T < T0)
         step = 0.;
     else if (T < Topt)

@@ -20,9 +20,12 @@ QDir FileLocationsStrict::locationImpl(FileType fileType) {
 }
 
 bool FileLocationsStrict::lookupImpl(FileType fileType, QString message) {
+    QString msg = message.isEmpty() ?
+                  "Error when looking up file type: " + label(fileType) :
+                  message;
     Q_ASSERT_X(false,
                "FileLocationsStrict::lookupImpl",
-               qPrintable("File type missing: " + label(fileType)));
+               qPrintable(msg));
     return false;
 }
 

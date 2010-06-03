@@ -111,7 +111,7 @@
                             <origin>C:/data/QDev/UniSim/ship/temp</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/ship/weather</origin>
+                            <origin>C:/data/QDev/UniSim/weather</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

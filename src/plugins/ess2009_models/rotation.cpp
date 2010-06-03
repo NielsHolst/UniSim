@@ -5,6 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "crop.h"
 #include "rotation.h"
@@ -17,7 +18,7 @@ Rotation::Rotation(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    setState("lai", &_lai);
+    new PullVariable("lai", &_lai, this);
 }
 
 
@@ -51,8 +52,7 @@ void Rotation::reset() {
 
 void Rotation::update() {
     currentCrop()->deepUpdate();
-    _lai = currentCrop()->state("lai");
-    //_lai = (_state == Growing) ? currentCrop()->state("lai") : 0.;
+    _lai = currentCrop()->pullVariable("lai");
 }
 
 Model* Rotation::currentCrop() {

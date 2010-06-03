@@ -3,14 +3,17 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "leaf_stem_ratio.h"
+
+using namespace UniSim;
 
 namespace intercom{
 
 LeafStemRatio::LeafStemRatio(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("ratio", &ratio);
+    new PullVariable("ratio", &ratio, this);
 }
 
 void LeafStemRatio::initialize()
@@ -22,7 +25,7 @@ void LeafStemRatio::initialize()
 
 void LeafStemRatio::update()
 {
-    double pt = photoThermalTime->state("total");
+    double pt = photoThermalTime->pullVariable("total");
     ratio = initial - slope*pt;
     if (ratio < 0.)
         ratio = 0.;

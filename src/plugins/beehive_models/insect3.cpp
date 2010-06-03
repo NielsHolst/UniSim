@@ -27,19 +27,19 @@ void Insect3::initialize() {
 }
 
 void Insect3::reset() {
-    egg->setInput("inflow", initEggs);
+    egg->pushVariable("inflow", initEggs);
 }
 
 void Insect3::update() {
     egg->deepUpdate();
 
-    larva->setInput("inflow", egg->state("outflow"));
+    larva->pushVariable("inflow", egg->pullVariable("outflow"));
     larva->deepUpdate();
 
-    pupa->setInput("inflow", larva->state("outflow"));
+    pupa->pushVariable("inflow", larva->pullVariable("outflow"));
     pupa->deepUpdate();
 
-    adult->setInput("inflow", pupa->state("outflow"));
+    adult->pushVariable("inflow", pupa->pullVariable("outflow"));
     adult->deepUpdate();
 }
 

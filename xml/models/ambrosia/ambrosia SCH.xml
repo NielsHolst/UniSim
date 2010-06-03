@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-	<controller type="Simple">
-		<parameter name="numSteps" value="200"/>
-		<sequence>
-			<model name="calendar"/>
-			<model name="weather"/>
-			<model name="plants"/>
-		</sequence>
-	</controller>
+    <integrator type="TimeStepLimited">
+     <parameter name="maxSteps" value="200"/>
+         <sequence>
+             <model name="calendar"/>
+             <model name="weather"/>
+             <model name="plants"/>
+         </sequence>
+    </integrator>
 	
 	<model name="calendar" type="UniSim::Calendar">
 		<parameter name="latitude" value="46.2" comment="Geneva"/>

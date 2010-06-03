@@ -3,14 +3,17 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "pt_emigration.h"
+
+using namespace UniSim;
 
 namespace grainstore{
 
 PtEmigration::PtEmigration(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-	setState("N", &density);
+    new PullVariable("N", &density, this);
 }
 
 void PtEmigration::initialize()

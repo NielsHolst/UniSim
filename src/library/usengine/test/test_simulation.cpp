@@ -5,7 +5,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/output.h>
 #include <usbase/utilities.h>
-#include <standard_integrators/simple_integrator.h>
+#include <standard_integrators/time_step_limited.h>
 #include <standard_models/anonymous_model.h>
 #include <usengine/simulation_maker.h>
 #include "../simulation.h"
@@ -58,7 +58,7 @@ void TestSimulation::testFindModels()
 {
     Simulation *sim = new Simulation("apple-tree", "1.0");
     setSimulationObject(sim);
-	new SimpleIntegrator("integrator", sim);
+    new TimeStepLimited("integrator", sim);
 	
 	AnonymousModel *butterfly, *mite;
 	
@@ -143,11 +143,11 @@ void TestSimulation::testExecute()
     QList<Model*> search;
     search = seekDescendants<Model*>("/butterfly/egg", 0);
     QCOMPARE(search.size(), 1);
-    search[0]->setInput("input", 15);
+    search[0]->pushVariable("input", 15);
 
     search = seekDescendants<Model*>("/wasp/egg", 0);
     QCOMPARE(search.size(), 1);
-    search[0]->setInput("input", 80);
+    search[0]->pushVariable("input", 80);
 
 	try {
 		_simulation->execute();

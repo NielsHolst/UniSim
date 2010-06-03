@@ -4,6 +4,8 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QString>
+#include <usbase/pull_variable.h>
+#include <usbase/push_variable.h>
 #include <usbase/utilities.h>
 #include "../standard_models/stage.h"
 #include "plant_growth_stage.h"
@@ -18,8 +20,12 @@ PlantGrowthStage::PlantGrowthStage(UniSim::Identifier name, QObject *parent)
     setRecursionPolicy(Component::Reset,  Component::ChildrenLast);
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 
-	setState("outflowAsDensity", &_outflowAsDensity);
-	setState("outflowAsDensityEqs", &_outflowAsDensityEqs);
+    new PullVariable("outflowAsDensity", &_outflowAsDensity, this);
+    new PullVariable("outflowAsDensityEqs", &_outflowAsDensityEqs, this);
+
+    new PushVariable("inflowAsDensity", &inflowAsDensity, this);
+    new PushVariable("inflowAsDensityEqs", &inflowAsDensityEqs, this);
+    new PushVariable("instantMortality", &instantMortality, this);
 }
 
 void PlantGrowthStage::initialize() {
@@ -28,24 +34,24 @@ void PlantGrowthStage::initialize() {
 }
 
 void PlantGrowthStage::reset() {
-	setInput("inflowAsDensity", 0.);
-	setInput("inflowAsDensityEqs", 0.);
-    setInput("instantMortality", 0.);
+    inflowAsDensity = 0.;
+    inflowAsDensityEqs = 0.;
+    instantMortality = 0.;
 }
 
 void PlantGrowthStage::update() {
-	_density->setInput("inflow", input("inflowAsDensity"));
-	_densityEqs->setInput("inflow", input("inflowAsDensityEqs"));
+    _density->pushVariable("inflow", inflowAsDensity);
+    _densityEqs->pushVariable("inflow", inflowAsDensityEqs);
 
-    _density->setInput("instantMortality", input("instantMortality"));
-    _densityEqs->setInput("instantMortality", input("instantMortality"));
-    setInput("instantMortality", 0.);
+    _density->pushVariable("instantMortality", instantMortality);
+    _densityEqs->pushVariable("instantMortality", instantMortality);
+    instantMortality = 0.;
 
     _density->deepUpdate();
     _densityEqs->deepUpdate();
 
-	_outflowAsDensity = _density->state("outflow");
-	_outflowAsDensityEqs = _densityEqs->state("outflow");
+    _outflowAsDensity = _density->pullVariable("outflow");
+    _outflowAsDensityEqs = _densityEqs->pullVariable("outflow");
 }
 
 }

@@ -7,26 +7,27 @@
 #include <QString>
 #include <QTextStream>
 #include <usbase/exception.h>
+#include <usbase/pull_variable.h>
+#include <usbase/push_variable.h>
 #include <usbase/utilities.h>
 #include "stage.h"
 	
 namespace UniSim {
 
 Stage::Stage(UniSim::Identifier name, QObject *parent)
-	: UniSim::Model(name, parent)
+    : UniSim::Model(name, parent), _x(0)
 {
-	_x = 0;
-	_sum = _input = _output = _inputTotal = _outputTotal = 0;
-	_firstUpdate = true;
-	_dirtySum = true;
+    new PullVariable("number", &_sum, this);
+    new PullVariable("inflow", &_input, this);
+    new PullVariable("outflow", &_output, this);
+    new PullVariable("inflowTotal", &_inputTotal, this);
+    new PullVariable("outflowTotal", &_outputTotal, this);
+    new PullVariable("growthRate", &_fgr, this);
+    new PullVariable("timeStep", &_dt, this);
 
-	setState("number", &_sum);
-	setState("inflow", &_input);
-	setState("outflow", &_output);
-	setState("inflowTotal", &_inputTotal);
-	setState("outflowTotal", &_outputTotal);
-    setState("growthRate", &_fgr);
-    setState("timeStep", &_dt);
+    new PushVariable("inflow", &_inflow, this);
+    new PushVariable("growthRate", &_fgr, this);
+    new PushVariable("instantMortality", &_instantMortality, this);
 }
 
 Stage::~Stage()
@@ -56,21 +57,20 @@ void Stage::reset()
 	_firstUpdate = true;
 	_dirtySum = false;
 
-	setInput("inflow", 0.);
-	setInput("growthRate", 1.);
-    setInput("instantMortality", 0.);
+    _inflow  = 0;
+    _fgr = 1.;
+    _instantMortality = 0.;
 }
 
 void Stage::update()
 {
     applyInstantMortality();
 
-    _input += input("inflow");
-	_inputTotal += input("inflow");
-	_fgr = input("growthRate");
-	setInput("inflow", 0);
+    _input += _inflow;
+    _inputTotal += _inflow;
+    _inflow = 0;
 
-    double dt = time->state("step");
+    double dt = time->pullVariable("step");
     _dt = dt;
 
 	if (_k<=0 || _L<=0 || _fgr<=0 || _input< 0 || dt<0 || _x==0) {
@@ -140,7 +140,7 @@ void Stage::update()
 }
 
 void Stage::applyInstantMortality() {
-    double survival = 1. - input("instantMortality")/100.;
+    double survival = 1. - _instantMortality/100.;
     if (survival == 1.) return;
     if (fabs(survival) < 1e-9) survival = 0.;
 
@@ -152,7 +152,7 @@ void Stage::applyInstantMortality() {
         for (int i = 0; i < _k; ++i) _x[i] *= survival;
     }
     _dirtySum = true;
-    setInput("instantMortality", 0.);
+    _instantMortality = 0;
 }
 
 void Stage::fill(double value)

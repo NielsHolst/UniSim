@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-	<controller type="Simple">
-		<parameter name="numSteps" value="90"/>
+	<controller type="UniSim::TimeStepLimited">
+		<parameter name="maxSteps" value="90"/>
 		<sequence>
 			<model name="calendar"/>
 			<model name="weather"/>
@@ -10,7 +10,7 @@
 	</controller>
 
 	<model name="calendar" type="UniSim::Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="followers" value="weather"/>
 	</model>
 
 	<model name="weather" type="beehive::Weather">
@@ -21,12 +21,12 @@
 	<model name="insect" type="Beehive::Insect4">
 		<parameter name="initEggs" value="100"/>
 		<model name="egg" type="UniSim::Stage">
-			<parameter name="duration" value="70"/>
+			<parameter name="duration" value="20"/>
 			<parameter name="k" value="30"/>
 			<model name="time" type="UniSim::DayDegrees">
-				<parameter name="T0" value="10"/>
-				<parameter name="Topt" value="30"/>
-				<parameter name="Tmax" value="35"/>
+				<parameter name="T0" value="12.5"/>
+				<parameter name="Topt" value="40"/>
+				<parameter name="Tmax" value="40"/>
 			</model>
 		</model>
 		<model name="larva" type="UniSim::Stage">
@@ -41,10 +41,10 @@
 		</model>
 		<model name="adult" type="UniSim::Stage">
 			<model name="fecundity" type="Beehive::Fecundity">
-				<parameter name="ageBegin" value="7"/>
-				<parameter name="ageEnd" value="14"/>
-				<parameter name="dailyFecundity" value="10"/>				
-				<parameter name="sexRatio" value="0.6"/>				
+				<parameter name="root1" value="0"/>				
+				<parameter name="root2" value="10"/>				
+				<parameter name="scale" value="0.05"/>				
+				<parameter name="sexRatio" value="0.5"/>				
 			</model>
 			<parameter name="duration" value="28"/>
 			<parameter name="k" value="30"/>
@@ -66,13 +66,8 @@
 		<variable label="Egg" axis="y" value="fecundity[eggsLaid]"/>
 	</output>
 	<output type="plot">
-		<parameter name="title" value="Number of eggs laid"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
-		<variable label="Egg" axis="y" value="fecundity[eggsLaid]"/>
-	</output>
-	<output type="plot">
 		<parameter name="title" value="Temperature"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Julian day" axis="x" value="calendar[dayInYear]"/>
 		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 		<variable label="Tmax" axis="y" value="weather[Tmax]"/>

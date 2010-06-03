@@ -5,6 +5,7 @@
 */
 #include <cfloat>
 #include <usbase/clock.h>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
 #include "../standard_models/calendar.h"
@@ -22,12 +23,12 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
     setColumn("Tmin", 4);
     setColumn("irradiationMJ", 7);
 
-    setState("Tavg", &Tavg);
-    setState("Tday", &Tday);
-    setState("irradiation", &irradiation);
-    setState("parTotal", &par.total);
-    setState("parDiffuse", &par.diffuse);
-    setState("parDirect", &par.direct);
+    new PullVariable("Tavg", &Tavg, this);
+    new PullVariable("Tday", &Tday, this);
+    new PullVariable("irradiation", &irradiation, this);
+    new PullVariable("parTotal", &par.total, this);
+    new PullVariable("parDiffuse", &par.diffuse, this);
+    new PullVariable("parDirect", &par.direct, this);
 }
 
 void Weather::initialize() {
@@ -53,9 +54,9 @@ void Weather::verifySequence() {
 void Weather::update()
 {
     WeatherFile::update();
-    Tavg = (state("Tmin") + state("Tmax"))/2.;
-    Tday = state("Tmax") - 0.25*(state("Tmax") - state("Tmin"));
-    irradiation = state("irradiationMJ")*1e6;
+    Tavg = (pullVariable("Tmin") + pullVariable("Tmax"))/2.;
+    Tday = pullVariable("Tmax") - 0.25*(pullVariable("Tmax") - pullVariable("Tmin"));
+    irradiation = pullVariable("irradiationMJ")*1e6;
 }
 
 void Weather::handleClockTick(double hour) {
@@ -64,10 +65,10 @@ void Weather::handleClockTick(double hour) {
 
 void Weather::updatePar() {
     double
-        sinld = calendar->state("sinLD"),
-        cosld = calendar->state("cosLD"),
-        day = calendar->state("dayInYear"),
-        dayLength = calendar->state("dayLength");
+        sinld = calendar->pullVariable("sinLD"),
+        cosld = calendar->pullVariable("cosLD"),
+        day = calendar->pullVariable("dayInYear"),
+        dayLength = calendar->pullVariable("dayLength");
 
     double aob = sinld/cosld;
     double dsinb = 3600.*(dayLength*sinld + 24.*cosld*sqrt(1. - aob*aob)/PI);
@@ -87,7 +88,7 @@ void Weather::updatePar() {
     else
         frdiff = 1.;
 
-    double sinbh = calendar->state("sinb");
+    double sinbh = calendar->pullVariable("sinb");
 
     par.total = 0.5*irradiation*sinbh*(1. + 0.4*sinbh)/dsinbe;
     par.diffuse = sinbh*frdiff*atmtr*0.5*sc;

@@ -1,13 +1,17 @@
 #include <cmath>
+#include <usbase/pull_variable.h>
+#include <usbase/push_variable.h>
 #include <iostream>
 #include "trickle_box.h"
+
+using namespace UniSim;
 
 TrickleBox::TrickleBox(QString name, QObject *parent)
 	: UniSim::Model(name,parent) 
 { 
-	setInput("inflow", 0.);
-	setState("contents", &_contents);
-	setState("outflow", &_outflow);
+    new PushVariable("inflow", &_inflow, this);
+    new PullVariable("contents", &_contents, this);
+    new PullVariable("outflow", &_outflow, this);
 }
 
 void TrickleBox::initialize()
@@ -22,7 +26,7 @@ void TrickleBox::reset()
 
 void TrickleBox::update()
 {
-    _contents += input("inflow");
+    _contents += _inflow;
 	if (_contents > _capacity)
 		_outflow = _contents - _capacity;
 }

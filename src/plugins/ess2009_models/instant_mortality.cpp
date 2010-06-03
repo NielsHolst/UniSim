@@ -29,11 +29,11 @@ void InstantMortality::initialize() {
 }
 
 void InstantMortality::update() {
-    int today = int(_calendar->state("dayOfYear"));
+    int today = int(_calendar->pullVariable("dayOfYear"));
     if (today == _dayOfYear) {
         for (int i = 0; i < _targetMortalities.size(); ++i) {
             TargetMortality mortality = _targetMortalities[i];
-            mortality.target->setInput("instantMortality", mortality.value);
+            mortality.target->pushVariable("instantMortality", mortality.value);
         }
     }
 }

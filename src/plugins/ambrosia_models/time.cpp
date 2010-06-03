@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "time.h"
 
@@ -13,10 +14,10 @@ namespace ambrosia{
 
 Time::Time(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
-    setState("dayLengthIndex", &dayLengthIndex);
-    setState("temperatureIndex", &temperatureIndex);
-    setState("step", &step);
-    setState("total", &total);
+    new PullVariable("dayLengthIndex", &dayLengthIndex, this);
+    new PullVariable("temperatureIndex", &temperatureIndex, this);
+    new PullVariable("step", &step, this);
+    new PullVariable("total", &total, this);
 }
 
 void Time::initialize() {
@@ -33,8 +34,8 @@ void Time::reset() {
 }
 
 void Time::update() {
-    double L = calendar->state("dayLength");
-    double T = weather->state("Tavg");
+    double L = calendar->pullVariable("dayLength");
+    double T = weather->pullVariable("Tavg");
     dayLengthIndex = L < L0 ? 1. : exp((L - L0)*log(1. - alfa/100.));
     if (T < T0)
         temperatureIndex = 0.;

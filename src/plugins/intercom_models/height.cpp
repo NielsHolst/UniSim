@@ -3,14 +3,17 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "height.h"
+
+using namespace UniSim;
 
 namespace intercom{
 
 Height::Height(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("height", &height);
+    new PullVariable("height", &height, this);
 }
 
 void Height::initialize() {
@@ -27,7 +30,7 @@ void Height::reset() {
 }
 
 void Height::update() {
-    double pt = photoThermalTime->state("total");
+    double pt = photoThermalTime->pullVariable("total");
     updateHeight(pt);
 }
 

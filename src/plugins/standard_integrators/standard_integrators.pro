@@ -9,9 +9,11 @@ CONFIG		+= plugin
 include ($${US_BASE}/base.pri)
 
 HEADERS	+= 	\
-		simple_integrator.h \
-	  	standard_integrator_maker.h 
+        time_limited.h \
+        time_step_limited.h \
+        standard_integrator_maker.h
 			  	
 SOURCES	+= 	\
-		simple_integrator.cpp \
-	  	standard_integrator_maker.cpp
+        time_limited.cpp \
+        time_step_limited.cpp \
+        standard_integrator_maker.cpp

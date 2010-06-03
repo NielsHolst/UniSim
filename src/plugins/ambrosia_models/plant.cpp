@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "plant.h"
 
@@ -13,8 +14,8 @@ namespace ambrosia{
 
 Plant::Plant(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
-    setState("stage", &stage);
-    setState("total", &total);
+    new PullVariable("stage", &stage, this);
+    new PullVariable("total", &total, this);
 }
 
 void Plant::initialize() {
@@ -36,13 +37,13 @@ void Plant::reset() {
 
 void Plant::update() {
     int firstDay = toDayOfYear(beginDay, beginMonth);
-    double today = calendar->state("dayInYear");
+    double today = calendar->pullVariable("dayInYear");
     if (today < firstDay)
         return;
 
     double step = (fabs(stage-3.) < 1e-9) ?
-        timeC->state("step") :
-        timeABDE->state("step");
+        timeC->pullVariable("step") :
+        timeABDE->pullVariable("step");
     total += step;
 
     double sum = 0;

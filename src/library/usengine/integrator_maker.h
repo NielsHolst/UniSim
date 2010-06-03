@@ -58,7 +58,7 @@ private:
     IntegratorMakerPlugIn* find(Identifier integratorType);
 
     typedef QMap<Identifier, IntegratorMakerPlugIn*> IntegratorMakers;
-    QMap<Identifier, IntegratorMakerPlugIn*> _IntegratorMakers;
+    QMap<Identifier, IntegratorMakerPlugIn*> _integratorMakers;
 };
 //@}
 }//namespace

@@ -26,10 +26,15 @@ private:
     double _initialDensity, _yearlyEmergenceRate, _yearlyMortalityRate, _cropLaiExp;
     QString _emergenceString;
 
-    // state
+    // pull variables
     double _density, _dormant, _total,
-    _dailyEmergenceRatio, _totalEmergenceRatio, _dailyEmergenceDensity, _totalEmergenceDensity,
-    _dailyEmergenceRatioPotantial, _cropEffectOnEmergence;
+        _dailyEmergenceRatio, _totalEmergenceRatio,
+        _dailyEmergenceDensity, _totalEmergenceDensity,
+        _dailyEmergenceRatioPotential, _cropEffectOnEmergence;
+
+    // push variables
+    double dormantInflow, instantMortality;
+
 
     // decoded parameters
     double _dailySurvivalRate, _emergenceScaling;

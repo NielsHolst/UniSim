@@ -1,13 +1,17 @@
+set UNISIM_BIN=C:\data\QDev\UniSim\ship\bin
 del /Q bin\*.*
 del /Q plugins\*.*
 copy ..\src\applications\unisim*.exe bin
 copy ..\vendor\qwt\lib\qwt5.dll bin
 pushd %QT_ROOT%\qt\bin
-copy mingwm10.dll \data\qdev\unisim\install_builder\bin
-copy qtcore4.dll \data\qdev\unisim\install_builder\bin
-copy qtgui4.dll \data\qdev\unisim\install_builder\bin
-copy qtxml4.dll \data\qdev\unisim\install_builder\bin
-copy qtxmlpatterns4.dll \data\qdev\unisim\install_builder\bin
+copy mingwm10.dll %UNISIM_BIN%
+copy qtcore4.dll %UNISIM_BIN%
+copy qtgui4.dll %UNISIM_BIN%
+copy qtxml4.dll %UNISIM_BIN%
+copy qtxmlpatterns4.dll %UNISIM_BIN%
+copy libgcc_s_dw2-1.dll %UNISIM_BIN%
+copy QtNetwork4.dll %UNISIM_BIN%
 popd
 copy ..\src\plugins\*.dll plugins
-copy ..\weather\*.* weather
+set UNISIM_BIN=
+pause

@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "area.h"
 #include "community.h"
@@ -18,8 +19,8 @@ Community::Community(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     photosynthesis = new Photosynthesis(this);
-    setState("grossLightAbsorption", &grossLightAbsorption);
-    setState("grossAssimilation", &grossAssimilation);
+    new PullVariable("grossLightAbsorption", &grossLightAbsorption, this);
+    new PullVariable("grossAssimilation", &grossAssimilation, this);
 }
 
 void Community::initialize() {

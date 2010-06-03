@@ -5,6 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "crop.h"
 #include "weather.h"
@@ -16,8 +17,8 @@ namespace ess2009 {
 Crop::Crop(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
-    setState("lai", &_lai);
-    setState("Tsum", &_Tsum);
+    new PullVariable("lai", &_lai, this);
+    new PullVariable("Tsum", &_Tsum, this);
 }
 
 
@@ -52,10 +53,10 @@ void Crop::reset() {
 }
 
 void Crop::update() {
-    int dayOfYear = int(_calendar->state("dayOfYear"));
+    int dayOfYear = int(_calendar->pullVariable("dayOfYear"));
 
     if (_isGrowing) {
-        _Tsum += _weather->state("T");
+        _Tsum += _weather->pullVariable("T");
         _lai = lookupLai();
         if (dayOfYear == _harvestDayOfYear) {
             _isGrowing = false;

@@ -6,6 +6,7 @@
 #include <QRegExp>
 #include "model.h"
 #include "output_variable.h"
+#include "pull_variable.h"
 #include "utilities.h"
 
 namespace UniSim{
@@ -48,17 +49,18 @@ void OutputVariable::appendVariable(OutputVariable::Raw raw, QObject *parent) {
     int numVariables = 0;
     for (Models::iterator mo = models.begin(); mo != models.end(); ++mo) {
         if (raw.stateNameInModel == "*") {
-            for (Model::States::const_iterator st = (*mo)->states().begin(); st != (*mo)->states().end(); ++st) {
-                Identifier stateNameInModel = st.key();
+            QList<PullVariable*> pullVariables = (*mo)->seekChildren<PullVariable*>("*");
+            for (QList<PullVariable*>::const_iterator st = pullVariables.begin(); st != pullVariables.end(); ++st) {
+                Identifier stateNameInModel = (*st)->objectName();
                 OutputVariable *v = new OutputVariable(stateNameInModel, parent);
                 v->fromRaw(raw);
                 v->model = *mo;
-                v->statePtr = st.value();
+                v->statePtr = (*st)->valuePtr();
                 ++numVariables;
             }
         }
         else {
-            const double *statePtr = (*mo)->statePtr(raw.stateNameInModel);
+            const double *statePtr = (*mo)->pullVariablePtr(raw.stateNameInModel);
             if (statePtr) {
                 OutputVariable *v = new OutputVariable(raw.stateNameInModel, parent);
                 v->fromRaw(raw);

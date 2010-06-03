@@ -5,7 +5,8 @@
 */
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
-#include "simple_integrator.h"
+#include "time_limited.h"
+#include "time_step_limited.h"
 #include "standard_integrator_maker.h"
 
 namespace UniSim{
@@ -13,7 +14,9 @@ namespace UniSim{
 QList<Identifier> StandardIntegratorMaker::supportedTypes() const
 {
     return QList<Identifier>()
-        << Identifier("Simple");
+        << Identifier("TimeLimited")
+        << Identifier("TimeStepLimited")
+    ;
 }
 
 UniSim::Identifier StandardIntegratorMaker::plugInName() const {
@@ -29,9 +32,11 @@ Integrator* StandardIntegratorMaker::create(Identifier integratorType, Identifie
 	// Remember to add integratorType to the list above as well
     UniSim::setSimulationObjectFromDescendent(parent);
     Integrator *integrator = 0;
-    if (integratorType.equals("Simple"))
-		integrator = new SimpleIntegrator(objectName, parent);
-	return integrator;
+    if (integratorType.equals("TimeLimited"))
+        integrator = new TimeLimited(objectName, parent);
+    else if (integratorType.equals("TimeStepLimited"))
+        integrator = new TimeStepLimited(objectName, parent);
+    return integrator;
 }
 
 Q_EXPORT_PLUGIN2(standard_integrator_maker,StandardIntegratorMaker)

@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "aethina.h"
 
 using namespace UniSim;
@@ -11,8 +12,9 @@ using namespace UniSim;
 namespace beehive{
 
 Aethina::Aethina(UniSim::Identifier name, QObject *parent)
-	: Model(name, parent) {
-	setState("N", &density);
+    : Model(name, parent)
+{
+    new PullVariable("N", &density, this);
 }
 
 void Aethina::initialize() {

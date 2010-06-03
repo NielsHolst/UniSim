@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "maize.h"
 
@@ -12,9 +13,9 @@ namespace grainstore{
 
 Maize::Maize(UniSim::Identifier name, QObject *parent)
     : Model(name, parent) {
-    setState("lossPct", &injury[LossPct]);
-    setState("damagePct", &injury[DamagePct]);
-    setState("ptSD", &ptSD[LossPct]);
+    new PullVariable("lossPct", &injury[LossPct], this);
+    new PullVariable("damagePct", &injury[DamagePct], this);
+    new PullVariable("ptSD", &ptSD[LossPct], this);
 
     paramText[LossPct] = "loss";
     paramText[DamagePct] = "damage";

@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "weather.h"
 
 using namespace UniSim;
@@ -12,7 +13,7 @@ namespace beehive{
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : WeatherFile(name, parent)
 {
-    setState("Tavg", &Tavg);
+    new PullVariable("Tavg", &Tavg, this);
     setColumn("Tmin", 2);
     setColumn("Tmax", 3);
 }
@@ -21,7 +22,7 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
 void Weather::update()
 {
     WeatherFile::update();
-    Tavg = (state("Tmin") + state("Tmax"))/2.;
+    Tavg = (pullVariable("Tmin") + pullVariable("Tmax"))/2.;
 }
 
 } //namespace

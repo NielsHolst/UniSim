@@ -5,6 +5,7 @@
 */
 #include <cmath>
 #include <cfloat>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "weather.h"
 
@@ -16,9 +17,9 @@ namespace ess2009 {
 Weather::Weather(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    setState("T", &_T);
-    setState("Tavg", &_T);
-    setState("Tsum", &_Tsum);
+    new PullVariable("T", &_T, this);
+    new PullVariable("Tavg", &_T, this);
+    new PullVariable("Tsum", &_Tsum, this);
 }
 
 void Weather::initialize()
@@ -37,7 +38,7 @@ void Weather::reset()
 
 void Weather::update()
 {
-    int dayOfYear = int(_calendar->state("dayOfYear"));
+    int dayOfYear = int(_calendar->pullVariable("dayOfYear"));
     _T = temperature(dayOfYear);
     _Tsum = (dayOfYear == 1) ? _T : _Tsum + _T;
 }

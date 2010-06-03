@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "assimilation_max_given_temp.h"
 
 using namespace UniSim;
@@ -12,7 +13,7 @@ namespace intercom{
 AssimilationMaxGivenTemp::AssimilationMaxGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("amax", &amax);
+    new PullVariable("amax", &amax, this);
 }
 
 void AssimilationMaxGivenTemp::initialize()
@@ -27,7 +28,7 @@ void AssimilationMaxGivenTemp::reset() {
 
 void AssimilationMaxGivenTemp::update()
 {
-    double Tday = weather->state("Tday");
+    double Tday = weather->pullVariable("Tday");
     amax = Tday < 0 ? 0. : slope*Tday;
     if (amax > maxAmax)
         amax = maxAmax;

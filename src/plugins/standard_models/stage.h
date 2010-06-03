@@ -30,11 +30,17 @@ private:
 	double _L;
 	int _k;
 
-	// state
+    // pull variables
 	double *_x;
-    double _fgr, _dt, _prevDel;
+    double _dt, _prevDel;
 	mutable bool _dirtySum, _firstUpdate;
 	mutable double _sum, _input, _output, _inputTotal, _outputTotal;
+
+    // push variables
+    double _inflow, _instantMortality;
+
+    // push-pull variables
+    double _fgr;
 
     // models
     Model *time;

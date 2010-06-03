@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "plant.h"
 
 using namespace UniSim;
@@ -11,16 +12,17 @@ using namespace UniSim;
 namespace conductance {
 
 Plant::Plant(UniSim::Identifier name, QObject *parent)
-    : Model(name, parent) {
-    setState("weight", &weight);
-    setState("totalWeight", &totalWeight);
-    setState("sz", &sz);
-    setState("total_sz", &total_sz);
-    setState("Lz", &Lz);
-    setState("fz", &fz);
-    setState("LA_per_plant", &LA_per_plant);
-    setState("dweight", &dweight);
-    setState("phase", &_phase);
+    : Model(name, parent)
+{
+    new PullVariable("weight", &weight, this);
+    new PullVariable("totalWeight", &totalWeight, this);
+    new PullVariable("sz", &sz, this);
+    new PullVariable("total_sz", &total_sz, this);
+    new PullVariable("Lz", &Lz, this);
+    new PullVariable("fz", &fz, this);
+    new PullVariable("LA_per_plant", &LA_per_plant, this);
+    new PullVariable("dweight", &dweight, this);
+    new PullVariable("phase", &_phase, this);
 }
 
 void Plant::initialize() {
@@ -55,7 +57,7 @@ void Plant::updateByDt(double dt) {
     Lz = LA_per_plant/sz;
     fz = 1. - exp(-k*Lz);
 
-    double I = weather->state("irradiation");
+    double I = weather->pullVariable("irradiation");
     dweight = eps*I*sz*fz*dt;
     weight += dweight;
     totalWeight = n*weight;
@@ -73,11 +75,11 @@ void Plant::updateCrownZoneArea() {
             sz = A*pow(weight, phi);
             break;
         case UnderCompression:
-            sz = other ? (1. - other->state("total_sz"))/n : 1./n;
+            sz = other ? (1. - other->pullVariable("total_sz"))/n : 1./n;
             break;
         case WeightProportional:
             Q_ASSERT(other);
-            sz = weight/(totalWeight + other->state("totalWeight"));
+            sz = weight/(totalWeight + other->pullVariable("totalWeight"));
     }
     total_sz = n*sz;
     if (total_sz < 0) {

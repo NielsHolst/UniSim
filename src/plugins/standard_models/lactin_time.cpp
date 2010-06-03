@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "lactin_time.h"
 
@@ -11,8 +12,8 @@ namespace UniSim{
 LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("step", &step);
-    setState("total", &total);
+    new PullVariable("step", &step, this);
+    new PullVariable("total", &total, this);
 }
 
 void LactinTime::initialize()
@@ -30,7 +31,7 @@ void LactinTime::reset() {
 
 void LactinTime::update()
 {
-    double T = weather->state("Tavg");
+    double T = weather->pullVariable("Tavg");
     step = exp(a*T) - exp(a*b - (b - T)/c) + d;
     if (step < 0.)
         step = 0.;

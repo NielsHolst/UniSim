@@ -24,11 +24,13 @@ public:
 	void update();
 
 private:
-	// parameters
-    int ageBegin, ageEnd;
-    double dailyFecundity, sexRatio;
+    // methods
+    double fecundity(double age) const;
 
-    // state
+    // parameters
+    double scale, root1, root2, sexRatio;
+
+    // pull variables
     double eggsLaid;
 
     // links

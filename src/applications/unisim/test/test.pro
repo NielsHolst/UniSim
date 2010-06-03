@@ -38,7 +38,7 @@ HEADERS += \
     $${US_PLUGINS}/intercom_models/test/test_canopy_layer.h \
     $${US_PLUGINS}/intercom_models/test/test_photosynthesis.h \
     $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.h \
-    $${US_PLUGINS}/standard_integrators/simple_integrator.h \
+    $${US_PLUGINS}/standard_integrators/time_step_limited.h \
     $${US_PLUGINS}/standard_models/anonymous_model.h \
     $${US_PLUGINS}/standard_models/calendar.h \
     $${US_PLUGINS}/standard_models/test/test_calendar.h \
@@ -77,7 +77,7 @@ SOURCES += \
     $${US_PLUGINS}/intercom_models/test/test_canopy_layer.cpp \
     $${US_PLUGINS}/intercom_models/test/test_photosynthesis.cpp \
     $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.cpp \
-    $${US_PLUGINS}/standard_integrators/simple_integrator.cpp \
+    $${US_PLUGINS}/standard_integrators/time_step_limited.cpp \
     $${US_PLUGINS}/standard_models/anonymous_model.cpp \
     $${US_PLUGINS}/standard_models/calendar.cpp \
     $${US_PLUGINS}/standard_models/test/test_calendar.cpp \

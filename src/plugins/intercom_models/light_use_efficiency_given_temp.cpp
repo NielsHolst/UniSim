@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "light_use_efficiency_given_temp.h"
 
 using namespace UniSim;
@@ -12,7 +13,7 @@ namespace intercom{
 LightUseEfficiencyGivenTemp::LightUseEfficiencyGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("efficiency", &efficiency);
+    new PullVariable("efficiency", &efficiency, this);
 }
 
 void LightUseEfficiencyGivenTemp::initialize()
@@ -27,7 +28,7 @@ void LightUseEfficiencyGivenTemp::reset() {
 
 void LightUseEfficiencyGivenTemp::update()
 {
-    double Tday = weather->state("Tday");
+    double Tday = weather->pullVariable("Tday");
     efficiency = slope*Tday + intercept;
 }
 

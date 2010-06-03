@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/pull_variable.h>
 #include "assimilation_max_given_temp_sla.h"
 #include "plant.h"
 
@@ -13,7 +14,7 @@ namespace intercom{
 AssimilationMaxGivenTempSla::AssimilationMaxGivenTempSla(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setState("amax", &amax);
+    new PullVariable("amax", &amax, this);
 }
 
 void AssimilationMaxGivenTempSla::initialize()
@@ -30,8 +31,8 @@ void AssimilationMaxGivenTempSla::reset() {
 
 void AssimilationMaxGivenTempSla::update()
 {
-    double sla = specificLeafArea->state("sla");
-    double Tday = weather->state("Tday");
+    double sla = specificLeafArea->pullVariable("sla");
+    double Tday = weather->pullVariable("Tday");
     amax=(16.92-16.92*pow(0.88, Tday))*pctN/sla/10.;
     if (amax < 0.)
         amax = 0.;

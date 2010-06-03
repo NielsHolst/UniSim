@@ -6,7 +6,6 @@
 #include <QApplication>
 #include <QtGui>
 #include <usbase/clock.h>
-#include <usbase/debug_output.h>
 #include <usbase/object_pool.h>
 #include <usbase/random_uniform.h>
 #include <usengine/integrator_maker.h>
@@ -23,7 +22,6 @@ void myMsgHandler(QtMsgType type, const char *msg)
 }
 
 void createSingletons(){
-    objectPool()->attach(DebugOutput::id(), new DebugOutput);
     objectPool()->attach(FileLocations::id(), new FileLocationsForgiving);
     objectPool()->attach(IntegratorMaker::id(), new IntegratorMaker);
     objectPool()->attach(ModelMaker::id(), new ModelMaker);
@@ -52,7 +50,6 @@ int main(int arbc, char *argv[])
         QMessageBox::information(0, "Program Error", "Uncaught exception: " + ex.message());
     }
 
-    debugOutput()->close();
     delete objectPool();
 
     return result;

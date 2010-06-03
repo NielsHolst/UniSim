@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
+#include <usbase/pull_variable.h>
 #include "../standard_models/stage.h"
 #include "fecundity.h"
 
@@ -15,20 +16,15 @@ namespace beehive{
 Fecundity::Fecundity(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    setRecursionPolicy(Component::Update, Component::ChildrenNot);
-
-    setState("eggsLaid", &eggsLaid);
+    new PullVariable("eggsLaid", &eggsLaid, this);
 }
 
 void Fecundity::initialize() {
-    setParameter("ageBegin", &ageBegin, 0);
-    setParameter("ageEnd", &ageBegin, 10);
-    setParameter("dailyFecundity", &dailyFecundity, 20.);
+    setParameter("root1", &root1, 0.);
+    setParameter("root2", &root2, 10.);
+    setParameter("scale", &scale, 0.01);
     setParameter("sexRatio", &sexRatio, 0.5);
-
-    adult = dynamic_cast<Stage*>(parent());
-    if (!adult)
-        throw Exception("Fecundity must have a Stage model as parent");
+    adult = seekOneAscendant<Stage*>("adult");
 }
 
 void Fecundity::reset() {
@@ -43,12 +39,14 @@ void Fecundity::update() {
     eggsLaid = 0;
     for (int i = 0; i < k; ++i) {
         double age = (i + 0.5)*duration/k;
-        if (age >= ageBegin && age <= ageEnd)
-            eggsLaid += adultAgeClasses[i]*dailyFecundity*sexRatio;
+        double numFemales = sexRatio*adultAgeClasses[i];
+		eggsLaid +=  numFemales*fecundity(age);
     }
-
-
 }
 
+double Fecundity::fecundity(double age) const {
+    double fec = -scale*(age - root1)*(age - root2);
+    return fec < 0. ? 0. : fec;
+}
 } //namespace
 

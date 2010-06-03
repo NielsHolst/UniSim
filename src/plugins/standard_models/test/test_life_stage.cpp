@@ -37,7 +37,7 @@ void TestLifeStage::testUpdate()
 	}
 	
 	stage->reset();
-	stage->setInput("input", input);
+    stage->pushVariable("input", input);
 
     QWARN("Use FrequencyDistribution here !");
     /*
@@ -78,18 +78,26 @@ void TestLifeStage::testState()
 	stage->changeParameter("duration", L);
 	
 	stage->reset();
-	stage->setInput("input", input);
+    stage->pushVariable("input", input);
 	
 	static double EPS = std::min(input*1000.*std::numeric_limits<double>::epsilon(), 1e-6);
 	
 	for (int i = 0; i < 1000; ++i) {
 		stage->update();
-		QVERIFY2(fabs( stage->state("contents") + stage->state("outputTotal") - stage->state("inputTotal") ) < EPS,
-				qPrintable("stage->inputTotal: " + QString::number(stage->state("inputTotal"))
-					+ " Got (contents + outputTotal): " + QString::number(stage->state("contents")) + " + "
-					+ QString::number(stage->state("outputTotal")) + " = "
-					+ QString::number(stage->state("contents") + stage->state("outputTotal"))
-					+ " Diff: " + QString::number(stage->state("contents") + stage->state("outputTotal") - stage->state("inputTotal"))
+        QVERIFY2(fabs( stage->pullVariable("contents") +
+                       stage->pullVariable("outputTotal") -
+                       stage->pullVariable("inputTotal") ) < EPS,
+
+                qPrintable("stage->inputTotal: "
+                    + QString::number(stage->pullVariable("inputTotal"))
+                    + " Got (contents + outputTotal): "
+                    + QString::number(stage->pullVariable("contents")) + " + "
+                    + QString::number(stage->pullVariable("outputTotal")) + " = "
+                    + QString::number(stage->pullVariable("contents") +
+                                      stage->pullVariable("outputTotal"))
+                    + " Diff: " + QString::number(stage->pullVariable("contents") +
+                                                  stage->pullVariable("outputTotal") -
+                                                  stage->pullVariable("inputTotal"))
 				));
 	}
 	

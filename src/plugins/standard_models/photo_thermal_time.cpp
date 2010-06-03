@@ -23,7 +23,7 @@ void PhotoThermalTime::update()
 {
     double prevTotal = total;
     DayDegrees::update();
-    step *= calendar->state("dayLength")/24.;
+    step *= calendar->pullVariable("dayLength")/24.;
     total = prevTotal + step;
 }
 

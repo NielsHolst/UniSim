@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-	<controller type="Simple">
-		<parameter name="numSteps" value="20"/>
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="20"/>
 		<sequence>
 			<model name="calendar"/>
 		</sequence>
-	</controller>
+	</integrator>
 
 	<model name="calendar" type="unisim::Calendar"/>	
 

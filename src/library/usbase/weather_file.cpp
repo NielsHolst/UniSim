@@ -5,6 +5,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
+#include <usbase/pull_variable.h>
 #include "weather_file.h"
 
 using namespace std;
@@ -19,7 +20,8 @@ WeatherFile::Column::Column(QString variableName_, int defaultColumn_, Model *pa
     : variableName(variableName_), defaultColumn(defaultColumn_)
 {
     Q_ASSERT(parent);
-    parent->setState(variableName, &value);
+    //parent->setState(variableName, &value);
+    new PullVariable(variableName, &value, parent);
 }
 
 void WeatherFile::Column::setParameter(Model *parent) {

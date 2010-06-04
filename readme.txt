@@ -54,6 +54,7 @@ UniSim development has been supported by
 Strategies (ENDURE) 
 * International Centre for Research in Organic Food Systems 
 (ICROFS), Denmark
+* BiosafeTrain Project of Danida, Denmark
 * Aarhus University, Denmark
 
 Installation
@@ -62,14 +63,14 @@ Installation
 1.  Install Qt Creator
 ----------------------
 1.1 Go to qt.nokia.com/downloads. 
-1.2 Click the ‘LGPL’ tab to view the open-source page.
-1.3 Download the ‘Qt SDK’ package appropriate to your operating 
+1.2 Click the 'LGPL' tab to view the open-source page.
+1.3 Download the 'Qt SDK' package appropriate to your operating 
 system.
 1.4 Install the downloaded package accepting all defaults.
 
 --- On Windows proceed with:
 1.5 Take note of the name of the Qt installation folder, e.g. 
-‘C:\Qt\2010.02.1’.
+'C:\Qt\2010.02.1'.
 
 1.6 Create an environment variable: 
 name = QT_ROOT
@@ -93,13 +94,13 @@ before, after or never.]
 
 3.  Download source code
 -----------------------
-3.1 Create a folder for your source code, e.g. ‘C:\qdev’
+3.1 Create a folder for your source code, e.g. 'C:\qdev'
 3.1 Go to www.boost.org/
 3.2 Click the Get Boost button
 3.3 Download the latest release
 3.4 Unpack it as a sub-folder of you source code folder, e.g. 
-‘C:\qdev\boost_1_41_0’. Avoid nested sub-folders, e.g. 
-‘C:\qdev\boost_1_41_0\boost_1_41_0’.
+'C:\qdev\boost_1_41_0'. Avoid nested sub-folders, e.g. 
+'C:\qdev\boost_1_41_0\boost_1_41_0'.
 3.5 Create an environment variable: 
 name = BOOST_ROOT
 value = C:\qdev\boost_1_41_0 (or correspondingly)
@@ -112,8 +113,8 @@ version(s) before, after or never.]
 3.6 Go to www.ecolmod.org.
 3.7 Download the latest release of UniSim.
 3.8 Unpack it as a sub-folder of you source code folder, e.g. 
-‘C:\qdev\unisim_1_4’. Avoid nested sub-folders, e.g. ‘C:\qdev\ 
-unisim_1_4\unisim_1_4’.
+'C:\qdev\unisim_1_4'. Avoid nested sub-folders, e.g. 'C:\qdev\ 
+unisim_1_4\unisim_1_4'.
 
 [You can install a new version of UniSim alongside previous versions 
 following the same steps. Copy any project sub-folder(s), that you 
@@ -125,7 +126,7 @@ Building
 ========
 
 [Below UNISIM_ROOT denotes the location of your UniSim source code 
-folder, e.g. ‘C:\qdev\unisim_1_4’]
+folder, e.g. 'C:\qdev\unisim_1_4']
 
 1. Automatic Building
 The script file build_all.bat found in UNISIM_ROOT/src/build/win 

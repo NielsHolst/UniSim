@@ -5,7 +5,6 @@
 */
 #include <usbase/exception.h>
 #include <usbase/pull_variable.h>
-#include "../standard_models/stage.h"
 #include "fecundity.h"
 
 using namespace UniSim;
@@ -20,11 +19,11 @@ Fecundity::Fecundity(UniSim::Identifier name, QObject *parent)
 }
 
 void Fecundity::initialize() {
-    setParameter("root1", &root1, 0.);
-    setParameter("root2", &root2, 10.);
-    setParameter("scale", &scale, 0.01);
+    setParameter("root1", &root1, -10.);
+    setParameter("root2", &root2, 28.);
+    setParameter("scale", &scale, 0.02);
     setParameter("sexRatio", &sexRatio, 0.5);
-    adult = seekOneAscendant<Stage*>("adult");
+    adult = seekOneAscendant<Model*>("adult");
 }
 
 void Fecundity::reset() {
@@ -32,7 +31,7 @@ void Fecundity::reset() {
 }
 
 void Fecundity::update() {
-    const double *adultAgeClasses = adult->ageClasses();
+    const double *adultAgeClasses = adult->pullVariablePtr("ageClasses");
     int k = adult->parameter<int>("k");
     double duration = adult->parameter<double>("duration");
 

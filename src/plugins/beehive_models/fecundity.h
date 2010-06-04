@@ -8,9 +8,6 @@
 #include <QObject>
 #include <usbase/model.h>
 
-namespace UniSim {
-    class Stage;
-}
 namespace beehive{
 
 class Fecundity : public UniSim::Model
@@ -34,7 +31,7 @@ private:
     double eggsLaid;
 
     // links
-    UniSim::Stage *adult;
+    UniSim::Model *adult;
 };
 
 } //namespace

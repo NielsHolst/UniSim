@@ -31,10 +31,10 @@
 		</model>
 		<model name="adult" type="UniSim::Stage">
 			<model name="fecundity" type="Beehive::Fecundity">
-				<parameter name="ageBegin" value="7"/>
-				<parameter name="ageEnd" value="14"/>
-				<parameter name="dailyFecundity" value="10"/>				
-				<parameter name="sexRatio" value="0.6"/>				
+				<parameter name="root1" value="0"/>				
+				<parameter name="root2" value="10"/>				
+				<parameter name="scale" value="0.05"/>				
+				<parameter name="sexRatio" value="0.5"/>				
 			</model>
 			<parameter name="duration" value="28"/>
 			<parameter name="k" value="30"/>

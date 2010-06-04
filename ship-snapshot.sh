@@ -14,7 +14,7 @@ else
 	# Update github
 	git tag $version
 	git push origin master
-	git push refs/tags/$version
+	git push origin refs/tags/$version
 
 	# Update ecolmod.org 
 	#`sed -e s/unisim_base/${target_folder}/ index_base.html | sed -e s/version_base/$version/ > index.html`

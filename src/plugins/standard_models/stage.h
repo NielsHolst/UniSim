@@ -35,6 +35,7 @@ private:
     double _dt, _prevDel;
 	mutable bool _dirtySum, _firstUpdate;
 	mutable double _sum, _input, _output, _inputTotal, _outputTotal;
+    QObject *ageClassesPtr;
 
     // push variables
     double _inflow, _instantMortality;
@@ -46,7 +47,8 @@ private:
     Model *time;
 
 	// methods
-	void fill(double value);
+    void deleteVariable(QString name);
+    void fill(double value);
 	double sum() const;
     void applyInstantMortality();;
 };

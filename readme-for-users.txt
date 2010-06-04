@@ -30,6 +30,7 @@ UniSim development is supported by
 Strategies (ENDURE) 
 * International Centre for Research in Organic Food Systems 
 (ICROFS), Denmark
+* BiosafeTrain Project of Danida, Denmark
 * Aarhus University, Denmark
 
 Installation

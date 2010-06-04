@@ -15,8 +15,10 @@
 namespace UniSim {
 
 Stage::Stage(UniSim::Identifier name, QObject *parent)
-    : UniSim::Model(name, parent), _x(0)
+    : UniSim::Model(name, parent), _x(0), ageClassesPtr(0)
 {
+    // Next line can be used when pull variables have been templatized
+    //new PullVariable("ageClasses", &_x, this);
     new PullVariable("number", &_sum, this);
     new PullVariable("inflow", &_input, this);
     new PullVariable("outflow", &_output, this);
@@ -51,9 +53,13 @@ void Stage::reset()
 {
 	if (_x!=0) delete[] _x;
 	_x = new double[_k];
-	fill(0);
 
-	_sum =_input = _output = _inputTotal = _outputTotal = 0;
+    if (ageClassesPtr) delete ageClassesPtr;
+    ageClassesPtr = new PullVariable("ageClasses", _x, this);
+
+    fill(0);
+
+    _sum =_input = _output = _inputTotal = _outputTotal = 0;
 	_firstUpdate = true;
 	_dirtySum = false;
 

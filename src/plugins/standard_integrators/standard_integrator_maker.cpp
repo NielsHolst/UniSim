@@ -11,16 +11,31 @@
 
 namespace UniSim{
 
-QList<Identifier> StandardIntegratorMaker::supportedTypes() const
-{
-    return QList<Identifier>()
-        << Identifier("TimeLimited")
-        << Identifier("TimeStepLimited")
-    ;
+UniSim::Identifier StandardIntegratorMaker::pluginName() const {
+    return "UniSim";
 }
 
-UniSim::Identifier StandardIntegratorMaker::plugInName() const {
-    return "UniSim";
+QString StandardIntegratorMaker::pluginDesc() const {
+    return
+    "The @F UniSim plugin contains a collection of integrators of general utility.";
+}
+
+QStringList StandardIntegratorMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark";
+}
+
+const QMap<Identifier, QString>& StandardIntegratorMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["TimeLimited"] =
+    "@I pending";
+
+    desc["TimeStepLimited"] =
+    "@I pending";
+
+    return desc;
 }
 
 void StandardIntegratorMaker::useObjectPool(ObjectPool *pool) const {

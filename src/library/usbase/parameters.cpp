@@ -25,8 +25,14 @@ Parameters::Parameter::Parameter()
 }
 
 //! Returns a list of all parameter identifiers
-QList<Identifier> Parameters::allParameters() const {
+Identifiers Parameters::allParameters() const {
     return _parameters.keys();
+}
+
+QString Parameters::description(Identifier name) {
+    if (!_parameters.contains(name))
+        throw Exception("Attempt to access non-existing parameter with key '" + name.key() +"'");
+    return _parameters[name].desc;
 }
 
 //! Returns parameter value as string
@@ -110,7 +116,7 @@ Parameters::Parameters()
 {
 }
 
-template <> void Parameters::setParameter<QDate>(Identifier name, QDate *valuePtr, QDate defaultValue) {
+template <> void Parameters::setParameter<QDate>(Identifier name, QDate *valuePtr, QDate defaultValue, QString desc) {
     Q_ASSERT(valuePtr);
 		
     if (!_parameters.contains(name)) {
@@ -124,9 +130,10 @@ template <> void Parameters::setParameter<QDate>(Identifier name, QDate *valuePt
 	
     _parameters[name].valuePtr = (void *) valuePtr;
     _parameters[name].typePointedTo = QVariant::Date;
+    _parameters[name].desc = desc;
 }
 
-template <> void Parameters::setParameter<bool>(Identifier name, bool *valuePtr, bool defaultValue) {
+template <> void Parameters::setParameter<bool>(Identifier name, bool *valuePtr, bool defaultValue, QString desc) {
     Q_ASSERT(valuePtr);
 		
     if (!_parameters.contains(name)) {
@@ -146,6 +153,7 @@ template <> void Parameters::setParameter<bool>(Identifier name, bool *valuePtr,
 	
     _parameters[name].valuePtr = (void *) valuePtr;
     _parameters[name].typePointedTo = QVariant::Bool;
+    _parameters[name].desc = desc;
 }
 
 } //namespace

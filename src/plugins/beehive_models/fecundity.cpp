@@ -15,14 +15,14 @@ namespace beehive{
 Fecundity::Fecundity(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("eggsLaid", &eggsLaid, this);
+    new PullVariable("eggsLaid", &eggsLaid, this, "description");
 }
 
 void Fecundity::initialize() {
-    setParameter("root1", &root1, -10.);
-    setParameter("root2", &root2, 28.);
-    setParameter("scale", &scale, 0.02);
-    setParameter("sexRatio", &sexRatio, 0.5);
+    setParameter("root1", &root1, -10., "For parabolic equation");
+    setParameter("root2", &root2, 28., "For parabolic equation");
+    setParameter("scale", &scale, 0.02, "For parabolic equation");
+    setParameter("sexRatio", &sexRatio, 0.5, "Sex ratio (female fraction) of adult population");
     adult = seekOneAscendant<Model*>("adult");
 }
 

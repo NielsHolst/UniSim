@@ -12,16 +12,18 @@ namespace UniSim{
 LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("step", &step, this);
-    new PullVariable("total", &total, this);
+    new PullVariable("step", &step, this,
+                     "Duration of latest time step (physiological time)");
+    new PullVariable("total", &total, this,
+                     "Total duration since beginning of simulation (physiological time)");
 }
 
 void LactinTime::initialize()
 {
-    setParameter("a", &a, 0.13);
-    setParameter("b", &b, 42.);
-    setParameter("c", &c, 8.);
-    setParameter("d", &d, -0.1);
+    setParameter("a", &a, 0.13, "Equation parameter");
+    setParameter("b", &b, 42., "Equation parameter");
+    setParameter("c", &c, 8., "Equation parameter");
+    setParameter("d", &d, -0.1, "Equation parameter");
     weather = seekOne<Model*>("weather");
 }
 

@@ -56,6 +56,16 @@ Identifiers ModelMaker::selection()
 	return selection;
 }
 
+QList<ModelMakerPlugIn*> ModelMaker::plugins() {
+    QList<ModelMakerPlugIn*> plugins, redundant = me()->_modelMakers.values();
+    for (int i = 0; i < redundant.size(); ++i) {
+        ModelMakerPlugIn *next = redundant[i];
+        if (!plugins.contains(next))
+            plugins.append(next);
+    }
+    return plugins;
+}
+
 ModelMakerPlugIn* ModelMaker::find(Identifier modelType)
 {
 	ModelMakers::iterator ma = _modelMakers.find(modelType);

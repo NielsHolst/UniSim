@@ -16,14 +16,16 @@ class PullVariable : public QObject
     Q_OBJECT
 
 public:
-    PullVariable(Identifier name, const double *value, QObject *parent);
+    PullVariable(Identifier name, const double *value, QObject *parent, QString desc);
     double value() const;
     const double* valuePtr() const;
     Identifier id() const;
+    QString description() const;
 
 private:
     Identifier _id;
     const double *_valuePtr;
+    QString desc;
 };
 
 

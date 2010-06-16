@@ -21,11 +21,11 @@ WeatherFile::Column::Column(QString variableName_, int defaultColumn_, Model *pa
 {
     Q_ASSERT(parent);
     //parent->setState(variableName, &value);
-    new PullVariable(variableName, &value, parent);
+    new PullVariable(variableName, &value, parent, "description");
 }
 
 void WeatherFile::Column::setParameter(Model *parent) {
-    parent->setParameter(colName(variableName), &column, defaultColumn);
+    parent->setParameter(colName(variableName), &column, defaultColumn, "description");
 }
 
 void WeatherFile::Column::updateState(const QStringList &items) {
@@ -61,8 +61,8 @@ void WeatherFile::initialize()
 {
     for (Columns::iterator co = columns.begin(); co != columns.end(); ++co)
         co.value()->setParameter(this);
-    setParameter("fileName", &fileName, QString());
-    setParameter("firstDate", &firstDate, QDate());
+    setParameter("fileName", &fileName, QString(), "description");
+    setParameter("firstDate", &firstDate, QDate(), "description");
 }
 
 void WeatherFile::reset()

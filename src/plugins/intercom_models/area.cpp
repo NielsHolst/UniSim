@@ -21,7 +21,7 @@ namespace intercom{
 Area::Area(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("lai", &lai, this);
+    new PullVariable("lai", &lai, this, "description");
 
     lookupDist["Symmetric"] = Symmetric;
     lookupDist["Even"] = Even;
@@ -30,10 +30,10 @@ Area::Area(UniSim::Identifier name, QObject *parent)
 }
 
 void Area::initialize() {
-    setParameter("initial", &initial, 0.01);
-    setParameter("distribution", &distText, QString("Symmetric"));
-    setParameter("scatteringCoeff", &scatteringCoeff, 0.2);
-    setParameter("kDiffuse", &kDiffuse, 0.7);
+    setParameter("initial", &initial, 0.01, "description");
+    setParameter("distribution", &distText, QString("Symmetric"), "description");
+    setParameter("scatteringCoeff", &scatteringCoeff, 0.2, "description");
+    setParameter("kDiffuse", &kDiffuse, 0.7, "description");
 
     calendar = seekOne<Model*>("calendar");
     weather = seekOne<Model*>("weather");

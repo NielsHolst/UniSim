@@ -13,15 +13,15 @@ namespace intercom{
 Height::Height(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("height", &height, this);
+    new PullVariable("height", &height, this, "description");
 }
 
 void Height::initialize() {
-    setParameter("a", &a, 7.5);
-    setParameter("b", &b, 0.0085);
-    setParameter("c", &c, 77.9);
-    setParameter("m", &m, 624.);
-    setParameter("minHeight", &minHeight, 0.5);
+    setParameter("a", &a, 7.5, "description");
+    setParameter("b", &b, 0.0085, "description");
+    setParameter("c", &c, 77.9, "description");
+    setParameter("m", &m, 624., "description");
+    setParameter("minHeight", &minHeight, 0.5, "description");
     photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
 }
 

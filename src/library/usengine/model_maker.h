@@ -54,6 +54,9 @@ public:
 		The valid model types are those supplied by ModelMakerPlugIn's.
 	*/
     static Identifiers selection();
+
+    //! Provides a list of the available model plugins
+    static QList<ModelMakerPlugIn*> plugins();
 	
 	private:
     static ModelMaker* me();
@@ -61,7 +64,7 @@ public:
 
     ModelMakerPlugIn* find(Identifier modelType);
 	
-    typedef QMap<Identifier, ModelMakerPlugIn*> ModelMakers;
+    typedef QMap<Identifier, ModelMakerPlugIn*> ModelMakers; //! The key to the map is a model
 	ModelMakers _modelMakers;
 };
 //@}

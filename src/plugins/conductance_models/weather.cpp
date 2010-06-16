@@ -14,13 +14,13 @@ namespace conductance {
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("irradiation", &irradiation, this);
-    new PullVariable("Tavg", &Tavg, this);
+    new PullVariable("irradiation", &irradiation, this, "description");
+    new PullVariable("Tavg", &Tavg, this, "description");
 }
 
 void Weather::initialize() {
-    setParameter("irradiation", &irradiation, 10.);
-    setParameter("Tavg", &Tavg, 15.);
+    setParameter("irradiation", &irradiation, 10., "description");
+    setParameter("Tavg", &Tavg, 15., "description");
 }
 
 void Weather::reset() {

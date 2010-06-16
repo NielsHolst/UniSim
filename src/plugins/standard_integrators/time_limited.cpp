@@ -15,11 +15,11 @@ namespace UniSim{
 TimeLimited::TimeLimited(Identifier name, QObject *parent)
     : Integrator(name, parent)
 {
-    new PullVariable("numRuns", &numRuns, this);
+    new PullVariable("numRuns", &numRuns, this, "description");
 }
 
 void TimeLimited::initialize() {
-    setParameter("maxTime", &maxTime, 30.);
+    setParameter("maxTime", &maxTime, 30., "description");
     time = seekOneChild<Model*>("time", this);
 }
 

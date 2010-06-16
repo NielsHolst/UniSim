@@ -16,21 +16,46 @@
 
 namespace UniSim{
 
-QList<Identifier> StandardModelMaker::supportedTypes() const
-{
-    return QList<Identifier>()
-        << "Anonymous"
-        << "Calendar"
-        << "DayDegrees"
-        << "Days"
-        << "LactinTime"
-        << "PhotoThermalTime"
-        << "Stage"
-    ;
+UniSim::Identifier StandardModelMaker::pluginName() const {
+    return "UniSim";
 }
 
-UniSim::Identifier StandardModelMaker::plugInName() const {
-    return "UniSim";
+QString StandardModelMaker::pluginDesc() const {
+    return
+    "The @F UniSim plugin contains a collection of models of general utility.";
+}
+
+QStringList StandardModelMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark";
+}
+
+const QMap<Identifier, QString>& StandardModelMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["Anonymous"] =
+    "@I pending";
+
+    desc["Calendar"] =
+    "@I pending";
+
+    desc["DayDegrees"] =
+    "@I pending";
+
+    desc["Days"] =
+    "@I pending";
+
+    desc["LactinTime"] =
+    "@I pending";
+
+    desc["PhotoThermalTime"] =
+    "@I pending";
+
+    desc["Stage"] =
+    "@I pending";
+
+    return desc;
 }
 
 void StandardModelMaker::useObjectPool(ObjectPool *pool) const {

@@ -15,13 +15,13 @@ namespace intercom{
 SpecificLeafArea::SpecificLeafArea(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("sla", &sla, this);
+    new PullVariable("sla", &sla, this, "description");
 }
 
 void SpecificLeafArea::initialize()
 {
-    setParameter("initial", &initial, 0.024);
-    setParameter("slope", &slope, -7.5e-6);
+    setParameter("initial", &initial, 0.024, "description");
+    setParameter("slope", &slope, -7.5e-6, "description");
     Plant* plant = seekOneAscendant<Plant*>("*");
     photoThermalTime = plant->seekOneDescendant<Model*>("photoThermalTime");
 }

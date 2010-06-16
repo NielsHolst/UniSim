@@ -14,17 +14,17 @@ namespace ambrosia{
 
 Time::Time(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
-    new PullVariable("dayLengthIndex", &dayLengthIndex, this);
-    new PullVariable("temperatureIndex", &temperatureIndex, this);
-    new PullVariable("step", &step, this);
-    new PullVariable("total", &total, this);
+    new PullVariable("dayLengthIndex", &dayLengthIndex, this, "desc");
+    new PullVariable("temperatureIndex", &temperatureIndex, this, "desc");
+    new PullVariable("step", &step, this, "desc");
+    new PullVariable("total", &total, this, "desc");
 }
 
 void Time::initialize() {
-    setParameter("L0", &L0, 14.5);
-    setParameter("alfa", &alfa, 50.);
-    setParameter("T0", &T0, 0.9);
-    setParameter("Tmax", &Tmax, 31.7);
+    setParameter("L0", &L0, 14.5, "desc");
+    setParameter("alfa", &alfa, 50., "desc");
+    setParameter("T0", &T0, 0.9, "desc");
+    setParameter("Tmax", &Tmax, 31.7, "desc");
     calendar = seekOne<Model*>("calendar");
     weather = seekOne<Model*>("weather");
 }

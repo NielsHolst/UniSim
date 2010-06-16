@@ -12,7 +12,7 @@
 		<parameter name="firstDate" value="1/5/2010"/>
 	</model>
 
-	<model name="insect" type="Beehive::Insect3">
+	<model name="insect" type="Beehive::Insect2">
 		<parameter name="initEggs" value="100"/>
 		<model name="egg" type="UniSim::Stage">
 			<parameter name="duration" value="7"/>

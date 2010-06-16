@@ -14,17 +14,37 @@ using namespace UniSim;
 
 namespace conductance{
 
-QList<Identifier> ConductanceModelMaker::supportedTypes() const
-{
-	return QList<Identifier>()
-        << Identifier("Community")
-        << Identifier("Plant")
-		<< Identifier("Weather")
-;
+Identifier ConductanceModelMaker::pluginName() const {
+    return Identifier("conductance");
 }
 
-Identifier ConductanceModelMaker::plugInName() const {
-	return Identifier("conductance");
+QString ConductanceModelMaker::pluginDesc() const {
+    return
+    "The @F conductance plugin is an implementation of the Conductance model for plant growth and competition, "
+    "as described by @Cite{$benjamin_park_2007} and references cited therein.";
+}
+
+QStringList ConductanceModelMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark"
+        << "Mette Søndergård, Aarhus University, Denmark"
+        << "Gionata Bocci, Scuola Superiore Sant'Anna of Pisa, Italy";
+}
+
+const QMap<Identifier, QString>& ConductanceModelMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["Community"] =
+    "@I pending";
+
+    desc["Plant"] =
+    "@I pending";
+
+    desc["Weather"] =
+    "@I pending";
+
+    return desc;
 }
 
 void ConductanceModelMaker::useObjectPool(ObjectPool *pool) const {

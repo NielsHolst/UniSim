@@ -7,8 +7,8 @@
 
 namespace UniSim{
 
-PullVariable::PullVariable(Identifier name, const double *valuePtr, QObject *parent)
-    : QObject(parent), _id(name), _valuePtr(valuePtr)
+PullVariable::PullVariable(Identifier name, const double *valuePtr, QObject *parent, QString desc_)
+    : QObject(parent), _id(name), _valuePtr(valuePtr), desc(desc_)
 {
     setObjectName(name.key());
 }
@@ -24,6 +24,10 @@ const double* PullVariable::valuePtr() const {
 
 Identifier PullVariable::id() const {
     return _id;
+}
+
+QString PullVariable::description() const {
+    return desc;
 }
 
 } //namespace

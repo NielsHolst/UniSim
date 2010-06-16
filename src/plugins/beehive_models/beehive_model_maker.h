@@ -19,10 +19,14 @@ class BeehiveModelMaker : public QObject, public UniSim::ModelMakerPlugIn
 	Q_OBJECT
 	Q_INTERFACES(UniSim::ModelMakerPlugIn)
 public:
-    QList<UniSim::Identifier> supportedTypes() const;
-	UniSim::Identifier plugInName() const;
-	void useObjectPool(UniSim::ObjectPool *pool) const;
-	UniSim::Model* create(UniSim::Identifier modelType,
+    UniSim::Identifier pluginName() const;
+    QString pluginDesc() const;
+    QStringList authors() const;
+    const QMap<UniSim::Identifier, QString>& supportedClasses();
+
+    void useObjectPool(UniSim::ObjectPool *pool) const;
+
+    UniSim::Model* create(UniSim::Identifier modelType,
 	                      UniSim::Identifier objectName,
 	                      QObject *parent=0);
 };

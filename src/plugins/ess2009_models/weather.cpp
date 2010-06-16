@@ -17,17 +17,17 @@ namespace ess2009 {
 Weather::Weather(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    new PullVariable("T", &_T, this);
-    new PullVariable("Tavg", &_T, this);
-    new PullVariable("Tsum", &_Tsum, this);
+    new PullVariable("T", &_T, this, "description");
+    new PullVariable("Tavg", &_T, this, "description");
+    new PullVariable("Tsum", &_Tsum, this, "description");
 }
 
 void Weather::initialize()
 {
-    setParameter("tempOffset", &_tempOffset, -0.75);
-    setParameter("tempB", &_tempB, 17.20);
-    setParameter("tempC", &_tempC, 2.901);
-    setParameter("tempD", &_tempD, 722.7);
+    setParameter("tempOffset", &_tempOffset, -0.75, "description");
+    setParameter("tempB", &_tempB, 17.20, "description");
+    setParameter("tempC", &_tempC, 2.901, "description");
+    setParameter("tempD", &_tempD, 722.7, "description");
     _calendar = seekOne<Model*>("calendar");
 }	
 

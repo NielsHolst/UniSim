@@ -12,6 +12,7 @@
 #ifndef INTEGRATOR_MAKER_PLUG_IN_H
 #define INTEGRATOR_MAKER_PLUG_IN_H
 
+#include <QMap>
 #include <QtPlugin>
 #include "identifier.h"
 
@@ -28,11 +29,17 @@ class IntegratorMakerPlugIn
 public:
     virtual ~IntegratorMakerPlugIn() { }
 	
-    //! Returns a list of the integrator types supported by this integrator maker
-    virtual Identifiers supportedTypes() const = 0;
-	
     //! Returns name of this plugin
-    virtual Identifier plugInName() const = 0;
+    virtual Identifier pluginName() const = 0;
+
+    //! Returns description of this plugin
+    virtual QString pluginDesc() const = 0;
+
+    //! Returns the model types supported by this model maker and their description
+    virtual const QMap<Identifier, QString>& supportedClasses() = 0;
+
+    //! Returns the list of authors for this plugin
+    virtual QStringList authors() const = 0;
 
     //! Sets ObjectPool to be used by plug-in
     virtual void useObjectPool(ObjectPool *pool) const = 0;
@@ -45,6 +52,8 @@ public:
         \return Integrator created or null if integratorType was unknown
 	*/
     virtual UniSim::Integrator* create(Identifier integratorType, Identifier objectName, QObject *parent=0) = 0;
+protected:
+    QMap<Identifier, QString> desc;
 };
 
 } //namespace

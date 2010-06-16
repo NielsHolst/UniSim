@@ -12,15 +12,17 @@ namespace UniSim{
 DayDegrees::DayDegrees(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("step", &step, this);
-    new PullVariable("total", &total, this);
+    new PullVariable("step", &step, this,
+                     "Duration of latest time step (day-degrees)");
+    new PullVariable("total", &total, this,
+                     "Total duration since beginning of simulation (day-degrees)");
 }
 
 void DayDegrees::initialize()
 {
-    setParameter("T0", &T0, 0.);
-    setParameter("Topt", &Topt, 100.);
-    setParameter("Tmax", &Tmax, 100.);
+    setParameter("T0", &T0, 0., "Lower temperature threshold for development (@Char{ring}C)");
+    setParameter("Topt", &Topt, 100., "Optimum temperature for development (@Char{ring}C)");
+    setParameter("Tmax", &Tmax, 100., "Upper temperature threshold for development (@Char{ring}C)");
     weather = seekOne<Model*>("weather");
 }
 

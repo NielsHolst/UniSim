@@ -14,12 +14,12 @@ namespace intercom{
 AssimilationMaxGivenTempSla::AssimilationMaxGivenTempSla(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("amax", &amax, this);
+    new PullVariable("amax", &amax, this, "description");
 }
 
 void AssimilationMaxGivenTempSla::initialize()
 {
-    setParameter("pctN", &pctN, 0.040);
+    setParameter("pctN", &pctN, 0.040, "description");
     weather = seekOne<Model*>("weather");
     Model *plant = seekOneAscendant<Plant*>("*");
     specificLeafArea = plant->seekOneDescendant<Model*>("specificLeafArea");

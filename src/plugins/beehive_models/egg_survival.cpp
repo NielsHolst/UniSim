@@ -14,14 +14,14 @@ namespace beehive{
 EggSurvival::EggSurvival(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("survival", &survival, this);
+    new PullVariable("survival", &survival, this, "description");
 }
 
 void EggSurvival::initialize() {
-    setParameter("a", &a, -0.00706);
-    setParameter("b", &b, 0.370);
-    setParameter("c", &c, -4.12);
-    setParameter("Tlow", &Tlow, 21.);
+    setParameter("a", &a, -0.00706, "For parabolic equation");
+    setParameter("b", &b, 0.370, "For parabolic equation");
+    setParameter("c", &c, -4.12, "For parabolic equation");
+    setParameter("Tlow", &Tlow, 21., "Lower limit where extrapolation begins");
     weather = seekOne<Model*>("weather");
 }
 

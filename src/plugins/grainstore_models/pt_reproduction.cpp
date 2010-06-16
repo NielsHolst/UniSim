@@ -16,26 +16,26 @@ namespace grainstore{
 PtReproduction::PtReproduction(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("fecundity", &fecundity, this);
-    new PullVariable("densityDependence", &_densityDependence, this);
+    new PullVariable("fecundity", &fecundity, this, "desc");
+    new PullVariable("densityDependence", &_densityDependence, this, "desc");
 }
 
 void PtReproduction::initialize()
 {
-    setParameter("delay", &delay, 5);
-    setParameter("sexRatio", &sexRatio, 0.5);
-    setParameter("tempMax", &tempMax, 30.);
-    setParameter("c1", &c1, 0.005494);
-    setParameter("c2", &c2, 0.2359);
-    setParameter("ageOpt", &ageOpt, 34.92);
-    setParameter("ageDisp", &sexRatio, 26.67);
-    setParameter("applyDensityDependence", &applyDensityDependence, false);
-    setParameter("rm_a", &rm_a, 0.01261);
-    setParameter("rm_b", &rm_b, 0.02001);
-    setParameter("rm_opt", &rm_opt, 0.0875);
-    setParameter("scale_a", &scale_a, 0.01851);
-    setParameter("scale_b", &scale_b, -0.1116);
-    setParameter("scale_c", &scale_c, 0.202);
+    setParameter("delay", &delay, 5, "desc");
+    setParameter("sexRatio", &sexRatio, 0.5, "desc");
+    setParameter("tempMax", &tempMax, 30., "desc");
+    setParameter("c1", &c1, 0.005494, "desc");
+    setParameter("c2", &c2, 0.2359, "desc");
+    setParameter("ageOpt", &ageOpt, 34.92, "desc");
+    setParameter("ageDisp", &sexRatio, 26.67, "desc");
+    setParameter("applyDensityDependence", &applyDensityDependence, false, "desc");
+    setParameter("rm_a", &rm_a, 0.01261, "desc");
+    setParameter("rm_b", &rm_b, 0.02001, "desc");
+    setParameter("rm_opt", &rm_opt, 0.0875, "desc");
+    setParameter("scale_a", &scale_a, 0.01851, "desc");
+    setParameter("scale_b", &scale_b, -0.1116, "desc");
+    setParameter("scale_c", &scale_c, 0.202, "desc");
 
     weather = seekOne<Model*>("weather");
     Model *development = seekOneSibling<Model*>("development");

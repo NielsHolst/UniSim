@@ -14,17 +14,17 @@ namespace ambrosia{
 
 Plant::Plant(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
-    new PullVariable("stage", &stage, this);
-    new PullVariable("total", &total, this);
+    new PullVariable("stage", &stage, this, "desc");
+    new PullVariable("total", &total, this, "desc");
 }
 
 void Plant::initialize() {
-    setParameter("beginDay", &beginDay, 1);
-    setParameter("beginMonth", &beginMonth, 5);
+    setParameter("beginDay", &beginDay, 1, "desc");
+    setParameter("beginMonth", &beginMonth, 5, "desc");
 
     QString bd("bioDays");
     for (int i = 0; i < NumStages; ++i)
-        setParameter(bd + ('A' + i) , &bioDays[i], 0.);
+        setParameter(bd + ('A' + i) , &bioDays[i], 0., "desc");
 
     calendar = seekOne<Model*>("calendar");
     timeABDE = seekOneChild<Model*>("timeABDE");

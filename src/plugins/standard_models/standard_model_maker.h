@@ -8,7 +8,6 @@
 
 #include <usbase/model_maker_plug_in.h>
 
-
 namespace UniSim{
 
 class ObjectPool;
@@ -18,9 +17,13 @@ class StandardModelMaker : public QObject, public ModelMakerPlugIn
 	Q_OBJECT
     Q_INTERFACES(UniSim::ModelMakerPlugIn)
 public:
-    QList<Identifier> supportedTypes() const;
-    UniSim::Identifier plugInName() const;
+    UniSim::Identifier pluginName() const;
+    QString pluginDesc() const;
+    QStringList authors() const;
+    const QMap<UniSim::Identifier, QString>& supportedClasses();
+
     void useObjectPool(ObjectPool *pool) const;
+
     Model* create(Identifier modelType, Identifier objectName, QObject *parent=0);
 };
 

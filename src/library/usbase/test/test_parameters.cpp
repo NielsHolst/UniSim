@@ -16,7 +16,7 @@ void TestParameters::testSetIntWithStringValue() {
         p.initParameter(name,  QString("123"));
 
         int i;
-        p.setParameter(name, &i, 456);
+        p.setParameter(name, &i, 456, "desc");
         QCOMPARE(i,123);
         UniSim::Identifier id = UniSim::Identifier(name);
         QCOMPARE(p.parameter<int>(id),123);
@@ -34,7 +34,7 @@ void TestParameters::testSetBoolWithStringValue() {
     p.initParameter(name,  QString("Yes"));
 	
 	bool b;
-	p.setParameter(name, &b, false);
+    p.setParameter(name, &b, false, "desc");
 	QCOMPARE(b,true);
 	QCOMPARE(p.parameter<bool>(name),true);	
 }
@@ -45,7 +45,7 @@ void TestParameters::testSetStringWithStringValue() {
     p.initParameter(name,  QString("top"));
 	
 	QString s;
-	p.setParameter(name, &s, QString("toppest"));
+    p.setParameter(name, &s, QString("toppest"), "desc");
 	QCOMPARE(s,QString("top"));
 	QCOMPARE(p.parameter<QString>(name), QString("top"));	
 }
@@ -57,7 +57,7 @@ void TestParameters::testSetDateWithStringValue() {
     p.initParameter(name,  "23/12/2008");
 	
 	QDate date;
-	p.setParameter(name, &date, QDate(2009, 1, 20));
+    p.setParameter(name, &date, QDate(2009, 1, 20), "desc");
 	QCOMPARE(date, testDate);
 	QCOMPARE(p.parameter<QDate>(name), testDate);		
 }
@@ -68,7 +68,7 @@ void TestParameters::testSetIntWithoutStringValue() {
 	QString name("test_int");
 	
 	int i;
-	p.setParameter(name, &i, 456);
+    p.setParameter(name, &i, 456, "desc");
 	QCOMPARE(i,456);
 	QCOMPARE(p.parameter<int>(name),456);	
 }	
@@ -78,7 +78,7 @@ void TestParameters::testSetBoolWithoutStringValue() {
 	QString name("test");
 	
 	bool b = false;
-	p.setParameter(name, &b, true);
+    p.setParameter(name, &b, true, "desc");
 	QCOMPARE(b,true);
 	QCOMPARE(p.parameter<bool>(name),true);	
 }	
@@ -88,7 +88,7 @@ void TestParameters::testSetStringWithoutStringValue() {
 	QString name("test_string");
 	
 	QString s;
-	p.setParameter(name, &s, QString("toppest"));
+    p.setParameter(name, &s, QString("toppest"), "desc");
 	QCOMPARE(s,QString("toppest"));
 	QCOMPARE(p.parameter<QString>(name), QString("toppest"));	
 }
@@ -99,7 +99,7 @@ void TestParameters::testSetDateWithoutStringValue() {
 	QDate testDate = QDate(2008, 12, 23);
 	
 	QDate date;
-	p.setParameter(name, &date, testDate);
+    p.setParameter(name, &date, testDate, "desc");
 	QCOMPARE(date, testDate);
 	QCOMPARE(p.parameter<QDate>(name), testDate);		
 }
@@ -109,7 +109,7 @@ void TestParameters::testChangeInt(){
 	QString name("test");
 	
 	int i;
-	p.setParameter(name, &i, 123);
+    p.setParameter(name, &i, 123, "desc");
 	p.changeParameter(name, 456);
 	QCOMPARE(i,456);
 	QCOMPARE(p.parameter<int>(name), 456);	
@@ -120,7 +120,7 @@ void TestParameters::testChangeBool(){
 	QString name("test");
 	
 	bool b;
-	p.setParameter(name, &b, true);
+    p.setParameter(name, &b, true, "desc");
 	p.changeParameter(name, false);
 	QCOMPARE(b,false);
 	QCOMPARE(p.parameter<bool>(name), false);	
@@ -131,7 +131,7 @@ void TestParameters::testChangeString() {
 	QString name("test");
 	
 	QString s;
-	p.setParameter(name, &s, QString("top"));
+    p.setParameter(name, &s, QString("top"), "desc");
 	p.changeParameter(name, QString("toppest"));
 	QCOMPARE(s, QString("toppest"));
 	QCOMPARE(p.parameter<QString>(name), QString("toppest"));	
@@ -142,7 +142,7 @@ void TestParameters::testChangeDate() {
 	QString name("test");
 	
 	QDate date;
-	p.setParameter(name, &date, QDate(2008, 12, 23));
+    p.setParameter(name, &date, QDate(2008, 12, 23), "desc");
 
 	QDate newDate = QDate(2008, 10, 21);
 	p.changeParameter(name, newDate);
@@ -176,7 +176,7 @@ void TestParameters::testConflictingStringValueType() {
 	bool excepted = false;
 	try {
 		int i;
-		p.setParameter(name, &i, 456);
+        p.setParameter(name, &i, 456, "desc");
 	}
 	catch (const Exception &ex) {
 		excepted = true;

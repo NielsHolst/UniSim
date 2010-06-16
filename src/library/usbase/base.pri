@@ -19,6 +19,7 @@ HEADERS += \
         $${US_BASE}/push_variable.h \
         $${US_BASE}/random_uniform.h \
         $${US_BASE}/utilities.h \
+        $${US_BASE}/version.h \
         $${US_BASE}/weather_file.h
 
 

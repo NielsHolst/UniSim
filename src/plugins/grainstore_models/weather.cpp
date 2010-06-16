@@ -19,7 +19,7 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
     setColumn("Tmin", 5);
     setColumn("marketPrice", 6);
 
-    new PullVariable("Tavg", &Tavg, this);
+    new PullVariable("Tavg", &Tavg, this, "desc");
 }
 
 

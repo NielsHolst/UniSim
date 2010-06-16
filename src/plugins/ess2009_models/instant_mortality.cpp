@@ -18,9 +18,9 @@ InstantMortality::InstantMortality(Identifier name, QObject *parent)
 }
 
 void InstantMortality::initialize() {
-    setParameter("day", &_day, 1);
-    setParameter("month", &_month, 6);
-    setParameter("mortalities", &_mortalityString, QString());
+    setParameter("day", &_day, 1, "description");
+    setParameter("month", &_month, 6, "description");
+    setParameter("mortalities", &_mortalityString, QString(), "description");
 
     _dayOfYear = UniSim::toDayOfYear(_day, _month);
     decodeMortalities();

@@ -13,13 +13,13 @@ namespace intercom{
 LightUseEfficiencyGivenTemp::LightUseEfficiencyGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("efficiency", &efficiency, this);
+    new PullVariable("efficiency", &efficiency, this, "description");
 }
 
 void LightUseEfficiencyGivenTemp::initialize()
 {
-    setParameter("slope", &slope, -0.00095);
-    setParameter("intercept", &intercept, 0.0635);
+    setParameter("slope", &slope, -0.00095, "description");
+    setParameter("intercept", &intercept, 0.0635, "description");
     weather = seekOne<Model*>("weather");
 }
 void LightUseEfficiencyGivenTemp::reset() {

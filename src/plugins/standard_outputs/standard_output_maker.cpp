@@ -11,15 +11,31 @@
 
 namespace UniSim{
 
-QList<Identifier> StandardOutputMaker::supportedTypes() const
-{
-    return QList<Identifier>()
-        << Identifier("Plot")
-        << Identifier("Table");
+UniSim::Identifier StandardOutputMaker::pluginName() const {
+    return "UniSim";
 }
 
-UniSim::Identifier StandardOutputMaker::plugInName() const {
-    return "UniSim";
+QString StandardOutputMaker::pluginDesc() const {
+    return
+    "The @F UniSim plugin contains a collection of output classes of general utility.";
+}
+
+QStringList StandardOutputMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark";
+}
+
+const QMap<Identifier, QString>& StandardOutputMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["Plot"] =
+    "@I pending";
+
+    desc["Table"] =
+    "@I pending";
+
+    return desc;
 }
 
 void StandardOutputMaker::useObjectPool(ObjectPool *pool) const {

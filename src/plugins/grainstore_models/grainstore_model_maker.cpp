@@ -19,22 +19,54 @@ using namespace UniSim;
 
 namespace grainstore{
 
-QList<Identifier> GrainstoreModelMaker::supportedTypes() const
-{
-	return QList<Identifier>()
-        << Identifier("LarvaTime")
-        << Identifier("Maize")
-		<< Identifier("Prostephanus")
-		<< Identifier("PtDevelopment")
-		<< Identifier("PtEmigration")
-        << Identifier("PtImmigration")
-        << Identifier("PtReproduction")
-        << Identifier("Weather")
-;
+Identifier GrainstoreModelMaker::pluginName() const {
+    return Identifier("grainstore");
 }
 
-Identifier GrainstoreModelMaker::plugInName() const {
-    return Identifier("grainstore");
+QString GrainstoreModelMaker::pluginDesc() const {
+    return
+    "The @F grainstore plugin contains models that simulate the population dynamics"
+    "of the major insect pests (@I {Prostephanus truncatus} and @I {Sitophilus zeamais})"
+    "and the biocontrol agent @I {Teretrius nigrescens} in African maize stores, "
+    "as described by @Cite{$meikle_et_al_1998, $meikle_et_al_1999, holst_meikle_2003}."
+    "@PP This reimplementation of the models are still not functional.";
+}
+
+QStringList GrainstoreModelMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark";
+}
+
+
+const QMap<Identifier, QString>& GrainstoreModelMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["LarvaTime"] =
+    "@I pending";
+
+    desc["Maize"] =
+    "@I pending";
+
+    desc["Prostephanus"] =
+    "@I pending";
+
+    desc["PtDevelopment"] =
+    "@I pending";
+
+    desc["PtEmigration"] =
+    "@I pending";
+
+    desc["PtImmigration"] =
+    "@I pending";
+
+    desc["PtReproduction"] =
+    "@I pending";
+
+    desc["Weather"] =
+    "@I pending";
+
+    return desc;
 }
 
 void GrainstoreModelMaker::useObjectPool(ObjectPool *pool) const {

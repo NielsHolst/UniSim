@@ -19,22 +19,52 @@ using namespace UniSim;
 
 namespace ess2009 {
 
-QList<Identifier> Ess2009ModelMaker::supportedTypes() const
-{
-    return QList<Identifier>()
-        << Identifier("Crop")
-        << Identifier("InstantMortality")
-        << Identifier("PlantGrowthStage")
-        << Identifier("Rotation")
-        << Identifier("SeedBank")
-        << Identifier("Treatments")
-        << Identifier("Weather")
-        << Identifier("Weed") ;
-}
-
-Identifier Ess2009ModelMaker::plugInName() const
+Identifier Ess2009ModelMaker::pluginName() const
 {
     return Identifier("ess2009");
+}
+
+QString Ess2009ModelMaker::pluginDesc() const {
+    return
+    "The @F ess2009 plugin was developed for the ENDURE Summer School 2009 in Volterra, Italy."
+    "It contains models to simulate the population dynamics of annual weeds in the crop rotation."
+    "The models remain to be formally published.";
+}
+
+QStringList Ess2009ModelMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark";
+}
+
+const QMap<Identifier, QString>& Ess2009ModelMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["Crop"] =
+    "@I pending";
+
+    desc["InstantMortality"] =
+    "@I pending";
+
+    desc["PlantGrowthStage"] =
+    "@I pending";
+
+    desc["Rotation"] =
+    "@I pending";
+
+    desc["SeedBank"] =
+    "@I pending";
+
+    desc["Treatments"] =
+    "@I pending";
+
+    desc["Weather"] =
+    "@I pending";
+
+    desc["Weed"] =
+    "@I pending";
+
+    return desc;
 }
 
 void Ess2009ModelMaker::useObjectPool(ObjectPool *pool) const {

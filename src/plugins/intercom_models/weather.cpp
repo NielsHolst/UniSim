@@ -23,12 +23,12 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
     setColumn("Tmin", 4);
     setColumn("irradiationMJ", 7);
 
-    new PullVariable("Tavg", &Tavg, this);
-    new PullVariable("Tday", &Tday, this);
-    new PullVariable("irradiation", &irradiation, this);
-    new PullVariable("parTotal", &par.total, this);
-    new PullVariable("parDiffuse", &par.diffuse, this);
-    new PullVariable("parDirect", &par.direct, this);
+    new PullVariable("Tavg", &Tavg, this, "description");
+    new PullVariable("Tday", &Tday, this, "description");
+    new PullVariable("irradiation", &irradiation, this, "description");
+    new PullVariable("parTotal", &par.total, this, "description");
+    new PullVariable("parDiffuse", &par.diffuse, this, "description");
+    new PullVariable("parDirect", &par.direct, this, "description");
 }
 
 void Weather::initialize() {

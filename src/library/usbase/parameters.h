@@ -36,6 +36,7 @@ private:
         QString stringValue;
 		QVariant::Type typePointedTo; 
         void *valuePtr;
+        QString desc;
     };
 
 public:
@@ -48,7 +49,7 @@ public:
 
         Parameters are typically set up during initialize(). The value can be retrieved via parameter().
     */
-    template <class T> void setParameter(Identifier name, T *valuePtr, T defaultValue);
+    template <class T> void setParameter(Identifier name, T *valuePtr, T defaultValue, QString desc);
 
 
     //! Changes parameter value
@@ -70,6 +71,7 @@ public:
 
     void initParameter(Identifier name, QString value);
     Identifiers allParameters() const;
+    QString description(Identifier name);
 
 private:
     static QDate validatedDate(QString s);
@@ -81,7 +83,7 @@ template <class T> QVariant::Type getType() {
 	return QVariant(T()).type();
 }
 
-template <class T> void Parameters::setParameter(Identifier name, T *valuePtr, T defaultValue) {
+template <class T> void Parameters::setParameter(Identifier name, T *valuePtr, T defaultValue, QString desc) {
     Q_ASSERT(valuePtr);
 		
     if (!_parameters.contains(name)) {
@@ -103,10 +105,11 @@ template <class T> void Parameters::setParameter(Identifier name, T *valuePtr, T
 	
     _parameters[name].valuePtr = (void *) valuePtr;
     _parameters[name].typePointedTo = getType<T>();
+    _parameters[name].desc = desc;
 }
 
-template <> void Parameters::setParameter<QDate>(Identifier name, QDate *valuePtr, QDate defaultValue);
-template <> void Parameters::setParameter<bool>(Identifier name, bool *valuePtr, bool defaultValue);
+template <> void Parameters::setParameter<QDate>(Identifier name, QDate *valuePtr, QDate defaultValue, QString desc);
+template <> void Parameters::setParameter<bool>(Identifier name, bool *valuePtr, bool defaultValue, QString desc);
 
 template <class T> void Parameters::changeParameter(Identifier name, T value) {
     T* valuePtr = validatedValuePtr<T>(name);

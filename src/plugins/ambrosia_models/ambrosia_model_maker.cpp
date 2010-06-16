@@ -14,17 +14,35 @@ using namespace UniSim;
 
 namespace ambrosia{
 
-QList<Identifier> AmbrosiaModelMaker::supportedTypes() const
-{
-	return QList<Identifier>()
-        << Identifier("Plant")
-        << Identifier("Time")
-        << Identifier("Weather")
-;
+UniSim::Identifier AmbrosiaModelMaker::pluginName() const {
+    return "ambrosia";
 }
 
-Identifier AmbrosiaModelMaker::plugInName() const {
-	return Identifier("ambrosia");
+QString AmbrosiaModelMaker::pluginDesc() const {
+    return
+    "The @F ambrosia plugin is an implementation of the phenology model for @I {Ambrosia artemisiifolia}, "
+    "as described by @Cite{$deen_et_al_1998a, $deen_et_al_1998b}.";
+}
+
+QStringList AmbrosiaModelMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark";
+}
+
+const QMap<Identifier, QString>& AmbrosiaModelMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["Plant"] =
+    "@I pending";
+
+    desc["Time"] =
+    "@I pending";
+
+    desc["Weather"] =
+    "@I pending";
+
+    return desc;
 }
 
 void AmbrosiaModelMaker::useObjectPool(ObjectPool *pool) const {

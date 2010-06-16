@@ -21,20 +21,20 @@ Weed::Weed(UniSim::Identifier name, QObject *parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 
-    new PullVariable("prevOutflowTotal", &_prevOutflowTotal, this);
-    new PullVariable("projectedDeqs", &_projectedDeqs, this);
-    new PullVariable("projectedYieldLossPct", &_projectedYieldLossPct, this);
-    new PullVariable("projectedMass", &_projectedMass, this);
-    new PullVariable("seedsDropping", &_seedsDropping, this);
-    new PullVariable("g", &_g, this);
+    new PullVariable("prevOutflowTotal", &_prevOutflowTotal, this, "description");
+    new PullVariable("projectedDeqs", &_projectedDeqs, this, "description");
+    new PullVariable("projectedYieldLossPct", &_projectedYieldLossPct, this, "description");
+    new PullVariable("projectedMass", &_projectedMass, this, "description");
+    new PullVariable("seedsDropping", &_seedsDropping, this, "description");
+    new PullVariable("g", &_g, this, "description");
 }
 
 void Weed::initialize() {
-	setParameter("cropLaiExp1", &_cropLaiExp1, 6.904);
-	setParameter("cropLaiExp2", &_cropLaiExp2, 0.7491);
-	setParameter("seedProdSlope", &_seedProdSlope, 2.);
-	setParameter("seedProdExp", &_seedProdExp, 1.);
-    setParameter("seedSpillAtHarvestPct", &_seedSpillAtHarvestPct, 100.);
+    setParameter("cropLaiExp1", &_cropLaiExp1, 6.904, "description");
+    setParameter("cropLaiExp2", &_cropLaiExp2, 0.7491, "description");
+    setParameter("seedProdSlope", &_seedProdSlope, 2., "description");
+    setParameter("seedProdExp", &_seedProdExp, 1., "description");
+    setParameter("seedSpillAtHarvestPct", &_seedSpillAtHarvestPct, 100., "description");
 
     _seedBank = seekOneChild<Model*>("seedBank");
     _seedling = seekOneChild<Model*>("seedling");

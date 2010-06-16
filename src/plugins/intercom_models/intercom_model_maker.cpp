@@ -24,27 +24,62 @@ namespace intercom{
 
 bool initialized = false;
 
-QList<Identifier> IntercomModelMaker::supportedTypes() const
-{
-	return QList<Identifier>()
-        << Identifier("Area")
-        << Identifier("AssimilationMaxGivenTemp")
-        << Identifier("AssimilationMaxGivenTempSla")
-        << Identifier("Community")
-        << Identifier("Height")
-        << Identifier("LeafStemRatio")
-        << Identifier("LightUseEfficiencyGivenTemp")
-        << Identifier("Organ")
-        << Identifier("Plant")
-        << Identifier("SpecificLeafArea")
-        << Identifier("Weather")
-;
-}
-
-UniSim::Identifier IntercomModelMaker::plugInName() const {
+UniSim::Identifier IntercomModelMaker::pluginName() const {
     return "intercom";
 }
 
+QString IntercomModelMaker::pluginDesc() const {
+    return
+    "The @F intercom plugin is an implementation of the INTERCOM model for plant growth and competition, "
+    "as described by @Cite{$kropff_laar}.";
+}
+
+QStringList IntercomModelMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark"
+        << "Marleen Riemens, Plant Research International, Netherlands"
+        << "Jonathan Storkey, Rothamstead Research International, UK";
+}
+
+const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["Area"] =
+    "@I pending";
+
+    desc["AssimilationMaxGivenTemp"] =
+    "@I pending";
+
+    desc["AssimilationMaxGivenTempSla"] =
+    "@I pending";
+
+    desc["Community"] =
+    "@I pending";
+
+    desc["Height"] =
+    "@I pending";
+
+    desc["LeafStemRatio"] =
+    "@I pending";
+
+    desc["LightUseEfficiencyGivenTemp"] =
+    "@I pending";
+
+    desc["Organ"] =
+    "@I pending";
+
+    desc["Plant"] =
+    "@I pending";
+
+    desc["SpecificLeafArea"] =
+    "@I pending";
+
+    desc["Weather"] =
+    "@I pending";
+
+    return desc;
+}
 
 void IntercomModelMaker::useObjectPool(ObjectPool *pool) const {
     objectPool()->deferTo(pool);

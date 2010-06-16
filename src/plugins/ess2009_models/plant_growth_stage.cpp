@@ -20,12 +20,12 @@ PlantGrowthStage::PlantGrowthStage(UniSim::Identifier name, QObject *parent)
     setRecursionPolicy(Component::Reset,  Component::ChildrenLast);
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 
-    new PullVariable("outflowAsDensity", &_outflowAsDensity, this);
-    new PullVariable("outflowAsDensityEqs", &_outflowAsDensityEqs, this);
+    new PullVariable("outflowAsDensity", &_outflowAsDensity, this, "description");
+    new PullVariable("outflowAsDensityEqs", &_outflowAsDensityEqs, this, "description");
 
-    new PushVariable("inflowAsDensity", &inflowAsDensity, this);
-    new PushVariable("inflowAsDensityEqs", &inflowAsDensityEqs, this);
-    new PushVariable("instantMortality", &instantMortality, this);
+    new PushVariable("inflowAsDensity", &inflowAsDensity, this, "description");
+    new PushVariable("inflowAsDensityEqs", &inflowAsDensityEqs, this, "description");
+    new PushVariable("instantMortality", &instantMortality, this, "description");
 }
 
 void PlantGrowthStage::initialize() {

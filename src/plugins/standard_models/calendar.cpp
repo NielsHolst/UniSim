@@ -22,23 +22,25 @@ namespace UniSim{
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("daysTotal", &daysTotal, this);
-    new PullVariable("dayInYear", &dayInYear, this);
-    new PullVariable("dayOfYear", &dayInYear, this);
-    new PullVariable("day", &day, this);
-    new PullVariable("month", &month, this);
-    new PullVariable("year", &year, this);
-    new PullVariable("dayLength", &dayLength, this);
-    new PullVariable("sinb", &sinb, this);
-    new PullVariable("sinLD", &sinLD, this);
-    new PullVariable("cosLD", &cosLD, this);
+    new PullVariable("daysTotal", &daysTotal, this, "Days total since beginning of simulation");
+    new PullVariable("dayInYear", &dayInYear, this, "Day number in year, also known as Julian day");
+    new PullVariable("dayOfYear", &dayInYear, this, "Synonymous with @F {dayInYear}");
+    new PullVariable("day", &day, this, "Current day in month (1..31)");
+    new PullVariable("month", &month, this, "Current montn (1..12)");
+    new PullVariable("year", &year, this, "Current year");
+    new PullVariable("dayLength", &dayLength, this, "Current day length (hours)");
+    new PullVariable("sinb", &sinb, this, "Sine of sun elevation, updated by the @F tick event of the @F clock object");
+    new PullVariable("sinLD", &sinLD, this, "Intermediate variable in astronomic calculations");
+    new PullVariable("cosLD", &cosLD, this, "Intermediate variable in astronomic calculations");
 }
 
 void Calendar::initialize()
 {
-    setParameter("firstDate", &firstDate, QDate());
-    setParameter("latitude", &latitude, 52.);
-    setParameter("followers", &followersAsString, QString());
+    setParameter("firstDate", &firstDate, QDate(), "Initial date of simulation");
+    setParameter("latitude", &latitude, 52., "Latitude of simulated system");
+    setParameter("followers", &followersAsString, QString(),
+    "A single name, or list of names, denoting those objects that follows the calendar date. "
+    "Commonly the @F weather object is set as a follower");
 
     followers.clear();
     QStringList followersAsStrings = decodeSimpleList(followersAsString, "Calendar::initialize");

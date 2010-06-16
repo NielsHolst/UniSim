@@ -16,7 +16,7 @@ LifeCycle::LifeCycle(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable("contents", &sum, this);
+    new PullVariable("contents", &sum, this, "description");
 }
 
 void LifeCycle::initialize()

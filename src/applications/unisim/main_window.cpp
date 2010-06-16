@@ -12,7 +12,7 @@
 #include <usbase/model.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
-#include <usengine/model_documentation_writer.h>
+#include <usengine/documentation_writer.h>
 #include <usengine/prototype_maker.h>
 #include <usengine/plot_widget.h>  // test
 #include "file_locations_sub_window.h"
@@ -75,6 +75,9 @@ MainWindow::MainWindow()
     toolsMenu->addAction( toolsGenerateDocs = new QAction("&Generate documentation...", this) );
     connect( toolsGenerateDocs, SIGNAL(triggered()), this, SLOT(doToolsGenerateDocs()) );
 
+    if (!isDeveloperVersion())
+        toolsMenu->hide();
+
     /*viewMenu->addAction( viewComponents = new QAction("&Components", this) );
     connect( viewComponents, SIGNAL(triggered()), this, SLOT(doViewComponents()) );*/
 
@@ -110,7 +113,10 @@ void MainWindow::setTitle(QString subTitle) {
     QString title;
     if (!subTitle.isEmpty()) title = subTitle + "  -  ";
 
-    title += "Universal Simulator";
+    title += "Universal Simulator ";
+    title += version();
+    if (isDeveloperVersion())
+        title+= ".x";
     setWindowTitle(title);
 }
 
@@ -274,28 +280,20 @@ void MainWindow::doToolsPrototyping() {
 }
 
 void MainWindow::doToolsGenerateDocs() {
-    QDir dir = FileLocations::location(FileLocations::Output);
-    QString folderPath = dir.absolutePath();
-    QString filePath = folderPath + "/" + "index.html";
-
-    QFile file(filePath);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    if (!file.isOpen()) {
-        QString msg = "Cannot open file to write documentation: " +
-                      filePath;
-        QMessageBox::information(this, "Message", msg);
-        return;
+    bool ok = true;
+    DocumentationWriter writer;
+    try {
+        writer.write();
     }
-
-    ModelDocumentationWriter writer;
-    writer.setDevice(&file);
-
-    writer.write();
-
-    QString msg = "Documentation successfully written to " +
-                  filePath;
-    QMessageBox::information(this, "Message", msg);
-
+    catch (UniSim::Exception &ex) {
+        ok = false;
+        LogBase::LogItem message = { "Error", ex.message() };
+        _logSubWindow->tell(message);
+    }
+    if (ok) QMessageBox::information(
+            this,
+            "Message",
+            "Documentation successfully written to output folder");
 }
 
 void MainWindow::doViewComponents()

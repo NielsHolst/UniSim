@@ -14,7 +14,7 @@ TimeStepLimited::TimeStepLimited(Identifier name, QObject *parent)
 }
 
 void TimeStepLimited::initialize() {
-    setParameter("maxSteps", &maxSteps, 100);
+    setParameter("maxSteps", &maxSteps, 100, "description");
 }
 
 void TimeStepLimited::resetRuns() {

@@ -32,6 +32,13 @@ const double MIN_EXP = -log(1. - DBL_EPSILON);
 
 class Model;
 
+//! @name Versioning
+//@{
+QString version();
+bool isDeveloperVersion();
+
+//@}
+
 //! @name Navigation
 //@{
 void setSimulationObjectFromDescendent(QObject *object);
@@ -218,9 +225,10 @@ void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers) {
             TPlugin *plugin = qobject_cast<TPlugin*>(loader.instance());
             if (plugin) {
                 plugin->useObjectPool(objectPool());
-                foreach (Identifier id, plugin->supportedTypes()) {
+				QList<Identifier> classes = plugin->supportedClasses().keys();
+                foreach (Identifier id, classes) {
                     (*makers)[id] = plugin;
-                    Identifier idWithNamespace = plugin->plugInName().label() + "::" + id.label();
+                    Identifier idWithNamespace = plugin->pluginName().label() + "::" + id.label();
                     (*makers)[idWithNamespace] = plugin;
 
                 }

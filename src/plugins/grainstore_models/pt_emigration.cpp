@@ -13,14 +13,14 @@ namespace grainstore{
 PtEmigration::PtEmigration(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("N", &density, this);
+    new PullVariable("N", &density, this, "desc");
 }
 
 void PtEmigration::initialize()
 {
-	setParameter("Ninit", &Ninit, 1.);
-	setParameter("K", &K, 1000.);
-	setParameter("r", &r, 1.2);
+    setParameter("Ninit", &Ninit, 1., "desc");
+    setParameter("K", &K, 1000., "desc");
+    setParameter("r", &r, 1.2, "desc");
 }
 
 void PtEmigration::reset()

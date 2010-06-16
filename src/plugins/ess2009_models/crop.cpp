@@ -17,24 +17,24 @@ namespace ess2009 {
 Crop::Crop(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
-    new PullVariable("lai", &_lai, this);
-    new PullVariable("Tsum", &_Tsum, this);
+    new PullVariable("lai", &_lai, this, "description");
+    new PullVariable("Tsum", &_Tsum, this, "description");
 }
 
 
 
 void Crop::initialize() {
-    setParameter("sowingDay", &_sowingDay, 1);
-    setParameter("sowingMonth", &_sowingMonth, 4);
-    setParameter("harvestDay", &_harvestDay, 1);
-    setParameter("harvestMonth", &_harvestMonth, 8);
-    setParameter("weedExchangeRate", &_weedExchangeRate, 0.6);
-    setParameter("maxYield", &_maxYield, 800.);
-    setParameter("maxYieldLossPct", &_maxYieldLossPct, 60.);
-    setParameter("slopeYieldLossPct", &_slopeYieldLossPct, 0.5);
+    setParameter("sowingDay", &_sowingDay, 1, "description");
+    setParameter("sowingMonth", &_sowingMonth, 4, "description");
+    setParameter("harvestDay", &_harvestDay, 1, "description");
+    setParameter("harvestMonth", &_harvestMonth, 8, "description");
+    setParameter("weedExchangeRate", &_weedExchangeRate, 0.6, "description");
+    setParameter("maxYield", &_maxYield, 800., "description");
+    setParameter("maxYieldLossPct", &_maxYieldLossPct, 60., "description");
+    setParameter("slopeYieldLossPct", &_slopeYieldLossPct, 0.5, "description");
     setParameter("laiCalendar", &_laiCalendar,
                  QString("((0 0)(110 0)(210 0.3)(310 0.8)(410 1.6)"
-                         "(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"));
+                         "(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"), "description");
 
     _sowingDayOfYear = UniSim::toDayOfYear(_sowingDay, _sowingMonth);
     _harvestDayOfYear = UniSim::toDayOfYear(_harvestDay, _harvestMonth);

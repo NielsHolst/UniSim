@@ -19,17 +19,20 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
 {
     // Next line can be used when pull variables have been templatized
     //new PullVariable("ageClasses", &_x, this);
-    new PullVariable("number", &_sum, this);
-    new PullVariable("inflow", &_input, this);
-    new PullVariable("outflow", &_output, this);
-    new PullVariable("inflowTotal", &_inputTotal, this);
-    new PullVariable("outflowTotal", &_outputTotal, this);
-    new PullVariable("growthRate", &_fgr, this);
-    new PullVariable("timeStep", &_dt, this);
+    new PullVariable("number", &_sum, this, "Number of units (e.g. individuals) in stage");
+    new PullVariable("inflow", &_input, this, "Inflow into the stage in latest time step");
+    new PullVariable("outflow", &_output, this, "Outflow from the stage in latest time step");
+    new PullVariable("inflowTotal", &_inputTotal, this, "Total inflow into the stage since beginning of the simulation");
+    new PullVariable("outflowTotal", &_outputTotal, this, "Total outflow from the stage since beginning of the simulation");
+    new PullVariable("growthRate", &_fgr, this, "Finite growth rate through stage. "
+                     "For every quantity @I x that enters as inflow, @I fgr*x will emerge as outflow. "
+                     "@F fgr can be changed during the simulation");
+    new PullVariable("timeStep", &_dt, this, "The latest time step applied to the stage");
 
-    new PushVariable("inflow", &_inflow, this);
-    new PushVariable("growthRate", &_fgr, this);
-    new PushVariable("instantMortality", &_instantMortality, this);
+    new PushVariable("inflow", &_inflow, this, "Number of units to be put into the stage in the next time step");
+    new PushVariable("growthRate", &_fgr, this, "Same as the @F fgr pull variable");
+    new PushVariable("instantMortality", &_instantMortality, this,
+                     "The mortality [0..1] will be applied in the next time step, before the @F inflow is added");
 }
 
 Stage::~Stage()
@@ -42,8 +45,10 @@ Stage::~Stage()
 
 void Stage::initialize()
 {
-	setParameter("k", &_k, 30);
-	setParameter("duration", &_L, 100.);
+    setParameter("k", &_k, 30, "The number of age classes in the stage. The fewer age classes, the larger the variance on @F {duration}");
+    setParameter("duration", &_L, 100., "The average duration of the stage: an inflow will emerge as an outflow dispersed "
+                 "over time, with a delay of @F duration on average and a variance of @Math {@F duration sup 2 slash @F k sup 2} "
+                 "@Cite{$manetsch}.");
 
     time = seekOneChild<Model*>("time");
 }
@@ -55,7 +60,7 @@ void Stage::reset()
 	_x = new double[_k];
 
     if (ageClassesPtr) delete ageClassesPtr;
-    ageClassesPtr = new PullVariable("ageClasses", _x, this);
+    ageClassesPtr = new PullVariable("ageClasses", _x, this, "description");
 
     fill(0);
 

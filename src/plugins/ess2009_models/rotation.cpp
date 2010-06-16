@@ -18,13 +18,13 @@ Rotation::Rotation(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable("lai", &_lai, this);
+    new PullVariable("lai", &_lai, this, "description");
 }
 
 
 
 void Rotation::initialize() {
-    setParameter("crops", &_cropsString, QString());
+    setParameter("crops", &_cropsString, QString(), "description");
     decodeCrops();
     _calendar = seekOne<Model*>("calendar");
     collectRotation();

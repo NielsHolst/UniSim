@@ -17,7 +17,7 @@ OutputTable::OutputTable(Identifier name, QObject *parent)
 
 void OutputTable::initialize() {
     Output::initialize();
-    setParameter("fileName", &fileName, QString("output_table.prn"));
+    setParameter("fileName", &fileName, QString("output_table.prn"), "description");
     standardizeLabels();
 }
 

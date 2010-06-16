@@ -16,10 +16,10 @@ Prostephanus::Prostephanus(UniSim::Identifier name, QObject *parent)
 
 void Prostephanus::initialize()
 {
-    setParameter("lossDemandRate", &lossDemandRate, 0.000659);
-    setParameter("lossSearchRate", &lossSearchRate, 0.00795);
-    setParameter("damageDemandRate", &damageDemandRate, 0.00317);
-    setParameter("damageSearchRate", &damageSearchRate, 0.0301);
+    setParameter("lossDemandRate", &lossDemandRate, 0.000659, "desc");
+    setParameter("lossSearchRate", &lossSearchRate, 0.00795, "desc");
+    setParameter("damageDemandRate", &damageDemandRate, 0.00317, "desc");
+    setParameter("damageSearchRate", &damageSearchRate, 0.0301, "desc");
 
     immigration = seekOneChild<Model*>("immigration");
     development = seekOneChild<Model*>("development");

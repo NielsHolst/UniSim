@@ -13,13 +13,13 @@ namespace intercom{
 LeafStemRatio::LeafStemRatio(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("ratio", &ratio, this);
+    new PullVariable("ratio", &ratio, this, "description");
 }
 
 void LeafStemRatio::initialize()
 {
-    setParameter("initial", &initial, 0.73);
-    setParameter("slope", &slope, 5.7e-4);
+    setParameter("initial", &initial, 0.73, "description");
+    setParameter("slope", &slope, 5.7e-4, "description");
     photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
 }
 

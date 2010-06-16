@@ -18,13 +18,13 @@ Insect4::Insect4(UniSim::Identifier name, QObject *parent)
 }
 
 void Insect4::initialize() {
-    setParameter("initEggs", &initEggs, 30.);
+    setParameter("initEggs", &initEggs, 30., "Initial number of insect eggs");
 
     egg = seekOneChild<Model*>("egg");
     larva = seekOneChild<Model*>("larva");
     pupa = seekOneChild<Model*>("pupa");
     adult = seekOneChild<Model*>("adult");
-    fecundity = adult->seekOneChild<Model*>("fecundity");
+    fecundity = seekOneSibling<Model*>("fecundity");
 }
 
 void Insect4::reset() {

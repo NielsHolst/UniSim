@@ -14,26 +14,26 @@ namespace conductance {
 Plant::Plant(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("weight", &weight, this);
-    new PullVariable("totalWeight", &totalWeight, this);
-    new PullVariable("sz", &sz, this);
-    new PullVariable("total_sz", &total_sz, this);
-    new PullVariable("Lz", &Lz, this);
-    new PullVariable("fz", &fz, this);
-    new PullVariable("LA_per_plant", &LA_per_plant, this);
-    new PullVariable("dweight", &dweight, this);
-    new PullVariable("phase", &_phase, this);
+    new PullVariable("weight", &weight, this, "description");
+    new PullVariable("totalWeight", &totalWeight, this, "description");
+    new PullVariable("sz", &sz, this, "description");
+    new PullVariable("total_sz", &total_sz, this, "description");
+    new PullVariable("Lz", &Lz, this, "description");
+    new PullVariable("fz", &fz, this, "description");
+    new PullVariable("LA_per_plant", &LA_per_plant, this, "description");
+    new PullVariable("dweight", &dweight, this, "description");
+    new PullVariable("phase", &_phase, this, "description");
 }
 
 void Plant::initialize() {
-    setParameter("initWeight", &initWeight, 2.);
-    setParameter("A", &A, 0.03);
-    setParameter("phi", &phi, 0.67);
-    setParameter("F", &F, 0.01);
-    setParameter("theta", &theta, 0.9);
-    setParameter("k", &k, 0.6);
-    setParameter("eps", &eps, 1.);
-    setParameter("n", &n, 20.);
+    setParameter("initWeight", &initWeight, 2., "description");
+    setParameter("A", &A, 0.03, "description");
+    setParameter("phi", &phi, 0.67, "description");
+    setParameter("F", &F, 0.01, "description");
+    setParameter("theta", &theta, 0.9, "description");
+    setParameter("k", &k, 0.6, "description");
+    setParameter("eps", &eps, 1., "description");
+    setParameter("n", &n, 20., "description");
 
     weather = seekOne<Model*>("weather");
 

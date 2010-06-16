@@ -19,8 +19,8 @@ Community::Community(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     photosynthesis = new Photosynthesis(this);
-    new PullVariable("grossLightAbsorption", &grossLightAbsorption, this);
-    new PullVariable("grossAssimilation", &grossAssimilation, this);
+    new PullVariable("grossLightAbsorption", &grossLightAbsorption, this, "description");
+    new PullVariable("grossAssimilation", &grossAssimilation, this, "description");
 }
 
 void Community::initialize() {

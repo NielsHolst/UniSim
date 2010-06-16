@@ -7,10 +7,10 @@ LIBS += -L$${US_QWT}/lib \
 
 HEADERS += 	\
 			$${US_ENGINE}/confirmation.h \
+            $${US_ENGINE}/documentation_writer.h \
 			$${US_ENGINE}/integrator_maker.h \
 			$${US_ENGINE}/file_locations_strict.h \
             $${US_ENGINE}/main_window_interface.h \
-            $${US_ENGINE}/model_documentation_writer.h \
 			$${US_ENGINE}/model_maker.h \
             $${US_ENGINE}/output_maker.h \
             $${US_ENGINE}/plot_widget.h \
@@ -23,9 +23,9 @@ HEADERS += 	\
 
 SOURCES += 	\
 			$${US_ENGINE}/confirmation.cpp \
+            $${US_ENGINE}/documentation_writer.cpp \
 			$${US_ENGINE}/integrator_maker.cpp \
 			$${US_ENGINE}/file_locations_strict.cpp \
-			$${US_ENGINE}/model_documentation_writer.cpp \
             $${US_ENGINE}/model_maker.cpp \
             $${US_ENGINE}/output_maker.cpp \
             $${US_ENGINE}/plot_widget.cpp \

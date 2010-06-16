@@ -13,13 +13,13 @@ namespace intercom{
 AssimilationMaxGivenTemp::AssimilationMaxGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("amax", &amax, this);
+    new PullVariable("amax", &amax, this, "description");
 }
 
 void AssimilationMaxGivenTemp::initialize()
 {
-    setParameter("slope", &slope, 0.04);
-    setParameter("maxAmax", &maxAmax, 1.);
+    setParameter("slope", &slope, 0.04, "description");
+    setParameter("maxAmax", &maxAmax, 1., "description");
     weather = seekOne<Model*>("weather");
 }
 void AssimilationMaxGivenTemp::reset() {

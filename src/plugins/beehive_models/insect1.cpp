@@ -16,8 +16,7 @@ Insect1::Insect1(UniSim::Identifier name, QObject *parent)
 }
 
 void Insect1::initialize() {
-    setParameter("initEggs", &initEggs, 30.);
-    setParameter("sexRatio", &sexRatio, 0.5);
+    setParameter("initEggs", &initEggs, 30., "Initial number of insect eggs");
 
     egg = seekOneChild<Model*>("egg");
     larva = seekOneChild<Model*>("larva");

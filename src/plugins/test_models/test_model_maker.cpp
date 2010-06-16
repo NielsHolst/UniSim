@@ -14,17 +14,34 @@ using namespace UniSim;
 
 namespace test{
 
-QList<Identifier> TestModelMaker::supportedTypes() const
-{
-	return QList<Identifier>()
-		<< Identifier("ConstantWorld")
-		<< Identifier("LifeCycle")
-		<< Identifier("LifeStage")
-;
+UniSim::Identifier TestModelMaker::pluginName() const {
+    return "test";
 }
 
-UniSim::Identifier TestModelMaker::plugInName() const {
-    return "test";
+QString TestModelMaker::pluginDesc() const {
+    return
+    "The @F test plugin contains models used for testing only (UniSim unit tests).";
+}
+
+QStringList TestModelMaker::authors() const {
+    return QStringList()
+        << "Niels Holst, Aarhus University, Denmark";
+}
+
+const QMap<Identifier, QString>& TestModelMaker::supportedClasses() {
+    if (!desc.isEmpty())
+        return desc;
+
+    desc["ConstantWorld"] =
+    "@I pending";
+
+    desc["LifeCycle"] =
+    "@I pending";
+
+    desc["LifeStage"] =
+    "@I pending";
+
+    return desc;
 }
 
 void TestModelMaker::useObjectPool(ObjectPool *pool) const {

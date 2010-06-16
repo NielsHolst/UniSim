@@ -16,15 +16,17 @@ class PushVariable : public QObject
     Q_OBJECT
 
 public:
-    PushVariable(Identifier name, double *valuePtr, QObject *parent);
+    PushVariable(Identifier name, double *valuePtr, QObject *parent, QString desc);
     double value() const;
     double* valuePtr();
     void setValue(double value);
     Identifier id() const;
+    QString description() const;
 
 private:
     Identifier _id;
     double *_valuePtr;
+    QString desc;
 };
 
 

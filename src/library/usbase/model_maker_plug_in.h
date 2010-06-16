@@ -12,6 +12,7 @@
 #ifndef MODEL_MAKER_PLUG_IN_H
 #define MODEL_MAKER_PLUG_IN_H
 
+#include <QMap>
 #include <QtPlugin>
 #include "identifier.h"
 
@@ -25,11 +26,17 @@ class ModelMakerPlugIn
 public:
     virtual ~ModelMakerPlugIn() { }
 	
-	//! Returns a list of the model types supported by this model maker
-    virtual Identifiers supportedTypes() const = 0;
-	
     //! Returns name of this plugin
-    virtual Identifier plugInName() const = 0;
+    virtual Identifier pluginName() const = 0;
+
+    //! Returns description of this plugin
+    virtual QString pluginDesc() const = 0;
+
+    //! Returns the model types supported by this model maker and their description
+    virtual const QMap<Identifier, QString>& supportedClasses() = 0;
+
+    //! Returns the list of authors for this plugin
+    virtual QStringList authors() const = 0;
 
     //! Sets ObjectPool to be used by plug-in
     virtual void useObjectPool(ObjectPool *pool) const = 0;
@@ -42,7 +49,10 @@ public:
 		\return Model created or null of modelType was unknown
 	*/
     virtual UniSim::Model* create(Identifier modelType, Identifier objectName, QObject *parent=0) = 0;
+protected:
+    QMap<Identifier, QString> desc;
 };
+
 
 } //namespace
 

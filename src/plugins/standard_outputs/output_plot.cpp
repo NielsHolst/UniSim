@@ -34,7 +34,7 @@ OutputPlot::~OutputPlot() {
 
 void OutputPlot::initialize() {
     Output::initialize();
-    setParameter("title", &title, QString());
+    setParameter("title", &title, QString(), "description");
 
     const QList<OutputVariable *> &xs(xVariables()), &ys(yVariables());
     if (ys.size() == 0) {

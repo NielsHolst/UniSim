@@ -12,8 +12,10 @@ namespace UniSim{
 Days::Days(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("step", &step, this);
-    new PullVariable("total", &total, this);
+    new PullVariable("step", &step, this,
+                     "Duration of latest time step (days)");
+    new PullVariable("total", &total, this,
+                     "Total duration since beginning of simulation (days)");
 }
 
 void Days::reset() {

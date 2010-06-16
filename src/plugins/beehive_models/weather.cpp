@@ -13,7 +13,10 @@ namespace beehive{
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : WeatherFile(name, parent)
 {
-    new PullVariable("Tavg", &Tavg, this);
+    new PullVariable("Tavg", &Tavg, this,
+    "Daily average temperature, calculated as average between daily minimum "
+    "and maximum temperature");
+
     setColumn("Tmin", 2);
     setColumn("Tmax", 3);
 }

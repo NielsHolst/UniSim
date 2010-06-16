@@ -18,11 +18,11 @@ Community::Community(UniSim::Identifier name, QObject *parent)
     : Model(name, parent), phase(Unlimited)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable("sum_sz", &sum_sz, this);
+    new PullVariable("sum_sz", &sum_sz, this, "description");
 }
 
 void Community::initialize() {
-    setParameter("dt", &dt, 1.);
+    setParameter("dt", &dt, 1., "description");
     plants = seekChildren<Plant*>("*");
 	if (plants.isEmpty())
 		throw Exception("Community has no plants");

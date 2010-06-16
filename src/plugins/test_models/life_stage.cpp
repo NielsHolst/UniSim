@@ -23,14 +23,14 @@ LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
 	_firstUpdate = true;
 	_dirtySum = true;
 	
-    new PullVariable("contents", &_sum, this);
-    new PullVariable("fgr", &_fgr, this);
-    new PullVariable("input", &_input, this);
-    new PullVariable("output", &_output, this);
-    new PullVariable("inputTotal", &_inputTotal, this);
-    new PullVariable("outputTotal", &_outputTotal, this);
+    new PullVariable("contents", &_sum, this, "description");
+    new PullVariable("fgr", &_fgr, this, "description");
+    new PullVariable("input", &_input, this, "description");
+    new PullVariable("output", &_output, this, "description");
+    new PullVariable("inputTotal", &_inputTotal, this, "description");
+    new PullVariable("outputTotal", &_outputTotal, this, "description");
 
-    new PushVariable("input", &_inflow, this);
+    new PushVariable("input", &_inflow, this, "description");
 }
 
 LifeStage::~LifeStage()
@@ -43,9 +43,9 @@ LifeStage::~LifeStage()
 
 void LifeStage::initialize()
 {
-	setParameter("k", &_k, 30);
-	setParameter("duration", &_L, 100.);
-    setParameter("initial_input", &_initialInput, 0.);
+    setParameter("k", &_k, 30, "description");
+    setParameter("duration", &_L, 100., "description");
+    setParameter("initial_input", &_initialInput, 0., "description");
 }
 
 void LifeStage::reset()

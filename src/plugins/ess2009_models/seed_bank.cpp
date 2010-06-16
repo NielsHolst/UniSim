@@ -21,27 +21,27 @@ namespace ess2009 {
 SeedBank::SeedBank(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    new PullVariable("number", &_total, this);
-    new PullVariable("dormant", &_dormant, this);
-    new PullVariable("nonDormant", &_density, this);
-    new PullVariable("dailyEmergenceRatio", &_dailyEmergenceRatio, this);
-    new PullVariable("totalEmergenceRatio", &_totalEmergenceRatio, this);
-    new PullVariable("dailyEmergenceDensity", &_dailyEmergenceDensity, this);
-    new PullVariable("totalEmergenceDensity", &_totalEmergenceDensity, this);
-    new PullVariable("cropEffectOnEmergence", &_cropEffectOnEmergence, this);
-    new PullVariable("dailyEmergenceRatioPotential", &_dailyEmergenceRatioPotential, this);
+    new PullVariable("number", &_total, this, "description");
+    new PullVariable("dormant", &_dormant, this, "description");
+    new PullVariable("nonDormant", &_density, this, "description");
+    new PullVariable("dailyEmergenceRatio", &_dailyEmergenceRatio, this, "description");
+    new PullVariable("totalEmergenceRatio", &_totalEmergenceRatio, this, "description");
+    new PullVariable("dailyEmergenceDensity", &_dailyEmergenceDensity, this, "description");
+    new PullVariable("totalEmergenceDensity", &_totalEmergenceDensity, this, "description");
+    new PullVariable("cropEffectOnEmergence", &_cropEffectOnEmergence, this, "description");
+    new PullVariable("dailyEmergenceRatioPotential", &_dailyEmergenceRatioPotential, this, "description");
 
-    new PushVariable("dormantInflow", &dormantInflow, this);
-    new PushVariable("instantMortality", &instantMortality, this);
+    new PushVariable("dormantInflow", &dormantInflow, this, "description");
+    new PushVariable("instantMortality", &instantMortality, this, "description");
 }
 
 void SeedBank::initialize()
 {
-    setParameter("initialDensity", &_initialDensity, 1000.);
-    setParameter("emergenceCalendar", &_emergenceString, QString("(0 0 5 10 20 40 10 5 0 0 0 0)"));
-    setParameter("yearlyEmergenceRate", &_yearlyEmergenceRate, 0.20);
-    setParameter("yearlyMortalityRate", &_yearlyMortalityRate, 0.10);
-    setParameter("cropLaiExp", &_cropLaiExp, 0.04282);
+    setParameter("initialDensity", &_initialDensity, 1000., "description");
+    setParameter("emergenceCalendar", &_emergenceString, QString("(0 0 5 10 20 40 10 5 0 0 0 0)"), "description");
+    setParameter("yearlyEmergenceRate", &_yearlyEmergenceRate, 0.20, "description");
+    setParameter("yearlyMortalityRate", &_yearlyMortalityRate, 0.10, "description");
+    setParameter("cropLaiExp", &_cropLaiExp, 0.04282, "description");
 
     _calendar = seekOne<Model*>("calendar");
     _rotation = seekOne<Model*>("rotation");

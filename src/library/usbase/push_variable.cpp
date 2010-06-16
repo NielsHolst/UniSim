@@ -9,8 +9,8 @@
 
 namespace UniSim{
 
-PushVariable::PushVariable(Identifier name, double *valuePtr, QObject *parent)
-    : QObject(parent), _id(name), _valuePtr(valuePtr)
+PushVariable::PushVariable(Identifier name, double *valuePtr, QObject *parent, QString desc_)
+    : QObject(parent), _id(name), _valuePtr(valuePtr), desc(desc_)
 {
     setObjectName(name.key());
 }
@@ -42,6 +42,11 @@ void PushVariable::setValue(double value) {
 Identifier PushVariable::id() const {
     return _id;
 }
+
+QString PushVariable::description() const {
+    return desc;
+}
+
 
 } //namespace
 

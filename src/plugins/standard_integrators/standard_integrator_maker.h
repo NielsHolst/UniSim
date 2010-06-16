@@ -17,9 +17,13 @@ class StandardIntegratorMaker : public QObject, public IntegratorMakerPlugIn
 	Q_OBJECT
     Q_INTERFACES(UniSim::IntegratorMakerPlugIn)
 public:
-    QList<Identifier> supportedTypes() const;
-    UniSim::Identifier plugInName() const;
+    UniSim::Identifier pluginName() const;
+    QString pluginDesc() const;
+    QStringList authors() const;
+    const QMap<UniSim::Identifier, QString>& supportedClasses();
+
     void useObjectPool(ObjectPool *pool) const;
+
     Integrator* create(Identifier integratorType, Identifier objectName, QObject *parent=0);
 };
 

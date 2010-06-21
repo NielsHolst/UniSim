@@ -27,6 +27,8 @@ public:
 private:
     // methods
     void updateCrownZoneArea();
+    void updateLightInterception();
+    void updateWeight(double dt);
 
     // parameters
     double initWeight, A, phi, F, theta, k, eps, n;

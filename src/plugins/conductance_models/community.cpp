@@ -17,17 +17,23 @@ namespace conductance {
 Community::Community(UniSim::Identifier name, QObject *parent)
     : Model(name, parent), phase(Unlimited)
 {
-    setRecursionPolicy(Component::Update, Component::ChildrenNot);
     new PullVariable("sum_sz", &sum_sz, this, "description");
 }
 
 void Community::initialize() {
     setParameter("dt", &dt, 1., "description");
+    adjustTimeStep();
+
     plants = seekChildren<Plant*>("*");
 	if (plants.isEmpty())
 		throw Exception("Community has no plants");
 	else if (plants.size() > 2)
         throw Exception("Max. 2 plants are allowed in community");
+}
+
+void Community::adjustTimeStep() {
+    numSteps = (int) (1. + 1e-6)/dt;
+    adjustedDt = 1./numSteps;
 }
 
 void Community::reset() {
@@ -42,17 +48,16 @@ void Community::reset() {
 }
 
 void Community::update() {
-    int steps = (int) (1. + 1e-6)/dt;
-    for (int i = 0; i < steps; ++i) {
+    for (int i = 0; i < numSteps; ++i) {
         bool phaseChanged = true;
         while (phaseChanged) {
             updatePlants();
             updateTotalCrownZoneArea();
             Phase prevPhase = phase;
             if (phase == Unlimited)
-                updateUnlimited();
+                updatePhaseUnlimited();
             else if (phase == UnderCompression && plants.size() == 2)
-                updateUnderCompression();
+                updatePhaseUnderCompression();
             phaseChanged = prevPhase != phase;
         }
     }
@@ -60,7 +65,7 @@ void Community::update() {
 
 void Community::updatePlants() {
     for (int i = 0; i < plants.size(); ++i)
-        plants[i]->updateByDt(dt);
+        plants[i]->updateByDt(adjustedDt);
 }
 
 void Community::updateTotalCrownZoneArea() {
@@ -68,7 +73,8 @@ void Community::updateTotalCrownZoneArea() {
     for (int i = 0; i < plants.size(); ++i)
         sum_sz += plants[i]->pullVariable("total_sz");
 }
-void Community::updateUnlimited() {
+
+void Community::updatePhaseUnlimited() {
     if (sum_sz >= 1.) {
         smallest = (plants.size() == 1
                    || plants[1]->pullVariable("weight") > plants[0]->pullVariable("weight")) ? 0: 1;
@@ -77,9 +83,11 @@ void Community::updateUnlimited() {
     }
 }
 
-void Community::updateUnderCompression() {
+void Community::updatePhaseUnderCompression() {
     Q_ASSERT(smallest>=0 && smallest<=1);
-    if (plants[smallest]->pullVariable("Lz") >= plants[1-smallest]->pullVariable("Lz")) {
+    if (plants[smallest]->pullVariable("Lz") >=
+        plants[1-smallest]->pullVariable("Lz"))
+    {
         plants[0]->changePhase(WeightProportional);
         plants[1]->changePhase(WeightProportional);
         phase = WeightProportional;

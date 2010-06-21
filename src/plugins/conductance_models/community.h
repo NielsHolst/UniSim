@@ -25,13 +25,18 @@ public:
 
 private:
     // methods
+    void adjustTimeStep();
     void updatePlants();
     void updateTotalCrownZoneArea();
-    void updateUnlimited();
-    void updateUnderCompression();
+    void updatePhaseUnlimited();
+    void updatePhaseUnderCompression();
 
 	// parameters
     double dt;
+
+    // derived parameters
+    int numSteps;
+    double adjustedDt;
 
 	// state
     Phase phase;

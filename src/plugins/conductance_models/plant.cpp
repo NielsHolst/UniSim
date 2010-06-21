@@ -50,23 +50,16 @@ void Plant::reset() {
     updateCrownZoneArea();
 }
 
-void Plant::updateByDt(double dt) {
-    updateCrownZoneArea();
-
-    LA_per_plant = F*pow(weight, theta);
-    Lz = LA_per_plant/sz;
-    fz = 1. - exp(-k*Lz);
-
-    double I = weather->pullVariable("irradiation");
-    dweight = eps*I*sz*fz*dt;
-    weight += dweight;
-    totalWeight = n*weight;
-}
-
 void Plant::changePhase(Phase newPhase) {
     phase = newPhase;
     _phase = double(phase);
     Q_ASSERT(phase == Unlimited || phase == UnderCompression || other);
+}
+
+void Plant::updateByDt(double dt) {
+    updateCrownZoneArea();
+    updateLightInterception();
+    updateWeight(dt);
 }
 
 void Plant::updateCrownZoneArea() {
@@ -100,6 +93,19 @@ void Plant::updateCrownZoneArea() {
             throw Exception(msg);
         }
     }
+}
+
+void Plant::updateLightInterception() {
+    LA_per_plant = F*pow(weight, theta);
+    Lz = LA_per_plant/sz;
+    fz = 1. - exp(-k*Lz);
+}
+
+void Plant::updateWeight(double dt) {
+    double I = weather->pullVariable("irradiation");
+    dweight = eps*I*sz*fz*dt;
+    weight += dweight;
+    totalWeight = n*weight;
 }
 
 } //namespace

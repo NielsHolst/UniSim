@@ -197,20 +197,26 @@ void MainWindow::openFile(QString filePath)
 
 void  MainWindow::viewModel() {
     if (!viewModelSubWindow) viewModelSubWindow = new SubWindow(_mdiArea, "Model view");
-    UniSim::ImageWidget *image = new UniSim::ImageWidget;
-    try {
-        image->setImage(liveSim->graphFilePath());
-    }
-    catch (UniSim::Exception &ex) {
-        LogBase::LogItem message = { "Warning", ex.message() };
-        _logSubWindow->tell(message);
-        return;
-    }
+
+    imageLabel = new QLabel;
+    imageLabel->setBackgroundRole(QPalette::Base);
+    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageLabel->setScaledContents(true);
+
+    scrollArea = new QScrollArea;
+    scrollArea->setBackgroundRole(QPalette::Dark);
+    scrollArea->setWidget(imageLabel);
+    viewModelSubWindow->setWidget(scrollArea);
+
+    QImage image(liveSim->graphFilePath());
+    imageLabel->setPixmap(QPixmap::fromImage(image));
+    scaleFactor = 1.0;
+    scrollArea->setWidgetResizable(true);
 
     viewModelSubWindow->setType(SubWindow::View);
-    viewModelSubWindow->setWidget(image);
     viewModelSubWindow->adjustSize();
     viewModelSubWindow->showNormal();
+
 }
 
 void MainWindow::doFileEdit() {

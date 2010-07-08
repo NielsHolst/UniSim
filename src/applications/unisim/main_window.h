@@ -17,6 +17,7 @@ class QLabel;
 class QMdiArea;
 class QMenu;
 class QPixmap;
+class QScrollArea;
 class QSettings;
 class QwtPlot;
 class LiveSimulation;
@@ -79,12 +80,14 @@ private:
 	QMdiArea *_mdiArea;
 	LogSubWindow *_logSubWindow;
     SubWindow *fileLocationsSubWindow, *viewModelSubWindow;
+        QLabel *imageLabel;
+        QScrollArea *scrollArea;
 	
 	// Data
     QList<UniSim::XmlEditor*> _xmlEditors;
 	LiveSimulation *liveSim;
-    //QPixmap *modelPixmap;
-	
+    double scaleFactor;
+
     // Events
     void closeEvent (QCloseEvent * event);
 

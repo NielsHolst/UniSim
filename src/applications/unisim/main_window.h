@@ -94,6 +94,7 @@ private:
     void setTitle(QString subTitle);
 	void setPermanentMessage(QString message);
     void viewModel();
+    QString versionText() const;
 	
 };
 

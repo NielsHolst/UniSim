@@ -117,9 +117,7 @@ void MainWindow::setTitle(QString subTitle) {
     if (!subTitle.isEmpty()) title = subTitle + "  -  ";
 
     title += "Universal Simulator ";
-    title += version();
-    if (isDeveloperVersion())
-        title+= ".x";
+    title += versionText();
     setWindowTitle(title);
 }
 
@@ -332,7 +330,7 @@ void MainWindow::doViewLog()
 
 void MainWindow::doHelpAbout() {
     QString text =
-        "Universal Simulator (UniSim) " + version() + "\n\n"
+        "Universal Simulator (UniSim) " + versionText() + "\n\n"
         "Copyright (C) 2009-2010 by Niels Holst [niels.holst@agrsci.dk] and co-authors. Copyrights reserved.\n\n"
         "Released under the terms of the GNU General Public License version 3.0 or later. "
         "See www.gnu.org/copyleft/gpl.html.";
@@ -359,4 +357,6 @@ void MainWindow::liveSimulatorStateChanged(int iOldState, int iNewState) {
 	}
 }
 
-
+QString MainWindow::versionText() const {
+    return version() + ( isDeveloperVersion() ? ".x" : "" );
+}

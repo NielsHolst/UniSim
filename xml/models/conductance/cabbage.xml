@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+    <integrator type="TimeStepLimited">
+        <parameter name="maxSteps" value="100"/>
+        <sequence>
+            <model name="calendar"/>
+            <model name="weather"/>
+            <model name="community"/>
+        </sequence>
+    </integrator>
+	
+	<model name="calendar" type="Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>
+	
+	<model name="weather" type="conductance::Weather">
+		<parameter name="irradiation" value="10"/>
+	</model>
+
+	<model name="community" type="conductance::Community">
+		<parameter name="dt" value="0.01"/>
+		<model name="cabbage" type="conductance::Plant">
+			<parameter name="n" value="9" />
+			<parameter name="initWeight" value="0.05" />
+			<parameter name="F" value="0.0158"/>
+			<parameter name="theta" value="0.84"/>
+			<parameter name="A" value="0.0314"/>
+			<parameter name="phi" value="0.529"/>
+			<parameter name="k" value="0.71"/>
+			<parameter name="eps" value="1.40"/>
+		</model>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value ="conductance_sz.prn"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage_phase" value="cabbage[phase]"/>
+		<variable axis="y" label="cabbage_sz" value="cabbage[sz]"/>
+		<variable axis="y" label="cabbage_Lz" value="cabbage[Lz]"/>
+		<variable axis="y" label="cabbage_fz" value="cabbage[fz]"/>
+		<variable axis="y" label="sum_sz" value="community[sum_sz]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Weather"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="Tavg" value="weather[Tavg]"/>
+		<variable axis="y" label="irradiation" value="weather[irradiation]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Phase"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[phase]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Total crown zone area"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabage" value="community[sum_sz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Weight per plant"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[weight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Leaf area per plant"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[LA_per_plant]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Weight per m2"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[totalWeight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Growth rate"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[dweight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Crown Zone Area (CZA)"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[sz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="CZA LAI"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[Lz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="PAR intercepted in CZA"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="cabbage" value="cabbage[fz]"/>
+	</output>
+</simulation>

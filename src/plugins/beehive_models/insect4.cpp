@@ -24,7 +24,7 @@ void Insect4::initialize() {
     larva = seekOneChild<Model*>("larva");
     pupa = seekOneChild<Model*>("pupa");
     adult = seekOneChild<Model*>("adult");
-    fecundity = seekOneSibling<Model*>("fecundity");
+    fecundity = adult->seekOneChild<Model*>("fecundity");
 }
 
 void Insect4::reset() {

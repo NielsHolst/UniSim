@@ -68,7 +68,7 @@ const QMap<Identifier, QString>& BeehiveModelMaker::supportedClasses() {
     "@F eggsLaid variable. This is used to provide an inflow to the @F egg stage.";
 
     desc["Insect6"] =
-    "This model looks for a sibling called @F fecundity from which it pulls the "
+    "This model looks for @F fecundity, a child of the @F adult stage, from which it pulls the "
     "@F eggsLaid variable. This is used to provide an inflow to the @F egg stage.";
 
     desc["Weather"] =

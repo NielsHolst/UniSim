@@ -15,13 +15,15 @@ using namespace UniSim;
 namespace conductance {
 
 Community::Community(UniSim::Identifier name, QObject *parent)
-    : Model(name, parent), phase(Unlimited)
+    : Model(name, parent)
 {
-    new PullVariable("sum_sz", &sum_sz, this, "description");
+    new PullVariable("sum_sz", &sum_sz, this,
+                     "Total crown zone area of the one or two plants present"
+                     "(m @Sup 2 leaf area per m @Sup 2 ground area)");
 }
 
 void Community::initialize() {
-    setParameter("dt", &dt, 1., "description");
+    setParameter("dt", &dt, 1., "Time step for integration @Sym lessequal 1 day (days)");
     adjustTimeStep();
 
     plants = seekChildren<Plant*>("*");
@@ -37,7 +39,8 @@ void Community::adjustTimeStep() {
 }
 
 void Community::reset() {
-    smallest = -1;
+    phase = Unlimited;
+    smaller = -1;
 
     updateTotalCrownZoneArea();
     if (sum_sz > 1) {
@@ -76,17 +79,17 @@ void Community::updateTotalCrownZoneArea() {
 
 void Community::updatePhaseUnlimited() {
     if (sum_sz >= 1.) {
-        smallest = (plants.size() == 1
+        smaller = (plants.size() == 1
                    || plants[1]->pullVariable("weight") > plants[0]->pullVariable("weight")) ? 0: 1;
-        plants[smallest]->changePhase(UnderCompression);
+        plants[smaller]->changePhase(UnderCompression);
         phase = UnderCompression;
     }
 }
 
 void Community::updatePhaseUnderCompression() {
-    Q_ASSERT(smallest>=0 && smallest<=1);
-    if (plants[smallest]->pullVariable("Lz") >=
-        plants[1-smallest]->pullVariable("Lz"))
+    Q_ASSERT(smaller>=0 && smaller<=1);
+    if (plants[smaller]->pullVariable("Lz") >=
+        plants[1-smaller]->pullVariable("Lz"))
     {
         plants[0]->changePhase(WeightProportional);
         plants[1]->changePhase(WeightProportional);

@@ -40,7 +40,7 @@ private:
 
 	// state
     Phase phase;
-    int smallest;
+    int smaller;
     double sum_sz;
 
     // links

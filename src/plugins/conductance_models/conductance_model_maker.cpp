@@ -21,7 +21,8 @@ Identifier ConductanceModelMaker::pluginName() const {
 QString ConductanceModelMaker::pluginDesc() const {
     return
     "The @F conductance plugin is an implementation of the Conductance model for plant growth and competition, "
-    "as described by @Cite{$benjamin_park_2007} and references cited therein.";
+    "as described by @Cite{$benjamin_park_2007} and references cited therein."
+    "@PP A @Conductance model must hold as children, one of two objects of @F Plant class.";
 }
 
 QStringList ConductanceModelMaker::authors() const {

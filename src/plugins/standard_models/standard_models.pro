@@ -12,6 +12,7 @@ HEADERS += \
 	stage.h \
 	anonymous_model.h \
 	calendar.h \
+    constants.h \
     day_degrees.h \
     days.h \
     lactin_time.h \
@@ -22,6 +23,7 @@ SOURCES += \
     stage.cpp \
 	anonymous_model.cpp \
 	calendar.cpp \
+    constants.cpp \
     day_degrees.cpp \
     days.cpp \
     lactin_time.cpp \

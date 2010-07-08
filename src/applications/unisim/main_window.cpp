@@ -215,8 +215,7 @@ void  MainWindow::viewModel() {
 
     viewModelSubWindow->setType(SubWindow::View);
     viewModelSubWindow->adjustSize();
-    viewModelSubWindow->showNormal();
-
+    viewModelSubWindow->showMaximized();
 }
 
 void MainWindow::doFileEdit() {

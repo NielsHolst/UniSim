@@ -53,6 +53,7 @@ private slots:
     void doToolsGenerateDocs();
 	void doViewComponents();
 	void doViewLog();
+    void doHelpAbout();
 	
     void liveSimulatorStateChanged(int oldState, int newState);
 
@@ -70,7 +71,8 @@ private:
 		*simulationRun,
         *toolsPrototyping, *toolsGenerateDocs,
 		*viewComponents, *viewLog,
-		*windowCloseAll, *windowCascade, *windowTile;
+        *windowCloseAll, *windowCascade, *windowTile,
+        *helpAbout;
 	QSettings *settings;
 		
 	QLabel *permanentMessage;

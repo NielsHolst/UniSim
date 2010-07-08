@@ -46,7 +46,7 @@ MainWindow::MainWindow()
     toolsMenu		= menuBar()->addMenu("&Tools");
     viewMenu		= menuBar()->addMenu("&View");
 	windowMenu		= menuBar()->addMenu("&Window");
-    //helpMenu		= menuBar()->addMenu("&Help");
+    helpMenu		= menuBar()->addMenu("&Help");
 	
 	fileMenu->addAction( fileOpen = new QAction("&Open", this) );
 	connect( fileOpen, SIGNAL(triggered()), this, SLOT(doFileOpen()) );
@@ -93,7 +93,10 @@ MainWindow::MainWindow()
 	windowMenu->addAction( windowCloseAll = new QAction("Close &all", this) );
 	connect( windowCloseAll, SIGNAL(triggered()), _mdiArea, SLOT(closeAllSubWindows ()) );
 
-	useStoredGeometry();		
+    helpMenu->addAction( helpAbout = new QAction("&About", this) );
+    connect( helpAbout, SIGNAL(triggered()), this, SLOT(doHelpAbout()) );
+
+    useStoredGeometry();
 	
 	statusBar()->addPermanentWidget(permanentMessage = new QLabel(this));
 	setPermanentMessage("No model");	
@@ -325,6 +328,15 @@ void MainWindow::doViewLog()
 {
 	_logSubWindow->adjustSize();
 	_logSubWindow->show();
+}
+
+void MainWindow::doHelpAbout() {
+    QString text =
+        "Universal Simulator (UniSim) " + version() + "\n\n"
+        "Copyright (C) 2009-2010 by Niels Holst [niels.holst@agrsci.dk] and co-authors. Copyrights reserved.\n\n"
+        "Released under the terms of the GNU General Public License version 3.0 or later. "
+        "See www.gnu.org/copyleft/gpl.html.";
+    QMessageBox::about(this, "About Universal Simulator", text);
 }
 
 void MainWindow::liveSimulatorStateChanged(int iOldState, int iNewState) {

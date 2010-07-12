@@ -2,7 +2,7 @@ include(../../config.pri)
 
 TEMPLATE	= lib
 DESTDIR	= 	$${US_PLUGINS}
-TARGET 	= standard_outputs_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+TARGET 	= unisim_outputs_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 INCLUDEPATH += $${US_QWT}/include
 
 CONFIG		+= plugin
@@ -18,10 +18,10 @@ HEADERS	+= 	\
         $${US_ENGINE}/plot_widget.h \
         output_plot.h \
         output_table.h \
-        standard_output_maker.h
+        unisim_output_maker.h
 			  	
 SOURCES	+= 	\
         $${US_ENGINE}/plot_widget.cpp \
         output_plot.cpp \
         output_table.cpp \
-        standard_output_maker.cpp
+        unisim_output_maker.cpp

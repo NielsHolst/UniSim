@@ -76,7 +76,7 @@ const QMap<Identifier, QString>& AweModelMaker::supportedClasses() {
     "where @F x is the day of the year [0..365].";
 
     desc["Weed"] =
-    "The @Weed model holds the @F SeedBank model, @F PlantGrowthStage models for "
+    "The @F Weed model holds the @F SeedBank model, @F PlantGrowthStage models for "
     "seedling, juvenile and mature stages, and a @F UniSim::Stage model "
     "to represent seeds on the plant. @PP "
     "The @F Weed model orchestrates the progressive flow of weed individuals "

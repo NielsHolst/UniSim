@@ -7,25 +7,25 @@
 #include <usbase/utilities.h>
 #include "output_plot.h"
 #include "output_table.h"
-#include "standard_output_maker.h"
+#include "unisim_output_maker.h"
 
 namespace UniSim{
 
-UniSim::Identifier StandardOutputMaker::pluginName() const {
+UniSim::Identifier UniSimOutputMaker::pluginName() const {
     return "UniSim";
 }
 
-QString StandardOutputMaker::pluginDesc() const {
+QString UniSimOutputMaker::pluginDesc() const {
     return
     "The @F UniSim plugin contains a collection of output classes of general utility.";
 }
 
-QStringList StandardOutputMaker::authors() const {
+QStringList UniSimOutputMaker::authors() const {
     return QStringList()
         << "Niels Holst, Aarhus University, Denmark";
 }
 
-const QMap<Identifier, QString>& StandardOutputMaker::supportedClasses() {
+const QMap<Identifier, QString>& UniSimOutputMaker::supportedClasses() {
     if (!desc.isEmpty())
         return desc;
 
@@ -38,11 +38,11 @@ const QMap<Identifier, QString>& StandardOutputMaker::supportedClasses() {
     return desc;
 }
 
-void StandardOutputMaker::useObjectPool(ObjectPool *pool) const {
+void UniSimOutputMaker::useObjectPool(ObjectPool *pool) const {
     objectPool()->deferTo(pool);
 }
 
-Output* StandardOutputMaker::create(Identifier outputType, Identifier objectName, QObject *parent)
+Output* UniSimOutputMaker::create(Identifier outputType, Identifier objectName, QObject *parent)
 {
 	// Remember to add integratorType to the list above as well
     UniSim::setSimulationObjectFromDescendent(parent);
@@ -54,6 +54,6 @@ Output* StandardOutputMaker::create(Identifier outputType, Identifier objectName
     return output;
 }
 
-Q_EXPORT_PLUGIN2(standard_output_maker,StandardOutputMaker)
+Q_EXPORT_PLUGIN2(unisim_output_maker,UniSimOutputMaker)
 
 } //namespace

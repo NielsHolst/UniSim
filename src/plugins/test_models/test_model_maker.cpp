@@ -20,6 +20,7 @@ UniSim::Identifier TestModelMaker::pluginName() const {
 
 QString TestModelMaker::pluginDesc() const {
     return
+    "!Exclude\n"
     "The @F test plugin contains models used for testing only (UniSim unit tests).";
 }
 

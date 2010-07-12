@@ -39,7 +39,8 @@ void Calendar::initialize()
     setParameter("firstDate", &firstDate, QDate(), "Initial date of simulation");
     setParameter("latitude", &latitude, 52., "Latitude of simulated system");
     setParameter("followers", &followersAsString, QString(),
-    "A single name, or list of names, denoting those objects that follows the calendar date. "
+    "A single name, or list of names, denoting those objects that follow "
+    "(are synchronized with) the calendar date. "
     "Commonly the @F weather object is set as a follower");
 
     followers.clear();

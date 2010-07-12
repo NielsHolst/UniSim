@@ -2,7 +2,7 @@ include(../../config.pri)
 
 TEMPLATE = lib
 DESTDIR = $${US_PLUGINS}
-TARGET = standard_models_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+TARGET = unisim_models_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 
 CONFIG += plugin
 
@@ -17,7 +17,7 @@ HEADERS += \
     days.h \
     lactin_time.h \
     photo_thermal_time.h \
-    standard_model_maker.h
+    unisim_model_maker.h
 
 SOURCES += \
     stage.cpp \
@@ -28,4 +28,4 @@ SOURCES += \
     days.cpp \
     lactin_time.cpp \
     photo_thermal_time.cpp \
-    standard_model_maker.cpp
+    unisim_model_maker.cpp

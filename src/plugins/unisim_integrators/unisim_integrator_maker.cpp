@@ -7,25 +7,25 @@
 #include <usbase/utilities.h>
 #include "time_limited.h"
 #include "time_step_limited.h"
-#include "standard_integrator_maker.h"
+#include "unisim_integrator_maker.h"
 
 namespace UniSim{
 
-UniSim::Identifier StandardIntegratorMaker::pluginName() const {
+UniSim::Identifier UniSimIntegratorMaker::pluginName() const {
     return "UniSim";
 }
 
-QString StandardIntegratorMaker::pluginDesc() const {
+QString UniSimIntegratorMaker::pluginDesc() const {
     return
     "The @F UniSim plugin contains a collection of integrators of general utility.";
 }
 
-QStringList StandardIntegratorMaker::authors() const {
+QStringList UniSimIntegratorMaker::authors() const {
     return QStringList()
         << "Niels Holst, Aarhus University, Denmark";
 }
 
-const QMap<Identifier, QString>& StandardIntegratorMaker::supportedClasses() {
+const QMap<Identifier, QString>& UniSimIntegratorMaker::supportedClasses() {
     if (!desc.isEmpty())
         return desc;
 
@@ -38,11 +38,11 @@ const QMap<Identifier, QString>& StandardIntegratorMaker::supportedClasses() {
     return desc;
 }
 
-void StandardIntegratorMaker::useObjectPool(ObjectPool *pool) const {
+void UniSimIntegratorMaker::useObjectPool(ObjectPool *pool) const {
     objectPool()->deferTo(pool);
 }
 
-Integrator* StandardIntegratorMaker::create(Identifier integratorType, Identifier objectName, QObject *parent)
+Integrator* UniSimIntegratorMaker::create(Identifier integratorType, Identifier objectName, QObject *parent)
 {
 	// Remember to add integratorType to the list above as well
     UniSim::setSimulationObjectFromDescendent(parent);
@@ -54,6 +54,6 @@ Integrator* StandardIntegratorMaker::create(Identifier integratorType, Identifie
     return integrator;
 }
 
-Q_EXPORT_PLUGIN2(standard_integrator_maker,StandardIntegratorMaker)
+Q_EXPORT_PLUGIN2(unisim_integrator_maker, UniSimIntegratorMaker)
 
 } //namespace

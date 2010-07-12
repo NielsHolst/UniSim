@@ -3,19 +3,19 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef STANDARD_MODEL_MAKER_H
-#define STANDARD_MODEL_MAKER_H
+#ifndef UNISIM_OUTPUT_MAKER_H
+#define UNISIM_OUTPUT_MAKER_H
 
-#include <usbase/model_maker_plug_in.h>
+#include <usbase/output_maker_plug_in.h>
 
 namespace UniSim{
 
 class ObjectPool;
 
-class StandardModelMaker : public QObject, public ModelMakerPlugIn
+class UniSimOutputMaker : public QObject, public OutputMakerPlugIn
 {
 	Q_OBJECT
-    Q_INTERFACES(UniSim::ModelMakerPlugIn)
+    Q_INTERFACES(UniSim::OutputMakerPlugIn)
 public:
     UniSim::Identifier pluginName() const;
     QString pluginDesc() const;
@@ -24,7 +24,7 @@ public:
 
     void useObjectPool(ObjectPool *pool) const;
 
-    Model* create(Identifier modelType, Identifier objectName, QObject *parent=0);
+    Output* create(Identifier outputType, Identifier objectName, QObject *parent=0);
 };
 
 } //namespace

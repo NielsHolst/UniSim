@@ -25,6 +25,7 @@ Identifier GrainstoreModelMaker::pluginName() const {
 
 QString GrainstoreModelMaker::pluginDesc() const {
     return
+    "!Exclude\n"
     "The @F grainstore plugin contains models that simulate the population dynamics"
     "of the major insect pests (@I {Prostephanus truncatus} and @I {Sitophilus zeamais})"
     "and the biocontrol agent @I {Teretrius nigrescens} in African maize stores, "

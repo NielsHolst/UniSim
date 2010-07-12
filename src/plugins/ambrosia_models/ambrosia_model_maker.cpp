@@ -20,6 +20,7 @@ UniSim::Identifier AmbrosiaModelMaker::pluginName() const {
 
 QString AmbrosiaModelMaker::pluginDesc() const {
     return
+    "!Exclude\n"
     "The @F ambrosia plugin is an implementation of the phenology model for @I {Ambrosia artemisiifolia}, "
     "as described by @Cite{$deen_et_al_1998a, $deen_et_al_1998b}.";
 }

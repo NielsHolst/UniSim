@@ -107,6 +107,8 @@ void DocumentationWriter::writePlugins() {
     QList<ModelMakerPlugIn*> plugins = ModelMaker::plugins();
     qSort(plugins.begin(), plugins.end(), pluginLessThan);
     for (int i = 0; i < plugins.size(); ++i) {
+        QString beginning = plugins[i]->pluginDesc().left(8);
+        if (beginning.toLower() == "!exclude") continue;
         write(plugins[i]);
     }
 }

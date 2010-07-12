@@ -12,19 +12,23 @@
 
 using namespace UniSim;
 
-namespace ess2009 {
+namespace awe {
 
 Rotation::Rotation(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable("lai", &_lai, this, "description");
+    new PullVariable("lai", &lai, this,
+                     "Leaf area index (m @Sup {2}\"/\"m @Sup {2}) of the current crop");
 }
 
 
 
 void Rotation::initialize() {
-    setParameter("crops", &_cropsString, QString(), "description");
+    setParameter("crops", &cropsString, QString(),
+                 "Sequence of crops in rotation. For example, @F {(maize wheat wheat)}, "
+                 "in which maize is followed by two crops of wheat. The crop names must "
+                 "refer to names of @F Crop models that are children of @F {Rotation}.");
     decodeCrops();
     _calendar = seekOne<Model*>("calendar");
     collectRotation();
@@ -32,9 +36,9 @@ void Rotation::initialize() {
 }
 
 void Rotation::collectRotation() {
-   for (int i = 0; i < _cropNames.size(); ++i) {
-        Model *crop = seekOne<Model*>(_cropNames[i]);
-        _crops.append(crop);
+   for (int i = 0; i < cropNames.size(); ++i) {
+        Model *crop = seekOneChild<Model*>(cropNames[i]);
+        crops.append(crop);
     }
  }
 
@@ -45,36 +49,36 @@ void Rotation::connectCrops() {
 }
 
 void Rotation::reset() {
-    _state = NotSown;
-    _currentCropIndex = 0;
-    _lai = 0;
+    state = NotSown;
+    currentCropIndex = 0;
+    lai = 0;
 }
 
 void Rotation::update() {
     currentCrop()->deepUpdate();
-    _lai = currentCrop()->pullVariable("lai");
+    lai = currentCrop()->pullVariable("lai");
 }
 
 Model* Rotation::currentCrop() {
-    return _crops[_currentCropIndex];
+    return crops[currentCropIndex];
 }
 
 void Rotation::decodeCrops() {
-    _cropNames = decodeSimpleList(_cropsString, "Crop rotation");
+    cropNames = decodeSimpleList(cropsString, "Crop rotation");
 }
 
 void Rotation::handleEvent(QObject *sender, QString event) {
     if (event == "sowing") {
-        _state = Growing;
+        state = Growing;
     }
     else if (event == "harvest") {
-        _state = Harvested;
-        _currentCropIndex = (_currentCropIndex + 1)%_crops.size();
+        state = Harvested;
+        currentCropIndex = (currentCropIndex + 1)%crops.size();
     }
 }
 
 QList<Model*> Rotation::cropRotation(){
-    return _crops;
+    return crops;
 }
 
 QList<Model*> Rotation::cropModels(){

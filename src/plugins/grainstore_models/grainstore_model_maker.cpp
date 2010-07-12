@@ -28,8 +28,8 @@ QString GrainstoreModelMaker::pluginDesc() const {
     "The @F grainstore plugin contains models that simulate the population dynamics"
     "of the major insect pests (@I {Prostephanus truncatus} and @I {Sitophilus zeamais})"
     "and the biocontrol agent @I {Teretrius nigrescens} in African maize stores, "
-    "as described by @Cite{$meikle_et_al_1998, $meikle_et_al_1999, holst_meikle_2003}."
-    "@PP This reimplementation of the models are still not functional.";
+    "as described by @Cite{$meikle_et_al_1998, $meikle_et_al_1999, $holst_meikle_2003}."
+    "@PP The @F grainstore plugin is still under development and not yet functional.";
 }
 
 QStringList GrainstoreModelMaker::authors() const {

@@ -3,13 +3,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef ESS2009_INSTANT_MORTALITY_H
-#define ESS2009_INSTANT_MORTALITY_H
+#ifndef AWE_INSTANT_MORTALITY_H
+#define AWE_INSTANT_MORTALITY_H
 
 #include <QObject>
 #include <usbase/model.h>
 
-namespace ess2009 {
+namespace awe {
+
+class PlantGrowthStage;
 
 class InstantMortality : public UniSim::Model
 {
@@ -21,19 +23,19 @@ public:
 	
 private:
     //parameters
-    int _day, _month;
-    QString _mortalityString;
+    int day, month;
+    QString mortalityString;
 
     // decoded parameters;
-    int _dayOfYear;
+    int dayOfYear;
 
     // links
     struct TargetMortality {
-        UniSim::Model *target;
+        QList<PlantGrowthStage*> targets;
         double value;
     };
-    QList<TargetMortality> _targetMortalities;
-    UniSim::Model *_calendar;
+    QList<TargetMortality> targetMortalities;
+    UniSim::Model *calendar;
 
     //methods
     void decodeMortalities();

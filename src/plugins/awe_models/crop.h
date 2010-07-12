@@ -3,14 +3,14 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef CROP_H
-#define CROP_H
+#ifndef AWE_CROP_H
+#define AWE_CROP_H
 
 #include <QMap>
 #include <QObject>
 #include <usbase/model.h>
 
-namespace ess2009 {
+namespace awe {
 
 class Crop : public UniSim::Model
 {
@@ -24,21 +24,21 @@ public:
 
 private:
     // parameters
-    int _sowingDay, _sowingMonth, _harvestDay, _harvestMonth;
-    double _weedExchangeRate, _maxYield,
-            _maxYieldLossPct, _slopeYieldLossPct;
-    QString _laiCalendar;
+    int sowingDay, sowingMonth, harvestDay, harvestMonth;
+    double weedExchangeRate, maxYield,
+            maxYieldLossPct, slopeYieldLossPct;
+    QString laiCalendar;
 
     // state
-    bool _isGrowing;
-    double _lai, _Tsum;
+    bool isGrowing;
+    double lai, Tsum;
 
     // decoded parameters
-    int _sowingDayOfYear, _harvestDayOfYear;
-    QMap<int, double> _laiByTSum;
+    int sowingDayOfYear, harvestDayOfYear;
+    QMap<int, double> laiByTSum;
 
     // links
-    UniSim::Model *_weather, *_calendar;
+    UniSim::Model *weather, *calendar;
 
     // methods
     void decodeLai();

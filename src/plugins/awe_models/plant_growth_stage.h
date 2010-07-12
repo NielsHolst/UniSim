@@ -3,15 +3,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef ESS2009_PLANT_GROWTH_STAGE_H
-#define ESS2009_PLANT_GROWTH_STAGE_H
+#ifndef AWE_PLANT_GROWTH_STAGE_H
+#define AWE_PLANT_GROWTH_STAGE_H
 
 #include <QObject>
 #include <usbase/model.h>
 
 using UniSim::Model;
 
-namespace ess2009 {
+namespace awe {
 
 class PlantGrowthStage : public Model
 {
@@ -23,13 +23,13 @@ public:
 	void update();
 private:
     // pull variables
-	double _outflowAsDensity, _outflowAsDensityEqs;
+    double outflowAsDensity, outflowAsDensityEqs;
 
     // push variables
     double inflowAsDensity, inflowAsDensityEqs, instantMortality;
 
 	//links
-    Model *_density, *_densityEqs;
+    Model *density, *densityEqs;
 };
 
 }

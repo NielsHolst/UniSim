@@ -6,7 +6,7 @@
             <model name="calendar"/>
             <model name="weather"/>
             <model name="rotation"/>
-            <model name="weed"/>
+            <model name="seedBank"/>
         </sequence>
     </integrator>
 
@@ -14,7 +14,7 @@
 		<parameter name="firstDate" value="1/1/2010"/>
 	</model>
     
-    <model name="weather" type="ess2009::Weather"/>
+    <model name="weather" type="awe::Weather"/>
 
     <model name="rotation" type="Rotation">
         <parameter name="crops" value="(maize wheat)"/>
@@ -42,57 +42,12 @@
         </model>
     </model>
     
-    <model name="weed" type="Weed">
-        <parameter name="seedProdSlope" value="0" note="number of seeds produced per g final weed biomass"/>
-
-        <model name="seedBank" type="SeedBank">
-			<parameter name="initialDensity" value="1000"/>
-			<parameter name="yearlyMortalityRate" value="0.1"/>
-			<parameter name="yearlyEmergenceRate" value="0.2"/>
-	        <parameter name="emergenceCalendar" value ="(0 5 30 60 70 50 10 0 0 0 0 0)"/>
-	    </model>
-
-		<model name="seedling" type="PlantGrowthStage">
-			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-				<parameter name="duration" value="40"/>
-			</model>
-			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-				<parameter name="duration" value="40"/>
-			</model>
-        </model>
-
-		<model name="juvenile" type="PlantGrowthStage">
-			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-               <parameter name="duration" value="600"/>
-			</model>
-			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-               <parameter name="duration" value="600"/>
-			</model>
-        </model>
-
-		<model name="mature" type="PlantGrowthStage">
-			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-				<parameter name="duration" value="300"/>
-			</model>
-			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-				<parameter name="duration" value="300"/>
-			</model>
-		</model>
-
-		<model name="seedsOnPlant" type="UniSim::Stage">
-			<model name="time" type="Days"/>
-			<parameter name="duration" value="150"/>
-			<parameter name="seedProdSlope" value="10"/>
-		</model>
+    <model name="seedBank" type="SeedBank">
+		<parameter name="initialDensity" value="1000"/>
+		<parameter name="yearlyMortalityRate" value="0.1"/>
+		<parameter name="yearlyEmergenceRate" value="0.2"/>
+        <parameter name="emergenceCalendar" value ="(0 5 30 60 70 50 10 0 0 0 0 0)"/>
     </model>
-
-	<!-- Outputs on screen -->
 
 	<output type="plot">
 		<parameter name="title" value="Temperature"/>
@@ -129,28 +84,5 @@
 		<variable label="Year" axis="x" value="calendar[year]"/>
 		<variable label="Potential" axis="y" value="seedBank[dailyEmergenceRatioPotential]"/>
 		<variable label="Realised" axis="y" value="seedBank[dailyEmergenceRatio]"/>
-    </output>
-        
-	<output type="plot">
-    	<parameter name="title" value="Weed stage density equivalents"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Seedlings" axis="y" value="seedling/densityEqs[number]"/>
-		<variable label="Juveniles" axis="y" value="juvenile/densityEqs[number]"/>
-		<variable label="Mature" axis="y" value="mature/densityEqs[number]"/>
-    </output>
-
-	<output type="plot">
-    	<parameter name="title" value="Weed stage densities"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Seedlings" axis="y" value="seedling/density[number]"/>
-		<variable label="Juveniles" axis="y" value="juvenile/density[number]"/>
-		<variable label="Mature" axis="y" value="mature/density[number]"/>
-    </output>
-
-    <output type="plot">
-    	<parameter name="title" value="Weed seedlings"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Density" axis="y" value="seedling/density[number]"/>
-		<variable label="Density eqs." axis="y" value="seedling/densityEqs[number]"/>
     </output>
 </simulation>

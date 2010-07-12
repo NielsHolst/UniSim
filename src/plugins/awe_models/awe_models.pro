@@ -2,7 +2,7 @@ include(../../config.pri)
 
 TEMPLATE = lib
 DESTDIR = $${US_PLUGINS}
-TARGET = ess2009_models_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+TARGET = awe_models_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += plugin
 
 include ($${US_BASE}/base.pri)
@@ -10,22 +10,20 @@ include ($${US_BASE}/base.pri)
 
 HEADERS += \
     crop.h \
-    ess2009_model_maker.h \
+    awe_model_maker.h \
     instant_mortality.h \
 	plant_growth_stage.h \
     rotation.h\
     seed_bank.h \
-    treatments.h \
 	weather.h \
 	weed.h
 
 SOURCES += \
     crop.cpp \
-    ess2009_model_maker.cpp \
+    awe_model_maker.cpp \
     instant_mortality.cpp \
     plant_growth_stage.cpp \
     rotation.cpp\
     seed_bank.cpp \
-    treatments.cpp \
     weather.cpp \
 	weed.cpp

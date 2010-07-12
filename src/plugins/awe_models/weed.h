@@ -3,15 +3,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef ESS2009_WEED_H
-#define ESS2009_WEED_H
+#ifndef AWE_WEED_H
+#define AWE_WEED_H
 
 #include <QObject>
 #include <usbase/model.h>
 
 using UniSim::Model;
 
-namespace ess2009 {
+namespace awe {
 
 class Rotation;
 
@@ -26,24 +26,25 @@ public:
 
 private:
 	// parameters
-    double _cropLaiExp1, _cropLaiExp2, _seedProdSlope, _seedProdExp, _seedSpillAtHarvestPct;
+    double c1, c2, seedProdSlope, seedProdExp;
 
 	// state
-    double _prevOutflowTotal, _projectedDeqs, _projectedYieldLossPct, _projectedMass, _seedsDropping;
-double _g;
+    double prevOutflowTotal,
+           projectedDeqs, projectedYieldLossPct, projectedMass,
+           seedsDropping, g;
+
 	// links
-	Model *_seedBank, *_seedling, *_juvenile, *_mature, *_seedsOnPlant,
-		  *_calendar, *_weather;
-	Rotation *_rotation;
+    Model *seedBank, *seedling, *juvenile, *mature, *seedsOnPlant,
+          *calendar, *weather;
+    Rotation *rotation;
 
 	// methods
 	double cropEffectOnSeedlings() const;
 	void projectCompetitionOutcome();
-	double projectedDeqs();
+    double calcProjectedDeqs();
     double yieldLossPct(double N) const;
 	double proportionDeqsEnteringMaturity() const;
     void kill(Model *stage, double mortalityPct);
-    void killAndSpillSeedsOnPlant(double mortalityPct);
 
 private slots:
     void handleEvent(QObject *sender, QString eventName);

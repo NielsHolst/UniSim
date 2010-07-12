@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-
     <integrator type="TimeStepLimited">
         <parameter name="maxSteps" value="730"/>
         <sequence>
@@ -15,7 +14,7 @@
 		<parameter name="firstDate" value="1/1/2010"/>
 	</model>
     
-    <model name="weather" type="ess2009::Weather"/>
+    <model name="weather" type="awe::Weather"/>
 
     <model name="rotation" type="Rotation">
         <parameter name="crops" value="(maize wheat)"/>
@@ -44,7 +43,7 @@
     </model>
     
     <model name="weed" type="Weed">
-        <parameter name="seedProdSlope" value="100" note="number of seeds produced per g final weed biomass"/>
+        <parameter name="seedProdSlope" value="0" note="number of seeds produced per g final weed biomass"/>
 
         <model name="seedBank" type="SeedBank">
 			<parameter name="initialDensity" value="1000"/>
@@ -55,41 +54,40 @@
 
 		<model name="seedling" type="PlantGrowthStage">
 			<model name="density" type="UniSim::Stage">
-				<model name="time" type="DayDegrees"/>
+				<model name="time" type="Days"/>
 				<parameter name="duration" value="40"/>
 			</model>
 			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="DayDegrees"/>
+				<model name="time" type="Days"/>
 				<parameter name="duration" value="40"/>
 			</model>
         </model>
 
 		<model name="juvenile" type="PlantGrowthStage">
 			<model name="density" type="UniSim::Stage">
-				<model name="time" type="DayDegrees"/>
-                <parameter name="duration" value="600"/>
+				<model name="time" type="Days"/>
+               <parameter name="duration" value="600"/>
 			</model>
 			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="DayDegrees"/>
-                <parameter name="duration" value="600"/>
+				<model name="time" type="Days"/>
+               <parameter name="duration" value="600"/>
 			</model>
         </model>
 
 		<model name="mature" type="PlantGrowthStage">
 			<model name="density" type="UniSim::Stage">
-				<model name="time" type="DayDegrees"/>
+				<model name="time" type="Days"/>
 				<parameter name="duration" value="300"/>
 			</model>
 			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="DayDegrees"/>
+				<model name="time" type="Days"/>
 				<parameter name="duration" value="300"/>
 			</model>
 		</model>
 
 		<model name="seedsOnPlant" type="UniSim::Stage">
-			<model name="time" type="DayDegrees"/>
+			<model name="time" type="Days"/>
 			<parameter name="duration" value="150"/>
-			<parameter name="seedProdSlope" value="10"/>
 		</model>
     </model>
 
@@ -153,30 +151,5 @@
 		<variable label="Year" axis="x" value="calendar[year]"/>
 		<variable label="Density" axis="y" value="seedling/density[number]"/>
 		<variable label="Density eqs." axis="y" value="seedling/densityEqs[number]"/>
-    </output>	
-	
-    <output type="plot">
-    	<parameter name="title" value="Seeds on plant"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Seed number" axis="y" value="seedsOnPlant[number]"/>
     </output>
-
-    <output type="plot">
-    	<parameter name="title" value="Projected weed biomass"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Weed mass" axis="y" value="weed[projectedMass]"/>
-    </output>
-
-    <output type="plot">
-    	<parameter name="title" value="Projected yield loss percentage"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Yield loss %" axis="y" value="weed[projectedYieldLossPct]"/>
-    </output>
-
-    <output type="plot">
-    	<parameter name="title" value="Projected total density equivalents"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
-		<variable label="Seedlings" axis="y" value="weed[projectedDeqs]"/>
-    </output>
-
 </simulation>

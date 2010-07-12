@@ -12,62 +12,63 @@
 
 using namespace UniSim;
 
-namespace ess2009 {
+namespace awe {
 
 Crop::Crop(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
-    new PullVariable("lai", &_lai, this, "description");
-    new PullVariable("Tsum", &_Tsum, this, "description");
+    new PullVariable("lai", &lai, this, "Leaf area index (m @Sup {2}\"/\"m @Sup {2}).");
+    new PullVariable("Tsum", &Tsum, this, "Temperature sum since sowing (day-degrees above @Char {ring}C).");
 }
 
 
 
 void Crop::initialize() {
-    setParameter("sowingDay", &_sowingDay, 1, "description");
-    setParameter("sowingMonth", &_sowingMonth, 4, "description");
-    setParameter("harvestDay", &_harvestDay, 1, "description");
-    setParameter("harvestMonth", &_harvestMonth, 8, "description");
-    setParameter("weedExchangeRate", &_weedExchangeRate, 0.6, "description");
-    setParameter("maxYield", &_maxYield, 800., "description");
-    setParameter("maxYieldLossPct", &_maxYieldLossPct, 60., "description");
-    setParameter("slopeYieldLossPct", &_slopeYieldLossPct, 0.5, "description");
-    setParameter("laiCalendar", &_laiCalendar,
+    setParameter("sowingDay", &sowingDay, 1, "Day in month of sowing");
+    setParameter("sowingMonth", &sowingMonth, 4, "Month of sowing");
+    setParameter("harvestDay", &harvestDay, 1, "Day in month of harvest");
+    setParameter("harvestMonth", &harvestMonth, 8, "Month of harvest");
+    setParameter("weedExchangeRate", &weedExchangeRate, 0.6, "Final biomass of weeds as a proportion of yield loss (g\"/\"g)");
+    setParameter("maxYield", &maxYield, 800., "Weed-free yield (g\"/\"m @Sup {2})");
+    setParameter("maxYieldLossPct", &maxYieldLossPct, 60., "Maximum yield loss (%) caused by weeds (Cousens's @I {a})");
+    setParameter("slopeYieldLossPct", &slopeYieldLossPct, 0.5, "Initial yield loss per weed (% per weed density equivalent) "
+                                                                "caused by weeds (Cousens's @I {i})");
+    setParameter("laiCalendar", &laiCalendar,
                  QString("((0 0)(110 0)(210 0.3)(310 0.8)(410 1.6)"
-                         "(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"), "description");
+                         "(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"),
+                 "Calendar for leaf area index (LAI) running on temperature sum since sowing (day-degrees above @Char {ring}C). "
+                 "Defined as a list of (@I {temperature-sum LAI}) pairs");
 
-    _sowingDayOfYear = UniSim::toDayOfYear(_sowingDay, _sowingMonth);
-    _harvestDayOfYear = UniSim::toDayOfYear(_harvestDay, _harvestMonth);
+    sowingDayOfYear = UniSim::toDayOfYear(sowingDay, sowingMonth);
+    harvestDayOfYear = UniSim::toDayOfYear(harvestDay, harvestMonth);
 
     decodeLai();
-    //_weather = findOneModelByType<Weather*>(this);
-    //_calendar = findOneModelByType<Calendar*>(this);
 
-    _weather = seekOne<Model*>("weather");
-    _calendar = seekOne<Model*>("calendar");
+    weather = seekOne<Model*>("weather");
+    calendar = seekOne<Model*>("calendar");
 }
 
 void Crop::reset() {
-    _isGrowing = false;
-    _lai = _Tsum = 0.;
+    isGrowing = false;
+    lai = Tsum = 0.;
 }
 
 void Crop::update() {
-    int dayOfYear = int(_calendar->pullVariable("dayOfYear"));
+    int dayOfYear = int(calendar->pullVariable("dayOfYear"));
 
-    if (_isGrowing) {
-        _Tsum += _weather->pullVariable("T");
-        _lai = lookupLai();
-        if (dayOfYear == _harvestDayOfYear) {
-            _isGrowing = false;
+    if (isGrowing) {
+        Tsum += weather->pullVariable("T");
+        lai = lookupLai();
+        if (dayOfYear == harvestDayOfYear) {
+            isGrowing = false;
             emit event(this, "harvest");
         }
     }
 
-    if (!_isGrowing) {
-        _Tsum = _lai = 0;
-        if (dayOfYear == _sowingDayOfYear) {
-            _isGrowing = true;
+    if (!isGrowing) {
+        Tsum = lai = 0;
+        if (dayOfYear == sowingDayOfYear) {
+            isGrowing = true;
             emit event(this, "sowing");
         }
     }
@@ -75,7 +76,7 @@ void Crop::update() {
 }
 
 void Crop::decodeLai() {
-    QString s = _laiCalendar.simplified();
+    QString s = laiCalendar.simplified();
     if (s.size() == 0) throw UniSim::Exception("LAI calendar is empty: " + s);
     if (s.left(1) != "(") throw UniSim::Exception("LAI calendar must begin with '(': " + s);
 
@@ -100,7 +101,7 @@ void Crop::decodeLai() {
             int tSum = pair[0].toInt(&ok0);
             double lai = pair[1].toDouble(&ok1);
             ok = ok0 && ok1;
-            if (ok) _laiByTSum[tSum] = lai;
+            if (ok) laiByTSum[tSum] = lai;
         }
 
         if (!ok)
@@ -117,7 +118,7 @@ void Crop::chopRightParenthesis(QString &s) const {
 }
 
 double Crop::lookupLai() const {
-    return interpolate(_laiByTSum, int(_Tsum));
+    return interpolate(laiByTSum, int(Tsum));
 }
 
 }

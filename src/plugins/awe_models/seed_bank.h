@@ -3,13 +3,13 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef ESS2009_SEED_BANK_H
-#define ESS2009_SEED_BANK_H
+#ifndef AWE_SEED_BANK_H
+#define AWE_SEED_BANK_H
 
 #include <QObject>
 #include <usbase/model.h>
 
-namespace ess2009 {
+namespace awe {
 
     class SeedBank : public UniSim::Model
 {
@@ -23,33 +23,33 @@ public:
 	
 private:
     // parameters
-    double _initialDensity, _yearlyEmergenceRate, _yearlyMortalityRate, _cropLaiExp;
-    QString _emergenceString;
+    double initialDensity, yearlyEmergenceRate, yearlyMortalityRate, cropLaiExp;
+    QString emergenceString;
 
     // pull variables
-    double _density, _dormant, _total,
-        _dailyEmergenceRatio, _totalEmergenceRatio,
-        _dailyEmergenceDensity, _totalEmergenceDensity,
-        _dailyEmergenceRatioPotential, _cropEffectOnEmergence;
+    double density, dormant, total,
+        dailyEmergenceRatio, totalEmergenceRatio,
+        dailyEmergenceDensity, totalEmergenceDensity,
+        dailyEmergenceRatioPotential, cropEffectOnEmergence;
 
     // push variables
     double dormantInflow, instantMortality;
 
 
     // decoded parameters
-    double _dailySurvivalRate, _emergenceScaling;
-    QMap<int,double> _emergenceCalendar;    // indexed by mid-month day of the year from Dec to Jan
+    double dailySurvivalRate, emergenceScaling;
+    QMap<int,double> emergenceCalendar;    // indexed by mid-month day of the year from Dec to Jan
 
     // links
-    UniSim::Model *_calendar, *_rotation;
+    UniSim::Model *calendar, *rotation;
 
     // methods
     void decodeEmergence();
     double lookupEmergence(int dayOfYear) const;
     void fitEmergence();
     void scaleEmergence(double factor);
-    double totalEmergenceRatio() const;
-    double cropEffectOnEmergence() const;
+    double calcTotalEmergenceRatio() const;
+    double calcCropEffectOnEmergence() const;
     void addInflow();
     void applyInstantMortality();
 };

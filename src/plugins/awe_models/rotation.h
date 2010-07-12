@@ -3,8 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef ESS2009_ROTATION_H
-#define ESS2009_ROTATION_H
+#ifndef AWE_ROTATION_H
+#define AWE_ROTATION_H
 
 #include <QList>
 #include <QMap>
@@ -14,7 +14,7 @@
 
 using UniSim::Model;
 
-namespace ess2009 {
+namespace awe {
 
 class Crop;
 
@@ -34,19 +34,19 @@ public:
 
 private:
     // parameters
-    QString _cropsString;
+    QString cropsString;
 
     // state
-    enum {NotSown, Growing, Harvested} _state;
-    int _currentCropIndex;
-    double _lai;
+    enum {NotSown, Growing, Harvested} state;
+    int currentCropIndex;
+    double lai;
 
     // decoded parameters
-    QStringList _cropNames;
+    QStringList cropNames;
 
     // links
     Model *_calendar;
-    QList<Model*> _crops;
+    QList<Model*> crops;
 
     // methods
     void collectRotation();

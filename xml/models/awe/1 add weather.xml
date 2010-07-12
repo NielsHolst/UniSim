@@ -12,7 +12,7 @@
 		<parameter name="firstDate" value="1/1/2010"/>
 	</model>
 	
-    <model name="weather" type="ess2009::Weather"/>
+    <model name="weather" type="awe::Weather"/>
 
 	<output type="plot">
 		<parameter name="title" value="Temperature"/>

@@ -15,7 +15,7 @@
 		<parameter name="firstDate" value="1/1/2010"/>
 	</model>
     
-    <model name="weather" type="ess2009::Weather"/>
+    <model name="weather" type="awe::Weather"/>
 
     <model name="rotation" type="Rotation">
         <parameter name="crops" value="(maize wheat)"/>
@@ -30,7 +30,7 @@
             <parameter name="slopeYieldLossPct" value="0.5"/>
             <parameter name="laiCalendar" value="((0 0)(200 0)(620 0.5)(700 0.9)(800 1.8)(940 5)(1200 5)(1808 5)(2572 3))"/>
 
-            <model type="Treatments">
+            <model name="treatments">
                 <model name="split_spraying_1" type="InstantMortality">
                     <parameter name="day" value="15"/>
                     <parameter name="month" value="5"/>
@@ -54,7 +54,7 @@
             <parameter name="slopeYieldLossPct" value="0.1"/>
             <parameter name="laiCalendar" value="((0 0)(110 0)(210 0.3)(310 0.8)(410 1.6)(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"/>
 
-            <model type="Treatments">
+            <model name="treatments">
                 <model name="single_spraying" type="InstantMortality">
                     <parameter name="day" value="30"/>
                     <parameter name="month" value="4"/>
@@ -110,7 +110,6 @@
 		<model name="seedsOnPlant" type="Stage">
 			<model name="time" type="DayDegrees"/>
 			<parameter name="duration" value="150"/>
-			<parameter name="seedProdSlope" value="10"/>
 		</model>
     </model>
     

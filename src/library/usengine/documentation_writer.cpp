@@ -18,8 +18,8 @@
 #include "model_maker.h"
 
 namespace {
-    QString desc(QString desc) {
-        QString res = desc.simplified();
+    QString desc(QString s) {
+        QString res = s.simplified();
         if (res.right(1) != ".")
             res += ".";
         res += "\n";
@@ -173,9 +173,6 @@ void DocumentationWriter::writeModel(ModelMakerPlugIn *plugin, Identifier modelI
 
 Model* DocumentationWriter::createModel(ModelMakerPlugIn *plugin, Identifier modelId) {
     Model *model = plugin->create(modelId, "anonymous");
-    if (!model){
-        QMessageBox::information(0, "Test", "throw");
-    }
     try {
         model->initialize();
     }
@@ -259,7 +256,7 @@ void DocumentationWriter::writeTableRow(QString format, QString a, QString b, QS
     if (!a.isEmpty() && b.isEmpty())
         write("B {@I {empty string}}\n");
     else
-        write("B {@F " + b + "}\n");
+        write("B {@F {" + b + "}}\n");
     write("C {" + c + "}\n");
 }
 

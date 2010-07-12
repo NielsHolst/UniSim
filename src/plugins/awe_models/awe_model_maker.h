@@ -3,8 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef ESS2009_MODEL_MAKER_H
-#define ESS2009_MODEL_MAKER_H
+#ifndef AWE_MODEL_MAKER_H
+#define AWE_MODEL_MAKER_H
 
 #include <usbase/model_maker_plug_in.h>
 
@@ -12,9 +12,9 @@ namespace UniSim {
     class ObjectPool;
 }
 
-namespace ess2009 {
+namespace awe {
 
-class Ess2009ModelMaker : public QObject, public UniSim::ModelMakerPlugIn
+class AweModelMaker : public QObject, public UniSim::ModelMakerPlugIn
 {
 	Q_OBJECT
 	Q_INTERFACES(UniSim::ModelMakerPlugIn)

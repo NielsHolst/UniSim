@@ -26,25 +26,20 @@ public:
 private:
     // methods
     void adjustTimeStep();
-    void updatePlants();
+    bool phaseChanged();
     void updateTotalCrownZoneArea();
-    void updatePhaseUnlimited();
-    void updatePhaseUnderCompression();
-
-	// parameters
-    double dt;
-
-    // derived parameters
-    int numSteps;
-    double adjustedDt;
+    bool phaseUnlimitedChanged();
+    void sortPlants();
+    bool phaseUnderCompressionChanged();
+    void reUpdatePlants();
 
 	// state
     Phase phase;
-    int smaller;
     double sum_sz;
 
     // links
     QList<Plant*> plants;
+    Plant *smaller, *larger;
 
 };
 

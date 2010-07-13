@@ -21,8 +21,9 @@ Identifier ConductanceModelMaker::pluginName() const {
 QString ConductanceModelMaker::pluginDesc() const {
     return
     "The @F conductance plugin is an implementation of the Conductance model for plant growth and competition, "
-    "as described by @Cite{$benjamin_park_2007} and references cited therein."
-    "@PP A @F Conductance model must hold as children, one of two objects of @F Plant class.";
+    "as described by @Cite{$benjamin_park_2007} and references cited therein. "
+    "The @F Conductance always holds three child models representing calendar, weather and plant community, "
+    "respectively. The community model again holds one or two plant models.";
 }
 
 QStringList ConductanceModelMaker::authors() const {
@@ -44,7 +45,8 @@ const QMap<Identifier, QString>& ConductanceModelMaker::supportedClasses() {
     "A @F Plant object grows in terms of biomass, leaf area and crown zone area according to its current competition phase";
 
     desc["Weather"] =
-    "This @F Weather object simply allows fixed values for irradiation and temperature.";
+    "This @F Weather object holds fixed values for global irradiation and "
+    "daily average temperature.";
 
     return desc;
 }

@@ -15,15 +15,14 @@ class Constants : public UniSim::Model
 	Q_OBJECT
 public: 
     Constants(UniSim::Identifier name, QObject *parent=0);
-    virtual ~Constants();
+    ~Constants();
     // standard methods
     void initialize();
 private:
-    // parameters
-    QString strVariables;
-
-    // pull-push variable
-    QMap<UniSim::Identifier, double*> variables;
+    // data
+    QList<double*> valuePtrs;
+    // methods
+    void addPullVariable(Identifier id, double value);
 };
 
 } //namespace

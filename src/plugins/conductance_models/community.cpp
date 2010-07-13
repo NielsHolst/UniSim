@@ -19,13 +19,10 @@ Community::Community(UniSim::Identifier name, QObject *parent)
 {
     new PullVariable("sum_sz", &sum_sz, this,
                      "Total crown zone area of the one or two plants present"
-                     "(m @Sup 2 leaf area per m @Sup 2 ground area)");
+                     "(m @Sup 2 ground area owned per m @Sup 2 ground area available)");
 }
 
 void Community::initialize() {
-    setParameter("dt", &dt, 1., "Time step for integration @Sym lessequal 1 day (days)");
-    adjustTimeStep();
-
     plants = seekChildren<Plant*>("*");
 	if (plants.isEmpty())
 		throw Exception("Community has no plants");
@@ -33,14 +30,9 @@ void Community::initialize() {
         throw Exception("Max. 2 plants are allowed in community");
 }
 
-void Community::adjustTimeStep() {
-    numSteps = (int) (1. + 1e-6)/dt;
-    adjustedDt = 1./numSteps;
-}
-
 void Community::reset() {
     phase = Unlimited;
-    smaller = -1;
+    smaller = larger = 0;
 
     updateTotalCrownZoneArea();
     if (sum_sz > 1) {
@@ -51,24 +43,17 @@ void Community::reset() {
 }
 
 void Community::update() {
-    for (int i = 0; i < numSteps; ++i) {
-        bool phaseChanged = true;
-        while (phaseChanged) {
-            updatePlants();
-            updateTotalCrownZoneArea();
-            Phase prevPhase = phase;
-            if (phase == Unlimited)
-                updatePhaseUnlimited();
-            else if (phase == UnderCompression && plants.size() == 2)
-                updatePhaseUnderCompression();
-            phaseChanged = prevPhase != phase;
-        }
-    }
+    while (phaseChanged())
+        reUpdatePlants();
 }
 
-void Community::updatePlants() {
-    for (int i = 0; i < plants.size(); ++i)
-        plants[i]->updateByDt(adjustedDt);
+bool Community::phaseChanged() {
+    updateTotalCrownZoneArea();
+    if (phase == Unlimited)
+        return phaseUnlimitedChanged();
+    else if (phase == UnderCompression && plants.size() == 2)
+        return phaseUnderCompressionChanged();
+    return false;
 }
 
 void Community::updateTotalCrownZoneArea() {
@@ -77,24 +62,53 @@ void Community::updateTotalCrownZoneArea() {
         sum_sz += plants[i]->pullVariable("total_sz");
 }
 
-void Community::updatePhaseUnlimited() {
-    if (sum_sz >= 1.) {
-        smaller = (plants.size() == 1
-                   || plants[1]->pullVariable("weight") > plants[0]->pullVariable("weight")) ? 0: 1;
-        plants[smaller]->changePhase(UnderCompression);
+bool Community::phaseUnlimitedChanged() {
+    bool availableAreaExhausted = sum_sz >= 1.;
+    if (availableAreaExhausted) {
+        sortPlants();
+        smaller->changePhase(UnderCompression);
         phase = UnderCompression;
+        return true;
+    }
+    return false;
+}
+
+void Community::sortPlants() {
+    bool onlyOnePlant = plants.size() == 1;
+    if (onlyOnePlant) {
+        smaller = plants[0];
+        larger = 0;
+        return;
+    }
+
+    bool firstIsSmaller = plants[0]->pullVariable("weight") <
+                          plants[1]->pullVariable("weight");
+    if (firstIsSmaller) {
+        smaller = plants[0];
+        larger = plants[1];
+    }
+    else {
+        smaller = plants[1];
+        larger = plants[0];
     }
 }
 
-void Community::updatePhaseUnderCompression() {
-    Q_ASSERT(smaller>=0 && smaller<=1);
-    if (plants[smaller]->pullVariable("Lz") >=
-        plants[1-smaller]->pullVariable("Lz"))
+bool Community::phaseUnderCompressionChanged() {
+    bool plantsAreEven = smaller->pullVariable("Lz") >=
+                         larger->pullVariable("Lz");
+    if (plantsAreEven)
     {
-        plants[0]->changePhase(WeightProportional);
-        plants[1]->changePhase(WeightProportional);
+        smaller->changePhase(WeightProportional);
+        larger->changePhase(WeightProportional);
         phase = WeightProportional;
+        return true;
     }
+    return false;
+}
+
+void Community::reUpdatePlants() {
+    for (int i = 0; i < plants.size(); ++i)
+        plants[i]->reUpdate();
 }
 
 } //namespace

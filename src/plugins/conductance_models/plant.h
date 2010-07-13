@@ -19,16 +19,17 @@ public:
 	// standard methods
 	void initialize();
 	void reset();
+    void update();
 
     // special methods
     void changePhase(Phase newPhase);
-    void updateByDt(double dt);
+    void reUpdate();
 
 private:
     // methods
     void updateCrownZoneArea();
     void updateLightInterception();
-    void updateWeight(double dt);
+    void updateWeight();
 
     // parameters
     double initWeight, A, phi, F, theta, k, eps, n;

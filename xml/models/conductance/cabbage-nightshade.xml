@@ -15,6 +15,7 @@
 	
 	<model name="weather" type="conductance::Weather">
 		<parameter name="irradiation" value="10"/>
+		<parameter name="TAvg" value="20"/>
 	</model>
 
 	<model name="community" type="conductance::Community">

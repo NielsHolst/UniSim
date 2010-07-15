@@ -45,11 +45,10 @@ public:
     void deepCleanup();
     void deepDebrief();
 	
+    QString fullName();
+
     void setRecursionPolicy(Function function, RecursionPolicy policy);
     RecursionPolicy recursionPolicy(Function function) const;
-
-    template <class T> T seekOne(QString name);
-    template <class T> QList<T> seekMany(QString name);
 
     template <class T> T seekOneChild(QString name);
     template <class T> QList<T> seekChildren(QString name);
@@ -78,17 +77,6 @@ private:
 
 typedef QList<Component*> Components;
 
-
-
-//! Finds exactly one object (n==0) anywhere in simulation object tree
-template <class T> T Component::seekOne(QString name) {
-    return UniSim::seekOneDescendant<T>(name, 0);
-}
-
-//! Finds a number (n>=0) of objects anywhere in simulation object tree
-template <class T> QList<T> Component::seekMany(QString name) {
-    return UniSim::seekDescendants<T>(name, 0);
-}
 
 //! Finds exactly one child (n==1)
 template <class T> T Component::seekOneChild(QString name) {

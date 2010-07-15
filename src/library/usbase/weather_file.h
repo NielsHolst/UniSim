@@ -22,6 +22,7 @@ public:
     virtual void initialize();
     virtual void reset();
     virtual void update();
+    virtual void cleanup();
 
     // special methods
     void setColumn(QString name, int defaultColumn);
@@ -48,6 +49,9 @@ private:
     Columns columns;
     QFile file;
     int lineNo;
+
+    // state
+    bool hasBeenReset;
 
     // methods
     void updateRecordings();

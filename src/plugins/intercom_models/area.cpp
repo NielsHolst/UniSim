@@ -8,7 +8,7 @@
 #include <usbase/exception.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
-#include "../standard_models/calendar.h"
+#include "../unisim_models/calendar.h"
 #include "area.h"
 #include "constants.h"
 #include "plant.h"
@@ -68,7 +68,8 @@ LightComponents Area::calcEffectiveAreaAbove(double height) {
 LightComponents Area::calc_k() const {
     double scat = sqrt(1 - scatteringCoeff);
     double sinb = calendar->pullVariable("sinb");
-    Q_ASSERT(sinb > 0.);
+    Q_ASSERT_X(sinb > 0., "Area::calc_k()",
+               qPrintable("sinb = " + QString::number(sinb)));
     LightComponents k;
     k[Diffuse] = kDiffuse;
     k[DirectDirect] = 0.5/sinb*kDiffuse/0.8/scat;
@@ -93,6 +94,9 @@ PhotosyntheticRate Area::calcPhotosynthesisInShade(LightComponents eaa) {
 
 LightComponents Area::calcAbsorptionInShade(LightComponents eaa) {
     double sinb = calendar->pullVariable("sinb");
+    if (sinb == 0.)
+        return LightComponents();
+
     double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
     double refSphec = refHorz*2./(1. + 1.6*sinb);
 
@@ -111,6 +115,7 @@ LightComponents Area::calcAbsorptionInShade(LightComponents eaa) {
     LightComponents absorbed;
     for (int lc = 0; lc < 3; ++lc)
         absorbed[lc] = k[lc] * (1. - reflected[lc]) * par[lc] * exp(-eaa.value(lc));
+
     return absorbed;
 }
 
@@ -118,11 +123,13 @@ double Area::netAbsorption(const LightComponents &absorbed) const {
     double netAbsorbed = absorbed.value(Diffuse) + absorbed.value(DirectTotal)
                          - absorbed.value(DirectDirect);
     if (netAbsorbed < 0) {
-        if (netAbsorbed > -1e-4)
+        netAbsorbed = 0.;
+     /*   if (netAbsorbed > -0.1)
             netAbsorbed = 0.;
         else
             throw Exception("Shaded absorption (" + QString::number(netAbsorbed) + ")" +
-                            " < 0 in area of " + plant->objectName());
+                            " < 0 in " + const_cast<Area*>(this)->fullName());
+     */
     }
     return netAbsorbed;
 }

@@ -120,6 +120,13 @@ void Component::deepDebrief()
     call(this, &Component::debrief, &Component::deepDebrief, recursionPolicy(Component::Debrief));
 }
 
+//! Returns name with full path of all ancestors
+QString Component::fullName() {
+    QString name = "/" + objectName();
+    Component *p = dynamic_cast<Component*>(parent());
+    return p ? (p->fullName() + name) : name;
+}
+
 //! Sets the RecursionPolicy
 void Component::setRecursionPolicy(Function function, RecursionPolicy policy_)
 {

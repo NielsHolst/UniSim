@@ -8,7 +8,7 @@
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
-#include "../standard_models/calendar.h"
+#include "../unisim_models/calendar.h"
 #include "weather.h"
 
 using namespace std;
@@ -48,7 +48,8 @@ void Weather::verifySequence() {
     }
     Q_ASSERT(ixCalendar > -1 && ixWeather > -1);
     if (ixCalendar > ixWeather)
-        throw Exception("Calendar must appear before weather in simulation sequence. Reorder 'sequence' elements in XML file.");
+        throw Exception("Calendar must appear before weather in simulation sequence. "
+                        "Reorder 'sequence' elements in XML file.");
 }
 
 void Weather::update()

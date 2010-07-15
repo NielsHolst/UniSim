@@ -35,7 +35,7 @@ private:
     double initWeight, A, phi, F, theta, k, eps, n;
 
 	// state
-    double weight, dweight, totalWeight, sz, total_sz, Lz, fz, _phase, LA_per_plant;
+    double weight, dweight, totalWeight, sz, total_sz, Lz, fz, _phase, LA_per_plant, lai;
     Phase phase;
 
     // links

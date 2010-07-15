@@ -51,7 +51,7 @@ void TestComponent::cleanupTestCase() {
 
 void TestComponent::testSeekOne() {
     try {
-        Component *cob = dogs->seekOne<Component*>("cobra");
+        Component *cob = reptiles->seekOneDescendant<Component*>("cobra");
         QCOMPARE(cob, cobra);
     }
     catch (Exception &ex) {
@@ -61,7 +61,7 @@ void TestComponent::testSeekOne() {
 
 void TestComponent::testSeekMany() {
     try {
-        QList<Component*> dogList = reptiles->seekMany<Component*>("dogs/*");
+        QList<Component*> dogList = mammals->seekDescendants<Component*>("dogs/*");
         QSet<Component*> dogSet;
         dogSet << femaleDogs << maleDogs;
         QVERIFY(setEqualsList(dogSet, dogList));

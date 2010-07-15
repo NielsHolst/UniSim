@@ -144,6 +144,7 @@ void Calendar::synchronizeWithFollowers() {
         }
         else if (firstDate > flwFirstDate) {
             int daysTo = flwFirstDate.daysTo(firstDate);
+            flw->deepReset();
             for (int i = 0; i < daysTo; ++i)
                 flw->deepUpdate();
         }

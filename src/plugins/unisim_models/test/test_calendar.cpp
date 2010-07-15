@@ -6,7 +6,7 @@
 #include <usengine/simulation_maker.h>
 #include "../anonymous_model.h"
 #include "../calendar.h"
-#include "../../standard_integrators/time_limited.h"
+#include "../../unisim_integrators/time_limited.h"
 #include "test_calendar.h"
 
 using std::cout;
@@ -190,7 +190,7 @@ void TestCalendar::cleanup() {
 
 void TestCalendar::createSimulation(QString fileName, int numFollowers) {
     QDir dir = FileLocations::location(FileLocations::Plugins);
-    QString filePath = dir.absolutePath() + "/standard_models/test/" + fileName;
+    QString filePath = dir.absolutePath() + "/unisim_models/test/" + fileName;
 
     SimulationMaker maker;
     sim = maker.parse(filePath);
@@ -337,13 +337,14 @@ void TestCalendar::testFirstDatePresentFollowerWithout() {
 void TestCalendar::testFirstDatePresentFollowerBefore() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", QDate(2010, 4, 1));
+    calendar->changeParameter("firstDate", QDate(2010, 1, 1));
     weather->changeParameter("firstDate", WEATHER_DATE);
 
     try {
         sim->execute();
-        QCOMPARE(finalCalendarDate(), local::finalDate(QDate(2010, 4, 1)));
-        QCOMPARE(local::finalWeatherDate(), local::finalDate(QDate(2010, 4, 1)));
+        QCOMPARE(finalCalendarDate(), local::finalDate(QDate(2010, 1, 1)));
+        QCOMPARE(local::finalWeatherDate(), local::finalDate(QDate(2010, 1, 1)));
+        QCOMPARE(weather->pullVariable("Tmax"), 8.3);
     }
     catch (Exception &ex) {
         delete sim;

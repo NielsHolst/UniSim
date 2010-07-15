@@ -9,7 +9,7 @@ include ($${US_BASE}/base.pri)
 
 HEADERS += \
     $${US_ENGINE}/simulation.h \
-    ../standard_models/calendar.h \
+    ../unisim_models/calendar.h \
     assimilation_max_given_temp.h \
     assimilation_max_given_temp_sla.h \
     intercom_model_maker.h \
@@ -31,7 +31,7 @@ HEADERS += \
 
 SOURCES += \
     $${US_ENGINE}/simulation.cpp \
-    ../standard_models/calendar.cpp \
+    ../unisim_models/calendar.cpp \
     assimilation_max_given_temp.cpp \
     assimilation_max_given_temp_sla.cpp \
     intercom_model_maker.cpp \

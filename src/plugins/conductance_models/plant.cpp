@@ -36,6 +36,9 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
     new PullVariable("phase", &_phase, this,
                      "Competition phase: @F Unlimited, "
                      "@F UnderCompression or @F {WeightProportional}.");
+    new PullVariable("LAI", &lai, this,
+                     "Leaf area index of whole population "
+                     "(m @Sup 2 leaf area per m @Sup 2 ground area available");
 }
 
 void Plant::initialize() {
@@ -52,7 +55,7 @@ void Plant::initialize() {
     setParameter("k", &k, 0.6,
                  "Light extinction coefficient of foliage [0..1]");
     setParameter("eps", &eps, 1.,
-                 "Light use efficiency (g\"/\"MJ)");
+                 "Light use efficiency (g\"/\"MJ) of global irradiation");
     setParameter("n", &n, 20.,
                  "Plant density (plants per m @Sup {2})");
 
@@ -68,7 +71,7 @@ void Plant::initialize() {
 void Plant::reset() {
     weight = initWeight;
     totalWeight = n*initWeight;
-    Lz = fz = LA_per_plant = dweight = 0.;
+    Lz = fz = LA_per_plant = lai = dweight = 0.;
     changePhase(Unlimited);
     updateCrownZoneArea();
 }
@@ -110,11 +113,12 @@ void Plant::updateLightInterception() {
     LA_per_plant = F*pow(weight, theta);
     Lz = LA_per_plant/sz;
     fz = 1. - exp(-k*Lz);
+    lai = n*LA_per_plant;
 }
 
 void Plant::updateWeight() {
-    double par = weather->pullVariable("irradiation")/2.;
-    dweight = eps*par*sz*fz;
+    double I = weather->pullVariable("irradiation");
+    dweight = eps*I*sz*fz;
     weight += dweight;
     totalWeight = n*weight;
 }

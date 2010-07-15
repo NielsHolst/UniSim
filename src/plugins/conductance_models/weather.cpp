@@ -16,14 +16,10 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
 {
     new PullVariable("irradiation", &irradiation, this,
                      "Global irradiation (MJ\"/\"m @Sup {2}\"/\"d");
-    new PullVariable("Tavg", &Tavg, this,
-                     "Daily average temperature (@Char {ring}C)");
 }
 
 void Weather::initialize() {
     setParameter("irradiation", &irradiation, 10.,
-                 "Constant value");
-    setParameter("Tavg", &Tavg, 15.,
                  "Constant value");
 }
 

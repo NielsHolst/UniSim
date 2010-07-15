@@ -38,14 +38,14 @@ HEADERS += \
     $${US_PLUGINS}/intercom_models/test/test_canopy_layer.h \
     $${US_PLUGINS}/intercom_models/test/test_photosynthesis.h \
     $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.h \
-    $${US_PLUGINS}/standard_integrators/time_step_limited.h \
-    $${US_PLUGINS}/standard_models/anonymous_model.h \
-    $${US_PLUGINS}/standard_models/calendar.h \
-    $${US_PLUGINS}/standard_models/stage.h \
-    $${US_PLUGINS}/standard_models/test/test_calendar.h \
-    $${US_PLUGINS}/standard_models/test/test_life_stage.h \
-    $${US_PLUGINS}/standard_models/test/test_life_cycle.h \
-    $${US_PLUGINS}/standard_models/test/test_stage.h \
+    $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
+    $${US_PLUGINS}/unisim_models/anonymous_model.h \
+    $${US_PLUGINS}/unisim_models/calendar.h \
+    $${US_PLUGINS}/unisim_models/stage.h \
+    $${US_PLUGINS}/unisim_models/test/test_calendar.h \
+    $${US_PLUGINS}/unisim_models/test/test_life_stage.h \
+    $${US_PLUGINS}/unisim_models/test/test_life_cycle.h \
+    $${US_PLUGINS}/unisim_models/test/test_stage.h \
     ../graph_generator.h \
 	../live_simulation.h \
 	../log_base.h \
@@ -79,14 +79,14 @@ SOURCES += \
     $${US_PLUGINS}/intercom_models/test/test_canopy_layer.cpp \
     $${US_PLUGINS}/intercom_models/test/test_photosynthesis.cpp \
     $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.cpp \
-    $${US_PLUGINS}/standard_integrators/time_step_limited.cpp \
-    $${US_PLUGINS}/standard_models/anonymous_model.cpp \
-    $${US_PLUGINS}/standard_models/calendar.cpp \
-    $${US_PLUGINS}/standard_models/stage.cpp \
-    $${US_PLUGINS}/standard_models/test/test_calendar.cpp \
-    $${US_PLUGINS}/standard_models/test/test_life_stage.cpp \
-    $${US_PLUGINS}/standard_models/test/test_life_cycle.cpp \
-    $${US_PLUGINS}/standard_models/test/test_stage.cpp \
+    $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
+    $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
+    $${US_PLUGINS}/unisim_models/calendar.cpp \
+    $${US_PLUGINS}/unisim_models/stage.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_calendar.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_life_stage.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_life_cycle.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_stage.cpp \
     ../graph_generator.cpp \
 	../live_simulation.cpp \
 	../log_base.cpp \

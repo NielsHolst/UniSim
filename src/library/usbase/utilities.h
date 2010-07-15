@@ -43,6 +43,9 @@ bool isDeveloperVersion();
 //@{
 void setSimulationObjectFromDescendent(QObject *object);
 
+template <class T> T seekOne(QString name);
+template <class T> QList<T> seekMany(QString name);
+
 template <class T> T seekOneChild(QString name, QObject *parent);
 template <class T> QList<T> seekChildren(QString name, QObject *parent);
 
@@ -112,6 +115,11 @@ template <class T> QList<T> seekDescendants(QString name, QObject *root) {
     return filterByName<T>(name, candidates);
 }
 
+//! Finds a number (n>=0) of objects anywhere in simulation object tree
+template <class T> QList<T> seekMany(QString name) {
+    return seekDescendants<T>(name, 0);
+}
+
 //! Finds exactly one object
 /*!
   Works like find but throws an Exception if not exactly one object is found
@@ -127,6 +135,11 @@ template <class T> QList<T> seekDescendants(QString name, QObject *root) {
                         "' has more than one descendant called '" + name + "'");
     return matches[0];
 }
+
+ //! Finds exactly one object (n==0) anywhere in simulation object tree
+ template <class T> T seekOne(QString name) {
+     return seekOneDescendant<T>(name, 0);
+ }
 
  //! Finds any number of children
 /*!

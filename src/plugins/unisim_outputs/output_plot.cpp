@@ -80,9 +80,11 @@ void OutputPlot::fillPlotWidget() {
     ys = yVariables();
     OutputVariable *x = xs[0];
 
-    QString yAxisTitle = ys.size() == 1 ? ys[0]->label() : QString();
+    //QString yAxisTitle = ys.size() == 1 ? ys[0]->label() : QString(" ");
+    QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->label(), yAxisTitle);
-    plotWidget->showLegend(ys.size() > 1);
+    //plotWidget->showLegend(ys.size() > 1);
+    plotWidget->showLegend(true);
 
     for (int i = 0; i < ys.size(); ++i) {
         OutputVariable *y = ys[i];

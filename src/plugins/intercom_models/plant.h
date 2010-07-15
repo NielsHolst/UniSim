@@ -22,8 +22,6 @@ class Plant : public UniSim::Model
 public: 
 	Plant(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
-	void initialize();
-	void reset();
 
     // special methods
     PhotosyntheticRate calcPhotosynthesis();

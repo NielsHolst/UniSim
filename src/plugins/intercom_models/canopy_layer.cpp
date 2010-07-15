@@ -16,12 +16,15 @@ using namespace UniSim;
 namespace intercom{
 
 CanopyLayer::CanopyLayer(int layer_, QObject *parent)
-    : QObject(parent), layer(layer_), plantHeight(0)
+    : QObject(parent), layer(layer_), plantHeight(0), calendar(0)
 {
 }
 
 PhotosyntheticRate CanopyLayer::calcPhotosynthesis() {
     lookup();
+
+    if (calendar->pullVariable("sinb") == 0.)
+        return PhotosyntheticRate();
 
     double plHeight = plantHeight->pullVariable("height");
     double height = plHeight*XGAUSS5[layer];
@@ -31,8 +34,13 @@ PhotosyntheticRate CanopyLayer::calcPhotosynthesis() {
     PhotosyntheticRate result;
     for (int i = 0; i < plantAreas.size(); ++i) {
         double leafDensity = plantAreas[i]->atHeight(height);
+        PhotosyntheticRate areaResult = plantAreas[i]->calcPhotosynthesis(eaa);
+        areaResult *= leafDensity;
+        result += areaResult;
+        /*
         result += plantAreas[i]->calcPhotosynthesis(eaa);
         result *= leafDensity;
+        */
     }
 
     result *= plHeight*WGAUSS5[layer];
@@ -50,6 +58,9 @@ LightComponents CanopyLayer::calcEffectiveAreaAbove(double height) {
 }
 
 void CanopyLayer::lookup() {
+    if (!calendar)
+        calendar = seekOne<Model*>("calendar");
+
     if (!plantHeight)
         plantHeight = seekOneChild<Model*>("height", parent());
 

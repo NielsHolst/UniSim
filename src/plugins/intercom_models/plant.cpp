@@ -13,15 +13,8 @@ namespace intercom{
 Plant::Plant(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    setRecursionPolicy(Component::Update, Component::ChildrenNot);
     for (int i = 0; i < 5; ++i)
         canopyLayers.append(new CanopyLayer(i, this));
-}
-
-void Plant::initialize() {
-}
-
-void Plant::reset() {
 }
 
 PhotosyntheticRate Plant::calcPhotosynthesis() {

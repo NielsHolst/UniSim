@@ -59,6 +59,7 @@ WeatherFile::~WeatherFile() {
 
 void WeatherFile::initialize()
 {
+    hasBeenReset = false;
     for (Columns::iterator co = columns.begin(); co != columns.end(); ++co)
         co.value()->setParameter(this);
     setParameter("fileName", &fileName, QString(), "description");
@@ -67,6 +68,8 @@ void WeatherFile::initialize()
 
 void WeatherFile::reset()
 {
+    if (hasBeenReset) return;
+
     if (file.isOpen()) file.close();
     QString filePath = FileLocations::location(FileLocations::Weather).absolutePath() +
                        "/" + fileName;
@@ -76,10 +79,10 @@ void WeatherFile::reset()
     if (!fileOk) throw Exception("Cannot open weather file: " + filePath);
 
     lineNo = 0;
+    hasBeenReset = true;
 }
 
-void WeatherFile::update()
-{
+void WeatherFile::update() {
     if (file.atEnd()) return;
     QString line = QString(file.readLine()).simplified();
     ++lineNo;
@@ -93,6 +96,10 @@ void WeatherFile::update()
         throw Exception(ex.message() + "\nIn line " + QString::number(lineNo) +
                         ": " + line);
     }
+}
+
+void WeatherFile::cleanup() {
+    hasBeenReset = false;
 }
 
 void WeatherFile::setColumn(QString name, int defaultColumn) {

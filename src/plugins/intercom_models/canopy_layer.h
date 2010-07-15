@@ -29,7 +29,7 @@ public:
 private:
     int layer;
     QList<Area*> allAreas, plantAreas;
-    UniSim::Model *plantHeight;
+    UniSim::Model *plantHeight, *calendar;
 
     void lookup();
 };

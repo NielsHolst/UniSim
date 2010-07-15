@@ -8,7 +8,7 @@ CONFIG += plugin
 include ($${US_BASE}/base.pri)
 
 HEADERS += \
-    ../standard_models/stage.h \
+    ../unisim_models/stage.h \
 	grainstore_model_maker.h \
     larva_time.h \
 	maize.h \
@@ -20,7 +20,7 @@ HEADERS += \
     weather.h
 
 SOURCES += \
-    ../standard_models/stage.cpp \
+    ../unisim_models/stage.cpp \
     grainstore_model_maker.cpp \
     larva_time.cpp \
     maize.cpp \

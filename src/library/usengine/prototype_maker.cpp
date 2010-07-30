@@ -231,18 +231,19 @@ void PrototypeMaker::writeClassSourceFile(ClassName className) const{
     QTextStream text(&cppCode);
     text
         << copyrightNotice()
+        << "#include <usbase/pull_variable.h>\n"
         << "#include \"" << makeFileName(className) << ".h\"" << '\n'
         << "\nusing namespace UniSim;\n\n"
         << namespaceBegin()
         << className << "::" << className << "(UniSim::Identifier name, QObject *parent)" << '\n'
         << "\t: Model(name, parent) {" << '\n'
-        << "\tnew PullVariable(\"N\", &density, this);" << '\n'
+        << "\tnew PullVariable(\"N\", &density, this, \"Description\");" << '\n'
         << "}" << '\n'
         << '\n'
         << "void " << className << "::initialize() {" << '\n'
-        << "\tsetParameter(\"Ninit\", &Ninit, 1.);" << '\n'
-        << "\tsetParameter(\"K\", &K, 1000.);" << '\n'
-        << "\tsetParameter(\"r\", &r, 1.2);" << '\n'
+        << "\tsetParameter(\"Ninit\", &Ninit, 1., \"Description\");" << '\n'
+        << "\tsetParameter(\"K\", &K, 1000., \"Description\");" << '\n'
+        << "\tsetParameter(\"r\", &r, 1.2, \"Description\");" << '\n'
         << "}" << '\n'
         << '\n'
         << "void " << className << "::reset() {" << '\n'
@@ -282,8 +283,10 @@ void PrototypeMaker::writeMakerHeaderFile() const {
         << "\tQ_OBJECT" << '\n'
         << "\tQ_INTERFACES(UniSim::ModelMakerPlugIn)" << '\n'
         << "public:" << '\n'
-        << "\tQList<UniSim::Identifier> supportedTypes() const;" << '\n'
-        << "\tUniSim::Identifier plugInName() const;" << '\n'
+        << "\tUniSim::Identifier pluginName() const;" << '\n'
+        << "\tQString pluginDesc() const;" << '\n'
+        << "\tQStringList authors() const;" << '\n'
+        << "\tconst QMap<UniSim::Identifier, QString>& supportedClasses();" << '\n'
         << "\tvoid useObjectPool(UniSim::ObjectPool *pool) const;" << '\n'
         << "\tUniSim::Model* create(UniSim::Identifier modelType," << '\n'
         << "\t                      UniSim::Identifier objectName," << '\n'
@@ -315,26 +318,68 @@ void PrototypeMaker::writeMakerSourceFile() const {
         << '\n'
         << "namespace " << pluginName << "{" << '\n'
         << '\n'
-        << "QList<Identifier> " << classMakerName << "::supportedTypes() const" << '\n'
-        << "{" << '\n'
-        << "\treturn QList<Identifier>()" << '\n'
-        << modelIdentifiers()
-        << "}" << '\n'
-        << '\n'
-        << modelPlugInName() << '\n'
-        << modelUseObjectPool() << '\n'
-        << "Model* " << classMakerName << "::create(Identifier modelType, Identifier objectName, QObject *parent)" << '\n'
-        << "{" << '\n'
-        << "\tsetSimulationObjectFromDescendent(parent);" << '\n'
-        << "\tModel *model = 0;" << '\n'
-        << modelCreation()
-        << "\treturn model;" << '\n'
-        << "}" << '\n'
+
+        << plugInDesc()
+        << plugInName()
+        << authors()
+        << supportedClasses()
+        << useObjectPool()
+        << create()
+
         << '\n'
         << "Q_EXPORT_PLUGIN2(" << baseFileName << ", " << classMakerName << ")" << '\n'
         << '\n'
         << "} //namespace" << '\n';
     file.write(qPrintable(cppCode));
+}
+
+QString PrototypeMaker::plugInDesc() const {
+    return
+    "QString " + classMakerName + "::pluginDesc() const\n"
+    "{\n"
+        "\treturn \"Description of " + pluginName + "\";\n"
+    "}\n\n";
+}
+
+QString PrototypeMaker::authors() const {
+    return
+    "QStringList " + classMakerName + "::authors() const\n"
+    "{\n"
+        "\treturn QStringList() << \"author1\" << \"author2\";\n"
+    "}\n\n";
+}
+
+QString PrototypeMaker::supportedClasses() const {
+    return
+    "const QMap<Identifier, QString>& " + classMakerName +
+    "::supportedClasses()\n"
+    "{\n"
+    "\tif (!desc.isEmpty()) return desc;" +
+    classDesc() +
+    "\n\n\treturn desc;\n"
+    "}\n\n";
+}
+
+QString PrototypeMaker::classDesc() const {
+    QString s;
+    for (int i = 0; i < classes.size(); ++i) {
+        QString name = classes.keys()[i];
+        s += "\n\n\tdesc[\"" + name + "\"] =\n"
+             "\t\"Description\";";
+    }
+    return s;
+}
+
+QString PrototypeMaker::create() const {
+    return
+    "Model* " + classMakerName +
+    "::create(Identifier modelType, Identifier objectName, QObject *parent)\n"
+    "{\n"
+    "\tsetSimulationObjectFromDescendent(parent);\n"
+    "\tModel *model = 0;\n" +
+    modelCreation() +
+    "\treturn model;\n"
+    "}\n\n";
 }
 
 QString PrototypeMaker::modelIncludes() const {
@@ -344,15 +389,15 @@ QString PrototypeMaker::modelIncludes() const {
     return s;
 }
 
-QString PrototypeMaker::modelPlugInName() const {
+QString PrototypeMaker::plugInName() const {
     QString s;
-    s = "Identifier " + classMakerName + "::plugInName() const {\n";
-    s += "\treturn Identifier(\""+ pluginName + "\");\n";
-    s += "}\n";
+    s = "Identifier " + classMakerName + "::pluginName() const {\n";
+    s += "\treturn \""+ pluginName + "\";\n";
+    s += "}\n\n";
     return s;
 }
 
-QString PrototypeMaker::modelUseObjectPool() const {
+QString PrototypeMaker::useObjectPool() const {
     QString s;
     s = "void " + classMakerName + "::useObjectPool(ObjectPool *pool) const {\n";
     s += "\tobjectPool()->deferTo(pool);\n";
@@ -389,7 +434,7 @@ void PrototypeMaker::writeProjectFile() const {
     QString cppCode;
     QTextStream text(&cppCode);
     text
-        << "include($$(UNISIM_ROOT)/src/config.pri)" << '\n'
+        << "include(../../config.pri)" << '\n'
         << '\n'
         << "TEMPLATE = lib" << '\n'
         << "DESTDIR = $${US_PLUGINS}" << '\n'
@@ -422,7 +467,7 @@ QString PrototypeMaker::projectFiles(QString extension) const {
 }
 
 void PrototypeMaker::WriteXmlModelFile() const {
-    QString fileName = pluginName + "_prototype_model.xml";
+    QString fileName = pluginName + ".xml";
     QFile file;
     if (!openOutputFile(fileName, &file)) return;
 
@@ -431,8 +476,8 @@ void PrototypeMaker::WriteXmlModelFile() const {
     text
         << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << '\n'
         << "<simulation version=\"1.0\">" << '\n'
-        << "\t<integrator type=\"Simple\">" << '\n'
-        << "\t\t<parameter name=\"numSteps\" value=\"60\"/>" << '\n'
+        << "\t<integrator type=\"TimeStepLimited\">" << '\n'
+        << "\t\t<parameter name=\"maxSteps\" value=\"60\"/>" << '\n'
         << "\t\t<sequence>" << '\n'
         << xmlModelNames()
         << "\t\t</sequence>" << '\n'
@@ -456,13 +501,13 @@ QString PrototypeMaker::xmlModelNames() const {
 
 QString PrototypeMaker::xmlModelClasses() const {
     QString s;
-    s += "\t<model name=\"calendar\" type=\"Calendar\"/>\n"
-         "\t\t<parameter name=\"firstDate\" value=\"1/1/2010\" >\n"
+    s += "\n\t<model name=\"calendar\" type=\"Calendar\">\n"
+         "\t\t<parameter name=\"firstDate\" value=\"1/1/2010\"/>\n"
          "\t</model>\n";
     for (Classes::const_iterator cl = classes.begin(); cl != classes.end(); ++cl) {
         const ObjectNames &objectNames(cl.value());
         for (int i = 0; i < objectNames.size(); ++i) {
-            s += "\t<model name=\"" + objectNames[i] + "\" type=\"" + pluginName + "::" + cl.key() + "\">\n";
+            s += "\n\t<model name=\"" + objectNames[i] + "\" type=\"" + pluginName + "::" + cl.key() + "\">\n";
             s += parameter("Ninit", 1, 5);
             s += parameter("r", 1.02, 1.12);
             s += parameter("K", 70, 150);
@@ -481,8 +526,8 @@ QString PrototypeMaker::xmlOutputs() const {
                  "\t\t<parameter name=\"title\" value =\"" +
                  makeClassName(objectNames[i]) + "\"/>\n"
 
-                 "\t\t\t<variable axis=\"x\" label=\"Day\" value=\"calendar[dayInYear]\"/>\n"
-                 "\t\t\t<variable axis=\"y\" label=\"Density\" value=\"" +
+                 "\t\t<variable axis=\"x\" label=\"Day\" value=\"calendar[dayInYear]\"/>\n"
+                 "\t\t<variable axis=\"y\" label=\"Density\" value=\"" +
                  objectNames[i] + "[N]\"/>\n"
                  "\t</output>\n";
         }

@@ -14,7 +14,7 @@
 	</model>
 	
 	<model name="weather" type="conductance::Weather">
-		<parameter name="irradiation" value="20"/>
+		<parameter name="irradiation" value="10"/>
 	</model>
 
 	<model name="community" type="conductance::Community">

@@ -47,9 +47,16 @@ private:
     QString namespaceBegin() const;
     QString modelIncludes() const;
     QString modelIdentifiers() const;
-    QString modelPlugInName() const;
-    QString modelUseObjectPool() const;
     QString modelCreation() const;
+
+    QString plugInDesc() const;
+    QString plugInName() const;
+    QString authors() const;
+    QString supportedClasses() const;
+    QString useObjectPool() const;
+    QString create() const;
+    QString classDesc() const;
+
     QString projectFiles(QString extension) const;
     QString xmlModelClasses() const;
     QString xmlModelNames() const;

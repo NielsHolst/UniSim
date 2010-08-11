@@ -84,20 +84,20 @@ void TestLifeStage::testState()
 	
 	for (int i = 0; i < 1000; ++i) {
 		stage->update();
-        QVERIFY2(fabs( stage->pullVariable("contents") +
-                       stage->pullVariable("outputTotal") -
-                       stage->pullVariable("inputTotal") ) < EPS,
+        QVERIFY2(fabs( stage->pullVariable<double>("contents") +
+                       stage->pullVariable<double>("outputTotal") -
+                       stage->pullVariable<double>("inputTotal") ) < EPS,
 
                 qPrintable("stage->inputTotal: "
-                    + QString::number(stage->pullVariable("inputTotal"))
+                    + QString::number(stage->pullVariable<double>("inputTotal"))
                     + " Got (contents + outputTotal): "
-                    + QString::number(stage->pullVariable("contents")) + " + "
-                    + QString::number(stage->pullVariable("outputTotal")) + " = "
-                    + QString::number(stage->pullVariable("contents") +
-                                      stage->pullVariable("outputTotal"))
-                    + " Diff: " + QString::number(stage->pullVariable("contents") +
-                                                  stage->pullVariable("outputTotal") -
-                                                  stage->pullVariable("inputTotal"))
+                    + QString::number(stage->pullVariable<double>("contents")) + " + "
+                    + QString::number(stage->pullVariable<double>("outputTotal")) + " = "
+                    + QString::number(stage->pullVariable<double>("contents") +
+                                      stage->pullVariable<double>("outputTotal"))
+                    + " Diff: " + QString::number(stage->pullVariable<double>("contents") +
+                                                  stage->pullVariable<double>("outputTotal") -
+                                                  stage->pullVariable<double>("inputTotal"))
 				));
 	}
 	

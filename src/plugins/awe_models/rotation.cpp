@@ -18,7 +18,7 @@ Rotation::Rotation(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable("lai", &lai, this,
+    new PullVariable<double>("lai", &lai, this,
                      "Leaf area index (m @Sup {2}\"/\"m @Sup {2}) of the current crop");
 }
 
@@ -56,7 +56,7 @@ void Rotation::reset() {
 
 void Rotation::update() {
     currentCrop()->deepUpdate();
-    lai = currentCrop()->pullVariable("lai");
+    lai = currentCrop()->pullVariable<double>("lai");
 }
 
 Model* Rotation::currentCrop() {

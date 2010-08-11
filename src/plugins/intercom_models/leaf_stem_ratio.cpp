@@ -13,7 +13,7 @@ namespace intercom{
 LeafStemRatio::LeafStemRatio(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("ratio", &ratio, this, "description");
+    new PullVariable<double>("ratio", &ratio, this, "description");
 }
 
 void LeafStemRatio::initialize()
@@ -25,7 +25,7 @@ void LeafStemRatio::initialize()
 
 void LeafStemRatio::update()
 {
-    double pt = photoThermalTime->pullVariable("total");
+    double pt = photoThermalTime->pullVariable<double>("total");
     ratio = initial - slope*pt;
     if (ratio < 0.)
         ratio = 0.;

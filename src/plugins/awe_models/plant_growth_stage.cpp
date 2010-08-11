@@ -20,10 +20,10 @@ PlantGrowthStage::PlantGrowthStage(UniSim::Identifier name, QObject *parent)
     setRecursionPolicy(Component::Reset,  Component::ChildrenLast);
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 
-    new PullVariable("outflowAsDensity", &outflowAsDensity, this,
+    new PullVariable<double>("outflowAsDensity", &outflowAsDensity, this,
                      "Number of plants that emerged from this growth stage during the last update "
                      "(i.e. time step) (plants per m @Sup 2 per day)");
-    new PullVariable("outflowAsDensityEqs", &outflowAsDensityEqs, this,
+    new PullVariable<double>("outflowAsDensityEqs", &outflowAsDensityEqs, this,
                      "Number of density equivalents that emerged from this growth stage during the last update "
                      "(i.e. time step) (density equivalents per m @Sup 2 per day)");
     new PushVariable("inflowAsDensity", &inflowAsDensity, this,
@@ -58,8 +58,8 @@ void PlantGrowthStage::update() {
     density->deepUpdate();
     densityEqs->deepUpdate();
 
-    outflowAsDensity = density->pullVariable("outflow");
-    outflowAsDensityEqs = densityEqs->pullVariable("outflow");
+    outflowAsDensity = density->pullVariable<double>("outflow");
+    outflowAsDensityEqs = densityEqs->pullVariable<double>("outflow");
 }
 
 }

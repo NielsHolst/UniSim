@@ -14,8 +14,8 @@ namespace ambrosia{
 
 Plant::Plant(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
-    new PullVariable("stage", &stage, this, "desc");
-    new PullVariable("total", &total, this, "desc");
+    new PullVariable<double>("stage", &stage, this, "desc");
+    new PullVariable<double>("total", &total, this, "desc");
 }
 
 void Plant::initialize() {
@@ -37,13 +37,13 @@ void Plant::reset() {
 
 void Plant::update() {
     int firstDay = toDayOfYear(beginDay, beginMonth);
-    double today = calendar->pullVariable("dayInYear");
+    double today = calendar->pullVariable<double>("dayInYear");
     if (today < firstDay)
         return;
 
     double step = (fabs(stage-3.) < 1e-9) ?
-        timeC->pullVariable("step") :
-        timeABDE->pullVariable("step");
+        timeC->pullVariable<double>("step") :
+        timeABDE->pullVariable<double>("step");
     total += step;
 
     double sum = 0;

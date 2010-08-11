@@ -13,6 +13,8 @@
 
 namespace UniSim{	
 
+class PullVariableBase;
+
 class OutputVariable : public Component, public Parameters
 {
 	Q_OBJECT
@@ -43,8 +45,8 @@ private:
     QString _label, modelName, stateNameInModel;
 
     // links
-    const Model *model;		//!< Pointer to the model holding the state variable
-    const double *statePtr; //!< Pointer to the value of the state variable
+    const Model *model;		//!< Pointer to the model holding the pull variable
+    const PullVariableBase *pullVarPtr;
 
     // state
     Axis _axis;

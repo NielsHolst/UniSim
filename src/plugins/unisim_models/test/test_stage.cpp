@@ -31,12 +31,12 @@ void TestStage::testAgeClasses()
     double const *classes;
 
     stage->reset();
-    classes = stage->pullVariablePtr("ageClasses");
+    classes = stage->pullVariablePtr<double>("ageClasses");
     QVERIFY(classes);
 
     model->changeParameter("k", 300);
     stage->reset();
-    classes = stage->pullVariablePtr("ageClasses");
+    classes = stage->pullVariablePtr<double>("ageClasses");
     QVERIFY(classes);
     double test = classes[0] + classes[299];
     QCOMPARE(test, 0.);

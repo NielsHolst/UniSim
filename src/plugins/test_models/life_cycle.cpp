@@ -16,7 +16,7 @@ LifeCycle::LifeCycle(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable("contents", &sum, this, "description");
+    new PullVariable<double>("contents", &sum, this, "description");
 }
 
 void LifeCycle::initialize()
@@ -40,11 +40,11 @@ void LifeCycle::update()
     //cout << "LifeCycle::update() A\n";
     if (stages.size() > 0) {
         stages[0]->update();
-        sum = stages[0]->pullVariable("contents");
+        sum = stages[0]->pullVariable<double>("contents");
 		for (int i = 1; i < stages.size(); ++i) {
-            stages[i]->pushVariable("input", stages[i-1]->pullVariable("output"));
+            stages[i]->pushVariable("input", stages[i-1]->pullVariable<double>("output"));
 			stages[i]->update();
-            sum += stages[i]->pullVariable("contents");
+            sum += stages[i]->pullVariable<double>("contents");
 		}
 	}
     //cout << "LifeCycle::update() Z\n";

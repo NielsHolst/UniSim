@@ -13,9 +13,9 @@ namespace grainstore{
 
 Maize::Maize(UniSim::Identifier name, QObject *parent)
     : Model(name, parent) {
-    new PullVariable("lossPct", &injury[LossPct], this, "desc");
-    new PullVariable("damagePct", &injury[DamagePct], this, "desc");
-    new PullVariable("ptSD", &ptSD[LossPct], this, "desc");
+    new PullVariable<double>("lossPct", &injury[LossPct], this, "desc");
+    new PullVariable<double>("damagePct", &injury[DamagePct], this, "desc");
+    new PullVariable<double>("ptSD", &ptSD[LossPct], this, "desc");
 
     paramText[LossPct] = "loss";
     paramText[DamagePct] = "damage";

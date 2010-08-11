@@ -23,7 +23,7 @@ TimeSlice::TimeSlice(int slice_, QObject *parent)
 PhotosyntheticRate TimeSlice::calcPhotosynthesis() {
     lookup();
 
-    double dayLength = calendar->pullVariable("dayLength");
+    double dayLength = calendar->pullVariable<double>("dayLength");
     double hour = 12. + 0.5*dayLength*XGAUSS3[slice];
     clock()->doTick(hour);
 

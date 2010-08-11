@@ -13,7 +13,7 @@ namespace intercom{
 AssimilationMaxGivenTemp::AssimilationMaxGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("amax", &amax, this, "description");
+    new PullVariable<double>("amax", &amax, this, "description");
 }
 
 void AssimilationMaxGivenTemp::initialize()
@@ -28,7 +28,7 @@ void AssimilationMaxGivenTemp::reset() {
 
 void AssimilationMaxGivenTemp::update()
 {
-    double Tday = weather->pullVariable("Tday");
+    double Tday = weather->pullVariable<double>("Tday");
     amax = Tday < 0 ? 0. : slope*Tday;
     if (amax > maxAmax)
         amax = maxAmax;

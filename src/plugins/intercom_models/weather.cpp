@@ -23,12 +23,12 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
     setColumn("Tmin", 4);
     setColumn("irradiationMJ", 7);
 
-    new PullVariable("Tavg", &Tavg, this, "description");
-    new PullVariable("Tday", &Tday, this, "description");
-    new PullVariable("irradiation", &irradiation, this, "description");
-    new PullVariable("parTotal", &par.total, this, "description");
-    new PullVariable("parDiffuse", &par.diffuse, this, "description");
-    new PullVariable("parDirect", &par.direct, this, "description");
+    new PullVariable<double>("Tavg", &Tavg, this, "description");
+    new PullVariable<double>("Tday", &Tday, this, "description");
+    new PullVariable<double>("irradiation", &irradiation, this, "description");
+    new PullVariable<double>("parTotal", &par.total, this, "description");
+    new PullVariable<double>("parDiffuse", &par.diffuse, this, "description");
+    new PullVariable<double>("parDirect", &par.direct, this, "description");
 }
 
 void Weather::initialize() {
@@ -55,9 +55,9 @@ void Weather::verifySequence() {
 void Weather::update()
 {
     WeatherFile::update();
-    Tavg = (pullVariable("Tmin") + pullVariable("Tmax"))/2.;
-    Tday = pullVariable("Tmax") - 0.25*(pullVariable("Tmax") - pullVariable("Tmin"));
-    irradiation = pullVariable("irradiationMJ")*1e6;
+    Tavg = (pullVariable<double>("Tmin") + pullVariable<double>("Tmax"))/2.;
+    Tday = pullVariable<double>("Tmax") - 0.25*(pullVariable<double>("Tmax") - pullVariable<double>("Tmin"));
+    irradiation = pullVariable<double>("irradiationMJ")*1e6;
 }
 
 void Weather::handleClockTick(double hour) {
@@ -66,10 +66,10 @@ void Weather::handleClockTick(double hour) {
 
 void Weather::updatePar() {
     double
-        sinld = calendar->pullVariable("sinLD"),
-        cosld = calendar->pullVariable("cosLD"),
-        day = calendar->pullVariable("dayInYear"),
-        dayLength = calendar->pullVariable("dayLength");
+        sinld = calendar->pullVariable<double>("sinLD"),
+        cosld = calendar->pullVariable<double>("cosLD"),
+        day = calendar->pullVariable<double>("dayInYear"),
+        dayLength = calendar->pullVariable<double>("dayLength");
 
     double aob = sinld/cosld;
     double dsinb = 3600.*(dayLength*sinld + 24.*cosld*sqrt(1. - aob*aob)/PI);
@@ -89,7 +89,7 @@ void Weather::updatePar() {
     else
         frdiff = 1.;
 
-    double sinbh = calendar->pullVariable("sinb");
+    double sinbh = calendar->pullVariable<double>("sinb");
 
     par.total = 0.5*irradiation*sinbh*(1. + 0.4*sinbh)/dsinbe;
     par.diffuse = sinbh*frdiff*atmtr*0.5*sc;

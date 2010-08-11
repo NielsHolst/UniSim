@@ -20,14 +20,10 @@ Model::Model(Identifier name, QObject *parent)
 void Model::pushVariable(Identifier name, double value) {
     seekOneChild<PushVariable*>(name.key())->setValue(value);
 }
-
-double Model::pullVariable(Identifier name) {
-    return seekOneChild<PullVariable*>(name.key())->value();
+/*
+double Model::pullVariable<double>(Identifier name) {
+    return seekOneChild<PullVariable<double>*>(name.key())->value();
 }
-
-const double* Model::pullVariablePtr(Identifier name) {
-    return seekOneChild<PullVariable*>(name.key())->valuePtr();
-}
-
+*/
 } //namespace
 

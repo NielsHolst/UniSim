@@ -33,13 +33,13 @@ void Insect2::reset() {
 void Insect2::update() {
     egg->deepUpdate();
 
-    larva->pushVariable("inflow", egg->pullVariable("outflow"));
+    larva->pushVariable("inflow", egg->pullVariable<double>("outflow"));
     larva->deepUpdate();
 
-    pupa->pushVariable("inflow", larva->pullVariable("outflow"));
+    pupa->pushVariable("inflow", larva->pullVariable<double>("outflow"));
     pupa->deepUpdate();
 
-    adult->pushVariable("inflow", pupa->pullVariable("outflow"));
+    adult->pushVariable("inflow", pupa->pullVariable<double>("outflow"));
     adult->deepUpdate();
 }
 

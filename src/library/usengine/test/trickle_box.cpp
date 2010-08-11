@@ -10,8 +10,8 @@ TrickleBox::TrickleBox(QString name, QObject *parent)
 	: UniSim::Model(name,parent) 
 { 
     new PushVariable("inflow", &_inflow, this, "desc");
-    new PullVariable("contents", &_contents, this, "desc");
-    new PullVariable("outflow", &_outflow, this, "desc");
+    new PullVariable<double>("contents", &_contents, this, "desc");
+    new PullVariable<double>("outflow", &_outflow, this, "desc");
 }
 
 void TrickleBox::initialize()

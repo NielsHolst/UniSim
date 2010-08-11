@@ -12,7 +12,7 @@
 namespace UniSim{
 	
 OutputVariable::OutputVariable(Identifier name, QObject *parent)
-    : Component(name, parent)
+    : Component(name, parent), model(0), pullVarPtr(0)
 {
 }
 
@@ -24,7 +24,9 @@ void OutputVariable::reset() {
 }
 
 void OutputVariable::update() {
-    _data.append(*statePtr);
+    Q_ASSERT(pullVarPtr);
+    double toAppend = pullVarPtr->toVariant().value<double>();
+    _data.append(toAppend);
 }
 
 OutputVariable::Axis OutputVariable::axis() const {
@@ -49,23 +51,23 @@ void OutputVariable::appendVariable(OutputVariable::Raw raw, QObject *parent) {
     int numVariables = 0;
     for (Models::iterator mo = models.begin(); mo != models.end(); ++mo) {
         if (raw.stateNameInModel == "*") {
-            QList<PullVariable*> pullVariables = (*mo)->seekChildren<PullVariable*>("*");
-            for (QList<PullVariable*>::const_iterator st = pullVariables.begin(); st != pullVariables.end(); ++st) {
+            QList<PullVariableBase*> pullVariables = (*mo)->seekChildren<PullVariableBase*>("*");
+            for (QList<PullVariableBase*>::const_iterator st = pullVariables.begin(); st != pullVariables.end(); ++st) {
                 Identifier stateNameInModel = (*st)->objectName();
                 OutputVariable *v = new OutputVariable(stateNameInModel, parent);
                 v->fromRaw(raw);
                 v->model = *mo;
-                v->statePtr = (*st)->valuePtr();
+                v->pullVarPtr = *st;
                 ++numVariables;
             }
         }
         else {
-            const double *statePtr = (*mo)->pullVariablePtr(raw.stateNameInModel);
-            if (statePtr) {
+            PullVariableBase *pullVarPtr = (*mo)->seekOneChild<PullVariableBase*>(raw.stateNameInModel);
+            if (pullVarPtr) {
                 OutputVariable *v = new OutputVariable(raw.stateNameInModel, parent);
                 v->fromRaw(raw);
                 v->model = *mo;
-                v->statePtr = statePtr;
+                v->pullVarPtr = pullVarPtr;
                 ++numVariables;
             }
         }

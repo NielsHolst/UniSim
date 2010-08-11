@@ -18,16 +18,16 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
     : UniSim::Model(name, parent), _x(0), ageClassesPtr(0)
 {
     // Next line can be used when pull variables have been templatized
-    //new PullVariable("ageClasses", &_x, this);
-    new PullVariable("number", &_sum, this, "Number of units (e.g. individuals) in stage");
-    new PullVariable("inflow", &_input, this, "Inflow into the stage in latest time step");
-    new PullVariable("outflow", &_output, this, "Outflow from the stage in latest time step");
-    new PullVariable("inflowTotal", &_inputTotal, this, "Total inflow into the stage since beginning of the simulation");
-    new PullVariable("outflowTotal", &_outputTotal, this, "Total outflow from the stage since beginning of the simulation");
-    new PullVariable("growthRate", &_fgr, this, "Finite growth rate through stage. "
+    //new PullVariable<double>("ageClasses", &_x, this);
+    new PullVariable<double>("number", &_sum, this, "Number of units (e.g. individuals) in stage");
+    new PullVariable<double>("inflow", &_input, this, "Inflow into the stage in latest time step");
+    new PullVariable<double>("outflow", &_output, this, "Outflow from the stage in latest time step");
+    new PullVariable<double>("inflowTotal", &_inputTotal, this, "Total inflow into the stage since beginning of the simulation");
+    new PullVariable<double>("outflowTotal", &_outputTotal, this, "Total outflow from the stage since beginning of the simulation");
+    new PullVariable<double>("growthRate", &_fgr, this, "Finite growth rate through stage. "
                      "For every quantity @I x that enters as inflow, @I fgr*x will emerge as outflow. "
                      "@F fgr can be changed during the simulation");
-    new PullVariable("timeStep", &_dt, this, "The latest time step applied to the stage");
+    new PullVariable<double>("timeStep", &_dt, this, "The latest time step applied to the stage");
 
     new PushVariable("inflow", &_inflow, this, "Number of units to be put into the stage in the next time step");
     new PushVariable("growthRate", &_fgr, this, "Same as the @F fgr pull variable");
@@ -60,7 +60,7 @@ void Stage::reset()
 	_x = new double[_k];
 
     if (ageClassesPtr) delete ageClassesPtr;
-    ageClassesPtr = new PullVariable("ageClasses", _x, this, "description");
+    ageClassesPtr = new PullVariable<double>("ageClasses", _x, this, "description");
 
     fill(0);
 
@@ -81,7 +81,7 @@ void Stage::update()
     _inputTotal += _inflow;
     _inflow = 0;
 
-    double dt = time->pullVariable("step");
+    double dt = time->pullVariable<double>("step");
     _dt = dt;
 
 	if (_k<=0 || _L<=0 || _fgr<=0 || _input< 0 || dt<0 || _x==0) {

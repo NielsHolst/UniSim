@@ -23,12 +23,12 @@ LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
 	_firstUpdate = true;
 	_dirtySum = true;
 	
-    new PullVariable("contents", &_sum, this, "description");
-    new PullVariable("fgr", &_fgr, this, "description");
-    new PullVariable("input", &_input, this, "description");
-    new PullVariable("output", &_output, this, "description");
-    new PullVariable("inputTotal", &_inputTotal, this, "description");
-    new PullVariable("outputTotal", &_outputTotal, this, "description");
+    new PullVariable<double>("contents", &_sum, this, "description");
+    new PullVariable<double>("fgr", &_fgr, this, "description");
+    new PullVariable<double>("input", &_input, this, "description");
+    new PullVariable<double>("output", &_output, this, "description");
+    new PullVariable<double>("inputTotal", &_inputTotal, this, "description");
+    new PullVariable<double>("outputTotal", &_outputTotal, this, "description");
 
     new PushVariable("input", &_inflow, this, "description");
 }

@@ -21,7 +21,7 @@ WeatherFile::Column::Column(QString variableName_, int defaultColumn_, Model *pa
 {
     Q_ASSERT(parent);
     //parent->setState(variableName, &value);
-    new PullVariable(variableName, &value, parent, "description");
+    new PullVariable<double>(variableName, &value, parent, "description");
 }
 
 void WeatherFile::Column::setParameter(Model *parent) {

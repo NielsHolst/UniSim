@@ -49,9 +49,9 @@ namespace local {
 }
 
 QDate TestCalendar::finalCalendarDate() {
-    int day = (int) calendar->pullVariable("day");
-    int month = (int) calendar->pullVariable("month");
-    int year = (int) calendar->pullVariable("year");
+    int day = (int) calendar->pullVariable<double>("day");
+    int month = (int) calendar->pullVariable<double>("month");
+    int year = (int) calendar->pullVariable<double>("year");
     return QDate(year, month, day);
 }
 
@@ -223,13 +223,13 @@ void TestCalendar::testSolarElevation() {
     for (int lo = 0; lo < locations.size(); ++lo) {
         calendar->changeParameter("latitude", locations[lo].latitude);
         for (int da = 0; da < days.size(); ++da) {
-            while (fabs(calendar->pullVariable("dayOfYear") - days[da])> 1e-6) {
+            while (fabs(calendar->pullVariable<double>("dayOfYear") - days[da])> 1e-6) {
                 calendar->update();
             }
             for (int ho = 0; ho < hours.size(); ++ho) {
                 double astroHour = hours[ho] - solarNoonDiff[lo][da];
                 clock()->doTick(astroHour);
-                double sinb = cal->pullVariable("sinb");
+                double sinb = cal->pullVariable<double>("sinb");
                 double estSolarElev = asin(sinb)/PI*180.;
                 QVERIFY(fabs(estSolarElev - solarElev[lo][da][ho]) < 1.);
             }
@@ -246,11 +246,11 @@ void TestCalendar::testDayLength() {
     for (int lo = 0; lo < locations.size(); ++lo) {
         calendar->changeParameter("latitude", locations[lo].latitude);
         for (int da = 0; da < days.size(); ++da) {
-            while (fabs(calendar->pullVariable("dayOfYear") - days[da])> 1e-6) {
+            while (fabs(calendar->pullVariable<double>("dayOfYear") - days[da])> 1e-6) {
                 calendar->update();
             }
         double trueDayLength = QTime(0,0,0).secsTo(dayLength[lo][da])/60./60.;
-        double estDayLength = calendar->pullVariable("dayLength");
+        double estDayLength = calendar->pullVariable<double>("dayLength");
         QVERIFY(fabs(estDayLength - trueDayLength) < 1.5);
         }
     }
@@ -344,7 +344,7 @@ void TestCalendar::testFirstDatePresentFollowerBefore() {
         sim->execute();
         QCOMPARE(finalCalendarDate(), local::finalDate(QDate(2010, 1, 1)));
         QCOMPARE(local::finalWeatherDate(), local::finalDate(QDate(2010, 1, 1)));
-        QCOMPARE(weather->pullVariable("Tmax"), 8.3);
+        QCOMPARE(weather->pullVariable<double>("Tmax"), 8.3);
     }
     catch (Exception &ex) {
         delete sim;

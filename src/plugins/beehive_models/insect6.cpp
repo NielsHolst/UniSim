@@ -35,19 +35,19 @@ void Insect6::reset() {
 void Insect6::update() {
     egg->deepUpdate();
 
-    larva->pushVariable("inflow", egg->pullVariable("outflow"));
+    larva->pushVariable("inflow", egg->pullVariable<double>("outflow"));
     larva->deepUpdate();
 
-    pupa->pushVariable("inflow", larva->pullVariable("outflow"));
+    pupa->pushVariable("inflow", larva->pullVariable<double>("outflow"));
     pupa->deepUpdate();
 
-    adult->pushVariable("inflow", pupa->pullVariable("outflow"));
+    adult->pushVariable("inflow", pupa->pullVariable<double>("outflow"));
     adult->deepUpdate();
 
-    egg->pushVariable("inflow", fecundity->pullVariable("eggsLaid"));
+    egg->pushVariable("inflow", fecundity->pullVariable<double>("eggsLaid"));
 
     // Apply survival as finite growth rate which must be > 0
-    double fgr = eggSurvival->pullVariable("survival");
+    double fgr = eggSurvival->pullVariable<double>("survival");
     if (fgr == 0.)
         fgr = 1e-6;
     egg->pushVariable("growthRate", fgr);

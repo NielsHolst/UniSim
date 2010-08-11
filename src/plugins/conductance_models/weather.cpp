@@ -14,7 +14,7 @@ namespace conductance {
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("irradiation", &irradiation, this,
+    new PullVariable<double>("irradiation", &irradiation, this,
                      "Global irradiation (MJ\"/\"m @Sup {2}\"/\"d");
 }
 

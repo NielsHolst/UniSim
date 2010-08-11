@@ -16,6 +16,7 @@ HEADERS += \
 		$${US_BASE}/model_maker_plug_in.h \
         $${US_BASE}/parameters.h \
         $${US_BASE}/pull_variable.h \
+        $${US_BASE}/pull_variable_base.h \
         $${US_BASE}/push_variable.h \
         $${US_BASE}/random_uniform.h \
         $${US_BASE}/utilities.h \
@@ -35,7 +36,7 @@ SOURCES += \
 		$${US_BASE}/output.cpp \
 		$${US_BASE}/output_variable.cpp \
         $${US_BASE}/parameters.cpp \
-        $${US_BASE}/pull_variable.cpp \
+        $${US_BASE}/pull_variable_base.cpp \
         $${US_BASE}/push_variable.cpp \
         $${US_BASE}/random_uniform.cpp \
         $${US_BASE}/utilities.cpp \

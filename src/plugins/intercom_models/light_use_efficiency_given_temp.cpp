@@ -13,7 +13,7 @@ namespace intercom{
 LightUseEfficiencyGivenTemp::LightUseEfficiencyGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("efficiency", &efficiency, this, "description");
+    new PullVariable<double>("efficiency", &efficiency, this, "description");
 }
 
 void LightUseEfficiencyGivenTemp::initialize()
@@ -28,7 +28,7 @@ void LightUseEfficiencyGivenTemp::reset() {
 
 void LightUseEfficiencyGivenTemp::update()
 {
-    double Tday = weather->pullVariable("Tday");
+    double Tday = weather->pullVariable<double>("Tday");
     efficiency = slope*Tday + intercept;
 }
 

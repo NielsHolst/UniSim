@@ -61,14 +61,14 @@ void TestArea::cleanupTestCase()
 }
 
 void TestArea::testAtHeight() {
-    double ph = height->pullVariable("height");
-    double lai = leafArea->pullVariable("lai");
+    double ph = height->pullVariable<double>("height");
+    double lai = leafArea->pullVariable<double>("lai");
     QCOMPARE(lai*6./pow(ph,3)*0.2*(ph - 0.2), leafArea->atHeight(0.2));
 }
 
 void TestArea::testAboveHeight() {
-    double ph = height->pullVariable("height");
-    double lai = leafArea->pullVariable("lai");
+    double ph = height->pullVariable<double>("height");
+    double lai = leafArea->pullVariable<double>("lai");
     QCOMPARE(lai - lai/pow(ph,3)*0.2*0.2*(3.*ph - 2.*0.2), leafArea->aboveHeight(0.2));
 }
 
@@ -77,7 +77,7 @@ void TestArea::testCalcEffectiveAreaAbove() {
     const double hour = 14.;
 
     clock()->doTick(hour);
-    cout << "sinb equals " << calendar->pullVariable("sinb") << "\n";
+    cout << "sinb equals " << calendar->pullVariable<double>("sinb") << "\n";
     cout << "leaf area above equals " << leafArea->aboveHeight(height) << "\n";
 
     LightComponents eaa = leafArea->calcEffectiveAreaAbove(height);
@@ -105,10 +105,10 @@ void TestArea::testCalcPhotosynthesisInShade() {
     const double hour = 14.;
     clock()->doTick(hour);
 
-    cout << "temperature equals " << weather->pullVariable("Tday") << "\n";
+    cout << "temperature equals " << weather->pullVariable<double>("Tday") << "\n";
     cout << "efficiency amax equals "
-            << lightUseEfficiency->pullVariable("efficiency") << " "
-            << assimilationMax->pullVariable("amax") << "\n";
+            << lightUseEfficiency->pullVariable<double>("efficiency") << " "
+            << assimilationMax->pullVariable<double>("amax") << "\n";
 
     LightComponents eaa;
     eaa[Diffuse] = 1.3824;

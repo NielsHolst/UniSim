@@ -13,7 +13,7 @@ namespace intercom{
 Height::Height(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("height", &height, this, "description");
+    new PullVariable<double>("height", &height, this, "description");
 }
 
 void Height::initialize() {
@@ -30,7 +30,7 @@ void Height::reset() {
 }
 
 void Height::update() {
-    double pt = photoThermalTime->pullVariable("total");
+    double pt = photoThermalTime->pullVariable<double>("total");
     updateHeight(pt);
 }
 

@@ -15,7 +15,7 @@ namespace beehive{
 Fecundity::Fecundity(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("eggsLaid", &eggsLaid, this, "description");
+    new PullVariable<double>("eggsLaid", &eggsLaid, this, "description");
 }
 
 void Fecundity::initialize() {
@@ -31,7 +31,7 @@ void Fecundity::reset() {
 }
 
 void Fecundity::update() {
-    const double *adultAgeClasses = adult->pullVariablePtr("ageClasses");
+    const double *adultAgeClasses = adult->pullVariablePtr<double>("ageClasses");
     int k = adult->parameter<int>("k");
     double duration = adult->parameter<double>("duration");
 

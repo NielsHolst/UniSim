@@ -12,8 +12,8 @@ namespace UniSim{
 LarvaTime::LarvaTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("step", &step, this, "desc");
-    new PullVariable("total", &total, this, "desc");
+    new PullVariable<double>("step", &step, this, "desc");
+    new PullVariable<double>("total", &total, this, "desc");
 }
 
 void LarvaTime::initialize()
@@ -32,8 +32,8 @@ void LarvaTime::reset() {
 
 void LarvaTime::update()
 {
-    double gmc = weather->pullVariable("gmc");
-    step = lactin->pullVariable("step");
+    double gmc = weather->pullVariable<double>("gmc");
+    step = lactin->pullVariable<double>("step");
     double scaling = exp(-0.5*pow0(fabs(gmc - optimum)/spread, exponent));
     step *= scaling;
     if (step < minimum)

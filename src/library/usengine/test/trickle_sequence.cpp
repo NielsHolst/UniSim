@@ -26,7 +26,7 @@ void TrickleSequence::update()
         boxes[0]->pushVariable("inflow", 1);
 		boxes[0]->update();
 		for (int i = 1; i < boxes.size(); ++i) {
-            boxes[i]->pushVariable("inflow", boxes[i-1]->pullVariable("outflow"));
+            boxes[i]->pushVariable("inflow", boxes[i-1]->pullVariable<double>("outflow"));
 			boxes[i]->update();
 		}
 	}

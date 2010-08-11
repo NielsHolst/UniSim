@@ -15,7 +15,7 @@ namespace UniSim{
 TimeLimited::TimeLimited(Identifier name, QObject *parent)
     : Integrator(name, parent)
 {
-    new PullVariable("numRuns", &numRuns, this, "description");
+    new PullVariable<double>("numRuns", &numRuns, this, "description");
 }
 
 void TimeLimited::initialize() {
@@ -37,7 +37,7 @@ bool TimeLimited::nextRun() {
 
 bool TimeLimited::nextStep()
 {
-    return time->pullVariable("total") >= maxTime;
+    return time->pullVariable<double>("total") >= maxTime;
 }
 
 } //namespace

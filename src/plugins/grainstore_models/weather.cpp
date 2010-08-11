@@ -19,14 +19,14 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
     setColumn("Tmin", 5);
     setColumn("marketPrice", 6);
 
-    new PullVariable("Tavg", &Tavg, this, "desc");
+    new PullVariable<double>("Tavg", &Tavg, this, "desc");
 }
 
 
 void Weather::update()
 {
     WeatherFile::update();
-    Tavg = (pullVariable("Tmin") + pullVariable("Tmax"))/2.;
+    Tavg = (pullVariable<double>("Tmin") + pullVariable<double>("Tmax"))/2.;
 }
 
 } //namespace

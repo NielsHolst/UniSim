@@ -13,7 +13,7 @@ namespace grainstore{
 PtImmigration::PtImmigration(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("current", &current, this, "desc");
+    new PullVariable<double>("current", &current, this, "desc");
 }
 
 void PtImmigration::initialize()

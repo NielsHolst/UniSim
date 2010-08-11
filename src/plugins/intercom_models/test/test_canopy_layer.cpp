@@ -60,7 +60,7 @@ void TestCanopyLayer::testCalcEffectiveAreaAbove() {
     const double hour = 14.;
 
     clock()->doTick(hour);
-    cout << "sinb equals " << calendar->pullVariable("sinb") << "\n";
+    cout << "sinb equals " << calendar->pullVariable<double>("sinb") << "\n";
     LightComponents eaa = canopyLayers[0]->calcEffectiveAreaAbove(height);
 
     QList<Area*> areas = seekDescendants<Area*>("*", plant);

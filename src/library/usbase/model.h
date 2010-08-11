@@ -9,6 +9,8 @@
 #include "component.h"
 #include "identifier.h"
 #include "parameters.h"
+#include "pull_variable.h"
+#include "utilities.h"
 
 namespace UniSim{
 	
@@ -19,11 +21,22 @@ public:
     Model(Identifier name, QObject *parent=0);
 
     void pushVariable(Identifier name, double value);
-    double pullVariable(Identifier name);
-    const double* pullVariablePtr(Identifier name);
+    template <class T> T pullVariable(Identifier name);
+    template <class T> const T* pullVariablePtr(Identifier name);
 };
 
 typedef QList<Model*> Models;
+
+
+template <class T> T Model::pullVariable(Identifier name) {
+    PullVariableBase* variableBase = seekOneChild<PullVariableBase*>(name.key());
+    QVariant variant = variableBase->toVariant();
+    return variant.value<T>();
+}
+
+template <class T> const T* Model::pullVariablePtr(Identifier name) {
+    return seekOneChild<PullVariable<T>*>(name.key())->valuePtr();
+}
 
 } //namespace
 

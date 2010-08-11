@@ -7,27 +7,51 @@
 #define UNISIM_PULL_VARIABLE_H
 
 #include <QObject>
-#include "identifier.h"
+#include <QVariant>
+#include "pull_variable_base.h"
 
 namespace UniSim{
 
-class PullVariable : public QObject
+template <class T>
+class PullVariable : public PullVariableBase
 {
-    Q_OBJECT
-
+    // no Q_OBJECT
 public:
-    PullVariable(Identifier name, const double *value, QObject *parent, QString desc);
-    double value() const;
-    const double* valuePtr() const;
-    Identifier id() const;
-    QString description() const;
+    PullVariable(Identifier name, const T *valuePtr, QObject *parent, QString desc);
+    T value() const;
+    const T* valuePtr() const;
+    QVariant toVariant() const;
 
 private:
-    Identifier _id;
-    const double *_valuePtr;
-    QString desc;
+    const T *_valuePtr;
 };
 
+
+template <class T>
+PullVariable<T>::PullVariable(Identifier id, const T *valuePtr, QObject *parent, QString desc)
+    :  PullVariableBase(id, parent, desc), _valuePtr(valuePtr)
+{
+}
+
+template <class T>
+T PullVariable<T>::value() const
+{
+    Q_ASSERT(_valuePtr);
+    return *_valuePtr;
+}
+
+template <class T>
+const T* PullVariable<T>::valuePtr() const
+{
+    return _valuePtr;
+}
+
+template <class T>
+QVariant PullVariable<T>::toVariant() const
+{
+    T val = value();
+    return QVariant(val);
+}
 
 } //namespace
 

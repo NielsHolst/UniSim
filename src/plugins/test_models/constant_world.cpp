@@ -15,8 +15,8 @@ namespace test{
 ConstantWorld::ConstantWorld(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    new PullVariable("temperature", &temperature, this, "description");
-    new PullVariable("day", &day, this, "description");
+    new PullVariable<double>("temperature", &temperature, this, "description");
+    new PullVariable<double>("day", &day, this, "description");
     QDir dir = FileLocations::location(FileLocations::Plugins);
     Q_ASSERT(dir.absolutePath().contains("plugins"));
 }

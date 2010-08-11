@@ -14,29 +14,29 @@ namespace conductance {
 Plant::Plant(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("weight", &weight, this,
+    new PullVariable<double>("weight", &weight, this,
                      "Plant weight (g per plant");
-    new PullVariable("totalWeight", &totalWeight, this,
+    new PullVariable<double>("totalWeight", &totalWeight, this,
                      "Total population plant weight (g\"/\"m @Sup 2 ground area available)");
-    new PullVariable("sz", &sz, this,
+    new PullVariable<double>("sz", &sz, this,
                      "Crown zone area per plant "
                      "(m @Sup 2 ground area owned per per plant)");
-    new PullVariable("total_sz", &total_sz, this,
+    new PullVariable<double>("total_sz", &total_sz, this,
                      "Total population crown zone area "
                      "(m @Sup 2 ground area owned per m @Sup 2 ground area available)");
-    new PullVariable("Lz", &Lz, this,
+    new PullVariable<double>("Lz", &Lz, this,
                      "Leaf area index within the crown zone area "
                      "(m @Sup 2 leaf area per m @Sup 2 ground area owned)");
-    new PullVariable("fz", &fz, this,
+    new PullVariable<double>("fz", &fz, this,
                      "Fraction of light intercepted [0..1]");
-    new PullVariable("LA_per_plant", &LA_per_plant, this,
+    new PullVariable<double>("LA_per_plant", &LA_per_plant, this,
                      "Leaf area per plant (m @Sup 2 leaf area per plant)");
-    new PullVariable("dweight", &dweight, this,
+    new PullVariable<double>("dweight", &dweight, this,
                      "Latest increment in plant weight over time step @F dt (g per plant per day)");
-    new PullVariable("phase", &_phase, this,
+    new PullVariable<double>("phase", &_phase, this,
                      "Competition phase: @F Unlimited, "
                      "@F UnderCompression or @F {WeightProportional}.");
-    new PullVariable("LAI", &lai, this,
+    new PullVariable<double>("LAI", &lai, this,
                      "Leaf area index of whole population "
                      "(m @Sup 2 leaf area per m @Sup 2 ground area available");
 }
@@ -94,11 +94,11 @@ void Plant::updateCrownZoneArea() {
             sz = A*pow(weight, phi);
             break;
         case UnderCompression:
-            sz = other ? (1. - other->pullVariable("total_sz"))/n : 1./n;
+            sz = other ? (1. - other->pullVariable<double>("total_sz"))/n : 1./n;
             break;
         case WeightProportional:
             Q_ASSERT(other);
-            sz = weight/(totalWeight + other->pullVariable("totalWeight"));
+            sz = weight/(totalWeight + other->pullVariable<double>("totalWeight"));
     }
     total_sz = n*sz;
     if (total_sz < 0)
@@ -117,7 +117,7 @@ void Plant::updateLightInterception() {
 }
 
 void Plant::updateWeight() {
-    double I = weather->pullVariable("irradiation");
+    double I = weather->pullVariable<double>("irradiation");
     dweight = eps*I*sz*fz;
     weight += dweight;
     totalWeight = n*weight;

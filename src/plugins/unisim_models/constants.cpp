@@ -33,14 +33,14 @@ void Constants::initialize() {
         if (!ok)
             throw Exception("Parameter value for Constants model is not a number: " +
                             params[i].label() + " = " + stringValue);
-        addPullVariable(params[i], value);
+        addPullVariable<double>(params[i], value);
     }
 }
 
-void Constants::addPullVariable(Identifier id, double value) {
+void Constants::addPullVariable<double>(Identifier id, double value) {
     double *valuePtr = new double(value);
     valuePtrs.append(valuePtr);
-    new PullVariable(id, valuePtr, this, "Constant");
+    new PullVariable<double>(id, valuePtr, this, "Constant");
 }
 
 } //namespace

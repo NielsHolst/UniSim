@@ -17,8 +17,8 @@ namespace awe {
 Crop::Crop(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
-    new PullVariable("lai", &lai, this, "Leaf area index (m @Sup {2}\"/\"m @Sup {2}).");
-    new PullVariable("Tsum", &Tsum, this, "Temperature sum since sowing (day-degrees above @Char {ring}C).");
+    new PullVariable<double>("lai", &lai, this, "Leaf area index (m @Sup {2}\"/\"m @Sup {2}).");
+    new PullVariable<double>("Tsum", &Tsum, this, "Temperature sum since sowing (day-degrees above @Char {ring}C).");
 }
 
 
@@ -54,10 +54,10 @@ void Crop::reset() {
 }
 
 void Crop::update() {
-    int dayOfYear = int(calendar->pullVariable("dayOfYear"));
+    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
 
     if (isGrowing) {
-        Tsum += weather->pullVariable("T");
+        Tsum += weather->pullVariable<double>("T");
         lai = lookupLai();
         if (dayOfYear == harvestDayOfYear) {
             isGrowing = false;

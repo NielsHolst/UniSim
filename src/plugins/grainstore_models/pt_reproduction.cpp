@@ -16,8 +16,8 @@ namespace grainstore{
 PtReproduction::PtReproduction(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("fecundity", &fecundity, this, "desc");
-    new PullVariable("densityDependence", &_densityDependence, this, "desc");
+    new PullVariable<double>("fecundity", &fecundity, this, "desc");
+    new PullVariable<double>("densityDependence", &_densityDependence, this, "desc");
 }
 
 void PtReproduction::initialize()
@@ -62,7 +62,7 @@ void PtReproduction::update() {
     double duration = adult->parameter<double>("duration");
     const double *ageClasses = adult->ageClasses();
 
-    temp = weather->pullVariable("Tavg");
+    temp = weather->pullVariable<double>("Tavg");
     if (temp > tempMax)  temp = tempMax;
 
     double a, b;
@@ -74,7 +74,7 @@ void PtReproduction::update() {
     }
 
     if (applyDensityDependence) {
-        _densityDependence = densityDependence(adult->pullVariable("number"));
+        _densityDependence = densityDependence(adult->pullVariable<double>("number"));
         fecundity *= _densityDependence;
     }
     else {

@@ -14,7 +14,7 @@ namespace beehive{
 EggSurvival::EggSurvival(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("survival", &survival, this, "description");
+    new PullVariable<double>("survival", &survival, this, "description");
 }
 
 void EggSurvival::initialize() {
@@ -30,7 +30,7 @@ void EggSurvival::reset() {
 }
 
 void EggSurvival::update() {
-    double temp = weather->pullVariable("Tavg");
+    double temp = weather->pullVariable<double>("Tavg");
     survival = calcSurvival(temp);
 }
 

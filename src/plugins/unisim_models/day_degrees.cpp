@@ -12,9 +12,9 @@ namespace UniSim{
 DayDegrees::DayDegrees(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("step", &step, this,
+    new PullVariable<double>("step", &step, this,
                      "Duration of latest time step (day-degrees)");
-    new PullVariable("total", &total, this,
+    new PullVariable<double>("total", &total, this,
                      "Total duration since beginning of simulation (day-degrees)");
 }
 
@@ -32,7 +32,7 @@ void DayDegrees::reset() {
 
 void DayDegrees::update()
 {
-    double T = weather->pullVariable("Tavg");
+    double T = weather->pullVariable<double>("Tavg");
     if (T < T0)
         step = 0.;
     else if (T < Topt)

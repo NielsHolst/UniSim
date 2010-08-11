@@ -34,10 +34,10 @@ HEADERS += \
     $${US_PLUGINS}/intercom_models/plant.h \
     $${US_PLUGINS}/intercom_models/time_slice.h \
     $${US_PLUGINS}/intercom_models/weather.h \
-    $${US_PLUGINS}/intercom_models/test/test_area.h \
-    $${US_PLUGINS}/intercom_models/test/test_canopy_layer.h \
-    $${US_PLUGINS}/intercom_models/test/test_photosynthesis.h \
-    $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.h \
+#    $${US_PLUGINS}/intercom_models/test/test_area.h \
+#    $${US_PLUGINS}/intercom_models/test/test_canopy_layer.h \
+#    $${US_PLUGINS}/intercom_models/test/test_photosynthesis.h \
+ #   $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.h \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
     $${US_PLUGINS}/unisim_models/anonymous_model.h \
     $${US_PLUGINS}/unisim_models/calendar.h \
@@ -75,10 +75,10 @@ SOURCES += \
     $${US_PLUGINS}/intercom_models/plant.cpp \
     $${US_PLUGINS}/intercom_models/time_slice.cpp \
     $${US_PLUGINS}/intercom_models/weather.cpp \
-    $${US_PLUGINS}/intercom_models/test/test_area.cpp \
-    $${US_PLUGINS}/intercom_models/test/test_canopy_layer.cpp \
-    $${US_PLUGINS}/intercom_models/test/test_photosynthesis.cpp \
-    $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.cpp \
+#    $${US_PLUGINS}/intercom_models/test/test_area.cpp \
+#    $${US_PLUGINS}/intercom_models/test/test_canopy_layer.cpp \
+#    $${US_PLUGINS}/intercom_models/test/test_photosynthesis.cpp \
+#    $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.cpp \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
     $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
     $${US_PLUGINS}/unisim_models/calendar.cpp \

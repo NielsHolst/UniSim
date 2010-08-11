@@ -23,10 +23,10 @@ CanopyLayer::CanopyLayer(int layer_, QObject *parent)
 PhotosyntheticRate CanopyLayer::calcPhotosynthesis() {
     lookup();
 
-    if (calendar->pullVariable("sinb") == 0.)
+    if (calendar->pullVariable<double>("sinb") == 0.)
         return PhotosyntheticRate();
 
-    double plHeight = plantHeight->pullVariable("height");
+    double plHeight = plantHeight->pullVariable<double>("height");
     double height = plHeight*XGAUSS5[layer];
 
     LightComponents eaa = calcEffectiveAreaAbove(height);

@@ -12,8 +12,6 @@
 
 namespace UniSim{
 
-class PullVariable;
-class PushVariable;
 class Model;
 class ModelMakerPlugIn;
 	

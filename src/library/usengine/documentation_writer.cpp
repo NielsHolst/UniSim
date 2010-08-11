@@ -227,7 +227,7 @@ void DocumentationWriter::writePushVariables(Model *model) {
 
 void DocumentationWriter::writePullVariables(Model *model) {
     writeTableTitle("Pull variables");
-    QList<PullVariable*> var = model->seekChildren<PullVariable*>("*");
+    QList<PullVariable<double>*> var = model->seekChildren<PullVariable<double>*>("*");
 
     int n = var.size();
     if (n == 0)  {

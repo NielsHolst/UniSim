@@ -21,18 +21,18 @@ Weed::Weed(UniSim::Identifier name, QObject *parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 
-    new PullVariable("projectedDeqs", &projectedDeqs, this,
+    new PullVariable<double>("projectedDeqs", &projectedDeqs, this,
                      "The projected number of density equivalents (per m @Sup {2}) is the final density equivalents expected, "
                      "if there will be no mortality applied to any growth stages");
-    new PullVariable("projectedYieldLossPct", &projectedYieldLossPct, this,
+    new PullVariable<double>("projectedYieldLossPct", &projectedYieldLossPct, this,
                      "The projected yield loss (%) is calculated from @F projectedDeqs by way of the Cousens equation");
-    new PullVariable("projectedMass", &projectedMass, this,
+    new PullVariable<double>("projectedMass", &projectedMass, this,
                      "The projected weed biomass (g\"/\"m @Sup {2}) is calculated from @F projectedYieldLossPct "
                      "applying the weed\"/\"yield biomass exchange rate pertinent to the @F {Crop}");
-    new PullVariable("seedsDropping", &seedsDropping, this,
+    new PullVariable<double>("seedsDropping", &seedsDropping, this,
                      "The number of seeds (per m @Sup 2 per day) dropping to the ground during this time step. "
                      "These originate from the @F seedsOnPlant model");
-    new PullVariable("g", &g, this,
+    new PullVariable<double>("g", &g, this,
                      "Current seed multiplication rate for the @F seedsOnPlant model. "
                      "Works by unpublished mechanism");
 }
@@ -78,22 +78,22 @@ void Weed::update() {
     seedBank->pushVariable("dormantInflow", seedsDropping);
     seedsDropping = 0;
     seedBank->update();
-    double newSeedlings = seedBank->pullVariable("dailyEmergenceDensity");
+    double newSeedlings = seedBank->pullVariable<double>("dailyEmergenceDensity");
 
     seedling->pushVariable("inflowAsDensity", newSeedlings);
     seedling->pushVariable("inflowAsDensityEqs", newSeedlings*cropEffectOnSeedlings());
     seedling->update();
 
     juvenile->pushVariable("inflowAsDensity",
-                            seedling->pullVariable("outflowAsDensity"));
+                            seedling->pullVariable<double>("outflowAsDensity"));
     juvenile->pushVariable("inflowAsDensityEqs",
-                            seedling->pullVariable("outflowAsDensityEqs"));
+                            seedling->pullVariable<double>("outflowAsDensityEqs"));
     juvenile->update();
 
     mature->pushVariable("inflowAsDensity",
-                          juvenile->pullVariable("outflowAsDensity"));
+                          juvenile->pullVariable<double>("outflowAsDensity"));
     mature->pushVariable("inflowAsDensityEqs",
-                          juvenile->pullVariable("outflowAsDensityEqs"));
+                          juvenile->pullVariable<double>("outflowAsDensityEqs"));
     mature->update();
 
 	projectCompetitionOutcome();
@@ -105,11 +105,11 @@ void Weed::update() {
     if (g > 0) seedsOnPlant->pushVariable("growthRate", g);
     seedsOnPlant->deepUpdate();
 
-    seedsDropping += seedsOnPlant->pullVariable("outflow");
+    seedsDropping += seedsOnPlant->pullVariable<double>("outflow");
 }
 
 double Weed::cropEffectOnSeedlings() const {
-    double lai = rotation->pullVariable("lai");
+    double lai = rotation->pullVariable<double>("lai");
     return exp(c1*(exp(-lai/c2)-1.)) - exp(-c1);
 }
 
@@ -129,10 +129,10 @@ double Weed::calcProjectedDeqs() {
           *juvenileDEqs = juvenile->seekOneChild<Model*>("densityEqs"),
           *matureDEqs   = mature->seekOneChild<Model*>("densityEqs");
 
-    return seedlingDEqs->pullVariable("number") +
-           juvenileDEqs->pullVariable("number") +
-           matureDEqs->pullVariable("number") +
-           matureDEqs->pullVariable("outflowTotal") -
+    return seedlingDEqs->pullVariable<double>("number") +
+           juvenileDEqs->pullVariable<double>("number") +
+           matureDEqs->pullVariable<double>("number") +
+           matureDEqs->pullVariable<double>("outflowTotal") -
            prevOutflowTotal;
 }
 
@@ -147,7 +147,7 @@ double Weed::yieldLossPct(double N) const
 
 double Weed::proportionDeqsEnteringMaturity() const {
     double prop = (projectedDeqs > 0) ?
-                  juvenile->pullVariable("outflowAsDensityEqs")/projectedDeqs : 0.;
+                  juvenile->pullVariable<double>("outflowAsDensityEqs")/projectedDeqs : 0.;
 
 	if (prop > 1.){
 		//Q_ASSERT(prop < 1.001);
@@ -164,7 +164,7 @@ void Weed::handleEvent(QObject *sender, QString event) {
         kill(seedsOnPlant, 100);
 
         Model *matureDeqs = mature->seekOneChild<Model*>("densityEqs");
-        prevOutflowTotal = matureDeqs->pullVariable("outflowTotal");
+        prevOutflowTotal = matureDeqs->pullVariable<double>("outflowTotal");
     }
 }
 

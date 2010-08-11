@@ -14,10 +14,10 @@ namespace ambrosia{
 
 Time::Time(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
-    new PullVariable("dayLengthIndex", &dayLengthIndex, this, "desc");
-    new PullVariable("temperatureIndex", &temperatureIndex, this, "desc");
-    new PullVariable("step", &step, this, "desc");
-    new PullVariable("total", &total, this, "desc");
+    new PullVariable<double>("dayLengthIndex", &dayLengthIndex, this, "desc");
+    new PullVariable<double>("temperatureIndex", &temperatureIndex, this, "desc");
+    new PullVariable<double>("step", &step, this, "desc");
+    new PullVariable<double>("total", &total, this, "desc");
 }
 
 void Time::initialize() {
@@ -34,8 +34,8 @@ void Time::reset() {
 }
 
 void Time::update() {
-    double L = calendar->pullVariable("dayLength");
-    double T = weather->pullVariable("Tavg");
+    double L = calendar->pullVariable<double>("dayLength");
+    double T = weather->pullVariable<double>("Tavg");
     dayLengthIndex = L < L0 ? 1. : exp((L - L0)*log(1. - alfa/100.));
     if (T < T0)
         temperatureIndex = 0.;

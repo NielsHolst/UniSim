@@ -237,7 +237,7 @@ void PrototypeMaker::writeClassSourceFile(ClassName className) const{
         << namespaceBegin()
         << className << "::" << className << "(UniSim::Identifier name, QObject *parent)" << '\n'
         << "\t: Model(name, parent) {" << '\n'
-        << "\tnew PullVariable(\"N\", &density, this, \"Description\");" << '\n'
+        << "\tnew PullVariable<double>(\"N\", &density, this, \"Description\");" << '\n'
         << "}" << '\n'
         << '\n'
         << "void " << className << "::initialize() {" << '\n'

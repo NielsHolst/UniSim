@@ -17,9 +17,9 @@ namespace awe {
 Weather::Weather(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    new PullVariable("T", &T, this, "Daily average temperature (@Char ring C)");
-    new PullVariable("Tavg", &T, this, "Same as @F {T}");
-    new PullVariable("Tsum", &Tsum, this,
+    new PullVariable<double>("T", &T, this, "Daily average temperature (@Char ring C)");
+    new PullVariable<double>("Tavg", &T, this, "Same as @F {T}");
+    new PullVariable<double>("Tsum", &Tsum, this,
                      "Temperature sum since 1 January "
                      "Day-degrees above 0 @Char ring C");
 }
@@ -42,7 +42,7 @@ void Weather::reset()
 
 void Weather::update()
 {
-    int dayOfYear = int(calendar->pullVariable("dayOfYear"));
+    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
     T = temperature(dayOfYear);
     Tsum = (dayOfYear == 1) ? T : Tsum + T;
 }

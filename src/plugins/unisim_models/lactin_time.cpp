@@ -12,9 +12,9 @@ namespace UniSim{
 LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("step", &step, this,
+    new PullVariable<double>("step", &step, this,
                      "Duration of latest time step (physiological time)");
-    new PullVariable("total", &total, this,
+    new PullVariable<double>("total", &total, this,
                      "Total duration since beginning of simulation (physiological time)");
 }
 
@@ -33,7 +33,7 @@ void LactinTime::reset() {
 
 void LactinTime::update()
 {
-    double T = weather->pullVariable("Tavg");
+    double T = weather->pullVariable<double>("Tavg");
     step = exp(a*T) - exp(a*b - (b - T)/c) + d;
     if (step < 0.)
         step = 0.;

@@ -21,24 +21,24 @@ namespace awe {
 SeedBank::SeedBank(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    new PullVariable("number", &total, this,
+    new PullVariable<double>("number", &total, this,
                      "Total number of seeds (dormant + non-dormant) in the soil (seeds per m @Sup {2})");
-    new PullVariable("dormant", &dormant, this,
+    new PullVariable<double>("dormant", &dormant, this,
                      "Number of dormant seeds in the soil (seeds per m @Sup {2})");
-    new PullVariable("nonDormant", &density, this,
+    new PullVariable<double>("nonDormant", &density, this,
                      "Number of non-dormant seeds in the soil (seeds per m @Sup {2})");
-    new PullVariable("dailyEmergenceRatio", &dailyEmergenceRatio, this,
+    new PullVariable<double>("dailyEmergenceRatio", &dailyEmergenceRatio, this,
                      "Ratio [0..1] of seedlings emerging in this time step (per day)");
-    new PullVariable("totalEmergenceRatio", &totalEmergenceRatio, this,
+    new PullVariable<double>("totalEmergenceRatio", &totalEmergenceRatio, this,
                      "Accumulated ratio [0..1] of seedlings that have emerged since 1 January");
-    new PullVariable("dailyEmergenceDensity", &dailyEmergenceDensity, this,
+    new PullVariable<double>("dailyEmergenceDensity", &dailyEmergenceDensity, this,
                      "Density of seedlings emerging in this time step (seedlings per m @Sup 2 per day)");
-    new PullVariable("totalEmergenceDensity", &totalEmergenceDensity, this,
+    new PullVariable<double>("totalEmergenceDensity", &totalEmergenceDensity, this,
                      "Accumulated density of seedlings emerged since 1 January (seedlings per m @Sup {2})");
-    new PullVariable("cropEffectOnEmergence", &cropEffectOnEmergence, this,
+    new PullVariable<double>("cropEffectOnEmergence", &cropEffectOnEmergence, this,
                      "The effect [0..1] is a scaling factor applied to the @F dailyEmergenceRatioPotential to "
                      "achieve the realised @F {dailyEmergenceRatio}");
-    new PullVariable("dailyEmergenceRatioPotential", &dailyEmergenceRatioPotential, this,
+    new PullVariable<double>("dailyEmergenceRatioPotential", &dailyEmergenceRatioPotential, this,
                      "Potential ratio [0..1] of seedlings emerging in this time step (per day). "
                      "The realised ratio @F dailyEmergenceRatio depends on the shading effect of the crop");
 
@@ -90,7 +90,7 @@ void SeedBank::update()
 {
     applyInstantMortality();
     addInflow();
-    int dayOfYear = int(calendar->pullVariable("dayOfYear"));
+    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
     dailyEmergenceRatioPotential = lookupEmergence(dayOfYear);
     cropEffectOnEmergence = calcCropEffectOnEmergence();
     dailyEmergenceRatio = dailyEmergenceRatioPotential*cropEffectOnEmergence;
@@ -122,7 +122,7 @@ void SeedBank::addInflow() {
     dormant += dormantInflow;
     dormantInflow = 0.;
 
-    int dayOfYear = int(calendar->pullVariable("dayOfYear"));
+    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
     if (dayOfYear == 1) {
         density += dormant;
         dormant = 0.;
@@ -130,7 +130,7 @@ void SeedBank::addInflow() {
 }
 
 double SeedBank::calcCropEffectOnEmergence() const {
-    return exp(-cropLaiExp*UniSim::pow0(rotation->pullVariable("lai"),2.5));
+    return exp(-cropLaiExp*UniSim::pow0(rotation->pullVariable<double>("lai"),2.5));
 }
 
 void SeedBank::decodeEmergence() {

@@ -14,7 +14,7 @@ namespace intercom{
 AssimilationMaxGivenTempSla::AssimilationMaxGivenTempSla(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("amax", &amax, this, "description");
+    new PullVariable<double>("amax", &amax, this, "description");
 }
 
 void AssimilationMaxGivenTempSla::initialize()
@@ -31,8 +31,8 @@ void AssimilationMaxGivenTempSla::reset() {
 
 void AssimilationMaxGivenTempSla::update()
 {
-    double sla = specificLeafArea->pullVariable("sla");
-    double Tday = weather->pullVariable("Tday");
+    double sla = specificLeafArea->pullVariable<double>("sla");
+    double Tday = weather->pullVariable<double>("Tday");
     amax=(16.92-16.92*pow(0.88, Tday))*pctN/sla/10.;
     if (amax < 0.)
         amax = 0.;

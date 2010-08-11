@@ -59,22 +59,22 @@ void TestLifeCycle::testUpdate()
 		weed->update();
 	}
 
-    QVERIFY2((fabs(first->pullVariable("inputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullVariable<double>("inputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable("inputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable("inputTotal") - myInput))
+            + " Got: "+QString::number(first->pullVariable<double>("inputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable<double>("inputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(first->pullVariable("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullVariable<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable("outputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable("outputTotal") - myInput))
+            + " Got: "+QString::number(first->pullVariable<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(last->pullVariable("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(last->pullVariable<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(last->pullVariable("outputTotal"))
-            + " Diff: "+QString::number(fabs(last->pullVariable("outputTotal") - myInput))
+            + " Got: "+QString::number(last->pullVariable<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(last->pullVariable<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
 
@@ -84,22 +84,22 @@ void TestLifeCycle::testUpdate()
         weed->deepUpdate();
 	}
 
-    QVERIFY2((fabs(first->pullVariable("inputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullVariable<double>("inputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable("inputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable("inputTotal") - myInput))
+            + " Got: "+QString::number(first->pullVariable<double>("inputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable<double>("inputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(first->pullVariable("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullVariable<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable("outputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable("outputTotal") - myInput))
+            + " Got: "+QString::number(first->pullVariable<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullVariable<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(last->pullVariable("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(last->pullVariable<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(last->pullVariable("outputTotal"))
-            + " Diff: "+QString::number(fabs(last->pullVariable("outputTotal") - myInput))
+            + " Got: "+QString::number(last->pullVariable<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(last->pullVariable<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
 

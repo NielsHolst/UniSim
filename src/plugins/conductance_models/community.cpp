@@ -17,7 +17,7 @@ namespace conductance {
 Community::Community(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable("sum_sz", &sum_sz, this,
+    new PullVariable<double>("sum_sz", &sum_sz, this,
                      "Total crown zone area of the one or two plants present"
                      "(m @Sup 2 ground area owned per m @Sup 2 ground area available)");
 }
@@ -59,7 +59,7 @@ bool Community::phaseChanged() {
 void Community::updateTotalCrownZoneArea() {
     sum_sz = 0.;
     for (int i = 0; i < plants.size(); ++i)
-        sum_sz += plants[i]->pullVariable("total_sz");
+        sum_sz += plants[i]->pullVariable<double>("total_sz");
 }
 
 bool Community::phaseUnlimitedChanged() {
@@ -81,8 +81,8 @@ void Community::sortPlants() {
         return;
     }
 
-    bool firstIsSmaller = plants[0]->pullVariable("weight") <
-                          plants[1]->pullVariable("weight");
+    bool firstIsSmaller = plants[0]->pullVariable<double>("weight") <
+                          plants[1]->pullVariable<double>("weight");
     if (firstIsSmaller) {
         smaller = plants[0];
         larger = plants[1];
@@ -94,8 +94,8 @@ void Community::sortPlants() {
 }
 
 bool Community::phaseUnderCompressionChanged() {
-    bool plantsAreEven = smaller->pullVariable("Lz") >=
-                         larger->pullVariable("Lz");
+    bool plantsAreEven = smaller->pullVariable<double>("Lz") >=
+                         larger->pullVariable<double>("Lz");
     if (plantsAreEven)
     {
         smaller->changePhase(WeightProportional);

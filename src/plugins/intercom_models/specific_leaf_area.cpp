@@ -15,7 +15,7 @@ namespace intercom{
 SpecificLeafArea::SpecificLeafArea(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable("sla", &sla, this, "description");
+    new PullVariable<double>("sla", &sla, this, "description");
 }
 
 void SpecificLeafArea::initialize()
@@ -28,7 +28,7 @@ void SpecificLeafArea::initialize()
 
 void SpecificLeafArea::update()
 {
-    double pt = photoThermalTime->pullVariable("total");
+    double pt = photoThermalTime->pullVariable<double>("total");
     sla = initial + slope*pt;
 }
 

@@ -23,10 +23,10 @@ void TrickleSequence::update()
 {
     std::cout << "TrickleSequence::update() A " << "\n";
     if (boxes.size() > 0) {
-        boxes[0]->pushVariable("inflow", 1);
+        boxes[0]->pushVariable<double>("inflow", 1.);
 		boxes[0]->update();
 		for (int i = 1; i < boxes.size(); ++i) {
-            boxes[i]->pushVariable("inflow", boxes[i-1]->pullVariable<double>("outflow"));
+            boxes[i]->pushVariable<double>("inflow", boxes[i-1]->pullVariable<double>("outflow"));
 			boxes[i]->update();
 		}
 	}

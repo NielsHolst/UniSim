@@ -27,19 +27,19 @@ void Insect2::initialize() {
 }
 
 void Insect2::reset() {
-    egg->pushVariable("inflow", initEggs);
+    egg->pushVariable<double>("inflow", initEggs);
 }
 
 void Insect2::update() {
     egg->deepUpdate();
 
-    larva->pushVariable("inflow", egg->pullVariable<double>("outflow"));
+    larva->pushVariable<double>("inflow", egg->pullVariable<double>("outflow"));
     larva->deepUpdate();
 
-    pupa->pushVariable("inflow", larva->pullVariable<double>("outflow"));
+    pupa->pushVariable<double>("inflow", larva->pullVariable<double>("outflow"));
     pupa->deepUpdate();
 
-    adult->pushVariable("inflow", pupa->pullVariable<double>("outflow"));
+    adult->pushVariable<double>("inflow", pupa->pullVariable<double>("outflow"));
     adult->deepUpdate();
 }
 

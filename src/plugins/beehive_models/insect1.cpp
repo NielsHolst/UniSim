@@ -25,7 +25,7 @@ void Insect1::initialize() {
 }
 
 void Insect1::reset() {
-    egg->pushVariable("inflow", initEggs);
+    egg->pushVariable<double>("inflow", initEggs);
 }
 
 void Insect1::update() {

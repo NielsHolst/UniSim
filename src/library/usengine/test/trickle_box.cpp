@@ -9,7 +9,7 @@ using namespace UniSim;
 TrickleBox::TrickleBox(QString name, QObject *parent)
 	: UniSim::Model(name,parent) 
 { 
-    new PushVariable("inflow", &_inflow, this, "desc");
+    new PushVariable<double>("inflow", &_inflow, this, "desc");
     new PullVariable<double>("contents", &_contents, this, "desc");
     new PullVariable<double>("outflow", &_outflow, this, "desc");
 }

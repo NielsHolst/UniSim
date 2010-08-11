@@ -30,7 +30,7 @@ LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
     new PullVariable<double>("inputTotal", &_inputTotal, this, "description");
     new PullVariable<double>("outputTotal", &_outputTotal, this, "description");
 
-    new PushVariable("input", &_inflow, this, "description");
+    new PushVariable<double>("input", &_inflow, this, "description");
 }
 
 LifeStage::~LifeStage()

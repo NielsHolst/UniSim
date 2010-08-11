@@ -10,31 +10,40 @@
 #include "identifier.h"
 #include "parameters.h"
 #include "pull_variable.h"
+#include "push_variable.h"
 #include "utilities.h"
 
 namespace UniSim{
 	
-class Model : public UniSim::Component, public UniSim::Parameters
+class Model : public UniSim::Component, public Parameters
 {
 	Q_OBJECT
 public:
     Model(Identifier name, QObject *parent=0);
 
-    void pushVariable(Identifier name, double value);
+    template <class T> void pushVariable(Identifier name, T value);
     template <class T> T pullVariable(Identifier name);
     template <class T> const T* pullVariablePtr(Identifier name);
 };
 
 typedef QList<Model*> Models;
 
+template <class T>
+void Model::pushVariable(Identifier name, T value) {
+    seekOneChild<PushVariable<T>*>(name.key())->setValue(value);
+}
 
-template <class T> T Model::pullVariable(Identifier name) {
-    PullVariableBase* variableBase = seekOneChild<PullVariableBase*>(name.key());
-    QVariant variant = variableBase->toVariant();
+template <class T>
+T Model::pullVariable(Identifier name)
+{
+    PullVariableBase* baseVar = seekOneChild<PullVariableBase*>(name.key());
+    QVariant variant = baseVar->toVariant();
     return variant.value<T>();
 }
 
-template <class T> const T* Model::pullVariablePtr(Identifier name) {
+template <class T>
+const T* Model::pullVariablePtr(Identifier name)
+{
     return seekOneChild<PullVariable<T>*>(name.key())->valuePtr();
 }
 

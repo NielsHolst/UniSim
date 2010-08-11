@@ -7,28 +7,60 @@
 #define UNISIM_PUSH_VARIABLE_H
 
 #include <QObject>
-#include "identifier.h"
+#include <QVariant>
+#include "push_variable_base.h"
 
 namespace UniSim{
 
-class PushVariable : public QObject
+template <class T>
+class PushVariable : public PushVariableBase
 {
-    Q_OBJECT
-
+    // no Q_OBJECT
 public:
-    PushVariable(Identifier name, double *valuePtr, QObject *parent, QString desc);
-    double value() const;
-    double* valuePtr();
-    void setValue(double value);
-    Identifier id() const;
-    QString description() const;
+    PushVariable(Identifier name, T *valuePtr, QObject *parent, QString desc);
+    T value() const;
+    T* valuePtr() const;
+    QVariant toVariant() const;
+	void setValue(T newValue);
 
 private:
-    Identifier _id;
-    double *_valuePtr;
-    QString desc;
+    T *_valuePtr;
 };
 
+
+template <class T>
+PushVariable<T>::PushVariable(Identifier id, T *valuePtr, QObject *parent, QString desc)
+    :  PushVariableBase(id, parent, desc), _valuePtr(valuePtr)
+{
+    Q_ASSERT(_valuePtr);
+}
+
+template <class T>
+T PushVariable<T>::value() const
+{
+    Q_ASSERT(_valuePtr);
+    return *_valuePtr;
+}
+
+template <class T>
+T* PushVariable<T>::valuePtr() const
+{
+    return _valuePtr;
+}
+
+template <class T>
+QVariant PushVariable<T>::toVariant() const
+{
+    T val = value();
+    return QVariant(val);
+}
+
+template <class T>
+void PushVariable<T>::setValue(T newValue)
+{
+    Q_ASSERT(_valuePtr);
+    *_valuePtr = newValue;
+}
 
 } //namespace
 

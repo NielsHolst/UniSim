@@ -51,7 +51,7 @@ void TestLifeCycle::testUpdate()
     QVERIFY(last);
 	
 	double myInput = 1000;
-    first->pushVariable("input", myInput);
+    first->pushVariable<double>("input", myInput);
 	
     static double EPS = std::min(myInput*1000*std::numeric_limits<double>::epsilon(),  1e-6);
 
@@ -79,7 +79,7 @@ void TestLifeCycle::testUpdate()
 			));
 
     weed->deepReset();
-    first->pushVariable("input", myInput);
+    first->pushVariable<double>("input", myInput);
 	for (int i = 0; i < 10000; ++i) {
         weed->deepUpdate();
 	}

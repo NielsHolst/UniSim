@@ -42,7 +42,7 @@ void LifeCycle::update()
         stages[0]->update();
         sum = stages[0]->pullVariable<double>("contents");
 		for (int i = 1; i < stages.size(); ++i) {
-            stages[i]->pushVariable("input", stages[i-1]->pullVariable<double>("output"));
+            stages[i]->pushVariable<double>("input", stages[i-1]->pullVariable<double>("output"));
 			stages[i]->update();
             sum += stages[i]->pullVariable<double>("contents");
 		}

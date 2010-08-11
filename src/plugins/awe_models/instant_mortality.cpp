@@ -41,7 +41,7 @@ void InstantMortality::update() {
             TargetMortality mortality = targetMortalities[i];
             int n = mortality.targets.size();
             for (int j = 0; j < n; ++j)
-                mortality.targets[j]->pushVariable("instantMortality", mortality.value);
+                mortality.targets[j]->pushVariable<double>("instantMortality", mortality.value);
         }
     }
 }

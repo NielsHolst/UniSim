@@ -42,10 +42,10 @@ SeedBank::SeedBank(UniSim::Identifier name, QObject *parent)
                      "Potential ratio [0..1] of seedlings emerging in this time step (per day). "
                      "The realised ratio @F dailyEmergenceRatio depends on the shading effect of the crop");
 
-    new PushVariable("dormantInflow", &dormantInflow, this,
+    new PushVariable<double>("dormantInflow", &dormantInflow, this,
                      "Use this to set the daily inflow of dormant seeds into the seed bank (seeds per m @Sup 2 per day). "
                      "You cannot put non-dormant seeds into the seed bank");
-    new PushVariable("instantMortality", &instantMortality, this,
+    new PushVariable<double>("instantMortality", &instantMortality, this,
                      "The mortality (%) will be applied once in the next time step, before new seeds of @F dormantInflow "
                      "are added. Dormant and non-dormant seeds will be affected alike");
 }

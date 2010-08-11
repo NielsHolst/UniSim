@@ -29,9 +29,9 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
                      "@F fgr can be changed during the simulation");
     new PullVariable<double>("timeStep", &_dt, this, "The latest time step applied to the stage");
 
-    new PushVariable("inflow", &_inflow, this, "Number of units to be put into the stage in the next time step");
-    new PushVariable("growthRate", &_fgr, this, "Same as the @F fgr pull variable");
-    new PushVariable("instantMortality", &_instantMortality, this,
+    new PushVariable<double>("inflow", &_inflow, this, "Number of units to be put into the stage in the next time step");
+    new PushVariable<double>("growthRate", &_fgr, this, "Same as the @F fgr pull variable");
+    new PushVariable<double>("instantMortality", &_instantMortality, this,
                      "The mortality [0..1] will be applied in the next time step, before the @F inflow is added");
 }
 

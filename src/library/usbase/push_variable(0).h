@@ -3,28 +3,29 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_PULL_VARIABLE_H
-#define UNISIM_PULL_VARIABLE_H
+#ifndef UNISIM_PUSH_VARIABLE_H
+#define UNISIM_PUSH_VARIABLE_H
 
 #include <QObject>
 #include "identifier.h"
 
 namespace UniSim{
 
-class PullVariable : public QObject
+class PushVariable : public QObject
 {
     Q_OBJECT
 
 public:
-    PullVariable(Identifier name, const double *value, QObject *parent, QString desc);
+    PushVariable(Identifier name, double *valuePtr, QObject *parent, QString desc);
     double value() const;
-    const double* valuePtr() const;
+    double* valuePtr();
+    void setValue(double value);
     Identifier id() const;
     QString description() const;
 
 private:
     Identifier _id;
-    const double *_valuePtr;
+    double *_valuePtr;
     QString desc;
 };
 

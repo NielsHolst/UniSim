@@ -29,28 +29,28 @@ void Insect6::initialize() {
 }
 
 void Insect6::reset() {
-    egg->pushVariable("inflow", initEggs);
+    egg->pushVariable<double>("inflow", initEggs);
 }
 
 void Insect6::update() {
     egg->deepUpdate();
 
-    larva->pushVariable("inflow", egg->pullVariable<double>("outflow"));
+    larva->pushVariable<double>("inflow", egg->pullVariable<double>("outflow"));
     larva->deepUpdate();
 
-    pupa->pushVariable("inflow", larva->pullVariable<double>("outflow"));
+    pupa->pushVariable<double>("inflow", larva->pullVariable<double>("outflow"));
     pupa->deepUpdate();
 
-    adult->pushVariable("inflow", pupa->pullVariable<double>("outflow"));
+    adult->pushVariable<double>("inflow", pupa->pullVariable<double>("outflow"));
     adult->deepUpdate();
 
-    egg->pushVariable("inflow", fecundity->pullVariable<double>("eggsLaid"));
+    egg->pushVariable<double>("inflow", fecundity->pullVariable<double>("eggsLaid"));
 
     // Apply survival as finite growth rate which must be > 0
     double fgr = eggSurvival->pullVariable<double>("survival");
     if (fgr == 0.)
         fgr = 1e-6;
-    egg->pushVariable("growthRate", fgr);
+    egg->pushVariable<double>("growthRate", fgr);
 }
 
 } //namespace

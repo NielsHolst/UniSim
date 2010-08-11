@@ -11,8 +11,8 @@
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/model_maker_plug_in.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/pull_variable_base.h>
+#include <usbase/push_variable_base.h>
 #include <usbase/utilities.h>
 #include "documentation_writer.h"
 #include "model_maker.h"
@@ -208,7 +208,7 @@ void DocumentationWriter::writeParameters(Model *model) {
 
 void DocumentationWriter::writePushVariables(Model *model) {
     writeTableTitle("Push variables");
-    QList<PushVariable*> var = model->seekChildren<PushVariable*>("*");
+    QList<PushVariableBase*> var = model->seekChildren<PushVariableBase*>("*");
 
     int n = var.size();
     if (n == 0)  {
@@ -227,7 +227,7 @@ void DocumentationWriter::writePushVariables(Model *model) {
 
 void DocumentationWriter::writePullVariables(Model *model) {
     writeTableTitle("Pull variables");
-    QList<PullVariable<double>*> var = model->seekChildren<PullVariable<double>*>("*");
+    QList<PullVariableBase*> var = model->seekChildren<PullVariableBase*>("*");
 
     int n = var.size();
     if (n == 0)  {

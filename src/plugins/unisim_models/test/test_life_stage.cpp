@@ -37,7 +37,7 @@ void TestLifeStage::testUpdate()
 	}
 	
 	stage->reset();
-    stage->pushVariable("input", input);
+    stage->pushVariable<double>("input", input);
 
     QWARN("Use FrequencyDistribution here !");
     /*
@@ -78,7 +78,7 @@ void TestLifeStage::testState()
 	stage->changeParameter("duration", L);
 	
 	stage->reset();
-    stage->pushVariable("input", input);
+    stage->pushVariable<double>("input", input);
 	
 	static double EPS = std::min(input*1000.*std::numeric_limits<double>::epsilon(), 1e-6);
 	

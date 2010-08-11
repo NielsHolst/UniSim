@@ -75,24 +75,24 @@ void Weed::reset() {
 }
 
 void Weed::update() {
-    seedBank->pushVariable("dormantInflow", seedsDropping);
+    seedBank->pushVariable<double>("dormantInflow", seedsDropping);
     seedsDropping = 0;
     seedBank->update();
     double newSeedlings = seedBank->pullVariable<double>("dailyEmergenceDensity");
 
-    seedling->pushVariable("inflowAsDensity", newSeedlings);
-    seedling->pushVariable("inflowAsDensityEqs", newSeedlings*cropEffectOnSeedlings());
+    seedling->pushVariable<double>("inflowAsDensity", newSeedlings);
+    seedling->pushVariable<double>("inflowAsDensityEqs", newSeedlings*cropEffectOnSeedlings());
     seedling->update();
 
-    juvenile->pushVariable("inflowAsDensity",
+    juvenile->pushVariable<double>("inflowAsDensity",
                             seedling->pullVariable<double>("outflowAsDensity"));
-    juvenile->pushVariable("inflowAsDensityEqs",
+    juvenile->pushVariable<double>("inflowAsDensityEqs",
                             seedling->pullVariable<double>("outflowAsDensityEqs"));
     juvenile->update();
 
-    mature->pushVariable("inflowAsDensity",
+    mature->pushVariable<double>("inflowAsDensity",
                           juvenile->pullVariable<double>("outflowAsDensity"));
-    mature->pushVariable("inflowAsDensityEqs",
+    mature->pushVariable<double>("inflowAsDensityEqs",
                           juvenile->pullVariable<double>("outflowAsDensityEqs"));
     mature->update();
 
@@ -101,8 +101,8 @@ void Weed::update() {
 
     g = (projectedMass > 1e-6) ?  seedProdSlope*pow(projectedMass, seedProdExp)/projectedMass : 1.;
 
-    seedsOnPlant->pushVariable("inflow", seedInflowAsMass);
-    if (g > 0) seedsOnPlant->pushVariable("growthRate", g);
+    seedsOnPlant->pushVariable<double>("inflow", seedInflowAsMass);
+    if (g > 0) seedsOnPlant->pushVariable<double>("growthRate", g);
     seedsOnPlant->deepUpdate();
 
     seedsDropping += seedsOnPlant->pullVariable<double>("outflow");
@@ -169,7 +169,7 @@ void Weed::handleEvent(QObject *sender, QString event) {
 }
 
 void Weed::kill(Model *stage, double mortalityPct) {
-    stage->pushVariable("instantMortality", mortalityPct);
+    stage->pushVariable<double>("instantMortality", mortalityPct);
 }
 
 

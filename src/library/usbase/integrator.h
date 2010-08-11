@@ -12,7 +12,7 @@
 
 namespace UniSim{
 	
-class Integrator : public QObject, public UniSim::Parameters
+class Integrator : public QObject, public Parameters
 {
 	Q_OBJECT
 public:

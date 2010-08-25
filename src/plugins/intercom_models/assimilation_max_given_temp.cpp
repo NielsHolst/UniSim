@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "assimilation_max_given_temp.h"
 
@@ -13,13 +14,13 @@ namespace intercom{
 AssimilationMaxGivenTemp::AssimilationMaxGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("slope", &slope, 0.04, this, "description");
+    new Parameter<double>("maxAmax", &maxAmax, 1., this, "description");
     new PullVariable<double>("amax", &amax, this, "description");
 }
 
 void AssimilationMaxGivenTemp::initialize()
 {
-    setParameter("slope", &slope, 0.04, "description");
-    setParameter("maxAmax", &maxAmax, 1., "description");
     weather = seekOne<Model*>("weather");
 }
 void AssimilationMaxGivenTemp::reset() {

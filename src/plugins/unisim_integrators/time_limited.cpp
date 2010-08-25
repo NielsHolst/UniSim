@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QString>
 #include <usbase/model.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "time_limited.h"
@@ -15,11 +16,11 @@ namespace UniSim{
 TimeLimited::TimeLimited(Identifier name, QObject *parent)
     : Integrator(name, parent)
 {
+    new Parameter<double>("maxTime", &maxTime, 30., this, "description");
     new PullVariable<double>("numRuns", &numRuns, this, "description");
 }
 
 void TimeLimited::initialize() {
-    setParameter("maxTime", &maxTime, 30., "description");
     time = seekOneChild<Model*>("time", this);
 }
 

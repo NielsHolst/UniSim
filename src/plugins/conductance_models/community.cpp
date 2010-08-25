@@ -25,9 +25,9 @@ Community::Community(UniSim::Identifier name, QObject *parent)
 void Community::initialize() {
     plants = seekChildren<Plant*>("*");
 	if (plants.isEmpty())
-		throw Exception("Community has no plants");
+        throw Exception("Community has no plants", this);
 	else if (plants.size() > 2)
-        throw Exception("Max. 2 plants are allowed in community");
+        throw Exception("Max. 2 plants are allowed in community", this);
 }
 
 void Community::reset() {
@@ -38,7 +38,7 @@ void Community::reset() {
     if (sum_sz > 1) {
         QString msg = "Total crown zone area must be < 1 m2 on day 0; sum_sz = " +
                       QString::number(sum_sz);
-        throw Exception(msg);
+        throw Exception(msg, this);
     }
 }
 

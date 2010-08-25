@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include <cfloat>
+#include <QDate>
 #include <QDir>
 #include <QList>
 #include <QMap>
@@ -15,6 +16,7 @@
 #include <QPluginLoader>
 #include <QString>
 #include <QStringList>
+#include <QVariant>
 #include "exception.h"
 #include "file_locations.h"
 #include "identifier.h"
@@ -81,8 +83,12 @@ int toDayOfYear(int day, int month);
 
 //! @name String handling
 //@{
+QString fullName(QObject *object);
 QStringList decodeSimpleList(QString parenthesizedList, QString errorContext = QString());
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
+template<class T> T stringToValue(QString s);
+template<> bool stringToValue<bool>(QString s);
+template<> QDate stringToValue<QDate>(QString s);
 //@}
 
 //! @name PlugIn handling
@@ -99,6 +105,16 @@ void writeStandardTestFile(QString filePath);
 
 // ========================
 // Template implementations
+
+template<class T> T stringToValue(QString s) {
+    QVariant var(s.trimmed());
+    if (!var.canConvert<T>()) {
+        QString msg = "Cannot convert '" + s + "' to type " + QVariant(T()).typeName();
+        throw Exception(msg);
+    }
+    return var.value<T>();
+}
+
 
 //! Finds any number of objects
 /*!
@@ -129,10 +145,10 @@ template <class T> QList<T> seekMany(QString name) {
     QList<T> matches = seekDescendants<T>(name, useRoot);
     if (matches.size() == 0)
         throw Exception("'" + useRoot->objectName() +
-                        "' has no descendant called '" + name + "'");
+                        "' has no descendant called '" + name + "'", useRoot);
     else if (matches.size() > 1)
         throw Exception("'" + useRoot->objectName() +
-                        "' has more than one descendant called '" + name + "'");
+                        "' has more than one descendant called '" + name + "'", useRoot);
     return matches[0];
 }
 
@@ -167,7 +183,7 @@ template <class T> T seekOneChild(QString name, QObject *parent) {
                         "' has no child called '" + name + "'");
     else if (matches.size() > 1)
         throw Exception("'" + useParent->objectName() +
-                        "' has more than one child called '" + name + "'");
+                        "' has more than one child called '" + name + "'", useParent);
     return matches[0];
 }
 
@@ -189,10 +205,10 @@ template <class T> T seekOneAscendant(QString name, QObject *child) {
     QList<T> ascendants = filterByName<T>(name, candidates);
     if (ascendants.size() == 0)
         throw Exception("'" + child->objectName() +"' has no ascendants called '" +
-                        name + "', or it is not of the expected type");
+                        name + "', or it is not of the expected type",child);
     if (ascendants.size() > 1)
         throw Exception("'" + child->objectName() +"' has more than one ascendant called '" +
-                        name);
+                        name, child);
     return ascendants.at(0);
 }
 
@@ -216,7 +232,7 @@ template <class T> QList<T> filterByName(QString name, const QList<QObject*> &ca
             p = p->parent();
         }
         if (names[i].isEmpty())
-            throw Exception("Composite component name contains an empty name: " + name);
+            throw Exception("Composite component name contains an empty name: " + name, candidate);
         bool isT = dynamic_cast<T>(candidate) != 0;
         bool pathOk  =	i == 0 && (p->objectName() == names[0] || names[0] == "*");
         if (isT && pathOk) {

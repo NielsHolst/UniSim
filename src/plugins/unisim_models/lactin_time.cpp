@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "lactin_time.h"
@@ -12,6 +13,11 @@ namespace UniSim{
 LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("a", &a, 0.13, this, "Equation parameter");
+    new Parameter<double>("b", &b, 42., this, "Equation parameter");
+    new Parameter<double>("c", &c, 8., this, "Equation parameter");
+    new Parameter<double>("d", &d, -0.1, this, "Equation parameter");
+
     new PullVariable<double>("step", &step, this,
                      "Duration of latest time step (physiological time)");
     new PullVariable<double>("total", &total, this,
@@ -20,10 +26,6 @@ LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
 
 void LactinTime::initialize()
 {
-    setParameter("a", &a, 0.13, "Equation parameter");
-    setParameter("b", &b, 42., "Equation parameter");
-    setParameter("c", &c, 8., "Equation parameter");
-    setParameter("d", &d, -0.1, "Equation parameter");
     weather = seekOne<Model*>("weather");
 }
 

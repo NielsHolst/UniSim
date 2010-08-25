@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/utilities.h>
 #include "insect6.h"
 
@@ -14,12 +15,11 @@ namespace beehive{
 Insect6::Insect6(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    new Parameter<double>("initEggs", &initEggs, 30., this, "Initial number of insect eggs");
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 }
 
 void Insect6::initialize() {
-    setParameter("initEggs", &initEggs, 30., "Initial number of insect eggs");
-
     egg = seekOneChild<Model*>("egg");
     larva = seekOneChild<Model*>("larva");
     pupa = seekOneChild<Model*>("pupa");
@@ -29,28 +29,28 @@ void Insect6::initialize() {
 }
 
 void Insect6::reset() {
-    egg->pushVariable<double>("inflow", initEggs);
+    egg->pushVariable("inflow", initEggs);
 }
 
 void Insect6::update() {
     egg->deepUpdate();
 
-    larva->pushVariable<double>("inflow", egg->pullVariable<double>("outflow"));
+    larva->pushVariable("inflow", egg->pullVariable<double>("outflow"));
     larva->deepUpdate();
 
-    pupa->pushVariable<double>("inflow", larva->pullVariable<double>("outflow"));
+    pupa->pushVariable("inflow", larva->pullVariable<double>("outflow"));
     pupa->deepUpdate();
 
-    adult->pushVariable<double>("inflow", pupa->pullVariable<double>("outflow"));
+    adult->pushVariable("inflow", pupa->pullVariable<double>("outflow"));
     adult->deepUpdate();
 
-    egg->pushVariable<double>("inflow", fecundity->pullVariable<double>("eggsLaid"));
+    egg->pushVariable("inflow", fecundity->pullVariable<double>("eggsLaid"));
 
     // Apply survival as finite growth rate which must be > 0
     double fgr = eggSurvival->pullVariable<double>("survival");
     if (fgr == 0.)
         fgr = 1e-6;
-    egg->pushVariable<double>("growthRate", fgr);
+    egg->pushVariable("growthRate", fgr);
 }
 
 } //namespace

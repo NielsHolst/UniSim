@@ -12,6 +12,7 @@
 #include <cfloat>
 #include <cmath>
 #include <usbase/clock.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "calendar.h"
 
@@ -22,6 +23,13 @@ namespace UniSim{
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<QDate>("firstDate", &firstDate, QDate(), this, "Initial date of simulation");
+    new Parameter<double>("latitude", &latitude, 52., this, "Latitude of simulated system");
+    new Parameter<QString>("followers", &followersAsString, QString(), this,
+    "A single name, or list of names, denoting those objects that follow "
+    "(are synchronized with) the calendar date. "
+    "Commonly the @F weather object is set as a follower");
+
     new PullVariable<double>("daysTotal", &daysTotal, this, "Days total since beginning of simulation");
     new PullVariable<double>("dayInYear", &dayInYear, this, "Day number in year, also known as Julian day");
     new PullVariable<double>("dayOfYear", &dayInYear, this, "Synonymous with @F {dayInYear}");
@@ -36,13 +44,6 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 
 void Calendar::initialize()
 {
-    setParameter("firstDate", &firstDate, QDate(), "Initial date of simulation");
-    setParameter("latitude", &latitude, 52., "Latitude of simulated system");
-    setParameter("followers", &followersAsString, QString(),
-    "A single name, or list of names, denoting those objects that follow "
-    "(are synchronized with) the calendar date. "
-    "Commonly the @F weather object is set as a follower");
-
     followers.clear();
     QStringList followersAsStrings = decodeSimpleList(followersAsString, "Calendar::initialize");
     for (int i = 0; i < followersAsStrings.size(); ++i)
@@ -136,7 +137,8 @@ void Calendar::synchronizeWithFollowers() {
         QDate flwFirstDate = flw->parameter<QDate>("firstDate");
 
         if (flwFirstDate.isNull()) {
-            flw->changeParameter("firstDate", firstDate);
+            Parameter<QDate> *p = flw->seekOneChild<Parameter<QDate> *>("firstDate");
+            p->setValue(firstDate);
         }
         else if (firstDate < flwFirstDate) {
             firstDate = flwFirstDate;

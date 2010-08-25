@@ -7,11 +7,13 @@
 #define UniSim_EXCEPTION_H
 #include <QString>
 
+class QObject;
+
 namespace UniSim {
 	
 class Exception {
 public:
-    Exception(QString message);
+    Exception(QString message, QObject *concerning = 0);
 	virtual ~Exception() { }
 	
 	//! Get message
@@ -22,6 +24,7 @@ public:
 	
 protected:
     QString _message;
+    QObject *concerning;
 };
 
 } //namespace

@@ -8,13 +8,12 @@
 
 #include <QList>
 #include <usbase/component.h>
-#include <usbase/parameters.h>
 
 namespace UniSim{
 
 class OutputVariable;
 
-class Output : public Component, public Parameters
+class Output : public Component
 {
 	Q_OBJECT
 public:
@@ -26,9 +25,6 @@ public:
     const QList<OutputVariable *>& yVariables() const;
     void standardizeLabels();
 private:
-    // parameters
-    QString title;
-
     // links
     QList<OutputVariable *> variables, x, y;
 

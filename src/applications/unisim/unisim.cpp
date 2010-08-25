@@ -26,7 +26,7 @@ void createSingletons(){
     objectPool()->attach(IntegratorMaker::id(), new IntegratorMaker);
     objectPool()->attach(ModelMaker::id(), new ModelMaker);
     objectPool()->attach(OutputMaker::id(), new OutputMaker);
-    objectPool()->attach(RandomUniform::id(), new RandomUniform);
+    //objectPool()->attach(RandomUniform::id(), new RandomUniform);
     objectPool()->attach(Clock::id(), new Clock);
 }
 

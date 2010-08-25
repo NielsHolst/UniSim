@@ -7,6 +7,7 @@
 #include <QString>
 #include <QTextStream>
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/push_variable.h>
 #include <usbase/utilities.h>
@@ -17,6 +18,13 @@ namespace UniSim {
 Stage::Stage(UniSim::Identifier name, QObject *parent)
     : UniSim::Model(name, parent), _x(0), ageClassesPtr(0)
 {
+    new Parameter<int>("k", &_k, 30, this,
+        "The number of age classes in the stage. The fewer age classes, the larger the variance on @F {duration}");
+    new Parameter<double>("duration", &_L, 100., this,
+        "The average duration of the stage: an inflow will emerge as an outflow dispersed "
+        "over time, with a delay of @F duration on average and a variance of @Math {@F duration sup 2 slash @F k sup 2} "
+        "@Cite{$manetsch}.");
+
     // Next line can be used when pull variables have been templatized
     //new PullVariable<double>("ageClasses", &_x, this);
     new PullVariable<double>("number", &_sum, this, "Number of units (e.g. individuals) in stage");
@@ -45,11 +53,6 @@ Stage::~Stage()
 
 void Stage::initialize()
 {
-    setParameter("k", &_k, 30, "The number of age classes in the stage. The fewer age classes, the larger the variance on @F {duration}");
-    setParameter("duration", &_L, 100., "The average duration of the stage: an inflow will emerge as an outflow dispersed "
-                 "over time, with a delay of @F duration on average and a variance of @Math {@F duration sup 2 slash @F k sup 2} "
-                 "@Cite{$manetsch}.");
-
     time = seekOneChild<Model*>("time");
 }
 

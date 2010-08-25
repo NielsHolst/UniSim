@@ -11,6 +11,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/model_maker_plug_in.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable_base.h>
 #include <usbase/push_variable_base.h>
 #include <usbase/utilities.h>
@@ -188,21 +189,21 @@ Model* DocumentationWriter::createModel(ModelMakerPlugIn *plugin, Identifier mod
 // Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
 void DocumentationWriter::writeParameters(Model *model) {
     writeTableTitle("Parameters");
-    Identifiers params = model->allParameters();
+    QList<ParameterBase*> params = model->seekChildren<ParameterBase*>("*");
     int n = params.size();
     if (n == 0)  {
         QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
         writeTableRow(format, "", "", "@I None");
     }
     for (int i = 0; i < n; ++i) {
-        Identifier id = params[i];
-        QString value = model->parameterAsString(id);
+        Identifier id = params[i]->id();
+        QString value = params[i]->toVariant().toString();
         QString format;
         if (i == 0)
             format = FORMAT_FIRST_ROW;
         else if (i == n-1)
             format = FORMAT_LAST_ROW;
-        writeTableRow(format, id.label() + index(id), value, desc(model->description(id)));
+        writeTableRow(format, id.label() + index(id), value, desc(params[i]->description()));
     }
 }
 

@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <cmath>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/push_variable.h>
 #include <iostream>
@@ -23,6 +24,10 @@ LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
 	_firstUpdate = true;
 	_dirtySum = true;
 	
+    new Parameter<int>("k", &_k, 30, this, "description");
+    new Parameter<double>("duration", &_L, 100., this, "description");
+    new Parameter<double>("initial_input", &_initialInput, 0., this, "description");
+
     new PullVariable<double>("contents", &_sum, this, "description");
     new PullVariable<double>("fgr", &_fgr, this, "description");
     new PullVariable<double>("input", &_input, this, "description");
@@ -43,9 +48,6 @@ LifeStage::~LifeStage()
 
 void LifeStage::initialize()
 {
-    setParameter("k", &_k, 30, "description");
-    setParameter("duration", &_L, 100., "description");
-    setParameter("initial_input", &_initialInput, 0., "description");
 }
 
 void LifeStage::reset()

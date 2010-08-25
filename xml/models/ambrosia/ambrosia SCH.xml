@@ -16,7 +16,7 @@
 	<model name="weather" type="ambrosia::Weather">
 		<parameter name="fileName" value="geneva 2009.txt"/>
 		<parameter name="firstDate" value="1/3/2009"/>
-		<parameter name="colTavg" value="2"/>
+		<parameter name="Tavg" value="2"/>
 	</model>
 	
 	<model name="plants">

@@ -14,12 +14,12 @@ HEADERS += \
 		$${US_BASE}/output_variable.h \
 		$${US_BASE}/model.h \
 		$${US_BASE}/model_maker_plug_in.h \
-        $${US_BASE}/parameters.h \
+        $${US_BASE}/parameter.h \
+        $${US_BASE}/parameter_base.h \
         $${US_BASE}/pull_variable.h \
         $${US_BASE}/pull_variable_base.h \
         $${US_BASE}/push_variable.h \
         $${US_BASE}/push_variable_base.h \
-        $${US_BASE}/random_uniform.h \
         $${US_BASE}/utilities.h \
         $${US_BASE}/version.h \
         $${US_BASE}/weather_file.h
@@ -36,9 +36,8 @@ SOURCES += \
         $${US_BASE}/object_pool.cpp \
 		$${US_BASE}/output.cpp \
 		$${US_BASE}/output_variable.cpp \
-        $${US_BASE}/parameters.cpp \
+        $${US_BASE}/parameter_base.cpp \
         $${US_BASE}/pull_variable_base.cpp \
         $${US_BASE}/push_variable_base.cpp \
-        $${US_BASE}/random_uniform.cpp \
         $${US_BASE}/utilities.cpp \
         $${US_BASE}/weather_file.cpp

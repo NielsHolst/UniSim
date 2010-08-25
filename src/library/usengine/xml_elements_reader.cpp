@@ -17,7 +17,7 @@ namespace {
 	{
 	public:
 		UniSimEx(QString fileName, QXmlStreamReader* reader, QString message = QString())
-			: Exception(QString())
+            : UniSim::Exception(QString())
 		{
 			QTextStream text(&_message);
             text << "Error reading prototype file: "  <<  fileName << "\n"

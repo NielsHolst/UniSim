@@ -5,6 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/utilities.h>
 #include "instant_mortality.h"
 #include "plant_growth_stage.h"
@@ -16,18 +17,18 @@ namespace awe {
 InstantMortality::InstantMortality(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-}
-
-void InstantMortality::initialize() {
-    setParameter("day", &day, 1, "Day in month of imposed mortality");
-    setParameter("month", &month, 6, "Month of imposed mortality");
-    setParameter("mortalities", &mortalityString, QString(),
+    new Parameter<int>("day", &day, 1, this, "Day in month of imposed mortality");
+    new Parameter<int>("month", &month, 6, this, "Month of imposed mortality");
+    new Parameter<QString>("mortalities", &mortalityString, QString(), this,
                  "List of instant mortalities (0-100%) applied to the different weed growth stages. "
                  "Defined as a list of (@I {growth stage mortality}) pairs. For example, @F "
                  "{((seedling 100) (juvenile 80) (mature 10))}, which will apply the respective mortalities "
                  "to all @F PlantGrowhtStage models named "
                  "@F {seedling}, @F juvenile and @F {mature}.");
 
+}
+
+void InstantMortality::initialize() {
     dayOfYear = UniSim::toDayOfYear(day, month);
     decodeMortalities();
 
@@ -41,7 +42,7 @@ void InstantMortality::update() {
             TargetMortality mortality = targetMortalities[i];
             int n = mortality.targets.size();
             for (int j = 0; j < n; ++j)
-                mortality.targets[j]->pushVariable<double>("instantMortality", mortality.value);
+                mortality.targets[j]->pushVariable("instantMortality", mortality.value);
         }
     }
 }

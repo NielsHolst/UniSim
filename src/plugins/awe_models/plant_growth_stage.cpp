@@ -48,11 +48,11 @@ void PlantGrowthStage::reset() {
 }
 
 void PlantGrowthStage::update() {
-    density->pushVariable<double>("inflow", inflowAsDensity);
-    densityEqs->pushVariable<double>("inflow", inflowAsDensityEqs);
+    density->pushVariable("inflow", inflowAsDensity);
+    densityEqs->pushVariable("inflow", inflowAsDensityEqs);
 
-    density->pushVariable<double>("instantMortality", instantMortality);
-    densityEqs->pushVariable<double>("instantMortality", instantMortality);
+    density->pushVariable("instantMortality", instantMortality);
+    densityEqs->pushVariable("instantMortality", instantMortality);
     instantMortality = 0.;
 
     density->deepUpdate();

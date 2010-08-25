@@ -5,6 +5,7 @@
 */
 #include <cmath>
 #include <cfloat>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "weather.h"
@@ -17,6 +18,13 @@ namespace awe {
 Weather::Weather(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
+    new Parameter<double>("a", &a, -0.75, this,
+                 "Parameter @I a of yearly sine curve for temperature (@Char ring C)");
+    new Parameter<double>("b", &b, 17.20, this,
+                 "Parameter @I b of yearly sine curve for temperature (@Char ring C)");
+    new Parameter<double>("c", &c, 2.901, this,
+                 "Parameter @I c of yearly sine curve for temperature (dimensionless)");
+
     new PullVariable<double>("T", &T, this, "Daily average temperature (@Char ring C)");
     new PullVariable<double>("Tavg", &T, this, "Same as @F {T}");
     new PullVariable<double>("Tsum", &Tsum, this,
@@ -26,12 +34,6 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
 
 void Weather::initialize()
 {
-    setParameter("a", &a, -0.75,
-                 "Parameter @I a of yearly sine curve for temperature (@Char ring C)");
-    setParameter("b", &b, 17.20,
-                 "Parameter @I b of yearly sine curve for temperature (@Char ring C)");
-    setParameter("c", &c, 2.901,
-                 "Parameter @I c of yearly sine curve for temperature (dimensionless)");
     calendar = seekOne<Model*>("calendar");
 }	
 

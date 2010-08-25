@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "plant.h"
@@ -14,18 +15,18 @@ namespace ambrosia{
 
 Plant::Plant(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
+    new Parameter<int>("beginDay", &beginDay, 1, this, "desc");
+    new Parameter<int>("beginMonth", &beginMonth, 5, this, "desc");
+
+    QString bd("bioDays");
+    for (int i = 0; i < NumStages; ++i)
+        new Parameter<double>(bd + ('A' + i) , &bioDays[i], 0., this, "desc");
+
     new PullVariable<double>("stage", &stage, this, "desc");
     new PullVariable<double>("total", &total, this, "desc");
 }
 
 void Plant::initialize() {
-    setParameter("beginDay", &beginDay, 1, "desc");
-    setParameter("beginMonth", &beginMonth, 5, "desc");
-
-    QString bd("bioDays");
-    for (int i = 0; i < NumStages; ++i)
-        setParameter(bd + ('A' + i) , &bioDays[i], 0., "desc");
-
     calendar = seekOne<Model*>("calendar");
     timeABDE = seekOneChild<Model*>("timeABDE");
     timeC = seekOneChild<Model*>("timeC");

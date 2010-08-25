@@ -13,6 +13,9 @@ namespace grainstore{
 
 Maize::Maize(UniSim::Identifier name, QObject *parent)
     : Model(name, parent) {
+    new Parameter<double>("backgroundLossRate", &backgroundRate[LossPct], 0.0379, this, "desc");
+    new Parameter<double>("backgroundDamageRate", &backgroundRate[DamagePct], 0.212, this, "desc");
+
     new PullVariable<double>("lossPct", &injury[LossPct], this, "desc");
     new PullVariable<double>("damagePct", &injury[DamagePct], this, "desc");
     new PullVariable<double>("ptSD", &ptSD[LossPct], this, "desc");
@@ -22,8 +25,6 @@ Maize::Maize(UniSim::Identifier name, QObject *parent)
 }
 
 void Maize::initialize() {
-    setParameter("backgroundLossRate", &backgroundRate[LossPct], 0.0379, "desc");
-    setParameter("backgroundDamageRate", &backgroundRate[DamagePct], 0.212, "desc");
 
     // work in progress
     //ptAdult = findOne<Model*>("prostephanus/development/adult");

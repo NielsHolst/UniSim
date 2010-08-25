@@ -16,8 +16,8 @@ void TestStage::initTestCase()
     model = ModelMaker::create("UniSim::Stage", "adults");
     ModelMaker::create("UniSim::Days", "time", model);
     model->initialize();
-    model->changeParameter("k", K);
-    model->changeParameter("duration", L);
+    model->seekOneChild<Parameter<int>*>("k") -> setValue(K);
+    model->seekOneChild<Parameter<double>*>("duration") -> setValue(L);
 }
 
 void TestStage::cleanupTestCase()
@@ -34,7 +34,7 @@ void TestStage::testAgeClasses()
     classes = stage->pullVariablePtr<double>("ageClasses");
     QVERIFY(classes);
 
-    model->changeParameter("k", 300);
+    model->seekOneChild<Parameter<int>*>("k") -> setValue(300);
     stage->reset();
     classes = stage->pullVariablePtr<double>("ageClasses");
     QVERIFY(classes);

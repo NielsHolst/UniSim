@@ -18,8 +18,6 @@ class TimeStepLimited : public Integrator
 public:
     TimeStepLimited(Identifier name, QObject *parent=0);
 	
-	void initialize();
-	
     void resetRuns();
     void resetSteps();
 

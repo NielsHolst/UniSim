@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "light_use_efficiency_given_temp.h"
 
@@ -13,13 +14,13 @@ namespace intercom{
 LightUseEfficiencyGivenTemp::LightUseEfficiencyGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("slope", &slope, -0.00095, this, "description");
+    new Parameter<double>("intercept", &intercept, 0.0635, this, "description");
     new PullVariable<double>("efficiency", &efficiency, this, "description");
 }
 
 void LightUseEfficiencyGivenTemp::initialize()
 {
-    setParameter("slope", &slope, -0.00095, "description");
-    setParameter("intercept", &intercept, 0.0635, "description");
     weather = seekOne<Model*>("weather");
 }
 void LightUseEfficiencyGivenTemp::reset() {

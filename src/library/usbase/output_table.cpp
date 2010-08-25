@@ -13,7 +13,7 @@ Output::Output(QString name, QObject *parent)
 }
 
 void Output::initialize() {
-    setParameter("title", &title, "untitled");
+    new Parameter<double>("title", &title, "untitled");
 }
 
 } //namespace

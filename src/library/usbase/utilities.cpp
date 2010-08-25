@@ -13,6 +13,7 @@
 #include <QStringList>
 #include <QXmlStreamWriter>
 #include "exception.h"
+#include <usengine/simulation.h>
 #include "model.h"
 #include "utilities.h"
 #include "version.h"
@@ -164,6 +165,18 @@ namespace local {
 } //namespace
 //! \endcond
 
+QString fullName(QObject *object) {
+    bool noObject = !object;
+    bool isSimulation = dynamic_cast<Simulation*>(object) != 0;
+    if (noObject || isSimulation) return QString();
+    QString name = object->objectName();
+    if (name.isEmpty() || name.toLower() == "anonymous")
+        name = QString("unnamed[") +
+               object->metaObject()->className() + "]";
+    return fullName(object->parent()) + "/" + name;
+}
+
+
 //! Parses a simple list "(A B C)"
 /*! Throws an Exception if the list is ill-formated or is empty. The optional errorContext is used
     as explanatory test in the Exception
@@ -197,6 +210,30 @@ void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart) {
     }
 }
 
+template<> bool stringToValue<bool>(QString s_) {
+    QString s = s_.trimmed().toLower();
+    bool value;
+    if (s=="y" || s=="yes" || s=="t" || s=="true")
+        value = true;
+    else if (s=="n" || s=="no" || s=="f" || s=="false")
+        value = false;
+    else {
+        QString msg = "Cannot convert '" + s + "' to bool";
+        throw Exception(msg);
+    }
+    return value;
+}
+
+template<> QDate stringToValue<QDate>(QString s) {
+    QDate date = QDate::fromString(s.trimmed(), "d/M/yyyy");
+    if (!date.isValid()) {
+        QString msg = "Cannot convert '" + s + "' to a date";
+        throw Exception(msg);
+    }
+    return date;
+}
+
+
 //! Write object tree to std::cout
 /*!
     Write the name of an object and all its descendants on std::cout (intended for debugging).
@@ -221,9 +258,10 @@ namespace local {
 	void writeIntegrator(QXmlStreamWriter *xw)
 	{
 		xw->writeStartElement("integrator");
+        xw->writeAttribute("name", "integrator");
         xw->writeAttribute("type", "TimeStepLimited");
 		xw->writeEmptyElement("parameter");
-		xw->writeAttribute("name", "duration");
+        xw->writeAttribute("name", "maxSteps");
 		xw->writeAttribute("value", "365");
 
 		xw->writeStartElement("sequence");

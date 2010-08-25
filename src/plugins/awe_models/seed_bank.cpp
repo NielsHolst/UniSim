@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/push_variable.h>
 #include <usbase/utilities.h>
@@ -21,6 +22,23 @@ namespace awe {
 SeedBank::SeedBank(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
+    new Parameter<double>("initialDensity", &initialDensity, 1000., this,
+                 "Initial density of the seeds in the seed bank (seeds per m @Sup {2}");
+    new Parameter<QString>("emergenceCalendar", &emergenceString, QString("(0 0 5 10 20 40 10 5 0  0 0 0)"), this,
+                 "The calendar shows the relative emergence of seedlings per month in a scenario where no shade is "
+                 "causing a reduction in emergence. The scale is relative and needs not "
+                 "add up to a total of, e.g., 1 or 100. A daily calendar with values for @F dailyEmergenceRatioPotential "
+                 "is constructed from this calendar and the @F {yearlyEmergenceRate}");
+    new Parameter<double>("yearlyEmergenceRate", &yearlyEmergenceRate, 0.20, this,
+                 "The proportion [0..1] of the seed bank that would potentially emerge if no crop reduced emergence "
+                 "by shading");
+    new Parameter<double>("yearlyMortalityRate", &yearlyMortalityRate, 0.10, this,
+                 "The mortality [0..1] of the seed bank per year ");
+    new Parameter<double>("cropLaiExp", &cropLaiExp, 0.04282, this,
+                 "Exponent @I a in the equation to calculate @F cropEffectOnEmergence, "
+                 "@Math{ y = exp(-ax sup{5 over 2}) }, "
+                 "where @I x is the leaf area index of the current @F {Crop}");
+
     new PullVariable<double>("number", &total, this,
                      "Total number of seeds (dormant + non-dormant) in the soil (seeds per m @Sup {2})");
     new PullVariable<double>("dormant", &dormant, this,
@@ -52,23 +70,6 @@ SeedBank::SeedBank(UniSim::Identifier name, QObject *parent)
 
 void SeedBank::initialize()
 {
-    setParameter("initialDensity", &initialDensity, 1000.,
-                 "Initial density of the seeds in the seed bank (seeds per m @Sup {2}");
-    setParameter("emergenceCalendar", &emergenceString, QString("(0 0 5 10 20 40 10 5 0  0 0 0)"),
-                 "The calendar shows the relative emergence of seedlings per month in a scenario where no shade is "
-                 "causing a reduction in emergence. The scale is relative and needs not "
-                 "add up to a total of, e.g., 1 or 100. A daily calendar with values for @F dailyEmergenceRatioPotential "
-                 "is constructed from this calendar and the @F {yearlyEmergenceRate}");
-    setParameter("yearlyEmergenceRate", &yearlyEmergenceRate, 0.20,
-                 "The proportion [0..1] of the seed bank that would potentially emerge if no crop reduced emergence "
-                 "by shading");
-    setParameter("yearlyMortalityRate", &yearlyMortalityRate, 0.10,
-                 "The mortality [0..1] of the seed bank per year ");
-    setParameter("cropLaiExp", &cropLaiExp, 0.04282,
-                 "Exponent @I a in the equation to calculate @F cropEffectOnEmergence, "
-                 "@Math{ y = exp(-ax sup{5 over 2}) }, "
-                 "where @I x is the leaf area index of the current @F {Crop}");
-
     calendar = seekOne<Model*>("calendar");
     rotation = seekOne<Model*>("rotation");
 

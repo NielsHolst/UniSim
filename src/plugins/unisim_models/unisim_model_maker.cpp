@@ -11,6 +11,10 @@
 #include "days.h"
 #include "lactin_time.h"
 #include "photo_thermal_time.h"
+#include "random_lognormal.h"
+#include "random_normal.h"
+#include "random_poisson.h"
+#include "random_uniform.h"
 #include "stage.h"
 #include "unisim_model_maker.h"
 
@@ -65,6 +69,18 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "is multiplied by day length in hours (acquired from the @F weather object) "
     "divided by 24 hours.";
 
+    desc["RandomLognormal"] =
+    "The model maintains a random variable with lognormal distrubution.";
+
+    desc["RandomNormal"] =
+    "The model maintains a random variable with normal distrubution.";
+
+    desc["RandomPoisson"] =
+    "The model maintains a random variable with Poisson distrubution.";
+
+    desc["RandomUniform"] =
+    "The model maintains a random variable with uniform (even) distrubution.";
+
     desc["Stage"] =
     "The @F Stage model has an a distributed delay routine @Cite{$manetsch, $vansickle} inside. "
     "The implementation follows the original FORTRAN code @Cite{$abkin}. The two parameters @F "
@@ -96,6 +112,14 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new LactinTime(objectName, parent);
     else if (modelType.equals("PhotoThermalTime"))
         model = new PhotoThermalTime(objectName, parent);
+    else if (modelType.equals("RandomLognormal"))
+        model = new RandomLognormal(objectName, parent);
+    else if (modelType.equals("RandomNormal"))
+        model = new RandomNormal(objectName, parent);
+    else if (modelType.equals("RandomPoisson"))
+        model = new RandomUniform(objectName, parent);
+    else if (modelType.equals("RandomUniform"))
+        model = new RandomUniform(objectName, parent);
     else if (modelType.equals("Stage"))
         model = new Stage(objectName, parent);
     return model;

@@ -9,13 +9,12 @@
 #include <QList>
 #include <QVector>
 #include <usbase/component.h>
-#include <usbase/parameters.h>
 
 namespace UniSim{	
 
 class PullVariableBase;
 
-class OutputVariable : public Component, public Parameters
+class OutputVariable : public Component
 {
 	Q_OBJECT
 public:

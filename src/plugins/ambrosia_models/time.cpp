@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "time.h"
@@ -14,6 +15,11 @@ namespace ambrosia{
 
 Time::Time(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {
+    new Parameter<double>("L0", &L0, 14.5, this, "desc");
+    new Parameter<double>("alfa", &alfa, 50., this, "desc");
+    new Parameter<double>("T0", &T0, 0.9, this, "desc");
+    new Parameter<double>("Tmax", &Tmax, 31.7, this, "desc");
+
     new PullVariable<double>("dayLengthIndex", &dayLengthIndex, this, "desc");
     new PullVariable<double>("temperatureIndex", &temperatureIndex, this, "desc");
     new PullVariable<double>("step", &step, this, "desc");
@@ -21,10 +27,6 @@ Time::Time(UniSim::Identifier name, QObject *parent)
 }
 
 void Time::initialize() {
-    setParameter("L0", &L0, 14.5, "desc");
-    setParameter("alfa", &alfa, 50., "desc");
-    setParameter("T0", &T0, 0.9, "desc");
-    setParameter("Tmax", &Tmax, 31.7, "desc");
     calendar = seekOne<Model*>("calendar");
     weather = seekOne<Model*>("weather");
 }

@@ -215,13 +215,14 @@ void TestCalendar::createSimulation(QString fileName, int numFollowers) {
 void TestCalendar::testSolarElevation() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", QDate(2010, 1, 1));
+
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 1, 1));
     calendar->deepReset();
 
     Calendar *cal = dynamic_cast<Calendar*>(calendar);
 
     for (int lo = 0; lo < locations.size(); ++lo) {
-        calendar->changeParameter("latitude", locations[lo].latitude);
+        calendar->seekOneChild<Parameter<double>*>("latitude") -> setValue(locations[lo].latitude);
         for (int da = 0; da < days.size(); ++da) {
             while (fabs(calendar->pullVariable<double>("dayOfYear") - days[da])> 1e-6) {
                 calendar->update();
@@ -240,11 +241,11 @@ void TestCalendar::testSolarElevation() {
 void TestCalendar::testDayLength() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", QDate(2010, 1, 1));
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 1, 1));
     calendar->deepReset();
 
     for (int lo = 0; lo < locations.size(); ++lo) {
-        calendar->changeParameter("latitude", locations[lo].latitude);
+        calendar->seekOneChild<Parameter<double>*>("latitude") -> setValue(locations[lo].latitude);
         for (int da = 0; da < days.size(); ++da) {
             while (fabs(calendar->pullVariable<double>("dayOfYear") - days[da])> 1e-6) {
                 calendar->update();
@@ -283,7 +284,7 @@ void TestCalendar::testFirstDateNoneWithFollowerWithoutFirstDate() {
 void TestCalendar::testFirstDateNoneWithFollowerWithFirstDate() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    weather->changeParameter("firstDate", WEATHER_DATE);
+    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
 
     try {
         sim->execute();
@@ -301,7 +302,7 @@ void TestCalendar::testFirstDateNoneWithFollowerWithFirstDate() {
 void TestCalendar::testFirstDatePresentNoFollower() {
     createSimulation("test_calendar_no_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", QDate(2010, 4, 1));
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 4, 1));
 
     try {
         sim->execute();
@@ -317,7 +318,7 @@ void TestCalendar::testFirstDatePresentNoFollower() {
 void TestCalendar::testFirstDatePresentFollowerWithout() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", WEATHER_DATE);
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
 
     QVERIFY(weather->parameter<QDate>("firstDate").isNull());
 
@@ -337,8 +338,8 @@ void TestCalendar::testFirstDatePresentFollowerWithout() {
 void TestCalendar::testFirstDatePresentFollowerBefore() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", QDate(2010, 1, 1));
-    weather->changeParameter("firstDate", WEATHER_DATE);
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 1, 1));
+    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
 
     try {
         sim->execute();
@@ -356,8 +357,8 @@ void TestCalendar::testFirstDatePresentFollowerBefore() {
 void TestCalendar::testFirstDatePresentFollowerSame() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", WEATHER_DATE);
-    weather->changeParameter("firstDate", WEATHER_DATE);
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
+    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
 
     try {
         sim->execute();
@@ -374,8 +375,8 @@ void TestCalendar::testFirstDatePresentFollowerSame() {
 void TestCalendar::testFirstDatePresentFollowerAfter() {
     createSimulation("test_calendar_with_follower.xml", 1);
 
-    calendar->changeParameter("firstDate", WEATHER_DATE.addDays(-10));
-    weather->changeParameter("firstDate", WEATHER_DATE);
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE.addDays(-10));
+    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
 
     try {
         sim->execute();
@@ -395,9 +396,9 @@ void TestCalendar::testFirstDateFollowersConflicting() {
 
     Model *weather2 = seekOneDescendant<Model*>("weather2", 0);
 
-    calendar->changeParameter("firstDate", QDate(2010, 4, 1));
-    weather->changeParameter("firstDate", QDate(2010, 6, 15));
-    weather2->changeParameter("firstDate", QDate(2010, 6, 16));
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 4, 1));
+    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 6, 15));
+    weather2->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 6, 16));
 
     try {
         sim->execute();
@@ -413,9 +414,9 @@ void TestCalendar::testFirstDateFollowersNotConflicting() {
 
     Model *weather2 = seekOneDescendant<Model*>("weather2", 0);
 
-    calendar->changeParameter("firstDate", QDate(2010, 4, 1));
-    weather->changeParameter("firstDate", WEATHER_DATE);
-    weather2->changeParameter("firstDate", WEATHER_DATE);
+    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 4, 1));
+    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
+    weather2->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
 
     try {
         sim->execute();

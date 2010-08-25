@@ -1,5 +1,6 @@
 #include <usbase/integrator.h>
 #include <usbase/identifier.h>
+#include <usbase/parameter.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
 #include <unisim_integrators/time_step_limited.h>
@@ -40,7 +41,8 @@ void TestSimulationTrickle::testExecute() {
 }
 
 void TestSimulationTrickle::executeAndTest(int steps, int check0, int check1, int check2) {
-    integrator->changeParameter("maxSteps", steps);
+    Parameter<int> *maxSteps = seekOneChild<Parameter<int> *>("maxSteps", integrator);
+    maxSteps->setValue(steps);
     simulation->execute();
     textBox(0, check0);
     textBox(1, check1);

@@ -6,7 +6,7 @@
 #ifndef UNISIM_WEATHER_FILE
 #define UNISIM_WEATHER_FILE
 #include <QFile>
-#include <QMap>
+#include <QList>
 #include <QStringList>
 #include <usbase/model.h>
 
@@ -26,7 +26,6 @@ public:
 
     // special methods
     void setColumn(QString name, int defaultColumn);
-    bool variableExists(QString name);
 
 private:
     // parameters
@@ -38,14 +37,13 @@ private:
         public:
         Column(){}
         Column(QString variableName, int defaultColumn, UniSim::Model *parent);
-        void setParameter(UniSim::Model *parent);
-        void updateState(const QStringList &items);
+        void parseLine(const QStringList &items);
         private:
         QString variableName;
         int defaultColumn, column;
         double value;
     };
-    typedef QMap<QString, Column*> Columns;
+    typedef QList<Column*> Columns;
     Columns columns;
     QFile file;
     int lineNo;

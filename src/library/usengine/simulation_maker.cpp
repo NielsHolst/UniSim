@@ -13,6 +13,7 @@
 #include <usbase/exception.h>
 #include <usbase/output.h>
 #include <usbase/output_variable.h>
+#include <usbase/parameter_base.h>
 #include <usbase/utilities.h>
 #include "integrator_maker.h"
 #include "model_maker.h"
@@ -126,7 +127,7 @@ bool SimulationMaker::readIntegratorElement(QObject* parent)
 			readSequenceElement(integrator);
         }
         else if (elementNameEquals("parameter")){
-			readParameterElement(dynamic_cast<Parameters*>(integrator));
+            readParameterElement(integrator);
         }
         else {
             throw Exception(message(
@@ -148,7 +149,7 @@ void SimulationMaker::readSequenceElement(QObject* parent)
         if (elementNameEquals("model")) {
             QString model = attributeValue("name");
 			if (model.isEmpty()) 
-                throw Exception(message("Missing 'name' attribut of 'model' element in 'sequence"));
+                throw Exception(message("Missing 'name' attribute of 'model' element in 'sequence"));
             _sequence.append(model);
         }
         else {
@@ -188,7 +189,7 @@ bool SimulationMaker::readModelElement(QObject* parent)
 			readModelElement(model);
         }
         else if (elementNameEquals("parameter")){
-			readParameterElement(dynamic_cast<Parameters*>(model));
+            readParameterElement(model);
         }
         else {
             throw Exception(message(
@@ -201,19 +202,19 @@ bool SimulationMaker::readModelElement(QObject* parent)
 	return model;
 }
 
-void SimulationMaker::readParameterElement(Parameters* parent)
+void SimulationMaker::readParameterElement(QObject* parent)
 {
-        Q_ASSERT(reader->isStartElement() && parent);
+    Q_ASSERT(reader->isStartElement() && parent);
 
     QString name = attributeValue("name");
     QString value = attributeValue("value");
 	
-	if (!(name.isEmpty() || value.isEmpty())) {
-        parent->initParameter(name, value);
-    }
-    else {
-        throw Exception(message("Missing name or value in parameter"));
-	}
+    if (name.isEmpty() || value.isEmpty())
+        throw Exception(message("Missing name or value for parameter"), parent);
+
+    ParameterBase *param = seekOneChild<ParameterBase*>(name, parent);
+    param->setValueFromString(value.trimmed());
+
 	nextElementDelim();
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();

@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "fecundity.h"
 
@@ -15,14 +16,14 @@ namespace beehive{
 Fecundity::Fecundity(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    new Parameter<double>("root1", &root1, -10., this, "For parabolic equation");
+    new Parameter<double>("root2", &root2, 28., this, "For parabolic equation");
+    new Parameter<double>("scale", &scale, 0.02, this, "For parabolic equation");
+    new Parameter<double>("sexRatio", &sexRatio, 0.5, this, "Sex ratio (female fraction) of adult population");
     new PullVariable<double>("eggsLaid", &eggsLaid, this, "description");
 }
 
 void Fecundity::initialize() {
-    setParameter("root1", &root1, -10., "For parabolic equation");
-    setParameter("root2", &root2, 28., "For parabolic equation");
-    setParameter("scale", &scale, 0.02, "For parabolic equation");
-    setParameter("sexRatio", &sexRatio, 0.5, "Sex ratio (female fraction) of adult population");
     adult = seekOneAscendant<Model*>("adult");
 }
 

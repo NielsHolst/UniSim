@@ -5,30 +5,23 @@
 */
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "weather_file.h"
 
 using namespace std;
-using namespace UniSim;
 
-
-inline QString colName(QString name) {
-    return "col" + name;
-}
+namespace UniSim{
 
 WeatherFile::Column::Column(QString variableName_, int defaultColumn_, Model *parent)
     : variableName(variableName_), defaultColumn(defaultColumn_)
 {
     Q_ASSERT(parent);
-    //parent->setState(variableName, &value);
-    new PullVariable<double>(variableName, &value, parent, "description");
+    new Parameter<int>(variableName, &column, defaultColumn, parent, "Column number (counting from 1) of variable in weather file");
+    new PullVariable<double>(variableName, &value, parent, "Weather file variable");
 }
 
-void WeatherFile::Column::setParameter(Model *parent) {
-    parent->setParameter(colName(variableName), &column, defaultColumn, "description");
-}
-
-void WeatherFile::Column::updateState(const QStringList &items) {
+void WeatherFile::Column::parseLine(const QStringList &items) {
     if (column <= 0)
         return;
     if (column > items.size())
@@ -43,27 +36,22 @@ void WeatherFile::Column::updateState(const QStringList &items) {
                         "in weather file is not a number: '" + items[ix] + "'");
 }
 
-
-namespace UniSim{
-
 WeatherFile::WeatherFile(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<QString>("fileName", &fileName, QString(), this, "description");
+    new Parameter<QDate>("firstDate", &firstDate, QDate(), this, "description");
 }
 
 WeatherFile::~WeatherFile() {
-    for (Columns::iterator co = columns.begin(); co != columns.end(); ++co)
-        delete co.value();
+    for (int i = 0; i < columns.size(); ++i)
+        delete columns[i];
     columns.clear();
 }
 
 void WeatherFile::initialize()
 {
     hasBeenReset = false;
-    for (Columns::iterator co = columns.begin(); co != columns.end(); ++co)
-        co.value()->setParameter(this);
-    setParameter("fileName", &fileName, QString(), "description");
-    setParameter("firstDate", &firstDate, QDate(), "description");
 }
 
 void WeatherFile::reset()
@@ -89,8 +77,8 @@ void WeatherFile::update() {
     QStringList items = line.split(" ");
 
     try {
-        for (Columns::iterator co = columns.begin(); co != columns.end(); ++co)
-            co.value()->updateState(items);
+        for (int i = 0; i < columns.size(); ++i)
+            columns[i]->parseLine(items);
     }
     catch (const Exception &ex) {
         throw Exception(ex.message() + "\nIn line " + QString::number(lineNo) +
@@ -103,14 +91,14 @@ void WeatherFile::cleanup() {
 }
 
 void WeatherFile::setColumn(QString name, int defaultColumn) {
-    if (columns.contains(colName(name)))
-        changeParameter(colName(name), defaultColumn);
+    QList<Parameter<int>*> params = seekChildren<Parameter<int>*>(name);
+    if (params.size() == 0)
+        columns.append(new Column(name, defaultColumn, this));
+    else if (params.size() == 1)
+        params[0]->setValue(defaultColumn);
     else
-        columns[name] = new Column(name, defaultColumn, this);
-}
-
-bool WeatherFile::variableExists(QString name) {
-    return columns.contains(colName(name));
+        throw Exception("Parameters cannot have same name: "
+                        + name + " defined twice for " + fullName());
 }
 
 } //namespace

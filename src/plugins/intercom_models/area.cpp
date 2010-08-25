@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/calendar.h"
@@ -21,6 +22,11 @@ namespace intercom{
 Area::Area(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("initial", &initial, 0.01, this, "description");
+    new Parameter<QString>("distribution", &distText, QString("Symmetric"), this, "description");
+    new Parameter<double>("scatteringCoeff", &scatteringCoeff, 0.2, this, "description");
+    new Parameter<double>("kDiffuse", &kDiffuse, 0.7, this, "description");
+
     new PullVariable<double>("lai", &lai, this, "description");
 
     lookupDist["Symmetric"] = Symmetric;
@@ -30,11 +36,6 @@ Area::Area(UniSim::Identifier name, QObject *parent)
 }
 
 void Area::initialize() {
-    setParameter("initial", &initial, 0.01, "description");
-    setParameter("distribution", &distText, QString("Symmetric"), "description");
-    setParameter("scatteringCoeff", &scatteringCoeff, 0.2, "description");
-    setParameter("kDiffuse", &kDiffuse, 0.7, "description");
-
     calendar = seekOne<Model*>("calendar");
     weather = seekOne<Model*>("weather");
     plant = seekOneAscendant<Plant*>("*");

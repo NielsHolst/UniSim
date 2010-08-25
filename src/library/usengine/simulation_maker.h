@@ -68,7 +68,7 @@ private:
 	void readSequenceElement(QObject *parent);
 
 	bool readModelElement(QObject *parent);
-	void readParameterElement(Parameters *parent);
+    void readParameterElement(QObject *parent);
 
 	bool readOutputElement(QObject *parent);
     void readVariableElement(QObject* parent);

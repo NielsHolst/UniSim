@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "plant.h"
 
@@ -14,6 +15,23 @@ namespace conductance {
 Plant::Plant(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    new Parameter<double>("initWeight", &initWeight, 2., this,
+                 "Initial plant weight at time zero (g per plant)");
+    new Parameter<double>("A", &A, 0.03, this,
+                 "Coefficient in allometric relation for crown zone area: @Math {A w sup phione}");
+    new Parameter<double>("phi", &phi, 0.67, this,
+                 "Exponent in allometric relation for crown zone area: @Math {A w sup phione}");
+    new Parameter<double>("F", &F, 0.01, this,
+                 "Coefficient in allometric relation for plant leaf area: @Math {F w sup theta}");
+    new Parameter<double>("theta", &theta, 0.9, this,
+                 "Exponent in allometric relation for plant leaf area: @Math {F w sup theta}");
+    new Parameter<double>("k", &k, 0.6, this,
+                 "Light extinction coefficient of foliage [0..1]");
+    new Parameter<double>("eps", &eps, 1., this,
+                 "Light use efficiency (g\"/\"MJ) of global irradiation");
+    new Parameter<double>("n", &n, 20., this,
+                 "Plant density (plants per m @Sup {2})");
+
     new PullVariable<double>("weight", &weight, this,
                      "Plant weight (g per plant");
     new PullVariable<double>("totalWeight", &totalWeight, this,
@@ -33,7 +51,7 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
                      "Leaf area per plant (m @Sup 2 leaf area per plant)");
     new PullVariable<double>("dweight", &dweight, this,
                      "Latest increment in plant weight over time step @F dt (g per plant per day)");
-    new PullVariable<double>("phase", &_phase, this,
+    new PullVariable<int>("phase", &_phase, this,
                      "Competition phase: @F Unlimited, "
                      "@F UnderCompression or @F {WeightProportional}.");
     new PullVariable<double>("LAI", &lai, this,
@@ -42,29 +60,12 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
 }
 
 void Plant::initialize() {
-    setParameter("initWeight", &initWeight, 2.,
-                 "Initial plant weight at time zero (g per plant)");
-    setParameter("A", &A, 0.03,
-                 "Coefficient in allometric relation for crown zone area: @Math {A w sup phione}");
-    setParameter("phi", &phi, 0.67,
-                 "Exponent in allometric relation for crown zone area: @Math {A w sup phione}");
-    setParameter("F", &F, 0.01,
-                 "Coefficient in allometric relation for plant leaf area: @Math {F w sup theta}");
-    setParameter("theta", &theta, 0.9,
-                 "Exponent in allometric relation for plant leaf area: @Math {F w sup theta}");
-    setParameter("k", &k, 0.6,
-                 "Light extinction coefficient of foliage [0..1]");
-    setParameter("eps", &eps, 1.,
-                 "Light use efficiency (g\"/\"MJ) of global irradiation");
-    setParameter("n", &n, 20.,
-                 "Plant density (plants per m @Sup {2})");
-
     weather = seekOne<Model*>("weather");
 
     other = 0;
     QList<Plant*> siblings = seekSiblings<Plant*>("*");
     if (siblings.size() > 1)
-        throw Exception("Max. 2 plants are allowed in community");
+        throw Exception("Max. 2 plants are allowed in community", this);
     other = siblings.isEmpty() ? 0 : siblings[0];
 }
 
@@ -78,7 +79,7 @@ void Plant::reset() {
 
 void Plant::changePhase(Phase newPhase) {
     phase = newPhase;
-    _phase = double(phase);
+    _phase = int(phase);
     Q_ASSERT(phase == Unlimited || phase == UnderCompression || other);
 }
 

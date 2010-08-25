@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "leaf_stem_ratio.h"
 
@@ -13,13 +14,13 @@ namespace intercom{
 LeafStemRatio::LeafStemRatio(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("initial", &initial, 0.73, this, "description");
+    new Parameter<double>("slope", &slope, 5.7e-4, this, "description");
     new PullVariable<double>("ratio", &ratio, this, "description");
 }
 
 void LeafStemRatio::initialize()
 {
-    setParameter("initial", &initial, 0.73, "description");
-    setParameter("slope", &slope, 5.7e-4, "description");
     photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
 }
 

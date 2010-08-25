@@ -48,6 +48,8 @@ void TestLiveSimulation::testOpening() {
 
 void TestLiveSimulation::open() {
     _liveSim->open(_filePath);
+    showLog();
+
     QCOMPARE(_log->items()->size(), 1);
 	QVERIFY(_log->items()->at(0).title == "Opening file");
 	QVERIFY(_log->items()->at(0).text == _filePath);

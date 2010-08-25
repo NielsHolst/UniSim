@@ -34,8 +34,9 @@ private:
     // parameters
     double initWeight, A, phi, F, theta, k, eps, n;
 
-	// state
-    double weight, dweight, totalWeight, sz, total_sz, Lz, fz, _phase, LA_per_plant, lai;
+    // pull variables
+    double weight, dweight, totalWeight, sz, total_sz, Lz, fz, LA_per_plant, lai;
+    int _phase;
     Phase phase;
 
     // links

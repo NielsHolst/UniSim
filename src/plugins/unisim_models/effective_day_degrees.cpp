@@ -16,7 +16,7 @@ EffectiveDayDegrees::EffectiveDayDegrees(UniSim::Identifier name, QObject *paren
 void EffectiveDayDegrees::initialize()
 {
     DayDegrees::initialize();
-	setParameter("q", &q, 0.1);
+	new Parameter<double>("q", &q, 0.1);
     weather = findOne<Model*>("weather");
 }
 

@@ -12,16 +12,17 @@ namespace UniSim{
 LarvaTime::LarvaTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("exponent", &exponent, 16.42, this, "desc");
+    new Parameter<double>("minimum", &minimum, 0.001, this, "desc");
+    new Parameter<double>("optimum", &optimum, 15.14, this, "desc");
+    new Parameter<double>("spread", &spread, 5.169, this, "desc");
+
     new PullVariable<double>("step", &step, this, "desc");
     new PullVariable<double>("total", &total, this, "desc");
 }
 
 void LarvaTime::initialize()
 {
-    setParameter("exponent", &exponent, 16.42, "desc");
-    setParameter("minimum", &minimum, 0.001, "desc");
-    setParameter("optimum", &optimum, 15.14, "desc");
-    setParameter("spread", &spread, 5.169, "desc");
     weather = seekOne<Model*>("weather");
     lactin = seekOneChild<Model*>("time");
 }

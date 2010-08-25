@@ -15,14 +15,10 @@ class Weather : public UniSim::Model
 	Q_OBJECT
 public: 
 	Weather(UniSim::Identifier name, QObject *parent=0);
-	// standard methods
-	void initialize();
 
 private:
-	// parameters
-
-	// state
-    double Tavg, irradiation;
+    // parameter / pull variable
+    double irradiation;
 };
 
 } //namespace

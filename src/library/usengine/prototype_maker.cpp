@@ -10,12 +10,16 @@
 #include <QTextStream>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
-#include <usbase/random_uniform.h>
 #include "confirmation.h"
 #include "prototype_maker.h"
 #include "xml_elements_reader.h"
 
 namespace {
+
+    double rnd() {
+        return rand()/double(RAND_MAX);
+    }
+
 
     QString makeClassName(QString userClassName) {
         QString t;
@@ -58,6 +62,7 @@ PrototypeMaker::PrototypeMaker()
     reader = new XmlElementsReader;
     pluginTypeNames[ModelPlugin] = "models";
     pluginTypeNames[IntegratorPlugin] = "integrators";
+    srand(42);
 }
 
 PrototypeMaker::~PrototypeMaker() {
@@ -188,7 +193,6 @@ void PrototypeMaker::writeClassHeaderFile(ClassName className) const {
         << "public: " << '\n'
         << "\t" << className << "(UniSim::Identifier name, QObject *parent=0);" << '\n'
         << "\t// standard methods" << '\n'
-        << "\tvoid initialize();" << '\n'
         << "\tvoid reset();" << '\n'
         << "\tvoid update();" << '\n'
         << '\n'
@@ -237,13 +241,10 @@ void PrototypeMaker::writeClassSourceFile(ClassName className) const{
         << namespaceBegin()
         << className << "::" << className << "(UniSim::Identifier name, QObject *parent)" << '\n'
         << "\t: Model(name, parent) {" << '\n'
+        << "\tnew Parameter<double>(\"Ninit\", &Ninit, 1., this, \"Description\");" << '\n'
+        << "\tnew Parameter<double>(\"K\", &K, 1000., this, \"Description\");" << '\n'
+        << "\tnew Parameter<double>(\"r\", &r, 1.2, this, \"Description\");" << '\n'
         << "\tnew PullVariable<double>(\"N\", &density, this, \"Description\");" << '\n'
-        << "}" << '\n'
-        << '\n'
-        << "void " << className << "::initialize() {" << '\n'
-        << "\tsetParameter(\"Ninit\", &Ninit, 1., \"Description\");" << '\n'
-        << "\tsetParameter(\"K\", &K, 1000., \"Description\");" << '\n'
-        << "\tsetParameter(\"r\", &r, 1.2, \"Description\");" << '\n'
         << "}" << '\n'
         << '\n'
         << "void " << className << "::reset() {" << '\n'
@@ -537,7 +538,7 @@ QString PrototypeMaker::xmlOutputs() const {
 
 
 QString PrototypeMaker::parameter(QString name, double minValue, double maxValue) const {
-    double value = minValue + (maxValue - minValue)*randomUniform()->next();
+    double value = minValue + (maxValue - minValue)*rnd();
     QString s;
     s += "\t\t<parameter name=\"" + name + "\" value=\"" + QString::number(value) + "\"/>\n";
     return s;

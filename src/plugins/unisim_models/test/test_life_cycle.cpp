@@ -34,14 +34,14 @@ void TestLifeCycle::testUpdate()
 
     weed->deepInitialize();
 	
-	seedling->changeParameter("k", 30);	
-	seedling->changeParameter("duration", 50.);	
-	
-	juvenile->changeParameter("k", 20);	
-	juvenile->changeParameter("duration", 200.);	
-	
-	mature->changeParameter("k", 10);	
-	mature->changeParameter("duration", 1550.);	
+    seedling->seekOneChild<Parameter<int>*>("k") -> setValue(30);
+    seedling->seekOneChild<Parameter<double>*>("duration") -> setValue(50.);
+
+    juvenile->seekOneChild<Parameter<int>*>("k") -> setValue(20);
+    juvenile->seekOneChild<Parameter<double>*>("duration") -> setValue(200.);
+
+    mature->seekOneChild<Parameter<int>*>("k") -> setValue(10);
+    mature->seekOneChild<Parameter<double>*>("duration") -> setValue(1550.);
 	
     weed->deepReset();
 	
@@ -51,7 +51,7 @@ void TestLifeCycle::testUpdate()
     QVERIFY(last);
 	
 	double myInput = 1000;
-    first->pushVariable<double>("input", myInput);
+    first->pushVariable("input", myInput);
 	
     static double EPS = std::min(myInput*1000*std::numeric_limits<double>::epsilon(),  1e-6);
 
@@ -79,7 +79,7 @@ void TestLifeCycle::testUpdate()
 			));
 
     weed->deepReset();
-    first->pushVariable<double>("input", myInput);
+    first->pushVariable("input", myInput);
 	for (int i = 0; i < 10000; ++i) {
         weed->deepUpdate();
 	}

@@ -4,7 +4,9 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QMessageBox>
+#include <QObject>
 #include "exception.h"
+#include "utilities.h"
 
 /*! \class UniSim::Exception
     \brief The %Exception class is a base class for all exceptions thrown by the UniSim library
@@ -16,14 +18,17 @@
 
 namespace UniSim {
 
-Exception::Exception(QString message)
-	: _message(message)
+Exception::Exception(QString message, QObject *concerning_)
+    : _message(message), concerning(concerning_)
 {
 }
 
 QString Exception::message() const
 {
-	return _message;
+    QString msg = _message;
+    if (concerning)
+        msg += "\nConcerning:\n" + fullName(concerning);
+    return msg;
 }
 
 void Exception::show() const

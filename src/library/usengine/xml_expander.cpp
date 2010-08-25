@@ -23,7 +23,7 @@ namespace {
 	{
 	public:
 		XmlExpanderEx(QString fileName, QString message)
-			: Exception(QString())
+            : UniSim::Exception(QString())
 		{
 			QTextStream text(&_message);
 			text << "Error when expanding UniSim file: "  <<  fileName << "\n"

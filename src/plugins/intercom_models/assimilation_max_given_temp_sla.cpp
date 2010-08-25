@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "assimilation_max_given_temp_sla.h"
 #include "plant.h"
@@ -14,12 +15,12 @@ namespace intercom{
 AssimilationMaxGivenTempSla::AssimilationMaxGivenTempSla(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("pctN", &pctN, 0.040, this, "description");
     new PullVariable<double>("amax", &amax, this, "description");
 }
 
 void AssimilationMaxGivenTempSla::initialize()
 {
-    setParameter("pctN", &pctN, 0.040, "description");
     weather = seekOne<Model*>("weather");
     Model *plant = seekOneAscendant<Plant*>("*");
     specificLeafArea = plant->seekOneDescendant<Model*>("specificLeafArea");

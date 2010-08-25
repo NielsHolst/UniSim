@@ -39,9 +39,9 @@ LifeStage::~LifeStage()
 
 void LifeStage::initialize()
 {
-	setParameter("k", &_k, 30);
-	setParameter("duration", &_L, 100.);
-    setParameter("initial_input", &_initialInput, 0.);
+	new Parameter<double>("k", &_k, 30);
+	new Parameter<double>("duration", &_L, 100.);
+    new Parameter<double>("initial_input", &_initialInput, 0.);
 }
 
 void LifeStage::reset()

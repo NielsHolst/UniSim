@@ -7,6 +7,7 @@
 #include <QString>
 #include <usbase/component.h>
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "rotation.h"
@@ -20,6 +21,22 @@ Weed::Weed(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
+
+    new Parameter<double>("c1", &c1, 6.904, this,
+                 "Parameter in the equation that calculates density equivalents from density, "
+                 "@Math{y = exp braceleft c sub 1 bracketleft exp(-{x over c sub 2}) - 1 bracketright braceright "
+                 "- exp(-c sub {1})}, "
+                 "where @I x is crop leaf area index");
+    new Parameter<double>("c2", &c2, 0.7491, this,
+                 "See @F {c1}");
+    new Parameter<double>("seedProdSlope", &seedProdSlope, 2., this,
+                 "Slope @I a (seeds per g @Sup {b}) in the equation relating seed production to final weed biomass, "
+                 " @Math{y = ax sup b }"
+                 "where @I x is weed biomass (g)");
+    new Parameter<double>("seedProdExp", &seedProdExp, 1., this,
+                 "Exponent @I b in the equation relating seed production to final weed biomass, "
+                 " @Math{y = ax sup b }"
+                 "where @I x is weed biomass (g)");
 
     new PullVariable<double>("projectedDeqs", &projectedDeqs, this,
                      "The projected number of density equivalents (per m @Sup {2}) is the final density equivalents expected, "
@@ -38,21 +55,6 @@ Weed::Weed(UniSim::Identifier name, QObject *parent)
 }
 
 void Weed::initialize() {
-    setParameter("c1", &c1, 6.904,
-                 "Parameter in the equation that calculates density equivalents from density, "
-                 "@Math{y = exp braceleft c sub 1 bracketleft exp(-{x over c sub 2}) - 1 bracketright braceright "
-                 "- exp(-c sub {1})}, "
-                 "where @I x is crop leaf area index");
-    setParameter("c2", &c2, 0.7491, "See @F {c1}");
-    setParameter("seedProdSlope", &seedProdSlope, 2.,
-                 "Slope @I a (seeds per g @Sup {b}) in the equation relating seed production to final weed biomass, "
-                 " @Math{y = ax sup b }"
-                 "where @I x is weed biomass (g)");
-    setParameter("seedProdExp", &seedProdExp, 1.,
-                 "Exponent @I b in the equation relating seed production to final weed biomass, "
-                 " @Math{y = ax sup b }"
-                 "where @I x is weed biomass (g)");
-
     seedBank = seekOneChild<Model*>("seedBank");
     seedling = seekOneChild<Model*>("seedling");
     juvenile = seekOneChild<Model*>("juvenile");
@@ -75,24 +77,24 @@ void Weed::reset() {
 }
 
 void Weed::update() {
-    seedBank->pushVariable<double>("dormantInflow", seedsDropping);
+    seedBank->pushVariable("dormantInflow", seedsDropping);
     seedsDropping = 0;
     seedBank->update();
     double newSeedlings = seedBank->pullVariable<double>("dailyEmergenceDensity");
 
-    seedling->pushVariable<double>("inflowAsDensity", newSeedlings);
-    seedling->pushVariable<double>("inflowAsDensityEqs", newSeedlings*cropEffectOnSeedlings());
+    seedling->pushVariable("inflowAsDensity", newSeedlings);
+    seedling->pushVariable("inflowAsDensityEqs", newSeedlings*cropEffectOnSeedlings());
     seedling->update();
 
-    juvenile->pushVariable<double>("inflowAsDensity",
+    juvenile->pushVariable("inflowAsDensity",
                             seedling->pullVariable<double>("outflowAsDensity"));
-    juvenile->pushVariable<double>("inflowAsDensityEqs",
+    juvenile->pushVariable("inflowAsDensityEqs",
                             seedling->pullVariable<double>("outflowAsDensityEqs"));
     juvenile->update();
 
-    mature->pushVariable<double>("inflowAsDensity",
+    mature->pushVariable("inflowAsDensity",
                           juvenile->pullVariable<double>("outflowAsDensity"));
-    mature->pushVariable<double>("inflowAsDensityEqs",
+    mature->pushVariable("inflowAsDensityEqs",
                           juvenile->pullVariable<double>("outflowAsDensityEqs"));
     mature->update();
 
@@ -101,8 +103,8 @@ void Weed::update() {
 
     g = (projectedMass > 1e-6) ?  seedProdSlope*pow(projectedMass, seedProdExp)/projectedMass : 1.;
 
-    seedsOnPlant->pushVariable<double>("inflow", seedInflowAsMass);
-    if (g > 0) seedsOnPlant->pushVariable<double>("growthRate", g);
+    seedsOnPlant->pushVariable("inflow", seedInflowAsMass);
+    if (g > 0) seedsOnPlant->pushVariable("growthRate", g);
     seedsOnPlant->deepUpdate();
 
     seedsDropping += seedsOnPlant->pullVariable<double>("outflow");
@@ -169,7 +171,7 @@ void Weed::handleEvent(QObject *sender, QString event) {
 }
 
 void Weed::kill(Model *stage, double mortalityPct) {
-    stage->pushVariable<double>("instantMortality", mortalityPct);
+    stage->pushVariable("instantMortality", mortalityPct);
 }
 
 

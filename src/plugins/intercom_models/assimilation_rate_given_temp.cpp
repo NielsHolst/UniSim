@@ -17,8 +17,8 @@ AssimilationRateGivenTemp::AssimilationRateGivenTemp(UniSim::Identifier name, QO
 
 void AssimilationRateGivenTemp::initialize()
 {
-    setParameter("slope", &slope, -0.00095);
-    setParameter("intercept", &intercept, 0.0635);
+    new Parameter<double>("slope", &slope, -0.00095);
+    new Parameter<double>("intercept", &intercept, 0.0635);
     weather = seekOne<Model*>("weather");
 }
 void AssimilationRateGivenTemp::reset() {

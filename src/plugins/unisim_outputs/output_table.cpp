@@ -4,8 +4,10 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <iostream>
+#include <QTextStream>
 #include <usbase/file_locations.h>
 #include <usbase/output_variable.h>
+#include <usbase/parameter.h>
 #include "output_table.h"
 
 namespace UniSim{
@@ -13,11 +15,11 @@ namespace UniSim{
 OutputTable::OutputTable(Identifier name, QObject *parent)
     : Output(name, parent)
 {
+    new Parameter<QString>("fileName", &fileName, QString("output_table.prn"), this, "description");
 }
 
 void OutputTable::initialize() {
     Output::initialize();
-    setParameter("fileName", &fileName, QString("output_table.prn"), "description");
     standardizeLabels();
 }
 

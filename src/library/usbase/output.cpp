@@ -5,6 +5,7 @@
 */
 #include "output.h"
 #include "output_variable.h"
+#include "parameter.h"
 
 namespace UniSim{
 	
@@ -14,8 +15,6 @@ Output::Output(Identifier name, QObject *parent)
 }
 
 void Output::initialize() {
-    setParameter("title", &title, QString("untitled"), "description");
-
     variables = seekChildren<OutputVariable*>("*");
     extendLabels();
     segmentVariables();

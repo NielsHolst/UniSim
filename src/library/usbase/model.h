@@ -6,21 +6,24 @@
 #ifndef UNISIM_MODEL_H
 #define UNISIM_MODEL_H
 
+#include <QVariant>
 #include "component.h"
+#include "exception.h"
 #include "identifier.h"
-#include "parameters.h"
+#include "parameter.h"
 #include "pull_variable.h"
 #include "push_variable.h"
 #include "utilities.h"
 
 namespace UniSim{
 	
-class Model : public UniSim::Component, public Parameters
+class Model : public UniSim::Component
 {
 	Q_OBJECT
 public:
     Model(Identifier name, QObject *parent=0);
 
+    template <class T> T parameter(Identifier name);
     template <class T> void pushVariable(Identifier name, T value);
     template <class T> T pullVariable(Identifier name);
     template <class T> const T* pullVariablePtr(Identifier name);
@@ -29,7 +32,20 @@ public:
 typedef QList<Model*> Models;
 
 template <class T>
-void Model::pushVariable(Identifier name, T value) {
+T Model::parameter(Identifier name)
+{
+    ParameterBase* basePar = seekOneChild<ParameterBase*>(name.key());
+    QVariant variant = basePar->toVariant();
+    if (!variant.canConvert<T>())
+        throw Exception("Cannot convert parameter '" + name.label() +
+                        "' to type " + QVariant(T()).typeName(), this);
+    return variant.value<T>();
+}
+
+
+template <class T>
+void Model::pushVariable(Identifier name, T value)
+{
     seekOneChild<PushVariable<T>*>(name.key())->setValue(value);
 }
 

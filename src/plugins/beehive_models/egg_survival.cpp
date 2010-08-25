@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "egg_survival.h"
 
@@ -14,14 +15,14 @@ namespace beehive{
 EggSurvival::EggSurvival(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    new Parameter<double>("a", &a, -0.00706, this, "For parabolic equation");
+    new Parameter<double>("b", &b, 0.370, this, "For parabolic equation");
+    new Parameter<double>("c", &c, -4.12, this, "For parabolic equation");
+    new Parameter<double>("Tlow", &Tlow, 21., this, "Lower limit where extrapolation begins");
     new PullVariable<double>("survival", &survival, this, "description");
 }
 
 void EggSurvival::initialize() {
-    setParameter("a", &a, -0.00706, "For parabolic equation");
-    setParameter("b", &b, 0.370, "For parabolic equation");
-    setParameter("c", &c, -4.12, "For parabolic equation");
-    setParameter("Tlow", &Tlow, 21., "Lower limit where extrapolation begins");
     weather = seekOne<Model*>("weather");
 }
 

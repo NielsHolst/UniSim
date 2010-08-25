@@ -8,11 +8,10 @@
 
 #include <QObject>
 #include "identifier.h"
-#include "parameters.h"
 
 namespace UniSim{
 	
-class Integrator : public QObject, public Parameters
+class Integrator : public QObject
 {
 	Q_OBJECT
 public:

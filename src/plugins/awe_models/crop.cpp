@@ -5,6 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "crop.h"
@@ -17,6 +18,21 @@ namespace awe {
 Crop::Crop(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
+    new Parameter<int>("sowingDay", &sowingDay, 1, this, "Day in month of sowing");
+    new Parameter<int>("sowingMonth", &sowingMonth, 4, this, "Month of sowing");
+    new Parameter<int>("harvestDay", &harvestDay, 1, this, "Day in month of harvest");
+    new Parameter<int>("harvestMonth", &harvestMonth, 8, this, "Month of harvest");
+    new Parameter<double>("weedExchangeRate", &weedExchangeRate, 0.6, this, "Final biomass of weeds as a proportion of yield loss (g\"/\"g)");
+    new Parameter<double>("maxYield", &maxYield, 800., this, "Weed-free yield (g\"/\"m @Sup {2})");
+    new Parameter<double>("maxYieldLossPct", &maxYieldLossPct, 60., this, "Maximum yield loss (%) caused by weeds (Cousens's @I {a})");
+    new Parameter<double>("slopeYieldLossPct", &slopeYieldLossPct, 0.5, this, "Initial yield loss per weed (% per weed density equivalent) "
+                                                                "caused by weeds (Cousens's @I {i})");
+    new Parameter<QString>("laiCalendar", &laiCalendar,
+                 QString("((0 0)(110 0)(210 0.3)(310 0.8)(410 1.6)"
+                         "(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"), this,
+                 "Calendar for leaf area index (LAI) running on temperature sum since sowing (day-degrees above @Char {ring}C). "
+                 "Defined as a list of (@I {temperature-sum LAI}) pairs");
+
     new PullVariable<double>("lai", &lai, this, "Leaf area index (m @Sup {2}\"/\"m @Sup {2}).");
     new PullVariable<double>("Tsum", &Tsum, this, "Temperature sum since sowing (day-degrees above @Char {ring}C).");
 }
@@ -24,21 +40,6 @@ Crop::Crop(UniSim::Identifier name, QObject *parent)
 
 
 void Crop::initialize() {
-    setParameter("sowingDay", &sowingDay, 1, "Day in month of sowing");
-    setParameter("sowingMonth", &sowingMonth, 4, "Month of sowing");
-    setParameter("harvestDay", &harvestDay, 1, "Day in month of harvest");
-    setParameter("harvestMonth", &harvestMonth, 8, "Month of harvest");
-    setParameter("weedExchangeRate", &weedExchangeRate, 0.6, "Final biomass of weeds as a proportion of yield loss (g\"/\"g)");
-    setParameter("maxYield", &maxYield, 800., "Weed-free yield (g\"/\"m @Sup {2})");
-    setParameter("maxYieldLossPct", &maxYieldLossPct, 60., "Maximum yield loss (%) caused by weeds (Cousens's @I {a})");
-    setParameter("slopeYieldLossPct", &slopeYieldLossPct, 0.5, "Initial yield loss per weed (% per weed density equivalent) "
-                                                                "caused by weeds (Cousens's @I {i})");
-    setParameter("laiCalendar", &laiCalendar,
-                 QString("((0 0)(110 0)(210 0.3)(310 0.8)(410 1.6)"
-                         "(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"),
-                 "Calendar for leaf area index (LAI) running on temperature sum since sowing (day-degrees above @Char {ring}C). "
-                 "Defined as a list of (@I {temperature-sum LAI}) pairs");
-
     sowingDayOfYear = UniSim::toDayOfYear(sowingDay, sowingMonth);
     harvestDayOfYear = UniSim::toDayOfYear(harvestDay, harvestMonth);
 

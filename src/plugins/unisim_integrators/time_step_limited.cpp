@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "time_step_limited.h"
 
@@ -11,10 +12,7 @@ namespace UniSim{
 TimeStepLimited::TimeStepLimited(Identifier name, QObject *parent)
     : Integrator(name, parent)
 {
-}
-
-void TimeStepLimited::initialize() {
-    setParameter("maxSteps", &maxSteps, 100, "description");
+    new Parameter<int>("maxSteps", &maxSteps, 100, this, "description");
 }
 
 void TimeStepLimited::resetRuns() {

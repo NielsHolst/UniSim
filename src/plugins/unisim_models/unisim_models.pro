@@ -16,6 +16,11 @@ HEADERS += \
     days.h \
     lactin_time.h \
     photo_thermal_time.h \
+    random_base.h \
+    random_lognormal.h \
+    random_normal.h \
+    random_poisson.h \
+    random_uniform.h \
     unisim_model_maker.h
 
 SOURCES += \
@@ -26,4 +31,9 @@ SOURCES += \
     days.cpp \
     lactin_time.cpp \
     photo_thermal_time.cpp \
+    random_base.cpp \
+    random_lognormal.cpp \
+    random_normal.cpp \
+    random_poisson.cpp \
+    random_uniform.cpp \
     unisim_model_maker.cpp

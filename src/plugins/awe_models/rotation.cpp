@@ -5,6 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "crop.h"
@@ -17,18 +18,18 @@ namespace awe {
 Rotation::Rotation(UniSim::Identifier name, QObject *parent)
     : Model(name,parent)
 {
-    setRecursionPolicy(Component::Update, Component::ChildrenNot);
+    new Parameter<QString>("crops", &cropsString, QString(), this,
+                 "Sequence of crops in rotation. For example, @F {(maize wheat wheat)}, "
+                 "in which maize is followed by two crops of wheat. The crop names must "
+                 "refer to names of @F Crop models that are children of @F {Rotation}.");
     new PullVariable<double>("lai", &lai, this,
                      "Leaf area index (m @Sup {2}\"/\"m @Sup {2}) of the current crop");
+    setRecursionPolicy(Component::Update, Component::ChildrenNot);
 }
 
 
 
 void Rotation::initialize() {
-    setParameter("crops", &cropsString, QString(),
-                 "Sequence of crops in rotation. For example, @F {(maize wheat wheat)}, "
-                 "in which maize is followed by two crops of wheat. The crop names must "
-                 "refer to names of @F Crop models that are children of @F {Rotation}.");
     decodeCrops();
     _calendar = seekOne<Model*>("calendar");
     collectRotation();

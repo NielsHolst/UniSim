@@ -16,7 +16,7 @@
 	<model name="weather" type="ambrosia::Weather">
 		<parameter name="fileName" value="flakkebjerg 2009.txt"/>
 		<parameter name="firstDate" value="1/1/2009"/>
-		<parameter name="colTavg" value="3"/>
+		<parameter name="Tavg" value="3"/>
 	</model>
 	
 	<model name="plants">

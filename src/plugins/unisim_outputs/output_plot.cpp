@@ -7,6 +7,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/object_pool.h>
 #include <usbase/output_variable.h>
+#include <usbase/parameter.h>
 #include <usengine/main_window_interface.h>
 #include <usengine/plot_widget.h>
 #include "output_plot.h"
@@ -18,6 +19,9 @@ QList<QColor> OutputPlot::colors;
 OutputPlot::OutputPlot(Identifier name, QObject *parent)
     : Output(name, parent), plotWidget(0)
 {
+    new Parameter<QString>("title", &title, QString(), this,
+                           "Title of plot shown in window top bar");
+
     colors
     << QColor("#FF416E")
     << QColor("#3760D5")
@@ -34,7 +38,6 @@ OutputPlot::~OutputPlot() {
 
 void OutputPlot::initialize() {
     Output::initialize();
-    setParameter("title", &title, QString(), "description");
 
     const QList<OutputVariable *> &xs(xVariables()), &ys(yVariables());
     if (ys.size() == 0) {

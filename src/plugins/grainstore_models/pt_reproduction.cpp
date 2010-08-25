@@ -16,27 +16,27 @@ namespace grainstore{
 PtReproduction::PtReproduction(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<int>("delay", &delay, 5, this, "desc");
+    new Parameter<double>("sexRatio", &sexRatio, 0.5, this, "desc");
+    new Parameter<double>("tempMax", &tempMax, 30., this, "desc");
+    new Parameter<double>("c1", &c1, 0.005494, this, "desc");
+    new Parameter<double>("c2", &c2, 0.2359, this, "desc");
+    new Parameter<double>("ageOpt", &ageOpt, 34.92, this, "desc");
+    new Parameter<double>("ageDisp", &sexRatio, 26.67, this, "desc");
+    new Parameter<bool>("applyDensityDependence", &applyDensityDependence, false, this, "desc");
+    new Parameter<double>("rm_a", &rm_a, 0.01261, this, "desc");
+    new Parameter<double>("rm_b", &rm_b, 0.02001, this, "desc");
+    new Parameter<double>("rm_opt", &rm_opt, 0.0875, this, "desc");
+    new Parameter<double>("scale_a", &scale_a, 0.01851, this, "desc");
+    new Parameter<double>("scale_b", &scale_b, -0.1116, this, "desc");
+    new Parameter<double>("scale_c", &scale_c, 0.202, this, "desc");
+
     new PullVariable<double>("fecundity", &fecundity, this, "desc");
     new PullVariable<double>("densityDependence", &_densityDependence, this, "desc");
 }
 
 void PtReproduction::initialize()
 {
-    setParameter("delay", &delay, 5, "desc");
-    setParameter("sexRatio", &sexRatio, 0.5, "desc");
-    setParameter("tempMax", &tempMax, 30., "desc");
-    setParameter("c1", &c1, 0.005494, "desc");
-    setParameter("c2", &c2, 0.2359, "desc");
-    setParameter("ageOpt", &ageOpt, 34.92, "desc");
-    setParameter("ageDisp", &sexRatio, 26.67, "desc");
-    setParameter("applyDensityDependence", &applyDensityDependence, false, "desc");
-    setParameter("rm_a", &rm_a, 0.01261, "desc");
-    setParameter("rm_b", &rm_b, 0.02001, "desc");
-    setParameter("rm_opt", &rm_opt, 0.0875, "desc");
-    setParameter("scale_a", &scale_a, 0.01851, "desc");
-    setParameter("scale_b", &scale_b, -0.1116, "desc");
-    setParameter("scale_c", &scale_c, 0.202, "desc");
-
     weather = seekOne<Model*>("weather");
     Model *development = seekOneSibling<Model*>("development");
     egg = development->seekOneChild<Model*>("egg");

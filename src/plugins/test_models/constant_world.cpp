@@ -4,9 +4,9 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/file_locations.h>
+#include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "constant_world.h"
-#include <iostream>
 
 using namespace UniSim;
 
@@ -15,6 +15,7 @@ namespace test{
 ConstantWorld::ConstantWorld(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
+    new Parameter<double>("temperature", &setTemperature, 30., this, "description");
     new PullVariable<double>("temperature", &temperature, this, "description");
     new PullVariable<double>("day", &day, this, "description");
     QDir dir = FileLocations::location(FileLocations::Plugins);
@@ -23,8 +24,7 @@ ConstantWorld::ConstantWorld(Identifier name, QObject *parent)
 
 void ConstantWorld::initialize()
 {
-     setParameter("temperature", &setTemperature, 30., "description");
-	 temperature = setTemperature;
+     temperature = setTemperature;
 }	
 
 void ConstantWorld::reset()

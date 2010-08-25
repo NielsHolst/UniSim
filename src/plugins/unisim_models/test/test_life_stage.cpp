@@ -5,11 +5,14 @@
 #include <QObject>
 #include <usbase/exception.h>
 #include <usbase/model.h>
+#include <usbase/parameter.h>
 #include <usengine/model_maker.h>
 // #include <usutils/frequency_distribution.h>  put it where?
 #include "test_life_stage.h"
 
 //using namespace NHolst;
+
+using namespace UniSim;
 
 void TestLifeStage::initTestCase()
 {
@@ -28,8 +31,8 @@ void TestLifeStage::testUpdate()
 	QVERIFY(stage);
 	stage->initialize();
 	try { 
-		stage->changeParameter("k", k);
-		stage->changeParameter("duration", L);
+        stage->seekOneChild<Parameter<int>*>("k") -> setValue(k);
+        stage->seekOneChild<Parameter<double>*>("duration") -> setValue(L);
 	}
 	catch (const UniSim::Exception &ex) {
 		QWARN(qPrintable(ex.message()));
@@ -37,7 +40,7 @@ void TestLifeStage::testUpdate()
 	}
 	
 	stage->reset();
-    stage->pushVariable<double>("input", input);
+    stage->pushVariable("input", input);
 
     QWARN("Use FrequencyDistribution here !");
     /*
@@ -74,11 +77,11 @@ void TestLifeStage::testState()
 	UniSim::Model *stage = UniSim::ModelMaker::create("LifeStage", "senescent");
 	QVERIFY(stage);
 	stage->initialize();
-	stage->changeParameter("k", k);
-	stage->changeParameter("duration", L);
-	
+    stage->seekOneChild<Parameter<int>*>("k") -> setValue(k);
+    stage->seekOneChild<Parameter<double>*>("duration") -> setValue(L);
+
 	stage->reset();
-    stage->pushVariable<double>("input", input);
+    stage->pushVariable("input", input);
 	
 	static double EPS = std::min(input*1000.*std::numeric_limits<double>::epsilon(), 1e-6);
 	

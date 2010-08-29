@@ -257,7 +257,25 @@ bool SimulationMaker::readOutputElement(QObject* parent)
 
 void SimulationMaker::readVariableElement(QObject* parent)
 {
+    /*
 	Q_ASSERT(reader->isStartElement() && parent);
+
+    QString label, axis, value;
+    label = attributeValue("label");
+    if (label.isEmpty())
+        throw Exception(message("Missing 'label' attribute for 'variable' element"), parent);
+
+    axis = attributeValue("axis");
+    if (axis.isEmpty())
+        throw Exception(message("Missing 'axis' attribute for 'variable' element"), parent);
+
+    QString value = attributeValue("value");
+    if (value.isEmpty())
+        throw Exception(message("Missing 'value' attribute for 'variable' element"), parent);
+
+    new OutputVariable(label, axis, value, parent);
+*/
+
     OutputVariable::Raw raw;
 
     raw.label = attributeValue("label");

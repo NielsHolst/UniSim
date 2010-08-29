@@ -48,11 +48,14 @@ void setSimulationObjectFromDescendent(QObject *object);
 template <class T> T seekOne(QString name);
 template <class T> QList<T> seekMany(QString name);
 
+template <class TParentPtr, class TChildPtr> TChildPtr seekOne(QString expression);
+template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString expression);
+
 template <class T> T seekOneChild(QString name, QObject *parent);
 template <class T> QList<T> seekChildren(QString name, QObject *parent);
 
 template <class T> T seekOneDescendant(QString name, QObject *root);
-template <class T> QList<T> seekManyDescendants(QString name, QObject *root);
+template <class T> QList<T> seekDescendants(QString name, QObject *root);
 
 template <class T> T seekOneAscendant(QString name, QObject *child);
 
@@ -86,6 +89,7 @@ int toDayOfYear(int day, int month);
 QString fullName(QObject *object);
 QStringList decodeSimpleList(QString parenthesizedList, QString errorContext = QString());
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
+QStringList splitParentChildExpression(QString expression);
 template<class T> T stringToValue(QString s);
 template<> bool stringToValue<bool>(QString s);
 template<> QDate stringToValue<QDate>(QString s);
@@ -118,7 +122,6 @@ template<class T> T stringToValue(QString s) {
 
 //! Finds any number of objects
 /*!
-
   The path identifying the object(s) can be atomic ("elephant"),
   or, it can specify a path relative to the root ("mammals/elephant").
   Jokers are also allowed ("*", "mammals/ *", "* /leaves)
@@ -134,6 +137,38 @@ template <class T> QList<T> seekDescendants(QString name, QObject *root) {
 //! Finds a number (n>=0) of objects anywhere in simulation object tree
 template <class T> QList<T> seekMany(QString name) {
     return seekDescendants<T>(name, 0);
+}
+
+//! Finds one parent-child object
+/*!
+    Uses seekMany<T,U> but throws an Exception if not exactly one match is found.
+*/
+template <class TParentPtr, class TChildPtr> TChildPtr seekOne(QString expression) {
+    QList<TChildPtr> result = seekMany<TParentPtr, TChildPtr>(expression);
+    if (result.isEmpty())
+        throw Exception("No object found matching: " + expression);
+    else if (result.size() > 1)
+        throw Exception("More than one object found matching: " + expression);
+    return result[0];
+}
+
+//! Finds any number of parent-child objects
+/*!
+  The path identifying the object(s) is identifying a parent-child relationship, the name of
+  the child is given in brackets, e.g. "mammals/elephant[size]. The matching children are returned
+  as a list.
+*/
+template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString expression) {
+    QStringList split = splitParentChildExpression(expression);
+    QString parent = split[0], child = split[1];
+
+    QList<TParentPtr> parentPtr = seekMany<TParentPtr>(parent);
+    QList<TChildPtr> result;
+    for (int i = 0; i < parentPtr.size(); ++i) {
+        QList<TChildPtr> more = seekChildren<TChildPtr>(child, parentPtr[i]);
+        result.append(more);
+    }
+    return result;
 }
 
 //! Finds exactly one object
@@ -180,7 +215,7 @@ template <class T> T seekOneChild(QString name, QObject *parent) {
     QList<T> matches = seekChildren<T>(name, useParent);
     if (matches.size() == 0)
         throw Exception("'" + useParent->objectName() +
-                        "' has no child called '" + name + "'");
+                        "' has no child called '" + name + "'", useParent );
     else if (matches.size() > 1)
         throw Exception("'" + useParent->objectName() +
                         "' has more than one child called '" + name + "'", useParent);

@@ -17,7 +17,6 @@
 	
 	<output type="table">
 		<parameter name="fileName" value="test_calendar.prn"/>
-		<parameter name="title" value="Day length"/>
 		<variable label="daysTotal" axis="x" value="calendar[daysTotal]"/>
 		<variable label="day" axis="x" value="calendar[day]"/>
 		<variable label="month" axis="x" value="calendar[month]"/>

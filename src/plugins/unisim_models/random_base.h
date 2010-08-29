@@ -15,7 +15,11 @@ class RandomBase : public Model
 	Q_OBJECT
 public: 
     RandomBase(Identifier name, QObject *parent=0);
-protected:
+    // standard methods
+    void update();
+private:
+    // methods
+    virtual double drawValue() = 0;
     // parameters
     double minValue, maxValue;
     // pull variables

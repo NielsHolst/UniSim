@@ -172,20 +172,6 @@ void TestParameter::testIntToDate() {
     QVERIFY(excepted);
 }
 
-void TestParameter::testIdentical() {
-    int i1, i2;
-    new Parameter<int>("i", &i1, 123, model, "desc");
-    new Parameter<int>("i", &i2, 456, model, "desc");
-    bool excepted = false;
-    try {
-        QCOMPARE(model->parameter<int>("i"), 123);
-    }
-    catch (const Exception &ex) {
-        excepted = true;
-    }
-    QVERIFY(excepted);
-}
-
 void TestParameter::testMissing() {
     bool excepted = false;
     try {

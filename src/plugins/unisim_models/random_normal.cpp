@@ -8,11 +8,10 @@
 namespace UniSim{
 
 RandomNormal::RandomNormal(Identifier name, QObject *parent)
-    : RandomBase(name, parent)
+    : RandomBase(name, parent), generator(0), distribution(0), variate(0)
 {
-    generator = new Generator;
-    distribution = new Distribution(minValue, maxValue);
-    variate = new Variate(*generator, *distribution);
+    new Parameter<double>("mean", &mean, 10., this, "Mean of normal distribution");
+    new Parameter<double>("sd", &sd, 2., this, "Standard deviation of normal distribution");
 }
 
 RandomNormal::~RandomNormal() {
@@ -21,8 +20,14 @@ RandomNormal::~RandomNormal() {
     delete variate;
 }
 
-void RandomNormal::update() {
-    value = (*variate)();
+void RandomNormal::initialize() {
+    generator = new Generator;
+    distribution = new Distribution(mean, sd);
+    variate = new Variate(*generator, *distribution);
+}
+
+double RandomNormal::drawValue() {
+    return (*variate)();
 }
 
 } //namespace

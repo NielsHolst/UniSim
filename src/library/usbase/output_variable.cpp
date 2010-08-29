@@ -100,3 +100,4 @@ void OutputVariable::fromRaw(Raw raw) {
 }
 
 } //namespace
+

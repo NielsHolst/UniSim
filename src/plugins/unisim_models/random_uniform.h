@@ -20,8 +20,11 @@ public:
     RandomUniform(UniSim::Identifier name, QObject *parent=0);
     ~RandomUniform();
     // standard methods
-    void update();
+    void initialize();
 private:
+    // methods
+    double drawValue();
+    // random number generation
     typedef boost::mt19937 Generator ;
     typedef boost::uniform_real<double> Distribution;
     typedef boost::variate_generator<Generator&, Distribution> Variate;

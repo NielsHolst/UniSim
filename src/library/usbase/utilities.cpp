@@ -210,6 +210,33 @@ void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart) {
     }
 }
 
+QStringList splitParentChildExpression(QString expression) {
+    int begin = expression.indexOf('[');
+    int end = expression.indexOf(']');
+    QString msg;
+    if (begin == -1)
+        msg = "Missing '[' in expression";
+    else if (end == -1)
+        msg = "Missing ']' in expression";
+    else if (end < expression.size() - 1)
+        msg = "Expression must end with ']'";
+    else if (begin == 0)
+        msg = "Expression misses parent name before '['";
+    else if (end - begin == 1)
+        msg = "Expression misses child name inside the brackets";
+    if (!msg.isEmpty()) {
+        msg += ": '" + expression + "'";
+        throw (Exception(msg));
+    }
+    QString parent = expression.left(begin);
+    QString child = expression.mid(begin + 1, end - begin -1);
+
+    QStringList result;
+    result.append(parent);
+    result.append(child);
+    return result;
+}
+
 template<> bool stringToValue<bool>(QString s_) {
     QString s = s_.trimmed().toLower();
     bool value;

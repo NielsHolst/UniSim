@@ -6,7 +6,7 @@
 #ifndef UNISIM_RANDOM_NORMAL
 #define UNISIM_RANDOM_NORMAL
 #include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random/normal_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <QObject>
 #include "random_base.h"
@@ -20,10 +20,15 @@ public:
     RandomNormal(UniSim::Identifier name, QObject *parent=0);
     ~RandomNormal();
     // standard methods
-    void update();
+    void initialize();
 private:
+    // parameters
+    double mean, sd;
+    // methods
+    double drawValue();
+    // random number generation
     typedef boost::mt19937 Generator ;
-    typedef boost::uniform_real<double> Distribution;
+    typedef boost::normal_distribution<double> Distribution;
     typedef boost::variate_generator<Generator&, Distribution> Variate;
     Generator *generator;
     Distribution *distribution;

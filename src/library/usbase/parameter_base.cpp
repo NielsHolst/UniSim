@@ -36,9 +36,6 @@ void ParameterBase::assertUniqueness(Identifier id, QObject *parent) {
         isUnique = found[0] == this;
 
     if (!isUnique) {
-        int test1 = found.size();
-        ParameterBase *test2 = found[0];
-
         QString msg = "Parameter '" + id.label() + "' is not unique in '" + fullName(parent) +"'";
         Q_ASSERT_X(isUnique, "ParameterBase::assertUniqueness", qPrintable(msg));
     }

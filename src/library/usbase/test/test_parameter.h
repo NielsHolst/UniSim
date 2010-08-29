@@ -36,7 +36,6 @@ private slots:
     void testDoubleToInt();
     void testIntToDate();
 
-    void testIdentical();
     void testMissing();
     
 private:

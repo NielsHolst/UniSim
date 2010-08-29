@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <usbase/component.h>
 #include <usbase/model.h>
+#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "test_utilities.h"
 
@@ -166,6 +167,8 @@ void TestUtilities::initTestCase() {
     dogs = create<QObject>("dogs", mammals);
     femaleDogs = create<QObject>("female", dogs);
     maleDogs = create<QObject>("male", dogs);
+    new PullVariable<int>("size", &femaleDogsSize, femaleDogs, "desc");
+    new PullVariable<int>("size", &maleDogsSize, maleDogs, "desc");
 
     dogsModel = create<Model>("dogs", mammals);
     femaleDogsModel = create<Model>("female", dogsModel);
@@ -178,7 +181,7 @@ void TestUtilities::cleanupTestCase() {
 
 void TestUtilities::testFindAtomicGloballyAll() {
     QList<QObject*> objects = seekDescendants<QObject*>("*", 0);
-    QCOMPARE(objects.size(), 14);
+    QCOMPARE(objects.size(), 16);
 
     QList<Component*> components = seekDescendants<Component*>("*", 0);
     QCOMPARE(components.size(), 3);
@@ -209,7 +212,7 @@ void TestUtilities::testFindAtomicGloballyNone() {
 
 void TestUtilities::testFindAtomicDescendantsAll() {
     QList<QObject*> objects = seekDescendants<QObject*>("*", mammals);
-    QCOMPARE(objects.size(), 8);
+    QCOMPARE(objects.size(), 10);
 
     QList<Component*> components = seekDescendants<Component*>("*", mammals);
     QCOMPARE(components.size(), 3);
@@ -277,7 +280,7 @@ void TestUtilities::testFindJokerLast() {
     objects = seekDescendants<QObject*>("mammals/*/*", 0);
     QCOMPARE(objects.size(), 4);
 
-    objects = seekDescendants<QObject*>("dogs/*/*", 0);
+    objects = seekDescendants<QObject*>("dogs/*/*/*", 0);
     QCOMPARE(objects.size(), 0);
 }
 
@@ -434,4 +437,102 @@ void TestUtilities::testFindChildFromParent() {
         excepted = true;
     }
     QVERIFY(!excepted);
+}
+
+
+void TestUtilities::testSplitParentChildExpression() {
+    QString expression = "dogs/female[size]";
+    QStringList result;
+    try {
+        result = splitParentChildExpression(expression);
+    }
+    catch (Exception &ex) {
+        QFAIL(qPrintable("Split failed: " + ex.message()));
+    }
+    QCOMPARE(result[0], QString("dogs/female"));
+    QCOMPARE(result[1], QString("size"));
+}
+
+void TestUtilities::testMissingLeftBracket() {
+    QString expression = "femalesize]";
+    bool excepted = false;
+    QStringList result;
+    try {
+        result = splitParentChildExpression(expression);
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
+void TestUtilities::testMissingRightBracket() {
+    QString expression = "female[size";
+    bool excepted = false;
+    try {
+        splitParentChildExpression(expression);
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+}
+
+void TestUtilities::testMissplacedLeftBracket() {
+    QString expression = "[femalesize]";
+    bool excepted = false;
+    try {
+        splitParentChildExpression(expression);
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+}
+
+void TestUtilities::testMissingChildName() {
+    QString expression = "female[]";
+    bool excepted = false;
+    try {
+        splitParentChildExpression(expression);
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+}
+
+void TestUtilities::testSeekChildAndParentNone() {
+    PullVariable<int> *found;
+    bool excepted = false;
+    try {
+        found = seekOne<QObject*, PullVariable<int>*>("dogs[size]");
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
+void TestUtilities::testSeekChildAndParentOne() {
+    PullVariable<int>* found;
+    try  {
+        found = seekOne<QObject*, PullVariable<int>*>("dogs/female[size]");
+    }
+    catch (Exception &ex) {
+        QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
+    }
+    QCOMPARE(found->valuePtr(), &femaleDogsSize);
+}
+
+void TestUtilities::testSeekChildrenAndParentsMany() {
+    QList<PullVariable<int>*> found;
+    found = seekMany<QObject*, PullVariable<int>*>("dogs/*[size]");
+    QCOMPARE(found.size(), 2);
+    bool match1 = found[0]->valuePtr()==&femaleDogsSize && found[1]->valuePtr()==&maleDogsSize;
+    bool match2 = found[1]->valuePtr()==&femaleDogsSize && found[0]->valuePtr()==&maleDogsSize;
+    QVERIFY(match1 || match2);
 }

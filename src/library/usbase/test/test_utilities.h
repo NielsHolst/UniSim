@@ -45,12 +45,23 @@ private slots:
     void testFindChildFromRoot();
     void testFindChildFromParent();
 
+    void testSplitParentChildExpression();
+    void testMissingLeftBracket();
+    void testMissingRightBracket();
+    void testMissplacedLeftBracket();
+    void testMissingChildName();
+
+    void testSeekChildAndParentNone();
+    void testSeekChildAndParentOne();
+    void testSeekChildrenAndParentsMany();
+
 private:
     QObject
         *animals, *reptiles, *snakes, *cobra, *lizards,
         *mammals, *mice, *elephants, *dogs, *femaleDogs, *maleDogs;
     UniSim::Model
         *dogsModel, *femaleDogsModel, *maleDogsModel;
+    int femaleDogsSize, maleDogsSize;
 };
 
 DECLARE_TEST(TestUtilities)

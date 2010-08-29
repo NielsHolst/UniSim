@@ -8,11 +8,10 @@
 namespace UniSim{
 
 RandomLognormal::RandomLognormal(Identifier name, QObject *parent)
-    : RandomBase(name, parent)
+    : RandomBase(name, parent), generator(0), distribution(0), variate(0)
 {
-    generator = new Generator;
-    distribution = new Distribution(minValue, maxValue);
-    variate = new Variate(*generator, *distribution);
+    new Parameter<double>("mean", &mean, 10., this, "Mean of log-normal distribution");
+    new Parameter<double>("sd", &sd, 2., this, "Standard deviation of log-normal distribution");
 }
 
 RandomLognormal::~RandomLognormal() {
@@ -21,8 +20,14 @@ RandomLognormal::~RandomLognormal() {
     delete variate;
 }
 
-void RandomLognormal::update() {
-    value = (*variate)();
+void RandomLognormal::initialize() {
+    generator = new Generator;
+    distribution = new Distribution(mean, sd);
+    variate = new Variate(*generator, *distribution);
+}
+
+double RandomLognormal::drawValue() {
+    return (*variate)();
 }
 
 } //namespace

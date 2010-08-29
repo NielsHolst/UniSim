@@ -117,7 +117,7 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
     else if (modelType.equals("RandomNormal"))
         model = new RandomNormal(objectName, parent);
     else if (modelType.equals("RandomPoisson"))
-        model = new RandomUniform(objectName, parent);
+        model = new RandomPoisson(objectName, parent);
     else if (modelType.equals("RandomUniform"))
         model = new RandomUniform(objectName, parent);
     else if (modelType.equals("Stage"))

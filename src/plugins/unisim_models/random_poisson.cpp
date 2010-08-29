@@ -8,11 +8,9 @@
 namespace UniSim{
 
 RandomPoisson::RandomPoisson(Identifier name, QObject *parent)
-    : RandomBase(name, parent)
+    : RandomBase(name, parent), generator(0), distribution(0), variate(0)
 {
-    generator = new Generator;
-    distribution = new Distribution(minValue, maxValue);
-    variate = new Variate(*generator, *distribution);
+    new Parameter<double>("mean", &mean, 10., this, "Mean of Poisson distribution");
 }
 
 RandomPoisson::~RandomPoisson() {
@@ -21,8 +19,14 @@ RandomPoisson::~RandomPoisson() {
     delete variate;
 }
 
-void RandomPoisson::update() {
-    value = (*variate)();
+void RandomPoisson::initialize() {
+    generator = new Generator;
+    distribution = new Distribution(mean);
+    variate = new Variate(*generator, *distribution);
+}
+
+double RandomPoisson::drawValue() {
+    return (*variate)();
 }
 
 } //namespace

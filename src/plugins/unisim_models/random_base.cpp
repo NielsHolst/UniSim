@@ -18,4 +18,19 @@ RandomBase::RandomBase(Identifier name, QObject *parent)
     new PullVariable<double>("value", &value, this, "Random value");
 }
 
+void RandomBase::update() {
+    bool inBounds = false;
+    int i = 0;
+    const int IMAX = 30;
+    while (!inBounds && i<IMAX) {
+        value = drawValue();
+        inBounds = value>=minValue && value<=maxValue;
+        ++i;
+    }
+    if (value < minValue)
+        value = minValue;
+    else if (value > maxValue)
+        value = maxValue;
+}
+
 } //namespace

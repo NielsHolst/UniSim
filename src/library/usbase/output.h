@@ -23,17 +23,12 @@ public:
     // special methods
     const QList<OutputVariable *>& xVariables() const;
     const QList<OutputVariable *>& yVariables() const;
-    void standardizeLabels();
+
 private:
     // links
     QList<OutputVariable *> variables, x, y;
-
-    // methods
-    void extendLabels();
-    bool isDuplicateLabel(int ix);
-    void segmentVariables();
-	
 };
+
 typedef QList<Output*> Outputs;
 
 } //namespace

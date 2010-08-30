@@ -18,41 +18,28 @@ class OutputVariable : public Component
 {
 	Q_OBJECT
 public:
-    OutputVariable(Identifier name, QObject *parent=0);
+    OutputVariable(QString label, QString axis, PullVariableBase *variable, QObject *parent = 0);
 	
     // standard methods
-	void initialize();
 	void reset();
 	void update();
 
     // special methods
-    struct Raw{
-        QString label, axis, modelName, stateNameInModel;
-    };
-    static void appendVariable(Raw raw, QObject *parent);
-    void extendLabel();
-    void standardizeLabel();
-
     typedef enum {XAxis, YAxis} Axis;
     Axis axis() const;
-    QString label() const;
-    QString longName() const;
-    const QVector<double>* data() const;
+    const QVector<double>* history() const;
 
 private:
-    // parameters
-    QString _label, modelName, stateNameInModel;
+    // methods
+    void setAxisFromString(QString axis);
+
+    // data
+    Axis _axis;
+    QVector<double> _history;	//!< Series of collected values
 
     // links
     const Model *model;		//!< Pointer to the model holding the pull variable
     const PullVariableBase *pullVarPtr;
-
-    // state
-    Axis _axis;
-    QVector<double> _data;	//!< Series of collected values
-
-    // methods
-    void fromRaw(Raw raw);
 };
 
 typedef QList<OutputVariable*> OutputVariables;

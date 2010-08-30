@@ -169,6 +169,8 @@ void TestUtilities::initTestCase() {
     maleDogs = create<QObject>("male", dogs);
     new PullVariable<int>("size", &femaleDogsSize, femaleDogs, "desc");
     new PullVariable<int>("size", &maleDogsSize, maleDogs, "desc");
+    new PullVariable<int>("weight", &femaleDogsWeight, femaleDogs, "desc");
+    new PullVariable<int>("weight", &maleDogsWeight, maleDogs, "desc");
 
     dogsModel = create<Model>("dogs", mammals);
     femaleDogsModel = create<Model>("female", dogsModel);
@@ -536,3 +538,18 @@ void TestUtilities::testSeekChildrenAndParentsMany() {
     bool match2 = found[1]->valuePtr()==&femaleDogsSize && found[0]->valuePtr()==&maleDogsSize;
     QVERIFY(match1 || match2);
 }
+
+void TestUtilities::testSeekChildrenAndParentsJoker() {
+    QList<PullVariable<int>*> found;
+    try  {
+        found = seekMany<QObject*, PullVariable<int>*>("dogs/female[*]");
+    }
+    catch (Exception &ex) {
+        QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
+    }
+    QCOMPARE(found.size(), 2);
+    bool match1 = found[0]->valuePtr()==&femaleDogsWeight && found[1]->valuePtr()==&maleDogsWeight;
+    bool match2 = found[1]->valuePtr()==&femaleDogsWeight && found[0]->valuePtr()==&maleDogsWeight;
+    QVERIFY(match1 || match2);
+}
+

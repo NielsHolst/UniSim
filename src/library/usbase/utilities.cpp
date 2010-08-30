@@ -165,9 +165,9 @@ namespace local {
 } //namespace
 //! \endcond
 
-QString fullName(QObject *object) {
+QString fullName(const QObject *object) {
     bool noObject = !object;
-    bool isSimulation = dynamic_cast<Simulation*>(object) != 0;
+    bool isSimulation = dynamic_cast<const Simulation*>(object) != 0;
     if (noObject || isSimulation) return QString();
     QString name = object->objectName();
     if (name.isEmpty() || name.toLower() == "anonymous")

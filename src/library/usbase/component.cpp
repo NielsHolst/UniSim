@@ -7,6 +7,7 @@
 #include <QString>
 #include "component.h"
 #include "exception.h"
+#include "utilities.h"
 
 /*! \class UniSim::Component
     \brief The %Component class provides the basic building block to construct models.
@@ -57,7 +58,7 @@
 namespace UniSim{
 
 Component::Component(Identifier name, QObject *parent)
-	: QObject(parent)
+    : QObject(parent), _id(name)
 {
     setObjectName(name.key());
     setRecursionPolicy(Component::AllFunctions, Component::ChildrenFirst);
@@ -120,11 +121,17 @@ void Component::deepDebrief()
     call(this, &Component::debrief, &Component::deepDebrief, recursionPolicy(Component::Debrief));
 }
 
+//! Returns component id
+Identifier Component::id() const {
+    return _id;
+}
+
 //! Returns name with full path of all ancestors
-QString Component::fullName() {
-    QString name = "/" + objectName();
+QString Component::fullName() const {
+    return UniSim::fullName(this);
+    /*QString name = "/" + objectName();
     Component *p = dynamic_cast<Component*>(parent());
-    return p ? (p->fullName() + name) : name;
+    return p ? (p->fullName() + name) : name;*/
 }
 
 //! Sets the RecursionPolicy

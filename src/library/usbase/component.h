@@ -44,8 +44,9 @@ public:
     void deepUpdate();
     void deepCleanup();
     void deepDebrief();
-	
-    QString fullName();
+
+    Identifier id() const;
+    QString fullName() const;
 
     void setRecursionPolicy(Function function, RecursionPolicy policy);
     RecursionPolicy recursionPolicy(Function function) const;
@@ -71,6 +72,7 @@ signals:
     void event(QObject *sender, QString eventName);
 
 private:
+    Identifier _id;
     static QObject* _root;
     QMap<Function, RecursionPolicy> policy;
 };

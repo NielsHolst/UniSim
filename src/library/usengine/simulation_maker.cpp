@@ -14,6 +14,7 @@
 #include <usbase/output.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter_base.h>
+#include <usbase/pull_variable_base.h>
 #include <usbase/utilities.h>
 #include "integrator_maker.h"
 #include "model_maker.h"
@@ -65,10 +66,8 @@ Simulation* SimulationMaker::parse(QString fileName_)
     if (!nextElementDelim()) throw Exception(message("File is not in valid XML format"));
     if (elementNameNotEquals("simulation")) throw Exception(message("Root element must be 'simulation'"));
 
-    simName = attributeValue("name");
-	if (simName.isEmpty()) simName = "anonymous";
-    simVersion = attributeValue("version");
-	if (simVersion.isEmpty()) simVersion = "1.0";
+    simName = attributeValue("name", "anonymous");
+    simVersion = attributeValue("version", "1.0");
 	
 	Simulation *sim = new Simulation(simName, simVersion);
     UniSim::setSimulationObject(sim);
@@ -105,12 +104,8 @@ bool SimulationMaker::readIntegratorElement(QObject* parent)
 {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
-    QString type = attributeValue("type");
-	if (type.isEmpty())
-        throw Exception(message("Missing 'type' attribute for 'integrator' element"));
- 	
-    QString name = attributeValue("name");
-	if (name.isEmpty()) name = "anonymous";
+    QString type = attributeValue("type", parent);
+    QString name = attributeValue("name", "anonymous");
 
     Integrator *integrator;
     try {
@@ -131,7 +126,7 @@ bool SimulationMaker::readIntegratorElement(QObject* parent)
         }
         else {
             throw Exception(message(
-                           "Unknown element in 'model' element: " + elementName()));
+                           "Unknown element in 'model' element: " + elementName()), parent);
 		}
 	}	
 	Q_ASSERT(reader->isEndElement());
@@ -147,14 +142,12 @@ void SimulationMaker::readSequenceElement(QObject* parent)
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("model")) {
-            QString model = attributeValue("name");
-			if (model.isEmpty()) 
-                throw Exception(message("Missing 'name' attribute of 'model' element in 'sequence"));
+            QString model = attributeValue("name", parent);
             _sequence.append(model);
         }
         else {
             throw Exception(message(
-                           "Unknown child element of 'sequence' element: " + elementName()));
+                           "Unknown child element of 'sequence' element: " + elementName()), parent);
 		}
 		nextElementDelim();
 		Q_ASSERT(reader->isEndElement());
@@ -169,18 +162,15 @@ bool SimulationMaker::readModelElement(QObject* parent)
 {
 	Q_ASSERT(reader->isStartElement());
 	
-    QString modelType = attributeValue("type");
-	if (modelType.isEmpty()) modelType = "anonymous";
-	
-    QString objectName = attributeValue("name");
-	if (objectName.isEmpty()) objectName = "anonymous";
+    QString modelType = attributeValue("type", "anonymous");
+    QString objectName = attributeValue("name", "anonymous");
 
     Model *model;
     try {
         model = ModelMaker::create(modelType, objectName, parent);
     }
     catch (Exception &ex) {
-        throw Exception(message(ex.message()));
+        throw Exception(message(ex.message()), parent);
     }
 
 	nextElementDelim();
@@ -206,11 +196,8 @@ void SimulationMaker::readParameterElement(QObject* parent)
 {
     Q_ASSERT(reader->isStartElement() && parent);
 
-    QString name = attributeValue("name");
-    QString value = attributeValue("value");
-	
-    if (name.isEmpty() || value.isEmpty())
-        throw Exception(message("Missing name or value for parameter"), parent);
+    QString name = attributeValue("name", parent);
+    QString value = attributeValue("value", parent);
 
     ParameterBase *param = seekOneChild<ParameterBase*>(name, parent);
     param->setValueFromString(value.trimmed());
@@ -225,9 +212,8 @@ bool SimulationMaker::readOutputElement(QObject* parent)
 	Q_ASSERT(reader->isStartElement() && parent);
 	
 
-    QString objectName = attributeValue("name");
-	if (objectName.isEmpty()) objectName = "anonymous";
-    QString type = attributeValue("type").toLower();
+    QString objectName = attributeValue("name", "anonymous");
+    QString type = attributeValue("type", parent);
 
     Output *output;
     try {
@@ -257,25 +243,19 @@ bool SimulationMaker::readOutputElement(QObject* parent)
 
 void SimulationMaker::readVariableElement(QObject* parent)
 {
-    /*
+
 	Q_ASSERT(reader->isStartElement() && parent);
 
-    QString label, axis, value;
-    label = attributeValue("label");
-    if (label.isEmpty())
-        throw Exception(message("Missing 'label' attribute for 'variable' element"), parent);
+    QString
+        label = attributeValue("label", parent),
+        axis = attributeValue("label", parent),
+        value = attributeValue("value", parent);
 
-    axis = attributeValue("axis");
-    if (axis.isEmpty())
-        throw Exception(message("Missing 'axis' attribute for 'variable' element"), parent);
+    QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
+    for (int i = 0; i < variables.size(); ++i)
+        new OutputVariable(label, axis, variables[i], parent);
 
-    QString value = attributeValue("value");
-    if (value.isEmpty())
-        throw Exception(message("Missing 'value' attribute for 'variable' element"), parent);
-
-    new OutputVariable(label, axis, value, parent);
-*/
-
+/*
     OutputVariable::Raw raw;
 
     raw.label = attributeValue("label");
@@ -298,7 +278,7 @@ void SimulationMaker::readVariableElement(QObject* parent)
     raw.stateNameInModel = parts[1].left(parts[1].size()-1);
 
     OutputVariable::appendVariable(raw, parent);
-
+*/
     nextElementDelim();
     Q_ASSERT(reader->isEndElement());
     nextElementDelim();
@@ -316,8 +296,16 @@ QString SimulationMaker::elementName() const {
     return reader->name().toString();
 }
 
-QString SimulationMaker::attributeValue(QString name) const {
-    return reader->attributes().value(name).toString().trimmed();
+QString SimulationMaker::attributeValue(QString name, QString defaultValue) const {
+    QString result = reader->attributes().value(name).toString().trimmed();
+    return result.isEmpty() ? defaultValue : result;
+}
+
+QString SimulationMaker::attributeValue(QString name, QObject *parent) const {
+    QString result = attributeValue(name, "");
+    if (result.isEmpty())
+        throw Exception("Missing attribute '" + name + "'", parent);
+    return result;
 }
 
 QString SimulationMaker::message(QString text) const {

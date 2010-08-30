@@ -18,11 +18,6 @@ OutputTable::OutputTable(Identifier name, QObject *parent)
     new Parameter<QString>("fileName", &fileName, QString("output_table.prn"), this, "description");
 }
 
-void OutputTable::initialize() {
-    Output::initialize();
-    standardizeLabels();
-}
-
 void OutputTable::cleanup() {
     openFile();
     writeLabels(xVariables());
@@ -55,9 +50,9 @@ void OutputTable::writeLabels(const OutputVariables &variables) {
         return;
     QString s;
     QTextStream text(&s);
-    text << variables[0]->label();
+    text << variables[0]->id().label();
     for (int i = 1; i < variables.size(); ++i)
-        text << "\t" << variables[i]->label();
+        text << "\t" << variables[i]->id().label();
     file.write(qPrintable(s));
 }
 
@@ -71,7 +66,7 @@ void OutputTable::writeCR() {
 
 int OutputTable::checkDataSize(const OutputVariables &variables, int dataSize) const {
     for (int i = 0; i < variables.size(); ++i) {
-        int thisSize = variables[i]->data()->size();
+        int thisSize = variables[i]->history()->size();
         if (dataSize > 0 && dataSize != thisSize)
             throw Exception("Output variable data buffers of unequal size");
         else
@@ -85,9 +80,9 @@ void OutputTable::writeData(const OutputVariables &variables, int dataIx) {
         return;
     QString s;
     QTextStream text(&s);
-    text << variables[0]->data()->value(dataIx);
+    text << variables[0]->history()->value(dataIx);
     for (int i = 1; i < variables.size(); ++i)
-        text << "\t" << variables[i]->data()->value(dataIx);
+        text << "\t" << variables[i]->history()->value(dataIx);
     file.write(qPrintable(s));
 }
 

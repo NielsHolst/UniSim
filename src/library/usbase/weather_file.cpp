@@ -7,6 +7,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
+#include <usbase/utilities.h>
 #include "weather_file.h"
 
 using namespace std;
@@ -82,7 +83,7 @@ void WeatherFile::update() {
     }
     catch (const Exception &ex) {
         throw Exception(ex.message() + "\nIn line " + QString::number(lineNo) +
-                        ": " + line);
+                        ": " + line, this);
     }
 }
 
@@ -98,7 +99,7 @@ void WeatherFile::setColumn(QString name, int defaultColumn) {
         params[0]->setValue(defaultColumn);
     else
         throw Exception("Parameters cannot have same name: "
-                        + name + " defined twice for " + fullName());
+                        + name + " defined twice", this);
 }
 
 } //namespace

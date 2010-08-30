@@ -54,6 +54,7 @@ private slots:
     void testSeekChildAndParentNone();
     void testSeekChildAndParentOne();
     void testSeekChildrenAndParentsMany();
+    void testSeekChildrenAndParentsJoker();
 
 private:
     QObject
@@ -62,6 +63,7 @@ private:
     UniSim::Model
         *dogsModel, *femaleDogsModel, *maleDogsModel;
     int femaleDogsSize, maleDogsSize;
+    int femaleDogsWeight, maleDogsWeight;
 };
 
 DECLARE_TEST(TestUtilities)

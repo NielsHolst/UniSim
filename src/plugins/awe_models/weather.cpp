@@ -44,13 +44,13 @@ void Weather::reset()
 
 void Weather::update()
 {
-    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
+    int dayOfYear = calendar->pullVariable<int>("dayOfYear");
     T = temperature(dayOfYear);
     Tsum = (dayOfYear == 1) ? T : Tsum + T;
 }
 
 double Weather::temperature(int dayOfYear) const {
-    double k = sin(PI*dayOfYear/365. + c);
+    double k = sin(PI*dayOfYear/365.);
     return a + b*k*k;
 }
 

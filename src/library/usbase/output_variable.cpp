@@ -11,40 +11,39 @@
 
 namespace UniSim{
 	
-OutputVariable::OutputVariable(Identifier name, QObject *parent)
-    : Component(name, parent), model(0), pullVarPtr(0)
+OutputVariable::OutputVariable(QString label, QString axis, PullVariableBase *variable, QObject *parent)
+    : Component(label, parent), pullVarPtr(variable)
 {
+    Q_ASSERT(pullVarPtr);
+    setAxisFromString(axis);
 }
 
-void OutputVariable::initialize() {
+void OutputVariable::setAxisFromString(QString axis) {
+    QString s = axis.toLower();
+    if (axis!="x" && axis!="y")
+        throw Exception("Axis must be either 'x'' or 'y', not '" + axis + "'", this);
+    _axis = axis == "x" ? XAxis : YAxis;
 }
 
 void OutputVariable::reset() {
-    _data.clear();
+    _history.clear();
 }
 
 void OutputVariable::update() {
     Q_ASSERT(pullVarPtr);
     double toAppend = pullVarPtr->toVariant().value<double>();
-    _data.append(toAppend);
+    _history.append(toAppend);
 }
 
 OutputVariable::Axis OutputVariable::axis() const {
     return _axis;
 }
 
-QString OutputVariable::label() const {
-    return _label;
+const QVector<double>* OutputVariable::history() const {
+    return &_history;
 }
 
-QString OutputVariable::longName() const {
-    return _label + ":" + modelName + "[" + stateNameInModel + "]";
-}
-
-const QVector<double>* OutputVariable::data() const {
-    return &_data;
-}
-
+/*
 void OutputVariable::appendVariable(OutputVariable::Raw raw, QObject *parent) {
     Models models = UniSim::seekDescendants<Model*>(raw.modelName, 0);
 
@@ -75,29 +74,11 @@ void OutputVariable::appendVariable(OutputVariable::Raw raw, QObject *parent) {
     if (numVariables == 0) {
         QString msg = "Could not find variable: label=\"" + raw.label +
                       "\" value=\"" + raw.modelName + "[" + raw.stateNameInModel + "]\"";
-        throw Exception(msg);
+        throw Exception(msg, this);
     }
 
 }
-
-void OutputVariable::extendLabel() {
-    _label = modelName + "_" + _label;
-}
-
-void OutputVariable::standardizeLabel() {
-    //QRegExp unwanted("[[^a-z][^A-Z][^0-9]]");
-    QRegExp unwanted("[ /]");
-    _label.replace(unwanted, "_");
-}
-
-void OutputVariable::fromRaw(Raw raw) {
-    raw.axis = raw.axis.toLower();
-    Q_ASSERT(raw.axis=="x" || raw.axis=="y");
-    _label = raw.label;
-    modelName = raw.modelName;
-    stateNameInModel = raw.stateNameInModel;
-    _axis = raw.axis == "x" ? XAxis : YAxis;
-}
+*/
 
 } //namespace
 

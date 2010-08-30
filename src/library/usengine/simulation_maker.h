@@ -76,7 +76,8 @@ private:
     bool elementNameEquals(QString s) const;
     bool elementNameNotEquals(QString s) const;
     QString elementName() const;
-    QString attributeValue(QString name) const;
+    QString attributeValue(QString name, QString defaultValue) const;
+    QString attributeValue(QString name, QObject *parent) const;
 
     QString message(QString text) const;
 };

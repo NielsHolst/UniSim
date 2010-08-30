@@ -42,17 +42,17 @@ void OutputPlot::initialize() {
     const QList<OutputVariable *> &xs(xVariables()), &ys(yVariables());
     if (ys.size() == 0) {
         QString msg = "Output plot has no y-series: " + objectName();
-        throw Exception(msg);
+        throw Exception(msg, this);
     }
     if (xs.size() == 0) {
         QString msg = "Output plot has no x-series: " + objectName();
-        throw Exception(msg);
+        throw Exception(msg, this);
     }
     else if (xs.size() > 1) {
         QString msg = "Output plot has more than one x-series:";
         for (int i = 0; i < xs.size(); ++ i)
-            msg += "\n" + xs.at(i)->longName();
-        throw Exception(msg);
+            msg += "\n" + xs.at(i)->id().key();
+        throw Exception(msg, this);
     }
 }
 
@@ -85,13 +85,13 @@ void OutputPlot::fillPlotWidget() {
 
     //QString yAxisTitle = ys.size() == 1 ? ys[0]->label() : QString(" ");
     QString yAxisTitle(" ");
-    plotWidget->setXYtitles(x->label(), yAxisTitle);
+    plotWidget->setXYtitles(x->id().label(), yAxisTitle);
     //plotWidget->showLegend(ys.size() > 1);
     plotWidget->showLegend(true);
 
     for (int i = 0; i < ys.size(); ++i) {
         OutputVariable *y = ys[i];
-        QwtPlotCurve *curve = new QwtPlotCurve(y->label());
+        QwtPlotCurve *curve = new QwtPlotCurve(y->id().label());
         plotWidget->addCurve(curve);
 
         QColor color = colors[i % colors.size()];
@@ -99,9 +99,9 @@ void OutputPlot::fillPlotWidget() {
         pen.setWidth(4);
         curve->setPen(pen);
 
-        int numPoints = x->data()->size();
-        Q_ASSERT(numPoints == y->data()->size());
-        curve->setData(x->data()->data(), y->data()->data(), numPoints);
+        int numPoints = x->history()->size();
+        Q_ASSERT(numPoints == y->history()->size());
+        curve->setData(x->history()->data(), y->history()->data(), numPoints);
     }
 }
 

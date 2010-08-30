@@ -16,26 +16,6 @@ Output::Output(Identifier name, QObject *parent)
 
 void Output::initialize() {
     variables = seekChildren<OutputVariable*>("*");
-    extendLabels();
-    segmentVariables();
-}
-
-void Output::extendLabels() {
-    for (int i = 0; i < variables.size(); ++i) {
-        if (isDuplicateLabel(i))
-            variables[i]->extendLabel();
-    }
-}
-
-bool Output::isDuplicateLabel(int ix) {
-    QString searchLabel = variables[ix]->label();
-    for (int  i = 0; i < variables.size(); ++i)
-        if (i != ix && variables[i]->label() == searchLabel)
-            return true;
-    return false;
-}
-
-void Output::segmentVariables() {
     for (int i = 0; i < variables.size(); ++i) {
         if (variables[i]->axis() == OutputVariable::XAxis)
             x.append(variables[i]);
@@ -51,13 +31,5 @@ const OutputVariables& Output::xVariables() const {
 const OutputVariables& Output::yVariables() const {
     return y;
 }
-
-void Output::standardizeLabels() {
-    for (int  i = 0; i < x.size(); ++i)
-        x[i]->standardizeLabel();
-    for (int  i = 0; i < y.size(); ++i)
-        y[i]->standardizeLabel();
-}
-
 } //namespace
 

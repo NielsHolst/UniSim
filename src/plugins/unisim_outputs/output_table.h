@@ -20,7 +20,6 @@ class OutputTable : public Output
 public:
     OutputTable(Identifier name, QObject *parent=0);
     // standard methods
-	void initialize();
     void cleanup();
 	
 private:

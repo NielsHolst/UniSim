@@ -46,7 +46,6 @@
     <model name="seedBank" type="SeedBank">
 		<parameter name="initialDensity" value="1000"/>
 		<parameter name="yearlyMortalityRate" value="0.1"/>
-		<parameter name="yearlyMortalityRateTest" value="$random_log_uniform(default=0.1,min=0.001,max=0.2)"/>
 		<parameter name="yearlyEmergenceRate" value="0"/>
     </model>
 

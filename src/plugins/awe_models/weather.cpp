@@ -44,7 +44,7 @@ void Weather::reset()
 
 void Weather::update()
 {
-    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
+    int dayOfYear = calendar->pullVariable<int>("dayOfYear");
     T = temperature(dayOfYear);
     Tsum = (dayOfYear == 1) ? T : Tsum + T;
 }

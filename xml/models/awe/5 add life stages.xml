@@ -51,44 +51,44 @@
 			<parameter name="yearlyEmergenceRate" value="0.2"/>
 	        <parameter name="emergenceCalendar" value ="(0 5 30 60 70 50 10 0 0 0 0 0)"/>
 	    </model>
-
 		<model name="seedling" type="PlantGrowthStage">
 			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="40"/>
 			</model>
 			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="40"/>
 			</model>
         </model>
 
 		<model name="juvenile" type="PlantGrowthStage">
 			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-               <parameter name="duration" value="600"/>
+				<model name="time" type="DayDegrees"/>
+                <parameter name="duration" value="600"/>
 			</model>
 			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
-               <parameter name="duration" value="600"/>
+				<model name="time" type="DayDegrees"/>
+                <parameter name="duration" value="600"/>
 			</model>
         </model>
 
 		<model name="mature" type="PlantGrowthStage">
 			<model name="density" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="300"/>
 			</model>
 			<model name="densityEqs" type="UniSim::Stage">
-				<model name="time" type="Days"/>
+				<model name="time" type="DayDegrees"/>
 				<parameter name="duration" value="300"/>
 			</model>
 		</model>
 
 		<model name="seedsOnPlant" type="UniSim::Stage">
-			<model name="time" type="Days"/>
+			<model name="time" type="DayDegrees"/>
 			<parameter name="duration" value="150"/>
 		</model>
+
     </model>
 
 	<!-- Outputs on screen -->

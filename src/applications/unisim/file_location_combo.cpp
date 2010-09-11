@@ -10,7 +10,7 @@
 
 using namespace UniSim;
 
-FileLocationCombo::FileLocationCombo(FileLocations::FileType fType, QWidget *parent)
+FileLocationCombo::FileLocationCombo(FileLocationInfo::FileType fType, QWidget *parent)
     :  QComboBox(parent), fileType(fType), isBrowsing(false)
 {
     QString location = FileLocations::possibleLocation(fileType).absolutePath();
@@ -28,7 +28,7 @@ void FileLocationCombo::doBrowse(int index) {
     if (dialog.exec()) {
         removeItem(0);
         insertItem(0, dialog.location().absolutePath());
-        FileLocations::setLocation(fileType, dialog.location());
+        FileLocationInfo::setLocation(fileType, dialog.location());
     }
     setCurrentIndex(0);
     setEnabled(true);

@@ -18,7 +18,7 @@ using namespace UniSim;
 	
 void TestSimulation::initTestCase()
 {	
-    QDir dir = FileLocations::location(FileLocations::Temporary);
+    QDir dir = FileLocations::location(FileLocationInfo::Temporary);
     QString filePath = dir.absolutePath() + "/test.xml";
     writeStandardTestFile(filePath);
 

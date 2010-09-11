@@ -20,50 +20,61 @@
 
 using namespace UniSim;
 
-GraphGenerator::GraphGenerator(UniSim::Simulation *simulation, QString outputPath)
-        : _simulation(simulation), _outputPath(outputPath)
+GraphGenerator::GraphGenerator(UniSim::Simulation *simulation_)
+        : simulation(simulation_), dotFileOk(false)
 {	
-     QDir dir = UniSim::FileLocations::location(UniSim::FileLocations::DotTool);
-    _dotToolPath = dir.absolutePath() + "/dot.exe";
-	
-	_dotFilePath = _outputPath;
-	_dotFilePath.replace(".png", ".dot");
+    dotOption[Postscript] = "ps";
+    dotOption[PNG] = "png";
+    fileType[Postscript] = "eps";
+    fileType[PNG] = "png";
+    fileType[Dot] = "dot";
 }
 
-GraphGenerator::~GraphGenerator() 
-{
+QString GraphGenerator::dotCommand() {
+    QDir dir = UniSim::FileLocations::location(UniSim::FileLocationInfo::DotTool);
+    QString command = dir.absolutePath() + "/dot.exe";
+    if (!QFile::exists(command))
+        command = dir.absolutePath() + "/bin/dot.exe";
+    if (!QFile::exists(command))
+        throw UniSim::Exception("Could not find dot program to draw graph:'" + command + "'");
+    return "\"" + command + "\"";
 }
 
-QProcess* GraphGenerator::generate()
-{
-	if (!QFile(_dotToolPath).exists())
-		throw UniSim::Exception("Could not find dot program to draw graph:\n'" + _dotToolPath + "'");
-	generateDot();
-	return generatePng();	
+QString GraphGenerator::outputFilePath(OutputFormat format) {
+    QDir dir = UniSim::FileLocations::location(UniSim::FileLocationInfo::Temporary);
+    QString path = dir.absolutePath() + "/" + simulation->objectName() + "." + fileType[format];
+    return path;
 }
 
-QProcess* GraphGenerator::generatePng()
+QProcess* GraphGenerator::generate(OutputFormat format)
 {
-	QProcess *process = new QProcess;
-    QString command = "\"" + _dotToolPath + "\"";
+    Q_ASSERT(format != Dot);
+    if (!dotFileOk)
+        writeDotFile();
+
     QStringList args;
-    args << "-Tpng" << _dotFilePath << "-o" << _outputPath;
-    process->start(command, args);
+    args << ("-T" + dotOption[format])
+         << outputFilePath(Dot)
+         << "-o" << outputFilePath(format);
+
+    QProcess *process = new QProcess;
+    process->start(dotCommand(), args);
 	return process;
 }
 
-void GraphGenerator::generateDot()
+void GraphGenerator::writeDotFile()
 {
-	QFile f(_dotFilePath);
+    QString dotFilePath = outputFilePath(Dot);
+    QFile f(dotFilePath);
 	if (!f.open(QIODevice::Text | QIODevice::WriteOnly))   
-		throw UniSim::Exception("Could not open output file to draw graph:\n'" + _dotFilePath + "'");
+        throw Exception("Could not open output file to draw graph:'" + dotFilePath + "'");
 
-	_nodeNumber = 0;
+    nodeNumber = 0;
     f.write("digraph G {size=\"16,24\";graph[rankdir=LR];\n");
 
-    Models models = seekChildren<Model*>("*", _simulation);
+    Models models = seekChildren<Model*>("*", simulation);
     for (Models::const_iterator mo = models.begin(); mo != models.end(); ++mo) {
-		writeModel(&f, _simulation, *mo, 0);
+        writeModel(&f, simulation, *mo, 0);
 	}
 	f.write("\n}\n");
 }
@@ -87,7 +98,7 @@ void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int p
 	QString statement;
 	QTextStream sink(&	statement);
 
-	int myNumber = ++_nodeNumber;
+    int myNumber = ++nodeNumber;
 	writeNode(&sink, parent, parentNumber);
 	writeNode(&sink, child, myNumber);
 	sink << parent->objectName() << parentNumber << "->" << child->objectName() << myNumber << ";\n";

@@ -183,7 +183,7 @@ void TestUtilities::cleanupTestCase() {
 
 void TestUtilities::testFindAtomicGloballyAll() {
     QList<QObject*> objects = seekDescendants<QObject*>("*", 0);
-    QCOMPARE(objects.size(), 16);
+    QCOMPARE(objects.size(), 18);
 
     QList<Component*> components = seekDescendants<Component*>("*", 0);
     QCOMPARE(components.size(), 3);
@@ -214,7 +214,7 @@ void TestUtilities::testFindAtomicGloballyNone() {
 
 void TestUtilities::testFindAtomicDescendantsAll() {
     QList<QObject*> objects = seekDescendants<QObject*>("*", mammals);
-    QCOMPARE(objects.size(), 10);
+    QCOMPARE(objects.size(), 12);
 
     QList<Component*> components = seekDescendants<Component*>("*", mammals);
     QCOMPARE(components.size(), 3);
@@ -548,8 +548,8 @@ void TestUtilities::testSeekChildrenAndParentsJoker() {
         QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
     }
     QCOMPARE(found.size(), 2);
-    bool match1 = found[0]->valuePtr()==&femaleDogsWeight && found[1]->valuePtr()==&maleDogsWeight;
-    bool match2 = found[1]->valuePtr()==&femaleDogsWeight && found[0]->valuePtr()==&maleDogsWeight;
+    bool match1 = found[0]->valuePtr()==&femaleDogsSize && found[1]->valuePtr()==&femaleDogsWeight;
+    bool match2 = found[1]->valuePtr()==&femaleDogsSize && found[0]->valuePtr()==&femaleDogsWeight;
     QVERIFY(match1 || match2);
 }
 

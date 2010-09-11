@@ -145,7 +145,7 @@ void PrototypeMaker::writeOutput() {
 }
 
 void PrototypeMaker::createDestFolder() {
-    QDir dir = FileLocations::location(FileLocations::Output);
+    QDir dir = FileLocations::location(FileLocationInfo::Output);
     QString folderPath = dir.absolutePath();
     destFolderPath = folderPath + "/" + pluginName + "_" + pluginTypeNames[pluginType];
 

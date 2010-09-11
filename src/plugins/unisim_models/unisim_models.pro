@@ -21,6 +21,7 @@ HEADERS += \
     random_normal.h \
     random_poisson.h \
     random_uniform.h \
+    trigger_by_date.h \
     unisim_model_maker.h
 
 SOURCES += \
@@ -36,4 +37,5 @@ SOURCES += \
     random_normal.cpp \
     random_poisson.cpp \
     random_uniform.cpp \
+    trigger_by_date.cpp \
     unisim_model_maker.cpp

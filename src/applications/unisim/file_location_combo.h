@@ -12,11 +12,11 @@ class FileLocationCombo : public QComboBox
 {
 	Q_OBJECT
 public:
-    FileLocationCombo(UniSim::FileLocations::FileType fileType, QWidget *parent = 0);
+    FileLocationCombo(UniSim::FileLocationInfo::FileType fileType, QWidget *parent = 0);
 private slots:
     void doBrowse(int index);
 private:
-    UniSim::FileLocations::FileType fileType;
+    UniSim::FileLocationInfo::FileType fileType;
     bool isBrowsing;
 };
 

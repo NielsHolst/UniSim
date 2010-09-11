@@ -15,8 +15,8 @@ class FileLocationsStrict : public FileLocations {
 public:
     FileLocationsStrict();
 private:
-	QDir locationImpl(FileType fileType);
-    bool lookupImpl(FileType fileType, QString message);
+    QDir locationImpl(FileLocationInfo::FileType fileType);
+    bool lookupImpl(FileLocationInfo::FileType fileType, QString message);
 };
 
 }

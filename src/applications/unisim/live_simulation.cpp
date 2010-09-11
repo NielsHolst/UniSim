@@ -18,9 +18,12 @@ QMap<LiveSimulation::State, QString> LiveSimulation::stateTexts;
 
 LiveSimulation::LiveSimulation(QObject *parent, LogBase *log_)
         : QObject(parent), log(log_),
-        _state(Closed), _simulation(0), graphProcess(0)
+        _state(Closed), _simulation(0)
 {
     simulationMaker = new UniSim::SimulationMaker();
+
+    graphProcesses.append(0);
+    graphProcesses.append(0);
 
     connect(simulationMaker, SIGNAL(beginExpansion()), this, SLOT(acceptBeginExpansion()));
     connect(simulationMaker, SIGNAL(endExpansion()), this, SLOT(acceptEndExpansion()));
@@ -66,7 +69,8 @@ void LiveSimulation::setupStateTexts() {
 
 LiveSimulation::~LiveSimulation() {
     delete simulationMaker;
-    delete graphProcess;
+    delete graphProcesses[0];
+    delete graphProcesses[1];
 }
 
 void LiveSimulation::open(QString filePath) {
@@ -128,12 +132,24 @@ void LiveSimulation::writeGraph() {
 }
 
 void LiveSimulation::createGraphProcess() {
+    Q_ASSERT(graphProcesses.size() == 2);
+    for (int i = 0; i < 2; ++i) {
+        if (graphProcesses[i]) {
+            delete graphProcesses[i];
+            graphProcesses[i] = 0;
+        }
+    }
+    _graphFilePath.clear();
+
     try {
-        bool noProcess = establishNullProcess(graphProcess);
+        bool noProcess = establishNullProcess(graphProcesses[0]);
         if (noProcess) {
-            GraphGenerator graphGenerator(_simulation, graphFilePath());
-            graphProcess = graphGenerator.generate();
-            connect(graphProcess, SIGNAL(stateChanged (QProcess::ProcessState)),
+            GraphGenerator generator(_simulation);
+            graphProcesses[0] = generator.generate(GraphGenerator::PNG);
+            graphProcesses[1] = generator.generate(GraphGenerator::Postscript);
+
+            _graphFilePath = generator.outputFilePath(GraphGenerator::PNG);
+            connect(graphProcesses[0], SIGNAL(stateChanged (QProcess::ProcessState)),
                     this, SLOT(graphProcessChanged(QProcess::ProcessState)));
         }
         else {
@@ -171,12 +187,7 @@ bool LiveSimulation::establishNullProcess(QProcess *process) {
 }
 
 QString LiveSimulation::graphFilePath() const {
-    QString path;
-    QDir dir = UniSim::FileLocations::location(UniSim::FileLocations::Temporary);
-    QString fileName = QFileInfo(filePath).fileName();
-    path = dir.absolutePath() + "/" + fileName;
-    path.replace(".xml", ".png");
-    return path;
+    return _graphFilePath;
 }
 
 void LiveSimulation::graphProcessChanged(QProcess::ProcessState processState)

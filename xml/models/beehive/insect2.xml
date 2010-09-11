@@ -14,7 +14,6 @@
 
 	<model name="insect" type="Beehive::Insect2">
 		<parameter name="initEggs" value="100"/>
-		<parameter name="sexRatio" value="0.7"/>
 		<model name="egg" type="UniSim::Stage">
 			<parameter name="duration" value="7"/>
 			<parameter name="k" value="30"/>

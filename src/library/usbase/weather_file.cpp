@@ -60,7 +60,7 @@ void WeatherFile::reset()
     if (hasBeenReset) return;
 
     if (file.isOpen()) file.close();
-    QString filePath = FileLocations::location(FileLocations::Weather).absolutePath() +
+    QString filePath = FileLocations::location(FileLocationInfo::Weather).absolutePath() +
                        "/" + fileName;
     file.setFileName(filePath);
 

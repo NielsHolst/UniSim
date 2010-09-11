@@ -44,7 +44,7 @@
 	
 	<output type="plot">
 		<parameter name="title" value="Insect stages"/>
-		<variable label="Julian day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
 		<variable label="Egg" axis="y" value="insect/egg[number]"/>
 		<variable label="Larva" axis="y" value="insect/larva[number]"/>
 		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
@@ -52,7 +52,7 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value="Number of eggs laid"/>
-		<variable label="Julian day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
 		<variable label="Egg" axis="y" value="fecundity[eggsLaid]"/>
 	</output>
 </simulation>

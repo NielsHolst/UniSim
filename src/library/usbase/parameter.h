@@ -28,9 +28,9 @@ public:
     T value() const;
     T* valuePtr() const;
 	void setValue(T newValue);
+    void redirectValuePtr(T *valuePtr);
 
 private:
-    void checkUniqueness();
 
     T *_valuePtr;
     T defaultValue;
@@ -82,6 +82,10 @@ void Parameter<T>::setValueFromString(QString newValue)
     }
 }
 
+template <class T>
+void Parameter<T>::redirectValuePtr(T *valuePtr) {
+    _valuePtr = valuePtr;
+}
 
 } //namespace
 

@@ -16,12 +16,12 @@ using namespace intercom;
 
 void TestPlant::initTestCase()
 {
-    QDir dir = FileLocations::location(FileLocations::Models);
+    QDir dir = FileLocations::location(FileLocationInfo::Models);
     QString path = dir.absolutePath();
 
     SimulationMaker *maker = new SimulationMaker;
     try {
-        QDir dir = FileLocations::location(FileLocations::Plugins);
+        QDir dir = FileLocations::location(FileLocationInfo::Plugins);
         QString filePath = dir.absolutePath() + "/intercom_models/test/test_area.xml";
         simulation = maker->parse(filePath);
         plant = seekOneDescendant<Plant*>("cirsium", simulation);

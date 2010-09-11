@@ -18,7 +18,7 @@ ConstantWorld::ConstantWorld(Identifier name, QObject *parent)
     new Parameter<double>("temperature", &setTemperature, 30., this, "description");
     new PullVariable<double>("temperature", &temperature, this, "description");
     new PullVariable<double>("day", &day, this, "description");
-    QDir dir = FileLocations::location(FileLocations::Plugins);
+    QDir dir = FileLocations::location(FileLocationInfo::Plugins);
     Q_ASSERT(dir.absolutePath().contains("plugins"));
 }
 

@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
+#include <usbase/exception.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "random_base.h"
@@ -13,12 +14,41 @@ namespace UniSim{
 RandomBase::RandomBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    generator = new Generator;
     new Parameter<double>("minValue", &minValue, 0., this, "Minimum random value");
     new Parameter<double>("maxValue", &maxValue, 0., this, "Maximum random value");
     new PullVariable<double>("value", &value, this, "Random value");
 }
 
+RandomBase::~RandomBase() {
+    delete generator;
+}
+
+void RandomBase::initialize() {
+    triggers = seekChildren<Model*>("trigger");
+}
+
+void RandomBase::reset() {
+    nextValue();
+    emit event(this, "reset");
+}
+
 void RandomBase::update() {
+    if (triggered()) {
+        nextValue();
+        emit event(this, "update");
+    }
+}
+
+bool RandomBase::triggered() {
+    int i = 0;
+    bool doTrigger = false;
+    while (i < triggers.size() && !doTrigger)
+        doTrigger = triggers[i++]->pullVariable<bool>("triggered");
+    return doTrigger;
+}
+
+void RandomBase::nextValue() {
     bool inBounds = false;
     int i = 0;
     const int IMAX = 30;

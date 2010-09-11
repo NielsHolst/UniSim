@@ -16,6 +16,7 @@
 #include "random_poisson.h"
 #include "random_uniform.h"
 #include "stage.h"
+#include "trigger_by_date.h"
 #include "unisim_model_maker.h"
 
 namespace UniSim{
@@ -88,6 +89,9 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "@Math {@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
     "determined by an obligatory child model named @F {time}.";
 
+    desc["TriggerByDate"] =
+    "The  @F TriggerByDate model can be used by other models to trigger changes in their behaviour.";
+
     return desc;
 }
 
@@ -122,6 +126,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new RandomUniform(objectName, parent);
     else if (modelType.equals("Stage"))
         model = new Stage(objectName, parent);
+    else if (modelType.equals("TriggerByDate"))
+        model = new TriggerByDate(objectName, parent);
     return model;
 }
 

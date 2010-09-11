@@ -22,8 +22,7 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
 }
 
 
-void Weather::update()
-{
+void Weather::update() {
     WeatherFile::update();
     Tavg = (pullVariable<double>("Tmin") + pullVariable<double>("Tmax"))/2.;
 }

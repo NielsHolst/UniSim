@@ -14,7 +14,7 @@ class QFileDialog;
 class FileLocationDialog
 {
 public:
-    FileLocationDialog(UniSim::FileLocations::FileType fileType);
+    FileLocationDialog(UniSim::FileLocationInfo::FileType fileType);
     ~FileLocationDialog();
     bool exec();
     QDir location() const;

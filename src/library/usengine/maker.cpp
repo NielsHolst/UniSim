@@ -18,7 +18,7 @@ namespace UniSim{
 Maker *Maker::_me = 0;
 
 Maker::Maker() {
-	QDir dir = FileLocations::location(FileLocations::Plugins);
+	QDir dir = FileLocations::location(FileLocationInfo::Plugins);
 
 	foreach (QString filename, dir.entryList(QDir::Files)) {
 		QPluginLoader loader(dir.absoluteFilePath(filename));

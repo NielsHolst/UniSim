@@ -7,6 +7,8 @@
 #include <QString>
 #include "component.h"
 #include "exception.h"
+#include "parameter_base.h"
+#include "pull_variable_base.h"
 #include "utilities.h"
 
 /*! \class UniSim::Component
@@ -129,9 +131,6 @@ Identifier Component::id() const {
 //! Returns name with full path of all ancestors
 QString Component::fullName() const {
     return UniSim::fullName(this);
-    /*QString name = "/" + objectName();
-    Component *p = dynamic_cast<Component*>(parent());
-    return p ? (p->fullName() + name) : name;*/
 }
 
 //! Sets the RecursionPolicy
@@ -152,6 +151,11 @@ Component::RecursionPolicy Component::recursionPolicy(Function function) const
     Q_ASSERT(function != AllFunctions);
     return policy[function];
 }
+
+void Component::acceptPullVariableChanged(PullVariableBase *variable, ParameterBase *parameter) {
+    parameter->setValueFromString(variable->toVariant().toString());
+}
+
 
 } //namespace
 

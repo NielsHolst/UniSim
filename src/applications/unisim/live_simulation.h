@@ -78,8 +78,8 @@ private:
     State _state;
     UniSim::Simulation *_simulation;
     UniSim::SimulationMaker *simulationMaker;
-    QString filePath;
-    QProcess *graphProcess;
+    QString filePath, _graphFilePath;
+    QList<QProcess *> graphProcesses;
     static QMap<State, QString> stateTexts;
 };
 

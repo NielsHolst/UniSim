@@ -9,7 +9,7 @@
         </sequence>
     </integrator>
 	
-	<model name="calendar" type="Calendar">
+	<model name="calendar" type="ErrCalendar">
 		<parameter name="firstDate" value="1/1/2010"/>
 	</model>
 	

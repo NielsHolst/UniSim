@@ -40,5 +40,11 @@ call clean_ephemerals.bat
 @echo *** Finished build ***
 @echo .
 
+@rem Generate batch and project files
+..\own_tools\update_settings
+@echo .
+@echo *** Updated registry for UniSim ***
+@echo .
+
 :end
 @pause

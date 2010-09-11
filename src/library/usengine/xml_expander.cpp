@@ -82,7 +82,7 @@ QString XmlExpander::newFileName() const
     QString filePath = appendedFileName(_appendedName);
     QString name = QFileInfo(filePath).fileName();
 
-    QDir tempFolder = FileLocations::location(FileLocations::Temporary);
+    QDir tempFolder = FileLocations::location(FileLocationInfo::Temporary);
     return tempFolder.path() + "/" + name;
 }
 

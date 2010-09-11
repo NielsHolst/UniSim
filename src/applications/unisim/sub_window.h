@@ -18,7 +18,7 @@ class SubWindow : public QMdiSubWindow, public StoredWidget
 	Q_OBJECT
 
 public:
-    typedef enum{View, Output, Log, Untyped} Type;
+    typedef enum{View, Output, Log, Untyped, All} Type;
     SubWindow(QMdiArea *area, QString title);
     void closeEvent(QCloseEvent *event);
 

@@ -32,13 +32,14 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
     new PullVariable<double>("outflow", &_output, this, "Outflow from the stage in latest time step");
     new PullVariable<double>("inflowTotal", &_inputTotal, this, "Total inflow into the stage since beginning of the simulation");
     new PullVariable<double>("outflowTotal", &_outputTotal, this, "Total outflow from the stage since beginning of the simulation");
-    new PullVariable<double>("growthRate", &_fgr, this, "Finite growth rate through stage. "
-                     "For every quantity @I x that enters as inflow, @I fgr*x will emerge as outflow. "
-                     "@F fgr can be changed during the simulation");
+    new PullVariable<double>("growthRate", &_fgr, this, "Same as the @F growthRate push variable");
     new PullVariable<double>("timeStep", &_dt, this, "The latest time step applied to the stage");
 
+    new PushVariable<double>("growthRate", &_fgr, this, "Finite growth rate through stage. "
+                     "For every quantity @I x that enters as inflow, @I growthRate*x will emerge as outflow. "
+                     "@F growthRate can be changed during the simulation but must be larger than zero."
+                     "Use small values (e.g., @Math {10 sup {-6}}) instead of zero");
     new PushVariable<double>("inflow", &_inflow, this, "Number of units to be put into the stage in the next time step");
-    new PushVariable<double>("growthRate", &_fgr, this, "Same as the @F fgr pull variable");
     new PushVariable<double>("instantMortality", &_instantMortality, this,
                      "The mortality [0..1] will be applied in the next time step, before the @F inflow is added");
 }
@@ -87,6 +88,8 @@ void Stage::update()
     double dt = time->pullVariable<double>("step");
     _dt = dt;
 
+    if (_fgr <= 0)
+        throw Exception("Growth rate (" + QString::number(_fgr)+ ") must be larger than zero", this);
 	if (_k<=0 || _L<=0 || _fgr<=0 || _input< 0 || dt<0 || _x==0) {
 		QString msg;
 		QTextStream text(&msg);

@@ -5,7 +5,6 @@
 */
 #ifndef UNISIM_RANDOM_LOGNORMAL
 #define UNISIM_RANDOM_LOGNORMAL
-#include <boost/random/mersenne_twister.hpp>
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <QObject>
@@ -27,10 +26,8 @@ private:
     // methods
     double drawValue();
     // random number generation
-    typedef boost::mt19937 Generator ;
     typedef boost::lognormal_distribution<double> Distribution;
     typedef boost::variate_generator<Generator&, Distribution> Variate;
-    Generator *generator;
     Distribution *distribution;
     Variate *variate;
 };

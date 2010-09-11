@@ -12,16 +12,16 @@ namespace UniSim{
 FileLocationsStrict::FileLocationsStrict() : FileLocations() {
 }
 
-QDir FileLocationsStrict::locationImpl(FileType fileType) {
-    Q_ASSERT_X(contain(fileType),
+QDir FileLocationsStrict::locationImpl(FileLocationInfo::FileType fileType) {
+    Q_ASSERT_X(FileLocationInfo::contains(fileType),
                "FileLocationsStrict::locationImpl",
-               qPrintable("File type missing: " + label(fileType)));
-    return locations[fileType];
+               qPrintable("File type missing: " + FileLocationInfo::label(fileType)));
+    return FileLocationInfo::getLocation(fileType);
 }
 
-bool FileLocationsStrict::lookupImpl(FileType fileType, QString message) {
+bool FileLocationsStrict::lookupImpl(FileLocationInfo::FileType fileType, QString message) {
     QString msg = message.isEmpty() ?
-                  "Error when looking up file type: " + label(fileType) :
+                  "Error when looking up file type: " + FileLocationInfo::label(fileType) :
                   message;
     Q_ASSERT_X(false,
                "FileLocationsStrict::lookupImpl",

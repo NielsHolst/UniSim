@@ -6,6 +6,7 @@
 #ifndef UNISIM_RANDOM_BASE
 #define UNISIM_RANDOM_BASE
 #include <QObject>
+#include <boost/random/mersenne_twister.hpp>
 #include <usbase/model.h>
 
 namespace UniSim{
@@ -15,15 +16,26 @@ class RandomBase : public Model
 	Q_OBJECT
 public: 
     RandomBase(Identifier name, QObject *parent=0);
+    virtual ~RandomBase();
     // standard methods
-    void update();
+    virtual void initialize();
+    virtual void reset();
+    virtual void update();
+protected:
+    // Common random number generator
+    typedef boost::mt19937 Generator;
+    Generator *generator;
 private:
     // methods
     virtual double drawValue() = 0;
+    bool triggered();
+    void nextValue();
     // parameters
     double minValue, maxValue;
     // pull variables
     double value;
+    // links
+    Models triggers;
 };
 
 } //namespace

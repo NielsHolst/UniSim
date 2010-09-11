@@ -18,8 +18,10 @@ EggSurvival::EggSurvival(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("a", &a, -0.00706, this, "For parabolic equation");
     new Parameter<double>("b", &b, 0.370, this, "For parabolic equation");
     new Parameter<double>("c", &c, -4.12, this, "For parabolic equation");
-    new Parameter<double>("Tlow", &Tlow, 21., this, "Lower limit where extrapolation begins");
-    new PullVariable<double>("survival", &survival, this, "description");
+    new Parameter<double>("Tlow", &Tlow, 21., this,
+    "The parabola is extrapolated horizontally below this temperature");
+    new PullVariable<double>("survival", &survival, this,
+    "Survival [0;1] depending on current temperature");
 }
 
 void EggSurvival::initialize() {

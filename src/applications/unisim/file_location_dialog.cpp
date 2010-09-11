@@ -8,12 +8,12 @@
 #include <QFileDialog>
 #include "file_location_dialog.h"
 
-using UniSim::FileLocations;
+using namespace UniSim;
 
-FileLocationDialog::FileLocationDialog(FileLocations::FileType fileType)
+FileLocationDialog::FileLocationDialog(FileLocationInfo::FileType fileType)
     : _location()
 {
-    dialog = new QFileDialog(0, "Select folder for " + FileLocations::label(fileType).toLower());
+    dialog = new QFileDialog(0, "Select folder for " + FileLocationInfo::label(fileType).toLower());
     dialog->setDirectory(FileLocations::possibleLocation(fileType));
     dialog->setFileMode(QFileDialog::Directory);
 }

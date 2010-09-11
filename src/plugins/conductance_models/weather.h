@@ -15,7 +15,9 @@ class Weather : public UniSim::Model
 	Q_OBJECT
 public: 
 	Weather(UniSim::Identifier name, QObject *parent=0);
-
+    // standard methods
+    void reset();
+    void update();
 private:
     // parameter / pull variable
     double irradiation;

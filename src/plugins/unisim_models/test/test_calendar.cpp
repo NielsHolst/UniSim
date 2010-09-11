@@ -22,7 +22,7 @@ namespace local {
     }
 
     QString lastOutput() {
-        QDir dir = FileLocations::location(FileLocations::Output);
+        QDir dir = FileLocations::location(FileLocationInfo::Output);
         QString filePath = dir.absolutePath() + "/test_calendar.prn";
         QFile file (filePath);
         bool ok = file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -189,7 +189,7 @@ void TestCalendar::cleanup() {
 }
 
 void TestCalendar::createSimulation(QString fileName, int numFollowers) {
-    QDir dir = FileLocations::location(FileLocations::Plugins);
+    QDir dir = FileLocations::location(FileLocationInfo::Plugins);
     QString filePath = dir.absolutePath() + "/unisim_models/test/" + fileName;
 
     SimulationMaker maker;

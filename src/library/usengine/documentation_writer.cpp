@@ -77,7 +77,7 @@ void DocumentationWriter::write() {
 }
 
 void DocumentationWriter::openFile() {
-    QDir dir = FileLocations::location(FileLocations::Output);
+    QDir dir = FileLocations::location(FileLocationInfo::Output);
     QString fileName = dir.absolutePath() + "/../book/plugins_doc/ms_generated.txt";
     file.setFileName(fileName);
     bool ok = file.open(QIODevice::Text | QIODevice::WriteOnly);

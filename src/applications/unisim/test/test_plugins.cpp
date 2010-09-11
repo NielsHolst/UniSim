@@ -12,7 +12,7 @@ namespace local {
     Simulation *sim = 0;
 
     QDir xmlModelsTestFolder() {
-        QDir dir = FileLocations::location(FileLocations::Plugins);
+        QDir dir = FileLocations::location(FileLocationInfo::Plugins);
         dir.cdUp();
         dir.cdUp();
         dir.cd("xml");

@@ -35,12 +35,10 @@ class MainWindow : public QMainWindow,
 	Q_OBJECT
 
 public:
-	~MainWindow();
+    void createMenus();
     UniSim::PlotWidget* createPlotWidget(QString title);
-    void closeSubWindows();
-    void closeSubWindows(SubWindow::Type type);
-    void minimizeSubWindows();
-    void minimizeSubWindows(SubWindow::Type type);
+    void closeSubWindows(SubWindow::Type type = SubWindow::All);
+    void minimizeSubWindows(SubWindow::Type type = SubWindow::All);
 
 private slots:
 	void doFileOpen();
@@ -52,10 +50,10 @@ private slots:
 	void doSimulationRun();
     void doToolsPrototyping();
     void doToolsGenerateDocs();
-	void doViewComponents();
 	void doViewLog();
     void doHelpAbout();
-	
+    void standardizeSubWindows();
+
     void liveSimulatorStateChanged(int oldState, int newState);
 
 	
@@ -72,7 +70,7 @@ private:
 		*simulationRun,
         *toolsPrototyping, *toolsGenerateDocs,
 		*viewComponents, *viewLog,
-        *windowCloseAll, *windowCascade, *windowTile,
+        *windowCloseAll, *windowCascade, *windowTile, *windowStandardize,
         *helpAbout;
 	QSettings *settings;
 		

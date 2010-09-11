@@ -13,7 +13,9 @@
 #include <usbase/exception.h>
 #include <usbase/output.h>
 #include <usbase/output_variable.h>
+#include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
+#include <usbase/pull_variable.h>
 #include <usbase/pull_variable_base.h>
 #include <usbase/utilities.h>
 #include "integrator_maker.h"
@@ -53,6 +55,8 @@ Simulation* SimulationMaker::parse(QString fileName_)
     fileName = fileName_;
 	QString simName, simVersion;
 
+    redirectedParameters.clear();
+
     XmlExpander expander(fileName, "_expanded");
 	emit beginExpansion();
 	expander.expand();
@@ -91,6 +95,8 @@ Simulation* SimulationMaker::parse(QString fileName_)
     else if (iCon>1) throw Exception(message("Only one 'integrator' element allowed in 'simulation'"));
     if (iMod==0) throw Exception(message("Missing 'model' element in 'simulation'"));
     if (iOut==0) throw Exception(message("Missing 'output' element in 'simulation'"));
+
+    redirectParameters();
 
 	reader->clear();
     emit beginInitialization();
@@ -197,10 +203,23 @@ void SimulationMaker::readParameterElement(QObject* parent)
     Q_ASSERT(reader->isStartElement() && parent);
 
     QString name = attributeValue("name", parent);
-    QString value = attributeValue("value", parent);
+    QString value = attributeValue("value", "");
+    QString variableName = attributeValue("variable", "");
 
-    ParameterBase *param = seekOneChild<ParameterBase*>(name, parent);
-    param->setValueFromString(value.trimmed());
+    bool hasValue = !value.isEmpty();
+    bool hasVariable = !variableName.isEmpty();
+    if (hasValue && hasVariable)
+        throw Exception("Parameter '" + name +
+                        "' cannot have both a 'value' and a 'variable' attribute", parent);
+    if (!hasValue && !hasVariable)
+        throw Exception("Parameter '" + name +
+                        "' must have either a 'value' or a 'variable' attribute", parent);
+
+    ParameterBase *parameter = seekOneChild<ParameterBase*>(name, parent);
+    if (hasValue)
+        parameter->setValueFromString(value.trimmed());
+    else
+        redirectedParameters.append(RedirectedParameter(parameter, variableName));
 
 	nextElementDelim();
 	Q_ASSERT(reader->isEndElement());
@@ -229,7 +248,7 @@ bool SimulationMaker::readOutputElement(QObject* parent)
             readParameterElement(output);
         }
         else if (elementNameEquals("variable")) {
-            readVariableElement(output);
+            readOutputVariableElement(output);
         }
         else {
             throw Exception(message(
@@ -241,44 +260,20 @@ bool SimulationMaker::readOutputElement(QObject* parent)
     return output;
 }	
 
-void SimulationMaker::readVariableElement(QObject* parent)
+void SimulationMaker::readOutputVariableElement(QObject* parent)
 {
 
 	Q_ASSERT(reader->isStartElement() && parent);
 
     QString
         label = attributeValue("label", parent),
-        axis = attributeValue("label", parent),
+        axis = attributeValue("axis", parent),
         value = attributeValue("value", parent);
 
     QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
     for (int i = 0; i < variables.size(); ++i)
         new OutputVariable(label, axis, variables[i], parent);
 
-/*
-    OutputVariable::Raw raw;
-
-    raw.label = attributeValue("label");
-    if (raw.label.isEmpty())
-        throw Exception(message("Missing 'label' attribute for 'variable' element"));
-
-    raw.axis = attributeValue("axis");
-    if (raw.axis.isEmpty())
-        throw Exception(message("Missing 'axis' attribute for 'variable' element"));
-
-    QString value = attributeValue("value");
-    if (value.isEmpty())
-        throw Exception(message("Missing 'value' attribute for 'variable' element"));
-
-    QStringList parts = value.split("[");
-    if (parts.size() != 2 || parts[1].right(1) != "]" || parts[1].size() == 1)
-        throw Exception(message("Value of variable is not of the form 'x/y/z[state]' "));
-
-    raw.modelName = parts[0];
-    raw.stateNameInModel = parts[1].left(parts[1].size()-1);
-
-    OutputVariable::appendVariable(raw, parent);
-*/
     nextElementDelim();
     Q_ASSERT(reader->isEndElement());
     nextElementDelim();
@@ -318,6 +313,45 @@ QString SimulationMaker::message(QString text) const {
           << "XML-reader reported: " << reader->errorString() << "\n"
           << "Last token read: " << reader->tokenString();
     return s;
+}
+
+
+namespace {
+    template <class T>
+    bool couple(ParameterBase *parameter, PullVariableBase *variable) {
+        Parameter<T>* parameterT = dynamic_cast<Parameter<T>*>(parameter);
+        PullVariable<T> *variableT = dynamic_cast<PullVariable<T>*>(variable);
+        bool matchedT = parameterT && variableT;
+        if (matchedT) {
+            T *redirectTo = const_cast<T*>(variableT->valuePtr());
+            parameterT->redirectValuePtr(redirectTo);
+            Component *sender = seekFirstAscendant<Component*>("*", parameter);
+            Component *receiver = seekFirstAscendant<Component*>("*", variable);
+            QObject::connect(sender, SIGNAL(pullVariableChanged(PullVariableBase*,ParameterBase*)),
+                             receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
+        }
+        return matchedT;
+    }
+}
+
+void SimulationMaker::redirectParameters() {
+    for (int i = 0; i < redirectedParameters.size(); ++i) {
+        ParameterBase *parameter = redirectedParameters[i].first;
+        QString variableName = redirectedParameters[i].second;
+        PullVariableBase *variable = seekOne<QObject*, PullVariableBase*>(variableName);
+        bool coupled =
+            couple<bool>(parameter, variable) ||
+            couple<int>(parameter, variable) ||
+            couple<long>(parameter, variable) ||
+            couple<unsigned>(parameter, variable) ||
+            couple<float>(parameter, variable) ||
+            couple<double>(parameter, variable) ||
+            couple<QDate>(parameter, variable) ||
+            couple<QString>(parameter, variable);
+        if (!coupled)
+            throw Exception("The type of variable '" + variableName +
+                            "' does not match that of the parameter", parameter);
+    }
 }
 
 } //namespace

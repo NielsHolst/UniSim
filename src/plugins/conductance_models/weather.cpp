@@ -21,5 +21,13 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
                      "Global irradiation (MJ\"/\"m @Sup {2}\"/\"d");
 }
 
+void Weather::reset() {
+    irradiation = parameter<double>("irradiation");
+}
+
+void Weather::update() {
+    irradiation = parameter<double>("irradiation");
+}
+
 } //namespace
 

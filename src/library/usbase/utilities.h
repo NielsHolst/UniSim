@@ -58,6 +58,8 @@ template <class T> T seekOneDescendant(QString name, QObject *root);
 template <class T> QList<T> seekDescendants(QString name, QObject *root);
 
 template <class T> T seekOneAscendant(QString name, QObject *child);
+template <class T> T seekFirstAscendant(QString name, QObject *child);
+template <class T> QList<T> seekAscendants(QString name, QObject *child);
 
 template <class T> QList<T> filterByName(QString name, const QList<QObject*> &candidates);
 //@}
@@ -227,8 +229,35 @@ template <class T> T seekOneChild(QString name, QObject *parent) {
     Finds one ascendant matching name and type, or throws an Exception
 */
 template <class T> T seekOneAscendant(QString name, QObject *child) {
+    QList<T> ascendants = seekAscendants<T>(name, child);;
+    if (ascendants.size() == 0)
+        throw Exception("No ascendants called '" +
+                        name + "', or it is not of the expected type", child);
+    if (ascendants.size() > 1)
+        throw Exception("More than one ascendant called '" + name +"'", child);
+    return ascendants.at(0);
+}
+
+//! Finds first ascendant of child or throws an exception
+/*!
+    Finds first (nearest) ascendant matching name and type, or throws an Exception
+*/
+template <class T> T seekFirstAscendant(QString name, QObject *child) {
+    QList<T> ascendants = seekAscendants<T>(name, child);;
+    if (ascendants.size() == 0)
+        throw Exception("No ascendants called '" +
+                        name + "', or it is not of the expected type", child);
+    return ascendants.at(0);
+}
+
+
+//! Finds all ascendants of child
+/*!
+    Finds all ascendants matching name and type
+*/
+template <class T> QList<T> seekAscendants(QString name, QObject *child) {
     if (!child)
-        throw Exception("findAscendant called with null pointer");
+        throw Exception("seekFirstAscendant called with null pointer");
 
     QList<QObject*> candidates;
     QObject *p = child->parent();
@@ -237,14 +266,7 @@ template <class T> T seekOneAscendant(QString name, QObject *child) {
         p = p->parent();
     }
 
-    QList<T> ascendants = filterByName<T>(name, candidates);
-    if (ascendants.size() == 0)
-        throw Exception("'" + child->objectName() +"' has no ascendants called '" +
-                        name + "', or it is not of the expected type",child);
-    if (ascendants.size() > 1)
-        throw Exception("'" + child->objectName() +"' has more than one ascendant called '" +
-                        name, child);
-    return ascendants.at(0);
+    return filterByName<T>(name, candidates);
 }
 
 //! Selects objects in candidate list matching name
@@ -281,7 +303,7 @@ template <class TPlugin>
 void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers) {
     bool keepLooking = true;
     do {
-        QDir dir = FileLocations::location(FileLocations::Plugins);
+        QDir dir = FileLocations::location(FileLocationInfo::Plugins);
         foreach (QString filename, dir.entryList(QDir::Files)) {
 
             QPluginLoader loader(dir.absoluteFilePath(filename));
@@ -306,7 +328,7 @@ void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers) {
             QString msg = "Found no plugins for: " + makerId + " in: " + dir.absolutePath();
             if (!dir.exists())
                 msg += ".\nThe folder does not exist.";
-            keepLooking = FileLocations::lookup(FileLocations::Plugins, msg);
+            keepLooking = FileLocations::lookup(FileLocationInfo::Plugins, msg);
         }
     } while (keepLooking);
 }

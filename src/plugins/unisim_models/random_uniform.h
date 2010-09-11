@@ -5,7 +5,6 @@
 */
 #ifndef UNISIM_RANDOM_UNIFORM
 #define UNISIM_RANDOM_UNIFORM
-#include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <QObject>
@@ -25,10 +24,8 @@ private:
     // methods
     double drawValue();
     // random number generation
-    typedef boost::mt19937 Generator ;
     typedef boost::uniform_real<double> Distribution;
     typedef boost::variate_generator<Generator&, Distribution> Variate;
-    Generator *generator;
     Distribution *distribution;
     Variate *variate;
 };

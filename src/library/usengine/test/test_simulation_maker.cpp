@@ -21,7 +21,7 @@ using namespace UniSim;
 namespace local
 {
 	QString testFolder() {
-	    QDir dir = FileLocations::location(FileLocations::Temporary);
+	    QDir dir = FileLocations::location(FileLocationInfo::Temporary);
 	    return dir.absolutePath();
 	}
 	

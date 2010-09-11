@@ -6,14 +6,15 @@
 #ifndef UniSim_FILE_LOCATIONS_FORGIVING_H
 #define UniSim_FILE_LOCATIONS_FORGIVING_H
 
+#include <usbase/file_location_info.h>
 #include <usbase/file_locations.h>
 
 class FileLocationsForgiving : public UniSim::FileLocations {
 public:
     FileLocationsForgiving();
 private:
-	QDir locationImpl(FileType fileType);
-    bool lookupImpl(FileType fileType, QString message = QString());
+    QDir locationImpl(UniSim::FileLocationInfo::FileType fileType);
+    bool lookupImpl(UniSim::FileLocationInfo::FileType fileType, QString message = QString());
 };
 
 #endif

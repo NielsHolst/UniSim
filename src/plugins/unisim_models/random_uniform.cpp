@@ -8,18 +8,17 @@
 namespace UniSim{
 
 RandomUniform::RandomUniform(Identifier name, QObject *parent)
-    : RandomBase(name, parent), generator(0), distribution(0), variate(0)
+    : RandomBase(name, parent), distribution(0), variate(0)
 {
 }
 
 RandomUniform::~RandomUniform() {
-    delete generator;
     delete distribution;
     delete variate;
 }
 
 void RandomUniform::initialize() {
-    generator = new Generator;
+    RandomBase::initialize();
     distribution = new Distribution(parameter<double>("minValue"), parameter<double>("maxValue"));
     variate = new Variate(*generator, *distribution);
 }

@@ -10,13 +10,15 @@
 #include <QMessageBox>
 
 
+using namespace UniSim;
+
 FileLocationsForgiving::FileLocationsForgiving()
     : FileLocations() {
 }
 
-QDir FileLocationsForgiving::locationImpl(FileType fileType) {
-    if (contain(fileType)) {
-        QDir dir = locations[fileType];
+QDir FileLocationsForgiving::locationImpl(FileLocationInfo::FileType fileType) {
+    if (FileLocationInfo::contains(fileType)) {
+        QDir dir = FileLocationInfo::getLocation(fileType);
         if (dir.exists()) return dir;
     }
     else if (lookupImpl(fileType))
@@ -24,13 +26,14 @@ QDir FileLocationsForgiving::locationImpl(FileType fileType) {
     return QDir();
 }
 
-bool FileLocationsForgiving::lookupImpl(FileType fileType, QString message) {
-    QString msg = message + (message.isEmpty() ? "" : "\n\n") + hint(fileType);
+bool FileLocationsForgiving::lookupImpl(FileLocationInfo::FileType fileType, QString message) {
+    QString msg = message + (message.isEmpty() ? "" : "\n\n") +
+                  FileLocationInfo::hint(fileType);
     QMessageBox::information(0, "Guidance", msg);
 
     FileLocationDialog dialog(fileType);
     if (dialog.exec()) {
-        setLocation(fileType, dialog.location());
+        FileLocationInfo::setLocation(fileType, dialog.location());
         return true;
     }
     return false;

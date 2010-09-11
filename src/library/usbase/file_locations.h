@@ -9,39 +9,26 @@
 #include <QDir>
 #include <QMap>
 #include <QObject>
+#include "file_location_info.h"
 
 namespace UniSim {
 
 class FileLocations : public QObject
 {
     Q_OBJECT
-
 public:
-    enum FileType {Plugins, DotTool, Models, Output, Prototypes, Temporary, Weather, NumLocations};
     FileLocations();
     static QString id();
     virtual ~FileLocations() { }
-    static bool contain(FileType fileType);
-    static QString label(FileType fileType);
-    static QString hint(FileType fileType);
-    static QDir location(FileType fileType);
-    static bool lookup(FileType fileType, QString message = QString());
-    static QDir possibleLocation(FileType fileType);
-    static void setLocation(FileType fileType, QDir location);
-    static void setLocation(FileType fileType, QString filePath);
-protected:
-    QMap<FileType, QDir> locations;
+    static QDir location(FileLocationInfo::FileType fileType);
+    static QDir possibleLocation(FileLocationInfo::FileType fileType);
+    static bool lookup(FileLocationInfo::FileType fileType, QString message = QString());
 private:
-    virtual QDir locationImpl(FileType fileType) = 0;
-    virtual bool lookupImpl(FileType fileType, QString message = QString()) = 0;
+    virtual QDir locationImpl(FileLocationInfo::FileType fileType) = 0;
+    virtual bool lookupImpl(FileLocationInfo::FileType fileType, QString message = QString()) = 0;
+
     static FileLocations* me();
-
-    void setLabels();
-    void setHints();
-    void setLocations();
-
     static FileLocations *_me;
-    QMap<FileType, QString> labels, hints;
 };
 
 }

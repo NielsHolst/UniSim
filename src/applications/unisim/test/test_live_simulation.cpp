@@ -22,7 +22,7 @@ void TestLiveSimulation::initTestCase() {
 	QVERIFY(_liveSim);
 	QCOMPARE(_liveSim->state(), LiveSimulation::Closed);
 	
-	QDir dir = UniSim::FileLocations::location(UniSim::FileLocations::Temporary);
+	QDir dir = UniSim::FileLocations::location(UniSim::FileLocationInfo::Temporary);
 	_filePath = dir.absolutePath() + "/test.xml";
 	 UniSim::writeStandardTestFile(_filePath);
 }
@@ -48,8 +48,6 @@ void TestLiveSimulation::testOpening() {
 
 void TestLiveSimulation::open() {
     _liveSim->open(_filePath);
-    showLog();
-
     QCOMPARE(_log->items()->size(), 1);
 	QVERIFY(_log->items()->at(0).title == "Opening file");
 	QVERIFY(_log->items()->at(0).text == _filePath);

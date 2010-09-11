@@ -30,6 +30,7 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     "(are synchronized with) the calendar date. "
     "Commonly the @F weather object is set as a follower");
 
+    new PullVariable<QDate>("date", &date, this, "Current date");
     new PullVariable<double>("daysTotal", &daysTotal, this, "Days total since beginning of simulation");
     new PullVariable<double>("dayInYear", &dayInYear, this, "Day number in year, also known as Julian day");
     new PullVariable<double>("dayOfYear", &dayInYear, this, "Synonymous with @F {dayInYear}");

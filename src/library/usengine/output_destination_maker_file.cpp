@@ -17,7 +17,7 @@ OutputDestinationMakerFile::OutputDestinationMakerFile(QObject *parent)
 }
 
 void OutputDestinationMakerFile::createDestination(Output *output) {
-	QDir path = FileLocations::location(FileLocations::Output);
+	QDir path = FileLocations::location(FileLocationInfo::Output);
     QString filePath = path.absolutePath() + "/" + output->title() + ".txt";
 
 	OutputDestination *destination = new OutputDestinationFile(filePath, output);

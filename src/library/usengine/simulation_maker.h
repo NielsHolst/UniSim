@@ -3,9 +3,11 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef MODEL_PARSER_H
-#define MODEL_PARSER_H
+#ifndef UNISIM_SIMULATION_MAKER
+#define UNISIM_SIMULATION_MAKER
+#include <QList>
 #include <QObject>
+#include <QPair>
 #include <QStringList>
 #include <usbase/identifier.h>
 
@@ -13,6 +15,7 @@ class QXmlStreamReader;
 
 namespace UniSim{
 
+class ParameterBase;
 class Parameters;
 class Simulation;
 
@@ -61,6 +64,9 @@ private:
     QString fileName;
     Identifiers _sequence;
 
+    typedef QPair<ParameterBase*, QString> RedirectedParameter;
+    QList<RedirectedParameter> redirectedParameters;
+
     // methods
     bool nextElementDelim();
 	
@@ -71,7 +77,7 @@ private:
     void readParameterElement(QObject *parent);
 
 	bool readOutputElement(QObject *parent);
-    void readVariableElement(QObject* parent);
+    void readOutputVariableElement(QObject* parent);
 
     bool elementNameEquals(QString s) const;
     bool elementNameNotEquals(QString s) const;
@@ -80,6 +86,7 @@ private:
     QString attributeValue(QString name, QObject *parent) const;
 
     QString message(QString text) const;
+    void redirectParameters();
 };
 
 //@}

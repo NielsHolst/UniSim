@@ -29,9 +29,9 @@ void FileLocationsWidget::doClose() {
 
 QLayout* FileLocationsWidget::createEntries() {
     QGridLayout *layout = new QGridLayout;
-    for (int row = 0; row < FileLocations::NumLocations; ++row) {
-        FileLocations::FileType fileType = FileLocations::FileType(row);
-        layout->addWidget(new QLabel(FileLocations::label(fileType), this), row, 0);
+    for (int row = 0; row < FileLocationInfo::NumLocations; ++row) {
+        FileLocationInfo::FileType fileType = FileLocationInfo::FileType(row);
+        layout->addWidget(new QLabel(FileLocationInfo::label(fileType), this), row, 0);
 
         FileLocationCombo *combo;
         layout->addWidget(combo = new FileLocationCombo(fileType, this), row, 1);

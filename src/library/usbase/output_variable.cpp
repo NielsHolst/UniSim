@@ -21,7 +21,7 @@ OutputVariable::OutputVariable(QString label, QString axis, PullVariableBase *va
 void OutputVariable::setAxisFromString(QString axis) {
     QString s = axis.toLower();
     if (axis!="x" && axis!="y")
-        throw Exception("Axis must be either 'x'' or 'y', not '" + axis + "'", this);
+        throw Exception("Axis must be either 'x'' or 'y', not '" + axis + "'");
     _axis = axis == "x" ? XAxis : YAxis;
 }
 
@@ -42,43 +42,6 @@ OutputVariable::Axis OutputVariable::axis() const {
 const QVector<double>* OutputVariable::history() const {
     return &_history;
 }
-
-/*
-void OutputVariable::appendVariable(OutputVariable::Raw raw, QObject *parent) {
-    Models models = UniSim::seekDescendants<Model*>(raw.modelName, 0);
-
-    int numVariables = 0;
-    for (Models::iterator mo = models.begin(); mo != models.end(); ++mo) {
-        if (raw.stateNameInModel == "*") {
-            QList<PullVariableBase*> pullVariables = (*mo)->seekChildren<PullVariableBase*>("*");
-            for (QList<PullVariableBase*>::const_iterator st = pullVariables.begin(); st != pullVariables.end(); ++st) {
-                Identifier stateNameInModel = (*st)->objectName();
-                OutputVariable *v = new OutputVariable(stateNameInModel, parent);
-                v->fromRaw(raw);
-                v->model = *mo;
-                v->pullVarPtr = *st;
-                ++numVariables;
-            }
-        }
-        else {
-            PullVariableBase *pullVarPtr = (*mo)->seekOneChild<PullVariableBase*>(raw.stateNameInModel);
-            if (pullVarPtr) {
-                OutputVariable *v = new OutputVariable(raw.stateNameInModel, parent);
-                v->fromRaw(raw);
-                v->model = *mo;
-                v->pullVarPtr = pullVarPtr;
-                ++numVariables;
-            }
-        }
-    }
-    if (numVariables == 0) {
-        QString msg = "Could not find variable: label=\"" + raw.label +
-                      "\" value=\"" + raw.modelName + "[" + raw.stateNameInModel + "]\"";
-        throw Exception(msg, this);
-    }
-
-}
-*/
 
 } //namespace
 

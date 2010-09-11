@@ -38,7 +38,7 @@ void OutputTable::cleanup() {
 }
 
 void OutputTable::openFile() {
-    QString path = FileLocations::location(FileLocations::Output).absolutePath();
+    QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
     QString filePath = path + "/" + fileName;
     file.setFileName(filePath);
     if (!file.open(QIODevice::Text | QIODevice::WriteOnly))

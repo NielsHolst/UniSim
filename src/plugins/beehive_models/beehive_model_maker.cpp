@@ -12,6 +12,7 @@
 #include "insect2.h"
 #include "insect4.h"
 #include "insect6.h"
+#include "insect7.h"
 #include "weather.h"
 
 using namespace UniSim;
@@ -71,6 +72,10 @@ const QMap<Identifier, QString>& BeehiveModelMaker::supportedClasses() {
     "This model looks for @F fecundity, a child of the @F adult stage, from which it pulls the "
     "@F eggsLaid variable. This is used to provide an inflow to the @F egg stage.";
 
+    desc["Insect7"] =
+    "This model is more flexible. There can be any number of life stages, however, among them"
+    "two stages named 'egg' and 'adult' must exist";
+
     desc["Weather"] =
     "This model provides daily average temperature.";
 
@@ -97,6 +102,8 @@ Model* BeehiveModelMaker::create(Identifier modelType, Identifier objectName, QO
         model = new Insect4(objectName, parent);
     else if (modelType.equals("Insect6"))
         model = new Insect6(objectName, parent);
+    else if (modelType.equals("Insect7"))
+        model = new Insect7(objectName, parent);
     else if (modelType.equals("Weather"))
         model = new Weather(objectName, parent);
     return model;

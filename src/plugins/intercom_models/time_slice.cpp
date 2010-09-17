@@ -37,10 +37,15 @@ PhotosyntheticRate TimeSlice::calcPhotosynthesis() {
 }
 
 void TimeSlice::lookup() {
-    if (!calendar)
+        if (!calendar)
+            calendar = seekOne<Model*>("calendar");
+        if (plants.size() == 0)
+            plants = seekMany<Plant*>("*");
+
+/*    if (!calendar)
         calendar = seekOneDescendant<Model*>("calendar", simulationObject());
     if (plants.size() == 0)
-        plants = seekDescendants<Plant*>("*", simulationObject());
+        plants = seekDescendants<Plant*>("*", simulationObject());*/
 }
 
 } //namespace

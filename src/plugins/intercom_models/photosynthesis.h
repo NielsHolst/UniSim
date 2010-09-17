@@ -25,7 +25,6 @@ public:
 
 private:
     QList<TimeSlice*> timeSlices;
-    UniSim::Model *calendar;
 };
 
 } //namespace

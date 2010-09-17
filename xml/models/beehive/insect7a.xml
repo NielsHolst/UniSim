@@ -18,7 +18,7 @@
 		<parameter name="firstDate" value="1/5/1996"/>
 	</model>
 
-	<model name="insect" type="Beehive::Insect6">
+	<model name="insect" type="Beehive::Insect7">
 		<parameter name="initEggs" value="100"/>
 		<model name="egg" type="UniSim::Stage">
 			<parameter name="duration" value="20"/>
@@ -36,13 +36,9 @@
 			</model>
 		</model>
 		<model name="larva" type="UniSim::Stage">
-			<parameter name="duration" value="150"/>
+			<parameter name="duration" value="21"/>
 			<parameter name="k" value="30"/>
-			<model name="time" type="UniSim::DayDegrees">
-				<parameter name="T0" value="12.5"/>
-				<parameter name="Topt" value="40"/>
-				<parameter name="Tmax" value="40"/>
-			</model>
+			<model name="time" type="UniSim::Days"/>
 		</model>
 		<model name="pupa" type="UniSim::Stage">
 			<parameter name="duration" value="7"/>

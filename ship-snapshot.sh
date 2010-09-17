@@ -12,7 +12,7 @@ else
 	# update config.pri with new version before archiving
 	
 	# Update github
-	git tag $version
+#	git tag $version
 	git push origin master
 	git push origin refs/tags/$version
 

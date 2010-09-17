@@ -19,9 +19,9 @@
 	<model name="weather" type="intercom::Weather">
 		<parameter name="fileName" value="flakkebjerg 2005-06.txt"/>
 		<parameter name="firstDate" value="1/1/2005"/>
-		<parameter name="colTmin" value="3"/>
-		<parameter name="colTmax" value="4"/>
-		<parameter name="colIrradiationMJ" value="6"/>
+		<parameter name="Tmin" value="3"/>
+		<parameter name="Tmax" value="4"/>
+		<parameter name="IrradiationMJ" value="6"/>
 	</model>
 
 	<model name="field" type="intercom::Community">
@@ -65,6 +65,9 @@
 	</model>
 
 	<!-- Outputs on file -->
+
+	<output type="intercom::file">
+		<parameter name="filename" value="intercom_details.prn"/>
 
 	<output type="table">
 		<parameter name="filename" value="intercom.prn"/>

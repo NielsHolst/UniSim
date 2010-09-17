@@ -15,6 +15,7 @@ HEADERS += \
 	insect2.h \
     insect4.h \
     insect6.h \
+    insect7.h \
     weather.h
 
 SOURCES += \
@@ -25,5 +26,6 @@ SOURCES += \
     insect2.cpp \
     insect4.cpp \
     insect6.cpp \
+    insect7.cpp \
     weather.cpp
 

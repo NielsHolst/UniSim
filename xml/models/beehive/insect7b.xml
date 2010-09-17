@@ -18,7 +18,7 @@
 		<parameter name="firstDate" value="1/5/1996"/>
 	</model>
 
-	<model name="insect" type="Beehive::Insect6">
+	<model name="insect" type="Beehive::Insect7">
 		<parameter name="initEggs" value="100"/>
 		<model name="egg" type="UniSim::Stage">
 			<parameter name="duration" value="20"/>
@@ -35,14 +35,15 @@
 				<parameter name="Tlow" value="21"/>
 			</model>
 		</model>
-		<model name="larva" type="UniSim::Stage">
-			<parameter name="duration" value="150"/>
+		<model name="larva1" type="UniSim::Stage">
+			<parameter name="duration" value="5"/>
 			<parameter name="k" value="30"/>
-			<model name="time" type="UniSim::DayDegrees">
-				<parameter name="T0" value="12.5"/>
-				<parameter name="Topt" value="40"/>
-				<parameter name="Tmax" value="40"/>
-			</model>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="larva2" type="UniSim::Stage">
+			<parameter name="duration" value="15"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
 		</model>
 		<model name="pupa" type="UniSim::Stage">
 			<parameter name="duration" value="7"/>
@@ -66,7 +67,8 @@
 		<parameter name="title" value="Insect stages"/>
 		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
 		<variable label="Egg" axis="y" value="insect/egg[number]"/>
-		<variable label="Larva" axis="y" value="insect/larva[number]"/>
+		<variable label="Larva1" axis="y" value="insect/larva1[number]"/>
+		<variable label="Larva2" axis="y" value="insect/larva2[number]"/>
 		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
 		<variable label="Adult" axis="y" value="insect/adult[number]"/>
 	</output>

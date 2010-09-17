@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="60"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="cats"/>
+			<model name="mice"/>
+			<model name="rats"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>
+
+	<model name="cats" type="barn::Predator">
+		<parameter name="Ninit" value="1.02136"/>
+		<parameter name="r" value="1.02122"/>
+		<parameter name="K" value="113.627"/>
+	</model>
+
+	<model name="mice" type="barn::Prey">
+		<parameter name="Ninit" value="4.66906"/>
+		<parameter name="r" value="1.06908"/>
+		<parameter name="K" value="101.444"/>
+	</model>
+
+	<model name="rats" type="barn::Prey">
+		<parameter name="Ninit" value="1.97855"/>
+		<parameter name="r" value="1.04333"/>
+		<parameter name="K" value="108.597"/>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value ="Cats"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="Density" value="cats[N]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Mice"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="Density" value="mice[N]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Rats"/>
+		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="y" label="Density" value="rats[N]"/>
+	</output>
+</simulation>

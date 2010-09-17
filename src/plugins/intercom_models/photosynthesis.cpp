@@ -17,7 +17,7 @@ namespace intercom{
 
 
 Photosynthesis::Photosynthesis(QObject *parent)
-    : QObject(parent), calendar(0)
+    : QObject(parent)
 {
     for (int i = 0; i < 3; ++i)
         timeSlices.append(new TimeSlice(i, this));

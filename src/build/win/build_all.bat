@@ -15,14 +15,27 @@
 @echo Press Ctrl+C to break. Or:
 @pause
 
+@rem Prepare system path for compiling
+call %QTENV%
+
+@rem Erase all exe and dll targets
+call clean_targets.bat
+
+@rem Make own tools
+call make_tool update_settings
+call make_tool write_clean_ephemerals
+call make_tool write_plugins_project
+call make_tool write_unisim_root
+
 @rem Generate batch and project files
-..\own_tools\write_unisim_root
 ..\own_tools\write_clean_ephemerals
 ..\own_tools\write_plugins_project
+..\own_tools\write_unisim_root
 
-call %QTENV%
+@rem Clean build folders
 call clean_ephemerals.bat
-call clean_targets.bat
+
+@rem Build UniSim
 pushd ..\..
 qmake build_all.pro
 @echo .
@@ -40,7 +53,7 @@ call clean_ephemerals.bat
 @echo *** Finished build ***
 @echo .
 
-@rem Generate batch and project files
+@rem Update registry settings
 ..\own_tools\update_settings
 @echo .
 @echo *** Updated registry for UniSim ***

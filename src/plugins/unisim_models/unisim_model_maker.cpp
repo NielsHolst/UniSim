@@ -85,8 +85,8 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     desc["Stage"] =
     "The @F Stage model has an a distributed delay routine @Cite{$manetsch, $vansickle} inside. "
     "The implementation follows the original FORTRAN code @Cite{$abkin}. The two parameters @F "
-    "duration and @F k determine the average and variance of stage duration with variance equa to"
-    "@Math {@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
+    "duration and @F k determine the average and variance of stage duration with variance equal to "
+    "@Math{@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
     "determined by an obligatory child model named @F {time}.";
 
     desc["TriggerByDate"] =

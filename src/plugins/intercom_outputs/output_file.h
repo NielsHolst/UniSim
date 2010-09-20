@@ -29,7 +29,7 @@ private:
 
     // methods
     void openFile();
-    write(QString s);
+    void write(QString s);
     void writeCR();
     void writeTab();
 };

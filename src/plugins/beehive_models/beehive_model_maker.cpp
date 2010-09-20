@@ -13,6 +13,9 @@
 #include "insect4.h"
 #include "insect6.h"
 #include "insect7.h"
+#include "insect8.h"
+#include "larva_survival.h"
+#include "pollen.h"
 #include "weather.h"
 
 using namespace UniSim;
@@ -76,6 +79,15 @@ const QMap<Identifier, QString>& BeehiveModelMaker::supportedClasses() {
     "This model is more flexible. There can be any number of life stages, however, among them"
     "two stages named 'egg' and 'adult' must exist";
 
+    desc["Insect8"] =
+    "This model has been extended with larval survival depending on pollen supply";
+
+    desc["LarvaSurvival"] =
+    "Larva survival depends on the supply of pollen";
+
+    desc["Pollen"] =
+    "Pollen is the resource for the larvae. It has logistic growth.";
+
     desc["Weather"] =
     "This model provides daily average temperature.";
 
@@ -104,6 +116,12 @@ Model* BeehiveModelMaker::create(Identifier modelType, Identifier objectName, QO
         model = new Insect6(objectName, parent);
     else if (modelType.equals("Insect7"))
         model = new Insect7(objectName, parent);
+    else if (modelType.equals("Insect8"))
+        model = new Insect8(objectName, parent);
+    else if (modelType.equals("LarvaSurvival"))
+        model = new LarvaSurvival(objectName, parent);
+    else if (modelType.equals("Pollen"))
+        model = new Pollen(objectName, parent);
     else if (modelType.equals("Weather"))
         model = new Weather(objectName, parent);
     return model;

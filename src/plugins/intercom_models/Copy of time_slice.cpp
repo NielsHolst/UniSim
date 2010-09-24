@@ -9,30 +9,20 @@
 #include <usbase/utilities.h>
 #include "constants.h"
 #include "plant.h"
-#include "plant_layers.h"
 #include "time_slice.h"
 
 using namespace UniSim;
 
 namespace intercom{
 
-TimeSlice::TimeSlice(Identifier name, QObject *parent, int slice_)
-    : NamedObject(name, parent), slice(slice_)
+TimeSlice::TimeSlice(int slice_, QObject *parent)
+    : QObject(parent), calendar(0), slice(slice_)
 {
 }
 
-void TimeSlice::initialize() {
-    calendar = seekOne<Model*>("calendar");
-    QList<Plant*> plants = seekMany<Plant*>("*");
-    for (int i = 0; i < plants.size(); ++i) {
-        QString name = plants[i]->id().label() + "Layers";
-        PlantLayers *layers = new PlantLayers(name , this);
-        plantLayers.append(layers);
-        layers->initialize();
-    }
-}
-
 PhotosyntheticRate TimeSlice::calcPhotosynthesis() {
+    lookup();
+
     double dayLength = calendar->pullVariable<double>("dayLength");
     double hour = 12. + 0.5*dayLength*XGAUSS3[slice];
     clock()->doTick(hour);
@@ -44,6 +34,18 @@ PhotosyntheticRate TimeSlice::calcPhotosynthesis() {
     result *= dayLength*WGAUSS3[slice];
     cout << " TimeSlice::calcPhotosynthesis() result = " << result.absorption() << " " << result.assimilation() << "\n";
     return result;
+}
+
+void TimeSlice::lookup() {
+        if (!calendar)
+            calendar = seekOne<Model*>("calendar");
+        if (plants.size() == 0)
+            plants = seekMany<Plant*>("*");
+
+/*    if (!calendar)
+        calendar = seekOneDescendant<Model*>("calendar", simulationObject());
+    if (plants.size() == 0)
+        plants = seekDescendants<Plant*>("*", simulationObject());*/
 }
 
 } //namespace

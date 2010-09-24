@@ -2,7 +2,7 @@
 <simulation version="1.0">
 
      <integrator type="TimeStepLimited">
-         <parameter name="maxSteps" value="365"/>
+         <parameter name="maxSteps" value="10"/>
          <sequence>
              <model name="calendar"/>
              <model name="weather"/>
@@ -68,6 +68,7 @@
 
 	<output type="intercom::file">
 		<parameter name="filename" value="intercom_details.prn"/>
+	</output>
 
 	<output type="table">
 		<parameter name="filename" value="intercom.prn"/>

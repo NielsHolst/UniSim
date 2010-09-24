@@ -9,9 +9,7 @@
 
 #include <QMap>
 #include <QObject>
-#include "exception.h"
-#include "identifier.h"
-#include "utilities.h"
+#include "named_object.h"
 
 namespace UniSim{
 
@@ -19,7 +17,7 @@ class ParameterBase;
 class PullVariableBase;
 
 
-class Component : public QObject
+class Component : public NamedObject
 {
 	Q_OBJECT
 public:
@@ -48,22 +46,8 @@ public:
     void deepCleanup();
     void deepDebrief();
 
-    Identifier id() const;
-    QString fullName() const;
-
     void setRecursionPolicy(Function function, RecursionPolicy policy);
     RecursionPolicy recursionPolicy(Function function) const;
-
-    template <class T> T seekOneChild(QString name);
-    template <class T> QList<T> seekChildren(QString name);
-
-    template <class T> T seekOneSibling(QString name);
-    template <class T> QList<T> seekSiblings(QString name);
-
-    template <class T> T seekOneDescendant(QString name);
-    template <class T> QList<T> seekDescendants(QString name);
-
-    template <class T> T seekOneAscendant(QString name);
 
 signals:
     //! Signal provided for derived classes
@@ -85,58 +69,6 @@ private:
 };
 
 typedef QList<Component*> Components;
-
-
-//! Finds exactly one child (n==1)
-template <class T> T Component::seekOneChild(QString name) {
-    return UniSim::seekOneChild<T>(name, this);
-}
-
-//! Finds a number (n>=0) of children
-template <class T> QList<T> Component::seekChildren(QString name) {
-    return UniSim::seekChildren<T>(name, this);
-}
-
-//! Finds exactly one sibling (n==1)
-template <class T> T Component::seekOneSibling(QString name) {
-    if (!parent())
-        throw UniSim::Exception(objectName() + " has no siblings");
-    T sibling = UniSim::seekOneChild<T>(name, parent());
-    if (sibling == this)
-        throw UniSim::Exception(objectName() + " has no sibling with name " + name);
-    return sibling;
-}
-
-//! Finds a number (n>=0) of siblings
-template <class T> QList<T> Component::seekSiblings(QString name) {
-    if (!parent())
-        throw UniSim::Exception(objectName() + " has no siblings");
-    QList<T> siblingsAndMe = UniSim::seekChildren<T>(name, parent());
-
-    QList<T> siblings;
-    for (int i=0; i < siblingsAndMe.size(); ++i) {
-        T sib = siblingsAndMe[i];
-        if (sib != this)
-            siblings.append(sib);
-    }
-    return siblings;
-}
-
-//! Finds exactly one descendant (n==1)
-template <class T> T Component::seekOneDescendant(QString name) {
-    return UniSim::seekOneDescendant<T>(name, this);
-}
-
-//! Finds a number (n>=0) of descendant
-template <class T> QList<T> Component::seekDescendants(QString name) {
-    return UniSim::seekDescendants<T>(name, this);
-}
-
-//! Finds exactly one ascendant (n==1)
-template <class T> T Component::seekOneAscendant(QString name) {
-    return UniSim::seekOneAscendant<T>(name, this);
-}
-
 
 } //namespace
 

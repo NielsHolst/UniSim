@@ -4,22 +4,36 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QSettings>
-
 #include "file_location_info.h"
+#include "version.h"
 
-namespace {
-    #ifdef UNISIM_DEVELOPMENT
-        const char GROUP[] = "Development file locations";
-    #else
-        const char GROUP[] = "File locations";
-    #endif
-}
+const char DEV_GROUP[] = "Development file locations";
+const char USER_GROUP[] = "File locations";
 
-namespace UniSim{
+namespace UniSim {
 
+// static data
 QMap<FileLocationInfo::FileType, QString>
     FileLocationInfo::labels,
     FileLocationInfo::hints;
+
+// member functions
+
+
+void FileLocationInfo::initialize() {
+    if (isDeveloperVersion() && !contains(DotTool) && contains(DotTool, otherGroup())) {
+        QDir dir = getLocation(DotTool, otherGroup());
+        setLocation(DotTool, dir);
+    }
+}
+
+QString FileLocationInfo::group() {
+    return isDeveloperVersion() ? DEV_GROUP : USER_GROUP;
+}
+
+QString FileLocationInfo::otherGroup() {
+    return isDeveloperVersion() ? USER_GROUP : DEV_GROUP;
+}
 
 QString FileLocationInfo::label(FileType fileType) {
     if (labels.isEmpty())
@@ -74,7 +88,7 @@ void FileLocationInfo::setHints() {
 void FileLocationInfo::setLocation(FileType fileType, QDir location) {
     QSettings settings;
     QString key = label(fileType);
-    settings.beginGroup(GROUP);
+    settings.beginGroup(group());
     settings.setValue(key, location.absolutePath());
 }
 
@@ -83,18 +97,26 @@ void FileLocationInfo::setLocation(FileType fileType, QString filePath) {
 }
 
 QDir FileLocationInfo::getLocation(FileType fileType) {
+    return getLocation(fileType, group());
+}
+
+QDir FileLocationInfo::getLocation(FileType fileType, QString group) {
     QSettings settings;
     QString key = label(fileType);
     QDir dir;
-    settings.beginGroup(GROUP);
+    settings.beginGroup(group);
     if (settings.contains(key))
         dir = QDir(settings.value(key).toString() );
     return dir;
 }
 
 bool FileLocationInfo::contains(FileType fileType) {
+    return contains(fileType, group());
+}
+
+bool FileLocationInfo::contains(FileType fileType, QString group) {
     QSettings settings;
-    settings.beginGroup(GROUP);
+    settings.beginGroup(group);
     return settings.contains(label(fileType));
 }
 

@@ -8,7 +8,9 @@
 #include "output_file.h"
 #include "intercom_output_maker.h"
 
-namespace UniSim{
+using namespace UniSim;
+
+namespace intercom{
 
 UniSim::Identifier IntercomOutputMaker::pluginName() const {
     return "intercom";

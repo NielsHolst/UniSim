@@ -11,6 +11,7 @@ namespace UniSim {
 
 class Identifier {
 public:
+    Identifier();
     Identifier(QString label);
     Identifier(const char *label);
     QString key() const;

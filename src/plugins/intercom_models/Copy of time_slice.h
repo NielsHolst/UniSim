@@ -6,7 +6,6 @@
 #ifndef INTERCOM_TIME_SLICE
 #define INTERCOM_TIME_SLICE
 #include <QObject>
-#include <usbase/named_object.h>
 #include "photosynthetic_rate.h"
 
 namespace UniSim {
@@ -15,26 +14,20 @@ namespace UniSim {
 
 namespace intercom{
 
-class PlantLayers;
 class Plant;
 
-class TimeSlice : public UniSim::NamedObject
+class TimeSlice : public QObject
 {
 	Q_OBJECT
 public: 
-    TimeSlice(UniSim::Identifier name, QObject *parent, int slice);
-    void initialize();
+    TimeSlice(int slice, QObject *parent);
     PhotosyntheticRate calcPhotosynthesis();
 private:
-    // state
-    int slice;
-
-    // children
-    QList<PlantLayers*> plantLayers;
-
-    // links
     QList<Plant*> plants;
     UniSim::Model *calendar;
+    int slice;
+
+    void lookup();
 };
 
 } //namespace

@@ -25,13 +25,14 @@ HEADERS += \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
     $${US_PLUGINS}/intercom_models/area.h \
-    $${US_PLUGINS}/intercom_models/canopy_layer.h \
     $${US_PLUGINS}/intercom_models/community.h \
+    $${US_PLUGINS}/intercom_models/layer.h \
     $${US_PLUGINS}/intercom_models/light_components.h \
     $${US_PLUGINS}/intercom_models/organ.h \
     $${US_PLUGINS}/intercom_models/photosynthesis.h \
     $${US_PLUGINS}/intercom_models/photosynthetic_rate.h \
     $${US_PLUGINS}/intercom_models/plant.h \
+    $${US_PLUGINS}/intercom_models/plant_layers.h \
     $${US_PLUGINS}/intercom_models/time_slice.h \
     $${US_PLUGINS}/intercom_models/weather.h \
 #    $${US_PLUGINS}/intercom_models/test/test_area.h \
@@ -66,13 +67,14 @@ SOURCES += \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
     $${US_PLUGINS}/intercom_models/area.cpp \
-    $${US_PLUGINS}/intercom_models/canopy_layer.cpp \
     $${US_PLUGINS}/intercom_models/community.cpp \
+    $${US_PLUGINS}/intercom_models/layer.cpp \
     $${US_PLUGINS}/intercom_models/light_components.cpp \
     $${US_PLUGINS}/intercom_models/organ.cpp \
     $${US_PLUGINS}/intercom_models/photosynthesis.cpp \
     $${US_PLUGINS}/intercom_models/photosynthetic_rate.cpp \
     $${US_PLUGINS}/intercom_models/plant.cpp \
+    $${US_PLUGINS}/intercom_models/plant_layers.cpp \
     $${US_PLUGINS}/intercom_models/time_slice.cpp \
     $${US_PLUGINS}/intercom_models/weather.cpp \
 #    $${US_PLUGINS}/intercom_models/test/test_area.cpp \

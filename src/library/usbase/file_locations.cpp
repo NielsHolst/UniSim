@@ -13,6 +13,7 @@ namespace UniSim{
 FileLocations* FileLocations::_me = 0;
 
 FileLocations::FileLocations() {
+    FileLocationInfo::initialize();
 }
 
 FileLocations* FileLocations::me() {

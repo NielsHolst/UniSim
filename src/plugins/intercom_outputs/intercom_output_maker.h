@@ -8,11 +8,15 @@
 
 #include <usbase/output_maker_plug_in.h>
 
-namespace UniSim{
+namespace UniSim
+{
+    class ObjectPool;
+    class Output;
+}
 
-class ObjectPool;
+namespace intercom{
 
-class IntercomOutputMaker : public QObject, public OutputMakerPlugIn
+    class IntercomOutputMaker : public QObject, public UniSim::OutputMakerPlugIn
 {
 	Q_OBJECT
     Q_INTERFACES(UniSim::OutputMakerPlugIn)
@@ -22,9 +26,9 @@ public:
     QStringList authors() const;
     const QMap<UniSim::Identifier, QString>& supportedClasses();
 
-    void useObjectPool(ObjectPool *pool) const;
+    void useObjectPool(UniSim::ObjectPool *pool) const;
 
-    Output* create(Identifier outputType, Identifier objectName, QObject *parent=0);
+    UniSim::Output* create(UniSim::Identifier outputType, UniSim::Identifier objectName, QObject *parent=0);
 };
 
 } //namespace

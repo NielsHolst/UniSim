@@ -93,7 +93,7 @@
 	<output type="plot">
 		<parameter name="title" value="Pollen"/>
 		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
-		<variable label="Mass" axis="y" value="pollen[mass]"/>
+		<variable label="Pollen" axis="y" value="pollen[mass]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value="Temperature"/>

@@ -16,6 +16,7 @@ class FileLocationInfo
 
 public:
     enum FileType {Plugins, DotTool, Models, Output, Prototypes, Temporary, Weather, NumLocations};
+    static void initialize();
     static QString label(FileType fileType);
     static QString hint(FileType fileType);
     static void setLocation(FileType fileType, QDir location);
@@ -23,9 +24,17 @@ public:
     static QDir getLocation(FileType fileType);
     static bool contains(FileType fileType);
 private:
+    static QMap<FileType, QString> labels, hints;
+
     static void setLabels();
     static void setHints();
-    static QMap<FileType, QString> labels, hints;
+
+    static QDir getLocation(FileType fileType, QString group);
+    static bool contains(FileType fileType, QString group);
+
+
+    static QString group();
+    static QString otherGroup();
 };
 
 }

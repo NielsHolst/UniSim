@@ -12,6 +12,7 @@
 #include <usbase/model.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
+#include <usbase/version.h>
 #include <usengine/documentation_writer.h>
 #include <usengine/prototype_maker.h>
 #include <usengine/plot_widget.h>  // test
@@ -129,7 +130,7 @@ void MainWindow::setTitle(QString subTitle) {
     if (!subTitle.isEmpty()) title = subTitle + "  -  ";
 
     title += "Universal Simulator ";
-    title += versionText();
+    title += versionExtended();
     setWindowTitle(title);
 }
 
@@ -323,7 +324,7 @@ void MainWindow::doViewLog()
 
 void MainWindow::doHelpAbout() {
     QString text =
-        "Universal Simulator (UniSim) " + versionText() + "\n\n"
+        "Universal Simulator (UniSim) " + versionExtended() + "\n\n"
         "Copyright (C) 2009-2010 by Niels Holst [niels.holst@agrsci.dk] and co-authors. Copyrights reserved.\n\n"
         "Released under the terms of the GNU General Public License version 3.0 or later. "
         "See www.gnu.org/copyleft/gpl.html.";
@@ -348,8 +349,4 @@ void MainWindow::liveSimulatorStateChanged(int iOldState, int iNewState) {
 		setPermanentMessage("Busy...");
 		statusBar()->showMessage(LiveSimulation::stateText(newState));	
 	}
-}
-
-QString MainWindow::versionText() const {
-    return version() + ( isDeveloperVersion() ? ".x" : "" );
 }

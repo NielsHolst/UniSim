@@ -16,7 +16,6 @@
 #include <usengine/simulation.h>
 #include "model.h"
 #include "utilities.h"
-#include "version.h"
 
 /*! \namespace UniSim
     \brief Contains all classes, global functions and definitions.
@@ -25,22 +24,6 @@
 using namespace std;
 
 namespace UniSim {
-
-//
-// Versioning
-//
-
-QString version() {
-    return VERSION;
-}
-
-bool isDeveloperVersion() {
-#ifdef UNISIM_DEVELOPMENT
-    return true;
-#else
-    return false;
-#endif
-}
 
 //
 // Navigation

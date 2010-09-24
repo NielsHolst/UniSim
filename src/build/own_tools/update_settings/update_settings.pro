@@ -13,9 +13,11 @@ RC_FILE = ../../../icon/unisim.rc
 
 HEADERS += \
     $${US_BASE}/file_location_info.h \
+    $${US_BASE}/version.h \
     ../common/common.h
 
 SOURCES += \
     $${US_BASE}/file_location_info.cpp \
+    $${US_BASE}/version.cpp \
     ../common/common.cpp \
     main.cpp

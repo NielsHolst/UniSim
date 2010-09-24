@@ -13,7 +13,6 @@
 
 namespace intercom{
 
-class CanopyLayer;
 class Organ;
 
 class Plant : public UniSim::Model
@@ -22,21 +21,18 @@ class Plant : public UniSim::Model
 public: 
 	Plant(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
-
+    void reset();
+    void update();
     // special methods
     PhotosyntheticRate calcPhotosynthesis();
 
 private:
-	// parameters
+    // pull variables
+    double heights[5],
+        ELAIdiffuse[5], ELAIdirectdirect[5], ELAIdirecttotal[5] ;
 
 	// state
     PhotosyntheticRate photosyntheticRate;
-
-    // children
-    QList<CanopyLayer*> canopyLayers;
-
-    // links
-    UniSim::Models childrenToUpdate;
 };
 
 } //namespace

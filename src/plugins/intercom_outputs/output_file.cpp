@@ -6,11 +6,15 @@
 #include <iostream>
 #include <QTextStream>
 #include <usbase/file_locations.h>
+#include <usbase/model.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter.h>
+#include "../intercom_models/plant.h"
 #include "output_file.h"
 
-namespace UniSim{
+using namespace UniSim;
+
+namespace intercom{
 	
 OutputFile::OutputFile(Identifier name, QObject *parent)
     : Output(name, parent)
@@ -18,10 +22,23 @@ OutputFile::OutputFile(Identifier name, QObject *parent)
     new Parameter<QString>("fileName", &fileName, QString("output_intercom.prn"), this, "description");
 }
 
+void OutputFile::initialize() {
+    Output::initialize();
+    plant = seekOne<Plant*>("*");
+}
+
 void OutputFile::cleanup() {
     openFile();
-    write("INTERCOM Test Output");
-    writeCR();
+    write("INTERCOM Details\n\n");
+    write("Canopy layers height\n");
+    for (int i = 0; i < 5; ++i) {
+        const double *heights = plant->pullVariablePtr<double>("heights");
+        write(QString::number(i) + "\t" + heights[i] + "\n");
+    }
+    write("Canopy layer ELAI above\n");
+    for (int i = 0; i < 5; ++i) {
+        write(QString::number(i) + "\n");
+    }
     file.close();
 }
 

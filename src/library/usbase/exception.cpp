@@ -27,7 +27,7 @@ QString Exception::message() const
 {
     QString msg = _message;
     if (concerning)
-        msg += "\nConcerning:\n" + fullName(concerning);
+        msg += "\nConcerning: " + fullName(concerning);
     return msg;
 }
 

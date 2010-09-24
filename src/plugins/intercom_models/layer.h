@@ -3,10 +3,11 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef INTERCOM_TIME_SLICE
-#define INTERCOM_TIME_SLICE
+#ifndef INTERCOM_LAYER
+#define INTERCOM_LAYER
 #include <QObject>
 #include <usbase/named_object.h>
+#include "light_components.h"
 #include "photosynthetic_rate.h"
 
 namespace UniSim {
@@ -15,26 +16,27 @@ namespace UniSim {
 
 namespace intercom{
 
-class PlantLayers;
+class Area;
 class Plant;
 
-class TimeSlice : public UniSim::NamedObject
+class Layer : public UniSim::NamedObject
 {
 	Q_OBJECT
 public: 
-    TimeSlice(UniSim::Identifier name, QObject *parent, int slice);
+    Layer(UniSim::Identifier name, QObject *parent, int layer);
     void initialize();
     PhotosyntheticRate calcPhotosynthesis();
+    LightComponents calcEffectiveAreaAbove(double height);
+    LightComponents ELAI();
+    double height() const;
+
 private:
     // state
-    int slice;
-
-    // children
-    QList<PlantLayers*> plantLayers;
+    int layer;
 
     // links
-    QList<Plant*> plants;
-    UniSim::Model *calendar;
+    QList<Area*> allAreas, plantAreas;
+    UniSim::Model *plantHeight, *calendar;
 };
 
 } //namespace

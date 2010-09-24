@@ -3,7 +3,6 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "area.h"
 #include "canopy_layer.h"
@@ -26,14 +25,12 @@ PhotosyntheticRate CanopyLayer::calcPhotosynthesis() {
     if (calendar->pullVariable<double>("sinb") == 0.)
         return PhotosyntheticRate();
 
-    double plHeight = plantHeight->pullVariable<double>("height");
-    double height = plHeight*XGAUSS5[layer];
-
-    LightComponents eaa = calcEffectiveAreaAbove(height);
+    LightComponents eaa = calcEffectiveAreaAbove( height() );
 
     PhotosyntheticRate result;
+    double h = height();
     for (int i = 0; i < plantAreas.size(); ++i) {
-        double leafDensity = plantAreas[i]->atHeight(height);
+        double leafDensity = plantAreas[i]->atHeight(h);
         PhotosyntheticRate areaResult = plantAreas[i]->calcPhotosynthesis(eaa);
         areaResult *= leafDensity;
         result += areaResult;
@@ -43,6 +40,7 @@ PhotosyntheticRate CanopyLayer::calcPhotosynthesis() {
         */
     }
 
+    double plHeight = plantHeight->pullVariable<double>("height");
     result *= plHeight*WGAUSS5[layer];
     cout << " CanopyLayer::calcPhotosynthesis() result = " << result.absorption() << " " << result.assimilation() << "\n";
 
@@ -54,6 +52,21 @@ LightComponents CanopyLayer::calcEffectiveAreaAbove(double height) {
     LightComponents eaa;
     for (int i = 0; i < allAreas.size(); ++i)
         eaa += allAreas[i]->calcEffectiveAreaAbove(height);
+    return eaa;
+}
+
+double CanopyLayer::height() const {
+    lookup();
+    double plHeight = plantHeight->pullVariable<double>("height");
+    return plHeight*XGAUSS5[layer];
+}
+
+LightComponents CanopyLayer::ELAI() {
+    lookup();
+    LightComponents eaa;
+    double h = height();
+    for (int i = 0; i < allAreas.size(); ++i)
+        eaa += allAreas[i]->calcEffectiveAreaAbove(h);
     return eaa;
 }
 

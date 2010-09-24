@@ -3,8 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UniSim_UTILITIES_H
-#define UniSim_UTILITIES_H
+#ifndef UNISIM_UTILITIES_H
+#define UNISIM_UTILITIES_H
 
 #include <cmath>
 #include <cfloat>
@@ -33,13 +33,6 @@ const double MAX_EXP = -log(DBL_EPSILON);
 const double MIN_EXP = -log(1. - DBL_EPSILON);
 
 class Model;
-
-//! @name Versioning
-//@{
-QString version();
-bool isDeveloperVersion();
-
-//@}
 
 //! @name Navigation
 //@{

@@ -14,10 +14,10 @@ HEADERS += \
     assimilation_max_given_temp_sla.h \
     intercom_model_maker.h \
     area.h \
-    canopy_layer.h \
     community.h \
     constants.h \
     height.h \
+    layer.h \
     leaf_stem_ratio.h \
     light_components.h \
     light_use_efficiency_given_temp.h \
@@ -25,6 +25,7 @@ HEADERS += \
     photosynthesis.h \
     photosynthetic_rate.h \
     plant.h \
+    plant_layers.h \
     specific_leaf_area.h \
     time_slice.h \
     weather.h
@@ -36,9 +37,9 @@ SOURCES += \
     assimilation_max_given_temp_sla.cpp \
     intercom_model_maker.cpp \
     area.cpp \
-    canopy_layer.cpp \
     community.cpp \
     height.cpp \
+    layer.cpp \
     leaf_stem_ratio.cpp \
     light_components.cpp	\
     light_use_efficiency_given_temp.cpp \
@@ -46,6 +47,7 @@ SOURCES += \
     photosynthesis.cpp \
     photosynthetic_rate.cpp \
     plant.cpp \
+    plant_layers.cpp \
     specific_leaf_area.cpp \
     time_slice.cpp \
     weather.cpp

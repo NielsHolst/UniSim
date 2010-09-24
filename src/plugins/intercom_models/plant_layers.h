@@ -3,29 +3,25 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef INTERCOM_PHOTOSYNTHESIS
-#define INTERCOM_PHOTOSYNTHESIS
+#ifndef INTERCOM_PLANT_LAYERS
+#define INTERCOM_PLANT_LAYERS
 #include <QObject>
-#include "photosynthetic_rate.h"
-
-namespace UniSim {
-    class Model;
-}
+#include <usbase/named_object.h>
 
 namespace intercom{
 
-class TimeSlice;
+class Layer;
 
-class Photosynthesis : public QObject
+class PlantLayers : public UniSim::NamedObject
 {
 	Q_OBJECT
 public: 
-    Photosynthesis(QObject *parent);
+    PlantLayers(UniSim::Identifier name, QObject *parent);
     void initialize();
-    PhotosyntheticRate calculate();
-
 private:
-    QList<TimeSlice*> timeSlices;
+    // children
+    QList<Layer*> layers;
+
 };
 
 } //namespace

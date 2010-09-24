@@ -3,26 +3,34 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_OUTPUT_TABLE
-#define UNISIM_OUTPUT_TABLE
+#ifndef INTERCOM_OUTPUT_FILE
+#define INTERCOM_OUTPUT_FILE
 
 #include <QFile>
-#include <QList>
 #include <usbase/output.h>
 
-namespace UniSim{
+namespace UniSim
+{
+    class Model;
+}
 
-class OutputFile : public Output
+namespace intercom{
+
+class OutputFile : public UniSim::Output
 {
 	Q_OBJECT
 public:
-    OutputFile(Identifier name, QObject *parent=0);
+    OutputFile(UniSim::Identifier name, QObject *parent=0);
     // standard methods
+    void initialize();
     void cleanup();
 	
 private:
     // parameters
     QString fileName;
+
+    // links
+    UniSim::Model *plant;
 
     // housekeeping
     QFile file;

@@ -24,6 +24,10 @@
 
 namespace UniSim {
 
+Identifier::Identifier()
+{
+}
+
 Identifier::Identifier(QString label)
     : _label(label)
 {

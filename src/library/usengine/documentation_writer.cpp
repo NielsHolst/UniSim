@@ -15,6 +15,7 @@
 #include <usbase/pull_variable_base.h>
 #include <usbase/push_variable_base.h>
 #include <usbase/utilities.h>
+#include <usbase/version.h>
 #include "documentation_writer.h"
 #include "model_maker.h"
 

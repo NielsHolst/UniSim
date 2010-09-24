@@ -31,15 +31,8 @@ public:
 
 
 private:
-	// parameters
-
-	// state
-    double grossLightAbsorption, grossAssimilation;
-
-    // models
+    // children
     Photosynthesis *photosynthesis;
-    QList<Plant*> plants;
-    QList<Area*> areas;
 };
 
 } //namespace

@@ -15,12 +15,18 @@ using namespace UniSim;
 
 namespace intercom{
 
-
 Photosynthesis::Photosynthesis(QObject *parent)
     : QObject(parent)
 {
-    for (int i = 0; i < 3; ++i)
-        timeSlices.append(new TimeSlice(i, this));
+}
+
+void Photosynthesis::initialize() {
+    for (int i = 0; i < 3; ++i) {
+        QString name = "slice" + QString::number(i);
+        TimeSlice *slice = new TimeSlice(name, this, i);
+        timeSlices.append(slice);
+        slice->initialize();
+    }
 }
 
 PhotosyntheticRate Photosynthesis::calculate() {

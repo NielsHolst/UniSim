@@ -60,9 +60,8 @@
 namespace UniSim{
 
 Component::Component(Identifier name, QObject *parent)
-    : QObject(parent), _id(name)
+    : NamedObject(name, parent)
 {
-    setObjectName(name.key());
     setRecursionPolicy(Component::AllFunctions, Component::ChildrenFirst);
 }
 
@@ -121,16 +120,6 @@ void Component::deepCleanup()
 void Component::deepDebrief()
 {
     call(this, &Component::debrief, &Component::deepDebrief, recursionPolicy(Component::Debrief));
-}
-
-//! Returns component id
-Identifier Component::id() const {
-    return _id;
-}
-
-//! Returns name with full path of all ancestors
-QString Component::fullName() const {
-    return UniSim::fullName(this);
 }
 
 //! Sets the RecursionPolicy

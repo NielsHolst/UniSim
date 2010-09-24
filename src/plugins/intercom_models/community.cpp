@@ -18,14 +18,11 @@ namespace intercom{
 Community::Community(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    photosynthesis = new Photosynthesis(this);
-    new PullVariable<double>("grossLightAbsorption", &grossLightAbsorption, this, "description");
-    new PullVariable<double>("grossAssimilation", &grossAssimilation, this, "description");
 }
 
 void Community::initialize() {
-    plants = seekChildren<Plant*>("*");
-    areas = seekDescendants<Area*>("*");
+    photosynthesis = new Photosynthesis(this);
+    photosynthesis->initialize();
 }
 
 void Community::reset() {
@@ -33,8 +30,6 @@ void Community::reset() {
 
 void Community::update() {
     PhotosyntheticRate psRate = photosynthesis->calculate();
-    grossLightAbsorption = psRate.absorption();
-    grossAssimilation= psRate.assimilation();
 }
 
 } //namespace

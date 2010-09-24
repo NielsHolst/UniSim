@@ -23,14 +23,23 @@ class CanopyLayer : public QObject
 	Q_OBJECT
 public: 
     CanopyLayer(int layer, QObject *parent);
+
+
+    // special methods
     PhotosyntheticRate calcPhotosynthesis();
     LightComponents calcEffectiveAreaAbove(double height);
+    LightComponents ELAI();
+    double height() const;
 
 private:
+    // state
     int layer;
+
+    // links
     QList<Area*> allAreas, plantAreas;
     UniSim::Model *plantHeight, *calendar;
 
+    // methods
     void lookup();
 };
 

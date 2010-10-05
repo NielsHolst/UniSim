@@ -11,17 +11,20 @@
 namespace intercom{
 
 class Layer;
+class Plant;
 
 class PlantLayers : public UniSim::NamedObject
 {
 	Q_OBJECT
 public: 
-    PlantLayers(UniSim::Identifier name, QObject *parent);
+    PlantLayers(UniSim::Identifier name, Plant *plant, QObject *parent);
     void initialize();
+    Plant* plant();
 private:
     // children
     QList<Layer*> layers;
-
+    // links
+    Plant *_plant;
 };
 
 } //namespace

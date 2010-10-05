@@ -31,7 +31,8 @@ void WeatherFile::Column::parseLine(const QStringList &items) {
                         " for variable: " + variableName);
     bool ok;
     int ix = column - 1;
-    value = items[ix].toDouble(&ok);
+    QString item = items[ix].trimmed();
+    value = item.toDouble(&ok);
     if (!ok)
         throw Exception("Value read for variable: " + variableName +
                         "in weather file is not a number: '" + items[ix] + "'");
@@ -40,8 +41,19 @@ void WeatherFile::Column::parseLine(const QStringList &items) {
 WeatherFile::WeatherFile(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<QString>("fileName", &fileName, QString(), this, "description");
-    new Parameter<QDate>("firstDate", &firstDate, QDate(), this, "description");
+    new Parameter<QString>("fileName", &fileName, QString(), this,
+        "Name of weather file. The file will be looked up in the UniSim weather folder (set in the"
+        "File | Locations menu)");
+    new Parameter<QDate>("firstDate", &firstDate, QDate(), this,
+        "Date of first line in the weather file");
+    new Parameter<char>("separator", &separator, '\t', this,
+        "Character that separates columns in the weather file.");
+    new Parameter<bool>("keepEmptyColumns", &keepEmptyColumns, true, this,
+        "Should empty columns be kepped? If true \"12\\t\\t34\" will counts as 3 columns, "
+        "otherwise as 2 columns");
+    new Parameter<int>("headerLines", &headerLines, 0, this,
+        "Number of header lines to skip in weather file. If the file begins with a line of "
+        "column headings, for example, @F headerLines should be @F {1}");
 }
 
 WeatherFile::~WeatherFile() {
@@ -69,13 +81,23 @@ void WeatherFile::reset()
 
     lineNo = 0;
     hasBeenReset = true;
+    for (int i = 0; i < headerLines; ++i)
+        readLine();
+}
+
+bool WeatherFile::readLine() {
+    if (file.atEnd()) return false;
+    line = QString(file.readLine());
+    ++lineNo;
+    return true;
 }
 
 void WeatherFile::update() {
-    if (file.atEnd()) return;
-    QString line = QString(file.readLine()).simplified();
-    ++lineNo;
-    QStringList items = line.split(" ");
+    if (!readLine()) return;
+
+    QString::SplitBehavior behavior =
+            keepEmptyColumns ? QString::KeepEmptyParts : QString::SkipEmptyParts;
+    QStringList items = line.split(separator, behavior);
 
     try {
         for (int i = 0; i < columns.size(); ++i)

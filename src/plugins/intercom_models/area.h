@@ -28,10 +28,10 @@ public:
 
     // special methods
     LightComponents calcEffectiveAreaAbove(double height);
-    PhotosyntheticRate calcPhotosynthesis(LightComponents eaa);
+    PhotosyntheticRate calcPhotosynthesis(double height, LightComponents eaa);
     PhotosyntheticRate calcPhotosynthesisInShade(LightComponents eaa);
-    PhotosyntheticRate calcPhotosynthesisInSun(PhotosyntheticRate psInShade);
-    PhotosyntheticRate calcPhotosynthesisTotal(LightComponents eaa, PhotosyntheticRate psInShade, PhotosyntheticRate psInSun);
+    PhotosyntheticRate calcPhotosynthesisInSun(double absorptionInShade);
+    PhotosyntheticRate calcPhotosynthesisTotal(double height, LightComponents eaa, PhotosyntheticRate psInShade, PhotosyntheticRate psInSun);
 
     LightComponents calcAbsorptionInShade(LightComponents eaa);
 

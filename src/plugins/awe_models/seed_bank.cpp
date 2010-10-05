@@ -83,15 +83,16 @@ void SeedBank::reset()
     density = initialDensity;
     dailyEmergenceRatio = totalEmergenceRatio =
     dailyEmergenceDensity = totalEmergenceDensity = 0;
-    dormantInflow = 0.;
+    dormant = dormantInflow = 0.;
     instantMortality = 0.;
 }
 
 void SeedBank::update()
 {
+    //QMessageBox::information(0, "Test", QString::number(density));
     applyInstantMortality();
     addInflow();
-    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
+    int dayOfYear = calendar->pullVariable<int>("dayOfYear");
     dailyEmergenceRatioPotential = lookupEmergence(dayOfYear);
     cropEffectOnEmergence = calcCropEffectOnEmergence();
     dailyEmergenceRatio = dailyEmergenceRatioPotential*cropEffectOnEmergence;
@@ -108,6 +109,7 @@ void SeedBank::update()
         totalEmergenceDensity += dailyEmergenceDensity;
     }
     total = density + dormant;
+    //QMessageBox::information(0, "Test", QString::number(density));
 }
 
 void SeedBank::applyInstantMortality() {
@@ -123,7 +125,7 @@ void SeedBank::addInflow() {
     dormant += dormantInflow;
     dormantInflow = 0.;
 
-    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
+    int dayOfYear = calendar->pullVariable<int>("dayOfYear");
     if (dayOfYear == 1) {
         density += dormant;
         dormant = 0.;

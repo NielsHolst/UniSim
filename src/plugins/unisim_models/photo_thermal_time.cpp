@@ -19,12 +19,11 @@ void PhotoThermalTime::initialize()
     calendar = seekOne<Model*>("calendar");
 }
 
-void PhotoThermalTime::update()
+double PhotoThermalTime::calcDailyTimeStep()
 {
-    double prevTotal = total;
-    DayDegrees::update();
+    double step =  DayDegrees::calcDailyTimeStep();
     step *= calendar->pullVariable<double>("dayLength")/24.;
-    total = prevTotal + step;
+    return step;
 }
 
 } //namespace

@@ -25,25 +25,39 @@ void TimeSlice::initialize() {
     calendar = seekOne<Model*>("calendar");
     QList<Plant*> plants = seekMany<Plant*>("*");
     for (int i = 0; i < plants.size(); ++i) {
-        QString name = plants[i]->id().label() + "Layers";
-        PlantLayers *layers = new PlantLayers(name , this);
+        Plant *plant = plants[i];
+        QString name = plant->id().label() + "Layers";
+        PlantLayers *layers = new PlantLayers(name , plant, this);
         plantLayers.append(layers);
         layers->initialize();
     }
 }
 
 PhotosyntheticRate TimeSlice::calcPhotosynthesis() {
-    double dayLength = calendar->pullVariable<double>("dayLength");
-    double hour = 12. + 0.5*dayLength*XGAUSS3[slice];
-    clock()->doTick(hour);
-
+    tick();
     PhotosyntheticRate result;
     for (int i = 0; i < plants.size(); ++i)
         result += plants[i]->calcPhotosynthesis();
 
-    result *= dayLength*WGAUSS3[slice];
+    result *= dayLength()*WGAUSS3[slice];
     cout << " TimeSlice::calcPhotosynthesis() result = " << result.absorption() << " " << result.assimilation() << "\n";
     return result;
+}
+
+void TimeSlice::tick() {
+    clock()->doTick(hour());
+}
+
+double TimeSlice::hour() {
+    return 12. + 0.5*dayLength()*XGAUSS3[slice];
+}
+
+double TimeSlice::dayLength() {
+    return calendar->pullVariable<double>("dayLength");
+}
+
+int TimeSlice::index() const {
+    return slice;
 }
 
 } //namespace

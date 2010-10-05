@@ -40,7 +40,6 @@ void Height::updateHeight(double time) {
     if (height < minHeight)
         height = minHeight;
     height = height/100;  // from cm to m
-    height = 0.08;
 }
 
 } //namespace

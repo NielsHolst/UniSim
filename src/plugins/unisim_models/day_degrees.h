@@ -7,25 +7,24 @@
 #define UNISIM_DAY_DEGREES
 #include <QObject>
 #include <usbase/model.h>
+#include "physiological_time.h"
 
 namespace UniSim{
 
-class DayDegrees : public UniSim::Model
+class DayDegrees : public PhysiologicalTime
 {
 	Q_OBJECT
 public: 
     DayDegrees(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
     virtual void initialize();
-    virtual void reset();
-    virtual void update();
+
+    // special methods
+    virtual double calcDailyTimeStep();
 
 protected:
 	// parameters
     double T0, Topt, Tmax;
-
-	// state
-    double step, total;
 
     // models
     UniSim::Model *weather;

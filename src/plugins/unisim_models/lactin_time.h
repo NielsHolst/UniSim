@@ -7,18 +7,21 @@
 #define UNISIM_LACTIN_TIME
 #include <QObject>
 #include <usbase/model.h>
+#include "hydro_thermal_time.h"
+
 
 namespace UniSim{
 
-class LactinTime : public UniSim::Model
+class LactinTime : public PhysiologicalTime
 {
 	Q_OBJECT
 public: 
     LactinTime(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
-	void initialize();
-	void reset();
-	void update();
+    virtual void initialize();
+
+    // special methods
+    virtual double calcDailyTimeStep();
 
 private:
 	// parameters

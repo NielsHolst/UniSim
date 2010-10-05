@@ -83,11 +83,15 @@ namespace {
 	
 	void writeNode(QTextStream *sink, QObject *node, int number)
 	{
-		QString className = node->metaObject()->className();
-        //className.remove("UniSim::");
-		*sink << node->objectName() << number << "[label=\"" << className << "\\n";
-		if (node->objectName() != "anonymous")
+        QString className = node->metaObject()->className();
+        if (className.contains("Anonymous"))
+            className.clear();
+        *sink << node->objectName() << number << "[label=\"" << className;
+        if (node->objectName() != "anonymous") {
+            if (!className.isEmpty())
+                *sink << "\\n";
 			*sink << node->objectName();
+        }
 		*sink << "\"];";
 	}
 	

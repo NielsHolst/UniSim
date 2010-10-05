@@ -4,9 +4,10 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/pull_variable.h>
-#include "light_components.h"
 #include "constants.h"
+#include "light_components.h"
 #include "organ.h"
+#include "photosynthetic_rate.h"
 #include "plant.h"
 
 using namespace UniSim;
@@ -36,7 +37,7 @@ void Plant::reset() {
 }
 
 void Plant::update() {
-    /*
+       /*
     for (int i = 0; i < 5; ++i) {
         heights[i] = canopyLayers[i]->height();
         LightComponents elai = canopyLayers[i]->ELAI();

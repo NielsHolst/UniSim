@@ -240,7 +240,7 @@ void PrototypeMaker::writeClassSourceFile(ClassName className) const{
         << "\nusing namespace UniSim;\n\n"
         << namespaceBegin()
         << className << "::" << className << "(UniSim::Identifier name, QObject *parent)" << '\n'
-        << "\t: Model(name, parent) {" << '\n'
+        << "\t: Model(name, parent)\n{" << '\n'
         << "\tnew Parameter<double>(\"Ninit\", &Ninit, 1., this, \"Description\");" << '\n'
         << "\tnew Parameter<double>(\"K\", &K, 1000., this, \"Description\");" << '\n'
         << "\tnew Parameter<double>(\"r\", &r, 1.2, this, \"Description\");" << '\n'
@@ -477,7 +477,7 @@ void PrototypeMaker::WriteXmlModelFile() const {
     text
         << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << '\n'
         << "<simulation version=\"1.0\">" << '\n'
-        << "\t<integrator type=\"TimeStepLimited\">" << '\n'
+        << "\t<integrator class=\"TimeStepLimited\">" << '\n'
         << "\t\t<parameter name=\"maxSteps\" value=\"60\"/>" << '\n'
         << "\t\t<sequence>" << '\n'
         << xmlModelNames()
@@ -502,13 +502,13 @@ QString PrototypeMaker::xmlModelNames() const {
 
 QString PrototypeMaker::xmlModelClasses() const {
     QString s;
-    s += "\n\t<model name=\"calendar\" type=\"Calendar\">\n"
+    s += "\n\t<model name=\"calendar\" class=\"Calendar\">\n"
          "\t\t<parameter name=\"firstDate\" value=\"1/1/2010\"/>\n"
          "\t</model>\n";
     for (Classes::const_iterator cl = classes.begin(); cl != classes.end(); ++cl) {
         const ObjectNames &objectNames(cl.value());
         for (int i = 0; i < objectNames.size(); ++i) {
-            s += "\n\t<model name=\"" + objectNames[i] + "\" type=\"" + pluginName + "::" + cl.key() + "\">\n";
+            s += "\n\t<model name=\"" + objectNames[i] + "\" class=\"" + pluginName + "::" + cl.key() + "\">\n";
             s += parameter("Ninit", 1, 5);
             s += parameter("r", 1.02, 1.12);
             s += parameter("K", 70, 150);
@@ -523,11 +523,11 @@ QString PrototypeMaker::xmlOutputs() const {
     for (Classes::const_iterator cl = classes.begin(); cl != classes.end(); ++cl) {
         const ObjectNames &objectNames(cl.value());
         for (int i = 0; i < objectNames.size(); ++i) {
-            s += "\t<output type=\"plot\">\n"
+            s += "\t<output class=\"plot\">\n"
                  "\t\t<parameter name=\"title\" value =\"" +
                  makeClassName(objectNames[i]) + "\"/>\n"
 
-                 "\t\t<variable axis=\"x\" label=\"Day\" value=\"calendar[dayInYear]\"/>\n"
+                 "\t\t<variable axis=\"x\" label=\"Day\" value=\"calendar[daysTotal]\"/>\n"
                  "\t\t<variable axis=\"y\" label=\"Density\" value=\"" +
                  objectNames[i] + "[N]\"/>\n"
                  "\t</output>\n";

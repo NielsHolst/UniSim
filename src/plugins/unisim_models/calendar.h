@@ -46,6 +46,7 @@ private:
     double latitude;
     QDate firstDate;
     QString followersAsString;
+    double timeStep;
 
 	// state
     QDate date;

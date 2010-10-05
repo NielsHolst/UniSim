@@ -69,19 +69,20 @@ LightComponents Area::calcEffectiveAreaAbove(double height) {
 LightComponents Area::calc_k() const {
     double scat = sqrt(1 - scatteringCoeff);
     double sinb = calendar->pullVariable<double>("sinb");
-    Q_ASSERT_X(sinb > 0., "Area::calc_k()",
-               qPrintable("sinb = " + QString::number(sinb)));
     LightComponents k;
-    k[Diffuse] = kDiffuse;
-    k[DirectDirect] = 0.5/sinb*kDiffuse/0.8/scat;
-    k[DirectTotal] = k[DirectDirect]*scat;
+
+    if (sinb > 0.) {
+        k[Diffuse] = kDiffuse;
+        k[DirectDirect] = 0.5/sinb*kDiffuse/0.8/scat;
+        k[DirectTotal] = k[DirectDirect]*scat;
+    }
     return k;
 }
 
-PhotosyntheticRate Area::calcPhotosynthesis(LightComponents eaa) {
+PhotosyntheticRate Area::calcPhotosynthesis(double height, LightComponents eaa) {
     PhotosyntheticRate psInShade = calcPhotosynthesisInShade(eaa);
-    PhotosyntheticRate psInSun = calcPhotosynthesisInSun(psInShade);
-    PhotosyntheticRate psTotal = calcPhotosynthesisTotal(eaa, psInShade, psInSun);
+    PhotosyntheticRate psInSun = calcPhotosynthesisInSun(psInShade.absorption());
+    PhotosyntheticRate psTotal = calcPhotosynthesisTotal(height, eaa, psInShade, psInSun);
     cout << " Area::calcPhotosynthesis() psTotal = " << psTotal.absorption() << " " << psTotal.assimilation() << "\n";
     return psTotal;
 }
@@ -141,7 +142,7 @@ double Area::assimilationRate(double absorption) const {
     return amax == 0. ? 0. : amax*(1. - exp(-absorption*efficiency/amax));
 }
 
-PhotosyntheticRate Area::calcPhotosynthesisInSun(PhotosyntheticRate psInShade) {
+PhotosyntheticRate Area::calcPhotosynthesisInSun(double absorptionInShade) {
     double sinb = calendar->pullVariable<double>("sinb");
     double parDirect = weather->pullVariable<double>("parDirect");
     double perpendicular = (1. - scatteringCoeff)*parDirect/sinb;
@@ -150,7 +151,7 @@ PhotosyntheticRate Area::calcPhotosynthesisInSun(PhotosyntheticRate psInShade) {
     double assimilated = 0.;
     // integrate over leaf angles
     for (int i = 0; i<3; i++) {
-        double abso = psInShade.absorption() + perpendicular*XGAUSS3[i];
+        double abso = absorptionInShade + perpendicular*XGAUSS3[i];
         double assi = assimilationRate(abso);
         absorbed += abso*WGAUSS3[i];
         assimilated += assi*WGAUSS3[i];
@@ -158,10 +159,12 @@ PhotosyntheticRate Area::calcPhotosynthesisInSun(PhotosyntheticRate psInShade) {
     return PhotosyntheticRate(absorbed, assimilated);
 }
 
-PhotosyntheticRate Area::calcPhotosynthesisTotal(LightComponents eaa, PhotosyntheticRate psInShade, PhotosyntheticRate psInSun) {
+PhotosyntheticRate Area::calcPhotosynthesisTotal(double height, LightComponents eaa, PhotosyntheticRate psInShade, PhotosyntheticRate psInSun) {
     double sunlit = exp(-eaa.value(DirectDirect));
     double absorbed = sunlit*psInSun.absorption() + (1 - sunlit)*psInShade.absorption();
     double assimilated = sunlit*psInSun.assimilation() + (1 - sunlit)*psInShade.assimilation();
+    absorbed *= atHeight(height);
+    assimilated*= atHeight(height);
     // Finally, convert J/m2/s to MJ/m2/d
     return PhotosyntheticRate(/*3600.*1e-6*/absorbed, assimilated);
 }

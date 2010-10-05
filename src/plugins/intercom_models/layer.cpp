@@ -9,6 +9,7 @@
 #include "community.h"
 #include "constants.h"
 #include "plant.h"
+#include "plant_layers.h"
 
 using namespace UniSim;
 
@@ -25,7 +26,8 @@ void Layer::initialize() {
     Community *community = seekOneAscendant<Community*>("*");
     allAreas = community->seekDescendants<Area*>("*");
 
-    Plant *plant = seekOneAscendant<Plant*>("*");
+    PlantLayers *plantLayers = seekOneAscendant<PlantLayers*>("*");
+    Plant *plant = plantLayers->plant();
     plantHeight = plant->seekOneChild<Model*>("height");
     plantAreas = plant->seekDescendants<Area*>("*");
 }
@@ -34,14 +36,12 @@ PhotosyntheticRate Layer::calcPhotosynthesis() {
     if (calendar->pullVariable<double>("sinb") == 0.)
         return PhotosyntheticRate();
 
-    LightComponents eaa = calcEffectiveAreaAbove( height() );
+    double h = height();
+    LightComponents eaa = calcEffectiveAreaAbove(h);
 
     PhotosyntheticRate result;
-    double h = height();
     for (int i = 0; i < plantAreas.size(); ++i) {
-        double leafDensity = plantAreas[i]->atHeight(h);
-        PhotosyntheticRate areaResult = plantAreas[i]->calcPhotosynthesis(eaa);
-        areaResult *= leafDensity;
+        PhotosyntheticRate areaResult = plantAreas[i]->calcPhotosynthesis(h, eaa);
         result += areaResult;
         /*
         result += plantAreas[i]->calcPhotosynthesis(eaa);
@@ -75,7 +75,6 @@ LightComponents Layer::ELAI() {
         eaa += allAreas[i]->calcEffectiveAreaAbove(h);
     return eaa;
 }
-
 
 } //namespace
 

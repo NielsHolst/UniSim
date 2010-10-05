@@ -41,15 +41,15 @@ void OutputPlot::initialize() {
 
     const QList<OutputVariable *> &xs(xVariables()), &ys(yVariables());
     if (ys.size() == 0) {
-        QString msg = "Output plot has no y-series: " + objectName();
+        QString msg = "Output plot " + id().label() + " has no y-series";
         throw Exception(msg, this);
     }
     if (xs.size() == 0) {
-        QString msg = "Output plot has no x-series: " + objectName();
+        QString msg = "Output plot " + id().label() + " has no x-series";
         throw Exception(msg, this);
     }
     else if (xs.size() > 1) {
-        QString msg = "Output plot has more than one x-series:";
+        QString msg = "Output plot " + id().label() + " has more than one x-series:";
         for (int i = 0; i < xs.size(); ++ i)
             msg += "\n" + xs.at(i)->id().key();
         throw Exception(msg, this);

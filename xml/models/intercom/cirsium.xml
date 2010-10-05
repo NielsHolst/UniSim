@@ -2,7 +2,7 @@
 <simulation version="1.0">
 
      <integrator type="TimeStepLimited">
-         <parameter name="maxSteps" value="10"/>
+         <parameter name="maxSteps" value="2"/>
          <sequence>
              <model name="calendar"/>
              <model name="weather"/>
@@ -12,7 +12,7 @@
 	
 	<model name="calendar" type="unisim::Calendar">
 		<parameter name="latitude" value="52"/>
-		<parameter name="firstDate" value="1/1/2005"/>
+		<parameter name="firstDate" value="1/6/2005"/>
 		<parameter name="followers" value="weather"/>
 	</model>
 	

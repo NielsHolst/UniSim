@@ -10,22 +10,13 @@
 namespace UniSim{
 
 Days::Days(UniSim::Identifier name, QObject *parent)
-	: Model(name, parent)
+    : PhysiologicalTime(name, parent)
 {
-    new PullVariable<double>("step", &step, this,
-                     "Duration of latest time step (days)");
-    new PullVariable<double>("total", &total, this,
-                     "Total duration since beginning of simulation (days)");
 }
 
-void Days::reset() {
-    step = 1.;
-    total = 0.;
-}
-
-void Days::update()
+double Days::calcDailyTimeStep()
 {
-    total += step;
+    return 1.;
 }
 
 } //namespace

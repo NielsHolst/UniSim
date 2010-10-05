@@ -24,6 +24,12 @@ class TimeSlice : public UniSim::NamedObject
 public: 
     TimeSlice(UniSim::Identifier name, QObject *parent, int slice);
     void initialize();
+
+    void tick();
+    double hour();
+    double dayLength();
+    int index() const;
+
     PhotosyntheticRate calcPhotosynthesis();
 private:
     // state

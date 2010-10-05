@@ -7,14 +7,21 @@
 #define INTERCOM_OUTPUT_FILE
 
 #include <QFile>
+#include <QList>
+#include <QTextStream>
 #include <usbase/output.h>
 
-namespace UniSim
-{
+namespace UniSim {
     class Model;
 }
 
 namespace intercom{
+
+class Area;
+class Layer;
+class Plant;
+class PlantLayers;
+class TimeSlice;
 
 class OutputFile : public UniSim::Output
 {
@@ -29,17 +36,27 @@ private:
     // parameters
     QString fileName;
 
-    // links
-    UniSim::Model *plant;
-
     // housekeeping
     QFile file;
+    QTextStream os;
 
     // methods
     void openFile();
-    void write(QString s);
-    void writeCR();
-    void writeTab();
+    void seekObjects();
+
+    Plant* plant(TimeSlice *slice);
+    PlantLayers* plantLayers(TimeSlice *slice);
+    QList<Layer*> layers(TimeSlice *slice);
+
+    void writeWeather(TimeSlice *slice);
+    void writeLayerHeights(TimeSlice *slice);
+    void writeLayerELAI(TimeSlice *slice);
+    void writeAbsorption(TimeSlice *slice);
+    void writeAbsorption(TimeSlice *slice, Area *area);
+
+    // links
+    UniSim::Model *calendar, *weather;
+    QList<TimeSlice*> slices;
 };
 
 } //namespace

@@ -2,7 +2,7 @@
 <simulation version="1.0">
 
     <integrator type="TimeStepLimited">
-        <parameter name="maxSteps" value="3650"/>
+        <parameter name="maxSteps" value="730"/>
         <sequence>
             <model name="calendar"/>
             <model name="weather"/>
@@ -17,10 +17,10 @@
     
     <model name="weather" type="awe::Weather"/>
 
-    <model name="rotation" type="Rotation">
+    <model name="rotation" type="awe::Rotation">
         <parameter name="crops" value="(maize wheat)"/>
 
-        <model name="maize" type="Crop">
+        <model name="maize" type="awe::Crop">
             <parameter name="sowingDay" value="1"/>
             <parameter name="sowingMonth" value="5"/>
             <parameter name="harvestDay" value="20"/>
@@ -31,7 +31,7 @@
             <parameter name="laiCalendar" value="((0 0)(200 0)(620 0.5)(700 0.9)(800 1.8)(940 5)(1200 5)(1808 5)(2572 3))"/>
         </model>
 
-        <model name="wheat" type="Crop">
+        <model name="wheat" type="awe::Crop">
             <parameter name="sowingDay" value="15"/>
             <parameter name="sowingMonth" value="4"/>
             <parameter name="harvestDay" value="15"/>
@@ -43,7 +43,7 @@
         </model>
     </model>
     
-    <model name="seedBank" type="SeedBank">
+    <model name="seedBank" type="awe::SeedBank">
 		<parameter name="initialDensity" value="1000"/>
 		<parameter name="yearlyMortalityRate" value="0.1"/>
 		<parameter name="yearlyEmergenceRate" value="0"/>

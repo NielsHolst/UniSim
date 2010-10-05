@@ -17,7 +17,9 @@ public:
     PhotoThermalTime(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
     virtual void initialize();
-    virtual void update();
+
+    // special methods
+    virtual double calcDailyTimeStep();
 
 private:
 	// parameters

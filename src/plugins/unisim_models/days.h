@@ -7,20 +7,18 @@
 #define UNISIM_DAY_S
 #include <QObject>
 #include <usbase/model.h>
+#include "physiological_time.h"
+
 
 namespace UniSim{
 
-class Days : public UniSim::Model
+class Days : public PhysiologicalTime
 {
 	Q_OBJECT
 public: 
     Days(UniSim::Identifier name, QObject *parent=0);
-    // standard methods
-    void reset();
-    void update();
-private:
-    // state
-    double step, total;
+    // special methods
+    virtual double calcDailyTimeStep();
 };
 
 } //namespace

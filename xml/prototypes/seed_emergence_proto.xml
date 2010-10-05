@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="seed_emergence" type="model">
+    <class name="Weather">
+		<model name="weather"/>
+	</class> 
+    <class name="SeedBank">
+		<model name="seedbank"/>
+	</class>		
+</plugin>

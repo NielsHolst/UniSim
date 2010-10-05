@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/utilities.h>
+#include "plant.h"
 #include "plant_layers.h"
 #include "layer.h"
 
@@ -11,9 +12,10 @@ using namespace UniSim;
 
 namespace intercom{
 
-PlantLayers::PlantLayers(Identifier name, QObject *parent)
-    : NamedObject(name, parent)
+PlantLayers::PlantLayers(Identifier name, Plant *plant, QObject *parent)
+    : NamedObject(name, parent), _plant(plant)
 {
+    Q_ASSERT(_plant);
 }
 
 void PlantLayers::initialize() {
@@ -23,6 +25,10 @@ void PlantLayers::initialize() {
         layers.append(layer);
         layer->initialize();
     }
+}
+
+Plant* PlantLayers::plant() {
+    return _plant;
 }
 
 } //namespace

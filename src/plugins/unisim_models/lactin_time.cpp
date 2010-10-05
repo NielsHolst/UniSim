@@ -11,17 +11,12 @@
 namespace UniSim{
 
 LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
-	: Model(name, parent)
+    : PhysiologicalTime(name, parent)
 {
     new Parameter<double>("a", &a, 0.13, this, "Equation parameter");
     new Parameter<double>("b", &b, 42., this, "Equation parameter");
     new Parameter<double>("c", &c, 8., this, "Equation parameter");
     new Parameter<double>("d", &d, -0.1, this, "Equation parameter");
-
-    new PullVariable<double>("step", &step, this,
-                     "Duration of latest time step (physiological time)");
-    new PullVariable<double>("total", &total, this,
-                     "Total duration since beginning of simulation (physiological time)");
 }
 
 void LactinTime::initialize()
@@ -29,17 +24,13 @@ void LactinTime::initialize()
     weather = seekOne<Model*>("weather");
 }
 
-void LactinTime::reset() {
-    step = total = 0.;
-}
-
-void LactinTime::update()
+double LactinTime::calcDailyTimeStep()
 {
     double T = weather->pullVariable<double>("Tavg");
-    step = exp(a*T) - exp(a*b - (b - T)/c) + d;
+    double step = exp(a*T) - exp(a*b - (b - T)/c) + d;
     if (step < 0.)
         step = 0.;
-    total += step;
+    return step;
 }
 
 } //namespace

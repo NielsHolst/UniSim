@@ -19,7 +19,8 @@
 call %QTENV%
 
 @rem Erase all exe and dll targets
-call clean_targets.bat
+call clean_targets
+call clean_build_desktops
 
 @rem Make own tools
 call make_tool update_settings
@@ -33,7 +34,7 @@ call make_tool write_unisim_root
 ..\own_tools\write_unisim_root
 
 @rem Clean build folders
-call clean_ephemerals.bat
+call clean_ephemerals
 
 @rem Build UniSim
 pushd ..\..

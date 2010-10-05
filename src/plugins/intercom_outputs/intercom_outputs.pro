@@ -7,6 +7,7 @@ TARGET 	= intercom_outputs_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG		+= plugin
 
 include ($${US_BASE}/base.pri)
+include (../intercom_models/intercom_models.pri)
 
 HEADERS	+= 	\
         output_file.h \
@@ -15,3 +16,4 @@ HEADERS	+= 	\
 SOURCES	+= 	\
         output_file.cpp \
         intercom_output_maker.cpp
+

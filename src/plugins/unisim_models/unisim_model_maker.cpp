@@ -9,6 +9,7 @@
 #include "calendar.h"
 #include "day_degrees.h"
 #include "days.h"
+#include "hydro_thermal_time.h"
 #include "lactin_time.h"
 #include "photo_thermal_time.h"
 #include "random_lognormal.h"
@@ -57,6 +58,13 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "This model has the same pull variables as the @F DayDegrees model but it works in "
     "simple chronological time counting every day as just that, one day.";
 
+    desc["HydroThermalTime"] =
+    "Hydrothermal time accounts for temperature and soil water potential at the same time. "
+    "In this implementation the daily increment, as calculated by the @F DayDegrees model, "
+    "is set to zero if soil water potential is less than the threshold, otherwise the "
+    "daily increment is unaltered. A @F Model named @F {weather} with a pull "
+    "variable named @F SWP must exist to supply @F HydroThermalTime with soil water potential.";
+
     desc["LactinTime"] =
     "This is the physiological time scale of Lactin et al. (reference to be added). "
     "It pulls the daily average temperature from the @F weather object just like the @F "
@@ -66,7 +74,7 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
 
     desc["PhotoThermalTime"] =
     "Photothermal time accounts for temperature and day length at the same time. "
-    "In this implementation the daily increment as calculated by the @F DayDegrees model "
+    "In this implementation the daily increment, as calculated by the @F DayDegrees model, "
     "is multiplied by day length in hours (acquired from the @F weather object) "
     "divided by 24 hours.";
 
@@ -112,6 +120,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new DayDegrees(objectName, parent);
     else if (modelType.equals("Days"))
         model = new Days(objectName, parent);
+    else if (modelType.equals("HydroThermalTime"))
+        model = new HydroThermalTime(objectName, parent);
     else if (modelType.equals("LactinTime"))
         model = new LactinTime(objectName, parent);
     else if (modelType.equals("PhotoThermalTime"))

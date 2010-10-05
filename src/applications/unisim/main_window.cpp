@@ -135,6 +135,7 @@ void MainWindow::setTitle(QString subTitle) {
 }
 
 void MainWindow::closeEvent (QCloseEvent * event) {
+    store();
     for (int i = 0; i <_xmlEditors.size(); ++i)
         delete _xmlEditors[i];
     _xmlEditors.clear();

@@ -31,6 +31,10 @@ private:
     // parameters
     QString fileName;
     QDate firstDate;
+    char separator;
+    bool keepEmptyColumns;
+    int headerLines;
+    double timeStep;
 
     // file columns
     class Column {
@@ -50,11 +54,10 @@ private:
 
     // state
     bool hasBeenReset;
+    QString line;
 
     // methods
-    void updateRecordings();
-    void updatePar(double hour);
-
+    bool readLine();
 };
 
 } //namespace

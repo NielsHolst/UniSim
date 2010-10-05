@@ -5,6 +5,7 @@
 */
 #ifndef INTERCOM_LAYER
 #define INTERCOM_LAYER
+#include <QMap>
 #include <QObject>
 #include <usbase/named_object.h>
 #include "light_components.h"
@@ -29,6 +30,7 @@ public:
     LightComponents calcEffectiveAreaAbove(double height);
     LightComponents ELAI();
     double height() const;
+    QMap<Area*, LightComponents> absorptionByArea();
 
 private:
     // state

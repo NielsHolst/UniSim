@@ -3,28 +3,32 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef SEED_EMERGENCE_SEEDBANK
-#define SEED_EMERGENCE_SEEDBANK
+#ifndef SEED_EMERGENCE_CUMULATIVE_EMERGENCE
+#define SEED_EMERGENCE_CUMULATIVE_EMERGENCE
 #include <QObject>
 #include <usbase/model.h>
 
 namespace seed_emergence {
 
-class SeedBank : public UniSim::Model
+class CumulativeEmergence : public UniSim::Model
 {
 	Q_OBJECT
 public: 
-	SeedBank(UniSim::Identifier name, QObject *parent=0);
+    CumulativeEmergence(UniSim::Identifier name, QObject *parent=0);
 	// standard methods
+    void initialize();
 	void reset();
 	void update();
 
 private:
 	// parameters
-	double Ninit, K, r;
+    double a, b;
 
-	// state
-	double density;
+    // pull variables
+    double accumulated, dailyRate;
+
+    // links
+    UniSim::Model *hydrotime;
 
 };
 

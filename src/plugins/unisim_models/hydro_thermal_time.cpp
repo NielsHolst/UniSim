@@ -30,9 +30,10 @@ double HydroThermalTime::calcDailyTimeStep()
     swpThreshold = T < swpTopt ? swp0 : Kt*(T - swpTopt);
     if (swpThreshold > 0.)
         swpThreshold = 0.;
+		
     double swp = weather->pullVariable<double>("swp");
-
     if (swp < swpThreshold) return 0.;
+	
     return DayDegrees::calcDailyTimeStep();
 }
 

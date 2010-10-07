@@ -8,7 +8,8 @@
 
 #include <QList>
 #include <QVector>
-#include <usbase/component.h>
+#include "component.h"
+#include "dataset.h"
 
 namespace UniSim{	
 
@@ -36,6 +37,7 @@ private:
     // data
     Axis _axis;
     QVector<double> _history;	//!< Series of collected values
+    Dataset *dataset;
 
     // links
     const Model *model;		//!< Pointer to the model holding the pull variable

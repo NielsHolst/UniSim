@@ -9,11 +9,11 @@ include ($${US_BASE}/base.pri)
 
 HEADERS += \
 	seed_emergence_model_maker.h \
-	seed_bank.h \
+    cumulative_emergence.h \
 	weather.h
 
 SOURCES += \
 	seed_emergence_model_maker.cpp \
-	seed_bank.cpp \
+    cumulative_emergence.cpp \
 	weather.cpp
 

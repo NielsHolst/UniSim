@@ -6,7 +6,7 @@
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
 #include "seed_emergence_model_maker.h"
-#include "seed_bank.h"
+#include "cumulative_emergence.h"
 #include "weather.h"
 
 using namespace UniSim;
@@ -24,14 +24,14 @@ Identifier Seed_emergenceModelMaker::pluginName() const {
 
 QStringList Seed_emergenceModelMaker::authors() const
 {
-	return QStringList() << "author1" << "author2";
+    return QStringList() << "Niels Holst" << "Roberta Masin";
 }
 
 const QMap<Identifier, QString>& Seed_emergenceModelMaker::supportedClasses()
 {
 	if (!desc.isEmpty()) return desc;
 
-	desc["SeedBank"] =
+    desc["CumulativeEmergence"] =
 	"Description";
 
 	desc["Weather"] =
@@ -47,8 +47,8 @@ Model* Seed_emergenceModelMaker::create(Identifier modelType, Identifier objectN
 {
 	setSimulationObjectFromDescendent(parent);
 	Model *model = 0;
-	if (modelType.equals("seedbank"))
-		model = new SeedBank(objectName, parent);
+    if (modelType.equals("CumulativeEmergence"))
+        model = new CumulativeEmergence(objectName, parent);
 	else if (modelType.equals("weather"))
 		model = new Weather(objectName, parent);
 	return model;

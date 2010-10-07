@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
 	<integrator type="TimeStepLimited">
-		<parameter name="maxSteps" value="3600"/>
+		<parameter name="maxSteps" value="8000"/>
 		<sequence>
 			<model name="calendar"/>
 			<model name="weather"/>
@@ -26,10 +26,6 @@
 				<parameter name="Kt" value="0.50"/>
 				<parameter name="SWP0" value="-0.830"/>
 			</model>
-			<model name="emergence" type="seed_emergence::CumulativeEmergence">
-				<parameter name="a" value="10.1"/>
-				<parameter name="b" value="0.08"/>
-			</model>
 		</model>
 		<model name="green_foxtail">
 			<model name="time" type = "UniSim::HydroThermalTime">
@@ -37,10 +33,6 @@
 				<parameter name="SWPTopt" value="26"/>
 				<parameter name="Kt" value="0.30"/>
 				<parameter name="SWP0" value="-0.70"/>
-			</model>
-			<model name="emergence" type="seed_emergence::CumulativeEmergence">
-				<parameter name="a" value="6.9"/>
-				<parameter name="b" value="0.06"/>
 			</model>
 		</model>
 		<model name="goosegrass">
@@ -50,10 +42,6 @@
 				<parameter name="Kt" value="0.60"/>
 				<parameter name="SWP0" value="-1.21"/>
 			</model>
-			<model name="emergence" type="seed_emergence::CumulativeEmergence">
-				<parameter name="a" value="6.2"/>
-				<parameter name="b" value="0.08"/>
-			</model>
 		</model>
 		<model name="yellow_foxtail">
 			<model name="time" type = "UniSim::HydroThermalTime">
@@ -62,9 +50,13 @@
 				<parameter name="Kt" value="0.13"/>
 				<parameter name="SWP0" value="-0.69"/>
 			</model>
-			<model name="emergence" type="seed_emergence::CumulativeEmergence">
-				<parameter name="a" value="4.3"/>
-				<parameter name="b" value="0.08"/>
+		</model>
+		<model name="pink_foxtail">
+			<model name="time" type = "UniSim::HydroThermalTime">
+				<parameter name="T0" value="1.3"/>
+				<parameter name="SWPTopt" value="25"/>
+				<parameter name="Kt" value="0.13"/>
+				<parameter name="SWP0" value="-0.69"/>
 			</model>
 		</model>
 	</model>
@@ -73,15 +65,24 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Soil temperature at 2cm"/>
+		<lump count="24" value="current-sum-average"/>
 		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
-		<variable axis="y" label="Temp" value="weather[Tavg]"/>
+		<variable axis="y" label="Temp" value="weather[Tavg]">
+			<data>
+				<parameter name="filename" value ="observations.txt"/>
+				<!--variable axis="x" value="column[1]"/>
+				<variable axis="y" value="column[2]"/-->
+			</data>
+		</variable>
 	</output>
+	
 	<output type="plot">
 		<parameter name="title" value ="Soil water potential at 2cm"/>
 		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
 		<variable axis="y" label="SWP" value="weather[SWP]"/>
 		<variable axis="y" label="Y.f. threshold" value="yellow_foxtail/time[swpThreshold]"/>
 	</output>
+	
 	<output  type="plot">
 		<parameter name="title" value ="Hydrothermal time at 2cm"/>
 		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
@@ -89,13 +90,16 @@
 		<variable axis="y" label="Green foxtail" value="green_foxtail/time[total]"/>
 		<variable axis="y" label="Goosegrass" value="goosegrass/time[total]"/>
 		<variable axis="y" label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
+		<variable axis="y" label="NEW! Pink foxtail" value="pink_foxtail/time[total]"/>
 	</output>
-	<output  type="plot">
-		<parameter name="title" value ="Cumulative emergence"/>
+
+	<output  type="table">
+		<parameter name="filename" value ="seed_emergence_output.txt"/>
 		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
-		<variable axis="y" label="Large crabgrass" value="large_crabgrass/emergence[accumulated]"/>
-		<variable axis="y" label="Green foxtail" value="green_foxtail/emergence[accumulated]"/>
-		<variable axis="y" label="Goosegrass" value="goosegrass/emergence[accumulated]"/>
-		<variable axis="y" label="Yellow foxtail" value="yellow_foxtail/emergence[accumulated]"/>
+		<variable axis="y" label="Large crabgrass" value="large_crabgrass/time[total]"/>
+		<variable axis="y" label="Green foxtail" value="green_foxtail/time[total]"/>
+		<variable axis="y" label="Goosegrass" value="goosegrass/time[total]"/>
+		<variable axis="y" label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
+		<variable axis="y" label="NEW! Pink foxtail" value="pink_foxtail/time[total]"/>
 	</output>
 </simulation>

@@ -77,7 +77,7 @@ void LiveSimulation::open(QString filePath) {
     checkFilePath(filePath);
     if (_state != Ready) {
         parseFile();
-	}
+    }
 	else {
         LogBase::LogItem message =
             { "Warning", "Close current simulation before opening another" };

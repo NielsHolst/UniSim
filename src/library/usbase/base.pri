@@ -3,7 +3,7 @@
 HEADERS += \
         $${US_BASE}/clock.h \
         $${US_BASE}/component.h \
-        $${US_BASE}/dataset.h \
+#        $${US_BASE}/dataset.h \
         $${US_BASE}/exception.h \
         $${US_BASE}/file_location_info.h \
         $${US_BASE}/file_locations.h \
@@ -31,7 +31,7 @@ HEADERS += \
 SOURCES += \
         $${US_BASE}/clock.cpp \
         $${US_BASE}/component.cpp \
-        $${US_BASE}/dataset.cpp \
+#        $${US_BASE}/dataset.cpp \
         $${US_BASE}/exception.cpp \
         $${US_BASE}/file_location_info.cpp \
         $${US_BASE}/file_locations.cpp \

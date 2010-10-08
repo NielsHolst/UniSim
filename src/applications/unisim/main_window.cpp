@@ -203,8 +203,10 @@ void MainWindow::openFile(QString filePath)
 
     setTitle(QFileInfo(filePath).fileName());
     FileLocationInfo::setLocation(FileLocationInfo::Models, filePath);
+
     liveSim->open(filePath);
     liveSim->writeGraph();
+
     QSettings().setValue("latestModelFile", filePath);
 }
 

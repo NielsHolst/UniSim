@@ -98,7 +98,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
 
     redirectParameters();
 
-	reader->clear();
+    reader->clear();
     emit beginInitialization();
     sim->initialize(_sequence);
     emit endInitialization();

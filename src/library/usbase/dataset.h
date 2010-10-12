@@ -5,29 +5,49 @@
 */
 #ifndef UNISIM_DATASET_H
 #define UNISIM_DATASET_H
-
-#include <QList>
+#include <QMap>
 #include <QVector>
 #include "component.h"
 
-namespace UniSim{	
+namespace UniSim{
 
 class Dataset : public Component
 {
 	Q_OBJECT
-public:
-    Dataset(Identifier name, QObject *parent = 0);
-	
+public: 
+    Dataset(Identifier name, QObject *parent=0);
     // standard methods
-	void reset();
-	void update();
+    void initialize();
 
     // special methods
+    bool contains(QString columnName) const;
+    const QVector<double>* columnData(QString columnName) const;
 
 private:
+    // parameters
+    QString fileName;
+    QDate firstDate;
+    char separator;
+    bool keepEmptyColumns;
+    int headerLines;
+
+    QString columns;
+
+    // pull variables
+    int size;
+
+    // state
+    QFile file;
+    struct ColumnData {
+        int colIndex;
+        QVector<double> values;
+    };
+    QMap< QString, ColumnData > data;
+
+    // methods
+    void initializeData();
+    void itemToData(QStringList items, int colIndex, QString columnName);
 };
 
 } //namespace
-
-
 #endif

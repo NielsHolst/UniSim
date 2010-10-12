@@ -145,6 +145,15 @@ namespace local {
         s.chop(1);
         s = s.simplified();
     }
+
+    void chopRightParenthesis(QString &s, QObject *concerning) {
+        if (s.right(1) != ")")
+            throw Exception("Missing right parenthesis: (" + s, concerning);
+        s.chop(1);
+        s = s.simplified();
+    }
+
+
 } //namespace
 //! \endcond
 
@@ -177,6 +186,43 @@ QStringList decodeSimpleList(QString parenthesizedList, QString errorContext) {
     }
     local::chopParentheses(s, errorContext);
     return s.split(" ", QString::SkipEmptyParts);
+}
+
+
+QList< QPair<QString, int> > decodeNameValueList(QString nameValueList, QObject *concerning) {
+    QList< QPair<QString, int> > result;
+    QString s = nameValueList.simplified();
+    s = s.trimmed();
+    if (s.size() == 0) throw Exception("Name-value list is empty", concerning);
+    if (s.left(1) != "(") throw Exception("Name-value list must begin with '(': " + s, concerning);
+
+    QStringList parts = s.split("(");
+    for (int i = 0; i < 2; ++i) {
+        if (parts[i].size() > 0 && parts[i].left(1) != " ")
+            throw UniSim::Exception("Name-value list must begin with two left parentheses: " + s, concerning);
+    }
+
+    if (parts.size() < 3) throw UniSim::Exception("Name-value list is incomplete: " + s, concerning);
+
+    for (int i = 2; i< parts.size(); ++i) {
+        QString part = parts[i].trimmed();
+        local::chopRightParenthesis(part, concerning);
+        if (i == parts.size() - 1)
+            local::chopRightParenthesis(part, concerning);
+
+        QStringList strPair = part.split(" ");
+        bool ok = strPair.size() == 2;
+        if (ok) {
+            QPair<QString, int> pair;
+            pair.first = strPair[0];
+            pair.second = strPair[1].toInt(&ok);
+            if (ok) result.append(pair);
+        }
+
+        if (!ok)
+            throw UniSim::Exception("Name-value list must contain (name value) pairs: " + s, concerning);
+    }
+    return result;
 }
 
 //

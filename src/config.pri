@@ -2,10 +2,10 @@
 # Configuration of make process (can be edited)
 #
 
-UNISIM_VERSION      = 1_18
+UNISIM_VERSION      = 1-19
 
-CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
-#CONFIG += unisim_deployment     # Or, this if targets will be used to produce an installation file
+#CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
+CONFIG += unisim_deployment     # Or, this if targets will be used to produce an installation file
 
 #
 # Ensuing configuration (should not be edited)

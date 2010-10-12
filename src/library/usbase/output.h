@@ -11,6 +11,7 @@
 
 namespace UniSim{
 
+class OutputData;
 class OutputVariable;
 
 class Output : public Component
@@ -24,9 +25,13 @@ public:
     const QList<OutputVariable *>& xVariables() const;
     const QList<OutputVariable *>& yVariables() const;
 
+    const QList<OutputData *>& xData() const;
+    const QList<OutputData *>& yData() const;
+
 private:
     // links
-    QList<OutputVariable *> variables, x, y;
+    QList<OutputVariable *> variables, xVar, yVar;
+    QList<OutputData *> data, xDat, yDat;
 };
 
 typedef QList<Output*> Outputs;

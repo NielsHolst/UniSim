@@ -12,6 +12,7 @@
 #include <usbase/output.h>
 #include <usbase/utilities.h>
 #include "simulation.h"
+#include "simulation_maker.h"
 
 /*! \class UniSim::Simulation
     \brief The %Simulation class holds and executes models
@@ -50,7 +51,7 @@ Simulation::Simulation(QString name, QString version, QObject *parent)
 
     \param sequence list of top-level models in the order they will be managed
 */
-void Simulation::initialize(const Identifiers &sequence)
+void Simulation::initialize(const Identifiers &sequence, SimulationMaker *simMaker)
 {
 	if (_state == Initialized)  return;
 	
@@ -107,6 +108,10 @@ void Simulation::initialize(const Identifiers &sequence)
 	// Initialize integrator, models and outputs
 	_integrator->initialize();
     for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepInitialize();
+    if (simMaker) {
+        simMaker->setupOutputVariableElements();
+        simMaker->setupOutputDataElements();
+    }
     for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou) (*ou)->deepInitialize();
 
 	_state = Initialized;

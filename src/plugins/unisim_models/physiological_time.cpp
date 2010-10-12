@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/exception.h>
 #include <usbase/pull_variable.h>
 #include "physiological_time.h"
 
@@ -19,7 +20,10 @@ PhysiologicalTime::PhysiologicalTime(UniSim::Identifier name, QObject *parent)
 
 void PhysiologicalTime::initialize() {
     calendar = seekOne<Model*>("calendar");
-    calendarTimeStep = calendar->parameter<double>("timeStep");
+    int stepsPerDay = calendar->parameter<int>("stepsPerDay");
+    if (stepsPerDay <= 0)
+        throw Exception("Calendar parameter 'stepPerDays' must be > 0");
+    calendarTimeStep = 1./stepsPerDay;
 }
 
 void PhysiologicalTime::reset() {

@@ -3,9 +3,14 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QBrush>
+#include <QMessageBox>
 #include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
+#include <usbase/dataset.h>
 #include <usbase/file_locations.h>
 #include <usbase/object_pool.h>
+#include <usbase/output_data.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter.h>
 #include <usengine/main_window_interface.h>
@@ -62,8 +67,12 @@ void OutputPlot::cleanup() {
     showPlotWidget();
 }
 
-bool OutputPlot::isEmpty() const {
+bool OutputPlot::emptyVariables() const {
     return xVariables().isEmpty() || yVariables().isEmpty();
+}
+
+bool OutputPlot::emptyData() const {
+    return xData().isEmpty() || yData().isEmpty();
 }
 
 void OutputPlot::createPlotWidget() {
@@ -76,32 +85,71 @@ void OutputPlot::createPlotWidget() {
 
 void OutputPlot::fillPlotWidget() {
     Q_ASSERT(plotWidget);
-    if (isEmpty()) return;
+    fillWithVariables();
+    fillWithData();
+}
 
-    QList<OutputVariable *> xs, ys;
-    xs = xVariables();
-    ys = yVariables();
-    OutputVariable *x = xs[0];
+void OutputPlot::fillWithVariables() {
+    if (emptyVariables()) return;
 
-    //QString yAxisTitle = ys.size() == 1 ? ys[0]->label() : QString(" ");
+    QList<OutputVariable *> xv, yv;
+    xv = xVariables();
+    yv = yVariables();
+    Q_ASSERT(xv.size() == 1);
+    OutputVariable *x = xv[0];
+
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
-    //plotWidget->showLegend(ys.size() > 1);
     plotWidget->showLegend(true);
 
-    for (int i = 0; i < ys.size(); ++i) {
-        OutputVariable *y = ys[i];
+    for (int i = 0; i < yv.size(); ++i) {
+        OutputVariable *y = yv[i];
         QwtPlotCurve *curve = new QwtPlotCurve(y->id().label());
         plotWidget->addCurve(curve);
 
         QColor color = colors[i % colors.size()];
         QPen pen = QPen(color);
-        pen.setWidth(4);
+        int width = 2;
+        pen.setWidth(width);
         curve->setPen(pen);
 
         int numPoints = x->history()->size();
         Q_ASSERT(numPoints == y->history()->size());
         curve->setData(x->history()->data(), y->history()->data(), numPoints);
+    }
+}
+
+void OutputPlot::fillWithData() {
+    if (emptyData()) return;
+
+    QList<OutputData *> xv, yv;
+    xv = xData();
+    yv = yData();
+    Q_ASSERT(xv.size() == 1);
+    OutputData *x = xv[0];
+
+    QString yAxisTitle(" ");
+    plotWidget->setXYtitles(x->id().label(), yAxisTitle);
+    plotWidget->showLegend(true);
+
+    for (int i = 0; i < yv.size(); ++i) {
+        OutputData *y = yv[i];
+        QwtPlotCurve *curve = new QwtPlotCurve(y->id().label());
+        plotWidget->addCurve(curve);
+
+        QColor color = colors[i % colors.size()];
+
+        curve->setStyle(QwtPlotCurve::NoCurve);
+
+        QPen symPen = QPen(color);
+        symPen.setWidth(2);
+        QBrush brush;
+        QwtSymbol symbol(QwtSymbol::Ellipse, brush, symPen, QSize(8,8));
+        curve->setSymbol(symbol);
+
+        int numPoints = x->data()->size();
+        Q_ASSERT(numPoints == y->data()->size());
+        curve->setData(x->data()->data(), y->data()->data(), numPoints);
     }
 }
 

@@ -9,9 +9,11 @@
 #include <QTextStream>
 #include <QtXml/QXmlStreamReader>
 #include <usbase/model.h>
+#include <usbase/dataset.h>
 #include <usbase/integrator.h>
 #include <usbase/exception.h>
 #include <usbase/output.h>
+#include <usbase/output_data.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
@@ -55,7 +57,10 @@ Simulation* SimulationMaker::parse(QString fileName_)
     fileName = fileName_;
 	QString simName, simVersion;
 
+
     redirectedParameters.clear();
+    outputVariableParam.clear();
+    outputDataParam.clear();
 
     XmlExpander expander(fileName, "_expanded");
 	emit beginExpansion();
@@ -100,7 +105,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
 
     reader->clear();
     emit beginInitialization();
-    sim->initialize(_sequence);
+    sim->initialize(_sequence, this);
     emit endInitialization();
 
     return sim;
@@ -184,6 +189,9 @@ bool SimulationMaker::readModelElement(QObject* parent)
         if (elementNameEquals("model")) {
 			readModelElement(model);
         }
+        else if (elementNameEquals("dataset")){
+            readDatasetElement(model);
+        }
         else if (elementNameEquals("parameter")){
             readParameterElement(model);
         }
@@ -196,6 +204,28 @@ bool SimulationMaker::readModelElement(QObject* parent)
 	nextElementDelim();
 	
 	return model;
+}
+
+void SimulationMaker::readDatasetElement(QObject* parent)
+{
+    Q_ASSERT(reader->isStartElement());
+
+    QString objectName = attributeValue("name", parent);
+
+    Dataset *dataset = new Dataset(objectName, parent);
+
+    nextElementDelim();
+    while (!reader->hasError() && reader->isStartElement()) {
+        if (elementNameEquals("parameter")){
+            readParameterElement(dataset);
+        }
+        else {
+            throw Exception(message(
+                           "Unknown element in 'dataset' element: " + elementName()));
+        }
+    }
+    Q_ASSERT(reader->isEndElement());
+    nextElementDelim();
 }
 
 void SimulationMaker::readParameterElement(QObject* parent)
@@ -250,6 +280,9 @@ bool SimulationMaker::readOutputElement(QObject* parent)
         else if (elementNameEquals("variable")) {
             readOutputVariableElement(output);
         }
+        else if (elementNameEquals("data")) {
+            readOutputDataElement(output);
+        }
         else {
             throw Exception(message(
                     "Unknown element in 'output' element: " + elementName()));
@@ -265,18 +298,81 @@ void SimulationMaker::readOutputVariableElement(QObject* parent)
 
 	Q_ASSERT(reader->isStartElement() && parent);
 
-    QString
-        label = attributeValue("label", parent),
-        axis = attributeValue("axis", parent),
-        value = attributeValue("value", parent);
+    OutputParam param;
+    param.label = attributeValue("label", parent),
+    param.axis = attributeValue("axis", parent),
+    param.value = attributeValue("value", parent);
+    param.parent = parent;
 
+    outputVariableParam.append(param);
+/*
     QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
     for (int i = 0; i < variables.size(); ++i)
         new OutputVariable(label, axis, variables[i], parent);
-
+*/
     nextElementDelim();
     Q_ASSERT(reader->isEndElement());
     nextElementDelim();
+}
+
+void SimulationMaker::setupOutputVariableElements()
+{
+    for (int i = 0; i < outputVariableParam.size(); ++i) {
+        OutputParam param = outputVariableParam[i];
+        QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(param.value);
+        for (int i = 0; i < variables.size(); ++i)
+            new OutputVariable(param.label, param.axis, variables[i], param.parent);
+    }
+}
+
+void SimulationMaker::readOutputDataElement(QObject* parent)
+{
+
+    Q_ASSERT(reader->isStartElement() && parent);
+
+    OutputParam param;
+    param.label = attributeValue("label", parent),
+    param.axis = attributeValue("axis", parent),
+    param.value = attributeValue("value", parent);
+    param.parent = parent;
+
+    outputDataParam.append(param);
+/*
+    QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
+    for (int i = 0; i < variables.size(); ++i)
+        new OutputData(label, axis, variables[i], parent);
+*/
+    nextElementDelim();
+    Q_ASSERT(reader->isEndElement());
+    nextElementDelim();
+}
+
+void SimulationMaker::setupOutputDataElements()
+{
+    for (int i = 0; i < outputDataParam.size(); ++i) {
+        OutputParam param = outputDataParam[i];
+        QString datasetName, columnName;
+        splitOutputDataValue(param.value, &datasetName, &columnName);
+
+        Dataset *dataset = seekOne<Dataset*>(datasetName);
+        if (!dataset->contains(columnName)) {
+            QString msg = "Dataset '" + datasetName + "' has no column named '" + columnName + "'";
+            throw Exception(message(msg));
+        }
+        new OutputData(param.label, param.axis, dataset, columnName, param.parent);
+    }
+}
+
+void SimulationMaker::splitOutputDataValue(QString value, QString *datasetName, QString *columnName) {
+    bool ok = false;
+    QStringList items = value.trimmed().split("[");
+    if (items.size() == 2 && items[1].endsWith("]")) {
+        ok = true;
+        *datasetName = items[0];
+        *columnName = items[1].left( items[1].size() - 1 );
+    }
+    if (!ok)
+        throw Exception(message("Value badly formatted: " + value));
 }
 
 bool SimulationMaker::elementNameEquals(QString s) const {

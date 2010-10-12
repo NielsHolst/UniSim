@@ -10,7 +10,7 @@
 	</integrator>
 
 	<model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="firstDate" value="1/1/2008"/>
 		<parameter name="timeStep" value="0.04167"/>
 	</model>
 
@@ -19,12 +19,20 @@
 	</model>
 
 	<model name="seedbank">
+		<model name="observations" type="UniSim::Dataset">
+			<parameter name="filename" value ="obs/emergence data.txt"/>
+			<parameter name="firstDate" value="1/1/2008"/>
+			<parameter name="columns" value="((julian_day 2) (large_crabgrass 3) (green_foxtail 4) (goosegrass 5) (yellow_foxtail 6))"/>
+		<model>
+
 		<model name="large_crabgrass">
 			<model name="time" type = "UniSim::HydroThermalTime">
 				<parameter name="T0" value="8.4"/>
 				<parameter name="SWPTopt" value="26"/>
 				<parameter name="Kt" value="0.50"/>
 				<parameter name="SWP0" value="-0.830"/>
+				<model type="UniSim::TriggerByDate">
+				</model>
 			</model>
 		</model>
 		<model name="green_foxtail">
@@ -51,14 +59,6 @@
 				<parameter name="SWP0" value="-0.69"/>
 			</model>
 		</model>
-		<model name="pink_foxtail">
-			<model name="time" type = "UniSim::HydroThermalTime">
-				<parameter name="T0" value="1.3"/>
-				<parameter name="SWPTopt" value="25"/>
-				<parameter name="Kt" value="0.13"/>
-				<parameter name="SWP0" value="-0.69"/>
-			</model>
-		</model>
 	</model>
 
 	<!-- Output -->
@@ -68,12 +68,6 @@
 		<lump count="24" value="current-sum-average"/>
 		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
 		<variable axis="y" label="Temp" value="weather[Tavg]">
-			<data>
-				<parameter name="filename" value ="observations.txt"/>
-				<!--variable axis="x" value="column[1]"/>
-				<variable axis="y" value="column[2]"/-->
-			</data>
-		</variable>
 	</output>
 	
 	<output type="plot">
@@ -90,7 +84,15 @@
 		<variable axis="y" label="Green foxtail" value="green_foxtail/time[total]"/>
 		<variable axis="y" label="Goosegrass" value="goosegrass/time[total]"/>
 		<variable axis="y" label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
-		<variable axis="y" label="NEW! Pink foxtail" value="pink_foxtail/time[total]"/>
+
+		<!--
+		<data axis="x" label="Day" value="observations[julian_day]"/>
+		<data axis="y" label="Large crabgrass obs" value="observations[em_large_crabgrass]"/>
+		<data axis="y" label="Green foxtail obs" value="observations[em_green_foxtail]"/>
+		<data axis="y" label="Goosegrass obs" value="observations[em_large_crabgrass]"/>
+		<data axis="y" label="Large crabgrass obs" value="observations[em_goosegrass]"/>
+		<data axis="y" label="Yellow foxtail obs" value="observations[em_yellow_foxtail]"/>
+		-->
 	</output>
 
 	<output  type="table">

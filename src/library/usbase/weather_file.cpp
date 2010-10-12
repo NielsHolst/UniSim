@@ -49,7 +49,7 @@ WeatherFile::WeatherFile(UniSim::Identifier name, QObject *parent)
     new Parameter<char>("separator", &separator, '\t', this,
         "Character that separates columns in the weather file.");
     new Parameter<bool>("keepEmptyColumns", &keepEmptyColumns, true, this,
-        "Should empty columns be kepped? If true \"12\\t\\t34\" will counts as 3 columns, "
+        "Should empty columns be kept? If true \"12\\t\\t34\" will counts as 3 columns, "
         "otherwise as 2 columns");
     new Parameter<int>("headerLines", &headerLines, 0, this,
         "Number of header lines to skip in weather file. If the file begins with a line of "
@@ -86,10 +86,14 @@ void WeatherFile::reset()
 }
 
 bool WeatherFile::readLine() {
-    if (file.atEnd()) return false;
+    if (atEnd()) return false;
     line = QString(file.readLine());
     ++lineNo;
     return true;
+}
+
+bool WeatherFile::atEnd() const {
+    return file.atEnd();
 }
 
 void WeatherFile::update() {

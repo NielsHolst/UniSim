@@ -83,6 +83,7 @@ int toDayOfYear(int day, int month);
 //@{
 QString fullName(const QObject *object);
 QStringList decodeSimpleList(QString parenthesizedList, QString errorContext = QString());
+QList< QPair<QString, int> > decodeNameValueList(QString nameValueList, QObject *concerning = 0);
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
 QStringList splitParentChildExpression(QString expression);
 template<class T> T stringToValue(QString s);

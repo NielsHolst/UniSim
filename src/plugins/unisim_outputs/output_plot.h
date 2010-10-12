@@ -35,8 +35,11 @@ private:
     // methods
     void createPlotWidget();
     void fillPlotWidget();
+    void fillWithVariables();
+    void fillWithData();
     void showPlotWidget();
-    bool isEmpty() const;
+    bool emptyVariables() const;
+    bool emptyData() const;
 };
 
 } //namespace

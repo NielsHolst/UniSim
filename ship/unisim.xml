@@ -1,29 +1,35 @@
 <project>
     <shortName>UniSim</shortName>
     <fullName>Universal Simulator</fullName>
-    <version>1.18</version>
-    <installerFilename></installerFilename>
+    <version>1-19</version>
+	<outputDirectory>C:/data/QDev/UniSim/ship</outputDirectory>
     <readmeFile>C:/data/QDev/UniSim/readme-for-users.txt</readmeFile>
     <licenseFile>C:/data/QDev/UniSim/ship/gpl-3.0.txt</licenseFile>
     <leftImage>C:/data/QDev/UniSim/ship/pics/squirrel 163x314.png</leftImage>
     <postInstallationActionList>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
+            <name>Dataset files</name>
+            <type>REG_SZ</type>
+            <value>${windows_folder_personal}/${product_shortname}-${product_version}/datasets</value>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
             <name>Model files</name>
             <type>REG_SZ</type>
-            <value>${windows_folder_personal}\UniSim\models</value>
+            <value>${windows_folder_personal}/${product_shortname}-${product_version}/models</value>
         </registrySet>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
             <name>Output files</name>
             <type>REG_SZ</type>
-            <value>${windows_folder_personal}\UniSim\output</value>
+            <value>${windows_folder_personal}/${product_shortname}-${product_version}/output</value>
         </registrySet>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
             <name>Temporary files</name>
             <type>REG_SZ</type>
-            <value>${windows_folder_personal}\UniSim\temp</value>
+            <value>${windows_folder_personal}/${product_shortname}-${product_version}/temp</value>
         </registrySet>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
@@ -35,7 +41,7 @@
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
             <name>Weather files</name>
             <type>REG_SZ</type>
-            <value>${windows_folder_personal}\UniSim\weather</value>
+            <value>${windows_folder_personal}/${product_shortname}-${product_version}/weather</value>
         </registrySet>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
@@ -46,6 +52,7 @@
     </postInstallationActionList>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
+    <startMenuGroupName>${product_fullname}-${product_version}</startMenuGroupName>
     <vendor>Aarhus University</vendor>
     <componentList>
         <component>
@@ -107,10 +114,13 @@
                 </folder>
                 <folder>
                     <description>Personal UniSim Folder</description>
-                    <destination>${windows_folder_personal}/UniSim</destination>
+                    <destination>${windows_folder_personal}/${product_shortname}-${product_version}</destination>
                     <name>personalunisim</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
+                        <distributionDirectory>
+                            <origin>C:/data/QDev/UniSim/datasets</origin>
+                        </distributionDirectory>
                         <distributionDirectory>
                             <origin>C:/data/QDev/UniSim/xml/models</origin>
                         </distributionDirectory>
@@ -138,9 +148,9 @@
                 </startMenuShortcut>
                 <startMenuShortcut>
                     <comment>Run Universal Simulator</comment>
-                    <name>Universal Simulator 1.18</name>
+                    <name>${product_fullname} ${product_version}</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}/bin/unisim_1_18.exe</windowsExec>
+                    <windowsExec>${installdir}/bin/${product_shortname}-${product_version}.exe</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
                     <windowsIcon></windowsIcon>
                     <windowsPath>${installdir}</windowsPath>

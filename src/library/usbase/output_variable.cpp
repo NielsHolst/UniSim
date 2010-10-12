@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <QRegExp>
+#include <QMessageBox>
 #include "model.h"
 #include "output_variable.h"
 #include "pull_variable.h"

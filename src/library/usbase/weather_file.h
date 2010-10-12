@@ -26,6 +26,7 @@ public:
 
     // special methods
     void setColumn(QString name, int defaultColumn);
+    bool atEnd() const;
 
 private:
     // parameters
@@ -34,7 +35,6 @@ private:
     char separator;
     bool keepEmptyColumns;
     int headerLines;
-    double timeStep;
 
     // file columns
     class Column {

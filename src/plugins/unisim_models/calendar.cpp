@@ -29,10 +29,10 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     "A single name, or list of names, denoting those objects that follow "
     "(are synchronized with) the calendar date. "
     "Commonly the @F weather object is set as a follower");
-    new Parameter<double>("timeStep", &timeStep, 1., this, "Time step (days) of simulation. "
+    new Parameter<int>("stepsPerDay", &stepsPerDay, 1, this, "Time steps per days of simulation. "
         "Usually this should be set according to the time resolution of the @F weather object. "
-        "Daily readings for example corresponds to a @F timeStep of @F {1} and hourly "
-        "readings to a @F timeStep of @F {0.04167}");
+        "Daily readings for example corresponds to a @F stepsPerDay of @F {1} and hourly "
+        "readings to a @F stepsPerDay of @F {24}");
 
     new PullVariable<QDate>("date", &date, this, "Current date");
     new PullVariable<double>("daysTotal", &daysTotal, this, "Days total since beginning of simulation");
@@ -49,6 +49,9 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 
 void Calendar::initialize()
 {
+    if (stepsPerDay <= 0)
+        throw Exception("Calendar parameter 'stepPerDays must be > 0");
+
     followers.clear();
     QStringList followersAsStrings = decodeSimpleList(followersAsString, "Calendar::initialize");
     for (int i = 0; i < followersAsStrings.size(); ++i)
@@ -87,8 +90,9 @@ void Calendar::reset() {
     if (!msg.isEmpty())
         throw Exception(msg);
 
-    date = firstDate.addDays(-2);
-    daysTotal = 1;
+    date = firstDate;
+    daysTotal = 0;
+    dateTime.setDate(date);
     update();
 }
 
@@ -162,8 +166,13 @@ void Calendar::update()
 {
     const double RAD = PI/180.;
 
-    daysTotal += timeStep;
-    date = date.addDays(1);
+    daysTotal += 1./stepsPerDay;
+    dateTime = dateTime.addSecs(24*60*60/stepsPerDay);
+    date = dateTime.date();
+
+    QString test1 = date.toString("dd.MM.yyyy");
+    QString test2 = dateTime.toString("dd.MM.yyyy hh::mm::ss");
+
     day = date.day();
     month = date.month();
     dayInYear = QDate(date.year(), 1, 1).daysTo(date) + 1;

@@ -48,6 +48,9 @@ public:
 	*/	
     Simulation* parse(QString fileName);
 
+    void setupOutputVariableElements();
+    void setupOutputDataElements();
+
 signals: 
     //! Signals when the parser begins expanding the original UniSim file
 	void beginExpansion();
@@ -67,6 +70,13 @@ private:
     typedef QPair<ParameterBase*, QString> RedirectedParameter;
     QList<RedirectedParameter> redirectedParameters;
 
+    struct OutputParam {
+        QString axis, label, value;
+        QObject *parent;
+    };
+
+    QList<OutputParam> outputVariableParam, outputDataParam;
+
     // methods
     bool nextElementDelim();
 	
@@ -74,11 +84,14 @@ private:
 	void readSequenceElement(QObject *parent);
 
 	bool readModelElement(QObject *parent);
+    void readDatasetElement(QObject* parent);
     void readParameterElement(QObject *parent);
 
 	bool readOutputElement(QObject *parent);
     void readOutputVariableElement(QObject* parent);
+    void readOutputDataElement(QObject* parent);
 
+    void splitOutputDataValue(QString value, QString *datasetName, QString *columnName);
     bool elementNameEquals(QString s) const;
     bool elementNameNotEquals(QString s) const;
     QString elementName() const;

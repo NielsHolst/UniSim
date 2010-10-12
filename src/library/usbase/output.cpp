@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "output.h"
+#include "output_data.h"
 #include "output_variable.h"
 #include "parameter.h"
 
@@ -18,18 +19,34 @@ void Output::initialize() {
     variables = seekChildren<OutputVariable*>("*");
     for (int i = 0; i < variables.size(); ++i) {
         if (variables[i]->axis() == OutputVariable::XAxis)
-            x.append(variables[i]);
+            xVar.append(variables[i]);
         else
-            y.append(variables[i]);
+            yVar.append(variables[i]);
+    }
+
+    data = seekChildren<OutputData*>("*");
+    for (int i = 0; i < data.size(); ++i) {
+        if (data[i]->axis() == OutputData::XAxis)
+            xDat.append(data[i]);
+        else
+            yDat.append(data[i]);
     }
 }
 
 const OutputVariables& Output::xVariables() const {
-    return x;
+    return xVar;
 }
 
 const OutputVariables& Output::yVariables() const {
-    return y;
+    return yVar;
+}
+
+const OutputDatas& Output::xData() const {
+    return xDat;
+}
+
+const OutputDatas& Output::yData() const {
+    return yDat;
 }
 } //namespace
 

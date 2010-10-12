@@ -46,10 +46,11 @@ private:
     double latitude;
     QDate firstDate;
     QString followersAsString;
-    double timeStep;
+    int stepsPerDay;
 
 	// state
     QDate date;
+    QDateTime dateTime;
     double day, month, year, dayInYear, daysTotal,
         dayLength, sinb, sinLD, cosLD;
 

@@ -1,7 +1,8 @@
 INTERCOM_PLUGIN = $${US_PLUGINS}/intercom_models
 
 HEADERS += \
-    $${US_ENGINE}/simulation.h \
+#    $${US_ENGINE}/simulation.h \
+#    $${US_ENGINE}/simulation_maker.h \
     $${US_PLUGINS}/unisim_models/calendar.h \
     $${INTERCOM_PLUGIN}/assimilation_max_given_temp.h \
     $${INTERCOM_PLUGIN}/assimilation_max_given_temp_sla.h \
@@ -23,7 +24,8 @@ HEADERS += \
     $${INTERCOM_PLUGIN}/weather.h
 
 SOURCES += \
-    $${US_ENGINE}/simulation.cpp \
+#    $${US_ENGINE}/simulation.cpp \
+#    $${US_ENGINE}/simulation_maker.cpp \
     $${US_PLUGINS}/unisim_models/calendar.cpp \
     $${INTERCOM_PLUGIN}/assimilation_max_given_temp.cpp \
     $${INTERCOM_PLUGIN}/assimilation_max_given_temp_sla.cpp \

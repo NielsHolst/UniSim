@@ -13,7 +13,6 @@
 #include <QStringList>
 #include <QXmlStreamWriter>
 #include "exception.h"
-#include <usengine/simulation.h>
 #include "model.h"
 #include "utilities.h"
 
@@ -158,9 +157,7 @@ namespace local {
 //! \endcond
 
 QString fullName(const QObject *object) {
-    bool noObject = !object;
-    bool isSimulation = dynamic_cast<const Simulation*>(object) != 0;
-    if (noObject || isSimulation) return QString();
+    if (!object) return QString();
     QString name = object->objectName();
     if (name.isEmpty() || name.toLower() == "anonymous")
         name = QString("unnamed[") +

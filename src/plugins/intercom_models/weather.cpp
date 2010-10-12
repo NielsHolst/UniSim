@@ -7,7 +7,6 @@
 #include <usbase/clock.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
-#include <usengine/simulation.h>
 #include "../unisim_models/calendar.h"
 #include "weather.h"
 
@@ -39,6 +38,9 @@ void Weather::initialize() {
 }
 
 void Weather::verifySequence() {
+    /*
+    Deleted to avoid dependence on usengine
+
     Simulation *simulation = seekOneAscendant<Simulation*>("*");
     const Models &sequence(simulation->sequence());
     int ixCalendar(-1), ixWeather(-1);
@@ -50,6 +52,7 @@ void Weather::verifySequence() {
     if (ixCalendar > ixWeather)
         throw Exception("Calendar must appear before weather in simulation sequence. "
                         "Reorder 'sequence' elements in XML file.");
+    */
 }
 
 void Weather::update()

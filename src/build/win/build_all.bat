@@ -35,6 +35,8 @@ call make_tool write_unisim_root
 
 @rem Clean build folders
 call clean_ephemerals
+call clean_folder ..\..\library\usbase
+call clean_folder ..\..\library\usengine
 
 @rem Build UniSim
 pushd ..\..
@@ -50,9 +52,17 @@ popd
 @echo .
 
 call clean_ephemerals.bat
+call clean_folder ..\..\library\usbase
+call clean_folder ..\..\library\usengine
 @echo .
 @echo *** Finished build ***
 @echo .
+
+copy ..\..\library\*.dll ..\..\applications
+@echo .
+@echo *** Copied UniSim library files ***
+@echo .
+
 
 @rem Update registry settings
 ..\own_tools\update_settings

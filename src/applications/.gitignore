@@ -6,6 +6,8 @@
 ### Generated target files 
 ###
 
+base*.dll
+engine*.dll
 *.exe
 output/*.*
 temporary/*.*

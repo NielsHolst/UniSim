@@ -7,9 +7,12 @@ TARGET = UniSim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 # Load application icon
 RC_FILE = ../../icon/unisim.rc
  
-# Input
+# Libraries used
+include ($${US_QWT}/qwt.pri)
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
+
+# Source code
 HEADERS += \
     file_location_combo.h \
     file_location_dialog.h \

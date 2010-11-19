@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
 #SUBDIRS = applications/unisim applications/unisim/test plugins
-SUBDIRS = applications/unisim plugins
+SUBDIRS = library/usbase library/usengine plugins applications/unisim 

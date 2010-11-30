@@ -72,11 +72,13 @@ namespace {
     void call(Component *p, FunctionPtr doIt, FunctionPtr doItDeep, Component::RecursionPolicy policy)
 	{
 		if (policy == Component::ChildrenNot) {
+            p->followRedirections();
 			(p->*doIt)();
         }
         else {
 			if (policy == Component::ChildrenLast) {
-				(p->*doIt)();
+                p->followRedirections();
+                (p->*doIt)();
 			}
 			for (int i = 0; i < p->children().size(); ++i) {
 				Component *child = dynamic_cast<Component*>(p->children().at(i));
@@ -85,17 +87,26 @@ namespace {
 				}
 			}
 			if (policy == Component::ChildrenFirst) {
-				(p->*doIt)();
+                p->followRedirections();
+                (p->*doIt)();
 			}
 		}
 	}
 	
 }
 
+void Component::followRedirections() {
+    for (int i = 0; i < parameters.size(); ++i)
+        parameters[i]->followRedirection();
+}
+
 //! Initializes this and all children according to the RecursionPolicy.
 void Component::deepInitialize()
 {
+    // Update parameters twice since initialize could create additional parameters
+    parameters = seekChildren<ParameterBase*>("*");
     call(this, &Component::initialize, &Component::deepInitialize, recursionPolicy(Component::Initialize));
+    parameters = seekChildren<ParameterBase*>("*");
 }
 
 //! Resets this and all children according to the RecursionPolicy.

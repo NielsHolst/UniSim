@@ -6,39 +6,40 @@
 #include <iostream>
 #include <QTextStream>
 #include <usbase/file_locations.h>
+#include <usbase/output_variable.h>
 #include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
 #include <usbase/utilities.h>
-#include "output_table.h"
+#include "output_parameter_table.h"
 
 namespace UniSim{
 	
-OutputTable::OutputTable(Identifier name, QObject *parent)
+OutputParameterTable::OutputParameterTable(Identifier name, QObject *parent)
     : Output(name, parent)
 {
     new Parameter<QString>("fileName", &fileName, QString("output_table.prn"), this, "description");
 }
 
-void OutputTable::cleanup() {
+void OutputParameterTable::cleanup() {
     openFile();
-    writeLabels(xResults());
+    writeLabels(xVariables());
     writeTab();
-    writeLabels(yResults());
+    writeLabels(yVariables());
     writeCR();
 
-    int dataSize = checkDataSize(xResults());
-    checkDataSize(yResults(), dataSize);
+    int dataSize = checkDataSize(xVariables());
+    checkDataSize(yVariables(), dataSize);
 
     for (int i = 0; i < dataSize; ++i) {
-        writeData(xResults(), i);
+        writeData(xVariables(), i);
         writeTab();
-        writeData(yResults(), i);
+        writeData(yVariables(), i);
         writeCR();
     }
     file.close();
 }
 
-void OutputTable::openFile() {
+void OutputParameterTable::openFile() {
     QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
     QString useFileName = runNumber() == 1 ?
                           fileName :
@@ -61,7 +62,7 @@ void OutputTable::openFile() {
     }
 }
 
-QString OutputTable::ammendedFileName(QString fileName, int number) {
+QString OutputParameterTable::ammendedFileName(QString fileName, int number) {
     QString runCode = QString::number(number);
     runCode = runCode.rightJustified(4, '0');
 
@@ -72,28 +73,28 @@ QString OutputTable::ammendedFileName(QString fileName, int number) {
     return path + "/" + base + runCode + "." + suffix;
 }
 
-void OutputTable::writeLabels(const OutputResults &results) {
-    if (results.isEmpty())
+void OutputParameterTable::writeLabels(const OutputVariables &variables) {
+    if (variables.isEmpty())
         return;
     QString s;
     QTextStream text(&s);
-    text << results[0]->id().label();
-    for (int i = 1; i < results.size(); ++i)
-        text << "\t" << results[i]->id().label();
+    text << variables[0]->id().label();
+    for (int i = 1; i < variables.size(); ++i)
+        text << "\t" << variables[i]->id().label();
     file.write(qPrintable(s));
 }
 
-void OutputTable::writeTab() {
+void OutputParameterTable::writeTab() {
     file.write("\t");
 }
 
-void OutputTable::writeCR() {
+void OutputParameterTable::writeCR() {
     file.write("\n");
 }
 
-int OutputTable::checkDataSize(const OutputResults &results, int dataSize) const {
-    for (int i = 0; i < results.size(); ++i) {
-        int thisSize = results[i]->history()->size();
+int OutputParameterTable::checkDataSize(const OutputVariables &variables, int dataSize) const {
+    for (int i = 0; i < variables.size(); ++i) {
+        int thisSize = variables[i]->history()->size();
         if (dataSize > 0 && dataSize != thisSize)
             throw Exception("Output variable data buffers of unequal size");
         else
@@ -102,18 +103,18 @@ int OutputTable::checkDataSize(const OutputResults &results, int dataSize) const
     return dataSize;
 }
 
-void OutputTable::writeData(const OutputResults &results, int dataIx) {
-    if (results.isEmpty())
+void OutputParameterTable::writeData(const OutputVariables &variables, int dataIx) {
+    if (variables.isEmpty())
         return;
     QString s;
     QTextStream text(&s);
-    text << results[0]->history()->value(dataIx);
-    for (int i = 1; i < results.size(); ++i)
-        text << "\t" << results[i]->history()->value(dataIx);
+    text << variables[0]->history()->value(dataIx);
+    for (int i = 1; i < variables.size(); ++i)
+        text << "\t" << variables[i]->history()->value(dataIx);
     file.write(qPrintable(s));
 }
 
-void OutputTable::writeParameters() {
+void OutputParameterTable::writeParameters() {
     QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
     QString filePath = path + "/" + "param.txt";
     QFile file(filePath);

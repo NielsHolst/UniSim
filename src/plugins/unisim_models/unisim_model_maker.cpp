@@ -16,6 +16,7 @@
 #include "random_normal.h"
 #include "random_poisson.h"
 #include "random_uniform.h"
+#include "run_iterator_fixed.h"
 #include "stage.h"
 #include "trigger_by_date.h"
 #include "unisim_model_maker.h"
@@ -90,6 +91,10 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     desc["RandomUniform"] =
     "The model maintains a random variable with uniform (even) distrubution.";
 
+    desc["RunIteratorFixed"] =
+    "The model increments its @F iteration counter for every $F {update}. "
+    "Its @F value remains true as long as @Math{@F{iteration <= numIterations}}";
+
     desc["Stage"] =
     "The @F Stage model has an a distributed delay routine @Cite{$manetsch, $vansickle} inside. "
     "The implementation follows the original FORTRAN code @Cite{$abkin}. The two parameters @F "
@@ -134,6 +139,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new RandomPoisson(objectName, parent);
     else if (modelType.equals("RandomUniform"))
         model = new RandomUniform(objectName, parent);
+    else if (modelType.equals("RunIteratorFixed"))
+        model = new RunIteratorFixed(objectName, parent);
     else if (modelType.equals("Stage"))
         model = new Stage(objectName, parent);
     else if (modelType.equals("TriggerByDate"))

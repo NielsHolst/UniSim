@@ -3,11 +3,15 @@
 	<integrator type="UniSim::TimeStepLimited">
 		<parameter name="maxSteps" value="90"/>
 		<sequence>
+			<model name="random"/>
 			<model name="calendar"/>
 			<model name="weather"/>
 			<model name="pollen"/>
 			<model name="insect"/>
 		</sequence>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="30"/>
+		</model>
 	</integrator>
 
 	<model name="calendar" type="UniSim::Calendar">
@@ -19,6 +23,18 @@
 		<parameter name="firstDate" value="1/5/1996"/>
 	</model>
 
+	<model name="random">
+		<model name="scale" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0.01"/>
+			<parameter name="maxValue" value="1"/>
+		</model>
+		<model name="demandRate" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0.2"/>
+			<parameter name="maxValue" value="2"/>
+		</model>
+	</model>
+
+	
 	<model name="pollen" type="Beehive::Pollen">
 		<parameter name="r" value="0.1"/>
 	</model>
@@ -45,7 +61,8 @@
 			<parameter name="k" value="30"/>
 			<model name="time" type="UniSim::Days"/>
 			<model name="survival" type="beehive::LarvaSurvival">
-				<parameter name="demandRate" value="0.5"/>
+				<!--<parameter  name="demandRate" variable="{UniSim::RandomUniform}(minValue=0.2, maxValue=2)"/>-->
+				<parameter name="demandRate" variable="random/demandRate[value]" old_value="0.5"/>
 				<parameter name="attackRate" value="0.2"/>
 			</model>
 		</model>
@@ -58,7 +75,7 @@
 			<model name="fecundity" type="Beehive::Fecundity">
 				<parameter name="root1" value="0"/>				
 				<parameter name="root2" value="10"/>				
-				<parameter name="scale" value="0.2"/>				
+				<parameter name="scale" variable="random/scale[value]"/>				
 				<parameter name="sexRatio" value="0.5"/>				
 			</model>
 			<parameter name="duration" value="28"/>
@@ -66,8 +83,6 @@
 			<model name="time" type="UniSim::Days"/>
 		</model>
 	</model>
-
-	<!-- *** Outputs *** -->
 	
 	<output type="table">
 		<parameter name="filename" value="insect_stages.txt"/>
@@ -76,12 +91,35 @@
 		<variable label="Larva" axis="y" value="insect/larva[number]"/>
 		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
 		<variable label="Adult" axis="y" value="insect/adult[number]"/>
+		<variable label="TavgAvg" axis="y" value="weather[Tavg]" summary="average"/>
+		<variable label="TavgMax" axis="y" value="weather[Tavg]" summary="max"/>
+		<variable label="TavgMin" axis="y" value="weather[Tavg]" summary="min"/>
+		<variable label="TavgXMax" axis="y" value="weather[Tavg]" summary="xatmax"/>
+		<variable label="TavgXMin" axis="y" value="weather[Tavg]" summary="xatmin"/>
+		<variable label="TavgThreshold" axis="y" value="weather[Tavg]" summary="(xatthreshold 30.)"/>
 	</output>
 
+<!--	
+	<output type="SummaryPlot">
+		<variable label="Iteration" axis="x" value="RunIterator[iteration]"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Egg" axis="y" value="insect/egg[number]"/>
+		<variable label="Larva" axis="y" value="insect/larva[number]"/>
+		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
+		<variable label="Adult" axis="y" value="insect/adult[number]"/>
+	</output>
+	-->
+	
 	<output type="plot">
 		<parameter name="title" value="Fecundity scaling"/>
 		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
 		<read-parameter label="scale" axis="y" value="fecundity[scale]"/>
+	</output>
+	<output type="table">
+		<parameter name="filename" value="test param output.txt"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="scale" axis="y" value="random/scale[value]"/>
+		<read-parameter label="sexratio" axis="y" value="fecundity[sexratio]"/>
 	</output>
 	
 	<output type="plot">
@@ -118,5 +156,12 @@
 		<variable label="Tmax" axis="y" value="weather[Tmax]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
+		<variable label="TavgAvg" axis="y" value="weather[Tavg]" summary="average"/>
+		<variable label="TavgMax" axis="y" value="weather[Tavg]" summary="max"/>
+		<variable label="TavgMin" axis="y" value="weather[Tavg]" summary="min"/>
+		<variable label="TavgXMax" axis="y" value="weather[Tavg]" summary="xatmax"/>
+		<variable label="TavgXMin" axis="y" value="weather[Tavg]" summary="xatmin"/>
+		<variable label="TavgThreshold" axis="y" value="weather[Tavg]" summary="(xatthreshold 30.)"/>
+		
 	</output>
 </simulation>

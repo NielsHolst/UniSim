@@ -15,6 +15,7 @@ class PlotWidget;
 class MainWindowInterface {
 public:
     virtual PlotWidget* createPlotWidget(QString title) = 0;
+    virtual void tile() = 0;
 };
 
 } //namespace

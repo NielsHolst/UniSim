@@ -14,6 +14,7 @@
 #include <usbase/exception.h>
 #include <usbase/output.h>
 #include <usbase/output_data.h>
+#include <usbase/output_parameter.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
@@ -60,6 +61,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
 
     redirectedParameters.clear();
     outputVariableParam.clear();
+    outputParameterParam.clear();
     outputDataParam.clear();
 
     XmlExpander expander(fileName, "_expanded");
@@ -91,7 +93,9 @@ Simulation* SimulationMaker::parse(QString fileName_)
         } else if (elementNameEquals("output")) {
 			if (readOutputElement(sim)) ++iOut;
 		} else {
-            throw Exception(message("Unknown element in 'simulation' element: " + elementName()));
+            throw Exception(message("Unexpected element: '" + elementName() + "'"), sim);
+
+
 		}
 	}
 	Q_ASSERT(reader->isEndElement());
@@ -135,9 +139,12 @@ bool SimulationMaker::readIntegratorElement(QObject* parent)
         else if (elementNameEquals("parameter")){
             readParameterElement(integrator);
         }
+        else if (elementNameEquals("model")){
+            readModelElement(integrator);
+        }
         else {
             throw Exception(message(
-                           "Unknown element in 'model' element: " + elementName()), parent);
+                           "Unexpected element: '" + elementName() + "'"), parent);
 		}
 	}	
 	Q_ASSERT(reader->isEndElement());
@@ -196,9 +203,8 @@ bool SimulationMaker::readModelElement(QObject* parent)
             readParameterElement(model);
         }
         else {
-            throw Exception(message(
-                           "Unknown element in 'model' element: " + elementName()));
-		}
+            throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
+        }
 	}	
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
@@ -220,8 +226,7 @@ void SimulationMaker::readDatasetElement(QObject* parent)
             readParameterElement(dataset);
         }
         else {
-            throw Exception(message(
-                           "Unknown element in 'dataset' element: " + elementName()));
+            throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
         }
     }
     Q_ASSERT(reader->isEndElement());
@@ -277,6 +282,9 @@ bool SimulationMaker::readOutputElement(QObject* parent)
         if (elementNameEquals("parameter")) {
             readParameterElement(output);
         }
+        else if (elementNameEquals("read-parameter")) {
+            readOutputParameterElement(output);
+        }
         else if (elementNameEquals("variable")) {
             readOutputVariableElement(output);
         }
@@ -284,9 +292,8 @@ bool SimulationMaker::readOutputElement(QObject* parent)
             readOutputDataElement(output);
         }
         else {
-            throw Exception(message(
-                    "Unknown element in 'output' element: " + elementName()));
-		}
+            throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
+        }
 	}	
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
@@ -302,14 +309,11 @@ void SimulationMaker::readOutputVariableElement(QObject* parent)
     param.label = attributeValue("label", parent),
     param.axis = attributeValue("axis", parent),
     param.value = attributeValue("value", parent);
+    param.summary = attributeValue("summary", "");
     param.parent = parent;
 
     outputVariableParam.append(param);
-/*
-    QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
-    for (int i = 0; i < variables.size(); ++i)
-        new OutputVariable(label, axis, variables[i], parent);
-*/
+
     nextElementDelim();
     Q_ASSERT(reader->isEndElement());
     nextElementDelim();
@@ -320,8 +324,9 @@ void SimulationMaker::setupOutputVariableElements()
     for (int i = 0; i < outputVariableParam.size(); ++i) {
         OutputParam param = outputVariableParam[i];
         QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(param.value);
-        for (int i = 0; i < variables.size(); ++i)
-            new OutputVariable(param.label, param.axis, variables[i], param.parent);
+        for (int j = 0; j < variables.size(); ++j){
+            new OutputVariable(param.label, param.axis, param.summary, variables[j], param.parent);
+        }
     }
 }
 
@@ -337,11 +342,7 @@ void SimulationMaker::readOutputDataElement(QObject* parent)
     param.parent = parent;
 
     outputDataParam.append(param);
-/*
-    QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
-    for (int i = 0; i < variables.size(); ++i)
-        new OutputData(label, axis, variables[i], parent);
-*/
+
     nextElementDelim();
     Q_ASSERT(reader->isEndElement());
     nextElementDelim();
@@ -360,6 +361,34 @@ void SimulationMaker::setupOutputDataElements()
             throw Exception(message(msg));
         }
         new OutputData(param.label, param.axis, dataset, columnName, param.parent);
+    }
+}
+
+void SimulationMaker::readOutputParameterElement(QObject* parent)
+{
+
+    Q_ASSERT(reader->isStartElement() && parent);
+
+    OutputParam param;
+    param.label = attributeValue("label", parent),
+    param.axis = attributeValue("axis", parent),
+    param.value = attributeValue("value", parent);
+    param.parent = parent;
+
+    outputParameterParam.append(param);
+
+    nextElementDelim();
+    Q_ASSERT(reader->isEndElement());
+    nextElementDelim();
+}
+
+void SimulationMaker::setupOutputParameterElements()
+{
+    for (int i = 0; i < outputParameterParam.size(); ++i) {
+        OutputParam param = outputParameterParam[i];
+        QList<ParameterBase*> parameters = seekMany<QObject*, ParameterBase*>(param.value);
+        for (int i = 0; i < parameters.size(); ++i)
+            new OutputParameter(param.label, param.axis, parameters[i], param.parent);
     }
 }
 

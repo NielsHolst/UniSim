@@ -6,31 +6,42 @@
 #ifndef UNISIM_INTEGRATOR_H
 #define UNISIM_INTEGRATOR_H
 
-#include <QObject>
-#include "identifier.h"
+#include "model.h"
+
+class QProgressDialog;
 
 namespace UniSim{
-	
-class Integrator : public QObject
+
+class Integrator : public UniSim::Model
 {
 	Q_OBJECT
 public:
     Integrator(Identifier name, QObject *parent=0);
 	
-	//! Will be called once, before the first execution of the simulation.
-    virtual void initialize() { }
+    // standard methods
+    virtual void initialize();
+    virtual void reset();
 
-    //! Resets the state of the nextRun() guard function
-    virtual void resetRuns() { }
+    // special methods
+    bool nextRun();
+    virtual bool nextStep() = 0;
+	
+protected:
+    int stepNumber;
 
-    //! Resets the state of the nextStep() guard function
-    virtual void resetSteps() { }
-	
-	//! Guard function that determines whether the whole Simulation should be run (again)
-	virtual bool nextRun() = 0;
-	
-	//! Guard function that determines whether the Simulation should proceed one more time step
-	virtual bool nextStep() = 0;
+private slots:
+    void doCancel();
+
+private:
+    Model *runIterator;
+    int runNumber;
+    bool reporting, cancelled;
+    QProgressDialog *report;
+    void reportProgress();
+    void openReport();
+    void updateReport();
+    void createReport();
+    void closeReport();
 };
 
 } //namespace

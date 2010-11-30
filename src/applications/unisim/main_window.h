@@ -37,6 +37,7 @@ class MainWindow : public QMainWindow,
 public:
     void createMenus();
     UniSim::PlotWidget* createPlotWidget(QString title);
+    void tile();
     void closeSubWindows(SubWindow::Type type = SubWindow::All);
     void minimizeSubWindows(SubWindow::Type type = SubWindow::All);
 

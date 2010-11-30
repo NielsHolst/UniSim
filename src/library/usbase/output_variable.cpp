@@ -3,7 +3,11 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <cfloat>
 #include <QMessageBox>
+#include <QPair>
+#include "exception"
+#include "identifier.h"
 #include "model.h"
 #include "output_variable.h"
 #include "pull_variable.h"
@@ -11,36 +15,119 @@
 
 namespace UniSim{
 	
-OutputVariable::OutputVariable(QString label, QString axis, PullVariableBase *variable, QObject *parent)
-    : Component(label, parent), pullVarPtr(variable)
+OutputVariable::OutputVariable(QString label, QString axis, QString summary_, PullVariableBase *variable, QObject *parent)
+    : OutputResult(label, axis, parent), pullVarPtr(variable)
 {
     Q_ASSERT(pullVarPtr);
-    setAxisFromString(axis);
+    setSummaryFromString(summary_);
+    if (summary() == XAtThreshold){
+        setThreshold(summary_);
+    }
 }
 
-void OutputVariable::setAxisFromString(QString axis) {
-    QString s = axis.toLower();
-    if (axis!="x" && axis!="y")
-        throw Exception("Axis must be either 'x'' or 'y', not '" + axis + "'");
-    _axis = axis == "x" ? XAxis : YAxis;
+void OutputVariable::setThreshold(QString summary) {
+    QPair<QString, double> decoded = decodeSummary(summary);
+    QString name = decoded.first;
+    s.threshold = decoded.second;
+    if (!Identifier(name).equals("XAtThreshold"))
+        throw Exception("Summary type 'XAtThreshold' expected", this);
 }
+
+QPair<QString, double> OutputVariable::decodeSummary(QString summary) {
+    QString s = summary.simplified();
+    if (s.left(1)!="(" ||  s.right(1)!=")")
+        throw Exception("Write summary as (name value) pair", this);
+    s = s.mid(1, s.length()-2);
+    QStringList parts = s.split(" ");
+    if (parts.size() != 2)
+        throw Exception("Write summary as (name value) pair", this);
+    QPair<QString, double> result;
+    bool ok;
+    result.first = parts[0];
+    result.second = parts[1].toDouble(&ok);
+    if (!ok)
+        throw Exception("Write summary as (name value) pair. Error in value", this);
+    return result;
+}
+
 
 void OutputVariable::reset() {
-    _history.clear();
+    OutputResult::reset();
+    resetSummary();
 }
 
 void OutputVariable::update() {
     Q_ASSERT(pullVarPtr);
-    double toAppend = pullVarPtr->toVariant().value<double>();
-    _history.append(toAppend);
+    double value = pullVarPtr->toVariant().value<double>();
+    updateSummary(value);
+    _history.append(summary() == None ? value : s.value);
 }
 
-OutputVariable::Axis OutputVariable::axis() const {
-    return _axis;
+void OutputVariable::resetSummary() {
+    s.n = 0;
+    s.value = s.sum = 0.;
+    switch (summary()) {
+    case Max:
+    case XAtMax:
+        s.maxValue = DBL_MIN;
+        break;
+    case Min:
+    case XAtMin:
+        s.minValue = DBL_MAX;
+        break;
+    case XAtThreshold:
+        s.passedThreshold = s.hasPrevValue = false;
+    default:
+        ;
+    }
 }
 
-const QVector<double>* OutputVariable::history() const {
-    return &_history;
+void OutputVariable::updateSummary(double value) {
+    ++s.n;
+    switch (summary()) {
+    case None:
+        break;
+    case Max:
+        if (value > s.maxValue)
+            s.maxValue = s.value = value;
+        break;
+    case XAtMax:
+        if (value > s.maxValue) {
+            s.maxValue = value;
+            s.value = s.n;
+        }
+        break;
+    case Min:
+        if (value < s.minValue)
+            s.minValue = s.value = value;
+        break;
+    case XAtMin:
+        if (value < s.minValue) {
+            s.minValue = value;
+            s.value = s.n;
+        }
+        break;
+    case Average:
+        s.sum += value;
+        s.value = s.sum/s.n;
+        break;
+    case Final:
+        s.value = value;
+        break;
+    case XAtThreshold:
+        if (s.passedThreshold)
+            break;
+        else if (!s.hasPrevValue) {
+            s.prevValue = s.value;
+            s.hasPrevValue = true;
+        }
+        s.passedThreshold = (s.prevValue < s.threshold && s.threshold <= s.value) ||
+                          (s.prevValue > s.threshold && s.threshold >= s.value);
+        s.prevValue = value;
+        if (s.passedThreshold)
+            s.value = s.n;
+        break;
+    }
 }
 
 } //namespace

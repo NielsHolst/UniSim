@@ -8,34 +8,35 @@
 
 #include <QList>
 #include <QVector>
-#include "component.h"
+#include "output_result.h"
 
 namespace UniSim{	
 
 class PullVariableBase;
 
-class OutputVariable : public Component
+class OutputVariable : public OutputResult
 {
 	Q_OBJECT
 public:
-    OutputVariable(QString label, QString axis, PullVariableBase *variable, QObject *parent = 0);
+    OutputVariable(QString label, QString axis, QString summary, PullVariableBase *variable, QObject *parent = 0);
 	
     // standard methods
-	void reset();
-	void update();
-
-    // special methods
-    typedef enum {XAxis, YAxis} Axis;
-    Axis axis() const;
-    const QVector<double>* history() const;
+    void reset();
+    void update();
 
 private:
     // methods
-    void setAxisFromString(QString axis);
+    void setThreshold(QString summary);
+    QPair<QString, double> decodeSummary(QString summary);
+    void resetSummary();
+    void updateSummary(double value);
 
     // data
-    Axis _axis;
-    QVector<double> _history;	//!< Series of collected values
+    struct {
+        int n;
+        double value, sum, prevValue, minValue, maxValue, threshold, x;
+        bool passedThreshold, hasPrevValue;
+    } s;
 
     // links
     const Model *model;		//!< Pointer to the model holding the pull variable

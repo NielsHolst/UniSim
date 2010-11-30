@@ -3,10 +3,10 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UniSim_COMPONENT_H
-#define UniSim_COMPONENT_H
+#ifndef UNISIM_COMPONENT_H
+#define UNISIM_COMPONENT_H
 
-
+#include <QList>
 #include <QMap>
 #include <QObject>
 #include "named_object.h"
@@ -46,6 +46,8 @@ public:
     void deepCleanup();
     void deepDebrief();
 
+    void followRedirections();
+
     void setRecursionPolicy(Function function, RecursionPolicy policy);
     RecursionPolicy recursionPolicy(Function function) const;
 
@@ -63,9 +65,11 @@ private slots:
     void acceptPullVariableChanged(PullVariableBase *var, ParameterBase *param);
 
 private:
+    // data
     Identifier _id;
     static QObject* _root;
     QMap<Function, RecursionPolicy> policy;
+    QList<ParameterBase*> parameters;
 };
 
 typedef QList<Component*> Components;

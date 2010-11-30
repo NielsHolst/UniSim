@@ -8,31 +8,38 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include "plot_widget.h"
+#include <QMessageBox>
 
 namespace UniSim {
 
-PlotWidget::PlotWidget(QwtPlot *plot_, QWidget *widget_) :
-    plot(plot_), widget(widget_) {
+PlotWidget::PlotWidget(QwtPlot *plot, QWidget *widget_) :
+    _plot(plot), widget(widget_) {
 }
 
 void PlotWidget::setXYtitles(QString xTitle, QString yTitle) {
-    plot->setAxisTitle(QwtPlot::xBottom, xTitle);
-    plot->setAxisTitle(QwtPlot::yLeft, yTitle);
+    _plot->setAxisTitle(QwtPlot::xBottom, xTitle);
+    _plot->setAxisTitle(QwtPlot::yLeft, yTitle);
 }
 
 void PlotWidget::showLegend(bool doShow) {
-    if (doShow)
-        plot->insertLegend(new QwtLegend(), QwtPlot::RightLegend);
+    if (doShow) {
+        _plot->insertLegend(new QwtLegend(), QwtPlot::RightLegend);
+    }
 }
 
 void PlotWidget::addCurve(QwtPlotCurve *curve) {
-    curve->attach(plot);
+    curve->attach(_plot);
 }
 
 void PlotWidget::show() {
-    plot->replot();
+    _plot->replot();
     widget->adjustSize();
     widget->show();
 }
+
+QwtPlot* PlotWidget::plot() {
+    return _plot;
+}
+
 
 } //namespace

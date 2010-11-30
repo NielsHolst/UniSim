@@ -65,7 +65,7 @@ Model* Rotation::currentCrop() {
 }
 
 void Rotation::decodeCrops() {
-    cropNames = decodeSimpleList(cropsString, "Crop rotation");
+    cropNames = decodeSimpleList(cropsString, this);
 }
 
 void Rotation::handleEvent(QObject *sender, QString event) {

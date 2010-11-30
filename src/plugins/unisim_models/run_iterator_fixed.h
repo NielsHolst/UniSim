@@ -3,38 +3,32 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_TIME_LIMITED_H
-#define UNISIM_TIME_LIMITED_H
+#ifndef UNISIM_RUN_ITERATOR_FIXED
+#define UNISIM_RUN_ITERATOR_FIXED
+#include <QObject>
+#include <usbase/model.h>
 
-#include <usbase/integrator.h>
 
 namespace UniSim{
-	
-class Model;
 
-class TimeLimited : public Integrator
+class RunIteratorFixed : public Model
 {
 	Q_OBJECT
-
-public:
-    TimeLimited(Identifier name, QObject *parent=0);
+public: 
+    RunIteratorFixed(UniSim::Identifier name, QObject *parent=0);
 
     // standard methods
     void initialize();
-
-    // special methods
-    bool nextStep();
+    void cleanup();
 
 private:
-    // Parameters
-    double maxTime;
+    // parameters
+    int numIterations;
 
-    // Links
-    Model* time;
+    // pull variables
+    bool value;
+    int iteration;
 };
 
-
 } //namespace
-
-
 #endif

@@ -66,7 +66,7 @@ void Dataset::initialize() {
 
 void Dataset::initializeData() {
     typedef QPair<QString, int> NameVal;
-    QList<NameVal> nameValueList = decodeNameValueList(columns, this);
+    QList<NameVal> nameValueList = decodeNameValueList<int>(columns, this);
     for (int i = 0; i < nameValueList.size(); ++i) {
         QString name = nameValueList[i].first;
         if (contains(name))

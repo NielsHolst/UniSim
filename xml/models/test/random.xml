@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
     <integrator type="TimeStepLimited">
-        <parameter name="maxSteps" value="100"/>
-        <sequence>
-            <model name="calendar"/>
-            <model name="generators"/>
-            <model name="weather"/>
-        </sequence>
-    </integrator>
+		<parameter name="maxSteps" value="100"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="generators"/>
+			<model name="weather"/>
+		</sequence>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="3"/>
+		</model>
+	</integrator>
 	
 	<model name="calendar" type="Calendar">
 		<parameter name="firstDate" value="1/1/2010"/>
@@ -17,7 +20,7 @@
 		<!--
 		<parameter name="irradiation" value="20"/>
 		-->
-		<parameter name="irradiation" variable="normal[value]"/>
+		<parameter name="irradiation" variable="generators/normal[value]"/>
 	</model>
 	
 	<model name="generators">

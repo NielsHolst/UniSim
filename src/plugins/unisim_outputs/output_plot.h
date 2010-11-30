@@ -12,6 +12,7 @@
 
 namespace UniSim{
 
+class  MainWindowInterface;
 class PlotWidget;
 
 class OutputPlot : public Output
@@ -29,16 +30,17 @@ private:
     QString title;
 
     // housekeeping
+    MainWindowInterface *mainWindow;
     PlotWidget *plotWidget;
     static QList<QColor> colors;
 
     // methods
     void createPlotWidget();
     void fillPlotWidget();
-    void fillWithVariables();
+    void fillWithResults();
     void fillWithData();
     void showPlotWidget();
-    bool emptyVariables() const;
+    bool emptyResults() const;
     bool emptyData() const;
 };
 

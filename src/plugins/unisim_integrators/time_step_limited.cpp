@@ -15,26 +15,10 @@ TimeStepLimited::TimeStepLimited(Identifier name, QObject *parent)
     new Parameter<int>("maxSteps", &maxSteps, 100, this, "description");
 }
 
-void TimeStepLimited::resetRuns() {
-    doRun = true;
-}
-
-void TimeStepLimited::resetSteps() {
-    numSteps = 0;
-}
-
-bool TimeStepLimited::nextRun() {
-    if (doRun) {
-        doRun = false;
-        return true;
-    }
-    return false;
-}
-
 bool TimeStepLimited::nextStep()
 {
-    ++numSteps;
-    return numSteps <= maxSteps;
+    ++stepNumber;
+    return stepNumber <= maxSteps;
 }
 
 } //namespace

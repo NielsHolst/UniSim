@@ -11,8 +11,9 @@
 
 namespace UniSim{
 
+class Integrator;
 class OutputData;
-class OutputVariable;
+class OutputResult;
 
 class Output : public Component
 {
@@ -22,16 +23,18 @@ public:
     // standard methods
     virtual void initialize();
     // special methods
-    const QList<OutputVariable *>& xVariables() const;
-    const QList<OutputVariable *>& yVariables() const;
+    const QList<OutputResult *>& xResults() const;
+    const QList<OutputResult *>& yResults() const;
 
     const QList<OutputData *>& xData() const;
     const QList<OutputData *>& yData() const;
-
+protected:
+    int runNumber() const;
 private:
     // links
-    QList<OutputVariable *> variables, xVar, yVar;
+    QList<OutputResult *> results, xRes, yRes;
     QList<OutputData *> data, xDat, yDat;
+    Integrator *integrator;
 };
 
 typedef QList<Output*> Outputs;

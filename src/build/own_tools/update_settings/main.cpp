@@ -1,9 +1,10 @@
+#include <iostream>
 #include <QCoreApplication>
 #include <usbase/file_location_info.h>
 #include "../common/common.h"
 
 using namespace UniSim;
-
+using namespace std;
 
 QDir getXmlDir() {
     QDir dir = getSourceDir();
@@ -38,6 +39,8 @@ int main(int argc, char *argv[])
     dir = getXmlDir();
     dir.cd("models");
     FileLocationInfo::setLocation(FileLocationInfo::Models, dir);
+    //cout << qPrintable(dir.absolutePath()) << "\n";
+    //getchar();
 
     dir = getXmlDir();
     dir.cd("prototypes");
@@ -54,6 +57,10 @@ int main(int argc, char *argv[])
     dir = getUniSimDir();
     dir.cd("weather");
     FileLocationInfo::setLocation(FileLocationInfo::Weather, dir);
+
+    dir = getUniSimDir();
+    dir.cd("datasets");
+    FileLocationInfo::setLocation(FileLocationInfo::Datasets, dir);
 
     return 0;
 }

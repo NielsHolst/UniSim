@@ -12,7 +12,7 @@ using namespace UniSim;
 
 namespace beehive{
 
-Pollen::Pollen(UniSim::Identifier name, QObject *parent)
+Pollen::Pollen(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new Parameter<double>("initMass", &initMass, 100., this, "Initial mass");

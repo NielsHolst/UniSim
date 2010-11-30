@@ -50,6 +50,7 @@ public:
 
     void setupOutputVariableElements();
     void setupOutputDataElements();
+    void setupOutputParameterElements();
 
 signals: 
     //! Signals when the parser begins expanding the original UniSim file
@@ -71,11 +72,11 @@ private:
     QList<RedirectedParameter> redirectedParameters;
 
     struct OutputParam {
-        QString axis, label, value;
+        QString axis, label, value, summary;
         QObject *parent;
     };
 
-    QList<OutputParam> outputVariableParam, outputDataParam;
+    QList<OutputParam> outputVariableParam, outputDataParam, outputParameterParam;
 
     // methods
     bool nextElementDelim();
@@ -86,6 +87,7 @@ private:
 	bool readModelElement(QObject *parent);
     void readDatasetElement(QObject* parent);
     void readParameterElement(QObject *parent);
+    void readOutputParameterElement(QObject *parent);
 
 	bool readOutputElement(QObject *parent);
     void readOutputVariableElement(QObject* parent);

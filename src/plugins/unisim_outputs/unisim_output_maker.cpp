@@ -35,6 +35,9 @@ const QMap<Identifier, QString>& UniSimOutputMaker::supportedClasses() {
     desc["Table"] =
     "@I pending";
 
+    desc["SummaryPlot"] =
+    "@I pending";
+
     return desc;
 }
 
@@ -47,10 +50,12 @@ Output* UniSimOutputMaker::create(Identifier outputType, Identifier objectName, 
 	// Remember to add integratorType to the list above as well
     UniSim::setSimulationObjectFromDescendent(parent);
     Output *output = 0;
-    if (outputType.equals("Table"))
-        output = new OutputTable(objectName, parent);
-    else if (outputType.equals("Plot"))
+    /*if (outputType.equals("ParameterTable"))
+        output = new ParameterTable(objectName, parent);
+    else*/ if (outputType.equals("Plot"))
         output = new OutputPlot(objectName, parent);
+    else if (outputType.equals("Table"))
+        output = new OutputTable(objectName, parent);
     return output;
 }
 

@@ -29,17 +29,18 @@ public:
     T* valuePtr() const;
 	void setValue(T newValue);
     void redirectValuePtr(T *valuePtr);
+    void followRedirection();
 
 private:
 
     T *_valuePtr;
+    T *redirectedValuePtr;
     T defaultValue;
 };
 
-
 template <class T>
 Parameter<T>::Parameter(Identifier id, T *valuePtr, T defaultvalue_, QObject *parent, QString desc)
-    :  ParameterBase(id, parent, desc), _valuePtr(valuePtr), defaultValue(defaultvalue_)
+    :  ParameterBase(id, parent, desc), _valuePtr(valuePtr), redirectedValuePtr(0), defaultValue(defaultvalue_)
 {
     assertUniqueness(id, parent);
     Q_ASSERT(_valuePtr);
@@ -83,8 +84,15 @@ void Parameter<T>::setValueFromString(QString newValue)
 }
 
 template <class T>
-void Parameter<T>::redirectValuePtr(T *valuePtr) {
-    _valuePtr = valuePtr;
+void Parameter<T>::redirectValuePtr(T *rederictedPtr) {
+    redirectedValuePtr = rederictedPtr;
+}
+
+
+template <class T>
+void Parameter<T>::followRedirection() {
+    if (redirectedValuePtr)
+        *_valuePtr = *redirectedValuePtr;
 }
 
 } //namespace

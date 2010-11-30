@@ -126,21 +126,15 @@ int toDayOfYear(int day, int month) {
 // String handling
 //
 
-//! \cond
-namespace local {
-    QString stringDefault(QString s, QString defaultValue) {
-        return s.isEmpty() ? defaultValue : s;
-    }
 
-    void chopParentheses(QString &s, QString errorContext) {
+    void chopParentheses(QString &s, QObject *concerning) {
         if (s.left(1) != "(")
-            throw UniSim::Exception(stringDefault(errorContext, "Value list") +
-                                    " miss left parenthesis: " + s);
+            throw UniSim::Exception("Value list miss left parenthesis: " + s, concerning);
         s.remove(0, 1);
 
         if (s.right(1) != ")")
-            throw UniSim::Exception(stringDefault(errorContext, "Value list") +
-                                    " miss right parenthesis: " + s);
+            throw UniSim::Exception("Value list miss right parenthesis: " + s, concerning);
+
         s.chop(1);
         s = s.simplified();
     }
@@ -153,9 +147,6 @@ namespace local {
     }
 
 
-} //namespace
-//! \endcond
-
 QString fullName(const QObject *object) {
     if (!object) return QString();
     QString name = object->objectName();
@@ -167,59 +158,20 @@ QString fullName(const QObject *object) {
 
 
 //! Parses a simple list "(A B C)"
-/*! Throws an Exception if the list is ill-formated or is empty. The optional errorContext is used
-    as explanatory test in the Exception
+/*! Throws an Exception if the list is ill-formated or is empty.
 */
-QStringList decodeSimpleList(QString parenthesizedList, QString errorContext) {
+QStringList decodeSimpleList(QString parenthesizedList, QObject *concerning) {
     QString s = parenthesizedList.simplified();
     if (s.size() == 0)
         return QStringList();
     if (s[0] != '(') {
         if (s.endsWith(')'))
-            throw UniSim::Exception(local::stringDefault(errorContext,
-                                    "Value list misses left parenthesis"));
+            throw UniSim::Exception("Value list misses left parenthesis", concerning);
         else
             return QStringList() << s;
     }
-    local::chopParentheses(s, errorContext);
+    chopParentheses(s, concerning);
     return s.split(" ", QString::SkipEmptyParts);
-}
-
-
-QList< QPair<QString, int> > decodeNameValueList(QString nameValueList, QObject *concerning) {
-    QList< QPair<QString, int> > result;
-    QString s = nameValueList.simplified();
-    s = s.trimmed();
-    if (s.size() == 0) throw Exception("Name-value list is empty", concerning);
-    if (s.left(1) != "(") throw Exception("Name-value list must begin with '(': " + s, concerning);
-
-    QStringList parts = s.split("(");
-    for (int i = 0; i < 2; ++i) {
-        if (parts[i].size() > 0 && parts[i].left(1) != " ")
-            throw UniSim::Exception("Name-value list must begin with two left parentheses: " + s, concerning);
-    }
-
-    if (parts.size() < 3) throw UniSim::Exception("Name-value list is incomplete: " + s, concerning);
-
-    for (int i = 2; i< parts.size(); ++i) {
-        QString part = parts[i].trimmed();
-        local::chopRightParenthesis(part, concerning);
-        if (i == parts.size() - 1)
-            local::chopRightParenthesis(part, concerning);
-
-        QStringList strPair = part.split(" ");
-        bool ok = strPair.size() == 2;
-        if (ok) {
-            QPair<QString, int> pair;
-            pair.first = strPair[0];
-            pair.second = strPair[1].toInt(&ok);
-            if (ok) result.append(pair);
-        }
-
-        if (!ok)
-            throw UniSim::Exception("Name-value list must contain (name value) pairs: " + s, concerning);
-    }
-    return result;
 }
 
 //
@@ -263,7 +215,7 @@ QStringList splitParentChildExpression(QString expression) {
     return result;
 }
 
-template<> bool stringToValue<bool>(QString s_) {
+template<> bool stringToValue<bool>(QString s_, QObject *concerning) {
     QString s = s_.trimmed().toLower();
     bool value;
     if (s=="y" || s=="yes" || s=="t" || s=="true")
@@ -272,16 +224,16 @@ template<> bool stringToValue<bool>(QString s_) {
         value = false;
     else {
         QString msg = "Cannot convert '" + s + "' to bool";
-        throw Exception(msg);
+        throw Exception(msg, concerning);
     }
     return value;
 }
 
-template<> QDate stringToValue<QDate>(QString s) {
+template<> QDate stringToValue<QDate>(QString s, QObject *concerning) {
     QDate date = QDate::fromString(s.trimmed(), "d/M/yyyy");
     if (!date.isValid()) {
         QString msg = "Cannot convert '" + s + "' to a date";
-        throw Exception(msg);
+        throw Exception(msg, concerning);
     }
     return date;
 }

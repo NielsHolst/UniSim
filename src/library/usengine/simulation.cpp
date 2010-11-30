@@ -106,11 +106,11 @@ void Simulation::initialize(const Identifiers &sequence, SimulationMaker *simMak
 	}
 
 	// Initialize integrator, models and outputs
-	_integrator->initialize();
     for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepInitialize();
     if (simMaker) {
         simMaker->setupOutputVariableElements();
         simMaker->setupOutputDataElements();
+        simMaker->setupOutputParameterElements();
     }
     for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou) (*ou)->deepInitialize();
 
@@ -134,25 +134,29 @@ void Simulation::execute()
 	_runCount = 0;
 	_stopCurrentRun = _stopAllRuns = false;
 	
-    _integrator->resetRuns();
+    _integrator->deepInitialize();
     while (_integrator->nextRun() && !_stopAllRuns) {
         ++_runCount;
 		_stepCount = 0;
 		
+        _integrator->deepReset();
         for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepReset();
         for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepReset();
 		
-        _integrator->resetSteps();
+        _integrator->deepReset();
         while (_integrator->nextStep() && !_stopCurrentRun) {
 			++_stepCount;
+            _integrator->deepUpdate();
             for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepUpdate();
             for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepUpdate();
 		}
 
+        _integrator->deepCleanup();
         for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepCleanup();
         for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepCleanup();
     }
 
+    _integrator->deepDebrief();
     for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepDebrief();
     for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepDebrief();
 }

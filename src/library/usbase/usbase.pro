@@ -21,6 +21,8 @@ HEADERS += \
 		$${US_BASE}/output.h \
 		$${US_BASE}/output_maker_plug_in.h \
         $${US_BASE}/output_data.h \
+        $${US_BASE}/output_parameter.h \
+        $${US_BASE}/output_result.h \
         $${US_BASE}/output_variable.h \
 		$${US_BASE}/model.h \
 		$${US_BASE}/model_maker_plug_in.h \
@@ -46,9 +48,11 @@ SOURCES += \
         $${US_BASE}/integrator.cpp \
         $${US_BASE}/model.cpp \
         $${US_BASE}/named_object.cpp \
-        $${US_BASE}/output_data.cpp \
         $${US_BASE}/object_pool.cpp \
-		$${US_BASE}/output.cpp \
+        $${US_BASE}/output.cpp \
+        $${US_BASE}/output_data.cpp \
+        $${US_BASE}/output_parameter.cpp \
+        $${US_BASE}/output_result.cpp \
 		$${US_BASE}/output_variable.cpp \
         $${US_BASE}/parameter_base.cpp \
         $${US_BASE}/pull_variable_base.cpp \

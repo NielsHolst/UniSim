@@ -3,46 +3,88 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QProgressDialog>
 #include <QString>
+#include "exception.h"
 #include "integrator.h"
-
-/*! \class UniSim::Integrator
-    \brief The %Integrator class controls the execution of a Simulation
-
-    The two control loops of Simulation::execute() are guarded by the Integrator functions: nextRun() and
-    nextStep():
-
-    \verbatim
-    Simulation::execute() {
-        integrator->resetRuns();
-        while integrator->nextRun() {
-            reset all components;
-
-            integrator->resetSteps();
-            while integrator->nextStep()
-                update all components;
-            cleanup all components;
-        }
-        debrief all components;
-    }
-    \endverbatim
-
-    You set up the logic for the execution of your simulation by deriving a class from Integrator and defining
-    nextRun() and nextStep(). Usually you can use one of the Integrator classes already defined.
-
-    Integrators are supplied as plugins. If you derive your own Integrator classes you should also put them
-    in a plugin to be generally available.
-
-    \sa IntegratorMakerPlugIn
-
-*/
+#include "model.h"
+#include "pull_variable.h"
 
 namespace UniSim{
 	
 Integrator::Integrator(Identifier name, QObject *parent)
-	: QObject(parent)
+    : Model(name, parent), report(0)
 {
-    setObjectName(name.key());
+    new PullVariable<int>("stepNumber", &stepNumber, this, "Number of current time step in this iteration");
+    new PullVariable<int>("runNumber", &runNumber, this, "Number of current iteration");
+}
+
+void Integrator::initialize() {
+    Models models = seekChildren<Model*>("RunIterator");
+    if (models.size() == 0)
+        runIterator = 0;
+    else if (models.size() == 1)
+        runIterator = models[0];
+    else
+        throw Exception("Max. one child model named 'RunIterator' is allowed", this);
+
+    runNumber = 0;
+    reporting = cancelled = false;
+}
+
+void Integrator::reset() {
+    stepNumber = 0;
+}
+
+bool Integrator::nextRun() {
+    reportProgress();
+    ++runNumber;
+    bool nextOk;
+    if (cancelled)
+        nextOk = false;
+    else if (runIterator)
+        nextOk = runIterator->pullVariable<bool>("value");
+    else
+        nextOk = runNumber == 1;
+    if (!nextOk)
+        closeReport();
+    return nextOk;
+}
+
+void Integrator::doCancel() {
+    cancelled = true;
+}
+
+void Integrator::reportProgress() {
+    if (!reporting) {
+        openReport();
+        reporting = true;
+    }
+    updateReport();
+}
+
+void Integrator::openReport() {
+    if (!report)
+        createReport();
+}
+
+void Integrator::updateReport() {
+    report->setValue(runNumber);
+}
+
+void Integrator::createReport() {
+    int numRuns = 1;
+    if (runIterator)
+        numRuns = runIterator->pullVariable<int>("numIterations");
+    report = new QProgressDialog("Computing...", "Cancel simulation", 0, numRuns);
+    report->setWindowModality(Qt::WindowModal);
+    report->setMinimumDuration(1000);
+    connect(report, SIGNAL(canceled()), this, SLOT(doCancel()));
+}
+
+void Integrator::closeReport() {
+    report->close();
+    reporting = false;
 }
 
 } //namespace

@@ -53,7 +53,7 @@ void Calendar::initialize()
         throw Exception("Calendar parameter 'stepPerDays must be > 0");
 
     followers.clear();
-    QStringList followersAsStrings = decodeSimpleList(followersAsString, "Calendar::initialize");
+    QStringList followersAsStrings = decodeSimpleList(followersAsString, this);
     for (int i = 0; i < followersAsStrings.size(); ++i)
         followers.append(seekOne<Model*>(followersAsStrings.value(i)));
 

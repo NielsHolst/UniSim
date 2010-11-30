@@ -17,23 +17,11 @@ TimeLimited::TimeLimited(Identifier name, QObject *parent)
     : Integrator(name, parent)
 {
     new Parameter<double>("maxTime", &maxTime, 30., this, "description");
-    new PullVariable<double>("numRuns", &numRuns, this, "description");
 }
 
 void TimeLimited::initialize() {
-    time = seekOneChild<Model*>("time", this);
-}
-
-void TimeLimited::resetRuns() {
-    numRuns = 0.;
-}
-
-void TimeLimited::resetSteps() {
-}
-
-bool TimeLimited::nextRun() {
-    numRuns += 1.;
-    return numRuns == 1;
+    Integrator::initialize();
+    time = UniSim::seekOneChild<Model*>("time", this);
 }
 
 bool TimeLimited::nextStep()

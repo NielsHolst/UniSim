@@ -20,8 +20,9 @@ public:
     void showLegend(bool doShow);
     void addCurve(QwtPlotCurve *curve);
     void show();
+    QwtPlot* plot();
 private:
-    QwtPlot *plot;
+    QwtPlot *_plot;
     QWidget *widget;
 };
 

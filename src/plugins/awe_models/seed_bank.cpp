@@ -138,7 +138,7 @@ double SeedBank::calcCropEffectOnEmergence() const {
 
 void SeedBank::decodeEmergence() {
     const int m[14] = {-16,15,45,74,105,135,166,196,227,258,288,319,349,380};
-    QStringList valList = UniSim::decodeSimpleList(emergenceString, "Emergence calendar");
+    QStringList valList = decodeSimpleList(emergenceString, this);
     if (valList.size() != 12) throw Exception("Emergence calendar must have 12 space-separated values: " +
                                               emergenceString);
     bool ok = true;

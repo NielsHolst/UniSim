@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <iostream>
+#include <QDate>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -213,8 +214,10 @@ void PrototypeMaker::writeClassHeaderFile(ClassName className) const {
 
 QString PrototypeMaker::copyrightNotice() const
 {
+    QDate date = QDate::currentDate();
+    QString year = QString::number(date.year());
     return
-    "/* Copyright (C) 2009-2010 by Niels Holst [niels.holst@agrsci.dk] and co-authors.\n"
+    "/* Copyright (C) 2009-" + year + " by Niels Holst [niels.holst@agrsci.dk] and co-authors.\n"
     "** Copyrights reserved.\n"
     "** Released under the terms of the GNU General Public License version 3.0 or later.\n"
     "** See www.gnu.org/copyleft/gpl.html.\n"
@@ -502,13 +505,13 @@ QString PrototypeMaker::xmlModelNames() const {
 
 QString PrototypeMaker::xmlModelClasses() const {
     QString s;
-    s += "\n\t<model name=\"calendar\" class=\"Calendar\">\n"
+    s += "\n\t<model name=\"calendar\" type=\"Calendar\">\n"
          "\t\t<parameter name=\"firstDate\" value=\"1/1/2010\"/>\n"
          "\t</model>\n";
     for (Classes::const_iterator cl = classes.begin(); cl != classes.end(); ++cl) {
         const ObjectNames &objectNames(cl.value());
         for (int i = 0; i < objectNames.size(); ++i) {
-            s += "\n\t<model name=\"" + objectNames[i] + "\" class=\"" + pluginName + "::" + cl.key() + "\">\n";
+            s += "\n\t<model name=\"" + objectNames[i] + "\" type=\"" + pluginName + "::" + cl.key() + "\">\n";
             s += parameter("Ninit", 1, 5);
             s += parameter("r", 1.02, 1.12);
             s += parameter("K", 70, 150);

@@ -125,6 +125,10 @@ PlotWidget* MainWindow::createPlotWidget(QString title) {
     return new PlotWidget(plot, subWindow);
 }
 
+void MainWindow::tile() {
+    _mdiArea->tileSubWindows();
+}
+
 void MainWindow::setTitle(QString subTitle) {
     QString title;
     if (!subTitle.isEmpty()) title = subTitle + "  -  ";
@@ -273,7 +277,7 @@ void MainWindow::doSimulationRun()
 {
     minimizeSubWindows(SubWindow::View);
     liveSim->run();
-    _mdiArea->tileSubWindows();
+    tile();
 }
 
 void MainWindow::doToolsPrototyping() {

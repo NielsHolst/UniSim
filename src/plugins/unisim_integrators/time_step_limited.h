@@ -17,20 +17,13 @@ class TimeStepLimited : public Integrator
 	Q_OBJECT
 public:
     TimeStepLimited(Identifier name, QObject *parent=0);
-	
-    void resetRuns();
-    void resetSteps();
 
-	bool nextRun();
-	bool nextStep();
+    // special methods
+    bool nextStep();
 	
 private:
 	// Parameters
     int maxSteps;
-
-	// Data
-    bool doRun;
-    int numSteps;
 };
 
 } //namespace

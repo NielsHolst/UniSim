@@ -5,7 +5,10 @@
 */
 #include <QBrush>
 #include <QMessageBox>
+#include <qwt_plot.h>
 #include <qwt_plot_curve.h>
+#include <qwt_plot_canvas.h>
+#include <qwt_plot_zoomer.h>
 #include <qwt_symbol.h>
 #include <usbase/dataset.h>
 #include <usbase/file_locations.h>
@@ -44,31 +47,36 @@ OutputPlot::~OutputPlot() {
 void OutputPlot::initialize() {
     Output::initialize();
 
-    const QList<OutputVariable *> &xs(xVariables()), &ys(yVariables());
+    const OutputResults &xs(xResults()), &ys(yResults());
     if (ys.size() == 0) {
-        QString msg = "Output plot " + id().label() + " has no y-series";
+        QString msg = "Output plot " + id().label() + " has no y-results";
         throw Exception(msg, this);
     }
     if (xs.size() == 0) {
-        QString msg = "Output plot " + id().label() + " has no x-series";
+        QString msg = "Output plot " + id().label() + " has no x-result";
         throw Exception(msg, this);
     }
     else if (xs.size() > 1) {
-        QString msg = "Output plot " + id().label() + " has more than one x-series:";
+        QString msg = "Output plot " + id().label() + " has more than one x-result:";
         for (int i = 0; i < xs.size(); ++ i)
             msg += "\n" + xs.at(i)->id().key();
         throw Exception(msg, this);
     }
+
+    mainWindow = objectPool()->find<MainWindowInterface*>("mainWindow");
+    Q_ASSERT(mainWindow);
 }
 
 void OutputPlot::cleanup() {
-    createPlotWidget();
+    if (runNumber() == 1)
+        createPlotWidget();
     fillPlotWidget();
     showPlotWidget();
+    mainWindow->tile();
 }
 
-bool OutputPlot::emptyVariables() const {
-    return xVariables().isEmpty() || yVariables().isEmpty();
+bool OutputPlot::emptyResults() const {
+    return xResults().isEmpty() || yResults().isEmpty();
 }
 
 bool OutputPlot::emptyData() const {
@@ -76,35 +84,35 @@ bool OutputPlot::emptyData() const {
 }
 
 void OutputPlot::createPlotWidget() {
-    MainWindowInterface *mainWindow =
-            objectPool()->find<MainWindowInterface*>("mainWindow");
-    Q_ASSERT(mainWindow);
-
     plotWidget = mainWindow->createPlotWidget(title);
+    plotWidget->showLegend(true);
+    //QwtPlotCanvas *canvas = plotWidget->plot()->canvas();
+    //new QwtPlotZoomer(canvas);   crash!!½
 }
 
 void OutputPlot::fillPlotWidget() {
     Q_ASSERT(plotWidget);
-    fillWithVariables();
+    fillWithResults();
     fillWithData();
 }
 
-void OutputPlot::fillWithVariables() {
-    if (emptyVariables()) return;
+void OutputPlot::fillWithResults() {
+    if (emptyResults()) return;
 
-    QList<OutputVariable *> xv, yv;
-    xv = xVariables();
-    yv = yVariables();
+    OutputResults xv, yv;
+    xv = xResults();
+    yv = yResults();
     Q_ASSERT(xv.size() == 1);
-    OutputVariable *x = xv[0];
+    OutputResult *x = xv[0];
 
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
-    plotWidget->showLegend(true);
 
     for (int i = 0; i < yv.size(); ++i) {
-        OutputVariable *y = yv[i];
+        OutputResult *y = yv[i];
         QwtPlotCurve *curve = new QwtPlotCurve(y->id().label());
+        bool showLegend = (runNumber() == 1);
+        curve->setItemAttribute(QwtPlotItem::Legend, showLegend);
         plotWidget->addCurve(curve);
 
         QColor color = colors[i % colors.size()];

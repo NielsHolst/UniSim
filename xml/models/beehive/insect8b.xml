@@ -3,12 +3,29 @@
 	<integrator type="UniSim::TimeStepLimited">
 		<parameter name="maxSteps" value="90"/>
 		<sequence>
+			<model name="random"/>
 			<model name="calendar"/>
 			<model name="weather"/>
 			<model name="pollen"/>
 			<model name="insect"/>
 		</sequence>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="30"/>
+		</model>
 	</integrator>
+
+	
+	<model name="random">
+		<model name="fecundity_scale" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0.01"/>
+			<parameter name="maxValue" value="1"/>
+		</model>
+		<model name="demandRate" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0.2"/>
+			<parameter name="maxValue" value="2"/>
+		</model>
+	</model>
+	
 	
 	<model name="calendar" type="UniSim::Calendar">
 		<parameter name="followers" value="weather"/>
@@ -45,7 +62,7 @@
 			<parameter name="k" value="30"/>
 			<model name="time" type="UniSim::Days"/>
 			<model name="survival" type="beehive::LarvaSurvival">
-				<parameter name="demandRate" value="0.5"/>
+				<parameter name="demandRate" variable="random/demandRate[value]" old_value="0.5"/>
 				<parameter name="attackRate" value="0.2"/>
 			</model>
 		</model>
@@ -58,7 +75,7 @@
 			<model name="fecundity" type="Beehive::Fecundity">
 				<parameter name="root1" value="0"/>				
 				<parameter name="root2" value="10"/>				
-				<parameter name="scale" value="0.2"/>				
+				<parameter name="scale" variable="random/fecundity_scale[value]" old_value="0.2"/>				
 				<parameter name="sexRatio" value="0.5"/>				
 			</model>
 			<parameter name="duration" value="28"/>
@@ -77,8 +94,17 @@
 		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
 		<variable label="Adult" axis="y" value="insect/adult[number]"/>
 		<variable label="Pollen" axis="y" value="pollen[mass]"/>
+		<variable label="Pollen120" axis="y" value="pollen[mass]" summary="(xAtThreshold 120.)"/>
+		<variable label="Pollen80" axis="y" value="pollen[mass]" summary="(xAtThreshold 80.)"/>
+		<variable label="Pollen10" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
 	</output>
 
+	<output type="plot">
+		<parameter name="title" value="Fecundity scaling"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<read-parameter label="scale" axis="y" value="fecundity[scale]"/>
+	</output>
+	
 	<output type="plot">
 		<parameter name="title" value="Insect stages"/>
 		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
@@ -113,5 +139,41 @@
 		<variable label="Tmax" axis="y" value="weather[Tmax]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
+		<variable label="TavgMin" axis="y" value="weather[Tavg]" summary="min"/>
+		<variable label="TavgMax" axis="y" value="weather[Tavg]" summary="max"/>
+		<variable label="TavgAvg" axis="y" value="weather[Tavg]" summary="average"/>
+		<variable label="TavgXAtMin" axis="y" value="weather[Tavg]" summary="xAtMin"/>
+		<variable label="TavgXAtMax" axis="y" value="weather[Tavg]" summary="xAtMax"/>
 	</output>
+
+	<output type="plot" summary="yes">
+		<parameter name="title" value="Max. larva density"/>
+		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
+		<variable label="Larva" axis="y" value="insect/larva[number]" summary="max"/>
+	</output>
+	<output type="plot" summary="yes">
+		<parameter name="title" value="Days until pollen = 10"/>
+		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
+		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
+	</output>
+
+	<output type="plot" summary="yes">
+		<parameter name="title" value="Max. larva density"/>
+		<variable label="Demand rate" axis="x" value="random/demandRate[value]"/>		
+		<variable label="Larva" axis="y" value="insect/larva[number]" summary="max"/>
+	</output>
+	<output type="plot" summary="yes">
+		<parameter name="title" value="Days until pollen = 10"/>
+		<variable label="Demand rate" axis="x" value="random/demandRate[value]"/>		
+		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
+	</output>
+
+	<output type="table" summary="yes">
+		<parameter name="fileName" value="insect summary.txt"/>
+		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
+		<variable label="Demand rate" axis="x" value="random/demandRate[value]"/>		
+		<variable label="Larva" axis="y" value="insect/larva[number]" summary="max"/>
+		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
+	</output>
+	
 </simulation>

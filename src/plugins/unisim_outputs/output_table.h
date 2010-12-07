@@ -20,7 +20,8 @@ public:
     OutputTable(Identifier name, QObject *parent=0);
     // standard methods
     void cleanup();
-	
+    void debrief();
+
 private:
     // parameters
     QString fileName;
@@ -30,13 +31,15 @@ private:
 
     // methods
     void openFile();
+    void closeFile();
     QString ammendedFileName(QString fileName, int number);
     int checkDataSize(const OutputResults &results, int dataSize = 0) const;
+    void writeLabels();
     void writeLabels(const OutputResults &results);
-    void writeData(const OutputResults &results, int dataIx);
+    void writeResults();
+    void writeResults(const OutputResults &results, int dataIx);
     void writeCR();
     void writeTab();
-    void writeParameters();
 };
 
 } //namespace

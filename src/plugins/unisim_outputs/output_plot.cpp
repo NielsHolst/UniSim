@@ -68,8 +68,20 @@ void OutputPlot::initialize() {
 }
 
 void OutputPlot::cleanup() {
-    if (runNumber() == 1)
+    if (!isSummary()) {
+        if (runNumber() == 1) createPlotWidget();
+        showPlot();
+    }
+}
+
+void OutputPlot::debrief() {
+    if (isSummary()) {
         createPlotWidget();
+        showPlot();
+    }
+}
+
+void OutputPlot::showPlot() {
     fillPlotWidget();
     showPlotWidget();
     mainWindow->tile();
@@ -108,6 +120,8 @@ void OutputPlot::fillWithResults() {
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
 
+    bool symbolsOnly = x->isOutputSummary();
+
     for (int i = 0; i < yv.size(); ++i) {
         OutputResult *y = yv[i];
         QwtPlotCurve *curve = new QwtPlotCurve(y->id().label());
@@ -117,9 +131,18 @@ void OutputPlot::fillWithResults() {
 
         QColor color = colors[i % colors.size()];
         QPen pen = QPen(color);
-        int width = 2;
-        pen.setWidth(width);
-        curve->setPen(pen);
+        pen.setWidth(2);
+
+        if (symbolsOnly) {
+            QBrush brush;
+            QwtSymbol symbol(QwtSymbol::Ellipse, brush, pen, QSize(8,8));
+            curve->setStyle(QwtPlotCurve::NoCurve);
+            curve->setSymbol(symbol);
+        }
+        else {
+            curve->setPen(pen);
+        }
+
 
         int numPoints = x->history()->size();
         Q_ASSERT(numPoints == y->history()->size());
@@ -146,13 +169,12 @@ void OutputPlot::fillWithData() {
         plotWidget->addCurve(curve);
 
         QColor color = colors[i % colors.size()];
+        QPen pen = QPen(color);
+        pen.setWidth(2);
 
-        curve->setStyle(QwtPlotCurve::NoCurve);
-
-        QPen symPen = QPen(color);
-        symPen.setWidth(2);
         QBrush brush;
-        QwtSymbol symbol(QwtSymbol::Ellipse, brush, symPen, QSize(8,8));
+        QwtSymbol symbol(QwtSymbol::Ellipse, brush, pen, QSize(8,8));
+        curve->setStyle(QwtPlotCurve::NoCurve);
         curve->setSymbol(symbol);
 
         int numPoints = x->data()->size();

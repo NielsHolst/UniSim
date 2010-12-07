@@ -117,5 +117,6 @@
 		<data axis="y" label="Green foxtail obs" value="observations[green_foxtail]"/>
 		<data axis="y" label="Goosegrass obs" value="observations[goosegrass]"/>
 		<data axis="y" label="Yellow foxtail obs" value="observations[yellow_foxtail]"/>
+
 	</output>
 </simulation>

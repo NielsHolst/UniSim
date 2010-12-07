@@ -23,6 +23,7 @@ public:
     // standard methods
     void reset();
     void update();
+    void cleanup();
 
 private:
     // methods

@@ -40,8 +40,9 @@ bool Integrator::nextRun() {
     reportProgress();
     ++runNumber;
     bool nextOk;
-    if (cancelled)
+    if (cancelled) {
         nextOk = false;
+    }
     else if (runIterator)
         nextOk = runIterator->pullVariable<bool>("value");
     else
@@ -83,8 +84,12 @@ void Integrator::createReport() {
 }
 
 void Integrator::closeReport() {
-    report->close();
+    if (report) report->close();
     reporting = false;
+}
+
+void Integrator::acceptException(Exception *e) {
+    closeReport();
 }
 
 } //namespace

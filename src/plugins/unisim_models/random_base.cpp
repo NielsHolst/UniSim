@@ -5,23 +5,30 @@
 */
 
 #include <usbase/exception.h>
+#include <usbase/object_pool.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "random_base.h"
+#include "random_generator.h"
 
 namespace UniSim{
 
 RandomBase::RandomBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    generator = new Generator;
+    if (!objectPool()->contains(id()))
+        objectPool()->attach(id(), new RandomGenerator);
+    generator = objectPool()->find<RandomGenerator*>(id());
     new Parameter<double>("minValue", &minValue, 0., this, "Minimum random value");
     new Parameter<double>("maxValue", &maxValue, 0., this, "Maximum random value");
     new PullVariable<double>("value", &value, this, "Random value");
 }
 
 RandomBase::~RandomBase() {
-    delete generator;
+}
+
+Identifier RandomBase::id() {
+    return "RandomBase";
 }
 
 void RandomBase::initialize() {

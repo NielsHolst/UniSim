@@ -3,9 +3,11 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QList>
 #include <QMessageBox>
 #include <QObject>
 #include "exception.h"
+#include "integrator.h"
 #include "utilities.h"
 
 /*! \class UniSim::Exception
@@ -21,6 +23,9 @@ namespace UniSim {
 Exception::Exception(QString message, QObject *concerning_)
     : _message(message), concerning(concerning_)
 {
+    QList<Integrator*> integrators = seekMany<Integrator*>("*");
+    for (int i = 0; i < integrators.size(); ++i)
+        integrators[i]->acceptException(this);
 }
 
 QString Exception::message() const

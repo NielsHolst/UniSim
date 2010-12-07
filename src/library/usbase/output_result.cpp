@@ -4,13 +4,15 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "identifier.h"
+#include "output.h"
 #include "output_result.h"
 
 namespace UniSim{
 	
 OutputResult::OutputResult(QString label, QString axis, QObject *parent)
-    : Component(label, parent), _summary(None)
+    : Component(label, parent), _summary(None), historyCleared(false)
 {
+    output = dynamic_cast<Output*>(parent);
     setAxisFromString(axis);
 }
 
@@ -50,8 +52,15 @@ void OutputResult::setSummaryFromString(QString summary) {
 }
 
 void OutputResult::reset() {
-    _history.clear();
+    if (!historyCleared || !isOutputSummary())
+        _history.clear();
+    historyCleared = true;
 }
+
+void OutputResult::debrief() {
+    historyCleared = false;
+}
+
 
 OutputResult::Axis OutputResult::axis() const {
     return _axis;
@@ -63,6 +72,10 @@ OutputResult::Summary OutputResult::summary() const {
 
 const QVector<double>* OutputResult::history() const {
     return &_history;
+}
+
+bool OutputResult::isOutputSummary() const {
+    return output && output->isSummary();
 }
 
 } //namespace

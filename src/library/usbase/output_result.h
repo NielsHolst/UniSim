@@ -12,6 +12,8 @@
 
 namespace UniSim{	
 
+class Output;
+
 class OutputResult : public Component
 {
 	Q_OBJECT
@@ -20,6 +22,7 @@ public:
 	
     // standard methods
 	void reset();
+    void debrief();
 
     // special methods
     enum Axis {XAxis, YAxis};
@@ -29,6 +32,7 @@ public:
     Summary summary() const;
 
     const QVector<double>* history() const;
+    bool isOutputSummary() const;
 
 protected:
     // methods
@@ -39,6 +43,11 @@ protected:
     Axis _axis;
     Summary _summary;
     QVector<double> _history;	//!< Series of collected values
+    bool historyCleared;
+
+    // links
+    const Output *output;   //!< Pointer to parent or null
+
 };
 
 typedef QList<OutputResult*> OutputResults;

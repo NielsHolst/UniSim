@@ -12,6 +12,8 @@ class QProgressDialog;
 
 namespace UniSim{
 
+class Exception;
+
 class Integrator : public UniSim::Model
 {
 	Q_OBJECT
@@ -25,6 +27,7 @@ public:
     // special methods
     bool nextRun();
     virtual bool nextStep() = 0;
+    void acceptException(Exception *e);
 	
 protected:
     int stepNumber;

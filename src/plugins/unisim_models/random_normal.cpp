@@ -22,7 +22,7 @@ RandomNormal::~RandomNormal() {
 void RandomNormal::initialize() {
     RandomBase::initialize();
     distribution = new Distribution(mean, sd);
-    variate = new Variate(*generator, *distribution);
+    variate = new Variate(*(generator->generator()), *distribution);
 }
 
 double RandomNormal::drawValue() {

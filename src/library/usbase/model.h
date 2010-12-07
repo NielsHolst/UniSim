@@ -27,6 +27,11 @@ public:
     template <class T> void pushVariable(Identifier name, T value);
     template <class T> T pullVariable(Identifier name);
     template <class T> const T* pullVariablePtr(Identifier name);
+
+    bool hide() const;
+    void setHide(bool value);
+private:
+    bool _hide;
 };
 
 typedef QList<Model*> Models;

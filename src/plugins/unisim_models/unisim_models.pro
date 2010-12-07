@@ -19,6 +19,7 @@ HEADERS += \
     photo_thermal_time.h \
     physiological_time.h \
     random_base.h \
+    random_generator.h \
     random_lognormal.h \
     random_normal.h \
     random_poisson.h \
@@ -38,6 +39,7 @@ SOURCES += \
     photo_thermal_time.cpp \
     physiological_time.cpp \
     random_base.cpp \
+    random_generator.cpp \
     random_lognormal.cpp \
     random_normal.cpp \
     random_poisson.cpp \

@@ -13,14 +13,17 @@ using namespace std;
 namespace UniSim{
 	
 Model::Model(Identifier name, QObject *parent)
-    : Component(name, parent)
+    : Component(name, parent), _hide(false)
 {
 }
 
-/*
-void Model::pushVariable(Identifier name, double value) {
-    seekOneChild<PushVariable*>(name.key())->setValue(value);
+bool Model::hide() const {
+    return _hide;
 }
-*/
+
+void Model::setHide(bool value) {
+    _hide = value;
+}
+
 } //namespace
 

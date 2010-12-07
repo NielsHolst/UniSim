@@ -12,7 +12,7 @@
 namespace UniSim{
 	
 Output::Output(Identifier name, QObject *parent)
-    : Component(name, parent)
+    : Component(name, parent), _isSummary(false)
 {
 }
 
@@ -54,6 +54,14 @@ const OutputDatas& Output::yData() const {
 
 int Output::runNumber() const {
     return integrator->pullVariable<int>("runNumber");
+}
+
+bool Output::isSummary() const {
+    return _isSummary;
+}
+
+void Output::setIsSummary(bool value) {
+    _isSummary = value;
 }
 
 } //namespace

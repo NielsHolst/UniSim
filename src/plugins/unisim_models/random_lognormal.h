@@ -9,6 +9,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <QObject>
 #include "random_base.h"
+#include "random_generator.h"
 
 namespace UniSim{
 
@@ -27,7 +28,7 @@ private:
     double drawValue();
     // random number generation
     typedef boost::lognormal_distribution<double> Distribution;
-    typedef boost::variate_generator<Generator&, Distribution> Variate;
+    typedef boost::variate_generator<RandomGenerator::Generator&, Distribution> Variate;
     Distribution *distribution;
     Variate *variate;
 };

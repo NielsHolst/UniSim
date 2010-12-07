@@ -8,6 +8,7 @@
 #include <QPair>
 #include "exception"
 #include "identifier.h"
+#include "output.h"
 #include "model.h"
 #include "output_variable.h"
 #include "pull_variable.h"
@@ -60,7 +61,13 @@ void OutputVariable::update() {
     Q_ASSERT(pullVarPtr);
     double value = pullVarPtr->toVariant().value<double>();
     updateSummary(value);
-    _history.append(summary() == None ? value : s.value);
+    if (!isOutputSummary())
+        _history.append(summary() == None ? value : s.value);
+}
+
+void OutputVariable::cleanup() {
+    if (isOutputSummary())
+        _history.append(s.value);
 }
 
 void OutputVariable::resetSummary() {
@@ -86,6 +93,7 @@ void OutputVariable::updateSummary(double value) {
     ++s.n;
     switch (summary()) {
     case None:
+        s.value = value;
         break;
     case Max:
         if (value > s.maxValue)
@@ -118,11 +126,12 @@ void OutputVariable::updateSummary(double value) {
         if (s.passedThreshold)
             break;
         else if (!s.hasPrevValue) {
-            s.prevValue = s.value;
+            s.prevValue = value;
             s.hasPrevValue = true;
+            break;
         }
-        s.passedThreshold = (s.prevValue < s.threshold && s.threshold <= s.value) ||
-                          (s.prevValue > s.threshold && s.threshold >= s.value);
+        s.passedThreshold = (s.prevValue < s.threshold && s.threshold <= value) ||
+                          (s.prevValue > s.threshold && s.threshold >= value);
         s.prevValue = value;
         if (s.passedThreshold)
             s.value = s.n;

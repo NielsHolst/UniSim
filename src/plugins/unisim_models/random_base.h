@@ -7,9 +7,12 @@
 #define UNISIM_RANDOM_BASE
 #include <QObject>
 #include <boost/random/mersenne_twister.hpp>
+#include <usbase/identifier.h>
 #include <usbase/model.h>
 
 namespace UniSim{
+
+class RandomGenerator ;
 
 class RandomBase : public Model
 {
@@ -21,10 +24,11 @@ public:
     virtual void initialize();
     virtual void reset();
     virtual void update();
+    // special methods
+    static Identifier id();
 protected:
     // Common random number generator
-    typedef boost::mt19937 Generator;
-    Generator *generator;
+    RandomGenerator *generator;
 private:
     // methods
     virtual double drawValue() = 0;

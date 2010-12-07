@@ -325,9 +325,10 @@ QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *c
         QStringList strPair = part.split(" ");
         bool ok = strPair.size() == 2;
         if (ok) {
-            QPair<QString, int> pair;
+            QPair<QString, T> pair;
             pair.first = strPair[0];
             pair.second = stringToValue<T>(strPair[1], concerning);
+            result.append(pair);
         }
 
         if (!ok)

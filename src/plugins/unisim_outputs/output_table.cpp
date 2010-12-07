@@ -19,28 +19,28 @@ OutputTable::OutputTable(Identifier name, QObject *parent)
     new Parameter<QString>("fileName", &fileName, QString("output_table.prn"), this, "description");
 }
 
+
 void OutputTable::cleanup() {
-    openFile();
-    writeLabels(xResults());
-    writeTab();
-    writeLabels(yResults());
-    writeCR();
-
-    int dataSize = checkDataSize(xResults());
-    checkDataSize(yResults(), dataSize);
-
-    for (int i = 0; i < dataSize; ++i) {
-        writeData(xResults(), i);
-        writeTab();
-        writeData(yResults(), i);
-        writeCR();
+    if (!isSummary()) {
+        openFile();
+        writeLabels();
+        writeResults();
+        closeFile();
     }
-    file.close();
+}
+
+void OutputTable::debrief() {
+    if (isSummary()) {
+        openFile();
+        writeLabels();
+        writeResults();
+        closeFile();
+    }
 }
 
 void OutputTable::openFile() {
     QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
-    QString useFileName = runNumber() == 1 ?
+    QString useFileName = (runNumber() == 1 || isSummary()) ?
                           fileName :
                           ammendedFileName(fileName, runNumber());
     QString filePath = path + "/" + useFileName;
@@ -50,15 +50,40 @@ void OutputTable::openFile() {
         throw Exception("Could not open output file to write table:\n'" + filePath + "'");
 
     // If more than one file then give the first file a number too
-    if (runNumber() == 2) {
-        writeParameters();
-
+    if (runNumber() == 2 && !isSummary()) {
         QString filePath = path + "/" + fileName;
         QFile prevFile(filePath);
 
         QString newName = path + "/" + ammendedFileName(fileName, 1);
+
+        // Delete any existing file named newName
+        QFile toDelete(newName);
+        toDelete.remove();
         prevFile.rename(newName);
     }
+}
+
+void OutputTable::writeLabels() {
+    writeLabels(xResults());
+    writeTab();
+    writeLabels(yResults());
+    writeCR();
+}
+
+void OutputTable::writeResults() {
+    int dataSize = checkDataSize(xResults());
+    checkDataSize(yResults(), dataSize);
+
+    for (int i = 0; i < dataSize; ++i) {
+        writeResults(xResults(), i);
+        writeTab();
+        writeResults(yResults(), i);
+        writeCR();
+    }
+}
+
+void OutputTable::closeFile() {
+    file.close();
 }
 
 QString OutputTable::ammendedFileName(QString fileName, int number) {
@@ -102,7 +127,7 @@ int OutputTable::checkDataSize(const OutputResults &results, int dataSize) const
     return dataSize;
 }
 
-void OutputTable::writeData(const OutputResults &results, int dataIx) {
+void OutputTable::writeResults(const OutputResults &results, int dataIx) {
     if (results.isEmpty())
         return;
     QString s;
@@ -111,22 +136,6 @@ void OutputTable::writeData(const OutputResults &results, int dataIx) {
     for (int i = 1; i < results.size(); ++i)
         text << "\t" << results[i]->history()->value(dataIx);
     file.write(qPrintable(s));
-}
-
-void OutputTable::writeParameters() {
-    QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
-    QString filePath = path + "/" + "param.txt";
-    QFile file(filePath);
-    if (!file.open(QIODevice::Text | QIODevice::WriteOnly))
-        throw Exception("Could not open output file to write parameters:\n'" + filePath + "'");
-
-    QList<ParameterBase*> param = seekMany<ParameterBase*>("*");
-    for (int i = 0; i < param.size(); ++i) {
-        QString s;
-        QTextStream text(&s);
-        text << UniSim::fullName(param[i]) << "\t" << param[i]->toVariant().toString() << "\n";
-        file.write(qPrintable(s));
-    }
 }
 
 } //namespace

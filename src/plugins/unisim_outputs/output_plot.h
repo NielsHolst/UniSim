@@ -24,6 +24,7 @@ public:
     // standard methods
 	void initialize();
     void cleanup();
+    void debrief();
 	
 private:
     // parameters
@@ -35,6 +36,7 @@ private:
     static QList<QColor> colors;
 
     // methods
+    void showPlot();
     void createPlotWidget();
     void fillPlotWidget();
     void fillWithResults();

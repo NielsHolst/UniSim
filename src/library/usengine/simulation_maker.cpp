@@ -182,10 +182,15 @@ bool SimulationMaker::readModelElement(QObject* parent)
 	
     QString modelType = attributeValue("type", "anonymous");
     QString objectName = attributeValue("name", "anonymous");
+    QString hide = attributeValue("hide", "");
 
     Model *model;
     try {
         model = ModelMaker::create(modelType, objectName, parent);
+        if (!hide.isEmpty()) {
+            bool isHidden = UniSim::stringToValue<bool>(hide);
+            model->setHide(isHidden);
+        }
     }
     catch (Exception &ex) {
         throw Exception(message(ex.message()), parent);
@@ -268,10 +273,15 @@ bool SimulationMaker::readOutputElement(QObject* parent)
 
     QString objectName = attributeValue("name", "anonymous");
     QString type = attributeValue("type", parent);
+    QString summary = attributeValue("summary", "");
 
     Output *output;
     try {
         output = OutputMaker::create(type, objectName, parent);
+        if (!summary.isEmpty()) {
+            bool isSummary = UniSim::stringToValue<bool>(summary);
+            output->setIsSummary(isSummary);
+        }
     }
     catch (Exception &ex) {
         throw Exception(message(ex.message()));

@@ -28,9 +28,14 @@ public:
 
     const QList<OutputData *>& xData() const;
     const QList<OutputData *>& yData() const;
+
+    bool isSummary() const;
+    void setIsSummary(bool value);
 protected:
     int runNumber() const;
 private:
+    // data
+    bool _isSummary;
     // links
     QList<OutputResult *> results, xRes, yRes;
     QList<OutputData *> data, xDat, yDat;

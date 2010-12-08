@@ -35,10 +35,10 @@ LarvaSurvival::LarvaSurvival(UniSim::Identifier name, QObject *parent)
     "Attack rate (per unit of pollen per day");
 
     new PullVariable<double>("survival", &survival, this,
-    "Survival [0;1] depending on supply/demand ratio for pollen");
+    "Survival [0;1] depending on \"supply/demand\" ratio for pollen");
 
     new PullVariable<double>("sdRatio", &sdRatio, this,
-    "Supply/demand ratio for pollen");
+    "\"Supply/demand\" ratio for pollen");
 
     new PullVariable<double>("eaten", &eaten, this,
     "Pollen mass eaten per day");

@@ -137,7 +137,7 @@
 		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
 		<variable label="TavgMin" axis="y" value="weather[Tavg]" summary="min"/>
 		<variable label="TavgMax" axis="y" value="weather[Tavg]" summary="max"/>
-		<variable label="TavgAvg" axis="y" value="weather[Tavg]" summary="average"/>
+		<variable label="TavgAvg" axis="y" value="weather[Tavg]" summary="avg"/>
 		<variable label="TavgXAtMin" axis="y" value="weather[Tavg]" summary="xAtMin"/>
 		<variable label="TavgXAtMax" axis="y" value="weather[Tavg]" summary="xAtMax"/>
 	</output>
@@ -149,6 +149,6 @@
 	<output type="plot" summary="yes">
 		<parameter name="title" value="Days until pollen = 10"/>
 		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
-		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
+		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10)"/>
 	</output>
 </simulation>

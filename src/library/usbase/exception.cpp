@@ -20,13 +20,22 @@
 
 namespace UniSim {
 
+bool Exception::excepted = false;
+
 Exception::Exception(QString message, QObject *concerning_)
     : _message(message), concerning(concerning_)
 {
-    QList<Integrator*> integrators = seekMany<Integrator*>("*");
+    if (excepted) {
+        excepted = false;
+        return;
+    }
+    excepted = true;
+
+    QList<Integrator*> integrators =seekMany<Integrator*>("*");
     for (int i = 0; i < integrators.size(); ++i)
         integrators[i]->acceptException(this);
 }
+
 
 QString Exception::message() const
 {

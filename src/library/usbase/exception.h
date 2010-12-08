@@ -25,6 +25,9 @@ public:
 protected:
     QString _message;
     QObject *concerning;
+
+private:
+    static bool excepted;
 };
 
 } //namespace

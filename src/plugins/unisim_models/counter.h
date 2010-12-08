@@ -3,29 +3,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef BARN_PREY
-#define BARN_PREY
+#ifndef UNISIM_COUNTER_H
+#define UNISIM_COUNTER_H
 #include <QObject>
 #include <usbase/model.h>
 
-namespace barn {
+namespace UniSim{
 
-class Prey : public UniSim::Model
+class Counter : public Model
 {
 	Q_OBJECT
 public: 
-	Prey(UniSim::Identifier name, QObject *parent=0);
-	// standard methods
-	void reset();
-	void update();
-
+    Counter(UniSim::Identifier name, QObject *parent=0);
+    // standard methods
+    void reset();
+    void update();
 private:
-	// parameters
-	double Ninit, K, r;
-
-	// state
-	double density;
-
+    // parameters
+    int initValue;
+    // pull variables
+    int value;
 };
 
 } //namespace

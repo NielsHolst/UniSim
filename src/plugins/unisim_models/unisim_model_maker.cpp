@@ -7,6 +7,7 @@
 #include <usbase/utilities.h>
 #include "anonymous_model.h"
 #include "calendar.h"
+#include "counter.h"
 #include "day_degrees.h"
 #include "days.h"
 #include "hydro_thermal_time.h"
@@ -48,6 +49,13 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "The @F Calendar model keeps track of the date. Since @F latitude is one of its parameters, "
     "it also knows of the current day length. Solar elevation is calculated every time "
     "the hour of the day is set by a tick of the global clock object";
+
+    desc["Counter"] =
+    "The @F Counter model maintains a counter (@F {value}) that is incremented by one for every time step."
+    "At reset @F value is set to @F {initValue}.";
+
+    desc["Constant"] =
+    "Pending";
 
     desc["DayDegrees"] =
     "This is a standard day-degree model. It obtains the daily average temperature from "
@@ -121,6 +129,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
 		model = new AnonymousModel(objectName, parent);
     else if (modelType.equals("Calendar"))
         model = new Calendar(objectName, parent);
+    else if (modelType.equals("Counter"))
+        model = new Counter(objectName, parent);
     else if (modelType.equals("DayDegrees"))
         model = new DayDegrees(objectName, parent);
     else if (modelType.equals("Days"))

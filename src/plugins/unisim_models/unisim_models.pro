@@ -12,6 +12,7 @@ HEADERS += \
 	stage.h \
 	anonymous_model.h \
 	calendar.h \
+    counter.h \
     day_degrees.h \
     days.h \
     hydro_thermal_time.h \
@@ -32,6 +33,7 @@ SOURCES += \
     stage.cpp \
 	anonymous_model.cpp \
 	calendar.cpp \
+    counter.cpp \
     day_degrees.cpp \
     days.cpp \
     hydro_thermal_time.cpp \

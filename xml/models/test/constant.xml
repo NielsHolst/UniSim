@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="30"/>
+		<sequence>
+			<model name="counter"/>
+			<model name="constant"/>
+		</sequence>
+	</integrator>
+	<model name="counter" type="UniSim::Counter">
+		<parameter name="initValue" value="-10"/>
+	</model>
+	<model name="constant" type="Constant">
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Counter"/>
+		<variable label="counter" axis="x" value="counter[value]"/>
+		<variable label="counter" axis="y" value="counter[value]"/>
+	</output>
+</simulation>

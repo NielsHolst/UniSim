@@ -27,7 +27,7 @@ public:
 
 private:
 	// parameters
-	double _L;
+    double _L, initialInflow;
 	int _k;
 
     // pull variables

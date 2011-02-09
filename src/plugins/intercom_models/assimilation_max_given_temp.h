@@ -22,10 +22,11 @@ public:
 
 private:
 	// parameters
-    double slope, maxAmax;
+    double radix, maxAmax;
 
-	// state
-    double amax;
+    // pull variables
+    double value;
+
     // models
     UniSim::Model *weather;
 

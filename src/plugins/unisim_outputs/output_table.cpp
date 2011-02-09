@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <math.h>
 #include <iostream>
 #include <QTextStream>
 #include <usbase/file_locations.h>
@@ -10,6 +11,8 @@
 #include <usbase/parameter_base.h>
 #include <usbase/utilities.h>
 #include "output_table.h"
+
+using std::max;
 
 namespace UniSim{
 	
@@ -71,10 +74,8 @@ void OutputTable::writeLabels() {
 }
 
 void OutputTable::writeResults() {
-    int dataSize = checkDataSize(xResults());
-    checkDataSize(yResults(), dataSize);
-
-    for (int i = 0; i < dataSize; ++i) {
+    int n = resultsSize();
+    for (int i = 0; i < n; ++i) {
         writeResults(xResults(), i);
         writeTab();
         writeResults(yResults(), i);
@@ -100,6 +101,7 @@ QString OutputTable::ammendedFileName(QString fileName, int number) {
 void OutputTable::writeLabels(const OutputResults &results) {
     if (results.isEmpty())
         return;
+
     QString s;
     QTextStream text(&s);
     text << results[0]->id().label();
@@ -116,20 +118,32 @@ void OutputTable::writeCR() {
     file.write("\n");
 }
 
-int OutputTable::checkDataSize(const OutputResults &results, int dataSize) const {
+int OutputTable::resultsSize() const {
+    int xSize = dataSize(xResults());
+    int ySize = dataSize(yResults());
+    bool ok = xSize==0 || ySize==0 || xSize==ySize;
+    if (!ok)
+        throw Exception("x and y output variable data buffers are of unequal size");
+    return max(xSize, ySize);
+}
+
+int OutputTable::dataSize(const OutputResults &results) const {
+    if (results.isEmpty()) return 0;
+    int theSize = -1;
     for (int i = 0; i < results.size(); ++i) {
-        int thisSize = results[i]->history()->size();
-        if (dataSize > 0 && dataSize != thisSize)
-            throw Exception("Output variable data buffers of unequal size");
-        else
-            dataSize = thisSize;
+        int nextSize = results[i]->history()->size();
+        if (theSize == -1)
+            theSize = nextSize;
+        else if (nextSize != theSize)
+            throw Exception("Output variable data buffers are of unequal size");
     }
-    return dataSize;
+    return theSize;
 }
 
 void OutputTable::writeResults(const OutputResults &results, int dataIx) {
     if (results.isEmpty())
         return;
+
     QString s;
     QTextStream text(&s);
     text << results[0]->history()->value(dataIx);

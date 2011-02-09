@@ -14,16 +14,16 @@ namespace intercom{
 Height::Height(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("a", &a, 7.5, this, "description");
-    new Parameter<double>("b", &b, 0.0085, this, "description");
-    new Parameter<double>("c", &c, 77.9, this, "description");
-    new Parameter<double>("m", &m, 624., this, "description");
-    new Parameter<double>("minHeight", &minHeight, 0.5, this, "description");
-    new PullVariable<double>("height", &height, this, "description");
+    new Parameter<double>("h0", &h0, 0.05, this, "Height at time zero (m)");
+    new Parameter<double>("hmax", &hmax, 1.0, this, "Maximum height (m)");
+    new Parameter<double>("slope", &slope, 0.0085, this, "Growth rate (per photothermal time unit)");
+    new Parameter<double>("tm", &tm, 624., this, "Time when @Math {height = h0 + (hmax - h0) slash 2 }");
+
+    new PullVariable<double>("height", &height, this, "Current height (m)");
 }
 
 void Height::initialize() {
-    photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
+    photoThermalTime = seekOneNearest<Model*>("time");
 }
 
 void Height::reset() {
@@ -36,10 +36,7 @@ void Height::update() {
 }
 
 void Height::updateHeight(double time) {
-    height = a + c/(1. + exp(-b*(time - m)));
-    if (height < minHeight)
-        height = minHeight;
-    height = height/100;  // from cm to m
+    height = h0 + (hmax-h0)/(1. + exp(-slope*(time - tm)));
 }
 
 } //namespace

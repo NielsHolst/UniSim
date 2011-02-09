@@ -21,12 +21,13 @@ public:
     OutputResult(QString label, QString axis, QObject *parent = 0);
 	
     // standard methods
+    void initialize();
 	void reset();
     void debrief();
 
     // special methods
     enum Axis {XAxis, YAxis};
-    enum Summary {None, Max, Min, Average, Final, XAtThreshold, XAtMax, XAtMin};
+    enum Summary {None, Max, Min, Average, Sum, Final, XAtThreshold, XAtMax, XAtMin};
 
     Axis axis() const;
     Summary summary() const;
@@ -40,6 +41,7 @@ protected:
     void setSummaryFromString(QString axis);
 
     // data
+    QString axisString;
     Axis _axis;
     Summary _summary;
     QVector<double> _history;	//!< Series of collected values

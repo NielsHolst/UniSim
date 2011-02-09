@@ -156,13 +156,18 @@ void TestUtilities::initTestCase() {
     animals = create<QObject>("animals",0);
     setSimulationObject(animals);
 
+    femaleAnimals = create<QObject>("female", animals);
+
     reptiles = create<QObject>("reptiles", animals);
+    femaleReptiles = create<QObject>("female", reptiles);
+
     snakes = create<QObject>("snakes", reptiles);
     cobra = create<QObject>("cobra", snakes);
     lizards = create<QObject>("lizards", reptiles);
     mammals = create<QObject>("mammals", animals);
     mice = create<QObject>("mice", mammals);
     elephants = create<QObject>("elephants", mammals);
+    femaleElephants = create<QObject>("female", elephants);
 
     dogs = create<QObject>("dogs", mammals);
     femaleDogs = create<QObject>("female", dogs);
@@ -175,6 +180,8 @@ void TestUtilities::initTestCase() {
     dogsModel = create<Model>("dogs", mammals);
     femaleDogsModel = create<Model>("female", dogsModel);
     maleDogsModel = create<Model>("male", dogsModel);
+
+    writeObjectTree(animals);
 }
 
 void TestUtilities::cleanupTestCase() {
@@ -183,7 +190,7 @@ void TestUtilities::cleanupTestCase() {
 
 void TestUtilities::testFindAtomicGloballyAll() {
     QList<QObject*> objects = seekDescendants<QObject*>("*", 0);
-    QCOMPARE(objects.size(), 18);
+    QCOMPARE(objects.size(), 21);
 
     QList<Component*> components = seekDescendants<Component*>("*", 0);
     QCOMPARE(components.size(), 3);
@@ -214,7 +221,7 @@ void TestUtilities::testFindAtomicGloballyNone() {
 
 void TestUtilities::testFindAtomicDescendantsAll() {
     QList<QObject*> objects = seekDescendants<QObject*>("*", mammals);
-    QCOMPARE(objects.size(), 12);
+    QCOMPARE(objects.size(), 13);
 
     QList<Component*> components = seekDescendants<Component*>("*", mammals);
     QCOMPARE(components.size(), 3);
@@ -223,8 +230,8 @@ void TestUtilities::testFindAtomicDescendantsAll() {
 
 void TestUtilities::testFindAtomicDescendantsSome() {
     QList<QObject*> objects = seekDescendants<QObject*>("female", mammals);
-    QCOMPARE(objects.size(), 2);
-    QVERIFY( setEqualsList(QSet<QObject*>() << femaleDogs << femaleDogsModel, objects) );
+    QCOMPARE(objects.size(), 3);
+    QVERIFY( setEqualsList(QSet<QObject*>() << femaleElephants << femaleDogs << femaleDogsModel, objects) );
 }
 
 void TestUtilities::testFindAtomicDescendantsNone() {
@@ -235,14 +242,15 @@ void TestUtilities::testFindAtomicDescendantsNone() {
 void TestUtilities::testFindJokerFirst() {
     QList<QObject*> objects;
     QSet<QObject*> females;
-    females << femaleDogs << femaleDogsModel;
+    females << femaleAnimals << femaleReptiles << femaleElephants << femaleDogs << femaleDogsModel;
 
     objects = seekDescendants<QObject*>("*/female", 0);
-    QCOMPARE(objects.size(), 2);
+    QCOMPARE(objects.size(), 5);
     QVERIFY( setEqualsList(females, objects) );
 
+    females.remove(femaleAnimals);
     objects = seekDescendants<QObject*>("*/*/female", 0);
-    QCOMPARE(objects.size(), 2);
+    QCOMPARE(objects.size(), 4);
     QVERIFY( setEqualsList(females, objects) );
 
     objects = seekDescendants<QObject*>("*/animals", 0);
@@ -259,14 +267,14 @@ void TestUtilities::testFindJokerFirst() {
 void TestUtilities::testFindJokerInside() {
     QList<QObject*> objects;
     QSet<QObject*> females;
-    females << femaleDogs << femaleDogsModel;
+    females << femaleElephants << femaleDogs << femaleDogsModel;
 
     objects = seekDescendants<QObject*>("mammals/*/female", 0);
-    QCOMPARE(objects.size(), 2);
+    QCOMPARE(objects.size(), 3);
     QVERIFY( setEqualsList(females, objects) );
 
     objects = seekDescendants<QObject*>("animals/*/*/female", 0);
-    QCOMPARE(objects.size(), 2);
+    QCOMPARE(objects.size(), 3);
     QVERIFY( setEqualsList(females, objects) );
 
     objects = seekDescendants<QObject*>("animals/*/*/*/female", 0);
@@ -276,11 +284,13 @@ void TestUtilities::testFindJokerInside() {
 void TestUtilities::testFindJokerLast() {
     QList<QObject*> objects;
     objects = seekDescendants<QObject*>("animals/reptiles/*", 0);
-    QCOMPARE(objects.size(), 2);
-    QVERIFY( setEqualsList(QSet<QObject*>() << snakes << lizards, objects) );
+    QCOMPARE(objects.size(), 3);
+    QVERIFY( setEqualsList(QSet<QObject*>() << femaleReptiles << snakes << lizards, objects) );
 
     objects = seekDescendants<QObject*>("mammals/*/*", 0);
-    QCOMPARE(objects.size(), 4);
+    QCOMPARE(objects.size(), 5);
+    QVERIFY( setEqualsList(QSet<QObject*>() << femaleElephants << femaleDogs << maleDogs
+                           << femaleDogsModel << maleDogsModel, objects) );
 
     objects = seekDescendants<QObject*>("dogs/*/*/*", 0);
     QCOMPARE(objects.size(), 0);
@@ -358,8 +368,8 @@ void TestUtilities::testFindEmpty() {
 void TestUtilities::testFindChildrenFromRoot() {
     QList<QObject*> objects;
     objects = UniSim::seekChildren<QObject*>("*", 0);
-    QCOMPARE(objects.size(), 2);
-    QVERIFY( setEqualsList(QSet<QObject*>() << mammals << reptiles, objects) );
+    QCOMPARE(objects.size(), 3);
+    QVERIFY( setEqualsList(QSet<QObject*>() << femaleAnimals << mammals << reptiles, objects) );
     objects = UniSim::seekChildren<QObject*>("mammals", 0);
     QCOMPARE(objects.size(), 1);
     QCOMPARE(objects[0], mammals);
@@ -553,3 +563,69 @@ void TestUtilities::testSeekChildrenAndParentsJoker() {
     QVERIFY(match1 || match2);
 }
 
+void TestUtilities::testPeekOne() {
+    QObject *animals2 = peekOne<QObject*>("animals");
+    QVERIFY(animals2);
+    QObject *mice2 = peekOne<QObject*>("mice");
+    QVERIFY(mice2);
+    QObject *rats2 = peekOne<QObject*>("rats");
+    QVERIFY(!rats2);
+}
+
+void TestUtilities::testPeekOneChild() {
+    QObject *mice2 = peekOneChild<QObject*>("mice", mammals);
+    QVERIFY(mice2);
+    QObject *rats2 = peekOneChild<QObject*>("rats", mammals);
+    QVERIFY(!rats2);
+}
+
+void TestUtilities::testPeekOneDescendant() {
+    QObject *mice2 = peekOneDescendant<QObject*>("mice", mammals);
+    QVERIFY(mice2);
+    QObject *rats2 = peekOneDescendant<QObject*>("rats", mammals);
+    QVERIFY(!rats2);
+}
+
+void TestUtilities::testPeekOneAscendant() {
+    QObject *animals2 = peekOneAscendant<QObject*>("animals", mice);
+    QCOMPARE(animals, animals2);
+    QObject *mammals2 = peekOneAscendant<QObject*>("mammals", mice);
+    QVERIFY(mammals2);
+    QObject *reptiles2 = peekOneAscendant<QObject*>("reptiles", mice);
+    QVERIFY(!reptiles2);
+}
+
+
+void TestUtilities::testPeekOneNearest() {
+    QObject *femaleElephants2 = peekOneNearest<QObject*>("female", elephants);
+    QCOMPARE(femaleElephants, femaleElephants2);
+
+    QObject *femaleAnimals2 = peekOneNearest<QObject*>("female", mice);
+    QCOMPARE(femaleAnimals, femaleAnimals2);
+
+    QObject *femaleReptiles2 = peekOneNearest<QObject*>("female", snakes);
+    QCOMPARE(femaleReptiles, femaleReptiles2);
+
+    QObject *maleElephants2 = peekOneNearest<QObject*>("male", elephants);
+    QVERIFY(!maleElephants2);
+}
+
+void TestUtilities::testSeekOneNearest() {
+    QObject *femaleElephants2 = seekOneNearest<QObject*>("female", elephants);
+    QCOMPARE(femaleElephants, femaleElephants2);
+
+    QObject *femaleAnimals2 = seekOneNearest<QObject*>("female", mice);
+    QCOMPARE(femaleAnimals, femaleAnimals2);
+
+    QObject *femaleReptiles2 = seekOneNearest<QObject*>("female", snakes);
+    QCOMPARE(femaleReptiles, femaleReptiles2);
+
+    bool excepted = false;
+    try {
+        seekOneNearest<QObject*>("male", elephants);
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}

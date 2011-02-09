@@ -15,8 +15,8 @@
 	</model>
 
 	<model name="weather" type="beehive::Weather">
-		<parameter name="fileName" value="AZ_96.txt"/>
-		<parameter name="firstDate" value="1/5/1996"/>
+		<parameter name="fileName" value="AZ_96.txt" old_value="Harlingen2008a.txt"/>
+		<parameter name="firstDate" value="1/1/2008"/>
 	</model>
 
 	<model name="pollen" type="Beehive::Pollen">

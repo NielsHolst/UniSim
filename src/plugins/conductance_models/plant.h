@@ -27,12 +27,15 @@ public:
 
 private:
     // methods
+    bool startAtOnce() const;
+    bool startNow() const;
     void updateCrownZoneArea();
     void updateLightInterception();
     void updateWeight();
 
     // parameters
     double initWeight, A, phi, F, theta, k, eps, n;
+    int initDay, initMonth;
 
     // pull variables
     double weight, dweight, totalWeight, sz, total_sz, Lz, fz, LA_per_plant, lai;
@@ -40,7 +43,7 @@ private:
     Phase phase;
 
     // links
-    UniSim::Model *weather;
+    UniSim::Model *weather, *calendar;
     Plant *other;
 
 };

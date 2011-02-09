@@ -38,18 +38,25 @@ class Model;
 //@{
 void setSimulationObjectFromDescendent(QObject *object);
 
+template <class T> T peekOne(QString name);
 template <class T> T seekOne(QString name);
 template <class T> QList<T> seekMany(QString name);
 
 template <class TParentPtr, class TChildPtr> TChildPtr seekOne(QString expression);
 template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString expression);
 
+template <class T> T peekOneNearest(QString name, QObject *parent);
+template <class T> T seekOneNearest(QString name, QObject *parent);
+
+template <class T> T peekOneChild(QString name, QObject *parent);
 template <class T> T seekOneChild(QString name, QObject *parent);
 template <class T> QList<T> seekChildren(QString name, QObject *parent);
 
+template <class T> T peekOneDescendant(QString name, QObject *root);
 template <class T> T seekOneDescendant(QString name, QObject *root);
 template <class T> QList<T> seekDescendants(QString name, QObject *root);
 
+template <class T> T peekOneAscendant(QString name, QObject *child);
 template <class T> T seekOneAscendant(QString name, QObject *child);
 template <class T> T seekFirstAscendant(QString name, QObject *child);
 template <class T> QList<T> seekAscendants(QString name, QObject *child);
@@ -126,8 +133,10 @@ template<class T> T stringToValue(QString s, QObject *concerning) {
 */
 template <class T> QList<T> seekDescendants(QString name, QObject *root) {
     QObject *useRoot = root ? root : simulationObject();
+    if (!useRoot)
+        return QList<T>();
     QList<QObject*> candidates = useRoot->findChildren<QObject*>();
-    if (!root)
+    if (!root && useRoot) // if no root then make search truely global by including the useRoot too
         candidates.prepend(useRoot);
     return filterByName<T>(name, candidates);
 }
@@ -169,26 +178,43 @@ template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString e
     return result;
 }
 
-//! Finds exactly one object
+//! Finds exactly one object, or none
 /*!
-  Works like find but throws an Exception if not exactly one object is found
+  Works like seekDescendants but throws an Exception if not exactly one object or none is found
 */
- template <class T> T seekOneDescendant(QString name, QObject *root) {
+ template <class T> T peekOneDescendant(QString name, QObject *root) {
+    QList<T> matches = seekDescendants<T>(name, root);
     QObject *useRoot = root ? root : simulationObject();
-    QList<T> matches = seekDescendants<T>(name, useRoot);
     if (matches.size() == 0)
-        throw Exception("'" + useRoot->objectName() +
-                        "' has no descendant called '" + name + "'", useRoot);
+        return 0;
     else if (matches.size() > 1)
         throw Exception("'" + useRoot->objectName() +
                         "' has more than one descendant called '" + name + "'", useRoot);
     return matches[0];
 }
 
- //! Finds exactly one object (n==0) anywhere in simulation object tree
- template <class T> T seekOne(QString name) {
-     return seekOneDescendant<T>(name, 0);
- }
+ //! Finds exactly one object
+/*!
+  Works like seekDescendants but throws an Exception if not exactly one object is found
+*/
+template <class T> T seekOneDescendant(QString name, QObject *root) {
+    QObject *useRoot = root ? root : simulationObject();
+    T result = peekOneDescendant<T>(name, root);
+    if (!result)
+        throw Exception("'" + useRoot->objectName() +
+                        "' has no descendant called '" + name + "'", useRoot);
+    return result;
+}
+
+//! Finds exactly one object, or none, anywhere in simulation object tree
+template <class T> T peekOne(QString name) {
+    return peekOneDescendant<T>(name, 0);
+}
+
+//! Finds exactly one object anywhere in simulation object tree
+template <class T> T seekOne(QString name) {
+ return seekOneDescendant<T>(name, 0);
+}
 
  //! Finds any number of children
 /*!
@@ -198,10 +224,46 @@ template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString e
     If parent is null then the root is the assumed parent,
 */
 
- template <class T> QList<T> seekChildren(QString name, QObject *parent) {
+template <class T> QList<T> seekChildren(QString name, QObject *parent) {
     QObject *useParent = parent ? parent : simulationObject();
+    if (!useParent)
+        return QList<T>();
     QList<QObject*> candidates = useParent->children();
     return filterByName<T>(name, candidates);
+}
+
+
+template <class T> T peekOneNearest(QString name, QObject *parent) {
+    QList<QObject*> parents;
+    parents.append(parent);
+    parents.append(seekAscendants<QObject*>("*", parent));
+    for (int i = 0; i < parents.size(); ++i) {
+        T child = peekOneChild<T>(name, parents[i]);
+        if (child) return child;
+    }
+    return 0;
+}
+
+template <class T> T seekOneNearest(QString name, QObject *parent) {
+    T child = peekOneNearest<T>(name, parent);
+    if (child) return child;
+    throw Exception("Found no nearest object called '" + name + "'", parent);
+}
+
+
+//! Finds exactly one child, or none
+/*!
+  Works like seekChildren but throws an Exception if not exactly one object, or none, is found
+*/
+template <class T> T peekOneChild(QString name, QObject *parent) {
+    QObject *useParent = parent ? parent : simulationObject();
+    QList<T> matches = seekChildren<T>(name, useParent);
+    if (matches.size() == 0)
+        return 0;
+    else if (matches.size() > 1)
+        throw Exception("'" + useParent->objectName() +
+                        "' has more than one child called '" + name + "'", useParent);
+    return matches[0];
 }
 
 //! Finds exactly one child
@@ -210,14 +272,24 @@ template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString e
 */
 template <class T> T seekOneChild(QString name, QObject *parent) {
     QObject *useParent = parent ? parent : simulationObject();
-    QList<T> matches = seekChildren<T>(name, useParent);
-    if (matches.size() == 0)
+    T result = peekOneChild<T>(name, parent);
+    if (!result)
         throw Exception("'" + useParent->objectName() +
                         "' has no child called '" + name + "'", useParent );
-    else if (matches.size() > 1)
-        throw Exception("'" + useParent->objectName() +
-                        "' has more than one child called '" + name + "'", useParent);
-    return matches[0];
+    return result;
+}
+
+//! Finds an ascendant of child or none
+/*!
+    Finds one ascendant matching name and type, or throws an Exception
+*/
+template <class T> T peekOneAscendant(QString name, QObject *child) {
+    QList<T> ascendants = seekAscendants<T>(name, child);;
+    if (ascendants.size() == 0)
+        return 0;
+    if (ascendants.size() > 1)
+        throw Exception("More than one ascendant called '" + name +"'", child);
+    return ascendants.at(0);
 }
 
 //! Finds an ascendant of child or throws an exception
@@ -225,13 +297,11 @@ template <class T> T seekOneChild(QString name, QObject *parent) {
     Finds one ascendant matching name and type, or throws an Exception
 */
 template <class T> T seekOneAscendant(QString name, QObject *child) {
-    QList<T> ascendants = seekAscendants<T>(name, child);;
-    if (ascendants.size() == 0)
+    T result = peekOneAscendant<T>(name, child);
+    if (!result)
         throw Exception("No ascendants called '" +
                         name + "', or it is not of the expected type", child);
-    if (ascendants.size() > 1)
-        throw Exception("More than one ascendant called '" + name +"'", child);
-    return ascendants.at(0);
+    return result;
 }
 
 //! Finds first ascendant of child or throws an exception

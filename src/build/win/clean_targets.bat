@@ -1,5 +1,7 @@
 @echo off
 if exist ..\..\applications\*.exe  del ..\..\applications\*.exe /Q
+if exist ..\..\applications\engine*.dll  del ..\..\applications\engine*.dll /Q
+if exist ..\..\applications\base*.dll  del ..\..\applications\base*.dll /Q
 if exist ..\..\library\*.dll  del ..\..\library\*.dll /Q
 if exist ..\..\library\*.a  del ..\..\library\*.a /Q
 if exist ..\..\plugins\*.dll  del ..\..\plugins\*.dll /Q

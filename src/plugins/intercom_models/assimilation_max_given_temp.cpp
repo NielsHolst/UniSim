@@ -14,25 +14,25 @@ namespace intercom{
 AssimilationMaxGivenTemp::AssimilationMaxGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("slope", &slope, 0.04, this, "description");
-    new Parameter<double>("maxAmax", &maxAmax, 1., this, "description");
-    new PullVariable<double>("amax", &amax, this, "description");
+    new Parameter<double>("radix", &radix, 0.882, this, "description");
+    new Parameter<double>("maxAmax", &maxAmax, 50, this, "description");
+
+    new PullVariable<double>("value", &value, this, "Max CO @Sub 2 assimilation rate [kg CO @Sub 2 per ha leaf per hour]");
 }
 
 void AssimilationMaxGivenTemp::initialize()
 {
     weather = seekOne<Model*>("weather");
 }
+
 void AssimilationMaxGivenTemp::reset() {
-    amax = 0.;
+    value = 0.;
 }
 
 void AssimilationMaxGivenTemp::update()
 {
     double Tday = weather->pullVariable<double>("Tday");
-    amax = Tday < 0 ? 0. : slope*Tday;
-    if (amax > maxAmax)
-        amax = maxAmax;
+    value = (Tday < 0.) ? 0. : maxAmax*(1. - pow(radix, Tday));
 }
 
 } //namespace

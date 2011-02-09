@@ -23,10 +23,10 @@ call clean_targets
 call clean_build_desktops
 
 @rem Make own tools
+call make_tool write_unisim_root
 call make_tool update_settings
 call make_tool write_clean_ephemerals
 call make_tool write_plugins_project
-call make_tool write_unisim_root
 
 @rem Generate batch and project files
 ..\own_tools\write_clean_ephemerals

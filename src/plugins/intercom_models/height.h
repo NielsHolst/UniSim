@@ -25,7 +25,7 @@ private:
     void updateHeight(double time);
 
 	// parameters
-    double a, b, c, m, minHeight;
+    double h0, hmax, slope, tm;
 ;
 
 	// state

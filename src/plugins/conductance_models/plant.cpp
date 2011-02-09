@@ -17,6 +17,12 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
 {
     new Parameter<double>("initWeight", &initWeight, 2., this,
                  "Initial plant weight at time zero (g per plant)");
+    new Parameter<int>("initDay", &initDay, 0, this,
+                 "Day of month when growth begins, and @F weight is set to @F {initWeight}. "
+                 "Use together with @F {initMonth}. If @F initDay or @F initMonth is zero,"
+                 "they are not used and growth will start on day 1 in the simulation");
+    new Parameter<int>("initMonth", &initMonth, 0, this,
+                 "See @F {initday}");
     new Parameter<double>("A", &A, 0.03, this,
                  "Coefficient in allometric relation for crown zone area: @Math {A w sup phione}");
     new Parameter<double>("phi", &phi, 0.67, this,
@@ -60,6 +66,7 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
 }
 
 void Plant::initialize() {
+    calendar = seekOne<Model*>("calendar");
     weather = seekOne<Model*>("weather");
 
     other = 0;
@@ -70,11 +77,15 @@ void Plant::initialize() {
 }
 
 void Plant::reset() {
-    weight = initWeight;
+    weight = startAtOnce() ? initWeight : 0.;
     totalWeight = n*initWeight;
     Lz = fz = LA_per_plant = lai = dweight = 0.;
     changePhase(Unlimited);
     updateCrownZoneArea();
+}
+
+bool Plant::startAtOnce() const {
+    return initDay==0 || initMonth==0;
 }
 
 void Plant::changePhase(Phase newPhase) {
@@ -84,22 +95,30 @@ void Plant::changePhase(Phase newPhase) {
 }
 
 void Plant::update() {
+    if (startNow())
+        weight = initWeight;
     updateCrownZoneArea();
     updateLightInterception();
     updateWeight();
 }
 
+bool Plant::startNow() const {
+    QDate today = calendar->pullVariable<QDate>("date");
+    return today.day()==initDay && today.month()==initMonth;
+}
+
 void Plant::updateCrownZoneArea() {
     switch (phase) {
         case Unlimited:
-            sz = A*pow(weight, phi);
+        sz = (weight==0.) ? 0. : A*pow(weight, phi);
             break;
         case UnderCompression:
             sz = other ? (1. - other->pullVariable<double>("total_sz"))/n : 1./n;
             break;
         case WeightProportional:
             Q_ASSERT(other);
-            sz = weight/(totalWeight + other->pullVariable<double>("totalWeight"));
+            double totals = totalWeight + other->pullVariable<double>("totalWeight");
+            sz = (totals==0.) ? 0. : weight/totals;
     }
     total_sz = n*sz;
     if (total_sz < 0)
@@ -111,14 +130,14 @@ void Plant::updateCrownZoneArea() {
 }
 
 void Plant::updateLightInterception() {
-    LA_per_plant = F*pow(weight, theta);
-    Lz = LA_per_plant/sz;
+    LA_per_plant = (weight==0.) ? 0. : F*pow(weight, theta);
+    Lz = (sz==0.) ? 0. : LA_per_plant/sz;
     fz = 1. - exp(-k*Lz);
     lai = n*LA_per_plant;
 }
 
 void Plant::updateWeight() {
-    double I = weather->pullVariable<double>("irradiation");
+    double I = weather->pullVariable<double>("irradiationMJ");
     dweight = eps*I*sz*fz;
     weight += dweight;
     totalWeight = n*weight;

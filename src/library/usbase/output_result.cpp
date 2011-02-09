@@ -10,20 +10,9 @@
 namespace UniSim{
 	
 OutputResult::OutputResult(QString label, QString axis, QObject *parent)
-    : Component(label, parent), _summary(None), historyCleared(false)
+    : Component(label, parent), axisString(axis), _summary(None), historyCleared(false)
 {
     output = dynamic_cast<Output*>(parent);
-    setAxisFromString(axis);
-}
-
-void OutputResult::setAxisFromString(QString axis) {
-    Identifier id(axis);
-    if (id.equals("x"))
-        _axis = XAxis;
-    else if (id.equals("y"))
-        _axis = YAxis;
-    else
-        throw Exception("Axis must be either 'x'' or 'y', not '" + axis + "'", this);
 }
 
 void OutputResult::setSummaryFromString(QString summary) {
@@ -36,6 +25,8 @@ void OutputResult::setSummaryFromString(QString summary) {
         _summary = Min;
     else if (id.equals("average") || id.equals("avg"))
         _summary = Average;
+    else if (id.equals("sum"))
+        _summary = Sum;
     else if (id.equals("final"))
         _summary = Final;
     else if (id.equals("xatthreshold"))
@@ -49,6 +40,20 @@ void OutputResult::setSummaryFromString(QString summary) {
         _summary = XAtMin;
     else
         throw Exception("Unknown summary '" + summary + "'", this);
+}
+
+void OutputResult::initialize() {
+    setAxisFromString(axisString);
+}
+
+void OutputResult::setAxisFromString(QString axis) {
+    Identifier id(axis);
+    if (id.equals("x"))
+        _axis = XAxis;
+    else if (id.equals("y"))
+        _axis = YAxis;
+    else
+        throw Exception("Axis must be either 'x'' or 'y', not '" + axis + "'", this);
 }
 
 void OutputResult::reset() {

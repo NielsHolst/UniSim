@@ -12,10 +12,12 @@
 #include <qwt_symbol.h>
 #include <usbase/dataset.h>
 #include <usbase/file_locations.h>
+#include <usbase/named_object.h>
 #include <usbase/object_pool.h>
 #include <usbase/output_data.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter.h>
+#include <usbase/pull_variable_base.h>
 #include <usengine/main_window_interface.h>
 #include <usengine/plot_widget.h>
 #include "output_plot.h"
@@ -119,12 +121,13 @@ void OutputPlot::fillWithResults() {
 
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
+    setYLabels();
 
     bool symbolsOnly = x->isOutputSummary();
 
     for (int i = 0; i < yv.size(); ++i) {
         OutputResult *y = yv[i];
-        QwtPlotCurve *curve = new QwtPlotCurve(y->id().label());
+        QwtPlotCurve *curve = new QwtPlotCurve(yLabels[i].label());
         bool showLegend = (runNumber() == 1);
         curve->setItemAttribute(QwtPlotItem::Legend, showLegend);
         plotWidget->addCurve(curve);
@@ -148,6 +151,62 @@ void OutputPlot::fillWithResults() {
         Q_ASSERT(numPoints == y->history()->size());
         curve->setData(x->history()->data(), y->history()->data(), numPoints);
     }
+}
+
+void OutputPlot::setYLabels() {
+    if (!setYLabelsFromLabels() && yLabels.size() > 1)
+        setYLabelsFromIds();
+}
+
+bool OutputPlot::setYLabelsFromLabels() {
+    QList<NamedObject*> ancestors;
+    for (int i = 0; i < yResults().size(); ++i) {
+        OutputVariable *var = dynamic_cast<OutputVariable*>(yResults()[i]);
+        Q_ASSERT(var);
+        NamedObject *ancestor = dynamic_cast<NamedObject*>(var);
+        Q_ASSERT(ancestor);
+        ancestors.append(ancestor);
+    }
+
+    bool areEqual;
+    yLabels = getIds(ancestors, &areEqual);
+    return !areEqual;
+}
+
+void OutputPlot::setYLabelsFromIds() {
+    QList<NamedObject*> ancestors;
+    for (int i = 0; i < yResults().size(); ++i) {
+        OutputVariable *var = dynamic_cast<OutputVariable*>(yResults()[i]);
+        Q_ASSERT(var);
+        NamedObject *ancestor = dynamic_cast<NamedObject*>(var->pullVariable()->parent());
+        Q_ASSERT(ancestor);
+        ancestors.append(ancestor);
+    }
+
+    bool areEqual(true), checkAgain(true);
+    while (areEqual && checkAgain) {
+        yLabels = getIds(ancestors, &areEqual);
+        if (areEqual) {
+            for (int i = 0; checkAgain && (i < ancestors.size()); ++i) {
+                ancestors[i] = dynamic_cast<NamedObject*>(ancestors[i]->parent());
+                checkAgain = ancestors[i];
+            }
+        }
+    }
+}
+
+
+QList<Identifier> OutputPlot::getIds(QList<NamedObject*> &objects, bool *areEqual) const{
+    QList<Identifier> ids;
+    *areEqual = true;
+    Identifier prevId;
+    for (int i = 0; i < objects.size(); ++i) {
+        Identifier id = objects[i]->id();
+        ids.append(id);
+        *areEqual = *areEqual && (i==0 || id==prevId);
+        prevId = id;
+    }
+    return ids;
 }
 
 void OutputPlot::fillWithData() {

@@ -123,9 +123,9 @@ void TestSimulation::testFindModels()
 	QCOMPARE(models[3]->objectName(), QString("adult"));
 		
     models = UniSim::seekChildren<Model*>("*", 0);
-	QCOMPARE(models.size(), 2);
-	QCOMPARE(models[0]->objectName(), QString("butterfly"));
-	QCOMPARE(models[1]->objectName(), QString("mite"));
+    QCOMPARE(models.size(), 3);
+    QCOMPARE(models[0]->objectName(), QString("integrator"));
+    QCOMPARE(models[2]->objectName(), QString("mite"));
 		
 	delete sim;
 }

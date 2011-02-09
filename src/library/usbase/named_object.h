@@ -21,20 +21,32 @@ public:
     Identifier id() const;
     QString fullName() const;
 
+    template <class T> T peekOneChild(QString name);
     template <class T> T seekOneChild(QString name);
     template <class T> QList<T> seekChildren(QString name);
 
+    template <class T> T peekOneNearest(QString name);
+    template <class T> T seekOneNearest(QString name);
+
+    template <class T> T peekOneSibling(QString name);
     template <class T> T seekOneSibling(QString name);
     template <class T> QList<T> seekSiblings(QString name);
 
+    template <class T> T peekOneDescendant(QString name);
     template <class T> T seekOneDescendant(QString name);
     template <class T> QList<T> seekDescendants(QString name);
 
+    template <class T> T peekOneAscendant(QString name);
     template <class T> T seekOneAscendant(QString name);
 
 private:
 	Identifier _id;
 };
+
+//! Finds exactly one child or none (n==1 || n==0)
+template <class T> T NamedObject::peekOneChild(QString name) {
+    return UniSim::peekOneChild<T>(name, this);
+}
 
 //! Finds exactly one child (n==1)
 template <class T> T NamedObject::seekOneChild(QString name) {
@@ -46,12 +58,30 @@ template <class T> QList<T> NamedObject::seekChildren(QString name) {
     return UniSim::seekChildren<T>(name, this);
 }
 
+//! Finds exactly one nearest object or none (n==1 || n==0)
+template <class T> T NamedObject::peekOneNearest(QString name) {
+    return UniSim::peekOneNearest<T>(name, this);
+}
+
+//! Finds exactly one nearest object (n==1)
+template <class T> T NamedObject::seekOneNearest(QString name) {
+    return UniSim::seekOneNearest<T>(name, this);
+}
+
+//! Finds exactly one sibling or none (n==1 || n==0)
+template <class T> T NamedObject::peekOneSibling(QString name) {
+    if (!parent())
+        return 0;
+    T sibling = UniSim::peekOneChild<T>(name, parent());
+    if (sibling == 0 || sibling == this)
+        return 0;
+    return sibling;
+}
+
 //! Finds exactly one sibling (n==1)
 template <class T> T NamedObject::seekOneSibling(QString name) {
-    if (!parent())
-        throw UniSim::Exception(objectName() + " has no siblings");
-    T sibling = UniSim::seekOneChild<T>(name, parent());
-    if (sibling == this)
+    T sibling = peekOneSibling<T>(name);
+    if (!sibling)
         throw UniSim::Exception(objectName() + " has no sibling with name " + name);
     return sibling;
 }
@@ -71,6 +101,11 @@ template <class T> QList<T> NamedObject::seekSiblings(QString name) {
     return siblings;
 }
 
+//! Finds exactly one descendant or none (n==1 || n==0)
+template <class T> T NamedObject::peekOneDescendant(QString name) {
+    return UniSim::peekOneDescendant<T>(name, this);
+}
+
 //! Finds exactly one descendant (n==1)
 template <class T> T NamedObject::seekOneDescendant(QString name) {
     return UniSim::seekOneDescendant<T>(name, this);
@@ -79,6 +114,11 @@ template <class T> T NamedObject::seekOneDescendant(QString name) {
 //! Finds a number (n>=0) of descendant
 template <class T> QList<T> NamedObject::seekDescendants(QString name) {
     return UniSim::seekDescendants<T>(name, this);
+}
+
+//! Finds exactly one ascendant or none (n==1 || n==0)
+template <class T> T NamedObject::peekOneAscendant(QString name) {
+    return UniSim::peekOneAscendant<T>(name, this);
 }
 
 //! Finds exactly one ascendant (n==1)

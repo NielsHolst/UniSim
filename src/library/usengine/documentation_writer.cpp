@@ -67,6 +67,8 @@ const char FORMAT_LAST_ROW[] =
 const char FORMAT_VERY_LAST_ROW[] =
     "rulebelow { yes }\n";
 
+const QString F("{Courier Base -2p} @Font ");
+
 void DocumentationWriter::write() {
 	openFile();
     writeTimeStamp();
@@ -177,12 +179,18 @@ void DocumentationWriter::writeModel(ModelMakerPlugIn *plugin, Identifier modelI
 
 Model* DocumentationWriter::createModel(ModelMakerPlugIn *plugin, Identifier modelId) {
     Model *model = plugin->create(modelId, "anonymous");
+    Q_ASSERT_X(model,
+               "DocumentationWriter::createModel",
+               qPrintable(plugin->pluginName().label() +
+               " cannot create " + modelId.label()));
+    /*
     try {
         model->initialize();
     }
     catch (Exception &ex) {
         //ignore
     }
+    */
     return model;
 }
 
@@ -190,7 +198,7 @@ Model* DocumentationWriter::createModel(ModelMakerPlugIn *plugin, Identifier mod
 // Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
 void DocumentationWriter::writeParameters(Model *model) {
     writeTableTitle("Parameters");
-    QList<ParameterBase*> params = model->seekChildren<ParameterBase*>("*");
+    QList<ParameterBase*> params = seekChildren<ParameterBase*>("*", model);
     int n = params.size();
     if (n == 0)  {
         QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
@@ -223,7 +231,7 @@ void DocumentationWriter::writePushVariables(Model *model) {
             format = FORMAT_FIRST_ROW;
         else if (i == n-1)
             format = FORMAT_LAST_ROW;
-        writeTableRow(format, var[i]->id().label() + index(var[i]->id()), "double", desc(var[i]->description()));
+        writeTableRow(format, var[i]->id().label() + index(var[i]->id()), var[i]->typeId(), desc(var[i]->description()));
     }
 }
 
@@ -242,7 +250,7 @@ void DocumentationWriter::writePullVariables(Model *model) {
             format = FORMAT_FIRST_ROW;
         else if (i == n-1)
             format = FORMAT_VERY_LAST_ROW;
-        writeTableRow(format, var[i]->id().label() + index(var[i]->id()), "double", desc(var[i]->description()));
+        writeTableRow(format, var[i]->id().label() + index(var[i]->id()), var[i]->typeId(), desc(var[i]->description()));
     }
 }
 
@@ -256,11 +264,11 @@ void DocumentationWriter::writeTableTitle(QString title) {
 void DocumentationWriter::writeTableRow(QString format, QString a, QString b, QString c) {
     write("@Rowa\n");
     write(format);
-    write("A {@F " + a + "}\n");
+    write("A {" + F + a + "}\n");
     if (!a.isEmpty() && b.isEmpty())
         write("B {@I {empty string}}\n");
     else
-        write("B {@F {" + b + "}}\n");
+        write("B {"+ F + "{" + b + "}}\n");
     write("C {" + c + "}\n");
 }
 

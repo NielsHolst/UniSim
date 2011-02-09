@@ -1,0 +1,1 @@
+find ./src -type f -exec wc -l  {} \; > line_count.txt

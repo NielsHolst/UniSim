@@ -31,9 +31,16 @@ Exception::Exception(QString message, QObject *concerning_)
     }
     excepted = true;
 
-    QList<Integrator*> integrators =seekMany<Integrator*>("*");
-    for (int i = 0; i < integrators.size(); ++i)
-        integrators[i]->acceptException(this);
+    /* This causes problems with seekMany depending on the specific error condition
+       Needs reworking or nmust be dropped
+    try {
+        QList<Integrator*> integrators =seekMany<Integrator*>("*");
+        for (int i = 0; i < integrators.size(); ++i)
+            integrators[i]->acceptException(this);
+    }
+    catch (...) {
+    }
+    */
 }
 
 

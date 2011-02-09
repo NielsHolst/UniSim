@@ -23,6 +23,7 @@ public:
     Parameter(Identifier name, T *valuePtr, T defaultvalue, QObject *parent, QString desc);
     // generic
     QVariant toVariant() const;
+    QString typeId() const;
     void setValueFromString(QString newValue);
     // special
     T value() const;
@@ -65,6 +66,14 @@ QVariant Parameter<T>::toVariant() const
     T val = value();
     return QVariant(val);
 }
+
+template <class T>
+QString Parameter<T>::typeId() const
+{
+    QString result = QString(QVariant(T()).typeName()).toLower();
+    return (result == "qdate") ? QString("date") : result;
+}
+
 
 template <class T>
 void Parameter<T>::setValue(T newValue)

@@ -8,11 +8,10 @@
 #include <QList>
 #include <QObject>
 #include <usbase/model.h>
-#include "light_components.h"
-#include "photosynthetic_rate.h"
 
 namespace intercom{
 
+class Area;
 class Organ;
 
 class Plant : public UniSim::Model
@@ -21,18 +20,32 @@ class Plant : public UniSim::Model
 public: 
 	Plant(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
+    void initialize();
     void reset();
-    void update();
+
     // special methods
-    PhotosyntheticRate calcPhotosynthesis();
+    void applyEarlyGrowth();
+    void accumulate();
+    void allocate(double carbohydrates);
+    double kgPerHa_to_gPerPlant(double x) const;
+    double gPerPlant_to_kgPerHa(double x) const;
 
 private:
-    // pull variables
-    double heights[5],
-        ELAIdiffuse[5], ELAIdirectdirect[5], ELAIdirecttotal[5] ;
+    // methods
+    void updateLai();
 
-	// state
-    PhotosyntheticRate photosyntheticRate;
+    // parameters
+    double density;
+
+    // pull variables
+    double lai, lightAbsorption, CO2Assimilation,
+        grossProduction, maintenanceResp, availableProduction;
+
+    // links
+    QList<Area*> areas;
+    QList<Organ*> organs;
+    QList<Model*> specificLeafAreas, partitions;
+    UniSim::Model *earlyGrowth;
 };
 
 } //namespace

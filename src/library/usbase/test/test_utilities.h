@@ -56,10 +56,17 @@ private slots:
     void testSeekChildrenAndParentsMany();
     void testSeekChildrenAndParentsJoker();
 
+    void testPeekOne();
+    void testPeekOneChild();
+    void testPeekOneDescendant();
+    void testPeekOneAscendant();
+
+    void testPeekOneNearest();
+    void testSeekOneNearest();
 private:
     QObject
-        *animals, *reptiles, *snakes, *cobra, *lizards,
-        *mammals, *mice, *elephants, *dogs, *femaleDogs, *maleDogs;
+        *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,
+        *mammals, *mice, *elephants, *femaleElephants, *dogs, *femaleDogs, *maleDogs;
     UniSim::Model
         *dogsModel, *femaleDogsModel, *maleDogsModel;
     int femaleDogsSize, maleDogsSize;

@@ -2,7 +2,7 @@ include(../../../config.pri)
 
 TEMPLATE = app
 DESTDIR = $${US_APPLICATIONS}
-TARGET = test_unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+TARGET = test-unisim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += console
 QT += testlib
 
@@ -24,24 +24,8 @@ HEADERS += \
     $${US_ENGINE}/test/test_simulation_trickle.h \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
-    $${US_PLUGINS}/intercom_models/area.h \
-    $${US_PLUGINS}/intercom_models/community.h \
-    $${US_PLUGINS}/intercom_models/layer.h \
-    $${US_PLUGINS}/intercom_models/light_components.h \
-    $${US_PLUGINS}/intercom_models/organ.h \
-    $${US_PLUGINS}/intercom_models/photosynthesis.h \
-    $${US_PLUGINS}/intercom_models/photosynthetic_rate.h \
-    $${US_PLUGINS}/intercom_models/plant.h \
-    $${US_PLUGINS}/intercom_models/plant_layers.h \
-    $${US_PLUGINS}/intercom_models/time_slice.h \
-    $${US_PLUGINS}/intercom_models/weather.h \
-#    $${US_PLUGINS}/intercom_models/test/test_area.h \
-#    $${US_PLUGINS}/intercom_models/test/test_canopy_layer.h \
-#    $${US_PLUGINS}/intercom_models/test/test_photosynthesis.h \
- #   $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.h \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
     $${US_PLUGINS}/unisim_models/anonymous_model.h \
-    $${US_PLUGINS}/unisim_models/calendar.h \
     $${US_PLUGINS}/unisim_models/stage.h \
     $${US_PLUGINS}/unisim_models/test/test_calendar.h \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.h \
@@ -66,24 +50,8 @@ SOURCES += \
     $${US_ENGINE}/test/test_simulation_trickle.cpp \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
-    $${US_PLUGINS}/intercom_models/area.cpp \
-    $${US_PLUGINS}/intercom_models/community.cpp \
-    $${US_PLUGINS}/intercom_models/layer.cpp \
-    $${US_PLUGINS}/intercom_models/light_components.cpp \
-    $${US_PLUGINS}/intercom_models/organ.cpp \
-    $${US_PLUGINS}/intercom_models/photosynthesis.cpp \
-    $${US_PLUGINS}/intercom_models/photosynthetic_rate.cpp \
-    $${US_PLUGINS}/intercom_models/plant.cpp \
-    $${US_PLUGINS}/intercom_models/plant_layers.cpp \
-    $${US_PLUGINS}/intercom_models/time_slice.cpp \
-    $${US_PLUGINS}/intercom_models/weather.cpp \
-#    $${US_PLUGINS}/intercom_models/test/test_area.cpp \
-#    $${US_PLUGINS}/intercom_models/test/test_canopy_layer.cpp \
-#    $${US_PLUGINS}/intercom_models/test/test_photosynthesis.cpp \
-#    $${US_PLUGINS}/intercom_models/test/test_photosynthetic_rate.cpp \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
     $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
-    $${US_PLUGINS}/unisim_models/calendar.cpp \
     $${US_PLUGINS}/unisim_models/stage.cpp \
     $${US_PLUGINS}/unisim_models/test/test_calendar.cpp \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.cpp \

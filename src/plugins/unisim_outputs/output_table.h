@@ -33,7 +33,8 @@ private:
     void openFile();
     void closeFile();
     QString ammendedFileName(QString fileName, int number);
-    int checkDataSize(const OutputResults &results, int dataSize = 0) const;
+    int resultsSize() const;
+    int dataSize(const OutputResults &results) const;
     void writeLabels();
     void writeLabels(const OutputResults &results);
     void writeResults();

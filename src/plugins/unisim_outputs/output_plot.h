@@ -12,7 +12,7 @@
 
 namespace UniSim{
 
-class  MainWindowInterface;
+class MainWindowInterface;
 class PlotWidget;
 
 class OutputPlot : public Output
@@ -34,6 +34,7 @@ private:
     MainWindowInterface *mainWindow;
     PlotWidget *plotWidget;
     static QList<QColor> colors;
+    QList<Identifier> yLabels;
 
     // methods
     void showPlot();
@@ -44,6 +45,10 @@ private:
     void showPlotWidget();
     bool emptyResults() const;
     bool emptyData() const;
+    void setYLabels();
+    bool setYLabelsFromLabels();
+    void setYLabelsFromIds();
+    QList<Identifier> getIds(QList<NamedObject*> &objects, bool *areEqual) const;
 };
 
 } //namespace

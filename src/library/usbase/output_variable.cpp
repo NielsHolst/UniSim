@@ -17,12 +17,16 @@
 namespace UniSim{
 	
 OutputVariable::OutputVariable(QString label, QString axis, QString summary_, PullVariableBase *variable, QObject *parent)
-    : OutputResult(label, axis, parent), pullVarPtr(variable)
+    : OutputResult(label, axis, parent), summaryString(summary_), pullVarPtr(variable)
 {
     Q_ASSERT(pullVarPtr);
-    setSummaryFromString(summary_);
+}
+
+void OutputVariable::initialize() {
+    OutputResult::initialize();
+    setSummaryFromString(summaryString);
     if (summary() == XAtThreshold){
-        setThreshold(summary_);
+        setThreshold(summaryString);
     }
 }
 
@@ -76,7 +80,7 @@ void OutputVariable::resetSummary() {
     switch (summary()) {
     case Max:
     case XAtMax:
-        s.maxValue = DBL_MIN;
+        s.maxValue = -DBL_MAX;
         break;
     case Min:
     case XAtMin:
@@ -119,6 +123,10 @@ void OutputVariable::updateSummary(double value) {
         s.sum += value;
         s.value = s.sum/s.n;
         break;
+    case Sum:
+        s.sum += value;
+        s.value = s.sum;
+        break;
     case Final:
         s.value = value;
         break;
@@ -137,6 +145,10 @@ void OutputVariable::updateSummary(double value) {
             s.value = s.n;
         break;
     }
+}
+
+const PullVariableBase* OutputVariable::pullVariable() {
+    return pullVarPtr;
 }
 
 } //namespace

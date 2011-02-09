@@ -5,7 +5,7 @@
 */
 #ifndef INTERCOM_WEATHER
 #define INTERCOM_WEATHER
-#include <usbase/weather_file.h>
+#include "weather_interface.h"
 
 namespace UniSim {
     class Calendar;
@@ -13,14 +13,10 @@ namespace UniSim {
 
 namespace intercom {
 
-class Weather : public UniSim::WeatherFile
+class Weather : public WeatherInterface
 {
 	Q_OBJECT
 public: 
-    struct Par {
-        double total, diffuse, direct;
-    };
-
     Weather(UniSim::Identifier name, QObject *parent=0);
     // standard methods
     void initialize();
@@ -30,16 +26,14 @@ private slots:
     void handleClockTick(double hour);
 
 private:
-    // state (in addition to columns from weather file)
-    double Tavg, Tday, irradiation;
-    Par par;
-
     // methods
     void verifySequence();
     void updatePar();
 
-    // models
+    // links
     UniSim::Calendar *calendar;
+
+    int testInt;
 
 };
 

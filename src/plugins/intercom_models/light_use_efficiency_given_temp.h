@@ -24,8 +24,8 @@ private:
 	// parameters
     double slope, intercept;
 
-	// state
-    double efficiency;
+    // pull variables
+    double value;
 
     // models
     UniSim::Model *weather;

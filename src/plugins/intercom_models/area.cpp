@@ -3,14 +3,19 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <cmath>
 #include <iostream>
 #include <QMessageBox>
-#include <usbase/exception.h>
+#include <QTextStream>
+#include <usbase/clock.h>
+#include <usbase/file_locations.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
+#include <usbase/push_variable.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/calendar.h"
 #include "area.h"
+#include "area_density.h"
 #include "constants.h"
 #include "plant.h"
 #include "weather.h"
@@ -22,199 +27,185 @@ namespace intercom{
 Area::Area(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("initial", &initial, 0.01, this, "description");
-    new Parameter<QString>("distribution", &distText, QString("Symmetric"), this, "description");
-    new Parameter<double>("scatteringCoeff", &scatteringCoeff, 0.2, this, "description");
-    new Parameter<double>("kDiffuse", &kDiffuse, 0.7, this, "description");
+    new Parameter<double>("scatteringCoeff", &scatteringCoeff, 0.2, this,
+                          "Light scattering coefficient. Usually the default value is used.");
+    new Parameter<double>("kDiffuse", &kDiffuse, 0.7, this,
+                          "Light extinction coefficient of diffuse light");
+    new Parameter<bool>("writeTestOutput", &writeTestOutput, false, this,
+                          "Write detailed output? The resulting file has a name that begins with"
+                          "\"area_test\" followed by the full name of the @F Area object");
 
-    new PullVariable<double>("lai", &lai, this, "description");
+    new PullVariable<double>("area", &area, this,
+                             "Area (cm @Sup {2}) of this organ per plant");
+    new PullVariable<double>("LAI", &lai, this,
+                             "Leaf area index of this organ");
+    new PullVariable<double>("lightAbsorption", &photosynthesisPerDay[Absorption], this,
+                             "Light absorbed by this area (W per m @Sup 2 ground per day)");
+    new PullVariable<double>("CO2Assimilation", &photosynthesisPerDay[Assimilation], this,
+                             "CO @Sub 2 assimilated by this area (kg CO @Sub 2 per ha ground per day)");
 
-    lookupDist["Symmetric"] = Symmetric;
-    lookupDist["Even"] = Even;
-    lookupDist["Tapering"] = Tapering;
-    lookupDist["TopHeavy"] = TopHeavy;
+    new PushVariable<double>("allocation", &allocation, this,
+                             "Allocated dry matter (g per plant per day) to be converted into area");
 }
 
 void Area::initialize() {
     calendar = seekOne<Model*>("calendar");
     weather = seekOne<Model*>("weather");
     plant = seekOneAscendant<Plant*>("*");
-    plantHeight = plant->seekOneDescendant<Model*>("height");
+    plantHeightModel = plant->seekOneDescendant<Model*>("height");
+    measure = seekOneChild<Model*>("measure");
+    density = seekOneChild<AreaDensity*>("*");
+    specificLeafArea = seekOneChild<Model*>("specificLeafArea");
     lightUseEfficiency = seekOneChild<Model*>("lightUseEfficiency");
     assimilationMax = seekOneChild<Model*>("amax");
 }
 
 void Area::reset() {
-    lai = initial;
+    area = lai =
+    allocation = 0.;
+    if (writeTestOutput) {
+        QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
+        QString fileName = "area_test_" + plant->fullName() + ".prn";
+        fileName = fileName.replace(QRegExp("[/:\\[\\]]"),"_");
+        QString filePath = path + "/" + fileName;
+        test.setFileName(filePath);
+        bool ok = test.open(QIODevice::Text | QIODevice::WriteOnly);
+        if (!ok)
+            throw Exception("Could not open file for test output:\""+filePath+"\"");
+    }
 }
 
-Area::Distribution Area::distribution() const {
-    if (!lookupDist.contains(distText))
-        throw Exception("Unknown distribution type: " + distText);
-    return lookupDist.value(distText);
+void Area::updateLai() {
+    double density = plant->pullVariable<double>("density");
+    area = measure->pullVariable<double>("number");
+    lai = density*area/10000.;
 }
 
-LightComponents Area::calcEffectiveAreaAbove(double height) {
-    LightComponents k = calc_k();
+void Area::update() {
+    // Fetch current values
+    dayLength = calendar->pullVariable<double>("dayLength");
+    plantHeight = plantHeightModel->pullVariable<double>("height");
+    double specificLA = specificLeafArea->pullVariable<double>("value");
 
-    LightComponents eaa;
-    double areaAbove = aboveHeight(height);
-    for (int lc = 0; lc < 3; ++lc) {
-        eaa[lc] = k[lc]*areaAbove;
+    // Add allocated carbohydrates as area
+    double newArea = allocation*specificLA;
+    measure->pushVariable<double>("inflow", newArea);
+    updateLai();
+    allocation = 0.;
+}
+
+void Area::cleanup() {
+    test.close();
+}
+
+void Area::setPoint(int hourPoint_, int heightPoint_) {
+    hourPoint = hourPoint_;
+    heightPoint = heightPoint_;
+    if (hourPoint == 0 && heightPoint == 0) {
+        for (int i = 0; i < 2; ++i)
+            photosynthesisPerDay[i] = 0.;
     }
 
-    return eaa;
+    double hour = 12. + 0.5*dayLength*XGAUSS3[hourPoint];
+    clock()->doTick(hour);
+    sinb = calendar->pullVariable<double>("sinb");
+
+    height = plantHeight*XGAUSS5[heightPoint];
 }
 
-LightComponents Area::calc_k() const {
-    double scat = sqrt(1 - scatteringCoeff);
-    double sinb = calendar->pullVariable<double>("sinb");
-    LightComponents k;
+const double * Area::calcELAI() {
+    static double elai[3];
+    updateExtensionCoeff();
+    double densityAbove = density->above(height);
+    for (int i = 0; i < 3; ++i)
+        elai[i] = k[i]*lai*densityAbove;
+    return elai;
+}
 
+void Area::updateExtensionCoeff() {
+    double scat = sqrt(1 - scatteringCoeff);
     if (sinb > 0.) {
         k[Diffuse] = kDiffuse;
         k[DirectDirect] = 0.5/sinb*kDiffuse/0.8/scat;
         k[DirectTotal] = k[DirectDirect]*scat;
     }
-    return k;
+    else {
+        k[0] = k[1] = k[2] = 0.;
+    }
 }
 
-PhotosyntheticRate Area::calcPhotosynthesis(double height, LightComponents eaa) {
-    PhotosyntheticRate psInShade = calcPhotosynthesisInShade(eaa);
-    PhotosyntheticRate psInSun = calcPhotosynthesisInSun(psInShade.absorption());
-    PhotosyntheticRate psTotal = calcPhotosynthesisTotal(height, eaa, psInShade, psInSun);
-    cout << " Area::calcPhotosynthesis() psTotal = " << psTotal.absorption() << " " << psTotal.assimilation() << "\n";
-    return psTotal;
-}
+void Area::updatePhotosynthesis(const double *sumELAI) {
+    updateReflection();
 
-PhotosyntheticRate Area::calcPhotosynthesisInShade(LightComponents eaa) {
-    LightComponents absorbedComp = calcAbsorptionInShade(eaa);
-    double absorption = netAbsorption(absorbedComp);
-    double assimilation = assimilationRate(absorption);
-    return PhotosyntheticRate(absorption, assimilation);
-}
-
-LightComponents Area::calcAbsorptionInShade(LightComponents eaa) {
-    double sinb = calendar->pullVariable<double>("sinb");
-    if (sinb == 0.)
-        return LightComponents();
-
-    double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
-    double refSphec = refHorz*2./(1. + 1.6*sinb);
-
-    LightComponents k = calc_k();
-
-    LightComponents par;
+    double par[3];
     par[Diffuse] = weather->pullVariable<double>("parDiffuse");
-    par[DirectDirect] = weather->pullVariable<double>("parDirect");
+    par[DirectDirect] =
     par[DirectTotal] = weather->pullVariable<double>("parDirect");
 
-    LightComponents reflected;
-    reflected[Diffuse] = refHorz;
-    reflected[DirectDirect] = scatteringCoeff;
-    reflected[DirectTotal] = refSphec;
-
-    LightComponents absorbed;
-    for (int lc = 0; lc < 3; ++lc)
-        absorbed[lc] = k[lc] * (1. - reflected[lc]) * par[lc] * exp(-eaa.value(lc));
-
-    return absorbed;
-}
-
-double Area::netAbsorption(const LightComponents &absorbed) const {
-    double netAbsorbed = absorbed.value(Diffuse) + absorbed.value(DirectTotal)
-                         - absorbed.value(DirectDirect);
-    if (netAbsorbed < 0) {
-        netAbsorbed = 0.;
-     /*   if (netAbsorbed > -0.1)
-            netAbsorbed = 0.;
-        else
-            throw Exception("Shaded absorption (" + QString::number(netAbsorbed) + ")" +
-                            " < 0 in " + const_cast<Area*>(this)->fullName());
-     */
+    double absorbed[3];
+    for (int i = 0; i < 3; ++i) {
+        double available = (1. - reflection[i])*par[i]*exp(-sumELAI[i]);
+        absorbed[i] = k[i]*available;
     }
-    return netAbsorbed;
+    double shaded[2];
+    shaded[Absorption] = absorbed[Diffuse] + std::max(absorbed[DirectTotal] - absorbed[DirectDirect], 0.);
+    shaded[Assimilation] = assimilation(shaded[Absorption]);
+
+    double sunlit[2] = {0.,0.};
+    double perpLight = (sinb == 0.) ? 0. : (1. - reflection[DirectDirect])*par[DirectTotal]/sinb;
+    for (int v = 0; v < 3; ++v) {
+        double absorbed = shaded[Absorption] + XGAUSS3[v]*perpLight;
+        sunlit[Absorption] += WGAUSS3[v]*absorbed;
+        sunlit[Assimilation] += WGAUSS3[v]*assimilation(absorbed);
+    }
+
+    double fsl = exp(-sumELAI[DirectDirect]);
+    double perLA[2];
+    for (int i = 0; i < 2; ++i)
+        perLA[i] = (1. - fsl)*shaded[i] + fsl*sunlit[i];
+    perLA[Absorption] *= 3600*1e-6;
+
+
+    double densityAt = density->at(height);
+    double increment[2];
+    for (int i = 0; i < 2; ++i) {
+        increment[i] = perLA[i]*lai*densityAt*plantHeight*dayLength*WGAUSS3[hourPoint]*WGAUSS5[heightPoint];
+        photosynthesisPerDay[i] += increment[i];
+    }
+    if (writeTestOutput) {
+        QString s;
+        QTextStream str(&s);
+        str << calendar->pullVariable<int>("dayInYear") << '\t' << calendar->pullVariable<double>("daylength") << '\t'
+            << hourPoint << '\t' << heightPoint << '\t'
+            << par[Diffuse] << '\t' << par[DirectDirect] << '\t'
+            << shaded[Absorption] << '\t' << shaded[Assimilation] << '\t'
+            << sunlit[Absorption] << '\t' << sunlit[Assimilation] << '\t'
+            << fsl << '\t' << height << '\t' << densityAt << '\t'
+            << perLA[0] << '\t' << perLA[1] << '\t'
+            << increment[0] << '\t' << increment[1] << '\t'
+            << photosynthesisPerDay[0] << '\t' << photosynthesisPerDay[1];
+        for (int i = 0; i < 3; ++i) {
+            double available = (1. - reflection[i])*par[i]*exp(-sumELAI[i]);
+            str << '\t' << available;
+        }
+        str << '\n';
+        test.write(str.string()->toAscii());
+    }
 }
 
-double Area::assimilationRate(double absorption) const {
-    double efficiency = lightUseEfficiency->pullVariable<double>("efficiency");
-    double amax = assimilationMax->pullVariable<double>("amax");
+void Area::updateReflection() {
+    double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
+    double refSphec = refHorz*2./(1. + 1.6*sinb);
+    reflection[Diffuse] = refHorz;
+    reflection[DirectDirect] = scatteringCoeff;
+    reflection[DirectTotal] = refSphec;
+}
+
+double Area::assimilation(double absorption) const {
+    double efficiency = lightUseEfficiency->pullVariable<double>("value");
+    double amax = assimilationMax->pullVariable<double>("value");
     return amax == 0. ? 0. : amax*(1. - exp(-absorption*efficiency/amax));
 }
-
-PhotosyntheticRate Area::calcPhotosynthesisInSun(double absorptionInShade) {
-    double sinb = calendar->pullVariable<double>("sinb");
-    double parDirect = weather->pullVariable<double>("parDirect");
-    double perpendicular = (1. - scatteringCoeff)*parDirect/sinb;
-
-    double absorbed = 0;
-    double assimilated = 0.;
-    // integrate over leaf angles
-    for (int i = 0; i<3; i++) {
-        double abso = absorptionInShade + perpendicular*XGAUSS3[i];
-        double assi = assimilationRate(abso);
-        absorbed += abso*WGAUSS3[i];
-        assimilated += assi*WGAUSS3[i];
-    }
-    return PhotosyntheticRate(absorbed, assimilated);
-}
-
-PhotosyntheticRate Area::calcPhotosynthesisTotal(double height, LightComponents eaa, PhotosyntheticRate psInShade, PhotosyntheticRate psInSun) {
-    double sunlit = exp(-eaa.value(DirectDirect));
-    double absorbed = sunlit*psInSun.absorption() + (1 - sunlit)*psInShade.absorption();
-    double assimilated = sunlit*psInSun.assimilation() + (1 - sunlit)*psInShade.assimilation();
-    absorbed *= atHeight(height);
-    assimilated*= atHeight(height);
-    // Finally, convert J/m2/s to MJ/m2/d
-    return PhotosyntheticRate(/*3600.*1e-6*/absorbed, assimilated);
-}
-
-double Area::atHeight(double height) const {
-    double ph = plantHeight->pullVariable<double>("height");
-    if (ph == 0. || height > ph)
-        return 0.;
-
-    double area;
-    switch (distribution()) {
-        case Symmetric:
-            area = lai*6./pow(ph,3)*height*(ph-height);
-            break;
-        case Even:
-            area = lai/ph;
-            break;
-        case Tapering:
-            area = lai*((-0.2*height/ph + 0.2)/0.1)/ph;
-            break;
-        case TopHeavy:
-            area = lai*30.*pow(height,4)/pow(ph,5)*(1. - height/ph);
-            break;
-    }
-    return area;
-}
-
-double Area::aboveHeight(double height) const {
-    double ph = plantHeight->pullVariable<double>("height");
-    if (ph == 0. || height > ph)
-        return 0.;
-
-    double area;
-    switch (distribution()) {
-        case Symmetric:
-            area = lai - lai/pow(ph,3)*height*height*(3.*ph - 2.*height);
-            break;
-        case Even:
-            area = lai*(ph - height)/ph;
-            break;
-        case Tapering:
-            area = lai*(1-(-(pow((height/ph),2)) + 2.*(height/ph)));
-            break;
-        case TopHeavy:
-            area = lai*(-.164 + 1.172/(1. + exp(8.352*(height/ph - .759))));
-            break;
-    }
-    return area;
-}
-
 
 } //namespace
 

@@ -14,23 +14,25 @@ namespace intercom{
 LightUseEfficiencyGivenTemp::LightUseEfficiencyGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("slope", &slope, -0.00095, this, "description");
-    new Parameter<double>("intercept", &intercept, 0.0635, this, "description");
-    new PullVariable<double>("efficiency", &efficiency, this, "description");
+    new Parameter<double>("slope", &slope, -0.0095, this, "Slope of the line (kg CO @Sub 2 per ha leaf per hour per (W per m @Sup 2 leaf) per {@Degree}C)");
+    new Parameter<double>("intercept", &intercept, 0.635, this, "Intercept of the line (kg CO @Sub 2 per ha leaf per hour per (W per m @Sup 2 leaf)')");
+
+    new PullVariable<double>("value", &value, this, "Light use efficiency, @Sym epsilon (kg CO @Sub 2 per ha leaf per hour per (W per m @Sup 2 leaf)')");
 }
 
 void LightUseEfficiencyGivenTemp::initialize()
 {
     weather = seekOne<Model*>("weather");
 }
+
 void LightUseEfficiencyGivenTemp::reset() {
-    efficiency = 0.;
+    value = 0.;
 }
 
 void LightUseEfficiencyGivenTemp::update()
 {
     double Tday = weather->pullVariable<double>("Tday");
-    efficiency = slope*Tday + intercept;
+    value = slope*Tday + intercept;
 }
 
 } //namespace

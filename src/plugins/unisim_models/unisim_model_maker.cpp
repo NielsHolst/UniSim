@@ -54,9 +54,6 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "The @F Counter model maintains a counter (@F {value}) that is incremented by one for every time step."
     "At reset @F value is set to @F {initValue}.";
 
-    desc["Constant"] =
-    "Pending";
-
     desc["DayDegrees"] =
     "This is a standard day-degree model. It obtains the daily average temperature from "
     "the weather object, which must exist as @F Model named @F {weather} having a pull "
@@ -104,8 +101,8 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "Its @F value remains true as long as @Math{@F{iteration <= numIterations}}";
 
     desc["Stage"] =
-    "The @F Stage model has an a distributed delay routine @Cite{$manetsch, $vansickle} inside. "
-    "The implementation follows the original FORTRAN code @Cite{$abkin}. The two parameters @F "
+    "The @F Stage model holds a distributed delay routine (@Cite{$label{Manetsch 1976}manetsch, $label{Vansickle 1977}vansickle}) inside. "
+    "The implementation follows the original FORTRAN code of @Cite{$label{Abkin \"&\" Wolf (1976)}abkin}. The two parameters @F "
     "duration and @F k determine the average and variance of stage duration with variance equal to "
     "@Math{@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
     "determined by an obligatory child model named @F {time}.";

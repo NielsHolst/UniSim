@@ -20,6 +20,7 @@ public:
     PullVariable(Identifier name, const T *valuePtr, QObject *parent, QString desc);
     T value() const;
     const T* valuePtr() const;
+    QString typeId() const;
     QVariant toVariant() const;
 
 private:
@@ -51,6 +52,13 @@ QVariant PullVariable<T>::toVariant() const
 {
     T val = value();
     return QVariant(val);
+}
+
+template <class T>
+QString PullVariable<T>::typeId() const
+{
+    QString result = QString(QVariant(T()).typeName()).toLower();
+    return result.startsWith("q") ? result.remove(0,1) : result;
 }
 
 } //namespace

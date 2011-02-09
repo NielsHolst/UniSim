@@ -13,6 +13,8 @@ del /Q /S %UNISIM_GV%\lib\release
 del /Q bin\*.*del /Q bin\*.*
 del /Q plugins\*.*
 copy ..\src\applications\unisim*.exe bin
+copy ..\src\applications\base*.dll bin
+copy ..\src\applications\engine*.dll bin
 copy ..\vendor\qwt\lib\qwt5.dll bin
 pushd %QT_ROOT%\qt\bin
 copy mingwm10.dll %UNISIM_BIN%

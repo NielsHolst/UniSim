@@ -46,11 +46,6 @@ WeatherFile::WeatherFile(UniSim::Identifier name, QObject *parent)
         "File | Locations menu)");
     new Parameter<QDate>("firstDate", &firstDate, QDate(), this,
         "Date of first line in the weather file");
-    new Parameter<char>("separator", &separator, '\t', this,
-        "Character that separates columns in the weather file.");
-    new Parameter<bool>("keepEmptyColumns", &keepEmptyColumns, true, this,
-        "Should empty columns be kept? If true \"12\\t\\t34\" will counts as 3 columns, "
-        "otherwise as 2 columns");
     new Parameter<int>("headerLines", &headerLines, 0, this,
         "Number of header lines to skip in weather file. If the file begins with a line of "
         "column headings, for example, @F headerLines should be @F {1}");
@@ -99,9 +94,8 @@ bool WeatherFile::atEnd() const {
 void WeatherFile::update() {
     if (!readLine()) return;
 
-    QString::SplitBehavior behavior =
-            keepEmptyColumns ? QString::KeepEmptyParts : QString::SkipEmptyParts;
-    QStringList items = line.split(separator, behavior);
+    QRegExp whitespace = QRegExp("\\s+");
+    QStringList items = line.split(whitespace, QString::SkipEmptyParts);
 
     try {
         for (int i = 0; i < columns.size(); ++i)

@@ -17,6 +17,7 @@ class PullVariableBase : public QObject
 public:
     PullVariableBase(Identifier id, QObject *parent, QString desc);
     virtual QVariant toVariant() const = 0;
+    virtual QString typeId() const = 0;
     Identifier id() const;
     QString description() const;
 

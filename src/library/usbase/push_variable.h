@@ -21,7 +21,8 @@ public:
     T value() const;
     T* valuePtr() const;
     QVariant toVariant() const;
-	void setValue(T newValue);
+    QString typeId() const;
+    void setValue(T newValue);
 
 private:
     T *_valuePtr;
@@ -53,6 +54,13 @@ QVariant PushVariable<T>::toVariant() const
 {
     T val = value();
     return QVariant(val);
+}
+
+template <class T>
+QString PushVariable<T>::typeId() const
+{
+    QString result = QString(QVariant(T()).typeName()).toLower();
+    return (result == "qdate") ? QString("date") : result;
 }
 
 template <class T>

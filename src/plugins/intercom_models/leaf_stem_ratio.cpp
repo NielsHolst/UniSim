@@ -21,7 +21,7 @@ LeafStemRatio::LeafStemRatio(UniSim::Identifier name, QObject *parent)
 
 void LeafStemRatio::initialize()
 {
-    photoThermalTime = seekOneSibling<Model*>("photoThermalTime");
+    photoThermalTime = seekOneNearest<Model*>("time");
 }
 
 void LeafStemRatio::update()

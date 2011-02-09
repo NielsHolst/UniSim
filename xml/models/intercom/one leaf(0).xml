@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+
+     <integrator type="TimeStepLimited">
+         <parameter name="maxSteps" value="180"/>
+         <sequence>
+             <model name="calendar"/>
+             <model name="weather"/>
+             <model name="field"/>
+         </sequence>
+     </integrator>
+	
+	<model name="calendar" type="unisim::Calendar">
+		<parameter name="latitude" value="55"/>
+		<parameter name="firstDate" value="1/4/2005"/>
+		<parameter name="followers" value="weather"/>
+	</model>
+	
+	<model name="weather" type="intercom::Weather">
+		<parameter name="fileName" value = "flakkebjerg 2005-06.txt" other="flakkebjerg constant.txt"/>
+		<parameter name="firstDate" value="1/1/2005"/>
+		<parameter name="Tmin" value="3"/>
+		<parameter name="Tmax" value="4"/>
+		<parameter name="IrradiationMJ" value="6"/>
+	</model>
+
+	<model name="field" type="intercom::Community">
+		<parameter name="earlyGrowthThreshold" value="1"/>
+		
+		<model name="cirsium" type="intercom::Plant">
+			<parameter name="density" value="10"/>
+			
+			<model name="time" type="UniSim::PhotoThermalTime">
+				<parameter name="T0" value="4"/>
+			</model>
+			
+			<model name="height" type="intercom::Height">
+				<parameter name="h0" value="0.01"/>
+				<parameter name="hmax" value="1"/>
+				<parameter name="tm" value="500"/>
+			</model>
+			
+			<model name="earlyGrowth" type="intercom::EarlyGrowth"> 
+				<parameter name="initialArea" value="1" comment="cm2 per plant"/>
+				<parameter name="growthRate" value="0.1"/>
+			</model>
+
+			<model name="leaves" type="intercom::Organ">
+			
+				<model name="area" type="intercom::Area">
+					<parameter name="kDiffuse" value="0.7"/>
+
+					<model name="measure" type="UniSim::Stage">
+						<parameter name="duration" value="300"/>
+					</model>
+
+					<model name="density" type="intercom::AreaDensitySymmetric"/>
+					<model name="specificLeafArea" type="intercom::SpecificLeafArea"/>
+					<model name="amax" type="intercom::AssimilationMaxGivenTemp"/>
+					<model name="lightUseEfficiency" type="intercom::LightUseEfficiencyGivenTemp"/>
+					<model name="partion" type="intercom::PartitioningFixed">
+						<parameter name="value" value="1"/>
+					</model>
+				</model>
+
+				<model name="mass" type="UniSim::Stage">
+					<parameter name="duration" value="300"/>
+				</model>
+			</model>
+			
+		</model>
+	</model>
+
+	<!-- Outputs on file -->
+
+	<output type="table">
+		<parameter name="filename" value="intercom.prn"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day length" axis="y" value="calendar[dayLength]"/>
+		<variable label="Pt-time" axis="y" value="time[total]"/>
+		<variable label="areaLAI" axis="y" value="leaves/area[lai]"/>
+		
+		<variable label="leaves-mass" axis="y" value="cirsium/leaves/mass[number]"/>
+		<variable label="leaves-area" axis="y" value="cirsium/leaves/area[area]"/>
+		<variable label="SLA" axis="y" value="specificLeafArea[value]"/>
+		
+		<variable label="Tday" axis="y" value="weather[Tday]"/>
+		<variable label="Amax" axis="y" value="amax[value]"/>
+		<variable label="Eps" axis="y" value="lightUseEfficiency[value]"/>
+		<variable label="areaAbsorption" axis="y" value="leaves/area[lightAbsorption]"/>
+		<variable label="areaCO2Assimilation" axis="y" value="leaves/area[CO2Assimilation]"/>
+		<variable label="grossProd" axis="y" value="field[grossProduction]"/>
+		<variable label="grossProdSum" axis="y" value="field[grossProduction]" summary="sum"/>
+		<variable label="maint. resp." axis="y" value="cirsium[maintenanceResp]"/>
+		<variable label="testInt" axis="y" value="weather[testInt]"/>
+	</output>
+
+    <!-- Outputs on screen -->
+	
+	<output type="plot">
+		<parameter name="title" value="Day length"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day length" axis="y" value="calendar[dayLength]"/>
+	</output>
+    
+	<output type="plot">
+		<parameter name="title" value="Photothermal time"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Pt-time" axis="y" value="time[total]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Amax"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Amax" axis="y" value="amax[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Light use efficiency"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Eps" axis="y" value="lightUseEfficiency[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
+		<variable label="Tday" axis="y" value="weather[Tday]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="LAI"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="field" axis="y" value="field[lai]"/>
+		<variable label="cirsium" axis="y" value="cirsium[lai]"/>
+		<variable label="leaves" axis="y" value="leaves[lai]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Cirsium area (cm2)"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="leaves" axis="y" value="cirsium/leaves/area[area]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Cirsium mass (g/plant)"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="leaves" axis="y" value="cirsium/leaves/mass[number]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Cirsium height"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Cirsium" axis="y" value="cirsium/height[height]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Irradiation"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="MJ/m2/d" axis="y" value="weather[irradiationMJ]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Leaves light absorption"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="MJ/m2/d" axis="y" value="leaves/area[lightAbsorption]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Field CO2 assimilation"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="kg/ha/d" axis="y" value="field[CO2assimilation]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Field gross production"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="kg/ha/d" axis="y" value="field[grossProduction]" summary="sum"/>
+    </output>
+
+	
+    <output type="plot">
+		<parameter name="title" value="Plant energy budget"/>
+		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="CO2 assim." axis="y" value="cirsium[COassimilation]"/>
+		<variable label="gross prod." axis="y" value="cirsium[grossProduction]"/>
+		<variable label="maint. resp." axis="y" value="cirsium[maintenanceResp]"/>
+		<variable label="avail. prod." axis="y" value="cirsium[availableProduction]"/>
+    </output>
+
+</simulation>

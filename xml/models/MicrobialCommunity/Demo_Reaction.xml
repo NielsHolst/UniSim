@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulation version="1.0">
+
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="500"/>
+		
+		<sequence>
+			<model name="Calendar"/>
+			<model name="Community"/>
+		</sequence>
+
+	</integrator>
+
+	<model name="Calendar" type="UniSim::Calendar">
+		<parameter name="firstDate" value="1/1/2011" />		
+	</model>
+
+	<model name="Community" type="MicrobialCommunity::Community">
+		
+		<model name="PMO_ZeroOrder" type="MicrobialCommunity::ZeroOrderReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+		
+		<model name="PMO_FirstOrder" type="MicrobialCommunity::FirstOrderReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+		
+		<model name="PMO_Enzymatic" type="MicrobialCommunity::EnzymaticReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+	
+		<model name="MOB_1" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 1"/>
+			<parameter name="InitialDensity" value="1000"/>
+			<parameter name="ZeroOrderRateConstant" value="25"/>
+			<parameter name="FirstOrderRateConstant" value="0.004"/>
+			<parameter name="MichaelisMentenConstant" value="800"/>
+			<parameter name="MaximumVelocity" value="30"/>
+		</model>
+
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Methane Concentration"/>
+		<variable axis="x" label="Time" value="Calendar[daysTotal]"/>
+		<variable axis="y" label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
+		<variable axis="y" label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
+		<variable axis="y" label="First Order" value="PMO_FirstOrder[Substrate]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Zero Order Methane Oxidation"/>
+		<variable axis="x" label="Substrate" value="PMO_ZeroOrder[Substrate]"/>
+		<variable axis="y" label="Velocity" value="PMO_ZeroOrder[Velocity]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="First Order Methane Oxidation"/>
+		<variable axis="x" label="Substrate" value="PMO_FirstOrder[Substrate]"/>
+		<variable axis="y" label="Velocity" value="PMO_FirstOrder[Velocity]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Enzymatic Methane Oxidation"/>
+		<variable axis="x" label="Substrate" value="PMO_Enzymatic[Substrate]"/>
+		<variable axis="y" label="Velocity" value="PMO_Enzymatic[Velocity]"/>
+	</output>
+
+</simulation>

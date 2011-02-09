@@ -16,24 +16,18 @@ using namespace UniSim;
 namespace intercom{
 
 Weather::Weather(UniSim::Identifier name, QObject *parent)
-    : WeatherFile(name, parent)
+    : WeatherInterface(name, parent)
 {
     setColumn("Tmax", 3);
     setColumn("Tmin", 4);
     setColumn("irradiationMJ", 7);
-
-    new PullVariable<double>("Tavg", &Tavg, this, "description");
-    new PullVariable<double>("Tday", &Tday, this, "description");
-    new PullVariable<double>("irradiation", &irradiation, this, "description");
-    new PullVariable<double>("parTotal", &par.total, this, "description");
-    new PullVariable<double>("parDiffuse", &par.diffuse, this, "description");
-    new PullVariable<double>("parDirect", &par.direct, this, "description");
 }
 
 void Weather::initialize() {
+    new Parameter<int>("testInt", &testInt, 113, this, "desc");
+    new PullVariable<int>("testInt", &testInt, this, "desc");
     WeatherFile::initialize();
     calendar = seekOne<Calendar*>("calendar");
-    verifySequence();
     connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
 }
 

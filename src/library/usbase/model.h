@@ -43,7 +43,7 @@ T Model::parameter(Identifier name)
     QVariant variant = basePar->toVariant();
     if (!variant.canConvert<T>())
         throw Exception("Cannot convert parameter '" + name.label() +
-                        "' to type " + QVariant(T()).typeName(), this);
+                        "' to desired type", this);
     return variant.value<T>();
 }
 

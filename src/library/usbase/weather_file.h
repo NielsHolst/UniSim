@@ -32,8 +32,6 @@ private:
     // parameters
     QString fileName;
     QDate firstDate;
-    char separator;
-    bool keepEmptyColumns;
     int headerLines;
 
     // file columns

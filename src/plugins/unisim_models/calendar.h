@@ -37,6 +37,7 @@ private:
     QList<QDate> followerFirstDates;
 
     // methods
+    void updateDerived();
     void getFollowerFirstDates();
     FirstDateDiagnose firstDateDiagnose();
     bool sameFollowerFirstDates();
@@ -51,8 +52,8 @@ private:
 	// state
     QDate date;
     QDateTime dateTime;
-    double day, month, year, dayInYear, daysTotal,
-        dayLength, sinb, sinLD, cosLD;
+    int day, month, dayInYear, daysTotal;
+    double year, dayLength, sinb, sinLD, cosLD;
 
 };
 

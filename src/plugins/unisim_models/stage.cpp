@@ -23,7 +23,9 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("duration", &_L, 100., this,
         "The average duration of the stage: an inflow will emerge as an outflow dispersed "
         "over time, with a delay of @F duration on average and a variance of @Math {@F duration sup 2 slash @F k sup 2} "
-        "@Cite{$manetsch}.");
+        "@Cite{$label{(Manetsch 1976)}manetsch}.");
+    new Parameter<double>("initialInflow", &initialInflow, 0., this,
+        "The initial inflow is entered as inflow at time 0");
 
     // Next line can be used when pull variables have been templatized
     //new PullVariable<double>("ageClasses", &_x, this);
@@ -54,7 +56,7 @@ Stage::~Stage()
 
 void Stage::initialize()
 {
-    time = seekOneChild<Model*>("time");
+    time = seekOneNearest<Model*>("time");
 }
 
 
@@ -72,7 +74,7 @@ void Stage::reset()
 	_firstUpdate = true;
 	_dirtySum = false;
 
-    _inflow  = 0;
+    _inflow  = initialInflow;
     _fgr = 1.;
     _instantMortality = 0.;
 }
@@ -93,7 +95,7 @@ void Stage::update()
 	if (_k<=0 || _L<=0 || _fgr<=0 || _input< 0 || dt<0 || _x==0) {
 		QString msg;
 		QTextStream text(&msg);
-        text << qPrintable(objectName()) << " in illegal state for update: \n"
+        text << "Stage in illegal state for update: \n"
 			 << "k = "<< _k << "\n"
 			 << "duration = "<< _L << "\n"
 			 << "growth rate = " << _fgr << "\n"
@@ -103,10 +105,14 @@ void Stage::update()
 			text << "internal buffer is not ok\n";
 		else
 			text << "internal buffer is ok\n";
-		throw UniSim::Exception(msg);
+        throw UniSim::Exception(msg, this);
 	}
 
-	if (dt == 0) return;
+    if (dt == 0) {
+        sum();
+        _output = 0.;
+        return;
+    }
 
 	// Set del and attrition according to Vansickle
 	double 	del = _L*pow(_fgr, -1./_k),

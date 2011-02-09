@@ -5,59 +5,65 @@
 */
 #ifndef INTERCOM_AREA
 #define INTERCOM_AREA
+#include <QFile>
 #include <QList>
 #include <QMap>
 #include <QObject>
 #include <usbase/model.h>
-#include "light_components.h"
-#include "photosynthetic_rate.h"
 
 namespace intercom{
+
+class AreaDensity;
 
 class Area : public UniSim::Model
 {
 	Q_OBJECT
 public: 
-    typedef enum {Symmetric, Even, Tapering, TopHeavy} Distribution;
+    enum KindsOfLight {Diffuse, DirectDirect, DirectTotal};
+    enum Rates {Absorption, Assimilation};
 
     Area(UniSim::Identifier name, QObject *parent=0);
 
 	//standard methods
 	void initialize();
 	void reset();
+    void update();
+    void cleanup();
 
     // special methods
-    LightComponents calcEffectiveAreaAbove(double height);
-    PhotosyntheticRate calcPhotosynthesis(double height, LightComponents eaa);
-    PhotosyntheticRate calcPhotosynthesisInShade(LightComponents eaa);
-    PhotosyntheticRate calcPhotosynthesisInSun(double absorptionInShade);
-    PhotosyntheticRate calcPhotosynthesisTotal(double height, LightComponents eaa, PhotosyntheticRate psInShade, PhotosyntheticRate psInSun);
+    void setPoint(int hourPoint, int heightPoint);
+    const double * calcELAI();
+    void updatePhotosynthesis(const double *sumELAI);
 
-    LightComponents calcAbsorptionInShade(LightComponents eaa);
-
-    LightComponents calc_k() const;
-
-    Distribution distribution() const;
-    double atHeight(double height) const;
-    double aboveHeight(double height) const;
 
 private:
-    // input management
-    QMap<UniSim::Identifier, Distribution> lookupDist;
-
     // parameters
-    QString distText;
-    double initial, scatteringCoeff, kDiffuse;
+    double scatteringCoeff, kDiffuse;
+    bool writeTestOutput;
 
 	// state
-    double lai;
+    int hourPoint, heightPoint;
+    double dayLength, sinb, plantHeight,
+        height, k[3], reflection[3];
+    QFile test;
+
+    // pull variables
+    double area, lai, photosynthesisPerDay[2];
+
+    // push variables
+    double allocation;
 
     // links
-    UniSim::Model *calendar, *weather, *plant, *plantHeight, *lightUseEfficiency, *assimilationMax;
+    UniSim::Model *calendar, *weather, *plant, *plantHeightModel,
+        *measure, *specificLeafArea, *lightUseEfficiency, *assimilationMax;
+    AreaDensity *density;
 
     // methods
-    double netAbsorption(const LightComponents &absorbed) const;
-    double assimilationRate(double absorption) const;
+    void updateLai();
+    void updateExtensionCoeff();
+    void updateReflection();
+    double assimilation(double absorption) const;
+
 };
 
 } //namespace

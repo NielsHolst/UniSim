@@ -22,7 +22,7 @@ QString AmbrosiaModelMaker::pluginDesc() const {
     return
     "!Exclude\n"
     "The @F ambrosia plugin is an implementation of the phenology model for @I {Ambrosia artemisiifolia}, "
-    "as described by @Cite{$deen_et_al_1998a, $deen_et_al_1998b}.";
+    "as described by @Cite{$label{Deen et al. 1998a}deen_et_al_1998a} and @Cite{$label{1998b}deen_et_al_1998b}";
 }
 
 QStringList AmbrosiaModelMaker::authors() const {

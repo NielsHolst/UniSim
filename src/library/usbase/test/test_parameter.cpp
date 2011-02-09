@@ -8,6 +8,7 @@
 #include "../parameter.h"
 #include "test_parameter.h"
 
+using std::cout;
 using UniSim::Exception;
 using UniSim::Parameter;
 
@@ -173,9 +174,10 @@ void TestParameter::testIntToDate() {
 }
 
 void TestParameter::testMissing() {
+    QVERIFY(model);
     bool excepted = false;
     try {
-        QCOMPARE(model->parameter<int>("i"), 123);
+        QCOMPARE(model->parameter<int>("j"), 123);
     }
     catch (const Exception &ex) {
         excepted = true;

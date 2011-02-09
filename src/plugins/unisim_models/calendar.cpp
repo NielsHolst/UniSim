@@ -14,6 +14,7 @@
 #include <usbase/clock.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
+#include <usbase/test_num.h>
 #include "calendar.h"
 
 using namespace std;
@@ -35,11 +36,11 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
         "readings to a @F stepsPerDay of @F {24}");
 
     new PullVariable<QDate>("date", &date, this, "Current date");
-    new PullVariable<double>("daysTotal", &daysTotal, this, "Days total since beginning of simulation");
-    new PullVariable<double>("dayInYear", &dayInYear, this, "Day number in year, also known as Julian day");
-    new PullVariable<double>("dayOfYear", &dayInYear, this, "Synonymous with @F {dayInYear}");
-    new PullVariable<double>("day", &day, this, "Current day in month (1..31)");
-    new PullVariable<double>("month", &month, this, "Current montn (1..12)");
+    new PullVariable<int>("daysTotal", &daysTotal, this, "Days total since beginning of simulation");
+    new PullVariable<int>("dayInYear", &dayInYear, this, "Day number in year, also known as Julian day");
+    new PullVariable<int>("dayOfYear", &dayInYear, this, "Synonymous with @F {dayInYear}");
+    new PullVariable<int>("day", &day, this, "Current day in month (1..31)");
+    new PullVariable<int>("month", &month, this, "Current montn (1..12)");
     new PullVariable<double>("year", &year, this, "Current year");
     new PullVariable<double>("dayLength", &dayLength, this, "Current day length (hours)");
     new PullVariable<double>("sinb", &sinb, this, "Sine of sun elevation, updated by the @F tick event of the @F clock object");
@@ -90,10 +91,10 @@ void Calendar::reset() {
     if (!msg.isEmpty())
         throw Exception(msg);
 
-    date = firstDate;
+    date = firstDate.addDays(-1);
     daysTotal = 0;
     dateTime.setDate(date);
-    update();
+    updateDerived();
 }
 
 void Calendar::getFollowerFirstDates() {
@@ -162,16 +163,15 @@ void Calendar::synchronizeWithFollowers() {
     }
 }
 
-void Calendar::update()
-{
-    const double RAD = PI/180.;
-
+void Calendar::update() {
     daysTotal += 1./stepsPerDay;
     dateTime = dateTime.addSecs(24*60*60/stepsPerDay);
     date = dateTime.date();
+    updateDerived();
+}
 
-    QString test1 = date.toString("dd.MM.yyyy");
-    QString test2 = dateTime.toString("dd.MM.yyyy hh::mm::ss");
+void Calendar::updateDerived() {
+    const double RAD = PI/180.;
 
     day = date.day();
     month = date.month();
@@ -181,8 +181,9 @@ void Calendar::update()
     double dec = -asin(sin(23.45*RAD)*cos(2*PI*(dayInYear+10.)/365.));
     sinLD = sin(RAD*latitude)*sin(dec);
     cosLD = cos(RAD*latitude)*cos(dec);
-    dayLength = 12.*(1.+2.*asin((-sin(-4.*RAD)+sinLD)/cosLD)/PI);
-
+    Q_ASSERT(TestNum::neZero(cosLD));
+    double aob = sinLD/cosLD;
+    dayLength = 12.*(1. + 2.*asin(aob)/PI);
 }
 
 void Calendar::handleClockTick(double hour) {

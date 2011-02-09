@@ -21,9 +21,13 @@ public:
     OutputVariable(QString label, QString axis, QString summary, PullVariableBase *variable, QObject *parent = 0);
 	
     // standard methods
+    void initialize();
     void reset();
     void update();
     void cleanup();
+
+    // special methods
+    const PullVariableBase *pullVariable();
 
 private:
     // methods
@@ -33,6 +37,7 @@ private:
     void updateSummary(double value);
 
     // data
+    QString summaryString;
     struct {
         int n;
         double value, sum, prevValue, minValue, maxValue, threshold, x;
@@ -40,7 +45,6 @@ private:
     } s;
 
     // links
-    const Model *model;		//!< Pointer to the model holding the pull variable
     const PullVariableBase *pullVarPtr;
 };
 

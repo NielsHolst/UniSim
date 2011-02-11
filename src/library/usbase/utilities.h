@@ -16,6 +16,7 @@
 #include <QPluginLoader>
 #include <QString>
 #include <QStringList>
+#include <QTime>
 #include <QVariant>
 #include "exception.h"
 #include "file_locations.h"
@@ -98,6 +99,7 @@ template <class T> QList< QPair<QString, T> > decodeNameValueList(QString nameVa
 template<class T> T stringToValue(QString s, QObject *concerning = 0);
 template<> bool stringToValue<bool>(QString s, QObject *concerning);
 template<> QDate stringToValue<QDate>(QString s, QObject *concerning);
+template<> QTime stringToValue<QTime>(QString s, QObject *concerning);
 //@}
 
 //! @name PlugIn handling

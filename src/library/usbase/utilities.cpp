@@ -238,6 +238,15 @@ template<> QDate stringToValue<QDate>(QString s, QObject *concerning) {
     return date;
 }
 
+template<> QTime stringToValue<QTime>(QString s, QObject *concerning) {
+    QTime time = QTime::fromString(s.trimmed(), "h:m:s");
+    if (!time.isValid()) {
+        QString msg = "Cannot convert '" + s + "' to a time";
+        throw Exception(msg, concerning);
+    }
+    return time;
+}
+
 
 //! Write object tree to std::cout
 /*!

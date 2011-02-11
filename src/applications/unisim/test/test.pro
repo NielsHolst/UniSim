@@ -17,6 +17,7 @@ HEADERS += \
     $${US_BASE}/test/test_component.h \
     $${US_BASE}/test/test_identifier.h \
     $${US_BASE}/test/test_parameter.h \
+    $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
     $${US_ENGINE}/test/test_model_maker.h \
     $${US_ENGINE}/test/test_simulation.h \
@@ -30,6 +31,7 @@ HEADERS += \
     $${US_PLUGINS}/unisim_models/test/test_calendar.h \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.h \
     $${US_PLUGINS}/unisim_models/test/test_life_cycle.h \
+    $${US_PLUGINS}/unisim_models/test/test_records.h \
     $${US_PLUGINS}/unisim_models/test/test_stage.h \
     ../graph_generator.h \
 	../live_simulation.h \
@@ -43,6 +45,7 @@ SOURCES += \
     $${US_BASE}/test/test_component.cpp \
     $${US_BASE}/test/test_identifier.cpp \
     $${US_BASE}/test/test_parameter.cpp \
+    $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
     $${US_ENGINE}/test/test_model_maker.cpp \
     $${US_ENGINE}/test/test_simulation.cpp \
@@ -56,6 +59,7 @@ SOURCES += \
     $${US_PLUGINS}/unisim_models/test/test_calendar.cpp \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.cpp \
     $${US_PLUGINS}/unisim_models/test/test_life_cycle.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_records.cpp \
     $${US_PLUGINS}/unisim_models/test/test_stage.cpp \
     ../graph_generator.cpp \
 	../live_simulation.cpp \

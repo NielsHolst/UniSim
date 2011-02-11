@@ -33,6 +33,7 @@ HEADERS += \
         $${US_BASE}/pull_variable_base.h \
         $${US_BASE}/push_variable.h \
         $${US_BASE}/push_variable_base.h \
+        $${US_BASE}/time.h \
         $${US_BASE}/utilities.h \
         $${US_BASE}/version.h \
         $${US_BASE}/weather_file.h
@@ -57,6 +58,7 @@ SOURCES += \
         $${US_BASE}/parameter_base.cpp \
         $${US_BASE}/pull_variable_base.cpp \
         $${US_BASE}/push_variable_base.cpp \
+        $${US_BASE}/time.cpp \
         $${US_BASE}/utilities.cpp \
         $${US_BASE}/version.cpp \
         $${US_BASE}/weather_file.cpp

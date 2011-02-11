@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="10"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="records"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+		<parameter name="firstDate" value="1/1/2010"/>
+	</model>	
+
+	<model name="records" type="UniSim::records">
+		<parameter name="fileName" value="test/records/test_records.txt"/>
+	</model>
+	
+	<output type="table">
+		<parameter name="fileName" value="test_records.prn"/>
+		<variable label="daysTotal" axis="x" value="calendar[daysTotal]"/>
+		<variable label="currentDate" axis="y" value="records[currentDate]"/>
+		<variable label="nextDate" axis="y" value="records[nextDate]"/>
+		<variable label="A" axis="y" value="records[A]"/>
+		<variable label="B" axis="y" value="records[B]"/>
+		<variable label="C" axis="y" value="records[C]"/>
+	</output>
+</simulation>

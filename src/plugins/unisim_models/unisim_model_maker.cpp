@@ -17,6 +17,7 @@
 #include "random_normal.h"
 #include "random_poisson.h"
 #include "random_uniform.h"
+#include "records.h"
 #include "run_iterator_fixed.h"
 #include "stage.h"
 #include "trigger_by_date.h"
@@ -100,6 +101,10 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "The model increments its @F iteration counter for every $F {update}. "
     "Its @F value remains true as long as @Math{@F{iteration <= numIterations}}";
 
+    desc["Records"] =
+    "A @F Records model reads input from a text file formatted in columns with labels in the first line. "
+    "Columns can be separated by spaces or tab characters. Labels may not contain spaces";
+
     desc["Stage"] =
     "The @F Stage model holds a distributed delay routine (@Cite{$label{Manetsch 1976}manetsch, $label{Vansickle 1977}vansickle}) inside. "
     "The implementation follows the original FORTRAN code of @Cite{$label{Abkin \"&\" Wolf (1976)}abkin}. The two parameters @F "
@@ -146,6 +151,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new RandomPoisson(objectName, parent);
     else if (modelType.equals("RandomUniform"))
         model = new RandomUniform(objectName, parent);
+    else if (modelType.equals("Records"))
+        model = new Records(objectName, parent);
     else if (modelType.equals("RunIteratorFixed"))
         model = new RunIteratorFixed(objectName, parent);
     else if (modelType.equals("Stage"))

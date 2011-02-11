@@ -9,7 +9,7 @@
 
 namespace UniSim{
 
-Counter::Counter(UniSim::Identifier name, QObject *parent)
+Counter::Counter(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new Parameter<int>("initValue", &initValue, 0, this, "Initial value of counter");

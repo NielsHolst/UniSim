@@ -10,12 +10,12 @@
     </integrator>
 	
 	<model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
 	
 	<model name="weather" type="intercom::Weather">
 		<parameter name="fileName" value="flakkebjerg 2005-06.txt"/>
-		<parameter name="firstDate" value="1/1/2005"/>
+		<parameter name="initialDate" value="1/1/2005"/>
 		<parameter name="Tmin" value="3"/>
 		<parameter name="Tmax" value="4"/>
 		<parameter name="IrradiationMJ" value="6"/>
@@ -54,73 +54,73 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Weather"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="Irradiation" value="weather[irradiationMJ]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Phase"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="Carrot" value="carrot[phase]"/>
 		<variable axis="y" label="Barley" value="barley[phase]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Total crown zone area"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="Carrot field" value="CarrotField[sum_sz]"/>
 		<variable axis="y" label="Barley field" value="BarleyField[sum_sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/plant)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="Carrot" value="carrot[weight]"/>
 		<variable axis="y" label="Barley" value="barley[weight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area (m2/plant)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="carrot" value="carrot[LA_per_plant]"/>
 		<variable axis="y" label="barley" value="barley[LA_per_plant]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/m2 ground avail.)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="carrot" value="carrot[totalWeight]"/>
 		<variable axis="y" label="barley" value="barley[totalWeight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Growth rate (g/plant/day)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="carrot" value="carrot[dweight]"/>
 		<variable axis="y" label="barley" value="barley[dweight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Crown zone area (sz)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="carrot" value="carrot[sz]"/>
 		<variable axis="y" label="barley" value="barley[sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="LAI within sz (Lz)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="carrot" value="carrot[Lz]"/>
 		<variable axis="y" label="barley" value="barley[Lz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Light intercepted (fz)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="carrot" value="carrot[fz]"/>
 		<variable axis="y" label="barley" value="barley[fz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area index (LAI)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="carrot" value="carrot[lai]"/>
 		<variable axis="y" label="barley" value="barley[lai]"/>
 	</output>
 
 	<output type="table">
 		<parameter name="filename" value ="01 barley.txt"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="weight" value="barley[weight]"/>
 		<variable axis="y" label="LA" value="barley[LA_per_plant]"/>
 		<variable axis="y" label="sz" value="barley[sz]"/>

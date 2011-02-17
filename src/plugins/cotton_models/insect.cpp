@@ -55,7 +55,7 @@ void Insect::update() {
 }
 
 bool Insect::isEgglayingDate() {
-    QDate today = calendar->pullVariable<QDate>("date").addDays(-2);  // Hack, because calendar is 2 days ahead
+    QDate today = calendar->pullVariable<QDate>("date");
     int iteration = runIterator ? runIterator->pullVariable<int>("iteration") : 1;
     QDate egglayingDate = initEgglayingDate.addDays(iteration - 1);
 

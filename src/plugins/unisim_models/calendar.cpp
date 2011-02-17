@@ -24,161 +24,102 @@ namespace UniSim{
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<QDate>("firstDate", &firstDate, QDate(), this, "Initial date of simulation");
     new Parameter<double>("latitude", &latitude, 52., this, "Latitude of simulated system");
-    new Parameter<QString>("followers", &followersAsString, QString(), this,
-    "A single name, or list of names, denoting those objects that follow "
-    "(are synchronized with) the calendar date. "
-    "Commonly the @F weather object is set as a follower");
-    new Parameter<int>("stepsPerDay", &stepsPerDay, 1, this, "Time steps per days of simulation. "
-        "Usually this should be set according to the time resolution of the @F weather object. "
-        "Daily readings for example corresponds to a @F stepsPerDay of @F {1} and hourly "
-        "readings to a @F stepsPerDay of @F {24}");
+
+    new Parameter<QDate>("initialDate", &initialDate, QDate(2000,1,1), this,
+    "Initial date of simulation");
+
+    new Parameter<QTime>("initialTimeOfDay", &initialTimeOfDay, QTime(), this,
+    "Initial time of day of simulation. Default is midnight");
+
+    new Parameter<int>("timeStep", &timeStep, 1, this,
+    "Duration of one integration time step in units determined by @F {timeUnit}");
+
+    new Parameter<char>("timeUnit", &timeUnitAsChar, 'd', this,
+    "Time unit of @F {timeStep}: s)econds, m)inutes, h)ours, d)ays or y)ears.");
+
+    new Parameter<int>("timeStepOffset", &timeStepOffset, -1, this,
+    "The first values are reported to plot and table outputs after one time step. "
+    "With the default value of -1 for @F timeStepOffset, the first output will occur "
+    "at time zero, defined by @F initialDay and @F {initialTimeOfDay}. "
+    "Often this is what is intuitively expected. With a value of zero the first output "
+    "will occur one time step after time zero.");
 
     new PullVariable<QDate>("date", &date, this, "Current date");
-    new PullVariable<int>("daysTotal", &daysTotal, this, "Days total since beginning of simulation");
-    new PullVariable<int>("dayInYear", &dayInYear, this, "Day number in year, also known as Julian day");
-    new PullVariable<int>("dayOfYear", &dayInYear, this, "Synonymous with @F {dayInYear}");
+    new PullVariable<QTime>("timeOfDay", &timeOfDay, this, "Current time of day");
+    new PullVariable<QDateTime>("dateTime", &dateTime, this, "Current date and time");
+    new PullVariable<int>("totalTimeSteps", &totalTimeSteps, this,
+    "Total number of time steps performed since beginning of simulation");
+    new PullVariable<int>("totalTime", &totalTime, this,
+    "Total time, in units determined by @F {timeUnit}. passed since beginning of simulation");
+    new PullVariable<double>("totalDays", &totalDays, this,
+    "Total days passed since beginning of simulation");
+    new PullVariable<int>("dayOfYear", &dayOfYear, this, "Day number in year, also known as Julian day");
     new PullVariable<int>("day", &day, this, "Current day in month (1..31)");
-    new PullVariable<int>("month", &month, this, "Current montn (1..12)");
-    new PullVariable<double>("year", &year, this, "Current year");
+    new PullVariable<int>("month", &month, this, "Current month (1..12)");
+    new PullVariable<int>("year", &year, this, "Current year");
+    new PullVariable<int>("hour", &hour, this, "Current hour of the day (0..23)");
+    new PullVariable<int>("minute", &minute, this, "Current minute of the hour (0..59)");
+    new PullVariable<int>("second", &second, this, "Current second of the minute (0..59)");
+
+
+    new PullVariable<double>("dateAsReal", &dateAsReal, this, "Date as a real number measured in years");
     new PullVariable<double>("dayLength", &dayLength, this, "Current day length (hours)");
     new PullVariable<double>("sinb", &sinb, this, "Sine of sun elevation, updated by the @F tick event of the @F clock object");
-    new PullVariable<double>("sinLD", &sinLD, this, "Intermediate variable in astronomic calculations");
-    new PullVariable<double>("cosLD", &cosLD, this, "Intermediate variable in astronomic calculations");
+    new PullVariable<double>("sinLD", &sinLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
+    new PullVariable<double>("cosLD", &cosLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
+
+    new PushVariable<QDate>("initialDate", &initialDate, this,
+    "Even though @F initialDate is a parameter, you may want to change it from outside, "
+    " for example to synchronize the calendar with the initial date of a weather log. "
+    "You should perform a @F deepReset on your @F Calendar object after pushing a new "
+    "value to @F {initialDate}.");
+
+    new PushVariable<QTime>("initialTimeOfDay", &initialTimeOfDay, this,
+    "See comments for @F initialDate push variable.");
 }
 
-void Calendar::initialize()
-{
-    if (stepsPerDay <= 0)
-        throw Exception("Calendar parameter 'stepPerDays must be > 0");
-
-    followers.clear();
-    QStringList followersAsStrings = decodeSimpleList(followersAsString, this);
-    for (int i = 0; i < followersAsStrings.size(); ++i)
-        followers.append(seekOne<Model*>(followersAsStrings.value(i)));
-
+void Calendar::initialize() {
     connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
 }
 
 void Calendar::reset() {
-    QString msg;
-    getFollowerFirstDates();
-
-    switch (firstDateDiagnose()) {
-        case NoneNoFollowers:
-            msg = "Calendar misses parameter firstDate";
-            break;
-        case NoneWithFollowersWithFirstDate:
-            firstDate = followerFirstDates.value(0);
-            break;
-        case NoneWithFollowersWithoutFirstDate:
-            msg = "Calendar misses parameter firstDate";
-            break;
-        case PresentNoFollowers:
-            // nothing to do
-            break;
-        case PresentWithFollowers:
-            synchronizeWithFollowers();
-            break;
-        case FollowersConflicting:
-            msg = "Conflicting values of firstDate in followers of calendar: " +
-                  followersAsString;
-            break;
-        default:
-            Q_ASSERT(false);
-    }
-    if (!msg.isEmpty())
-        throw Exception(msg);
-
-    date = firstDate.addDays(-1);
-    daysTotal = 0;
-    dateTime.setDate(date);
+    timeUnit = Time::charToUnit(timeUnitAsChar);
+    dateTime = QDateTime(initialDate, initialTimeOfDay, Qt::UTC);
+    dateTime = dateTime + Time(timeStep*timeStepOffset, timeUnit);
+    totalTimeSteps = 0;
     updateDerived();
 }
 
-void Calendar::getFollowerFirstDates() {
-    followerFirstDates.clear();
-    for (int i = 0; i < followers.size(); ++i) {
-        QDate date;
-        try {
-            date = followers[i]->parameter<QDate>("firstDate");
-            if (!date.isNull())
-                followerFirstDates.append(date);
-        }
-        catch (Exception &ex) {
-            throw Exception("Follower of calendar must have parameter firstDate");
-        }
-    }
-}
-
-Calendar::FirstDateDiagnose Calendar::firstDateDiagnose() {
-    if (!sameFollowerFirstDates())
-        return FollowersConflicting;
-
-    if (firstDate.isNull()) {
-        if (followers.isEmpty())
-            return NoneNoFollowers;
-        else if (followerFirstDates.isEmpty())
-            return NoneWithFollowersWithoutFirstDate;
-        else
-            return NoneWithFollowersWithFirstDate;
-    }
-    else {
-        if (followers.isEmpty())
-            return PresentNoFollowers;
-        else
-            return PresentWithFollowers;
-    }
-
-}
-
-bool Calendar::sameFollowerFirstDates() {
-    for (int i = 1; i < followerFirstDates.size(); ++i) {
-        if (followerFirstDates.value(0) != followerFirstDates.value(i))
-            return false;
-    }
-    return true;
-}
-
-void Calendar::synchronizeWithFollowers() {
-    for (int i = 0; i < followers.size(); ++i) {
-        Model *flw = followers[i];
-        QDate flwFirstDate = flw->parameter<QDate>("firstDate");
-
-        if (flwFirstDate.isNull()) {
-            Parameter<QDate> *p = flw->seekOneChild<Parameter<QDate> *>("firstDate");
-            p->setValue(firstDate);
-        }
-        else if (firstDate < flwFirstDate) {
-            firstDate = flwFirstDate;
-            break;
-        }
-        else if (firstDate > flwFirstDate) {
-            int daysTo = flwFirstDate.daysTo(firstDate);
-            flw->deepReset();
-            for (int i = 0; i < daysTo; ++i)
-                flw->deepUpdate();
-        }
-    }
-}
 
 void Calendar::update() {
-    daysTotal += 1./stepsPerDay;
-    dateTime = dateTime.addSecs(24*60*60/stepsPerDay);
-    date = dateTime.date();
+    ++totalTimeSteps;
+    dateTime = dateTime + Time(timeStep, timeUnit);
     updateDerived();
 }
 
 void Calendar::updateDerived() {
     const double RAD = PI/180.;
 
+    date = dateTime.date();
+    timeOfDay = dateTime.time();
     day = date.day();
     month = date.month();
-    dayInYear = QDate(date.year(), 1, 1).daysTo(date) + 1;
-    year = date.year() + double(dayInYear)/date.daysInYear();
+    dayOfYear = date.dayOfYear();
+    year = date.year();
+    hour = timeOfDay.hour();
+    minute = timeOfDay.minute();
+    second = timeOfDay.second();
 
-    double dec = -asin(sin(23.45*RAD)*cos(2*PI*(dayInYear+10.)/365.));
+    totalTime = totalTimeSteps*timeStep;
+    totalDays = totalTime/Time::conversionFactor(timeUnit, Time::Days);
+
+    QDateTime beginning = QDateTime(QDate(year,1,1), QTime(), Qt::UTC);
+    double secsPassed = beginning.secsTo(dateTime);
+    double secsInYear = date.daysInYear()*24*60*60;
+    dateAsReal = double(year) + secsPassed/secsInYear;
+
+    double dec = -asin(sin(23.45*RAD)*cos(2*PI*(dayOfYear+10.)/365.));
     sinLD = sin(RAD*latitude)*sin(dec);
     cosLD = cos(RAD*latitude)*cos(dec);
     Q_ASSERT(TestNum::neZero(cosLD));

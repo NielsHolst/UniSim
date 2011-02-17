@@ -17,10 +17,10 @@
 	
 	<output type="table">
 		<parameter name="fileName" value="test_calendar.prn"/>
-		<variable label="daysTotal" axis="x" value="calendar[daysTotal]"/>
+		<variable label="totalTime" axis="x" value="calendar[totalTime]"/>
 		<variable label="day" axis="x" value="calendar[day]"/>
 		<variable label="month" axis="x" value="calendar[month]"/>
-		<variable label="year" axis="x" value="calendar[year]"/>
+		<variable label="year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="dayLength" axis="y" value="calendar[dayLength]"/>
 		<variable label="Tmax" axis="y" value="weather[Tmax]"/>
 		<variable label="Tmin" axis="y" value="weather[Tmin]"/>

@@ -38,7 +38,7 @@ void Plant::reset() {
 
 void Plant::update() {
     int firstDay = toDayOfYear(beginDay, beginMonth);
-    double today = calendar->pullVariable<double>("dayInYear");
+    double today = calendar->pullVariable<double>("dayOfYear");
     if (today < firstDay)
         return;
 

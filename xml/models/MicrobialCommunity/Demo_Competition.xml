@@ -10,7 +10,7 @@
 	</integrator>
 
 	<model name="Calendar" type="UniSim::Calendar">
-		<parameter name="firstDate" value="1/1/2011" />		
+		<parameter name="initialDate" value="1/1/2011" />		
 	</model>
 
 	<model name="Community" type="MicrobialCommunity::Community">
@@ -43,13 +43,13 @@
 
 	<output type="plot">
 		<parameter name="title" value ="Available Resource"/>
-		<variable axis="x" label="Time" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Time" value="Calendar[totalTime]"/>
 		<variable axis="y" label="Available Resource" value="Competition[AvailableResource]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
-		<variable axis="x" label="Time" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Time" value="Calendar[totalTime]"/>
 		<variable axis="y" label="MOB 1" value="MOB_1[Density]"/>
 		<variable axis="y" label="MOB 2" value="MOB_2[Density]"/>
 		<variable axis="y" label="Total" value="Community[Density]"/>

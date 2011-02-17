@@ -10,7 +10,7 @@
     </integrator>
 	
 	<model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
 	
 	<model name="weather" type="conductance::Weather">
@@ -32,7 +32,7 @@
 
 	<output type="table">
 		<parameter name="filename" value ="stellaria_output.prn"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria_phase" value="stellaria[phase]"/>
 		<variable axis="y" label="stellaria_sz" value="stellaria[sz]"/>
 		<variable axis="y" label="stellaria_Lz" value="stellaria[Lz]"/>
@@ -42,57 +42,57 @@
 
 	<output type="plot">
 		<parameter name="title" value ="Weather"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="irradiation" value="weather[irradiation]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Phase"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[phase]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Total crown zone area"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="community" value="community[sum_sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/plant)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[weight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area (m2/plant)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[LA_per_plant]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/m2 ground avail.)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[totalWeight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Growth rate (g/plant/day)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[dweight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Crown zone area (sz)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="LAI within sz (Lz)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[Lz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Light intercepted (fz)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[fz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area index (LAI)"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="stellaria" value="stellaria[lai]"/>
 	</output>
 </simulation>

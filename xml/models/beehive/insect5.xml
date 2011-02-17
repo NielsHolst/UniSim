@@ -9,15 +9,15 @@
 		</sequence>
 	</integrator>
 
-	<model name="calendar" type="UniSim::Calendar">
-		<parameter name="followers" value="weather"/>
-	</model>
+	<model name="calendar" type="UniSim::Calendar"/>
 
-	<model name="weather" type="beehive::Weather">
-		<parameter name="fileName" value="AZ_96.txt"/>
-		<parameter name="firstDate" value="1/5/1996"/>
+	<model name="weather" type="Beehive::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="AZ_96.txt"/>
+			<parameter name="imposeInitialDateAndTime" value="yes"/>
+		</model>
 	</model>
-
+	
 	<model name="insect" type="Beehive::Insect4">
 		<parameter name="initEggs" value="100"/>
 		<model name="egg" type="UniSim::Stage">
@@ -54,7 +54,7 @@
 	
 	<output type="plot">
 		<parameter name="title" value="Insect stages"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Egg" axis="y" value="insect/egg[number]"/>
 		<variable label="Larva" axis="y" value="insect/larva[number]"/>
 		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
@@ -62,14 +62,14 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value="Number of eggs laid"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Egg" axis="y" value="fecundity[eggsLaid]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value="Temperature"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
-		<variable label="Tmax" axis="y" value="weather[Tmax]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
+		<variable label="Tmax" axis="y" value="weather/records[Tmax]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
-		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
+		<variable label="Tmin" axis="y" value="weather/records[Tmin]"/>
 	</output>
 </simulation>

@@ -12,7 +12,7 @@
 	</integrator>
 
 	<model name="Calendar" type="UniSim::Calendar">
-		<parameter name="firstDate" value="1/1/2011" />		
+		<parameter name="initialDate" value="1/1/2011" />		
 	</model>
 
 	<model name="Community" type="MicrobialCommunity::Community">
@@ -42,7 +42,7 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Methane Concentration"/>
-		<variable axis="x" label="Time" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Time" value="Calendar[totalTime]"/>
 		<variable axis="y" label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
 		<variable axis="y" label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
 		<variable axis="y" label="First Order" value="PMO_FirstOrder[Substrate]"/>

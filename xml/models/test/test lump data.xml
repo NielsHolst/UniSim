@@ -10,7 +10,7 @@
 	</integrator>
 
 	<model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2008"/>
+		<parameter name="initialDate" value="1/1/2008"/>
 		<parameter name="timeStep" value="0.04167"/>
 	</model>
 
@@ -21,7 +21,7 @@
 	<model name="seedbank">
 		<model name="observations" type="UniSim::Dataset">
 			<parameter name="filename" value ="obs/emergence data.txt"/>
-			<parameter name="firstDate" value="1/1/2008"/>
+			<parameter name="initialDate" value="1/1/2008"/>
 			<parameter name="columns" value="((julian_day 2) (large_crabgrass 3) (green_foxtail 4) (goosegrass 5) (yellow_foxtail 6))"/>
 		<model>
 
@@ -66,20 +66,20 @@
 	<output type="plot">
 		<parameter name="title" value ="Soil temperature at 2cm"/>
 		<lump count="24" value="current-sum-average"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Temp" value="weather[Tavg]">
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Soil water potential at 2cm"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="SWP" value="weather[SWP]"/>
 		<variable axis="y" label="Y.f. threshold" value="yellow_foxtail/time[swpThreshold]"/>
 	</output>
 	
 	<output  type="plot">
 		<parameter name="title" value ="Hydrothermal time at 2cm"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Large crabgrass" value="large_crabgrass/time[total]"/>
 		<variable axis="y" label="Green foxtail" value="green_foxtail/time[total]"/>
 		<variable axis="y" label="Goosegrass" value="goosegrass/time[total]"/>
@@ -97,7 +97,7 @@
 
 	<output  type="table">
 		<parameter name="filename" value ="seed_emergence_output.txt"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Large crabgrass" value="large_crabgrass/time[total]"/>
 		<variable axis="y" label="Green foxtail" value="green_foxtail/time[total]"/>
 		<variable axis="y" label="Goosegrass" value="goosegrass/time[total]"/>

@@ -10,7 +10,7 @@
     </integrator>
 
     <model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
     
     <model name="weather" type="awe::Weather"/>
@@ -43,13 +43,13 @@
 
 	<output type="plot">
 		<parameter name="title" value="Temperature"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Temperature" axis="y" value="weather[T]"/>
     </output>
 
     <output type="plot">
 		<parameter name="title" value="Crop LAI"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Crop LAI" axis="y" value="rotation[lai]"/>
     </output>
     

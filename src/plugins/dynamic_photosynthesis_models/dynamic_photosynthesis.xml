@@ -11,7 +11,7 @@
 	</integrator>
 
 	<model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
 
 	<model name="sunLeaf" type="dynamic_photosynthesis::Leaf">
@@ -34,17 +34,17 @@
 
 	<output type="plot">
 		<parameter name="title" value ="SunLeaf"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="Density" value="sunLeaf[N]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="ShadeLeaf"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="Density" value="shadeLeaf[N]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weather"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="Density" value="weather[N]"/>
 	</output>
 </simulation>

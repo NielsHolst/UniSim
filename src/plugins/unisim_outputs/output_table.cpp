@@ -146,6 +146,7 @@ void OutputTable::writeResults(const OutputResults &results, int dataIx) {
 
     QString s;
     QTextStream text(&s);
+    text.setRealNumberPrecision(10);
     text << results[0]->history()->value(dataIx);
     for (int i = 1; i < results.size(); ++i)
         text << "\t" << results[i]->history()->value(dataIx);

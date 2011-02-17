@@ -16,45 +16,33 @@ using namespace UniSim;
 namespace intercom{
 
 Weather::Weather(UniSim::Identifier name, QObject *parent)
-    : WeatherInterface(name, parent)
+    : Model(name, parent)
 {
-    setColumn("Tmax", 3);
-    setColumn("Tmin", 4);
-    setColumn("irradiationMJ", 7);
+    new PullVariable<double>("Tavg", &Tavg, this, "description");
+    new PullVariable<double>("Tday", &Tday, this, "description");
+    new PullVariable<double>("irradiation", &irradiation, this, "description");
+    new PullVariable<double>("parTotal", &par.total, this, "description");
+    new PullVariable<double>("parDiffuse", &par.diffuse, this, "description");
+    new PullVariable<double>("parDirect", &par.direct, this, "description");
 }
 
 void Weather::initialize() {
-    new Parameter<int>("testInt", &testInt, 113, this, "desc");
-    new PullVariable<int>("testInt", &testInt, this, "desc");
-    WeatherFile::initialize();
     calendar = seekOne<Calendar*>("calendar");
+    records = seekOneChild<Model*>("records");
+
     connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
 }
 
-void Weather::verifySequence() {
-    /*
-    Deleted to avoid dependence on usengine
-
-    Simulation *simulation = seekOneAscendant<Simulation*>("*");
-    const Models &sequence(simulation->sequence());
-    int ixCalendar(-1), ixWeather(-1);
-    for (int i = 0; i < sequence.size(); ++i) {
-        if (sequence.at(i) == calendar) ixCalendar = i;
-        if (sequence.at(i) == this) ixWeather = i;
-    }
-    Q_ASSERT(ixCalendar > -1 && ixWeather > -1);
-    if (ixCalendar > ixWeather)
-        throw Exception("Calendar must appear before weather in simulation sequence. "
-                        "Reorder 'sequence' elements in XML file.");
-    */
+void Weather::reset() {
+    update();
 }
 
-void Weather::update()
-{
-    WeatherFile::update();
-    Tavg = (pullVariable<double>("Tmin") + pullVariable<double>("Tmax"))/2.;
-    Tday = pullVariable<double>("Tmax") - 0.25*(pullVariable<double>("Tmax") - pullVariable<double>("Tmin"));
-    irradiation = pullVariable<double>("irradiationMJ")*1e6;
+void Weather::update() {
+    double Tmin = records->pullVariable<double>("Tmin");
+    double Tmax = records->pullVariable<double>("Tmax");
+    Tavg = (Tmin + Tmax)/2.;
+    Tday = Tmax - 0.25*(Tmax - Tmin);
+    irradiation = records->pullVariable<double>("irradiationMJ")*1e6;
 }
 
 void Weather::handleClockTick(double hour) {
@@ -65,7 +53,7 @@ void Weather::updatePar() {
     double
         sinld = calendar->pullVariable<double>("sinLD"),
         cosld = calendar->pullVariable<double>("cosLD"),
-        day = calendar->pullVariable<double>("dayInYear"),
+        day = calendar->pullVariable<double>("dayOfYear"),
         dayLength = calendar->pullVariable<double>("dayLength");
 
     double aob = sinld/cosld;
@@ -97,3 +85,20 @@ void Weather::updatePar() {
 
 } //namespace
 
+/*
+void Weather::verifySequence() {
+    Deleted to avoid dependence on usengine
+
+    Simulation *simulation = seekOneAscendant<Simulation*>("*");
+    const Models &sequence(simulation->sequence());
+    int ixCalendar(-1), ixWeather(-1);
+    for (int i = 0; i < sequence.size(); ++i) {
+        if (sequence.at(i) == calendar) ixCalendar = i;
+        if (sequence.at(i) == this) ixWeather = i;
+    }
+    Q_ASSERT(ixCalendar > -1 && ixWeather > -1);
+    if (ixCalendar > ixWeather)
+        throw Exception("Calendar must appear before weather in simulation sequence. "
+                        "Reorder 'sequence' elements in XML file.");
+}
+*/

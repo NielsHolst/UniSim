@@ -9,6 +9,8 @@
 #include <QMap>
 #include <QString>
 
+class QObject;
+
 namespace UniSim {
 
 class Time {
@@ -16,7 +18,8 @@ public:
     enum Unit{Seconds, Minutes, Hours, Days, Years};
     Time(int time, Unit unit);
     static char unitToChar(Unit unit);
-    static Unit charToUnit(char ch);
+    static Unit charToUnit(char ch, QObject *concerning = 0);
+    static double conversionFactor(Unit from, Unit to);
     int time() const;
     Unit unit() const;
 private:
@@ -24,6 +27,7 @@ private:
     Unit _unit;
     static QMap<Unit, char> _unitToChar;
     static QMap<char, Unit> _charToUnit;
+    static QMap<Unit, double> unitToSeconds;
 };
 
 QDateTime operator+(const QDateTime &dateTime, const Time &time);

@@ -6,21 +6,24 @@
 #ifndef SEED_EMERGENCE_WEATHER
 #define SEED_EMERGENCE_WEATHER
 #include <QObject>
-#include <usbase/weather_file.h>
+#include <usbase/model.h>
 
 namespace seed_emergence {
 
-class Weather : public UniSim::WeatherFile
+class Weather : public UniSim::Model
 {
 	Q_OBJECT
 public: 
 	Weather(UniSim::Identifier name, QObject *parent=0);
     // standard methods
     void initialize();
+    void reset();
     void update();
 private:
     // pull variables
-    double swp;
+    double Tavg, swp;
+    // links
+    UniSim::Model *records;
 };
 
 } //namespace

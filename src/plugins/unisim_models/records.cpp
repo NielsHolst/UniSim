@@ -12,9 +12,11 @@ Records::Records(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new Parameter<QString>("fileName", &fileName, "record.txt", this, "desc");
-    /*new Parameter<QDate>("startingDate", &startingDate, "1/1/2000", this, "desc");
-    new Parameter<QTime>("startingTime", &startingTime, "00:00:00", this, "desc");*/
+    new Parameter<QString>("fileLocation", &fileLocation, "weather", this, "desc");
+    new Parameter<bool>("imposeInitialDateAndTime", &imposeInitialDateTime, false, this, "desc");
 
+    new PullVariable<QDateTime>("currentDateTime", &currentDateTime, this, "desc");
+    new PullVariable<QDateTime>("nextDateTime", &nextDateTime, this, "desc");
     new PullVariable<QDate>("currentDate", &currentDate, this, "desc");
     new PullVariable<QDate>("nextDate", &nextDate, this, "desc");
     new PullVariable<QTime>("currentTime", &currentTime, this, "desc");
@@ -31,7 +33,8 @@ Records::~Records() {
 
 void Records::initialize() {
 	calendar = seekOne<Model*>("calendar");
-    //double timeStep = calendar->pullVariable<double>("timeStep");  // days
+
+    setFileLocationType();
 
     readColumnNames();
     int n = columnNames.size();
@@ -47,10 +50,24 @@ void Records::initialize() {
     }
 }
 
+void Records::setFileLocationType() {
+    Identifier id(fileLocation);
+    if (id.equals("weather"))
+        fileLocationType = FileLocationInfo::Weather;
+    else if (id.equals("datasets"))
+        fileLocationType = FileLocationInfo::Datasets;
+    else if (id.equals("plugins"))
+        fileLocationType = FileLocationInfo::Plugins;
+    else
+        throw Exception("File location must be 'weather' or 'datasets', not '" +
+                        fileLocation +"'");
+}
+
+
 void Records::readColumnNames() {
     openFile();
     readLineItems();
-    if (lineItems.isEmpty())
+    if (pastLastLine)
         throw Exception("Records file is empty", this);
 
     dateColumn = -1;
@@ -63,15 +80,19 @@ void Records::readColumnNames() {
         else if (id.equals("time"))
             timeColumn = i;
     }
+    file.close();
 }
 
 void Records::openFile() {
-    QString filePath = FileLocations::location(FileLocationInfo::Datasets).absolutePath() +
+    QString filePath = FileLocations::location(fileLocationType).absolutePath() +
                        "/" + fileName;
     file.setFileName(filePath);
 
     bool fileOk = file.open(QIODevice::ReadOnly | QIODevice::Text);
-    if (!fileOk) throw Exception("Cannot open records file: " + filePath, this);
+    if (!fileOk)
+        throw Exception("Cannot open records file: " + filePath, this);
+
+    pastLastLine = false;
 }
 
 void Records::readLineItems() {
@@ -80,26 +101,45 @@ void Records::readLineItems() {
         line = QString(file.readLine().simplified());
     }
     lineItems = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    pastLastLine = lineItems.isEmpty();
 }
 
 void Records::reset() {
+    currentDate = nextDate = QDate(2000,1,1);
+    currentTime = nextTime = QTime(0,0,0);
+    currentDateTime = nextDateTime = QDateTime(currentDate, currentTime, Qt::UTC);
+
+    openFile();
+    readLineItems(); // skip labels (already read)
     advanceFirstLine();
+    if (imposeInitialDateTime) {
+        calendar->pushVariable<QDate>("initialDate", currentDate);
+        calendar->pushVariable<QTime>("initialTimeOfDay", currentTime);
+        calendar->deepReset();
+    }
     update();
 }
 
 void Records::advanceFirstLine() {
     readLineItems();
-    if (lineItems.isEmpty())
+    if (pastLastLine)
         throw Exception("Records file is empty", this);
     extractValues();
-    currentDate = nextDate;
-    currentTime = nextTime;
+    advanceTime();
     for (int i = 0; i < nextColumnValues->size(); ++i)
         (*currentColumnValues)[i] = nextColumnValues->at(i);
+
+}
+
+void Records::advanceTime() {
+    currentDate = nextDate;
+    currentTime = nextTime;
+    currentDateTime = nextDateTime;
+
 }
 
 void Records::extractValues() {
-    if (!lineItems.isEmpty() && lineItems.size() != columnNames.size())
+    if (!pastLastLine && lineItems.size() != columnNames.size())
         throw Exception("Number of items in records file does not match number of column names.\n"
                         + lineItems.join(" "), this);
 
@@ -111,6 +151,7 @@ void Records::extractValues() {
         else
             (*nextColumnValues)[i] = stringToValue<double>(lineItems[i], this);
     }
+    nextDateTime = QDateTime(nextDate, nextTime, Qt::UTC);
 }
 
 namespace {
@@ -123,36 +164,37 @@ namespace {
 }
 
 void Records::advanceLine() {
-    currentDate = nextDate;
-    currentTime = nextTime;
+    advanceTime();
     swap(currentColumnValues, nextColumnValues);
     readLineItems();
-    extractValues();
 
-    bool pastLastLine = lineItems.isEmpty();
-    if (pastLastLine) {
+    if (!pastLastLine) {
+        extractValues();
+    }
+    else {
         for (int i = 0; i < nextColumnValues->size(); ++i)
             (*nextColumnValues)[i] = currentColumnValues->at(i);
     }
 }
 
 void Records::update() {
-    QDate calendarDate = calendar->pullVariable<QDate>("date");
-    if (calendarDate > nextDate)
+    QDateTime calendarDateTime = calendar->pullVariable<QDateTime>("dateTime");
+    while (calendarDateTime > nextDateTime && !pastLastLine)
         advanceLine();
 
     for (int i = 0; i < values.size(); ++i) {
         if (i == dateColumn || i == timeColumn) continue;
-        double dx = currentDate.daysTo(nextDate);
+        double dx = currentDateTime.secsTo(nextDateTime);
         double dy = nextColumnValues->at(i) - currentColumnValues->at(i);
-        double x = currentDate.daysTo(calendarDate);
+        double x = currentDateTime.secsTo(calendarDateTime);
         values[i] = ((dx > 0) ? x*dy/dx : 0.) + currentColumnValues->at(i);
     }
-
+    /*
     QString s = calendarDate.toString("d/M/yyyy") + " "
                 + currentDate.toString("d/M/yyyy") + " "
                 + nextDate.toString("d/M/yyyy") + "\n";
     std::cout << qPrintable(s);
+    */
 }
 
 void Records::cleanup() {

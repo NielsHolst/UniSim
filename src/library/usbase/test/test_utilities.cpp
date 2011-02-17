@@ -629,3 +629,47 @@ void TestUtilities::testSeekOneNearest() {
     }
     QVERIFY(excepted);
 }
+
+void TestUtilities::testStringToValueChar() {
+    char ch = 'x';
+    QCOMPARE(stringToValue<char>(QString(ch)), ch);
+
+    bool excepted = false;
+    try {
+        stringToValue<char>(QString("ab"));
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    excepted = false;
+    try {
+        stringToValue<char>(QString());
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+}
+
+void TestUtilities::testStringToValueTime() {
+    QCOMPARE(QTime::fromString(QString("12:30:20"), "h:m:s"), QTime(12, 30, 20));
+    QCOMPARE(QTime::fromString(QString("12:30"), "h:m"), QTime(12, 30, 0));
+
+    QCOMPARE(stringToValue<QTime>(QString("12:30:20")), QTime(12, 30, 20));
+    QCOMPARE(stringToValue<QTime>(QString("12:30")), QTime(12, 30, 0));
+    QCOMPARE(stringToValue<QTime>(QString("0:0:0")), QTime(0, 0, 0));
+    QCOMPARE(stringToValue<QTime>(QString("0:0")), QTime(0, 0, 0));
+
+    bool excepted = false;
+    try {
+        stringToValue<QTime>(QString("12"));
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+}

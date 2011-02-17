@@ -11,7 +11,7 @@
 	
 	<model name="calendar" type="unisim::Calendar">
 		<parameter name="latitude" value="52"/>
-		<parameter name="firstDate" value="1/1/2007"/>
+		<parameter name="initialDate" value="1/1/2007"/>
 		<parameter name="followers" value="weather"/>
 	</model>
 	
@@ -58,7 +58,7 @@
 
 	<output type="table">
 		<parameter name="filename" value="test_plugins.prn"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Day length" axis="y" value="calendar[dayLength]"/>
 	</output>
     

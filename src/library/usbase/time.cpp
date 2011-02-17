@@ -3,13 +3,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QObject>
+#include "exception.h"
 #include "time.h"
 
 namespace UniSim {
 
 QMap<Time::Unit, char> Time::_unitToChar;
 QMap<char, Time::Unit> Time::_charToUnit;
-
+QMap<Time::Unit, double> Time::unitToSeconds;
 
 Time::Time(int time, Unit unit)
     : _time(time), _unit(unit)
@@ -24,10 +26,12 @@ char Time::unitToChar(Unit unit) {
         _unitToChar[Days] = 'd';
         _unitToChar[Years] = 'y';
     }
-    return _unitToChar[unit];
+    return _unitToChar.value(unit);
 }
 
-Time::Unit Time::charToUnit(char ch) {
+Time::Unit Time::charToUnit(char ch, QObject *concerning) {
+    if (ch < 'a')
+        ch = 'a' + ch - 'A';
     if (_charToUnit.isEmpty()) {
         _charToUnit['s'] = Seconds;
         _charToUnit['m'] = Minutes;
@@ -35,7 +39,20 @@ Time::Unit Time::charToUnit(char ch) {
         _charToUnit['d'] = Days;
         _charToUnit['y'] = Years;
     }
-    return _charToUnit[ch];
+    if (!_charToUnit.contains(ch))
+        throw Exception("Unknown time unit: '" + QString(ch) + ".", concerning);
+    return _charToUnit.value(ch);
+}
+
+double Time::conversionFactor(Unit from, Unit to) {
+    if (unitToSeconds.isEmpty()) {
+        unitToSeconds[Seconds] = 1.;
+        unitToSeconds[Minutes] = 60.;
+        unitToSeconds[Hours] = 60.*60;
+        unitToSeconds[Days] = 24.*60.*60;
+        unitToSeconds[Years] = 365.*24.*60.*60;
+    }
+    return (from == to) ?  1. : unitToSeconds[to]/unitToSeconds[from];
 }
 
 

@@ -506,7 +506,6 @@ QString PrototypeMaker::xmlModelNames() const {
 QString PrototypeMaker::xmlModelClasses() const {
     QString s;
     s += "\n\t<model name=\"calendar\" type=\"Calendar\">\n"
-         "\t\t<parameter name=\"firstDate\" value=\"1/1/2010\"/>\n"
          "\t</model>\n";
     for (Classes::const_iterator cl = classes.begin(); cl != classes.end(); ++cl) {
         const ObjectNames &objectNames(cl.value());
@@ -530,7 +529,7 @@ QString PrototypeMaker::xmlOutputs() const {
                  "\t\t<parameter name=\"title\" value =\"" +
                  makeClassName(objectNames[i]) + "\"/>\n"
 
-                 "\t\t<variable axis=\"x\" label=\"Day\" value=\"calendar[daysTotal]\"/>\n"
+                 "\t\t<variable axis=\"x\" label=\"Day\" value=\"calendar[totalTime]\"/>\n"
                  "\t\t<variable axis=\"y\" label=\"Density\" value=\"" +
                  objectNames[i] + "[N]\"/>\n"
                  "\t</output>\n";

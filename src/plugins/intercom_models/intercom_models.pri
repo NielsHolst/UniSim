@@ -20,8 +20,7 @@ HEADERS += \
     $${INTERCOM_PLUGIN}/phenology.h \
     $${INTERCOM_PLUGIN}/plant.h \
     $${INTERCOM_PLUGIN}/specific_leaf_area.h \
-    $${INTERCOM_PLUGIN}/weather.h \
-    $${INTERCOM_PLUGIN}/weather_interface.h
+    $${INTERCOM_PLUGIN}/weather.h
 
 SOURCES += \
     $${US_PLUGINS}/unisim_models/calendar.cpp \
@@ -42,5 +41,4 @@ SOURCES += \
     $${INTERCOM_PLUGIN}/phenology.cpp \
     $${INTERCOM_PLUGIN}/plant.cpp \
     $${INTERCOM_PLUGIN}/specific_leaf_area.cpp \
-    $${INTERCOM_PLUGIN}/weather.cpp \
-    $${INTERCOM_PLUGIN}/weather_interface.cpp
+    $${INTERCOM_PLUGIN}/weather.cpp

@@ -11,7 +11,7 @@
 	</integrator>
 
 	<model name="calendar" type="UniSim::Calendar">
-		<parameter name="firstDate" value="01/01/2004"/>
+		<parameter name="initialDate" value="01/01/2004"/>
 		<parameter name="latitude" value="55.3" comment="Gundsømagle Sø"/>
 	</model>
 	
@@ -27,7 +27,7 @@
 
 	<model name="weather" type="lakeoxygen::Weather">
 		<parameter name="filename" value="LakedataOBS2004-2005.txt"/>
-		<parameter name="firstdate" value="01/01/2004"/>
+		<parameter name="initialDate" value="01/01/2004"/>
 		<parameter name="oxygen" value="3"/> <!--Defines the column to read the rows-->
 		<parameter name="temperaturew" value="4"/> <!--Defines the column to read the rows-->
 		<parameter name="DLI" value="5"/> <!--Defines the column to read the rows-->
@@ -37,7 +37,7 @@
 	<!--Generating plots based on calculations -->
 	<output type="plot">
 		<parameter name="title" value ="Lakeenvironment"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Wind [m/s]" value="weather[Wind]"/>
 		<variable axis="y" label="Daylength" value="Calendar[dayLength]"/>
 		<variable axis="y" label="DLI" value="weather[DLI]"/>
@@ -45,13 +45,13 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="OxygenConcentration"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Netto Production" value="Netproduction[DOsum]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Observations"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="DO[mg/l]" value="weather[oxygen]"/>
 		<variable axis="y" label="Water temp[oC]" value="weather[temperaturew]"/>
 		
@@ -59,7 +59,7 @@
 	
 	<output type="plot" name="LightPlot">
 		<parameter name="title" value ="Prediction of Net Production"/>
-		<variable axis="x" label="Day" value="calendar[daystotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Light in layer 1" value="Layer1[Light]"/>
 		<variable axis="y" label="Light in layer 2" value="Layer2[Light]"/>
 		<variable axis="y" label="Light in layer 3" value="Layer3[Light]"/> 
@@ -68,7 +68,7 @@
 	<!--Generating table output to text file-->
 	<output type="Table">
 		<parameter name="Filename" value ="Prediction.txt"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Daylength [hr]" value="Calendar[dayLength]"/>
 		<variable axis="y" label="DO[mg/l]" value="weather[oxygen]"/>
 		<variable axis="y" label="Water temp[oC]" value="weather[temperaturew]"/>

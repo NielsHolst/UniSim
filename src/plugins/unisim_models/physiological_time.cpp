@@ -5,6 +5,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/pull_variable.h>
+#include <usbase/time.h>
 #include "physiological_time.h"
 
 namespace UniSim{
@@ -20,10 +21,9 @@ PhysiologicalTime::PhysiologicalTime(UniSim::Identifier name, QObject *parent)
 
 void PhysiologicalTime::initialize() {
     calendar = seekOne<Model*>("calendar");
-    int stepsPerDay = calendar->parameter<int>("stepsPerDay");
-    if (stepsPerDay <= 0)
-        throw Exception("Calendar parameter 'stepPerDays' must be > 0");
-    calendarTimeStep = 1./stepsPerDay;
+    calendarTimeStep = calendar->parameter<int>("timeStep");
+    Time::Unit unit = Time::charToUnit( calendar->parameter<char>("timeUnit") );
+    calendarTimeStep /= Time::conversionFactor(unit, Time::Days);
 }
 
 void PhysiologicalTime::reset() {

@@ -17,7 +17,7 @@
 	
 	<model name="weather" type="grainstore::Weather">
 		<parameter name="fileName" value="iita9495.wth"/>
-		<parameter name="firstDate" value="1/9/1994"/>
+		<parameter name="initialDate" value="1/9/1994"/>
 		<parameter name="colGmc" value="3"/>
 		<parameter name="colTmin" value="4"/>
 		<parameter name="colTmax" value="5"/>
@@ -87,7 +87,7 @@
 
 	<output type="table">
 		<parameter name="filename" value="test_plugins.prn"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="gmc" axis="y" value="weather[gmc]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 	</output>

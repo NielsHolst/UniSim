@@ -9,7 +9,7 @@
 	</integrator>
 
 	<model name="calendar" type="UniSim::Calendar">
-		<parameter name="firstDate" value="1/5/2010"/>
+		<parameter name="initialDate" value="1/5/2010"/>
 	</model>
 
 	<model name="insect" type="Beehive::Insect1">
@@ -38,7 +38,7 @@
 	
 	<output type="plot">
 		<parameter name="title" value="Insect stages"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Egg" axis="y" value="insect/egg[number]"/>
 		<variable label="Larva" axis="y" value="insect/larva[number]"/>
 		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>

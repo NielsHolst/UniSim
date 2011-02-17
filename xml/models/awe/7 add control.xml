@@ -12,7 +12,7 @@
     </integrator>
 
     <model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
     
     <model name="weather" type="awe::Weather"/>
@@ -117,44 +117,44 @@
 	
 	<output type="plot">
 		<parameter name="title" value="Temperature"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Temperature" axis="y" value="weather[T]"/>
     </output>
 
     <output type="plot">
 		<parameter name="title" value="Crop LAI"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Crop LAI" axis="y" value="rotation[lai]"/>
     </output>
 		
     <output type="plot">
     	<parameter name="title" value="Seed bank"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Seed bank" axis="y" value="seedBank[number]"/>
     </output>
 
     <output type="plot">
     	<parameter name="title" value="Total emergence within year"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Total emergence" axis="y" value="seedBank[totalEmergenceDensity]"/>
     </output>
 
     <output type="plot">
     	<parameter name="title" value="Daily emergence"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Daily emergence" axis="y" value="seedBank[dailyEmergenceDensity]"/>
     </output>
 
     <output type="plot">
     	<parameter name="title" value="Daily emergence ratio"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Potential" axis="y" value="seedBank[dailyEmergenceRatioPotential]"/>
 		<variable label="Realised" axis="y" value="seedBank[dailyEmergenceRatio]"/>
     </output>
         
 	<output type="plot">
     	<parameter name="title" value="Weed stage density equivalents"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Seedlings" axis="y" value="seedling/densityEqs[number]"/>
 		<variable label="Juveniles" axis="y" value="juvenile/densityEqs[number]"/>
 		<variable label="Mature" axis="y" value="mature/densityEqs[number]"/>
@@ -162,7 +162,7 @@
 
 	<output type="plot">
     	<parameter name="title" value="Weed stage densities"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Seedlings" axis="y" value="seedling/density[number]"/>
 		<variable label="Juveniles" axis="y" value="juvenile/density[number]"/>
 		<variable label="Mature" axis="y" value="mature/density[number]"/>
@@ -170,32 +170,32 @@
 
     <output type="plot">
     	<parameter name="title" value="Weed seedlings"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Density" axis="y" value="seedling/density[number]"/>
 		<variable label="Density eqs." axis="y" value="seedling/densityEqs[number]"/>
     </output>	
 	
     <output type="plot">
     	<parameter name="title" value="Seeds on plant"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Seed number" axis="y" value="seedsOnPlant[number]"/>
     </output>
 
     <output type="plot">
     	<parameter name="title" value="Projected weed biomass"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Weed mass" axis="y" value="weed[projectedMass]"/>
     </output>
 
     <output type="plot">
     	<parameter name="title" value="Projected yield loss percentage"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Yield loss %" axis="y" value="weed[projectedYieldLossPct]"/>
     </output>
 
     <output type="plot">
     	<parameter name="title" value="Projected total density equivalents"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Seedlings" axis="y" value="weed[projectedDeqs]"/>
     </output>
 

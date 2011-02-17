@@ -159,18 +159,26 @@ void OutputPlot::setYLabels() {
 }
 
 bool OutputPlot::setYLabelsFromLabels() {
-    QList<NamedObject*> ancestors;
-    for (int i = 0; i < yResults().size(); ++i) {
-        OutputVariable *var = dynamic_cast<OutputVariable*>(yResults()[i]);
-        Q_ASSERT(var);
-        NamedObject *ancestor = dynamic_cast<NamedObject*>(var);
-        Q_ASSERT(ancestor);
-        ancestors.append(ancestor);
-    }
+    QList<NamedObject*> namedObjs;
+    for (int i = 0; i < yResults().size(); ++i)
+        namedObjs.append(yResults()[i]);
 
     bool areEqual;
-    yLabels = getIds(ancestors, &areEqual);
+    yLabels = getIds(namedObjs, &areEqual);
     return !areEqual;
+}
+
+QList<Identifier> OutputPlot::getIds(QList<NamedObject*> &objects, bool *areEqual) const{
+    QList<Identifier> ids;
+    *areEqual = true;
+    Identifier prevId;
+    for (int i = 0; i < objects.size(); ++i) {
+        Identifier id = objects[i]->id();
+        ids.append(id);
+        *areEqual = *areEqual && (i==0 || id==prevId);
+        prevId = id;
+    }
+    return ids;
 }
 
 void OutputPlot::setYLabelsFromIds() {
@@ -193,20 +201,6 @@ void OutputPlot::setYLabelsFromIds() {
             }
         }
     }
-}
-
-
-QList<Identifier> OutputPlot::getIds(QList<NamedObject*> &objects, bool *areEqual) const{
-    QList<Identifier> ids;
-    *areEqual = true;
-    Identifier prevId;
-    for (int i = 0; i < objects.size(); ++i) {
-        Identifier id = objects[i]->id();
-        ids.append(id);
-        *areEqual = *areEqual && (i==0 || id==prevId);
-        prevId = id;
-    }
-    return ids;
 }
 
 void OutputPlot::fillWithData() {

@@ -5,8 +5,11 @@
 */
 #ifndef UNISIM_CALENDAR
 #define UNISIM_CALENDAR
-#include <QObject>
+#include <QDate>
+#include <QDateTime>
+#include <QTime>
 #include <usbase/model.h>
+#include <usbase/time.h>
 
 namespace UniSim{
 
@@ -24,36 +27,23 @@ private slots:
     void handleClockTick(double hour);
 
 private:
-    // data
-    enum FirstDateDiagnose {
-        NoneNoFollowers,
-        NoneWithFollowersWithFirstDate,
-        NoneWithFollowersWithoutFirstDate,
-        PresentNoFollowers,
-        PresentWithFollowers,
-        FollowersConflicting
-    };
-    UniSim::Models followers;
-    QList<QDate> followerFirstDates;
-
     // methods
     void updateDerived();
-    void getFollowerFirstDates();
-    FirstDateDiagnose firstDateDiagnose();
-    bool sameFollowerFirstDates();
-    void synchronizeWithFollowers();
 
 	// parameters
     double latitude;
-    QDate firstDate;
-    QString followersAsString;
-    int stepsPerDay;
+    QDate initialDate;
+    QTime initialTimeOfDay;
+    int timeStep, timeStepOffset;
+    char timeUnitAsChar;
+    Time::Unit timeUnit;
 
-	// state
+    // pull variables
     QDate date;
+    QTime timeOfDay;
     QDateTime dateTime;
-    int day, month, dayInYear, daysTotal;
-    double year, dayLength, sinb, sinLD, cosLD;
+    int day, month, year, hour, minute, second, dayOfYear, totalTime, totalTimeSteps;
+    double totalDays, dateAsReal, dayLength, sinb, sinLD, cosLD;
 
 };
 

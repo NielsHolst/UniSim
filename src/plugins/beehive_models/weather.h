@@ -5,21 +5,29 @@
 */
 #ifndef BEEHIVE_WEATHER
 #define BEEHIVE_WEATHER
-#include <usbase/weather_file.h>
+#include <usbase/model.h>
 
 namespace beehive{
 
-class Weather : public UniSim::WeatherFile
+class Weather : public UniSim::Model
 {
 	Q_OBJECT
 public: 
 	Weather(UniSim::Identifier name, QObject *parent=0);
     // standard methods
+    void initialize();
+    void reset();
 	void update();
 
 private:
-    // state (in addition to columns from weather file)
+    // methods
+    void updateTavg();
+
+    // pull variables
     double Tavg;
+
+    // links
+    UniSim::Model *records;
 };
 
 } //namespace

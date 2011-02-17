@@ -2,58 +2,15 @@
 #include <QDir>
 #include <usbase/clock.h>
 #include <usbase/file_locations.h>
-#include <usengine/simulation.h>
+#include <usbase/model.h>
+#include <usengine/model_maker.h>
 #include <usengine/simulation_maker.h>
-#include "../anonymous_model.h"
-#include "../calendar.h"
-#include "../../unisim_integrators/time_limited.h"
 #include "test_calendar.h"
 
 using std::cout;
 using namespace UniSim;
 
 const QDate WEATHER_DATE = QDate(2009, 9, 1);
-
-namespace local {
-
-    QDate finalDate(QDate firstDate) {
-        const int SIM_DURATION = 20;
-        return firstDate.addDays(SIM_DURATION-1);
-    }
-
-    QString lastOutput() {
-        QDir dir = FileLocations::location(FileLocationInfo::Output);
-        QString filePath = dir.absolutePath() + "/test_calendar.prn";
-        QFile file (filePath);
-        bool ok = file.open(QIODevice::ReadOnly | QIODevice::Text);
-        Q_ASSERT(ok);
-
-        QString line;
-        while (!file.atEnd()) {
-            QString nextLine = QString(file.readLine()).trimmed();
-            if (!nextLine.isEmpty())
-                line = nextLine;
-        }
-        file.close();
-        return line;
-    }
-
-    QDate finalWeatherDate() {
-        QStringList items = lastOutput().split("\t");
-        Q_ASSERT(items.size() == 7);
-        int day = items[1].toInt();
-        int month = items[2].toInt();
-        int year = (int) items[3].toDouble();
-        return QDate(year, month, day);
-    }
-}
-
-QDate TestCalendar::finalCalendarDate() {
-    int day = (int) calendar->pullVariable<double>("day");
-    int month = (int) calendar->pullVariable<double>("month");
-    int year = (int) calendar->pullVariable<double>("year");
-    return QDate(year, month, day);
-}
 
 /*
 NOAA Solar Position Calculator
@@ -79,10 +36,10 @@ void TestCalendar::initTestCase() {
     locations.append(Location("Helsinki",       +60.167, +24.967));
 
     // Check dates of all seasons
-    days.append(QDate(2010, 1,15).dayOfYear());
-    days.append(QDate(2010, 4,15).dayOfYear());
-    days.append(QDate(2010, 7,15).dayOfYear());
-    days.append(QDate(2010,10,15).dayOfYear());
+    dates.append(QDate(2010, 1,15));
+    dates.append(QDate(2010, 4,15));
+    dates.append(QDate(2010, 7,15));
+    dates.append(QDate(2010,10,15));
 
     // Check night, morning and afternoon
     hours.append(1.);
@@ -180,57 +137,29 @@ void TestCalendar::initTestCase() {
     solarElev[3][3][2] = 7.41;
 }
 
-void TestCalendar::cleanupTestCase() {
+void TestCalendar::init() {
+    calendar = ModelMaker::create("UniSim::Calendar", "calendar", 0);
+    calendar->deepInitialize();
 }
 
 void TestCalendar::cleanup() {
-    delete sim;
-    sim = 0;
-}
-
-void TestCalendar::createSimulation(QString fileName, int numFollowers) {
-    QDir dir = FileLocations::location(FileLocationInfo::Plugins);
-    QString filePath = dir.absolutePath() + "/unisim_models/test/" + fileName;
-
-    SimulationMaker maker;
-    sim = maker.parse(filePath);
-
-    Identifiers sequence;
-    sequence << "calendar";
-    if (numFollowers >=1)
-        sequence << "weather";
-    if (numFollowers ==2)
-        sequence << "weather2";
-    sim->initialize(sequence);
-
-    calendar = seekOneDescendant<Model*>("calendar", 0);
-    try {
-        weather = seekOneDescendant<Model*>("weather", 0);
-    }
-    catch (Exception &ex) {
-        weather = 0;
-    }
+    delete calendar;
+    calendar = 0;
 }
 
 void TestCalendar::testSolarElevation() {
-    createSimulation("test_calendar_with_follower.xml", 1);
-
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 1, 1));
-    calendar->deepReset();
-
-    Calendar *cal = dynamic_cast<Calendar*>(calendar);
-
     for (int lo = 0; lo < locations.size(); ++lo) {
         calendar->seekOneChild<Parameter<double>*>("latitude") -> setValue(locations[lo].latitude);
-        for (int da = 0; da < days.size(); ++da) {
-            while (fabs(calendar->pullVariable<double>("dayOfYear") - days[da])> 1e-6) {
+        calendar->seekOneChild<Parameter<QDate>*>("initialDate") -> setValue(QDate(2010, 1, 1));
+        calendar->deepReset();
+        for (int da = 0; da < dates.size(); ++da) {
+            while (calendar->pullVariable<QDate>("date") < dates[da]) {
                 calendar->update();
             }
             for (int ho = 0; ho < hours.size(); ++ho) {
                 double astroHour = hours[ho] - solarNoonDiff[lo][da];
                 clock()->doTick(astroHour);
-                double sinb = cal->pullVariable<double>("sinb");
+                double sinb = calendar->pullVariable<double>("sinb");
                 double estSolarElev = asin(sinb)/PI*180.;
                 QVERIFY(fabs(estSolarElev - solarElev[lo][da][ho]) < 1.);
             }
@@ -238,194 +167,56 @@ void TestCalendar::testSolarElevation() {
     }
 }
 
+
 void TestCalendar::testDayLength() {
-    createSimulation("test_calendar_with_follower.xml", 1);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 1, 1));
-    calendar->deepReset();
-
     for (int lo = 0; lo < locations.size(); ++lo) {
         calendar->seekOneChild<Parameter<double>*>("latitude") -> setValue(locations[lo].latitude);
-        for (int da = 0; da < days.size(); ++da) {
-            while (fabs(calendar->pullVariable<double>("dayOfYear") - days[da])> 1e-6) {
+        calendar->seekOneChild<Parameter<QDate>*>("initialDate") -> setValue(QDate(2010, 1, 1));
+        calendar->deepReset();
+        for (int da = 0; da < dates.size(); ++da) {
+            while (calendar->pullVariable<QDate>("date") < dates[da]) {
                 calendar->update();
             }
         double trueDayLength = QTime(0,0,0).secsTo(dayLength[lo][da])/60./60.;
         double estDayLength = calendar->pullVariable<double>("dayLength");
-        QVERIFY(fabs(estDayLength - trueDayLength) < 1.5);
+        cout << "Day length deviation (h)" << lo << ": " << (estDayLength - trueDayLength) << "\n";
+        QVERIFY(fabs(estDayLength - trueDayLength) < 0.5);
         }
     }
 }
 
 
-void TestCalendar::testFirstDateNoneNoFollower() {
-    createSimulation("test_calendar_no_follower.xml", 0);
-    try {
-        sim->execute();
-        QString msg = "Should not execute";
-        QFAIL(qPrintable(msg));
+void TestCalendar::testDaySteps() {
+    calendar->deepReset();
+    QDate initialDate = calendar->parameter<QDate>("initialDate");
+    QDate date = calendar->pullVariable<QDate>("date");
+    QCOMPARE(initialDate.addDays(-1), date);
+
+    const int n = 7;
+    for (int i = 0; i < n; ++i){
+        calendar->deepUpdate();
     }
-    catch (Exception &ex) {
-    }
+    QCOMPARE(initialDate.addDays(n-1), calendar->pullVariable<QDate>("date"));
 }
 
-void TestCalendar::testFirstDateNoneWithFollowerWithoutFirstDate() {
-    createSimulation("test_calendar_with_follower.xml", 1);
+void TestCalendar::testHourSteps() {
+    calendar->seekOneChild<Parameter<QTime>*>("initialTimeOfDay") -> setValue(QTime(12,0));
+    calendar->seekOneChild<Parameter<char>*>("timeUnit") -> setValue('h');
+    calendar->seekOneChild<Parameter<int>*>("timeStep") -> setValue(4);
+    calendar->deepReset();
 
-    try {
-        sim->execute();
-        QString msg = "Should not execute";
-        QFAIL(qPrintable(msg));
+    QDate initialDate = calendar->parameter<QDate>("initialDate");
+    QDate date = calendar->pullVariable<QDate>("date");
+    QTime time = calendar->pullVariable<QTime>("timeOfDay");
+    QCOMPARE(initialDate, date);
+    QCOMPARE(time, QTime(8,0));
+
+    const int n = 8;
+    for (int i = 0; i < n; ++i){
+        calendar->deepUpdate();
     }
-    catch (Exception &ex) {
-    }
+
+    QCOMPARE(calendar->pullVariable<QDate>("date"), initialDate.addDays(1));
+    QCOMPARE(calendar->pullVariable<QTime>("timeOfDay"), QTime(16,0));
 }
-
-void TestCalendar::testFirstDateNoneWithFollowerWithFirstDate() {
-    createSimulation("test_calendar_with_follower.xml", 1);
-
-    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-
-    try {
-        sim->execute();
-        QCOMPARE(calendar->parameter<QDate>("firstDate"), WEATHER_DATE);
-        QCOMPARE(finalCalendarDate(), local::finalDate(WEATHER_DATE));
-        QCOMPARE(local::finalWeatherDate(), local::finalDate(WEATHER_DATE));
-    }
-    catch (Exception &ex) {
-        delete sim;
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-}
-
-void TestCalendar::testFirstDatePresentNoFollower() {
-    createSimulation("test_calendar_no_follower.xml", 1);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 4, 1));
-
-    try {
-        sim->execute();
-        QCOMPARE(finalCalendarDate(), local::finalDate(QDate(2010, 4, 1)));
-    }
-    catch (Exception &ex) {
-        delete sim;
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-}
-
-void TestCalendar::testFirstDatePresentFollowerWithout() {
-    createSimulation("test_calendar_with_follower.xml", 1);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-
-    QVERIFY(weather->parameter<QDate>("firstDate").isNull());
-
-    try {
-        sim->execute();
-        QCOMPARE(weather->parameter<QDate>("firstDate"), WEATHER_DATE);
-        QCOMPARE(finalCalendarDate(), local::finalDate(WEATHER_DATE));
-        QCOMPARE(local::finalWeatherDate(), local::finalDate(WEATHER_DATE));
-    }
-    catch (Exception &ex) {
-        delete sim;
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-}
-
-void TestCalendar::testFirstDatePresentFollowerBefore() {
-    createSimulation("test_calendar_with_follower.xml", 1);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 1, 1));
-    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-
-    try {
-        sim->execute();
-        QCOMPARE(finalCalendarDate(), local::finalDate(QDate(2010, 1, 1)));
-        QCOMPARE(local::finalWeatherDate(), local::finalDate(QDate(2010, 1, 1)));
-        QCOMPARE(weather->pullVariable<double>("Tmax"), 8.3);
-    }
-    catch (Exception &ex) {
-        delete sim;
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-}
-
-void TestCalendar::testFirstDatePresentFollowerSame() {
-    createSimulation("test_calendar_with_follower.xml", 1);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-
-    try {
-        sim->execute();
-        QCOMPARE(finalCalendarDate(), local::finalDate(WEATHER_DATE));
-        QCOMPARE(local::finalWeatherDate(), local::finalDate(WEATHER_DATE));
-    }
-    catch (Exception &ex) {
-        delete sim;
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-}
-
-void TestCalendar::testFirstDatePresentFollowerAfter() {
-    createSimulation("test_calendar_with_follower.xml", 1);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE.addDays(-10));
-    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-
-    try {
-        sim->execute();
-        QCOMPARE(calendar->parameter<QDate>("firstDate"), WEATHER_DATE);
-        QCOMPARE(finalCalendarDate(), local::finalDate(WEATHER_DATE));
-        QCOMPARE(local::finalWeatherDate(), local::finalDate(WEATHER_DATE));
-    }
-    catch (Exception &ex) {
-        delete sim;
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-}
-
-void TestCalendar::testFirstDateFollowersConflicting() {
-    createSimulation("test_calendar_with_two_followers.xml", 2);
-
-    Model *weather2 = seekOneDescendant<Model*>("weather2", 0);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 4, 1));
-    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 6, 15));
-    weather2->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 6, 16));
-
-    try {
-        sim->execute();
-        QString msg = "Should not execute";
-        QFAIL(qPrintable(msg));
-    }
-    catch (Exception &ex) {
-    }
-}
-
-void TestCalendar::testFirstDateFollowersNotConflicting() {
-    createSimulation("test_calendar_with_two_followers.xml", 2);
-
-    Model *weather2 = seekOneDescendant<Model*>("weather2", 0);
-
-    calendar->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(QDate(2010, 4, 1));
-    weather->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-    weather2->seekOneChild<Parameter<QDate>*>("firstDate") -> setValue(WEATHER_DATE);
-
-    try {
-        sim->execute();
-    }
-    catch (Exception &ex) {
-        delete sim;
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-}
-
 

@@ -12,7 +12,7 @@
 
 	<model name="calendar" type="unisim::Calendar">
 		<parameter name="latitude" value="52"/>
-		<parameter name="firstDate" value="1/9/2006"/>
+		<parameter name="initialDate" value="1/9/2006"/>
 		<parameter name="followers" value="weather"/>
 	</model>
 	
@@ -62,6 +62,6 @@
 
 	<output type="table">
 		<parameter name="fileName" value="PAR from Irradiation.prn"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
     </output>
 </simulation>

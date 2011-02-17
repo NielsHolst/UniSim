@@ -8,7 +8,6 @@
 #include <usbase/utilities.h>
 #include "plant.h"
 #include "time.h"
-#include "weather.h"
 
 using namespace UniSim;
 
@@ -58,8 +57,6 @@ Model* AmbrosiaModelMaker::create(Identifier modelType, Identifier objectName, Q
 		model = new Time(objectName, parent);
     else if (modelType.equals("Plant"))
         model = new Plant(objectName, parent);
-    else if (modelType.equals("Weather"))
-        model = new Weather(objectName, parent);
     return model;
 }
 

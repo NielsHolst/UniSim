@@ -22,7 +22,7 @@
 	</model>
 	
 	<model name="calendar" type="UniSim::Calendar">
-		<parameter name="firstDate" value="01/01/2004"/>
+		<parameter name="initialDate" value="01/01/2004"/>
 		<parameter name="latitude" value="55.3" comment="Gundsømagle Sø"/> 
 	</model>
 	
@@ -36,7 +36,7 @@
 
 	<model name="weather" type="lakeoxygen::Weather">
 		<parameter name="filename" value="LakedataOBS2004-2005.txt"/>
-		<parameter name="firstdate" value="01/01/2004"/>
+		<parameter name="initialDate" value="01/01/2004"/>
 		<parameter name="obsDO" value="3"/> <!--Defines the column to read the rows-->
 		<parameter name="tempw" value="4"/> <!--Defines the column to read the rows-->
 		<parameter name="obsDLI" value="5"/> <!--Defines the column to read the rows-->
@@ -46,7 +46,7 @@
 	<!--Generating plots based on calculations -->
 	<output type="plot">
 		<parameter name="title" value ="Lake environment"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Wind [m/s]" value="weather[wind]"/>
 		<variable axis="y" label="Daylength" value="Calendar[dayLength]"/>
 		<variable axis="y" label="DLI" value="weather[DLI]"/>
@@ -54,14 +54,14 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Net community production [unit/m2/day]"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="NCP (Kl estimated from wind)" value="Netproduction[NetProdWind]" />
 		<variable axis="y" label="NCP (KL stochastic)" value="Netproduction[NetProd]"/>
 	</output>
 	
 	<output type="plot" name="plot">
 		<parameter name="title" value ="Accumulated Net Community Production"/>
-		<variable axis="x" label="Day" value="calendar[daystotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Sum (wind)" value="Netproduction[SumWind]"/>
 		<variable axis="y" label="Sum (stochastic)" value="Netproduction[SumStochastic]"/>
 	</output>
@@ -69,13 +69,13 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Averaged estimated reaeration coefficent (from wind speed)"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Kl" value="Netproduction[Kwind]" summary = "average" />
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Observations"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="DO[mg/l]" value="weather[obsDO]"/>
 		<variable axis="y" label="Water temp[oC]" value="weather[tempw]"/>
 	</output>
@@ -83,14 +83,14 @@
 	
 	<output type="plot" summary ="yes">
 		<parameter name="title" value ="Parameter (reaeration coefficient)"/>
-		<variable axis="x" label="Day" value="calendar[daystotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Kl" value="random/Kl[value]"/>
 	</output>
 	
 	<!--Generating table output to text file-->
 	<output type="Table">
 		<parameter name="Filename" value ="Prediction.txt"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Daylength [hr]" value="Calendar[dayLength]"/>
 		<variable axis="y" label="DO[mg/l]" value="weather[obsDO]"/>
 		<variable axis="y" label="Water temp[oC]" value="weather[tempw]"/>

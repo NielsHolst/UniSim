@@ -1,3 +1,4 @@
+#include <usbase/exception.h>
 #include <usbase/time.h>
 #include "test_time.h"
 
@@ -9,6 +10,17 @@ void TestTime::testConversion() {
     QCOMPARE(Time::unitToChar(Time::charToUnit('h')), 'h');
     QCOMPARE(Time::unitToChar(Time::charToUnit('d')), 'd');
     QCOMPARE(Time::unitToChar(Time::charToUnit('y')), 'y');
+
+    QCOMPARE(Time::unitToChar(Time::charToUnit('D')), 'd');
+
+    bool excepted = false;
+    try {
+        Time::charToUnit('X');
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
 }
 
 void TestTime::testAddSeconds() {

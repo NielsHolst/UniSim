@@ -22,8 +22,6 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
                  "Parameter @I a of yearly sine curve for temperature (@Char{ring}C)");
     new Parameter<double>("b", &b, 17.20, this,
                  "Parameter @I b of yearly sine curve for temperature (@Char{ring}C)");
-    new Parameter<double>("c", &c, 2.901, this,
-                 "Parameter @I c of yearly sine curve for temperature (dimensionless)");
 
     new PullVariable<double>("T", &T, this, "Daily average temperature (@Char{ring} C)");
     new PullVariable<double>("Tavg", &T, this, "Same as @F {T}");

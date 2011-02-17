@@ -16,7 +16,7 @@
 	</model>
 	<model name="weather" type="ambrosia::Weather">
 		<parameter name="fileName" value="flakkebjerg 2009.txt"/>
-		<parameter name="firstDate" value="1/1/2009"/>
+		<parameter name="initialDate" value="1/1/2009"/>
 		<parameter name="colTavg" value="3"/>
 	</model>
 	
@@ -42,7 +42,7 @@
 		
 	<output type="table">
 		<parameter name="filename" value="test_plugins.prn"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		
 		<variable label="Temp" axis="y" value="weather[Tavg]"/>
 		<variable label="Daylength" axis="y" value="calendar[daylength]"/>

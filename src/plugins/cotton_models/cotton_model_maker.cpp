@@ -7,7 +7,7 @@
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
 #include "insect.h"
-#include "weather.h"
+
 
 using namespace UniSim;
 
@@ -51,8 +51,6 @@ Model* CottonModelMaker::create(Identifier modelType, Identifier objectName, QOb
 	Model *model = 0;
     if (modelType.equals("Insect"))
         model = new Insect(objectName, parent);
-    else if (modelType.equals("Weather"))
-        model = new Weather(objectName, parent);
     return model;
 }
 

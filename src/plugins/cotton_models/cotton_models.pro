@@ -9,11 +9,8 @@ include ($${US_BASE}/base.pri)
 
 HEADERS += \
     cotton_model_maker.h \
-    insect.h \
-    weather.h
+    insect.h
 
 SOURCES += \
     cotton_model_maker.cpp \
-    insect.cpp \
-    weather.cpp
-
+    insect.cpp

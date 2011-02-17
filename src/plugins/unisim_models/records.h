@@ -7,13 +7,11 @@
 #include <QTime>
 #include <QVector>
 #include <usbase/model.h>
+#include <usbase/file_location_info.h>
 
 namespace UniSim {
 
 class PullVariableBase;
-
-
-
 
 class Records : public Model
 {
@@ -29,19 +27,22 @@ public:
 
 private:
     // methods
+    void setFileLocationType();
     void openFile();
     void readLineItems();
     void readColumnNames();
     void advanceFirstLine();
     void advanceLine();
     void extractValues();
+    void advanceTime();
 
     // parameters
-    QString fileName;
-    /*QDate startingDate;
-    QTime startingTime;*/
+    QString fileName, fileLocation;
+    bool imposeInitialDateTime;
+    FileLocationInfo::FileType fileLocationType;
 
     // pull variables
+    QDateTime currentDateTime, nextDateTime;
     QDate currentDate, nextDate;
     QTime currentTime, nextTime;
     QVector<double> values;
@@ -52,6 +53,7 @@ private:
     // housekeeping
 	QFile file;
     QStringList lineItems;
+    bool pastLastLine;
     QList<Identifier> columnNames;
     int dateColumn, timeColumn;
     QVector<double> *currentColumnValues, *nextColumnValues;

@@ -11,12 +11,11 @@
 	
 	<model name="calendar" type="UniSim::Calendar">
 		<parameter name="latitude" value="55.3" comment="Flakkebjerg"/>
-		<parameter name="followers" value="weather"/>
 	</model>
-	<model name="weather" type="ambrosia::Weather">
+	
+	<model name="weather" type="UniSim::Records">
 		<parameter name="fileName" value="flakkebjerg 2009.txt"/>
-		<parameter name="firstDate" value="1/1/2009"/>
-		<parameter name="Tavg" value="3"/>
+		<parameter name="imposeInitialDateAndTime" value="yes"/>
 	</model>
 	
 	<model name="plants">
@@ -41,7 +40,7 @@
 		
 	<output type="table">
 		<parameter name="fileName" value="ambrosia DK.prn"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		
 		<variable label="Temp" axis="y" value="weather[Tavg]"/>
 		<variable label="Daylength" axis="y" value="calendar[daylength]"/>
@@ -57,14 +56,14 @@
 
 	<output type="plot">
 		<parameter name="title" value="Environment"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>		
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>		
 		<variable label="Temperature" axis="y" value="weather[Tavg]"/>
 		<variable label="Daylength" axis="y" value="calendar[daylength]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value="Daily index"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>		
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>		
 		<variable label="Temperature" axis="y" value="plant/timeABDE[temperatureIndex]"/>
 		<variable label="Daylength ABDE" axis="y" value="plant/timeABDE[dayLengthIndex]"/>
 		<variable label="Daylength C" axis="y" value="plant/timeC[dayLengthIndex]"/>
@@ -72,7 +71,7 @@
 
 	<output type="plot">
 		<parameter name="title" value="Growth stage"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>		
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>		
 		<variable label="Stage" axis="y" value="plant[stage]"/>		
 	</output>
 </simulation>

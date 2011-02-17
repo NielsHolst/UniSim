@@ -18,7 +18,7 @@
 	
 	<model name="weather" type="grainstore::Weather">
 		<parameter name="fileName" value="iita9495.wth"/>
-		<parameter name="firstDate" value="1/9/1994"/>
+		<parameter name="initialDate" value="1/9/1994"/>
 		<parameter name="colGmc" value="3"/>
 		<parameter name="colTmin" value="4"/>
 		<parameter name="colTmax" value="5"/>
@@ -88,7 +88,7 @@
 
 	<output type="plot">
 		<parameter name="title" value="Grain store"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="gmc" axis="y" value="weather[gmc]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 
@@ -96,7 +96,7 @@
 
 	<output type="plot">
 		<parameter name="title" value="Prostephanus stages"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="egg" axis="y" value="egg[number]"/>
 		<variable label="larva" axis="y" value="larva[number]"/>
 		<variable label="pupa" axis="y" value="pupa[number]"/>
@@ -105,19 +105,19 @@
 
 	<output type="plot">
 		<parameter name="title" value="Prostephanus eggs per day"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Eggs per day" axis="y" value="reproduction[fecundity]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value="Prostephanus fecundity dens.dep."/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Density dependence" axis="y" value="reproduction[densityDependence]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value="Maize injury"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Loss" axis="y" value="maize[lossPct]"/>
 		<variable label="Damage" axis="y" value="maize[damagePct]"/>	
 	</output>

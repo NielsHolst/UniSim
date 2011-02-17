@@ -12,7 +12,7 @@
 	
 	<model name="calendar" type="unisim::Calendar">
 		<parameter name="latitude" value="52"/>
-		<parameter name="firstDate" value="1/1/2007"/>
+		<parameter name="initialDate" value="1/1/2007"/>
 		<parameter name="followers" value="weather"/>
 	</model>
 	
@@ -62,20 +62,20 @@
 
     <output type="plot">
 		<parameter name="title" value="Day length"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Day length" axis="y" value="calendar[dayLength]"/>
 	</output>
     
 	<output type="plot">
 		<parameter name="title" value="Sun angle"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="cosLD" axis="y" value="calendar[cosLD]"/>
 		<variable label="sinLD" axis="y" value="calendar[sinLD]"/>
 	</output>
     
 	<output type="plot">
 		<parameter name="title" value="Temperature"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Tmin" axis="y" value="weather[Tmin]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 		<variable label="Tday" axis="y" value="weather[Tday]"/>
@@ -84,13 +84,13 @@
 
     <output type="plot">
 		<parameter name="title" value="Irradiation"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Irradiation" axis="y" value="weather[IrradiationMJ]"/>
     </output>
 
     <output type="plot">
 		<parameter name="title" value="PAR at noon"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Total" axis="y" value="weather[parTotal12h]"/>
 		<variable label="Diffuse" axis="y" value="weather[parDiffuse12h]"/>
 		<variable label="Direct" axis="y" value="weather[parDirect12h]"/>
@@ -104,14 +104,14 @@
 
 	<output type="table">
 		<parameter name="fileName" value="PAR from Irradiation.prn"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Irradiation" axis="y" value="weather[IrradiationMJ]"/>
 		<variable label="Total PAR at noon" axis="y" value="weather[parTotal12h]"/>
     </output>
 
     <output type="plot">
 		<parameter name="title" value="Cirsium absorption"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="total" axis="y" value="cirsium[absorption]"/>
 		<variable label="leaves" axis="y" value="cirsium/leaves[absorption]"/>
 		<variable label="stem" axis="y" value="cirsium/stem[absorption]"/>
@@ -120,7 +120,7 @@
 
     <output type="table">
 		<parameter name="fileName" value="Cirsium absorption.prn"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="total" axis="y" value="cirsium[absorption]"/>
 		<variable label="leaves" axis="y" value="cirsium/leaves[absorption]"/>
 		<variable label="stem" axis="y" value="cirsium/stem[absorption]"/>
@@ -129,7 +129,7 @@
 
     <output type="plot">
 		<parameter name="title" value="Cirsium LAI"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="leaves" axis="y" value="cirsium/leaves/area[lai]"/>
 		<variable label="stem" axis="y" value="cirsium/stem/area[lai]"/>
 		<variable label="flowers" axis="y" value="cirsium/flowers/area[lai]"/>
@@ -137,13 +137,13 @@
 
     <output type="plot">
 		<parameter name="title" value="Plant height"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Cirsium" axis="y" value="cirsium/height[height]"/>
     </output>
 	
 	<output type="plot">
 		<parameter name="title" value="Photothermal time"/>
-		<variable label="Day" axis="x" value="calendar[daysTotal]"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="total" axis="y" value="cirsium/photoThermalTime[total]"/>
     </output>
 </simulation>

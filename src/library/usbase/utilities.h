@@ -80,6 +80,7 @@ QObject* simulationObject();
 
 //! @name Mathematics
 //@{
+//template <class T> void swap(T &a, T &b);
 double interpolate(const QMap<int, double> xy, int x);
 double pow0(double x, double c);
 double negExp(double x);
@@ -98,6 +99,7 @@ QStringList splitParentChildExpression(QString expression);
 template <class T> QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *concerning = 0);
 template<class T> T stringToValue(QString s, QObject *concerning = 0);
 template<> bool stringToValue<bool>(QString s, QObject *concerning);
+template<> char stringToValue<char>(QString s, QObject *concerning);
 template<> QDate stringToValue<QDate>(QString s, QObject *concerning);
 template<> QTime stringToValue<QTime>(QString s, QObject *concerning);
 //@}
@@ -366,6 +368,18 @@ template <class T> QList<T> filterByName(QString name, const QList<QObject*> &ca
     }
     return result;
 }
+
+/*
+// Mathematics
+//
+
+template <class T>
+void swap(T &a, T &b) {
+    T c = a;
+    a = b;
+    b = c;
+}
+*/
 
 //
 // String handling

@@ -8,7 +8,7 @@
 		</sequence>
 	</integrator>
 	<model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
 	<model name="shb" type="Aethina">
 		<parameter name="Ninit" value="2.49816"/>
@@ -18,7 +18,7 @@
 	
 	<output type="table">
 		<parameter name="filename" value="test_plugins.prn"/>
-		<variable label="Day" axis="x" value="calendar[dayInYear]"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Density" axis="y" value="shb[N]"/>
 	</output>
 </simulation>

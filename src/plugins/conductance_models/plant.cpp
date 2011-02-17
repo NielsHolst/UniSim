@@ -137,7 +137,7 @@ void Plant::updateLightInterception() {
 }
 
 void Plant::updateWeight() {
-    double I = weather->pullVariable<double>("irradiationMJ");
+    double I = weather->pullVariable<double>("irradiation");
     dweight = eps*I*sz*fz;
     weight += dweight;
     totalWeight = n*weight;

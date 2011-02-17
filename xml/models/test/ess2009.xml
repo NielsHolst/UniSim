@@ -12,7 +12,7 @@
     </controller>
 
     <model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
     
     <model name="weather" type="ess2009::Weather"/>
@@ -117,7 +117,7 @@
 	
 	<output type="table">
 		<parameter name="filename" value="test_plugins.prn"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>
+		<variable label="Year" axis="x" value="calendar[dateAsReal]"/>
 		<variable label="Temperature" axis="y" value="weather[T]"/>
     </output>
 

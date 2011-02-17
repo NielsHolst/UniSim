@@ -16,7 +16,7 @@
 	</integrator>
 
 	<model name="Calendar" type="UniSim::Calendar">
-		<parameter name="firstDate" value="1/1/2010" />		
+		<parameter name="initialDate" value="1/1/2010" />		
 	</model>
 
 	<model name="Random">
@@ -258,14 +258,14 @@
 <!--		
 	<output type="plot">
 		<parameter name="title" value ="Population Richness"/>
-		<variable axis="x" label="Hour" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>
 		<variable axis="y" label="Richness" value="Community[Richness]"/>
 	</output>
 -->
 	
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
-		<variable axis="x" label="Hour" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>
 		<variable axis="y" label="MOB 1" value="MOB_1[Density]"/>
 		<variable axis="y" label="MOB 2" value="MOB_2[Density]"/>
 		<variable axis="y" label="MOB 3" value="MOB_3[Density]"/>
@@ -280,7 +280,7 @@
 <!--	
 	<output type="plot">
 		<parameter name="title" value ="Density Activity Coefficient"/>
-		<variable axis="x" label="Hour" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>
 		<variable axis="y" label="MOB 1" value="MOB_1[DensityActivityCoefficient]"/>
 		<variable axis="y" label="MOB 2" value="MOB_2[DensityActivityCoefficient]"/>
 		<variable axis="y" label="MOB 3" value="MOB_3[DensityActivityCoefficient]"/>
@@ -288,7 +288,7 @@
 
 	<output type="plot">
 		<parameter name="title" value ="Methane Concentration"/>
-		<variable axis="x" label="Hour" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>
 		<variable axis="y" label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
 		<variable axis="y" label="First Order" value="PMO_FirstOrder[Substrate]"/>
 		<variable axis="y" label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
@@ -314,14 +314,14 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Available Resource"/>
-		<variable axis="x" label="Hour" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>
 		<variable axis="y" label="Available Resource" value="Growth[AvailableResource]"/>
 	</output>
 -->
 <!--	
 	<output type="table">
 		<parameter name="filename" value ="test.txt"/>
-		<variable axis="x" label="Hour" value="Calendar[daysTotal]"/>
+		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>
 		<variable axis="y" label="SpeciesName" value="Population[SpeciesName]"/>
 		<variable axis="y" label="Available_Resource" value="Growth[AvailableResource]"/>
 	</output>

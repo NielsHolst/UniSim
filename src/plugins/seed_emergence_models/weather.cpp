@@ -13,24 +13,23 @@ using namespace UniSim;
 namespace seed_emergence {
 
 Weather::Weather(UniSim::Identifier name, QObject *parent)
-    : WeatherFile(name, parent)
+    : Model(name, parent)
 {
-    setColumn("Tavg", 8);
-    setColumn("SWPkPa", 9);
+    new PullVariable<double>("Tavg", &Tavg, this, "Soil temperature ({@Degree}C)");
     new PullVariable<double>("SWP", &swp, this, "Soil water potential in MPa");
 }
 
 void Weather::initialize() {
-    WeatherFile::initialize();
-    Parameter<char> *separator = seekOneChild<Parameter<char>*>("separator");
-    separator->setValue(',');
-    Parameter<int> *headerLines = seekOneChild<Parameter<int>*>("headerLines");
-    headerLines->setValue(1);
+    records = seekOneChild<Model*>("records");
+}
+
+void Weather::reset() {
+    update();
 }
 
 void Weather::update() {
-    WeatherFile::update();
-    swp = pullVariable<double>("SWPkPA")/1000.;
+    Tavg = records->pullVariable<double>("Tavg");
+    swp = records->pullVariable<double>("SWPkPA")/1000.;
 }
 
 } //namespace

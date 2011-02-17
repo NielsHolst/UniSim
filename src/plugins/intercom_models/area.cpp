@@ -175,7 +175,7 @@ void Area::updatePhotosynthesis(const double *sumELAI) {
     if (writeTestOutput) {
         QString s;
         QTextStream str(&s);
-        str << calendar->pullVariable<int>("dayInYear") << '\t' << calendar->pullVariable<double>("daylength") << '\t'
+        str << calendar->pullVariable<int>("dayOfYear") << '\t' << calendar->pullVariable<double>("daylength") << '\t'
             << hourPoint << '\t' << heightPoint << '\t'
             << par[Diffuse] << '\t' << par[DirectDirect] << '\t'
             << shaded[Absorption] << '\t' << shaded[Assimilation] << '\t'

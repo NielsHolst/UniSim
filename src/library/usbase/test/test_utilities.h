@@ -63,6 +63,9 @@ private slots:
 
     void testPeekOneNearest();
     void testSeekOneNearest();
+
+    void testStringToValueChar();
+    void testStringToValueTime();
 private:
     QObject
         *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,

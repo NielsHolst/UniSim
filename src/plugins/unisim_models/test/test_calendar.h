@@ -7,7 +7,6 @@
 
 namespace UniSim {
     class Model;
-    class Simulation;
 }
 
 class TestCalendar : public QObject
@@ -15,27 +14,15 @@ class TestCalendar : public QObject
     Q_OBJECT
 private slots:
 	void initTestCase();
-    void cleanupTestCase();
+    void init();
     void cleanup();
 
     void testSolarElevation();
     void testDayLength();
-
-    void testFirstDateNoneNoFollower();
-    void testFirstDateNoneWithFollowerWithFirstDate();
-    void testFirstDateNoneWithFollowerWithoutFirstDate();
-
-    void testFirstDatePresentNoFollower();
-    void testFirstDatePresentFollowerWithout();
-    void testFirstDatePresentFollowerBefore();
-    void testFirstDatePresentFollowerSame();
-    void testFirstDatePresentFollowerAfter();
-
-    void testFirstDateFollowersConflicting();
-    void testFirstDateFollowersNotConflicting();
+    void testDaySteps();
+    void testHourSteps();
 
 private:
-    void createSimulation(QString filename, int numFollowers);
     QDate finalCalendarDate();
 
     struct Location{
@@ -45,16 +32,15 @@ private:
         double latitude, longitude;
     };
 
-    UniSim::Simulation *sim;
-    UniSim::Model *calendar, *weather;
-
     QList<Location> locations;
-    QList<int> days;
+    QList<QDate> dates;
     QList<double> hours;
 
     double solarNoonDiff[4][4];
     QTime dayLength[4][4];
     double solarElev[4][4][3];
+
+    UniSim::Model *calendar;
 };
 
 DECLARE_TEST(TestCalendar)

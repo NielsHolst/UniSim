@@ -13,7 +13,7 @@
 	</integrator>
 	
 	<model name="calendar" type="Calendar">
-		<parameter name="firstDate" value="1/1/2010"/>
+		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
 	
 	<model name="weather" type="Conductance::Weather">
@@ -53,7 +53,7 @@
 
 	<output type="table">
 		<parameter name="filename" value ="random_output.prn"/>
-		<variable axis="x" label="Day" value="calendar[dayInYear]"/>
+		<variable axis="x" label="Day" value="calendar[dayOfYear]"/>
 		<variable axis="y" label="uniform" value="uniform[value]"/>
 		<variable axis="y" label="poisson" value="poisson[value]"/>
 		<variable axis="y" label="normal" value="normal[value]"/>
@@ -61,7 +61,7 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Different distributions"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="uniform" value="uniform[value]"/>
 		<variable axis="y" label="poisson" value="poisson[value]"/>
 		<variable axis="y" label="normal" value="normal[value]"/>
@@ -69,7 +69,7 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Irradiation"/>
-		<variable axis="x" label="Day" value="calendar[daysTotal]"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="normal" value="weather[irradiation]"/>
 	</output>
 </simulation>

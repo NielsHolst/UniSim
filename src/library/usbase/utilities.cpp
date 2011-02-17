@@ -206,8 +206,8 @@ QStringList splitParentChildExpression(QString expression) {
         msg += ": '" + expression + "'";
         throw (Exception(msg));
     }
-    QString parent = expression.left(begin);
-    QString child = expression.mid(begin + 1, end - begin -1);
+    QString parent = expression.left(begin).trimmed();
+    QString child = expression.mid(begin + 1, end - begin -1).trimmed();
 
     QStringList result;
     result.append(parent);
@@ -229,8 +229,19 @@ template<> bool stringToValue<bool>(QString s_, QObject *concerning) {
     return value;
 }
 
+template<> char stringToValue<char>(QString s_, QObject *concerning) {
+    QString s = s_.trimmed();
+    if (s.size() != 1) {
+        QString msg = "Cannot convert '" + s + "' to char";
+        throw Exception(msg, concerning);
+    }
+    return s[0].toAscii();
+}
+
 template<> QDate stringToValue<QDate>(QString s, QObject *concerning) {
     QDate date = QDate::fromString(s.trimmed(), "d/M/yyyy");
+    if (!date.isValid())
+        date = QDate::fromString(s.trimmed(), "d.M.yyyy");
     if (!date.isValid()) {
         QString msg = "Cannot convert '" + s + "' to a date";
         throw Exception(msg, concerning);
@@ -238,8 +249,11 @@ template<> QDate stringToValue<QDate>(QString s, QObject *concerning) {
     return date;
 }
 
-template<> QTime stringToValue<QTime>(QString s, QObject *concerning) {
-    QTime time = QTime::fromString(s.trimmed(), "h:m:s");
+template<> QTime stringToValue<QTime>(QString s_, QObject *concerning) {
+    QString s = s_.trimmed();
+    QTime time = QTime::fromString(s, "h:m:s");
+    if (!time.isValid())
+            time = QTime::fromString(s, "h:m");
     if (!time.isValid()) {
         QString msg = "Cannot convert '" + s + "' to a time";
         throw Exception(msg, concerning);

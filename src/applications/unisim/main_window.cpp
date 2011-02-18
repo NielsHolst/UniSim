@@ -9,6 +9,7 @@
 #include <QSettings>
 #include <QVector>
 #include <qwt_plot.h>
+#include <usbase/authors.h>
 #include <usbase/model.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
@@ -329,12 +330,44 @@ void MainWindow::doViewLog()
 	_logSubWindow->show();
 }
 
+namespace {
+    QString addAuthor(QString s, const Authors::Author &author) {
+        return s + "- " +
+                author.name + ", " +
+                author.address +"\n";
+    }
+}
+
 void MainWindow::doHelpAbout() {
     QString text =
         "Universal Simulator (UniSim) " + versionExtended() + "\n\n"
         "Copyright (C) 2009-2010 by Niels Holst [niels.holst@agrsci.dk] and co-authors. Copyrights reserved.\n\n"
         "Released under the terms of the GNU General Public License version 3.0 or later. "
-        "See www.gnu.org/copyleft/gpl.html.";
+        "See www.gnu.org/copyleft/gpl.html.\n\n"
+        "The plots drawn by UniSim are based on the Qwt library. See qwt.sourceforge.net.\n\n"
+        "The diagrams shown in UniSim are produced by Graphviz software, included with the UniSim installation. See www.graphviz.org.\n\n";
+
+
+    text += "Main author followed by co-authors in alphabetical order:\n";
+    Authors::Author mainAuthor =   {"Niels",
+                        "Niels Holst",
+                        "Aarhus University, Flakkebjerg, Denmark",
+                        "niels.holst@agrsci.dk"};
+    text = addAuthor(text, mainAuthor);
+
+    const Authors::Collection *theAuthors;
+    try {
+        theAuthors = authors()->collection();
+        QMapIterator<Identifier, Authors::Author> au(*theAuthors);
+        while (au.hasNext()) {
+            au.next();
+            text = addAuthor(text, au.value());
+        }
+    }
+    catch (UniSim::Exception &ex) {
+        QMessageBox::information(this, "Message", "Could not retrieve author information due to the following error:\n" + ex.message());
+    }
+
     QMessageBox::about(this, "About Universal Simulator", text);
 }
 

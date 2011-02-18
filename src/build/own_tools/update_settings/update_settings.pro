@@ -9,7 +9,7 @@ CONFIG += console
 CONFIG += release
 
 # Load application icon
-RC_FILE = ../../../icon/unisim.rc
+RC_FILE = ../../../resources/unisim.rc
 
 HEADERS += \
     $${US_BASE}/file_location_info.h \

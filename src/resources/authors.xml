@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<authors>
+	<author>
+		<id>Anders</id>
+		<name>Anders Nielsen</name>
+		<address>Aarhus University, Aarhus, Denmark</address>
+		<email>***</email>
+	</author>
+	<author>
+		<id>David</id>
+		<name>David Driessen</name>
+		<address>Denmark</address>
+		<email>***</email>
+	</author>
+	<author>
+		<id>Kevin</id>
+		<name>Kevin, Yun-Feng Duan</name>
+		<address>Aarhus University, Foulum, Denmark</address>
+		<email>***</email>
+	</author>
+	<author>
+		<id>Gionata</id>
+		<name>Gionata Bocci</name>
+		<address>Scuola Superiore  di Studi Universitari e di Perfezionamento Sant'Anna, Pisa, Italy</address>
+		<email>g.bocci@sssup.it</email>
+	</author>
+	<author>
+		<id>Isik</id>
+		<name>Isik Ozturk</name>
+		<address>Aarhus University, Årslev, Denmark</address>
+		<email>***</email>
+	</author>
+	<author>
+		<id>Jon</id>
+		<name>Jonathan Storkey</name>
+		<address>Rothamsted Research, UK</address>
+		<email>jonathan.storkey@bbsrc.ac.uk</email>
+	</author>
+	<author>
+		<id>Marleen</id>
+		<name>Marleen Riemens</name>
+		<address>Plant Research International, Wageningen, Netherlands</address>
+		<email>marleen.riemens@wur.nl</email>
+	</author>
+	<author>
+		<id>Mette</id>
+		<name>Mette Sønderskov</name>
+		<address>Aarhus University, Flakkebjerg, Denmark</address>
+		<email>***</email>
+	</author>
+	<author>
+		<id>Roberta</id>
+		<name>Roberta Masin</name>
+		<address>Consiglio Nazionale delle Ricerche, Padova, Italy</address>
+		<email>roberta.masin@ibaf.cnr.it</email>
+	</author>
+	<author>
+		<id>Sambeg</id>
+		<name>Sambeg Thapa</name>
+		<address>University of Southern Denmark, Slagelse, Denmark</address>
+		<email>***</email>
+	</author>
+	<author>
+		<id>William</id>
+		<name>William Meikle</name>
+		<address>USDA, Weslaco, Texas, USA</address>
+		<email>***</email>
+	</author>
+	<author>
+		<id>Ding</id>
+		<name>Ding, Zhaowei</name>
+		<address>University of Southern Denmark, Slagelse, Denmark</address>
+		<email>***</email>
+	</author>
+</authors>

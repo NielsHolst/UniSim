@@ -5,8 +5,11 @@ DESTDIR = $${US_APPLICATIONS}
 TARGET = UniSim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 
 # Load application icon
-RC_FILE = ../../icon/unisim.rc
+RC_FILE = ../../resources/unisim.rc
  
+# Load other resources
+RESOURCES = ../../resources/unisim.qrc
+
 # Libraries used
 include ($${US_QWT}/qwt.pri)
 include ($${US_BASE}/base.pri)

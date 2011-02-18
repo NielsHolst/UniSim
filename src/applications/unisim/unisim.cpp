@@ -5,6 +5,7 @@
 */
 #include <QApplication>
 #include <QtGui>
+#include <usbase/authors.h>
 #include <usbase/clock.h>
 #include <usbase/object_pool.h>
 #include <usbase/random_uniform.h>
@@ -22,12 +23,12 @@ void myMsgHandler(QtMsgType type, const char *msg)
 }
 
 void createSingletons(){
+    objectPool()->attach(Authors::id(), new Authors);
+    objectPool()->attach(Clock::id(), new Clock);
     objectPool()->attach(FileLocations::id(), new FileLocationsForgiving);
     objectPool()->attach(IntegratorMaker::id(), new IntegratorMaker);
     objectPool()->attach(ModelMaker::id(), new ModelMaker);
     objectPool()->attach(OutputMaker::id(), new OutputMaker);
-    //objectPool()->attach(RandomUniform::id(), new RandomUniform);
-    objectPool()->attach(Clock::id(), new Clock);
 }
 
 int main(int arbc, char *argv[])

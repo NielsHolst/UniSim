@@ -8,6 +8,7 @@ TARGET = $${US_BASE_LIB_NAME}
 
 # Source code
 HEADERS += \
+        $${US_BASE}/authors.h \
         $${US_BASE}/clock.h \
         $${US_BASE}/component.h \
         $${US_BASE}/dataset.h \
@@ -39,6 +40,7 @@ HEADERS += \
         $${US_BASE}/weather_file.h
 
 SOURCES += \
+        $${US_BASE}/authors.cpp \
         $${US_BASE}/clock.cpp \
         $${US_BASE}/component.cpp \
         $${US_BASE}/dataset.cpp \

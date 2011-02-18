@@ -7,7 +7,10 @@ CONFIG += console
 QT += testlib
 
 # Load application icon
-RC_FILE = ../../../icon/unisim.rc
+RC_FILE = ../../../resources/unisim.rc
+ 
+# Load other resources
+RESOURCES = ../../../resources/unisim.qrc
 
 # Input
 include ($${US_BASE}/base.pri)

@@ -28,9 +28,7 @@ QString ConductanceModelMaker::pluginDesc() const {
 
 QStringList ConductanceModelMaker::authors() const {
     return QStringList()
-        << "Niels Holst, Aarhus University, Denmark"
-        << "Mette Søndergård, Aarhus University, Denmark"
-        << "Gionata Bocci, Scuola Superiore Sant'Anna of Pisa, Italy";
+        << "Niels" << "Mette" << "Gionata";
 }
 
 const QMap<Identifier, QString>& ConductanceModelMaker::supportedClasses() {

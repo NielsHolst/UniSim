@@ -97,11 +97,18 @@ QStringList decodeSimpleList(QString parenthesizedList, QObject *concerning = 0)
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
 QStringList splitParentChildExpression(QString expression);
 template <class T> QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *concerning = 0);
+
 template<class T> T stringToValue(QString s, QObject *concerning = 0);
 template<> bool stringToValue<bool>(QString s, QObject *concerning);
 template<> char stringToValue<char>(QString s, QObject *concerning);
 template<> QDate stringToValue<QDate>(QString s, QObject *concerning);
 template<> QTime stringToValue<QTime>(QString s, QObject *concerning);
+
+template<class T> QString valueToString(T value);
+template<> QString valueToString<bool>(bool value);
+template<> QString valueToString<char>(char value);
+template<> QString valueToString<QDate>(QDate value);
+template<> QString valueToString<QTime>(QTime value);
 //@}
 
 //! @name PlugIn handling
@@ -126,6 +133,10 @@ template<class T> T stringToValue(QString s, QObject *concerning) {
         throw Exception(msg, concerning);
     }
     return var.value<T>();
+}
+
+template<class T> QString valueToString(T value) {
+    return QVariant(value).toString();
 }
 
 

@@ -42,9 +42,7 @@ QString IntercomModelMaker::pluginDesc() const {
 
 QStringList IntercomModelMaker::authors() const {
     return QStringList()
-        << "Niels Holst, Aarhus University, Denmark"
-        << "Marleen Riemens, Plant Research International, Netherlands"
-        << "Jonathan Storkey, Rothamstead Research International, UK";
+        << "Niels" << "Marleen" << "Jon";
 }
 
 const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
@@ -86,7 +84,7 @@ const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
     desc["Height"] =
     "A @F Plant model must have one child model named @F {height} with a @F height pull variable returning the height. "
     "The @F Height class provides the standard height model of INTERCOM which is a logistic growth curve working on photothermal time."
-    "@PP @Math{height(t) = h0 + (hmax - h0) over {1 + exp(-slope(t - tm))}} @LP "
+    "@PP @Math{height(t) = h0 + {hmax - h0} over {1 + exp(-slope(t - tm))}} @LP "
     "The @F height model looks for the nearest model named @F time to provide the daily time increment. "
     "A @F UniSim::PhotoThermalTime model can be used for this purpose (see UniSim::PhotoThermalTime @CrossLink {page @PageOf UniSim::PhotoThermalTime}).";
 
@@ -111,11 +109,16 @@ const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
     "additional child models called @F {time}, @F {height} and @F {earlyGrowth}. ";
 
     desc["SpecificLeafArea"] =
-    "This can serve as the @F specificLeafArea model of an @F Area model. It models specific leaf area (m @Sup {2}\"/\"g) as a linear relation on photothermal time, "
+    "This can serve as the @F specificLeafArea model of an @F Area model. It models specific leaf area (m @Sup {2}/g) as a linear relation on photothermal time, "
     "supplied by the nearest model called @F {time}, for example a @F UniSim::PhotoThermalTime model.";
 
     desc["Weather"] =
-    "@I pending";
+    "The model named @F weather of this class must be present, as several other models rely on daily "
+    "weather recordings. The @F weather model holds a @F UniSim::Records inside which manages the daily "
+    "readings from a weather file. This weather file must hold at least four columns labelled: Date, Tmin, "
+    "Tmax and irradiationMJ. In addition to these four, @F Weather itself adds additional pull variables. "
+    "@PP Values of irradiation rates pertain to the current time of the day, as set by the @F clock "
+    "object";
 
     return desc;
 }

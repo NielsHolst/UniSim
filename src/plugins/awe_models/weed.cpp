@@ -44,8 +44,8 @@ Weed::Weed(UniSim::Identifier name, QObject *parent)
     new PullVariable<double>("projectedYieldLossPct", &projectedYieldLossPct, this,
                      "The projected yield loss (%) is calculated from @F projectedDeqs by way of the Cousens equation");
     new PullVariable<double>("projectedMass", &projectedMass, this,
-                     "The projected weed biomass (g\"/\"m @Sup {2}) is calculated from @F projectedYieldLossPct "
-                     "applying the weed\"/\"yield biomass exchange rate pertinent to the @F {Crop}");
+                     "The projected weed biomass (g/m @Sup {2}) is calculated from @F projectedYieldLossPct "
+                     "applying the weed/yield biomass exchange rate pertinent to the @F {Crop}");
     new PullVariable<double>("seedsDropping", &seedsDropping, this,
                      "The number of seeds (per m @Sup 2 per day) dropping to the ground during this time step. "
                      "These originate from the @F seedsOnPlant model");

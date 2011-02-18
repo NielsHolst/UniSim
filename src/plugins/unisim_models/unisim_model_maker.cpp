@@ -7,7 +7,6 @@
 #include <usbase/utilities.h>
 #include "anonymous_model.h"
 #include "calendar.h"
-#include "counter.h"
 #include "day_degrees.h"
 #include "days.h"
 #include "hydro_thermal_time.h"
@@ -36,7 +35,7 @@ QString UniSimModelMaker::pluginDesc() const {
 
 QStringList UniSimModelMaker::authors() const {
     return QStringList()
-        << "Niels Holst, Aarhus University, Denmark";
+        << "Niels";
 }
 
 const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
@@ -50,10 +49,6 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "The @F Calendar model keeps track of the date. Since @F latitude is one of its parameters, "
     "it also knows of the current day length. Solar elevation is calculated every time "
     "the hour of the day is set by a tick of the global clock object";
-
-    desc["Counter"] =
-    "The @F Counter model maintains a counter (@F {value}) that is incremented by one for every time step."
-    "At reset @F value is set to @F {initValue}.";
 
     desc["DayDegrees"] =
     "This is a standard day-degree model. It obtains the daily average temperature from "
@@ -99,11 +94,21 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
 
     desc["RunIteratorFixed"] =
     "The model increments its @F iteration counter for every $F {update}. "
-    "Its @F value remains true as long as @Math{@F{iteration <= numIterations}}";
+    "Its @F value remains true as long as @Math{@F{iteration <= numIterations}}.";
 
     desc["Records"] =
     "A @F Records model reads input from a text file formatted in columns with labels in the first line. "
-    "Columns can be separated by spaces or tab characters. Labels may not contain spaces";
+    "Columns can be separated by spaces or tab characters. Labels may not contain spaces. "
+    "A pull variable will be created for every column in the input file, named after the column label. "
+    "There can be more than one @F Records model present in a simulation. It is the @F calendar model "
+    "that determines the current date and time of day, not the @F Records model(s)."
+    "@PP Columns named @F date and @F time have special meanings, as they are used to synchronize the "
+    "readings from the input file with the @F calendar model. You must have either a @F date or a @F time "
+    "column, or both. The values from the first and last line of the input file will be extrapolated into the time "
+    "period before and after, respectively, as needed. "
+    "@PP The pull variables for date and time are mostly used for test purposes. If you "
+    "need to know about the current date and time of day, you should pull this information from "
+    "the @F calender model. See UniSim::Calendar @CrossLink {page @PageOf UniSim::Calendar}.";
 
     desc["Stage"] =
     "The @F Stage model holds a distributed delay routine (@Cite{$label{Manetsch 1976}manetsch, $label{Vansickle 1977}vansickle}) inside. "
@@ -131,8 +136,6 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
 		model = new AnonymousModel(objectName, parent);
     else if (modelType.equals("Calendar"))
         model = new Calendar(objectName, parent);
-    else if (modelType.equals("Counter"))
-        model = new Counter(objectName, parent);
     else if (modelType.equals("DayDegrees"))
         model = new DayDegrees(objectName, parent);
     else if (modelType.equals("Days"))

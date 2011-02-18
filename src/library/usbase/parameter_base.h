@@ -17,6 +17,7 @@ class ParameterBase : public QObject
 public:
     ParameterBase(Identifier id, QObject *parent, QString desc);
     virtual QVariant toVariant() const = 0;
+    virtual QString toString() const = 0;
     virtual QString typeId() const = 0;
     virtual void setValueFromString(QString newValue) = 0;
     virtual void followRedirection() = 0;

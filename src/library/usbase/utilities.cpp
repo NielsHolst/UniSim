@@ -261,6 +261,22 @@ template<> QTime stringToValue<QTime>(QString s_, QObject *concerning) {
     return time;
 }
 
+template<> QString valueToString<bool>(bool value) {
+    return value ? "yes" : "no";
+}
+
+template<> QString valueToString<char>(char value) {
+    return QString(value);
+}
+
+template<> QString valueToString<QDate>(QDate value) {
+    return value.toString("d/M/yyyy");
+}
+
+template<> QString valueToString<QTime>(QTime value) {
+    return value.toString("0:0:0");
+}
+
 
 //! Write object tree to std::cout
 /*!

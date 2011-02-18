@@ -29,7 +29,7 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     new Parameter<QDate>("initialDate", &initialDate, QDate(2000,1,1), this,
     "Initial date of simulation");
 
-    new Parameter<QTime>("initialTimeOfDay", &initialTimeOfDay, QTime(), this,
+    new Parameter<QTime>("initialTimeOfDay", &initialTimeOfDay, QTime(0,0,0), this,
     "Initial time of day of simulation. Default is midnight");
 
     new Parameter<int>("timeStep", &timeStep, 1, this,

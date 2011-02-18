@@ -24,8 +24,7 @@ QString CottonModelMaker::pluginDesc() const {
 
 QStringList CottonModelMaker::authors() const {
     return QStringList()
-        << "Willam Meikle, USDA-ARS, Texas, USA"
-        << "Niels Holst, Aarhus University, Denmark";
+        << "William" << "Niels";
 }
 
 const QMap<Identifier, QString>& CottonModelMaker::supportedClasses() {
@@ -34,9 +33,6 @@ const QMap<Identifier, QString>& CottonModelMaker::supportedClasses() {
 
     desc["Insect"] =
     "The @F Insect model simulated phenological development of the life stages";
-
-    desc["Weather"] =
-    "This model provides daily average temperature.";
 
     return desc;
 }

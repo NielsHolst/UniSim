@@ -23,6 +23,7 @@ public:
     Parameter(Identifier name, T *valuePtr, T defaultvalue, QObject *parent, QString desc);
     // generic
     QVariant toVariant() const;
+    QString toString() const;
     QString typeId() const;
     void setValueFromString(QString newValue);
     // special
@@ -65,6 +66,13 @@ QVariant Parameter<T>::toVariant() const
 {
     T val = value();
     return QVariant(val);
+}
+
+template <class T>
+QString Parameter<T>::toString() const
+{
+    T val = value();
+    return valueToString(val);
 }
 
 template <class T>

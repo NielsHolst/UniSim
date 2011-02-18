@@ -34,14 +34,14 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("k", &k, 0.6, this,
                  "Light extinction coefficient of foliage [0..1]");
     new Parameter<double>("eps", &eps, 1., this,
-                 "Light use efficiency (g\"/\"MJ) of global irradiation");
+                 "Light use efficiency (g/MJ) of global irradiation");
     new Parameter<double>("n", &n, 20., this,
                  "Plant density (plants per m @Sup {2})");
 
     new PullVariable<double>("weight", &weight, this,
                      "Plant weight (g per plant");
     new PullVariable<double>("totalWeight", &totalWeight, this,
-                     "Total population plant weight (g\"/\"m @Sup 2 ground area available)");
+                     "Total population plant weight (g/m @Sup 2 ground area available)");
     new PullVariable<double>("sz", &sz, this,
                      "Crown zone area per plant "
                      "(m @Sup 2 ground area owned per per plant)");

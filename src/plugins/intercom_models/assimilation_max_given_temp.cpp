@@ -14,10 +14,13 @@ namespace intercom{
 AssimilationMaxGivenTemp::AssimilationMaxGivenTemp(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("radix", &radix, 0.882, this, "description");
-    new Parameter<double>("maxAmax", &maxAmax, 50, this, "description");
+    new Parameter<double>("radix", &radix, 0.882, this,
+    "Radix in the empirical equation");
+    new Parameter<double>("maxAmax", &maxAmax, 50, this,
+    "Asymptotic max CO @Sub 2 assimilation rate at high temperature [kg CO @Sub 2 per ha leaf per hour]");
 
-    new PullVariable<double>("value", &value, this, "Max CO @Sub 2 assimilation rate [kg CO @Sub 2 per ha leaf per hour]");
+    new PullVariable<double>("value", &value, this,
+    "Max CO @Sub 2 assimilation rate [kg CO @Sub 2 per ha leaf per hour]");
 }
 
 void AssimilationMaxGivenTemp::initialize()

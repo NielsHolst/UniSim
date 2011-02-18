@@ -31,7 +31,7 @@ QString AweModelMaker::pluginDesc() const {
 
 QStringList AweModelMaker::authors() const {
     return QStringList()
-        << "Niels Holst, Aarhus University, Denmark";
+        << "Niels";
 }
 
 const QMap<Identifier, QString>& AweModelMaker::supportedClasses() {

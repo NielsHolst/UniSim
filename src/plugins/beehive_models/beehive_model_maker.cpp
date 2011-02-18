@@ -34,8 +34,7 @@ QString BeehiveModelMaker::pluginDesc() const {
 
 QStringList BeehiveModelMaker::authors() const {
     return QStringList()
-        << "Niels Holst, Aarhus University, Denmark"
-        << "Willam Meikle, USDA-ARS, Texas, USA";
+        << "Niels" << "William";
 }
 
 const QMap<Identifier, QString>& BeehiveModelMaker::supportedClasses() {

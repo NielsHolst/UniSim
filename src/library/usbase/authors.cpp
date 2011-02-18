@@ -114,8 +114,6 @@ void Authors::readAuthor() {
         throw Exception(message("Missing author name"));
     if (author.address.isEmpty())
         throw Exception(message("Missing author address"));
-    if (author.email.isEmpty())
-        throw Exception(message("Missing author email"));
     if (theCollection.contains(author.id))
         throw Exception(message("Author id occurs twice"));
     theCollection[author.id] = author;

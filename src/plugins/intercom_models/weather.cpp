@@ -18,12 +18,20 @@ namespace intercom{
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable<double>("Tavg", &Tavg, this, "description");
-    new PullVariable<double>("Tday", &Tday, this, "description");
-    new PullVariable<double>("irradiation", &irradiation, this, "description");
-    new PullVariable<double>("parTotal", &par.total, this, "description");
-    new PullVariable<double>("parDiffuse", &par.diffuse, this, "description");
-    new PullVariable<double>("parDirect", &par.direct, this, "description");
+    new PullVariable<double>("Tavg", &Tavg, this,
+    "Daily average temperature calculated as the average of @F Tmin and @F Tmax ({@Degree}C)");
+    new PullVariable<double>("Tday", &Tday, this,
+    "Daily day temperature calculated as @F Tmax minus one quarter of the span "
+    "between @F Tmax and @F Tmin ({@Degree}C)");
+    new PullVariable<double>("irradiation", &irradiation, this,
+    "Daily total irradiation. Same as @F irradiationMJ read from weather records "
+    "but with adjusted units (W/m @Sup{2})");
+    new PullVariable<double>("parTotal", &par.total, this,
+    "Total PAR irradiation rate at current time of day (W/m @Sup{2})");
+    new PullVariable<double>("parDiffuse", &par.diffuse, this,
+    "Diffuse component of total PAR irradiation at current time of day (W/m @Sup{2})");
+    new PullVariable<double>("parDirect", &par.direct, this,
+    "Direct componente of total PAR irradiation at current time of day (W/m @Sup{2})");
 }
 
 void Weather::initialize() {

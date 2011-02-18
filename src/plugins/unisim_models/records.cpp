@@ -11,16 +11,26 @@ namespace UniSim {
 Records::Records(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<QString>("fileName", &fileName, "record.txt", this, "desc");
-    new Parameter<QString>("fileLocation", &fileLocation, "weather", this, "desc");
-    new Parameter<bool>("imposeInitialDateAndTime", &imposeInitialDateTime, false, this, "desc");
+    new Parameter<QString>("fileName", &fileName, "records.txt", this,
+    "Name of input file");
+    new Parameter<QString>("fileLocation", &fileLocation, "weather", this,
+    "Valid locations are the standard folders: datasets, plugins and weather. "
+    "The standard folders can be set from the File|Locations menu.");
+    new Parameter<bool>("imposeInitialDateAndTime", &imposeInitialDateTime, false, this,
+    "Set this to 'yes' if you want the simulation to begin on the first date (and time, possibly) "
+    "found in the input file. This initial date (and time) will then be imposed on the @F calendar model "
+    "for its @F initialDate (and @F {initialTime}) parameters.");
 
-    new PullVariable<QDateTime>("currentDateTime", &currentDateTime, this, "desc");
-    new PullVariable<QDateTime>("nextDateTime", &nextDateTime, this, "desc");
-    new PullVariable<QDate>("currentDate", &currentDate, this, "desc");
-    new PullVariable<QDate>("nextDate", &nextDate, this, "desc");
-    new PullVariable<QTime>("currentTime", &currentTime, this, "desc");
-    new PullVariable<QTime>("nextTime", &nextTime, this, "desc");
+    new PullVariable<QDateTime>("currentDateTime", &currentDateTime, this,
+    "The date and time of the current line in the input file. The @F calendar date and time will be at "
+    "or past this");
+    new PullVariable<QDateTime>("nextDateTime", &nextDateTime, this,
+    "The date and time of the next line in the input file. The @F calendar date and time will be at "
+    "or before this");
+    new PullVariable<QDate>("currentDate", &currentDate, this, "The date part of @F {currentDateTime}");
+    new PullVariable<QDate>("nextDate", &nextDate, this, "The date part of @F {nextDateTime}");
+    new PullVariable<QTime>("currentTime", &currentTime, this, "The time part of @F {currentDateTime}");
+    new PullVariable<QTime>("nextTime", &nextTime, this, "The time part of @F {nextDateTime}");
 
     currentColumnValues = new QVector<double>;
     nextColumnValues = new QVector<double>;

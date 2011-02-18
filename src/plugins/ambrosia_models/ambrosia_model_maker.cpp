@@ -26,7 +26,7 @@ QString AmbrosiaModelMaker::pluginDesc() const {
 
 QStringList AmbrosiaModelMaker::authors() const {
     return QStringList()
-        << "Niels Holst, Aarhus University, Denmark";
+        << "Niels";
 }
 
 const QMap<Identifier, QString>& AmbrosiaModelMaker::supportedClasses() {

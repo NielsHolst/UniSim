@@ -22,7 +22,7 @@ QString UniSimOutputMaker::pluginDesc() const {
 
 QStringList UniSimOutputMaker::authors() const {
     return QStringList()
-        << "Niels Holst, Aarhus University, Denmark";
+        << "Niels";
 }
 
 const QMap<Identifier, QString>& UniSimOutputMaker::supportedClasses() {

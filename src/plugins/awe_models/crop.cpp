@@ -22,8 +22,8 @@ Crop::Crop(UniSim::Identifier name, QObject *parent)
     new Parameter<int>("sowingMonth", &sowingMonth, 4, this, "Month of sowing");
     new Parameter<int>("harvestDay", &harvestDay, 1, this, "Day in month of harvest");
     new Parameter<int>("harvestMonth", &harvestMonth, 8, this, "Month of harvest");
-    new Parameter<double>("weedExchangeRate", &weedExchangeRate, 0.6, this, "Final biomass of weeds as a proportion of yield loss (g\"/\"g)");
-    new Parameter<double>("maxYield", &maxYield, 800., this, "Weed-free yield (g\"/\"m @Sup {2})");
+    new Parameter<double>("weedExchangeRate", &weedExchangeRate, 0.6, this, "Final biomass of weeds as a proportion of yield loss (g/g)");
+    new Parameter<double>("maxYield", &maxYield, 800., this, "Weed-free yield (g/m @Sup {2})");
     new Parameter<double>("maxYieldLossPct", &maxYieldLossPct, 60., this, "Maximum yield loss (%) caused by weeds (Cousens's @I {a})");
     new Parameter<double>("slopeYieldLossPct", &slopeYieldLossPct, 0.5, this, "Initial yield loss per weed (% per weed density equivalent) "
                                                                 "caused by weeds (Cousens's @I {i})");
@@ -33,7 +33,7 @@ Crop::Crop(UniSim::Identifier name, QObject *parent)
                  "Calendar for leaf area index (LAI) running on temperature sum since sowing (day-degrees above @Char {ring}C). "
                  "Defined as a list of (@I {temperature-sum LAI}) pairs");
 
-    new PullVariable<double>("lai", &lai, this, "Leaf area index (m @Sup {2}\"/\"m @Sup {2}).");
+    new PullVariable<double>("lai", &lai, this, "Leaf area index (m @Sup {2}/m @Sup {2}).");
     new PullVariable<double>("Tsum", &Tsum, this, "Temperature sum since sowing (day-degrees above @Char {ring}C).");
 }
 

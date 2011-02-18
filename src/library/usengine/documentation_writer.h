@@ -34,6 +34,7 @@ private:
     void writeVersion();
     void write(ModelMakerPlugIn *plugin);
     void writeAuthors(ModelMakerPlugIn *plugin);
+    void writeAuthor(QString id);
     void writeModels(ModelMakerPlugIn *plugin);
     void writeModel(ModelMakerPlugIn *plugin, Identifier modelId);
     void writeParameters(Model *model);

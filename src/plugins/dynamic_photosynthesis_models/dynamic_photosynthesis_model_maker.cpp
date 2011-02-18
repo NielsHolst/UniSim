@@ -24,7 +24,7 @@ Identifier Dynamic_photosynthesisModelMaker::pluginName() const {
 
 QStringList Dynamic_photosynthesisModelMaker::authors() const
 {
-	return QStringList() << "author1" << "author2";
+	return QStringList() << "Isik" << "Niels";
 }
 
 const QMap<Identifier, QString>& Dynamic_photosynthesisModelMaker::supportedClasses()

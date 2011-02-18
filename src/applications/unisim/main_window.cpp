@@ -345,23 +345,23 @@ void MainWindow::doHelpAbout() {
         "Released under the terms of the GNU General Public License version 3.0 or later. "
         "See www.gnu.org/copyleft/gpl.html.\n\n"
         "The plots drawn by UniSim are based on the Qwt library. See qwt.sourceforge.net.\n\n"
-        "The diagrams shown in UniSim are produced by Graphviz software, included with the UniSim installation. See www.graphviz.org.\n\n";
-
-
-    text += "Main author followed by co-authors in alphabetical order:\n";
-    Authors::Author mainAuthor =   {"Niels",
-                        "Niels Holst",
-                        "Aarhus University, Flakkebjerg, Denmark",
-                        "niels.holst@agrsci.dk"};
-    text = addAuthor(text, mainAuthor);
+        "The diagrams shown in UniSim are produced by Graphviz software, included with the UniSim installation. "
+        "See www.graphviz.org.\n\n"
+        "UniSim was written in C++ and built with the GNU toolset, using Qt Creator and the Qt Library.\n\n"
+        "To download documentation and source code, visit www.ecolmod.org.\n\n"
+        "Main author followed by co-authors and contributors in alphabetical order:\n";
 
     const Authors::Collection *theAuthors;
     try {
+        Authors::Author niels = authors()->find("Niels");
+        text = addAuthor(text, niels);
+
         theAuthors = authors()->collection();
         QMapIterator<Identifier, Authors::Author> au(*theAuthors);
         while (au.hasNext()) {
             au.next();
-            text = addAuthor(text, au.value());
+            if (!au.value().id.equals("Niels"))
+                text = addAuthor(text, au.value());
         }
     }
     catch (UniSim::Exception &ex) {

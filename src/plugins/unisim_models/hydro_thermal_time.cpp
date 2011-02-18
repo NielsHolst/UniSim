@@ -15,10 +15,10 @@ HydroThermalTime::HydroThermalTime(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("SWP0", &swp0, 0., this,
         "Soil water potential threshold (MPa)");
     new Parameter<double>("SWPTopt", &swpTopt, 100., this,
-        "Temperature optimum ((@Char{ring}C). Above this value, the soil water potential threshold "
+        "Temperature optimum (@Char{ring}C). Above this value, the soil water potential threshold "
         "increases linearly by @F {Kt}");
     new Parameter<double>("Kt", &Kt, 0., this,
-        "Rate of increase (MPa\"/\"(@Char{ring}C) in soil water potential threshold above @F {SWPTOpt}");
+        "Rate of increase (MPa/@Char{ring}C) in soil water potential threshold above @F {SWPTOpt}");
 
     new PullVariable<double>("swpThreshold", &swpThreshold, this,
         "Actual soil water potential threshold for germination (MPa)");

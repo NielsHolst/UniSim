@@ -20,7 +20,7 @@ Organ::Organ(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     new Parameter<double>("maintenanceCoeff", &maintenanceCoeff, 0.03, this,
-                          "Maintenance coefficient \"(g/g/day)\" at 20 {@Degree}C");
+                          "Maintenance coefficient (g/g/day) at 20 {@Degree}C");
     new Parameter<double>("CH2ORequirement", &CH2ORequirement, 1.5, this,
                           "Carbohydrate requirement g CH @Sub 2 O per g biomass");
 

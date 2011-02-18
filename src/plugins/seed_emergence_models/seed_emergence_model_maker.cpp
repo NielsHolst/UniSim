@@ -24,7 +24,7 @@ Identifier Seed_emergenceModelMaker::pluginName() const {
 
 QStringList Seed_emergenceModelMaker::authors() const
 {
-    return QStringList() << "Niels Holst" << "Roberta Masin";
+    return QStringList() << "Niels" << "Roberta";
 }
 
 const QMap<Identifier, QString>& Seed_emergenceModelMaker::supportedClasses()

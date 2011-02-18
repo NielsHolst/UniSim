@@ -7,6 +7,7 @@
 #include <QList>
 #include <QtAlgorithms>
 #include <QMessageBox>
+#include <usbase/authors.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
@@ -131,21 +132,23 @@ void DocumentationWriter::write(ModelMakerPlugIn *plugin) {
 }
 
 void DocumentationWriter::writeAuthors(ModelMakerPlugIn *plugin) {
-    QStringList authors = plugin->authors();
-    int n = authors.size();
+    QStringList ids = plugin->authors();
+    int n = ids.size();
     write("@LP Author");
     if (n > 1) write("s");
     write(": ");
-    write(authors[0]);
-    for (int i = 1; i < n-1; ++i) {
-        write("; ");
-        write(authors[i]);
+    writeAuthor(ids[0]);
+    for (int i = 1; i < n; ++i) {
+        write(" @LP\n");
+        writeAuthor(ids[i]);
     }
-    if (n > 1) {
-        write (" and ");
-        write(authors[n-1]);
-    }
-    write(".\n");
+    write("\n");
+}
+
+
+void DocumentationWriter::writeAuthor(QString id) {
+    Authors::Author author = authors()->find(id);
+    write(author.name + ", " + author.address + ".");
 }
 
 void DocumentationWriter::writeModels(ModelMakerPlugIn *plugin) {
@@ -183,14 +186,6 @@ Model* DocumentationWriter::createModel(ModelMakerPlugIn *plugin, Identifier mod
                "DocumentationWriter::createModel",
                qPrintable(plugin->pluginName().label() +
                " cannot create " + modelId.label()));
-    /*
-    try {
-        model->initialize();
-    }
-    catch (Exception &ex) {
-        //ignore
-    }
-    */
     return model;
 }
 
@@ -206,7 +201,7 @@ void DocumentationWriter::writeParameters(Model *model) {
     }
     for (int i = 0; i < n; ++i) {
         Identifier id = params[i]->id();
-        QString value = params[i]->toVariant().toString();
+        QString value = params[i]->toString();
         QString format;
         if (i == 0)
             format = FORMAT_FIRST_ROW;
@@ -273,7 +268,7 @@ void DocumentationWriter::writeTableRow(QString format, QString a, QString b, QS
 }
 
 void DocumentationWriter::write(QString s) {
-    file.write(qPrintable(s));
+    file.write(qPrintable(s.replace("/", "\"/\"").replace("|", "\"|\"")));
 }
 
 void DocumentationWriter::write(const char *s) {

@@ -1,3 +1,7 @@
+/*
+** This file was provided by Robert Caldecott
+*/
+
 #ifndef AUTOTEST_H
 #define AUTOTEST_H
 

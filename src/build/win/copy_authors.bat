@@ -1,0 +1,1 @@
+copy ..\..\resources\authors.xml  ..\..\..

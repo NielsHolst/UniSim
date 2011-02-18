@@ -15,6 +15,9 @@
 @echo Press Ctrl+C to break. Or:
 @pause
 
+@rem Copy authors list to UniSim root
+call copy_authors
+
 @rem Prepare system path for compiling
 call %QTENV%
 

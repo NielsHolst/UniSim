@@ -15,7 +15,11 @@ namespace seed_emergence{
 
 QString Seed_emergenceModelMaker::pluginDesc() const
 {
-	return "Description of seed_emergence";
+    return
+    "The @F seed_emergence plugin provides a @F CumulativeEmergence model which models "
+    "emergence as a Gompertz curve running on hydrothermal time. The @F Unisim::HydrothermalTime model "
+    "calculates time from weather input provided on a file with hourly readings of soil temperature "
+    "and soil water potential.";
 }
 
 Identifier Seed_emergenceModelMaker::pluginName() const {
@@ -32,10 +36,10 @@ const QMap<Identifier, QString>& Seed_emergenceModelMaker::supportedClasses()
 	if (!desc.isEmpty()) return desc;
 
     desc["CumulativeEmergence"] =
-	"Description";
+    "Cumulative emergence (%) modelled as a Gompertz curve.";
 
 	desc["Weather"] =
-	"Description";
+    "Converts units of soil water potential from kPa to MPa.";
 
 	return desc;
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="600"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="plant"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="timeStep" value="2"/>
+		<parameter name="timeUnit" value="s"/>
+	</model>
+	
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="dynamic_photosynthesis/light_input.txt"/>
+		<parameter name="imposeInitialDateAndTime" value="yes"/>
+	</model>
+
+	<model name="plant">
+	
+		<model name="shadeLeaf" type="dynamic_photosynthesis::Leaf">
+			<parameter name="PPFDmax" value="400"/>
+		</model>
+
+		<model name="sunLeaf" type="dynamic_photosynthesis::Leaf">
+		</model>
+
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Weather"/>
+		<variable axis="x" label="Seconds" value="calendar[totalTime]"/>
+		<variable axis="y" label="PPFD" value="weather[PPFD]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Induction state"/>
+		<variable axis="x" label="Seconds" value="calendar[totalTime]"/>
+		<variable axis="y" label="Shade leaf" value="shadeLeaf[P]"/>
+		<variable axis="y" label="Sun leaf" value="sunLeaf[P]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Assimilation rate"/>
+		<variable axis="x" label="Seconds" value="calendar[totalTime]"/>
+		<variable axis="y" label="Shade leaf" value="shadeLeaf[Aind]"/>
+		<variable axis="y" label="Sun leaf" value="sunLeaf[Aind]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Equilibrium rate of change"/>
+		<variable axis="x" label="Seconds" value="calendar[totalTime]"/>
+		<variable axis="y" label="Shade leaf" value="shadeLeaf[eqrate]"/>
+		<variable axis="y" label="Sun leaf" value="sunLeaf[eqrate]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Equilibrium induction state"/>
+		<variable axis="x" label="Seconds" value="calendar[totalTime]"/>
+		<variable axis="y" label="Shade leaf" value="shadeLeaf[Peq]"/>
+		<variable axis="y" label="Sun leaf" value="sunLeaf[Peq]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Max. assimilation rate"/>
+		<variable axis="x" label="Seconds" value="calendar[totalTime]"/>
+		<variable axis="y" label="Shade leaf" value="shadeLeaf[Amax]"/>
+		<variable axis="y" label="Sun leaf" value="sunLeaf[Amax]"/>
+	</output>
+
+</simulation>

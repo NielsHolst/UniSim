@@ -5,9 +5,9 @@
 		<sequence>
 			<model name="random"/>
 			<model name="calendar"/>
+			<model name="weather"/>
 			<model name="netproduction"/>
 			<model name="OxygenConcentration"/>
-			<model name="weather"/>
 		</sequence>
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="30"/>
@@ -22,32 +22,29 @@
 	</model>
 	
 	<model name="calendar" type="UniSim::Calendar">
-		<parameter name="initialDate" value="01/01/2004"/>
 		<parameter name="latitude" value="55.3" comment="Gundsømagle Sø"/> 
+	</model>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="filename" value="LakedataOBS2004-2005.txt"/>
+		<parameter name="imposeInitialDateAndTime" value="yes"/>
 	</model>
 	
 	<model name="netproduction" type="lakeoxygen::Netproduction">
 		<parameter name="Unit" value="0"/> <!--Converts between Oxygen and Carbon as output if 0 then Oxygen if 1 then carbon-->
-		<parameter name="K" variable="random/Kl[value]" old_value="0.2"/>		
+		<parameter name="K" variable="random/Kl[value]" old_value="0.2"/>
+		
 	</model>
 	
+		
 	<model name="OxygenConcentration" type="lakeoxygen::OxygenConcentration">
 	</model>
 
-	<model name="weather" type="lakeoxygen::Weather">
-		<parameter name="filename" value="LakedataOBS2004-2005.txt"/>
-		<parameter name="initialDate" value="01/01/2004"/>
-		<parameter name="obsDO" value="3"/> <!--Defines the column to read the rows-->
-		<parameter name="tempw" value="4"/> <!--Defines the column to read the rows-->
-		<parameter name="obsDLI" value="5"/> <!--Defines the column to read the rows-->
-		<parameter name="wind" value="6"/> <!--Defines the column to read the rows-->	
-	</model>
-	
 	<!--Generating plots based on calculations -->
 	<output type="plot">
 		<parameter name="title" value ="Lake environment"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Wind [m/s]" value="weather[wind]"/>
+		<variable axis="y" label="Wind [m/s]" value="weather[Wind]"/>
 		<variable axis="y" label="Daylength" value="Calendar[dayLength]"/>
 		<variable axis="y" label="DLI" value="weather[DLI]"/>
 	</output>
@@ -55,9 +52,10 @@
 	<output type="plot">
 		<parameter name="title" value ="Net community production [unit/m2/day]"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="NCP (Kl estimated from wind)" value="Netproduction[NetProdWind]" />
+		<variable axis="y" label="NCP (Kl estimated from wind)" value="Netproduction[NetProdwind]" />
 		<variable axis="y" label="NCP (KL stochastic)" value="Netproduction[NetProd]"/>
 	</output>
+
 	
 	<output type="plot" name="plot">
 		<parameter name="title" value ="Accumulated Net Community Production"/>
@@ -65,7 +63,6 @@
 		<variable axis="y" label="Sum (wind)" value="Netproduction[SumWind]"/>
 		<variable axis="y" label="Sum (stochastic)" value="Netproduction[SumStochastic]"/>
 	</output>
-	
 	
 	<output type="plot">
 		<parameter name="title" value ="Averaged estimated reaeration coefficent (from wind speed)"/>
@@ -77,27 +74,27 @@
 		<parameter name="title" value ="Observations"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="DO[mg/l]" value="weather[obsDO]"/>
-		<variable axis="y" label="Water temp[oC]" value="weather[tempw]"/>
+		<variable axis="y" label="Water temp[oC]" value="weather[tempW]"/>
 	</output>
 	
 	
 	<output type="plot" summary ="yes">
-		<parameter name="title" value ="Parameter (reaeration coefficient)"/>
+		<parameter name="title" value ="Parameter"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Kl" value="random/Kl[value]"/>
 	</output>
-	
+
 	<!--Generating table output to text file-->
 	<output type="Table">
 		<parameter name="Filename" value ="Prediction.txt"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Daylength [hr]" value="Calendar[dayLength]"/>
-		<variable axis="y" label="DO[mg/l]" value="weather[obsDO]"/>
-		<variable axis="y" label="Water temp[oC]" value="weather[tempw]"/>
-		<variable axis="y" label="DO observed saturation percentage" value="Netproduction[DOobsSatPct]"/>
+		<variable axis="y" label="DO[mg/l]" value="weather[oxygen]"/>
+		<variable axis="y" label="Water temp[oC]" value="weather[tempW]"/>
+		<variable axis="y" label="DO observed saturation percentage" value="Netproduction[DOObsSatPct]"/>
 		<variable axis="y" label="DLI" value="weather[DLI]"/>
 		<variable axis="y" label="Netto Production (Stochastic)" value="Netproduction[NetProd]"/>
-		<variable axis="y" label="Netto Production (Kl_wind)" value="Netproduction[NetProdWind]"/>
+		<variable axis="y" label="Netto Production (Kl_wind)" value="Netproduction[Net_ProdWind]"/>
 		<variable axis="y" label="Random Kl value" value="random/Kl[value]"/>
 		<variable axis="y" label="Kl estimated from wind" value="Netproduction[Kwind]"/>
 	</output>

@@ -93,7 +93,7 @@
 			<parameter name="InitialSubstrate" value="10000"/>
 		</model>
 		
-		<model name="PMO_Enzymatic" type="MicrobialCommunity::EnzymeCatalyzedReaction">
+		<model name="PMO_Enzymatic" type="MicrobialCommunity::EnzymaticReaction">
 			<parameter name="InitialSubstrate" value="10000"/>
 		</model>
 			

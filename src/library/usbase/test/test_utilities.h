@@ -66,6 +66,17 @@ private slots:
 
     void testStringToValueChar();
     void testStringToValueTime();
+
+    void testDecodeListFaulty();
+    void testDecodeListEmpty();
+    void testDecodeListEmptyItems();
+    void testDecodeListDepth1();
+    void testDecodeListDepth2();
+    void testDecodeListOfInts();
+    void testDecodeListOfDates();
+    void testDecodeListOfStringDoubles();
+    void testDecodeListOfIntDates();
+
 private:
     QObject
         *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,

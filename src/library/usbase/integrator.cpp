@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QApplication>
 #include <QProgressDialog>
 #include <QString>
 #include "exception.h"
@@ -17,6 +18,8 @@ Integrator::Integrator(Identifier name, QObject *parent)
 {
     new PullVariable<int>("stepNumber", &stepNumber, this, "Number of current time step in this iteration");
     new PullVariable<int>("runNumber", &runNumber, this, "Number of current iteration");
+    // This make the application task hang in memory
+    //connect(QApplication::instance(), SIGNAL(lastWindowClosed()), this, SLOT(closeReport()));
 }
 
 void Integrator::initialize() {

@@ -174,6 +174,68 @@ QStringList decodeSimpleList(QString parenthesizedList, QObject *concerning) {
     return s.split(" ", QString::SkipEmptyParts);
 }
 
+
+namespace {
+
+    bool nextItem(QString *s, QString *item, QObject *context) {
+        *s = s->trimmed();
+        if (s->isEmpty())
+            return false;
+
+        if (s->startsWith("(")) {
+            int left = 1, right = 0, n = s->size();
+            int i = 1;
+            while (i < n && left != right) {
+                if (s->at(i) == '(')
+                    ++left;
+                else if (s->at(i) == ')')
+                    ++right;
+                ++i;
+            }
+            if (left != right)
+                throw Exception("Unmatched parentheses in " + *s, context);
+            int end = i - 1;
+            *item = s->mid(0, end+1);
+            s->remove(0, end+1);
+            return true;
+        }
+
+        if (s->startsWith(")"))
+            throw Exception("Unmatched parentheses in " + *s, context);
+
+        int end = s->indexOf(QRegExp("[ ()]"));
+        *item = s->mid(0, end);
+        if (end==-1) {
+            s->clear();
+		}
+        else {
+			if (s->at(end) == ')')
+				throw Exception("Surplus ')' in" + *s, context);
+            s->remove(0, end+1);
+		}
+        return true;
+
+    }
+}
+
+QStringList decodeList(QString s_, QObject *context) {
+    QStringList result;
+    QString s = s_.trimmed();
+
+    if (!s.startsWith("("))
+        throw Exception("Missing '(' at beginning of " + s, context);
+    if (!s.endsWith(")"))
+        throw Exception("Missing ')' at end of " + s, context);
+    s.remove(0,1);
+    s.chop(1);
+
+    QString item;
+    while (nextItem(&s, &item, context))
+        result.append(item);
+
+    return result;
+}
+
 //
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart) {
     Q_ASSERT(namespacePart && ownNamePart);

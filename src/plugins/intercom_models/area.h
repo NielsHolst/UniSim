@@ -48,14 +48,14 @@ private:
     QFile test;
 
     // pull variables
-    double area, lai, photosynthesisPerDay[2];
+    double value, lai, photosynthesisPerDay[2];
 
     // push variables
     double allocation;
 
     // links
     UniSim::Model *calendar, *weather, *plant, *plantHeightModel,
-        *measure, *specificLeafArea, *lightUseEfficiency, *assimilationMax;
+        *area, *specificLeafArea, *lightUseEfficiency, *assimilationMax;
     AreaDensity *density;
 
     // methods

@@ -3,31 +3,22 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef INTERCOM_PHENOLOGY
-#define INTERCOM_PHENOLOGY
+#ifndef INTERCOM_PARTITIONING
+#define INTERCOM_PARTITIONING
 #include <QObject>
-#include <QVector>
 #include <usbase/model.h>
 
 namespace intercom{
 
-class Phenology : public UniSim::Model
+class Partitioning : public UniSim::Model
 {
 	Q_OBJECT
 public: 
-    Phenology(UniSim::Identifier name, QObject *parent=0);
-	//standard methods
-	void initialize();
-    void reset();
-	void update();
+    Partitioning(UniSim::Identifier name, QObject *parent=0);
 
-private:
+protected:
     // pull variables
-    double alive;
-    QVector<double> proportions;
-
-    // links
-    QList<UniSim::Model*> stages;
+    double value;
 };
 
 } //namespace

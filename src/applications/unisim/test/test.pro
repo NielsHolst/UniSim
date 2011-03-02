@@ -15,6 +15,7 @@ RESOURCES = ../../../resources/unisim.qrc
 # Input
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
+include ($${US_PLUGINS}/intercom_models/intercom_models.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \
@@ -28,6 +29,7 @@ HEADERS += \
     $${US_ENGINE}/test/test_simulation_trickle.h \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
+    $${US_PLUGINS}/intercom_models/test/test_plant.h \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
     $${US_PLUGINS}/unisim_models/anonymous_model.h \
     $${US_PLUGINS}/unisim_models/stage.h \
@@ -56,6 +58,7 @@ SOURCES += \
     $${US_ENGINE}/test/test_simulation_trickle.cpp \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
+    $${US_PLUGINS}/intercom_models/test/test_plant.cpp \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
     $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
     $${US_PLUGINS}/unisim_models/stage.cpp \

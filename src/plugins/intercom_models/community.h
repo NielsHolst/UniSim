@@ -44,6 +44,9 @@ private:
     // links
     QList<Area*> areas;
     QList<Plant*> plants;
+
+    // data
+    bool isEarly;
 };
 
 } //namespace

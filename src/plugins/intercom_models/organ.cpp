@@ -32,6 +32,10 @@ Organ::Organ(UniSim::Identifier name, QObject *parent)
                              "Maintenance respiration (kg CH @Sub 2 O per ha ground per day)");
     new PullVariable<double>("growthResp", &growthResp, this,
                              "Growth respiration (kg CH @Sub 2 O per ha ground per day)");
+    new PullVariable<double>("allocatedPerPlant", &allocatedPerPlant, this,
+                             "Net biomass allocated to this organ per plant (g per plant per day)");
+    new PullVariable<double>("propAllocatedPerPlant", &propAllocatedPerPlant, this,
+                             "Proportion biomass allocated to this organ among all the plant's organs [0;1]");
 }
 
 void Organ::initialize() {
@@ -39,7 +43,6 @@ void Organ::initialize() {
         throw Exception("Parameter CH2ORequirement must be >= 1");
     weather = seekOne<Model*>("weather");
     plant = seekOneAscendant<Plant*>("*");
-    partition = seekOneChild<Model*>("partition");
     mass = seekOneChild<Model*>("mass");
     area = peekOneChild<Model*>("area");
 }
@@ -62,33 +65,38 @@ void Organ::accumulate() {
 
 void Organ::updateMaintenanceRespiration() {
     double temp = weather->pullVariable<double>("Tavg");
-    double resp20 = maintenanceCoeff*mass->pullVariable<double>("number");
+    double resp20 = maintenanceCoeff*mass->pullVariable<double>("value");
     resp20 = plant->gPerPlant_to_kgPerHa(resp20);
     maintenanceResp = resp20*pow(2., (temp - 20.)/10.);
 }
 
-void Organ::setMass(double newMass) {
-    double curMass = mass->pullVariable<double>("number");
-    double increment = newMass - curMass;
-    if (increment < 0.) increment = 0;
-    addMass(increment);
+double Organ::allocate(double proportion, double totalCarbohydrates) {
+    propAllocatedPerPlant = proportion;
+    double myShare = proportion*totalCarbohydrates;
+    double netCarbohydrates = myShare/CH2ORequirement;
+    return doAllocate(myShare, netCarbohydrates);
 }
 
-void Organ::addMass(double increment) {
-    mass->pushVariable<double>("inflow", increment);
+double  Organ::allocateNet(double proportion, double netCarbohydrates) {
+    propAllocatedPerPlant = proportion;
+    double myShare = proportion*netCarbohydrates;
+    double totalCarbohydrates = myShare*CH2ORequirement;
+    return doAllocate(totalCarbohydrates, myShare);
+}
+
+double Organ::doAllocate(double totalCarbohydrates, double netCarbohydrates) {
+    TestNum::assureGeZero(totalCarbohydrates, "totalCarbohydrates", this);
+    TestNum::assureGeZero(netCarbohydrates, "netCarbohydrates", this);
+
+    growthResp = totalCarbohydrates - netCarbohydrates;
+    allocatedPerPlant = plant->kgPerHa_to_gPerPlant(netCarbohydrates);
+
+    mass->pushVariable<double>("allocation", allocatedPerPlant);
     if (area)
-        area->pushVariable<double>("allocation", increment);
+        area->pushVariable<double>("allocation", allocatedPerPlant);
+    return allocatedPerPlant;
 }
 
-double Organ::allocate(double carbohydrates) {
-    double partioningCoeff = partition->pullVariable<double>("value");
-    double allocatedCH2O = partioningCoeff*carbohydrates;
-    double allocatedBiomass = allocatedCH2O/CH2ORequirement;
-    growthResp = allocatedCH2O - allocatedBiomass;
-    double allocatedPerPlant = plant->kgPerHa_to_gPerPlant(allocatedBiomass);
-    addMass(allocatedPerPlant);
-    return allocatedCH2O;
-}
 
 } //namespacee
 

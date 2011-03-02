@@ -1,4 +1,7 @@
 #include <iostream>
+#include <QDate>
+#include <QList>
+#include <QMap>
 #include <QSet>
 #include <QStringList>
 #include <usbase/component.h>
@@ -671,5 +674,149 @@ void TestUtilities::testStringToValueTime() {
         excepted = true;
     }
     QVERIFY(excepted);
+}
 
+void TestUtilities::testDecodeListFaulty() {
+    bool excepted = false;
+    try {
+        decodeList(QString());
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    excepted = false;
+    try {
+        decodeList("a");
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    excepted = false;
+    try {
+        decodeList("a b");
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    QObject *test = new QObject;
+    test->setObjectName("TEST");
+
+    excepted = false;
+    try {
+        decodeList("((a b) c))", test);
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+}
+
+void TestUtilities::testDecodeListEmpty() {
+    QStringList list;
+
+    list = decodeList("()");
+    QCOMPARE(list.size(), 0);
+}
+
+void TestUtilities::testDecodeListEmptyItems() {
+    QStringList list;
+    QStringList expected;
+
+    list = decodeList("(())");
+    expected << "()";
+    QCOMPARE(list, expected);
+
+    list = decodeList("(()())");
+    expected << "()";
+    QCOMPARE(list, expected);
+}
+
+void TestUtilities::testDecodeListDepth1() {
+    QStringList list;
+    QStringList expected;
+
+    list = decodeList("(a)");
+    expected << "a";
+    QCOMPARE(list, expected);
+
+    list = decodeList("(a b)");
+    expected << "b";
+    QCOMPARE(list, expected);
+}
+
+void TestUtilities::testDecodeListDepth2() {
+    QStringList list;
+    QStringList expected;
+
+    try {
+        list = decodeList("((a))");
+        expected << "(a)";
+        QCOMPARE(list, expected);
+
+        list = decodeList("((a)(b))");
+        expected << "(b)";
+        QCOMPARE(list, expected);
+
+        expected.clear();
+        list = decodeList("((a b))");
+        expected << "(a b)";
+        QCOMPARE(list, expected);
+
+        list = decodeList("((a b)(c d))");
+        expected << "(c d)";
+        QCOMPARE(list, expected);
+
+        expected.clear();
+        list = decodeList("((a b) c)");
+        expected << "(a b)" << "c";
+        QCOMPARE(list, expected);
+
+        expected.clear();
+        list = decodeList("(a (b c))");
+        expected << "a" << "(b c)";
+        QCOMPARE(list, expected);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+}
+
+void TestUtilities::testDecodeListOfInts() {
+    QList<int> decoded, expected;
+    decoded = decodeList<int>("(12 56 -8 0)");
+    expected << 12 << 56 << -8 << 0;
+    QCOMPARE(decoded, expected);
+}
+
+void TestUtilities::testDecodeListOfDates() {
+    QList<QDate> decoded, expected;
+    decoded = decodeList<QDate>("(1/1/2010 30/6/2009 17/4/2011)");
+    expected << QDate(2010,1,1) << QDate(2009,6,30) << QDate(2011,4,17);
+    QCOMPARE(decoded, expected);
+}
+
+void TestUtilities::testDecodeListOfStringDoubles() {
+    QMap<QString,double> decoded, expected;
+    decoded = decodeList<QString,double>("( (cat 5.4) (dog 14) (mouse 0.020))");
+    expected["cat"] = 5.4;
+    expected["dog"] = 14;
+    expected["mouse"] = 0.020;
+    QCOMPARE(decoded, expected);
+}
+
+void TestUtilities::testDecodeListOfIntDates() {
+    QMap<int,QDate> decoded, expected;
+    decoded = decodeList<int,QDate>("( (7 1/2/2010) (-2 4/8/2008) (0 24/12/2017))");
+    expected[7] = QDate(2010,2,1);
+    expected[-2] = QDate(2008,8,4);
+    expected[0] = QDate(2017,12,24);
+    QCOMPARE(decoded, expected);
 }

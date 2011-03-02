@@ -3,19 +3,18 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef INTERCOM_PARTITIONING_FIXED
-#define INTERCOM_PARTITIONING_FIXED
-#include <QObject>
+#include <usbase/pull_variable.h>
 #include "partitioning.h"
+
+using namespace UniSim;
 
 namespace intercom{
 
-class PartitioningFixed : public Partitioning
+Partitioning::Partitioning(UniSim::Identifier name, QObject *parent)
+    : Model(name, parent)
 {
-	Q_OBJECT
-public: 
-    PartitioningFixed(UniSim::Identifier name, QObject *parent=0);
-};
+    new PullVariable<double>("value", &value, this, "Partioning coefficient");
+}
 
 } //namespace
-#endif
+

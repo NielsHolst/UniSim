@@ -20,21 +20,20 @@ public:
     Mass(UniSim::Identifier name, QObject *parent=0);
 
 	//standard methods
+    void initialize();
 	void reset();
     void update();
 
+    // special methods
+    void updateCurrentPartition(double total);
+
 private:
-    // parameters
-    double initialMass, initialPctN, respRate, epsMass;
-
     // pull variables
-    double mass;
-
-    // push-pull variables
-    double pctN;
-
+    double value, currentPartition, allocationRate;
     // push variables
-    double massChange;
+    double allocation;
+    // links
+    UniSim::Model *mass;
 };
 
 } //namespace

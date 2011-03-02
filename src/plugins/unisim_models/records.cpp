@@ -3,7 +3,7 @@
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/pull_variable_base.h>
-#include <usbase/utilities.h>           // testing
+#include <usbase/utilities.h>          
 #include "records.h"
 
 namespace UniSim {
@@ -164,6 +164,7 @@ void Records::extractValues() {
     nextDateTime = QDateTime(nextDate, nextTime, Qt::UTC);
 }
 
+/*
 namespace {
     template <class T>
     void swap(T &a, T &b) {
@@ -172,7 +173,7 @@ namespace {
         b = c;
     }
 }
-
+*/
 void Records::advanceLine() {
     advanceTime();
     swap(currentColumnValues, nextColumnValues);

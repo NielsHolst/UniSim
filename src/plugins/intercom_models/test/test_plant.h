@@ -16,16 +16,8 @@ class TestPlant : public QObject
 {
     Q_OBJECT
 private slots:
-	void initTestCase();
-    void cleanupTestCase();
-
-    void testWeightedAreaAboveLayer();
-private:
-    void reset();
-
-    UniSim::Simulation *simulation;
-    UniSim::Model *calendar, *height;
-    intercom::Plant *plant;
+    void testOptimizeAllocationMixed();
+    void testOptimizeAllocationAllPositive();
 };
 
 DECLARE_TEST(TestPlant)

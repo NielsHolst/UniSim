@@ -25,21 +25,21 @@ public:
 	
     // special methods
     void accumulate();
-    void setMass(double newMass);
-    double allocate(double carbohydrates);
+    double allocate(double proportion, double totalCarbohydrates);     // returns net allocation per plant
+    double allocateNet(double proportion, double netCarbohydrates);    // returns net allocation per plant
 private:
     // methods
-    void addMass(double increment);
     void updateMaintenanceRespiration();
+    double doAllocate(double totalCarbohydrates, double netCarbohydrates);    // returns net allocation per plant
 
 	// parameters
     double maintenanceCoeff, CH2ORequirement;
 
     // pull variables
-    double lightAbsorption, CO2Assimilation, maintenanceResp, growthResp;
+    double lightAbsorption, CO2Assimilation, maintenanceResp, growthResp, allocatedPerPlant, propAllocatedPerPlant;
 
 	// links
-    Model *weather, *partition, *area, *mass;
+    Model *weather, *area, *mass;
     Plant *plant;
 };
 

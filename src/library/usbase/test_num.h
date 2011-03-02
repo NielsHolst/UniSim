@@ -9,6 +9,8 @@
 
 #include <float.h>
 #include <cmath>
+#include <QObject>
+#include "exception.h"
 
 namespace TestNum {
 
@@ -72,6 +74,68 @@ inline bool gtZero(double n, double feps = 1e-6) {
 
 inline bool geZero(double n, double feps = 1e-6) {
     return n>0. || eqZero(n);
+}
+
+// Fuzzy rounding in zero neighbourhood
+
+inline void snapToZero(double &n, double feps = 1e-6) {
+    if (eqZero(n, feps))
+        n = 0.;
+}
+
+inline void assureEqZero(double &n, const char *varName, QObject *context, double feps = 1e-6) {
+    if (eqZero(n, feps))
+        n = 0.;
+    if (n != 0)
+        throw UniSim::Exception("Cannot round number to zero: " + QString(varName) + " = " + QString::number(n), context);
+}
+
+inline void assureGeZero(double &n, const char *varName, QObject *context, double feps = 1e-6) {
+    if (geZero(n, feps) && n < 0.)
+        n = 0.;
+    if (n < 0)
+        throw UniSim::Exception("Cannot round number to zero: " + QString(varName) + " = " + QString::number(n), context);
+}
+
+inline void assureLeZero(double &n, const char *varName, QObject *context, double feps = 1e-6) {
+    if (leZero(n, feps) && n > 0.)
+        n = 0.;
+    if (n > 0)
+        throw UniSim::Exception("Cannot round number to zero: " + QString(varName) + " = " + QString::number(n), context);
+}
+
+// Fuzzy rounding in neighbourhood of constant
+
+inline void snapTo(double &n, double d, double feps = 1e-6) {
+    if (eq(n, d, feps))
+        n = d;
+}
+
+inline void assureEq(double &n, double d, const char *varName, QObject *context, double feps = 1e-6) {
+    if (eq(n, d, feps))
+        n = d;
+    if (n != d)
+        throw UniSim::Exception("Cannot round number to constant: " + QString(varName) +
+                                " = " + QString::number(n) +
+                                " != " + QString::number(d), context);
+}
+
+inline void assureGe(double &n, double d, const char *varName, QObject *context, double feps = 1e-6) {
+    if (ge(n, d, feps) && n < d)
+        n = d;
+    if (n < d)
+        throw UniSim::Exception("Cannot round number to constant: " + QString(varName) +
+                                " = " + QString::number(n) +
+                                " != " + QString::number(d), context);
+}
+
+inline void assureLe(double &n, double d, const char *varName, QObject *context, double feps = 1e-6) {
+    if (le(n, d, feps) && n > d)
+        n = d;
+    if (n > d)
+        throw UniSim::Exception("Cannot round number to constant: " + QString(varName) +
+                                " = " + QString::number(n) +
+                                " != " + QString::number(d), context);
 }
 
 } // namespace

@@ -1,0 +1,51 @@
+/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+** Copyrights reserved.
+** Released under the terms of the GNU General Public License version 3.0 or later.
+** See www.gnu.org/copyleft/gpl.html.
+*/
+#include <usbase/pull_variable.h>
+#include "mass.h"
+
+using namespace UniSim;
+
+namespace intercom{
+
+Mass::Mass(UniSim::Identifier name, QObject *parent)
+	: Model(name, parent)
+{
+    setRecursionPolicy(Update, ChildrenLast);
+    new PullVariable<double>("value", &value, this,
+                             "The mass of this organ per plant (g per plant)");
+    new PullVariable<double>("allocationRate", &allocationRate, this,
+                             "The mass just allocated to this organ per plant (g per plant per day)");
+
+    new PullVariable<double>("currentPartition", &currentPartition, this,
+                             "The proportion [0;1] that this mass consistutes out of the plant total");
+    new PushVariable<double>("allocation", &allocation, this,
+                             "Allocated dry matter (g per plant per day) to be added to mass");
+}
+
+void Mass::initialize() {
+    mass = seekOneChild<Model*>("mass");
+}
+
+void Mass::reset() {
+    allocation = 0.;
+    value = mass->pullVariable<double>("number");
+}
+
+
+void Mass::update() {
+    Q_ASSERT(allocation >= 0.);
+    mass->pushVariable<double>("inflow", allocation);
+    allocationRate = allocation;
+    allocation = 0.;
+    value = mass->pullVariable<double>("number");
+}
+
+void Mass::updateCurrentPartition(double total) {
+    currentPartition = (total == 0) ? 0 : value/total;
+}
+
+} //namespace
+

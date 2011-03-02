@@ -35,6 +35,7 @@ void Community::initialize() {
 }
 
 void Community::reset() {
+    isEarly = true;
     updateLai();
 }
 
@@ -46,11 +47,12 @@ void Community::updateLai() {
 
 void Community::update() {
     updateLai();
-    if (lai < earlyGrowthThreshold) {
+    if (lai < earlyGrowthThreshold && isEarly) {
         updateEarlyGrowth();
         accumulateLateGrowth();
     }
     else {
+        isEarly = false;
         accumulateLateGrowth();
         updateLateGrowth();
     }

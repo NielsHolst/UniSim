@@ -18,7 +18,9 @@
 #include "intercom_model_maker.h"
 #include "leaf_stem_ratio.h"
 #include "light_use_efficiency_given_temp.h"
+#include "mass.h"
 #include "partitioning_fixed.h"
+#include "partitioning_fixed_by_stage.h"
 #include "phenology.h"
 #include "plant.h"
 #include "specific_leaf_area.h"
@@ -92,14 +94,22 @@ const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
     "@I pending";
 
     desc["LightUseEfficiencyGivenTemp"] =
-    "This model can serve as the @F lightUseEfficiency sub-model of an @F Area object. It calculates light use (or light conversion) effiency as a linear relation on "
+    "This model can serve as the @F lightUseEfficiency child model of an @F Area object. It calculates light use (or light conversion) effiency as a linear relation on "
     "@F Tday of the @F weather model";
+
+    desc["Mass"] =
+    "This model can serve as a @F mass child model of an @F Organ model. "
+    "It holds iself a @F mass child model to hold the actual mass (g/plant) which is usually "
+    "of the UniSim::Stage class to simulate an ageing mass";
 
     desc["Organ"] =
     "An @F Organ model is a child of a @F Plant model. It contains one child model called @F mass and optionally an additional model of the @F Area class";
 
     desc["PartitioningFixed"] =
     "This model supplies a partitioning coefficient with a fixed value";
+
+    desc["PartitioningFixedByStage"] =
+    "Pending";
 
     desc["Phenology"] =
     "The model of plant phenology must be a child of a @F Plant model. It may consist of any number of @F UniSim::Stage models";
@@ -153,10 +163,14 @@ Model* IntercomModelMaker::create(Identifier modelType, Identifier objectName, Q
         model = new LeafStemRatio(objectName, parent);
     else if (modelType.equals("LightUseEfficiencyGivenTemp"))
         model = new LightUseEfficiencyGivenTemp(objectName, parent);
+    else if (modelType.equals("Mass"))
+        model = new Mass(objectName, parent);
     else if (modelType.equals("Organ"))
         model = new Organ(objectName, parent);
     else if (modelType.equals("PartitioningFixed"))
         model = new PartitioningFixed(objectName, parent);
+    else if (modelType.equals("PartitioningFixedByStage"))
+        model = new PartitioningFixedByStage(objectName, parent);
     else if (modelType.equals("Phenology"))
         model = new Phenology(objectName, parent);
     else if (modelType.equals("Plant"))

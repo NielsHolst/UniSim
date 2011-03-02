@@ -93,7 +93,10 @@ int toDayOfYear(int day, int month);
 QString fullName(const QObject *object);
 void chopParentheses(QString &s, QObject *concerning = 0);
 void chopRightParenthesis(QString &s, QObject *concerning = 0);
-QStringList decodeSimpleList(QString parenthesizedList, QObject *concerning = 0);
+QStringList decodeSimpleList(QString parenthesizedList, QObject *concerning = 0);  // deprecated
+QStringList decodeList(QString s, QObject *context = 0);
+template<class T> QList<T> decodeList(QString s, QObject *context = 0);
+template<class T, class U> QMap<T,U> decodeList(QString s, QObject *context = 0);
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
 QStringList splitParentChildExpression(QString expression);
 template <class T> QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *concerning = 0);
@@ -380,7 +383,6 @@ template <class T> QList<T> filterByName(QString name, const QList<QObject*> &ca
     return result;
 }
 
-/*
 // Mathematics
 //
 
@@ -390,11 +392,38 @@ void swap(T &a, T &b) {
     a = b;
     b = c;
 }
-*/
 
 //
 // String handling
 //
+
+template<class T>
+QList<T> decodeList(QString s, QObject *context = 0) {
+    QList<T> result;
+    QStringList strings = decodeList(s, context);
+    for (int i = 0; i < strings.size(); ++i) {
+        T value = stringToValue<T>(strings[i], context);
+        result.append(value);
+    }
+    return result;
+}
+
+template<class T, class U>
+QMap<T,U> decodeList(QString s, QObject *context = 0) {
+    QMap<T,U> result;
+    QStringList pairs = decodeList(s, context);
+    for (int i = 0; i < pairs.size(); ++i) {
+        QStringList pair = decodeList(pairs[i]);
+        if (pair.size() != 2)
+            throw Exception("(name value) pair expected, got: \"" + pairs[i] + "\"", context);
+        T key = stringToValue<T>(pair[0], context);
+        U value = stringToValue<U>(pair[1], context);
+        if (result.contains(key))
+            throw Exception("Name must be unique in list, found \"" + pair[0] + "\" twice");
+        result[key] = value;
+    }
+    return result;
+}
 
 template <class T>
 QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *concerning) {

@@ -34,6 +34,7 @@ protected:
 
 private slots:
     void doCancel();
+    void closeReport();
 
 private:
     Model *runIterator;
@@ -44,7 +45,6 @@ private:
     void openReport();
     void updateReport();
     void createReport();
-    void closeReport();
 };
 
 } //namespace

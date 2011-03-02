@@ -8,10 +8,15 @@
 #include <QList>
 #include <QObject>
 #include <usbase/model.h>
+#include "optimize_allocation.h"
 
+namespace UniSim{
+class Stage;
+}
 namespace intercom{
 
 class Area;
+class Mass;
 class Organ;
 
 class Plant : public UniSim::Model
@@ -26,26 +31,45 @@ public:
     // special methods
     void applyEarlyGrowth();
     void accumulate();
+
     void allocate(double carbohydrates);
+    void calcOptimalPartioning();
+
+
     double kgPerHa_to_gPerPlant(double x) const;
     double gPerPlant_to_kgPerHa(double x) const;
 
+    static void optimizeSolution();
+
+
 private:
     // methods
-    void updateLai();
+    void updatePullVariables();
 
     // parameters
     double density;
 
     // pull variables
-    double lai, lightAbsorption, CO2Assimilation,
+    double lai, mass, netAllocation, lightAbsorption, CO2Assimilation,
         grossProduction, maintenanceResp, availableProduction;
 
     // links
-    QList<Area*> areas;
-    QList<Organ*> organs;
-    QList<Model*> specificLeafAreas, partitions;
+    struct OrganInfo {
+        Organ *organ;
+        Mass *mass;
+        Area *area; //can be null
+        const double *massValue, *idealPartitioning, *sla;
+        double carbohydrateRequirements;
+    };
+    QList<OrganInfo> organs;
+    QList<UniSim::Stage*> stages;
     UniSim::Model *earlyGrowth;
+
+    // Data
+    OptimizeAllocation::Solution solution;
+    struct {
+        double previous, current;
+    } earlyGrowthMass;
 };
 
 } //namespace

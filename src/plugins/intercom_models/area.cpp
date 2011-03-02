@@ -35,8 +35,8 @@ Area::Area(UniSim::Identifier name, QObject *parent)
                           "Write detailed output? The resulting file has a name that begins with"
                           "\"area_test\" followed by the full name of the @F Area object");
 
-    new PullVariable<double>("area", &area, this,
-                             "Area (cm @Sup {2}) of this organ per plant");
+    new PullVariable<double>("value", &value, this,
+                             "The area of this organ per plant (cm @Sup {2} per plant)");
     new PullVariable<double>("LAI", &lai, this,
                              "Leaf area index of this organ");
     new PullVariable<double>("lightAbsorption", &photosynthesisPerDay[Absorption], this,
@@ -53,7 +53,7 @@ void Area::initialize() {
     weather = seekOne<Model*>("weather");
     plant = seekOneAscendant<Plant*>("*");
     plantHeightModel = plant->seekOneDescendant<Model*>("height");
-    measure = seekOneChild<Model*>("measure");
+    area = seekOneChild<Model*>("area");
     density = seekOneChild<AreaDensity*>("*");
     specificLeafArea = seekOneChild<Model*>("specificLeafArea");
     lightUseEfficiency = seekOneChild<Model*>("lightUseEfficiency");
@@ -61,7 +61,7 @@ void Area::initialize() {
 }
 
 void Area::reset() {
-    area = lai =
+    value = lai =
     allocation = 0.;
     if (writeTestOutput) {
         QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
@@ -77,8 +77,8 @@ void Area::reset() {
 
 void Area::updateLai() {
     double density = plant->pullVariable<double>("density");
-    area = measure->pullVariable<double>("number");
-    lai = density*area/10000.;
+    value = area->pullVariable<double>("number");
+    lai = density*value/10000.;
 }
 
 void Area::update() {
@@ -89,7 +89,8 @@ void Area::update() {
 
     // Add allocated carbohydrates as area
     double newArea = allocation*specificLA;
-    measure->pushVariable<double>("inflow", newArea);
+	Q_ASSERT(newArea >= 0.);
+    area->pushVariable<double>("inflow", newArea);
     updateLai();
     allocation = 0.;
 }

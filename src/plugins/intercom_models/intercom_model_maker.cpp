@@ -15,8 +15,8 @@
 #include "early_growth.h"
 #include "organ.h"
 #include "height.h"
+#include "instant_mortality.h"
 #include "intercom_model_maker.h"
-#include "leaf_stem_ratio.h"
 #include "light_use_efficiency_given_temp.h"
 #include "mass.h"
 #include "partitioning_fixed.h"
@@ -90,6 +90,10 @@ const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
     "The @F height model looks for the nearest model named @F time to provide the daily time increment. "
     "A @F UniSim::PhotoThermalTime model can be used for this purpose (see UniSim::PhotoThermalTime @CrossLink {page @PageOf UniSim::PhotoThermalTime}).";
 
+    desc["InstantMortality"] =
+    "List of instant mortalities [0;1] applied on a certain day and month to the listed plant organs, for example, "
+    "@F {((leaves 0)(stem 0.05)(flowers 0))}. Plant organs not mentioned will not be afflicted. Those mentioned must exist inside @F {Plant}.";
+
     desc["LeafStemRatio"] =
     "@I pending";
 
@@ -159,8 +163,8 @@ Model* IntercomModelMaker::create(Identifier modelType, Identifier objectName, Q
         model = new EarlyGrowth(objectName, parent);
     else if (modelType.equals("Height"))
         model = new Height(objectName, parent);
-    else if (modelType.equals("LeafStemRatio"))
-        model = new LeafStemRatio(objectName, parent);
+    else if (modelType.equals("InstantMortality"))
+        model = new InstantMortality(objectName, parent);
     else if (modelType.equals("LightUseEfficiencyGivenTemp"))
         model = new LightUseEfficiencyGivenTemp(objectName, parent);
     else if (modelType.equals("Mass"))

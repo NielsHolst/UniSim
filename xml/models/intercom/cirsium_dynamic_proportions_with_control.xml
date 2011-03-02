@@ -27,6 +27,19 @@
 		<model name="cirsium" type="intercom::Plant">
 			<parameter name="density" value="10"/>
 			
+            <model name="treatments">
+                <model type="intercom::InstantMortality">
+                    <parameter name="day" value="1"/>
+                    <parameter name="month" value="6"/>
+                    <parameter name="survival" value="((leaves 0.05)(stem 0.1)(flowers 0))"/>
+                </model>
+                <model  type="intercom::InstantMortality">
+                    <parameter name="day" value="15"/>
+                    <parameter name="month" value="7"/>
+                    <parameter name="survival" value="((leaves 0.05)(stem 0.1)(flowers 0))"/>
+                </model>
+            </model>
+
 			<model name="phenology" type="intercom::Phenology">
 				<model name="vegetative" type="UniSim::Stage">
 					<parameter name="duration" value="600"/>
@@ -79,8 +92,8 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="300"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixed">
-						<parameter name="value" value="0.5"/>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0.5)(flowering 0)(senescent 0))"/>
 					</model>
 				</model>
 			</model>
@@ -109,8 +122,8 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="600"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixed">
-						<parameter name="value" value="0.2"/>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0.2)(flowering 0)(senescent 0))"/>
 					</model>
 				</model>
 			</model>
@@ -139,8 +152,8 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="200"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixed">
-						<parameter name="value" value="0.05"/>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0)(flowering 0.2)(senescent 0))"/>
 					</model>
 				</model>
 			</model>
@@ -151,8 +164,8 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="600"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixed">
-						<parameter name="value" value="0.25"/>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0.3)(flowering 0.8)(senescent 1))"/>
 					</model>
 				</model>
 			</model>
@@ -253,7 +266,7 @@
 	<output type="plot">
 		<parameter name="title" value="Ideal organ partition"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="mass/partition[value]"/>
+		<variable label="Organ" axis="y" value="partition[value]"/>
     </output>
 
 	<output type="plot">
@@ -277,6 +290,10 @@
 		<variable label="Pt-time" axis="y" value="time[total]"/>
 		<variable label="areaLAI" axis="y" value="leaves/area[lai]"/>
 
+		<variable label="Plant CO2 assim" axis="y" value="cirsium[CO2assimilation]"/>
+
+		<variable label="Organ" axis="y" value="mass/partition[value]"/>
+		
 		<variable label="AllocTotal" axis="y" value="cirsium[netAllocation]"/>
 		<variable label="AllocOrgan" axis="y" value="cirsium/*[allocatedPerPlant]"/>
 		

@@ -15,7 +15,7 @@ HEADERS += \
     $${INTERCOM_PLUGIN}/early_growth.h \
     $${INTERCOM_PLUGIN}/height.h \
     $${INTERCOM_PLUGIN}/intercom_model_maker.h \
-    $${INTERCOM_PLUGIN}/leaf_stem_ratio.h \
+    $${INTERCOM_PLUGIN}/instant_mortality.h \
     $${INTERCOM_PLUGIN}/light_use_efficiency_given_temp.h \
     $${INTERCOM_PLUGIN}/mass.h \
     $${INTERCOM_PLUGIN}/optimize_allocation.h \
@@ -41,7 +41,7 @@ SOURCES += \
     $${INTERCOM_PLUGIN}/early_growth.cpp \
     $${INTERCOM_PLUGIN}/height.cpp \
     $${INTERCOM_PLUGIN}/intercom_model_maker.cpp \
-    $${INTERCOM_PLUGIN}/leaf_stem_ratio.cpp \
+    $${INTERCOM_PLUGIN}/instant_mortality.cpp \
     $${INTERCOM_PLUGIN}/light_use_efficiency_given_temp.cpp \
     $${INTERCOM_PLUGIN}/mass.cpp \
     $${INTERCOM_PLUGIN}/optimize_allocation.cpp \

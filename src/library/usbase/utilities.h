@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include <cfloat>
+#include <iostream>
 #include <QDate>
 #include <QDir>
 #include <QList>
@@ -23,7 +24,6 @@
 #include "identifier.h"
 #include "object_pool.h"
 
-#include <iostream>
 using std::cout;
 
 namespace UniSim {
@@ -52,6 +52,9 @@ template <class T> T seekOneNearest(QString name, QObject *parent);
 template <class T> T peekOneChild(QString name, QObject *parent);
 template <class T> T seekOneChild(QString name, QObject *parent);
 template <class T> QList<T> seekChildren(QString name, QObject *parent);
+
+template <class T> T peekParent(QString name, QObject *object);
+template <class T> T seekParent(QString name, QObject *object);
 
 template <class T> T peekOneDescendant(QString name, QObject *root);
 template <class T> T seekOneDescendant(QString name, QObject *root);
@@ -248,6 +251,25 @@ template <class T> QList<T> seekChildren(QString name, QObject *parent) {
         return QList<T>();
     QList<QObject*> candidates = useParent->children();
     return filterByName<T>(name, candidates);
+}
+
+template <class T> T peekParent(QString name, QObject *object) {
+    T p = dynamic_cast<T>(object->parent());
+    if (p) {
+        QList<QObject*> candidates;
+        candidates.append(p);
+        QList<T> matches = filterByName<T>(name, candidates);
+        if (matches.size() != 1)
+            p = 0;
+    }
+    return p;
+}
+
+template <class T> T seekParent(QString name, QObject *object) {
+    T p = peekParent<T>(name, object);
+    if (!p)
+        throw Exception("Cound not find parent: " +  name, object);
+    return p;
 }
 
 

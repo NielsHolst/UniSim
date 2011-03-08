@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="30"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="schedule"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+		<parameter name="initialDate" value="1/1/2010"/>
+	</model>	
+
+	<model name="schedule" type="UniSim::Scheduled">
+		<model name="time" type="unisim::Days"/>
+		<parameter name="schedule" value="((5 10)(20 30)(25 20))"/>
+	</model>
+	
+	
+	<output type="table">
+		<parameter name="filename" value="test_scheduled.prn"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
+		<variable label="Value" axis="y" value="schedule[value]"/>
+		<variable label="Increment" axis="y" value="schedule[increment]"/>
+	</output>
+
+</simulation>

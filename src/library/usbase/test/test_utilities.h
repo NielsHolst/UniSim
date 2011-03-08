@@ -64,6 +64,9 @@ private slots:
     void testPeekOneNearest();
     void testSeekOneNearest();
 
+    void testPeekParent();
+    void testSeekParent();
+
     void testStringToValueChar();
     void testStringToValueTime();
 

@@ -63,8 +63,8 @@
 				<parameter name="tm" value="500"/>
 			</model>
 			
-			<model name="earlyGrowth" type="intercom::EarlyGrowth"> 
-				<parameter name="initialArea" value="1" comment="cm2 per plant"/>
+			<model name="earlyGrowth" type="UniSim::exponential"> 
+				<parameter name="initialValue" value="1" comment="cm2 per plant"/>
 				<parameter name="growthRate" value="0.1"/>
 			</model>
 

@@ -633,6 +633,35 @@ void TestUtilities::testSeekOneNearest() {
     QVERIFY(excepted);
 }
 
+void TestUtilities::testPeekParent() {
+    QObject *ofRoot = peekParent<QObject*>("*", animals);
+    QVERIFY(ofRoot == 0);
+
+    QObject *ofSnakesModel = peekParent<Model*>("reptiles", snakes);
+    QVERIFY(ofSnakesModel == 0);
+
+    QObject *ofSnakes = peekParent<QObject*>("reptiles", snakes);
+    QCOMPARE(ofSnakes, reptiles);
+
+    QObject *ofFemaleDogsModel = peekParent<Model*>("*", femaleDogsModel);
+    QCOMPARE(ofFemaleDogsModel, dogsModel);
+}
+
+void TestUtilities::testSeekParent() {
+    bool excepted = false;
+    try {
+        seekParent<QObject*>("*", animals);
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    QObject *ofFemaleDogsModel = seekParent<Model*>("*", femaleDogsModel);
+    QCOMPARE(ofFemaleDogsModel, dogsModel);
+}
+
+
 void TestUtilities::testStringToValueChar() {
     char ch = 'x';
     QCOMPARE(stringToValue<char>(QString(ch)), ch);

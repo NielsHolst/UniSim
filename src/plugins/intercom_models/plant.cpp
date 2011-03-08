@@ -112,7 +112,7 @@ void Plant::applyEarlyGrowth() {
         }
     }
 
-    double totalArea = earlyGrowth->pullVariable<double>("area");
+    double totalArea = earlyGrowth->pullVariable<double>("value");
     double totalAreaMass = (idealWeightedSum == 0) ? 0. : totalArea/idealWeightedSum;
 
     earlyGrowthMass.previous = earlyGrowthMass.current;

@@ -14,6 +14,7 @@ HEADERS += \
 	calendar.h \
     day_degrees.h \
     days.h \
+    exponential.h \
     hydro_thermal_time.h \
     lactin_time.h \
     photo_thermal_time.h \
@@ -26,6 +27,7 @@ HEADERS += \
     random_uniform.h \
     records.h \
     run_iterator_fixed.h \
+    scheduled.h \
     trigger_by_date.h \
     unisim_model_maker.h
 
@@ -35,6 +37,7 @@ SOURCES += \
 	calendar.cpp \
     day_degrees.cpp \
     days.cpp \
+    exponential.cpp \
     hydro_thermal_time.cpp \
     lactin_time.cpp \
     photo_thermal_time.cpp \
@@ -47,5 +50,6 @@ SOURCES += \
     random_uniform.cpp \
     records.cpp \
     run_iterator_fixed.cpp \
+    scheduled.cpp \
     trigger_by_date.cpp \
     unisim_model_maker.cpp

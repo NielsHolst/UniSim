@@ -25,6 +25,9 @@ public:
     template <class T> T seekOneChild(QString name);
     template <class T> QList<T> seekChildren(QString name);
 
+    template <class T> T peekParent(QString name);
+    template <class T> T seekParent(QString name);
+
     template <class T> T peekOneNearest(QString name);
     template <class T> T seekOneNearest(QString name);
 
@@ -51,6 +54,16 @@ template <class T> T NamedObject::peekOneChild(QString name) {
 //! Finds exactly one child (n==1)
 template <class T> T NamedObject::seekOneChild(QString name) {
     return UniSim::seekOneChild<T>(name, this);
+}
+
+//! Finds parent or not
+template <class T> T NamedObject::peekParent(QString name) {
+    return UniSim::peekParent<T>(name, this);
+}
+
+//! Finds parent
+template <class T> T NamedObject::seekParent(QString name) {
+    return UniSim::seekParent<T>(name, this);
 }
 
 //! Finds a number (n>=0) of children

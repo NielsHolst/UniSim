@@ -94,9 +94,6 @@ const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
     "List of instant mortalities [0;1] applied on a certain day and month to the listed plant organs, for example, "
     "@F {((leaves 0)(stem 0.05)(flowers 0))}. Plant organs not mentioned will not be afflicted. Those mentioned must exist inside @F {Plant}.";
 
-    desc["LeafStemRatio"] =
-    "@I pending";
-
     desc["LightUseEfficiencyGivenTemp"] =
     "This model can serve as the @F lightUseEfficiency child model of an @F Area object. It calculates light use (or light conversion) effiency as a linear relation on "
     "@F Tday of the @F weather model";

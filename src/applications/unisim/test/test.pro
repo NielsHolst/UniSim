@@ -37,11 +37,13 @@ HEADERS += \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.h \
     $${US_PLUGINS}/unisim_models/test/test_life_cycle.h \
     $${US_PLUGINS}/unisim_models/test/test_records.h \
+    $${US_PLUGINS}/unisim_models/test/test_scheduled.h \
     $${US_PLUGINS}/unisim_models/test/test_stage.h \
     ../graph_generator.h \
 	../live_simulation.h \
 	../log_base.h \
     frequency_distribution.h \
+    test_dataset.h \
     test_frequency_distribution.h \
     test_live_simulation.h
     #test_plugins.h
@@ -66,11 +68,13 @@ SOURCES += \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.cpp \
     $${US_PLUGINS}/unisim_models/test/test_life_cycle.cpp \
     $${US_PLUGINS}/unisim_models/test/test_records.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_scheduled.cpp \
     $${US_PLUGINS}/unisim_models/test/test_stage.cpp \
     ../graph_generator.cpp \
 	../live_simulation.cpp \
 	../log_base.cpp \
     frequency_distribution.cpp \
+    test_dataset.cpp \
     test_frequency_distribution.cpp \
     test_live_simulation.cpp \
     #test_plugins.cpp \

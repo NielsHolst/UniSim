@@ -9,6 +9,7 @@
 #include "calendar.h"
 #include "day_degrees.h"
 #include "days.h"
+#include "exponential.h"
 #include "hydro_thermal_time.h"
 #include "lactin_time.h"
 #include "photo_thermal_time.h"
@@ -18,6 +19,7 @@
 #include "random_uniform.h"
 #include "records.h"
 #include "run_iterator_fixed.h"
+#include "scheduled.h"
 #include "stage.h"
 #include "trigger_by_date.h"
 #include "unisim_model_maker.h"
@@ -59,6 +61,10 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     desc["Days"] =
     "This model has the same pull variables as the @F DayDegrees model but it works in "
     "simple chronological time counting every day as just that, one day.";
+
+    desc["Exponential"] =
+    "Simple exponential growth model, @Math{y = exp(rt)}, "
+    "where @I t is taken from the nearest model called @F {time}.";
 
     desc["HydroThermalTime"] =
     "Hydrothermal time accounts for temperature and soil water potential at the same time. "
@@ -110,6 +116,13 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "need to know about the current date and time of day, you should pull this information from "
     "the @F calender model. See UniSim::Calendar @CrossLink {page @PageOf UniSim::Calendar}.";
 
+    desc["Scheduled"] =
+    "A @F Scheduled model produces canned data which are derived from a list of time value pairs, e.g., "
+    "@F {((10.2 14.6) (45.1 32.3) (57.1 24.43))}. Values are interpolated from the current time "
+    "which is taken from the nearest model called @F {time}. "
+    "At times outside the range covered by the list (outside [10.2;57.1], in this case) values are extrapolated "
+    "(to 14.6 or 24.43), in this case).";
+
     desc["Stage"] =
     "The @F Stage model holds a distributed delay routine (@Cite{$label{Manetsch 1976}manetsch, $label{Vansickle 1977}vansickle}) inside. "
     "The implementation follows the original FORTRAN code of @Cite{$label{Abkin \"&\" Wolf (1976)}abkin}. The two parameters @F "
@@ -140,6 +153,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new DayDegrees(objectName, parent);
     else if (modelType.equals("Days"))
         model = new Days(objectName, parent);
+    else if (modelType.equals("Exponential"))
+        model = new Exponential(objectName, parent);
     else if (modelType.equals("HydroThermalTime"))
         model = new HydroThermalTime(objectName, parent);
     else if (modelType.equals("LactinTime"))
@@ -158,6 +173,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new Records(objectName, parent);
     else if (modelType.equals("RunIteratorFixed"))
         model = new RunIteratorFixed(objectName, parent);
+    else if (modelType.equals("Scheduled"))
+        model = new Scheduled(objectName, parent);
     else if (modelType.equals("Stage"))
         model = new Stage(objectName, parent);
     else if (modelType.equals("TriggerByDate"))

@@ -15,6 +15,7 @@ HEADERS += \
     day_degrees.h \
     days.h \
     exponential.h \
+    fixed.h \
     hydro_thermal_time.h \
     lactin_time.h \
     photo_thermal_time.h \
@@ -38,6 +39,7 @@ SOURCES += \
     day_degrees.cpp \
     days.cpp \
     exponential.cpp \
+    fixed.cpp \
     hydro_thermal_time.cpp \
     lactin_time.cpp \
     photo_thermal_time.cpp \

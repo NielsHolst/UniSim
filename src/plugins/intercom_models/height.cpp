@@ -36,7 +36,11 @@ void Height::update() {
 }
 
 void Height::updateHeight(double time) {
-    height = h0 + (hmax-h0)/(1. + exp(-slope*(time - tm)));
+    height = h0 + (hmax - h0)*(f(time) - f(0))/(1 - f(0));
+}
+
+double Height::f(double time) {
+    return 1./(1. + exp(-slope*(time-tm)));
 }
 
 } //namespace

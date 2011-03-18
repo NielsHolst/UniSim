@@ -23,6 +23,7 @@ HEADERS += 	\
             $${US_ENGINE}/prototype_maker.h \
 			$${US_ENGINE}/simulation.h \
             $${US_ENGINE}/simulation_maker.h \
+            $${US_ENGINE}/test_dataset.h \
             $${US_ENGINE}/xml_elements_reader.h \
             $${US_ENGINE}/xml_expander.h \
             $${US_ENGINE}/xml_query_to_writer.h
@@ -38,6 +39,7 @@ SOURCES += 	\
             $${US_ENGINE}/prototype_maker.cpp \
 			$${US_ENGINE}/simulation.cpp \
             $${US_ENGINE}/simulation_maker.cpp \
+            $${US_ENGINE}/test_dataset.cpp \
             $${US_ENGINE}/xml_elements_reader.cpp \
             $${US_ENGINE}/xml_expander.cpp \
             $${US_ENGINE}/xml_query_to_writer.cpp

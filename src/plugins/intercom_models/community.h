@@ -29,17 +29,17 @@ public:
 
 private:
     // methods
-    const double* sumELAI();
+    void updateSumELAI();
     void updateLai();
-    void updateEarlyGrowth();
-    void accumulateLateGrowth();
-    void updateLateGrowth();
 
     // parameters
     double earlyGrowthThreshold;
+    bool testMode;
 
     // pull variables
-    double _sumELAI[3], lightAbsorption, CO2Assimilation, grossProduction, lai;
+    double sumELAI[3], lightAbsorption, CO2Assimilation, grossProduction,
+        maintenanceResp, growthResp, netAllocation,
+        lai;
 
     // links
     QList<Area*> areas;

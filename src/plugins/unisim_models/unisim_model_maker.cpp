@@ -10,6 +10,7 @@
 #include "day_degrees.h"
 #include "days.h"
 #include "exponential.h"
+#include "fixed.h"
 #include "hydro_thermal_time.h"
 #include "lactin_time.h"
 #include "photo_thermal_time.h"
@@ -65,6 +66,9 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     desc["Exponential"] =
     "Simple exponential growth model, @Math{y = exp(rt)}, "
     "where @I t is taken from the nearest model called @F {time}.";
+
+    desc["Fixed"] =
+    "@I Pending...";
 
     desc["HydroThermalTime"] =
     "Hydrothermal time accounts for temperature and soil water potential at the same time. "
@@ -155,6 +159,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new Days(objectName, parent);
     else if (modelType.equals("Exponential"))
         model = new Exponential(objectName, parent);
+    else if (modelType.equals("Fixed"))
+        model = new Fixed(objectName, parent);
     else if (modelType.equals("HydroThermalTime"))
         model = new HydroThermalTime(objectName, parent);
     else if (modelType.equals("LactinTime"))

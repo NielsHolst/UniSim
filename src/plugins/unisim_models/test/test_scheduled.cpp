@@ -3,7 +3,7 @@
 #include <usbase/test_num.h>
 #include <usengine/simulation.h>
 #include <usengine/simulation_maker.h>
-#include "test_dataset.h"
+#include <usengine/test_dataset.h>
 #include "test_scheduled.h"
 
 using namespace UniSim;

@@ -23,6 +23,7 @@
 
 	<model name="field" type="intercom::Community">
 		<parameter name="earlyGrowthThreshold" value="1"/>
+		<parameter name="testMode" value="no"/>
 				
 		<model name="cirsium" type="intercom::Plant">
 			<parameter name="density" value="10"/>
@@ -215,13 +216,13 @@
     </output>
 
     <output type="plot">
-		<parameter name="title" value="Plant allocation (g/day)"/>
+		<parameter name="title" value="Plant allocation (g/plant/day)"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Total" axis="y" value="cirsium[netAllocation]"/>
 		<variable label="Leaves" axis="y" value="cirsium/leaves[allocatedPerPlant]"/>
 		<variable label="Stem" axis="y" value="cirsium/stem[allocatedPerPlant]"/>
 		<variable label="Flowers" axis="y" value="cirsium/flowers[allocatedPerPlant]"/>
 		<variable label="Root" axis="y" value="cirsium/root[allocatedPerPlant]"/>
+		<variable label="Total" axis="y" value="cirsium[allocatedPerPlant]"/>
     </output>
 
     <!-- Plots of organs -->

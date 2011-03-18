@@ -23,10 +23,10 @@ public:
 private:
     // methods
     void updateHeight(double time);
+    double f(double time);
 
 	// parameters
     double h0, hmax, slope, tm;
-;
 
 	// state
     double height;

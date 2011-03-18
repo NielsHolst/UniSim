@@ -15,7 +15,7 @@ RESOURCES = ../../../resources/unisim.qrc
 # Input
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
-include ($${US_PLUGINS}/intercom_models/intercom_models.pri)
+#include ($${US_PLUGINS}/intercom_models/intercom_models.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \
@@ -29,11 +29,13 @@ HEADERS += \
     $${US_ENGINE}/test/test_simulation_trickle.h \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
+    $${US_PLUGINS}/intercom_models/optimize_allocation.h \
     $${US_PLUGINS}/intercom_models/test/test_plant.h \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
     $${US_PLUGINS}/unisim_models/anonymous_model.h \
     $${US_PLUGINS}/unisim_models/stage.h \
     $${US_PLUGINS}/unisim_models/test/test_calendar.h \
+    $${US_PLUGINS}/unisim_models/test/test_fixed.h \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.h \
     $${US_PLUGINS}/unisim_models/test/test_life_cycle.h \
     $${US_PLUGINS}/unisim_models/test/test_records.h \
@@ -43,7 +45,6 @@ HEADERS += \
 	../live_simulation.h \
 	../log_base.h \
     frequency_distribution.h \
-    test_dataset.h \
     test_frequency_distribution.h \
     test_live_simulation.h
     #test_plugins.h
@@ -60,11 +61,13 @@ SOURCES += \
     $${US_ENGINE}/test/test_simulation_trickle.cpp \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
+    $${US_PLUGINS}/intercom_models/optimize_allocation.cpp \
     $${US_PLUGINS}/intercom_models/test/test_plant.cpp \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
     $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
     $${US_PLUGINS}/unisim_models/stage.cpp \
     $${US_PLUGINS}/unisim_models/test/test_calendar.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_fixed.cpp \
     $${US_PLUGINS}/unisim_models/test/test_life_stage.cpp \
     $${US_PLUGINS}/unisim_models/test/test_life_cycle.cpp \
     $${US_PLUGINS}/unisim_models/test/test_records.cpp \
@@ -74,7 +77,6 @@ SOURCES += \
 	../live_simulation.cpp \
 	../log_base.cpp \
     frequency_distribution.cpp \
-    test_dataset.cpp \
     test_frequency_distribution.cpp \
     test_live_simulation.cpp \
     #test_plugins.cpp \

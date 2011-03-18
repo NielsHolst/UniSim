@@ -29,10 +29,9 @@ public:
     void reset();
 
     // special methods
-    void applyEarlyGrowth();
-    void accumulate();
+    void updateEarlyGrowth();
+    void updatePhotosynthesis();
 
-    void allocate(double carbohydrates);
     void calcOptimalPartioning();
 
 
@@ -45,13 +44,14 @@ public:
 private:
     // methods
     void updatePullVariables();
+    void allocate();
 
     // parameters
     double density;
 
     // pull variables
-    double lai, mass, netAllocation, lightAbsorption, CO2Assimilation,
-        grossProduction, maintenanceResp, availableProduction;
+    double lai, mass, allocatedPerPlant, netAllocation, lightAbsorption, CO2Assimilation,
+        grossProduction, maintenanceResp, growthResp, availableProduction;
 
     // links
     struct OrganInfo {

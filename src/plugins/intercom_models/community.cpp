@@ -18,7 +18,12 @@ Community::Community(UniSim::Identifier name, QObject *parent)
 {
     new Parameter<double>("earlyGrowthThreshold", &earlyGrowthThreshold, 1., this,
                           "Threshold (LAI) for applying the early exponential growth model");
+    new Parameter<bool>("testMode", &testMode, false, this,
+    "In test mode, the plants stop growing after @F earlyGrowthThreshold has been reached. "
+    "Daily photosynthesis is calculated but not allocated");
 
+    new PullVariable<bool>("isInEarlyGrowth", &isEarly, this,
+                           "Is the community it its early growth phase?");
     new PullVariable<double>("LAI", &lai, this,
                              "Leaf area index of whole community (m @Sup 2 plant area per m @Sup 2 ground)");
     new PullVariable<double>("lightAbsorption", &lightAbsorption, this,
@@ -27,6 +32,7 @@ Community::Community(UniSim::Identifier name, QObject *parent)
                              "Assimilated kg CO @Sub 2 per ha ground per day");
     new PullVariable<double>("grossProduction", &grossProduction, this,
                              "Produced kg CH @Sub {2}O per ha ground per day");
+
 }
 
 void Community::initialize() {
@@ -46,66 +52,48 @@ void Community::updateLai() {
 }
 
 void Community::update() {
+    // Total LAI
     updateLai();
-    if (lai < earlyGrowthThreshold && isEarly) {
-        updateEarlyGrowth();
-        accumulateLateGrowth();
-    }
-    else {
-        isEarly = false;
-        accumulateLateGrowth();
-        updateLateGrowth();
-    }
-}
-
-void Community::updateEarlyGrowth() {
-    for (int i = 0; i < plants.size(); ++i)
-        plants[i]->applyEarlyGrowth();
-}
-
-
-void Community::accumulateLateGrowth() {
-    // Update area photosynthesis
+    // Areas
     for (int hourPoint = 0; hourPoint < 3; ++hourPoint) {
         for (int heightPoint = 0; heightPoint < 5; ++heightPoint) {
+            updateSumELAI();
             for (int i = 0; i < areas.size(); ++i) {
                 areas[i]->setPoint(hourPoint, heightPoint);
-                areas[i]->updatePhotosynthesis(sumELAI());
+                areas[i]->updatePhotosynthesis(sumELAI);
             }
         }
     }
-    // Accumulate community-wide rates
-    lightAbsorption = CO2Assimilation = 0.;
-    for (int i = 0; i < areas.size(); ++i) {
-        lightAbsorption += areas[i]->pullVariable<double>("lightAbsorption");
-        CO2Assimilation += areas[i]->pullVariable<double>("CO2Assimilation");
-    }
-
-    grossProduction = 0;
+    // Plants
+    lightAbsorption =
+    CO2Assimilation =
+    grossProduction =
+    maintenanceResp = 0.;
     for (int i = 0; i < plants.size(); ++i) {
-        plants[i]->accumulate();
-        double assimilation = plants[i]->pullVariable<double>("CO2assimilation");
-        grossProduction += assimilation*30./44.;
+        Plant *plant = plants[i];
+        if (lai < earlyGrowthThreshold && isEarly) {
+            plant->updateEarlyGrowth();
+        }
+        else {
+            isEarly = false;
+            plant->updatePhotosynthesis();
+        }
+        lightAbsorption += plant->pullVariable<double>("lightAbsorption");
+        CO2Assimilation += plant->pullVariable<double>("CO2Assimilation");
+        grossProduction += plant->pullVariable<double>("grossProduction");
+        maintenanceResp += plant->pullVariable<double>("maintenanceResp");
+        growthResp += plant->pullVariable<double>("growthResp");
+        netAllocation += plant->pullVariable<double>("netAllocation");
     }
-
 }
 
-void Community::updateLateGrowth() {
-    for (int i = 0; i < plants.size(); ++i) {
-        double assimilation = plants[i]->pullVariable<double>("CO2assimilation");
-        double grossProduction = assimilation*30./44.;
-        plants[i]->allocate(grossProduction);
-    }
-}
-
-const double* Community::sumELAI() {
-    _sumELAI[0] = _sumELAI[1] = _sumELAI[2] = 0.;
+void Community::updateSumELAI() {
+    sumELAI[0] = sumELAI[1] = sumELAI[2] = 0.;
     for (int i = 0; i < areas.size(); ++i) {
         const double *elai = areas[i]->calcELAI();
         for (int i = 0; i < 3; ++i)
-            _sumELAI[i] += elai[i];
+            sumELAI[i] += elai[i];
     }
-    return _sumELAI;
 }
 
 } //namespace

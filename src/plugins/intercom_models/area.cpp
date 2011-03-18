@@ -27,6 +27,7 @@ namespace intercom{
 Area::Area(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    setRecursionPolicy(Update, ChildrenLast);
     new Parameter<double>("scatteringCoeff", &scatteringCoeff, 0.2, this,
                           "Light scattering coefficient. Usually the default value is used.");
     new Parameter<double>("kDiffuse", &kDiffuse, 0.7, this,
@@ -43,6 +44,11 @@ Area::Area(UniSim::Identifier name, QObject *parent)
                              "Light absorbed by this area (W per m @Sup 2 ground per day)");
     new PullVariable<double>("CO2Assimilation", &photosynthesisPerDay[Assimilation], this,
                              "CO @Sub 2 assimilated by this area (kg CO @Sub 2 per ha ground per day)");
+    new PullVariable<double>("grossProduction", &grossProduction, this,
+                             "Carbohydrates produced by this area (kg CH @Sub {2}O per ha ground per day)");
+    new PullVariable<double>("allocation", &allocation, this,
+                             "Allocated dry matter (g per plant per day) to be converted into area"
+                             "Same as @F allocation push variable.");
 
     new PushVariable<double>("allocation", &allocation, this,
                              "Allocated dry matter (g per plant per day) to be converted into area");
@@ -62,7 +68,11 @@ void Area::initialize() {
 
 void Area::reset() {
     value = lai =
+    photosynthesisPerDay[Absorption] =
+    photosynthesisPerDay[Assimilation] =
+    grossProduction =
     allocation = 0.;
+
     if (writeTestOutput) {
         QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
         QString fileName = "area_test_" + plant->fullName() + ".prn";
@@ -173,6 +183,7 @@ void Area::updatePhotosynthesis(const double *sumELAI) {
         increment[i] = perLA[i]*lai*densityAt*plantHeight*dayLength*WGAUSS3[hourPoint]*WGAUSS5[heightPoint];
         photosynthesisPerDay[i] += increment[i];
     }
+    grossProduction = 30./44.*photosynthesisPerDay[Assimilation];
     if (writeTestOutput) {
         QString s;
         QTextStream str(&s);

@@ -78,6 +78,7 @@ private slots:
     void testDecodeListOfInts();
     void testDecodeListOfDates();
     void testDecodeListOfStringDoubles();
+    void testDecodeListOfStringDoubles2();
     void testDecodeListOfIntDates();
 
 private:

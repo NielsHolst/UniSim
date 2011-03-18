@@ -9,6 +9,7 @@
 #include <usbase/parameter.h>
 #include <usbase/test_num.h>
 #include "area.h"
+#include "community.h"
 #include "organ.h"
 #include "plant.h"
 
@@ -28,10 +29,14 @@ Organ::Organ(UniSim::Identifier name, QObject *parent)
                              "Absorbed light (W per m @Sup 2 ground per day)");
     new PullVariable<double>("CO2Assimilation", &CO2Assimilation, this,
                              "Assimilated kg CO @Sub 2 per ha ground per day");
+    new PullVariable<double>("grossProduction", &grossProduction, this,
+                             "Produced kg CH @Sub {2}O per ha ground per day");
     new PullVariable<double>("maintenanceResp", &maintenanceResp, this,
                              "Maintenance respiration (kg CH @Sub 2 O per ha ground per day)");
     new PullVariable<double>("growthResp", &growthResp, this,
                              "Growth respiration (kg CH @Sub 2 O per ha ground per day)");
+    new PullVariable<double>("netAllocation", &netAllocation, this,
+                             "Net allocation rate, the daily increment to organbiomass (kg CH @Sub 2 O per ha ground per day)");
     new PullVariable<double>("allocatedPerPlant", &allocatedPerPlant, this,
                              "Net biomass allocated to this organ per plant (g per plant per day)");
     new PullVariable<double>("propAllocatedPerPlant", &propAllocatedPerPlant, this,
@@ -42,6 +47,7 @@ void Organ::initialize() {
     if (TestNum::lt(CH2ORequirement, 1.))
         throw Exception("Parameter CH2ORequirement must be >= 1");
     weather = seekOne<Model*>("weather");
+    community = seekOneAscendant<Community*>("*");
     plant = seekOneAscendant<Plant*>("*");
     mass = seekOneChild<Model*>("mass");
     area = peekOneChild<Model*>("area");
@@ -51,16 +57,18 @@ void Organ::reset() {
     lightAbsorption =
     CO2Assimilation =
     maintenanceResp =
+    grossProduction =
     growthResp = 0.;
+    isTestMode = community->parameter<bool>("testMode");
 }
 
-void Organ::accumulate() {
-    updateMaintenanceRespiration();
-
+void Organ::updatePhotosynthesis() {
     if (area) {
         lightAbsorption = area->pullVariable<double>("lightAbsorption");
         CO2Assimilation = area->pullVariable<double>("CO2Assimilation");;
+        grossProduction = area->pullVariable<double>("grossProduction");;
     }
+    updateMaintenanceRespiration();
 }
 
 void Organ::updateMaintenanceRespiration() {
@@ -70,31 +78,35 @@ void Organ::updateMaintenanceRespiration() {
     maintenanceResp = resp20*pow(2., (temp - 20.)/10.);
 }
 
-double Organ::allocate(double proportion, double totalCarbohydrates) {
+void Organ::allocate(double proportion, double totalCarbohydrates) {
     propAllocatedPerPlant = proportion;
     double myShare = proportion*totalCarbohydrates;
     double netCarbohydrates = myShare/CH2ORequirement;
-    return doAllocate(myShare, netCarbohydrates);
+    doAllocate(myShare, netCarbohydrates);
 }
 
-double  Organ::allocateNet(double proportion, double netCarbohydrates) {
+void Organ::allocateNet(double proportion, double netCarbohydrates) {
     propAllocatedPerPlant = proportion;
     double myShare = proportion*netCarbohydrates;
     double totalCarbohydrates = myShare*CH2ORequirement;
-    return doAllocate(totalCarbohydrates, myShare);
+    doAllocate(totalCarbohydrates, myShare);
 }
 
-double Organ::doAllocate(double totalCarbohydrates, double netCarbohydrates) {
+void Organ::doAllocate(double totalCarbohydrates, double netCarbohydrates) {
     TestNum::assureGeZero(totalCarbohydrates, "totalCarbohydrates", this);
     TestNum::assureGeZero(netCarbohydrates, "netCarbohydrates", this);
 
     growthResp = totalCarbohydrates - netCarbohydrates;
+    netAllocation = netCarbohydrates;
     allocatedPerPlant = plant->kgPerHa_to_gPerPlant(netCarbohydrates);
 
-    mass->pushVariable<double>("allocation", allocatedPerPlant);
-    if (area)
-        area->pushVariable<double>("allocation", allocatedPerPlant);
-    return allocatedPerPlant;
+    bool isEarly = community->pullVariable<bool>("isInEarlyGrowth");
+    bool skipAllocation = isTestMode && !isEarly;
+    if (!skipAllocation) {
+        mass->pushVariable<double>("allocation", allocatedPerPlant);
+        if (area)
+            area->pushVariable<double>("allocation", allocatedPerPlant);
+    }
 }
 
 

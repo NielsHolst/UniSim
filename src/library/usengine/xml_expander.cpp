@@ -39,11 +39,12 @@ namespace UniSim {
 XmlExpander::XmlExpander(QString xmlFile, QString appendedName)
 	: _xmlFile(xmlFile), _appendedName(appendedName)
 {
-	if (xmlFile.size() == 0) throw XmlExpanderEx(xmlFile, "Name of XML file is empty");
-	if (!QFile(xmlFile).exists()) throw XmlExpanderEx(xmlFile, "File not found");
-	Q_ASSERT_X(QDir::isAbsolutePath(xmlFile), 
-	                         "XmlExpander constructor", 
-	                         qPrintable("Must have absolute file path, got " + xmlFile));
+    if (xmlFile.size() == 0)
+        throw XmlExpanderEx(xmlFile, "Name of XML file is empty");
+    if (!QFile(xmlFile).exists())
+        throw XmlExpanderEx(xmlFile, "File not found");
+    if (!QDir::isAbsolutePath(xmlFile))
+        throw XmlExpanderEx("Must have absolute file path, got " + xmlFile);
 }
 
 void XmlExpander::expand()

@@ -230,11 +230,11 @@
     <output type="plot">
 		<parameter name="title" value="Plant allocation (g/day)"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Total" axis="y" value="cirsium[netAllocation]"/>
 		<variable label="Leaves" axis="y" value="cirsium/leaves[allocatedPerPlant]"/>
 		<variable label="Stem" axis="y" value="cirsium/stem[allocatedPerPlant]"/>
 		<variable label="Flowers" axis="y" value="cirsium/flowers[allocatedPerPlant]"/>
 		<variable label="Root" axis="y" value="cirsium/root[allocatedPerPlant]"/>
+		<variable label="Total" axis="y" value="cirsium[allocatedPerPlant]"/>
     </output>
 
     <!-- Plots of organs -->

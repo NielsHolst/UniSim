@@ -2,7 +2,7 @@
 <simulation version="1.0">
 
      <integrator type="TimeStepLimited">
-         <parameter name="maxSteps" value="270"/>
+         <parameter name="maxSteps" value="30"/>
          <sequence>
              <model name="calendar"/>
              <model name="weather"/>
@@ -12,44 +12,42 @@
 	
 	<model name="calendar" type="unisim::Calendar">
 		<parameter name="latitude" value="55"/>
-		<parameter name="initialDate" value="1/1/2005"/>
+		<parameter name="initialDate" value="1/4/2005"/>
 	</model>
 	
 	<model name="weather" type="intercom::Weather">
-		<model name="records" type="UniSim::Records">
-			<parameter name="fileName" value ="intercom/foulum 2005.txt" alternative = "flakkebjerg 2005-06.txt"/>
+		<model name="records" type="UniSim::Fixed">
+			<parameter name="pullVariables" value = "((Tmin 20)(Tmax 20)(irradiationMJ 20))"/>
 		</model>
 	</model>
 
 	<model name="field" type="intercom::Community">
-		<parameter name="earlyGrowthThreshold" value="0.1"/>
+		<parameter name="earlyGrowthThreshold" value="1"/>
+		<parameter name="testMode" value="yes"/>
 				
 		<model name="cirsium" type="intercom::Plant">
-			<parameter name="density" value="16"/> <!-- observations from 1/16 m2 plots-->
+			<parameter name="density" value="10"/>
 			
 			<model name="phenology" type="intercom::Phenology">
 				<model name="vegetative" type="UniSim::Stage">
-					<parameter name="duration" value="1000"/>
-					<parameter name="k" value="10"/>
+					<parameter name="duration" value="600"/>
 				</model>
 				<model name="flowering" type="UniSim::Stage">
-					<parameter name="duration" value="300"/>
-					<parameter name="k" value="60"/>
+					<parameter name="duration" value="200"/>
 				</model>
 				<model name="senescent" type="UniSim::Stage">
 					<model name="time" type="UniSim::Days"/>
 					<parameter name="duration" value="60"/>
-					<parameter name="k" value="10"/>
 				</model>
 			</model>
 
 			<model name="time" type="UniSim::PhotoThermalTime">
-				<parameter name="T0" value="0"/>
+				<parameter name="T0" value="4"/>
 			</model>
 			
 			<model name="height" type="intercom::Height">
-				<parameter name="h0" value="0"/>
-				<parameter name="hmax" value="1.6"/>
+				<parameter name="h0" value="0.01"/>
+				<parameter name="hmax" value="1"/>
 				<parameter name="tm" value="500"/>
 			</model>
 			
@@ -65,12 +63,12 @@
 					<parameter name="kDiffuse" value="0.7"/>
 
 					<model name="area" type="UniSim::Stage">
-						<parameter name="duration" value="500"/>
+						<parameter name="duration" value="300"/>
 					</model>
 
 					<model name="specificLeafArea" type="intercom::SpecificLeafArea">
 						<parameter name="initial" value="240"/>
-						<parameter name="slope" value="0"/>
+						<parameter name="slope" value="-0.075"/>
 					</model>
 
 					<model name="density" type="intercom::AreaDensitySymmetric"/>
@@ -82,8 +80,8 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="300"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0.45)(flowering 0)(senescent 0))"/>
+					<model name="partition" type="intercom::PartitioningFixed">
+						<parameter name="value" value="0.5"/>
 					</model>
 				</model>
 			</model>
@@ -112,8 +110,8 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="600"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0.45)(flowering 0)(senescent 0))"/>
+					<model name="partition" type="intercom::PartitioningFixed">
+						<parameter name="value" value="0.2"/>
 					</model>
 				</model>
 			</model>
@@ -142,8 +140,8 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="200"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0)(flowering 0.2)(senescent 0))"/>
+					<model name="partition" type="intercom::PartitioningFixed">
+						<parameter name="value" value="0.05"/>
 					</model>
 				</model>
 			</model>
@@ -154,23 +152,17 @@
 					<model name="mass" type="UniSim::Stage">
 						<parameter name="duration" value="600"/>
 					</model>
-					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0.1)(flowering 0.8)(senescent 1))"/>
+					<model name="partition" type="intercom::PartitioningFixed">
+						<parameter name="value" value="0.25"/>
 					</model>
 				</model>
 			</model>
-
+			
 			<!-- Observations -->
 			<dataset name="obs_height">
 				<parameter name="filename" value="cirar_height_2005.txt"/>
 				<parameter name="headerLines" value ="1"/>
 				<parameter name="columns" value="((day_in_year 2) (height 3))"/>
-			</dataset>
-			<dataset name="obs_mass">
-				<parameter name="filename" value="cirar_organs_2005.txt"/>
-				<parameter name="headerLines" value ="1"/>
-				<parameter name="columns" 
-				value="((day_in_year 2) (leaves 3)(stem 4)(flowers 5))"/>
 			</dataset>
 		</model>
 	</model>
@@ -222,7 +214,7 @@
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="LAI" axis="y" value="cirsium[lai]"/>
 		<variable label="early" axis="y" value="field[isInEarlyGrowth]"/>
-	</output>
+    </output>
 
     <output type="plot">
 		<parameter name="title" value="Plant energy budget (kg/ha/day)"/>
@@ -234,7 +226,7 @@
     </output>
 
     <output type="plot">
-		<parameter name="title" value="Plant allocation (g/day)"/>
+		<parameter name="title" value="Plant allocation (g/plant/day)"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Leaves" axis="y" value="cirsium/leaves[allocatedPerPlant]"/>
 		<variable label="Stem" axis="y" value="cirsium/stem[allocatedPerPlant]"/>
@@ -261,10 +253,6 @@
 		<parameter name="title" value="Mass of organs (g/plant)"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Organ" axis="y" value="mass/mass[number]"/>
-		<data axis="x" label="Day" value="obs_mass[day_in_year]"/>
-		<data axis="y" label="obs le" value="obs_mass[leaves]"/>
-		<data axis="y" label="obs st" value="obs_mass[stem]"/>
-		<data axis="y" label="obs fl" value="obs_mass[flowers]"/>
     </output>
 	
 	<output type="plot">
@@ -296,21 +284,29 @@
 	<output type="table">
 		<parameter name="filename" value="intercom.prn"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Day length" axis="y" value="calendar[dayLength]"/>
-		<variable label="Pt-time" axis="y" value="time[total]"/>
-		<variable label="areaLAI" axis="y" value="leaves/area[lai]"/>
+		<variable label="Plant_LAI" axis="y" value="cirsium[lai]"/>
+		<variable label="early" axis="y" value="field[isInEarlyGrowth]"/>
 
-		<variable label="Plant CO2 assim" axis="y" value="cirsium[CO2assimilation]"/>
+		<variable label="Mleaves" axis="y" value="leaves/mass/mass[number]"/>
+		<variable label="Mstem" axis="y" value="stem/mass/mass[number]"/>
+		<variable label="Mflowers" axis="y" value="flowers/mass/mass[number]"/>
 
-		<variable label="Organ" axis="y" value="mass/partition[value]"/>
-		
-		<variable label="AllocTotal" axis="y" value="cirsium[netAllocation]"/>
-		<variable label="AllocOrgan" axis="y" value="cirsium/*[allocatedPerPlant]"/>
-		
-		<variable label="leaves-mass" axis="y" value="cirsium/leaves/mass/mass[number]"/>
-		<variable label="leaves-area" axis="y" value="cirsium/leaves/area[area]"/>
-		<variable label="SLA" axis="y" value="specificLeafArea[value]"/>
-		
-	</output>
+		<variable label="Aleaves" axis="y" value="leaves/area/area[number]"/>
+		<variable label="Astem" axis="y" value="stem/area/area[number]"/>
+		<variable label="Aflowers" axis="y" value="flowers/area/area[number]"/>
+
+		<variable label="Allocleaves" axis="y" value="leaves/area[allocation]"/>
+		<variable label="Allocstem" axis="y" value="stem/area[allocation]"/>
+		<variable label="Allocflowers" axis="y" value="flowers/area[allocation]"/>
+
+		<variable label="INleaves" axis="y" value="leaves/area/area[inflowTotal]"/>
+		<variable label="INstem" axis="y" value="stem/area/area[inflowTotal]"/>
+		<variable label="INflowers" axis="y" value="flowers/area/area[inflowTotal]"/>
+
+		<variable label="DTleaves" axis="y" value="leaves/area/area[timestep]"/>
+		<variable label="DTstem" axis="y" value="stem/area/area[timestep]"/>
+		<variable label="DTflowers" axis="y" value="flowers/area/area[timestep]"/>
+
+		</output>
 
 </simulation>

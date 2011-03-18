@@ -48,7 +48,7 @@ private:
     QFile test;
 
     // pull variables
-    double value, lai, photosynthesisPerDay[2];
+    double value, lai, photosynthesisPerDay[2], grossProduction;
 
     // push variables
     double allocation;

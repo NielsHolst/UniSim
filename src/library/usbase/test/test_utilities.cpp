@@ -841,6 +841,15 @@ void TestUtilities::testDecodeListOfStringDoubles() {
     QCOMPARE(decoded, expected);
 }
 
+void TestUtilities::testDecodeListOfStringDoubles2() {
+    QMap<QString,double> decoded, expected;
+    decoded = decodeList<QString,double>("((Tmin 20)(Tmax 20)(irradiationMJ 20))");
+    expected["Tmin"] = 20;
+    expected["Tmax"] = 20;
+    expected["irradiationMJ"] = 20;
+    QCOMPARE(decoded, expected);
+}
+
 void TestUtilities::testDecodeListOfIntDates() {
     QMap<int,QDate> decoded, expected;
     decoded = decodeList<int,QDate>("( (7 1/2/2010) (-2 4/8/2008) (0 24/12/2017))");

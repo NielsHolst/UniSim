@@ -22,10 +22,10 @@
 	</model>
 
 	<model name="field" type="intercom::Community">
-		<parameter name="earlyGrowthThreshold" value="0.1"/>
+		<parameter name="earlyGrowthThreshold" value="1"/>
 				
 		<model name="cirsium" type="intercom::Plant">
-			<parameter name="density" value="16"/> <!-- observations from 1/16 m2 plots-->
+			<parameter name="density" value="40"/> 
 			
 			<model name="phenology" type="intercom::Phenology">
 				<model name="vegetative" type="UniSim::Stage">

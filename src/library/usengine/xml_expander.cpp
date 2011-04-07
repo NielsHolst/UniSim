@@ -30,113 +30,97 @@ namespace {
 				  << "Error message: " << message;
 		}
 	};
-	
+
+    const int MAX_LEVELS = 100;
 }
 
 
 namespace UniSim {
 
-XmlExpander::XmlExpander(QString xmlFile, QString appendedName)
-	: _xmlFile(xmlFile), _appendedName(appendedName)
+XmlExpander::XmlExpander(QString xmlFilePath_)
+    : xmlFilePath(xmlFilePath_)
 {
-    if (xmlFile.size() == 0)
-        throw XmlExpanderEx(xmlFile, "Name of XML file is empty");
-    if (!QFile(xmlFile).exists())
-        throw XmlExpanderEx(xmlFile, "File not found");
-    if (!QDir::isAbsolutePath(xmlFile))
-        throw XmlExpanderEx("Must have absolute file path, got " + xmlFile);
 }
 
-void XmlExpander::expand()
-{
-    int pos = _xmlFile.lastIndexOf(".");
-	if (pos < 0) pos = _xmlFile.size();
-
-	
+void XmlExpander::expand() {
 	QFile f, g;	
 	int i = 0;
 	do {	
 		f.close();
 		g.close();
-		f.setFileName(appendedFileName(i==0 ? QString() : "_0" + QString::number(i)));
-		g.setFileName(appendedFileName("_0" + QString::number(i+1)));
+        QString inFilePath = (i == 0) ? xmlFilePath : temporaryFilePath(QString::number(i));
+        QString outFilePath = temporaryFilePath(QString::number(i+1));
+        f.setFileName(inFilePath);
+        g.setFileName(outFilePath);
 		       
-		if (!f.open(QIODevice::Text | QIODevice::ReadOnly))   throw XmlExpanderEx(_xmlFile, "Cannot open file: "+f.fileName());
-		if (!g.open(QIODevice::Text | QIODevice::WriteOnly))  throw XmlExpanderEx(_xmlFile, "Cannot open file: "+g.fileName());
-	} while (i++ < 20 && expand(&f, &g));
+        if (!f.open(QIODevice::Text | QIODevice::ReadOnly))
+            throw XmlExpanderEx(xmlFilePath, "Cannot open file: " + inFilePath);
+        if (!g.open(QIODevice::Text | QIODevice::WriteOnly))
+            throw XmlExpanderEx(xmlFilePath, "Cannot open file: " + outFilePath);
+    } while (i++ < MAX_LEVELS && expand(&f, &g));
 
-	f.close();
-	g.close();
-	if (i==20) throw XmlExpanderEx(_xmlFile, "XML file cannot be expanded more than 20 times. Maybe UniSim 'select' statements form an endless loop?");
+    if (i == MAX_LEVELS)
+        throw XmlExpanderEx(xmlFilePath, "XML file cannot be expanded more than " +
+                            QString::number(MAX_LEVELS) + "times.");
 
-	f.setFileName(newFileName());
-	if (f.exists()) {
-		if(!f.remove()) throw XmlExpanderEx(_xmlFile, "Cannot delete old " + newFileName());
-	}
-	
-	if (!g.rename(newFileName()))
-		throw XmlExpanderEx(_xmlFile, "Cannot rename " + g.fileName() + " to " + newFileName());
+    _newFileName = f.fileName();
 } 
 
-QString XmlExpander::newFileName() const
-{
-    QString filePath = appendedFileName(_appendedName);
-    QString name = QFileInfo(filePath).fileName();
-
+QString XmlExpander::temporaryFilePath(QString tail) const {
     QDir tempFolder = FileLocations::location(FileLocationInfo::Temporary);
+    QString path = filePathWithTail(tail);
+    QString name = QFileInfo(path).fileName();
     return tempFolder.path() + "/" + name;
 }
 
-QString XmlExpander::appendedFileName(QString append) const
-{
-	int pos = _xmlFile.indexOf(".");
-	if (pos < 0) pos = _xmlFile.size();
-	QString fn(_xmlFile);		
-	return fn.insert(pos, append);
+QString XmlExpander::filePathWithTail(QString tail) const {
+    QString path = xmlFilePath;
+    int pos = path.indexOf(".");
+    return (pos < 0) ? path + tail : path.insert(pos, tail);
 }
-	
-bool XmlExpander::expand(QFile *fromXml, QFile *toXml)
-{
+
+bool XmlExpander::expand(QFile *fromXml, QFile *toXml) {
 	bool expanded = false;
 	
-	QXmlStreamReader *reader = new QXmlStreamReader;
+    reader = new QXmlStreamReader;
 	reader->setDevice(fromXml);
-	QXmlStreamWriter *writer = new QXmlStreamWriter(toXml);
+    writer = new QXmlStreamWriter(toXml);
 
 	writer->setAutoFormatting(true);
 	writer->setCodec("ISO-8859-1");
 	writer->writeStartDocument();
 	
-	while (!reader->isEndDocument()) {
-		reader->readNext();
-		if (reader->hasError()) {
-			QString msg = QString("Error in UniSim input file.") 
-				+ "\nIn line: " + QString::number(reader->lineNumber())
-				+ "\nIn column: " + QString::number(reader->columnNumber())
-				+ "\nXML-reader reported:" + reader->errorString() 
-				+ "\nLast token read: " + reader->tokenString();
-			throw XmlExpanderEx(_xmlFile, msg);
-		}
-		if (reader->isStartElement()) {
-			writer->writeStartElement(reader->name().toString());
-			_path.push(reader->name().toString());
-			for (int i = 0; i < reader->attributes().size(); ++i) {
-				if (reader->attributes()[i].name() == "name") 
-					_path.push(_path.pop() +"[@name='" + reader->attributes()[i].value().toString() + "']");
-				if (reader->attributes()[i].name() != "select")  {
-					writer->writeAttribute(reader->attributes()[i]);
-				}
-				else {
-					writer->writeAttribute("copied-from", reader->attributes()[i].value().toString());
-					writeQuery(stackedPath() + "/" + reader->attributes()[i].value().toString(), writer);
-					expanded = true;
-				}
-			}
-		}
-		else if (reader->isEndElement()){
-			writer->writeEndElement();
-			_path.pop();
-		}
+    bool writeEnd = true;
+    while (!reader->isEndDocument()) {
+        readNext();
+        ElementType type = elementType();
+
+        QString elementName;
+        if (type==Begin || type==Select) {
+            elementName = reader->name().toString();
+            path.push(elementName);
+        }
+
+        switch (type) {
+        case Begin:
+            writer->writeStartElement(elementName);
+            writer->writeAttributes(reader->attributes());
+            break;
+        case Select:
+            writeQuery(reader->attributes().value("select").toString());
+            writeEnd = false;
+            expanded = true;
+            break;
+        case Other:
+            break;
+        case End:
+            path.pop();
+            if (writeEnd){
+                writer->writeEndElement();
+            }
+            writeEnd = true;
+        }
+
 	}
 
 	writer->writeEndDocument();
@@ -146,25 +130,120 @@ bool XmlExpander::expand(QFile *fromXml, QFile *toXml)
 	return expanded;
 }
 
-void XmlExpander::writeQuery(QString queryString, QXmlStreamWriter *writer)
-{
-	QXmlQuery query;
-	QString queryStringWithDoc = "doc('" + _xmlFile + "')" + queryString;
-	query.setQuery(queryStringWithDoc);
-	if (!query.isValid()) throw XmlExpanderEx(_xmlFile, "UniSim file contains illegal 'select' statement. This not legal XQuery syntax: "+queryString);
-	
-	XmlQueryToWriter toWriter(&query, writer);
-	bool ok = query.evaluateTo(&toWriter);
-	if (!ok) throw XmlExpanderEx(_xmlFile, "Could not carry out XQuery: " + queryStringWithDoc);
-			
+void XmlExpander::readNext() {
+    reader->readNext();
+    checkReader();
 }
+
+void XmlExpander::checkReader() {
+    if (reader->hasError()) {
+        QString msg = QString("Error in UniSim input file.")
+            + "\nIn line: " + QString::number(reader->lineNumber())
+            + "\nIn column: " + QString::number(reader->columnNumber())
+            + "\nXML-reader reported:" + reader->errorString()
+            + "\nLast token read: " + reader->tokenString();
+        throw XmlExpanderEx(xmlFilePath, msg);
+    }
+}
+
+XmlExpander::ElementType XmlExpander::elementType() const {
+    ElementType type;
+    if (reader->isStartElement()) {
+        if (reader->attributes().hasAttribute("select"))
+            type = Select;
+        else
+            type = Begin;
+    }
+    else if (reader->isEndElement())
+       type = End;
+    else
+       type = Other;
+    return type;
+}
+
+void XmlExpander::writeQuery(QString queryString    )
+{
+    QXmlQuery query;
+    QString queryStr = queryString.trimmed();
+    if (queryStr.startsWith("doc")) {
+        if (!queryStr.contains("http"))
+            queryStr = insertDocPath(queryStr);
+    }
+    else
+        queryStr = "doc('" + xmlFilePath + "')" + stackedPath() + "/" + queryStr;
+
+    query.setQuery(queryStr);
+    if (!query.isValid())
+        throw XmlExpanderEx(xmlFilePath, "UniSim file contains illegal 'select' statement. "
+                            "This is not legal XQuery syntax: " + queryStr);
+    bool ok;
+
+    /*
+    XmlQueryToWriter toWriter(&query, writer);
+    ok = query.evaluateTo(&toWriter);
+    if (!ok)
+        throw XmlExpanderEx(xmlFilePath, "Could not carry out XQuery: " + queryStr);
+    */
+
+    QString qResult;
+    ok = query.evaluateTo(&qResult);
+    if (!ok)
+        throw XmlExpanderEx(xmlFilePath, "Could not carry out XQuery: " + queryStr);
+
+    std::cout << "\n" << qPrintable(qResult) << "\n";
+
+    QXmlStreamReader qReader(qResult);
+	while (!qReader.atEnd()) {
+        qReader.readNext();
+		if (qReader.isStartElement()) {
+            QString elementName = reader->name().toString();
+            std::cout << qPrintable("START " + elementName + "\n");
+            writer->writeStartElement(elementName);
+            writer->writeAttributes(qReader.attributes());
+		}
+		else if (qReader.isEndElement()) {
+            std::cout << "END\n";
+            writer->writeEndElement();
+		}
+	}
+    if (qReader.hasError()) {
+        QString msg = "Error in 'select' XML.\n"
+                      "Query = \"" + queryStr + "\"\n"
+                      "Result = \"" + qResult + "\"\n";
+		throw XmlExpanderEx(xmlFilePath, msg);
+	}
+
+}
+
+QString XmlExpander::insertDocPath(QString queryStr) const {
+    int from = queryStr.indexOf("('");
+    int to = queryStr.indexOf("')");
+    int length = to - from - 2;
+    if (from==-1 || to==-1 || length<=0)
+        throw XmlExpanderEx(xmlFilePath, "Name of document in XML 'select' not properly parenthesized: " +
+                            queryStr + ". Use this format: doc('my_file.xml')/...");
+    QString docName = queryStr.mid(from + 2, length);
+
+    int tailFrom = queryStr.indexOf("/");
+    QString tail = queryStr.mid(tailFrom);
+    QString path = QFileInfo(xmlFilePath).absoluteDir().absolutePath();
+    QString docPath = path + "/" + docName;
+
+    QString result = "doc('" + docPath + "')" + tail;
+    return result;
+}
+
 
 QString XmlExpander::stackedPath () const
 {
 	QString s;
-	for (int i = 0; i < _path.size(); ++i) 
-		s += "/" + _path[i];
+    for (int i = 0; i < path.size(); ++i)
+        s += "/" + path[i];
 	return s;
 }	
+
+QString XmlExpander::newFileName() const {
+    return _newFileName;
+}
 
 } // namespace

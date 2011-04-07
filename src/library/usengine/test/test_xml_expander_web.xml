@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="30"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="fixedModels"/>
+		</sequence>
+	</integrator>
+
+	<model oldname="calendar" 
+	select="doc('http://www.ecolmod.org/test/test_xml_expander_web_include.xml')/simulation/model[@name='calendar']">
+	</model>	
+
+	<model name="fixedModels">
+		<model name="fixed" type="UniSim::Fixed">
+			<parameter name="pullVariables" value="((Tavg 22.5)(I 32))"/>
+			<parameter name="parameters" value="((A 6.023e23)(p 3.1214 ))"/>
+			<parameter name="pushVariables" value="((m 0.9)(f 2.5))"/>
+		</model>
+		
+		<model name="empty" type="UniSim::Fixed"/>
+		
+		<model name="justPullVariables" type="UniSim::Fixed">
+			<model oldname="fixedCopy" select="../../model[@name='fixed']"/>
+			<parameter name="pullVariables" value = "((Tmin 20)(Tmax 20)(irradiationMJ 20))"/>
+		</model>
+	</model>
+	
+	<output type="table">
+		<parameter name="filename" value="test_scheduled.prn"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
+		<variable label="Value" axis="y" value="calendar[dayOfYear]"/>
+	</output>
+
+</simulation>

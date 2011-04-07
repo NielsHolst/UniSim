@@ -64,7 +64,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
     outputParameterParam.clear();
     outputDataParam.clear();
 
-    XmlExpander expander(fileName, "_expanded");
+    XmlExpander expander(fileName);
 	emit beginExpansion();
 	expander.expand();
 	emit endExpansion();	

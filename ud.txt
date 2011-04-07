@@ -1,0 +1,223 @@
+d402f59a	(Niels Holst	2011-02-18 09:57:21 +0100	1)/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	2)** Copyrights reserved.
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	3)** Released under the terms of the GNU General Public License version 3.0 or later.
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	4)** See www.gnu.org/copyleft/gpl.html.
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	5)*/
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	6)#include <cmath>
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	7)#include <iostream>
+dea3d287	(Niels Holst	2010-02-16 13:32:38 +0100	8)#include <QMessageBox>
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	9)#include <QTextStream>
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	10)#include <usbase/clock.h>
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	11)#include <usbase/file_locations.h>
+de240b40	(Niels Holst	2010-08-26 00:17:41 +0200	12)#include <usbase/parameter.h>
+1a4c273a	(Niels Holst	2010-06-03 12:22:36 +0200	13)#include <usbase/pull_variable.h>
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	14)#include <usbase/push_variable.h>
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	15)#include <usbase/utilities.h>
+9e75854b	(Niels Holst	2010-07-16 01:45:56 +0200	16)#include "../unisim_models/calendar.h"
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	17)#include "area.h"
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	18)#include "area_density.h"
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	19)#include "constants.h"
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	20)#include "plant.h"
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	21)#include "weather.h"
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	22)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	23)using namespace UniSim;
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	24)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	25)namespace intercom{
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	26)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	27)Area::Area(UniSim::Identifier name, QObject *parent)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	28)	: Model(name, parent)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	29){
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	30)    setRecursionPolicy(Update, ChildrenLast);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	31)    new Parameter<double>("scatteringCoeff", &scatteringCoeff, 0.2, this,
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	32)                          "Light scattering coefficient. Usually the default value is used.");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	33)    new Parameter<double>("kDiffuse", &kDiffuse, 0.7, this,
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	34)                          "Light extinction coefficient of diffuse light");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	35)    new Parameter<bool>("writeTestOutput", &writeTestOutput, false, this,
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	36)                          "Write detailed output? The resulting file has a name that begins with"
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	37)                          "\"area_test\" followed by the full name of the @F Area object");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	38)
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	39)    new PullVariable<double>("value", &value, this,
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	40)                             "The area of this organ per plant (cm @Sup {2} per plant)");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	41)    new PullVariable<double>("LAI", &lai, this,
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	42)                             "Leaf area index of this organ");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	43)    new PullVariable<double>("lightAbsorption", &photosynthesisPerDay[Absorption], this,
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	44)                             "Light absorbed by this area (W per m @Sup 2 ground per day)");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	45)    new PullVariable<double>("CO2Assimilation", &photosynthesisPerDay[Assimilation], this,
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	46)                             "CO @Sub 2 assimilated by this area (kg CO @Sub 2 per ha ground per day)");
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	47)    new PullVariable<double>("grossProduction", &grossProduction, this,
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	48)                             "Carbohydrates produced by this area (kg CH @Sub {2}O per ha ground per day)");
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	49)    new PullVariable<double>("allocation", &allocation, this,
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	50)                             "Allocated dry matter (g per plant per day) to be converted into area"
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	51)                             "Same as @F allocation push variable.");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	52)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	53)    new PushVariable<double>("allocation", &allocation, this,
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	54)                             "Allocated dry matter (g per plant per day) to be converted into area");
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	55)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	56)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	57)void Area::initialize() {
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	58)    calendar = seekOne<Model*>("calendar");
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	59)    weather = seekOne<Model*>("weather");
+4e2c2cd8	(Niels Holst	2010-04-09 10:10:42 +0200	60)    plant = seekOneAscendant<Plant*>("*");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	61)    plantHeightModel = plant->seekOneDescendant<Model*>("height");
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	62)    area = seekOneChild<Model*>("area");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	63)    density = seekOneChild<AreaDensity*>("*");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	64)    specificLeafArea = seekOneChild<Model*>("specificLeafArea");
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	65)    lightUseEfficiency = seekOneChild<Model*>("lightUseEfficiency");
+4e2c2cd8	(Niels Holst	2010-04-09 10:10:42 +0200	66)    assimilationMax = seekOneChild<Model*>("amax");
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	67)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	68)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	69)void Area::reset() {
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	70)    value = lai =
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	71)    photosynthesisPerDay[Absorption] =
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	72)    photosynthesisPerDay[Assimilation] =
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	73)    grossProduction =
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	74)    allocation = 0.;
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	75)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	76)    if (writeTestOutput) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	77)        QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	78)        QString fileName = "area_test_" + plant->fullName() + ".prn";
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	79)        fileName = fileName.replace(QRegExp("[/:\\[\\]]"),"_");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	80)        QString filePath = path + "/" + fileName;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	81)        test.setFileName(filePath);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	82)        bool ok = test.open(QIODevice::Text | QIODevice::WriteOnly);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	83)        if (!ok)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	84)            throw Exception("Could not open file for test output:\""+filePath+"\"");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	85)    }
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	86)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	87)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	88)void Area::updateLai() {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	89)    double density = plant->pullVariable<double>("density");
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	90)    value = area->pullVariable<double>("number");
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	91)    lai = density*value/10000.;
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	92)}
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	93)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	94)void Area::update() {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	95)    // Fetch current values
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	96)    dayLength = calendar->pullVariable<double>("dayLength");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	97)    plantHeight = plantHeightModel->pullVariable<double>("height");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	98)    double specificLA = specificLeafArea->pullVariable<double>("value");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	99)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	100)    // Add allocated carbohydrates as area
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	101)    double newArea = allocation*specificLA;
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	102)	Q_ASSERT(newArea >= 0.);
+53a8c1ef	(Niels Holst	2011-03-02 14:03:37 +0100	103)    area->pushVariable<double>("inflow", newArea);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	104)    updateLai();
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	105)    allocation = 0.;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	106)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	107)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	108)void Area::cleanup() {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	109)    test.close();
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	110)}
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	111)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	112)void Area::setPoint(int hourPoint_, int heightPoint_) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	113)    hourPoint = hourPoint_;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	114)    heightPoint = heightPoint_;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	115)    if (hourPoint == 0 && heightPoint == 0) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	116)        for (int i = 0; i < 2; ++i)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	117)            photosynthesisPerDay[i] = 0.;
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	118)    }
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	119)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	120)    double hour = 12. + 0.5*dayLength*XGAUSS3[hourPoint];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	121)    clock()->doTick(hour);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	122)    sinb = calendar->pullVariable<double>("sinb");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	123)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	124)    height = plantHeight*XGAUSS5[heightPoint];
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	125)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	126)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	127)const double * Area::calcELAI() {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	128)    static double elai[3];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	129)    updateExtensionCoeff();
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	130)    double densityAbove = density->above(height);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	131)    for (int i = 0; i < 3; ++i)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	132)        elai[i] = k[i]*lai*densityAbove;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	133)    return elai;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	134)}
+e1f25e59	(Niels Holst	2010-10-05 21:48:03 +0200	135)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	136)void Area::updateExtensionCoeff() {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	137)    double scat = sqrt(1 - scatteringCoeff);
+e1f25e59	(Niels Holst	2010-10-05 21:48:03 +0200	138)    if (sinb > 0.) {
+e1f25e59	(Niels Holst	2010-10-05 21:48:03 +0200	139)        k[Diffuse] = kDiffuse;
+e1f25e59	(Niels Holst	2010-10-05 21:48:03 +0200	140)        k[DirectDirect] = 0.5/sinb*kDiffuse/0.8/scat;
+e1f25e59	(Niels Holst	2010-10-05 21:48:03 +0200	141)        k[DirectTotal] = k[DirectDirect]*scat;
+e1f25e59	(Niels Holst	2010-10-05 21:48:03 +0200	142)    }
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	143)    else {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	144)        k[0] = k[1] = k[2] = 0.;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	145)    }
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	146)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	147)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	148)void Area::updatePhotosynthesis(const double *sumELAI) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	149)    updateReflection();
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	150)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	151)    double par[3];
+03bd5ca9	(Niels Holst	2010-08-11 10:40:55 +0200	152)    par[Diffuse] = weather->pullVariable<double>("parDiffuse");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	153)    par[DirectDirect] =
+03bd5ca9	(Niels Holst	2010-08-11 10:40:55 +0200	154)    par[DirectTotal] = weather->pullVariable<double>("parDirect");
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	155)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	156)    double absorbed[3];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	157)    for (int i = 0; i < 3; ++i) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	158)        double available = (1. - reflection[i])*par[i]*exp(-sumELAI[i]);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	159)        absorbed[i] = k[i]*available;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	160)    }
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	161)    double shaded[2];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	162)    shaded[Absorption] = absorbed[Diffuse] + std::max(absorbed[DirectTotal] - absorbed[DirectDirect], 0.);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	163)    shaded[Assimilation] = assimilation(shaded[Absorption]);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	164)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	165)    double sunlit[2] = {0.,0.};
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	166)    double perpLight = (sinb == 0.) ? 0. : (1. - reflection[DirectDirect])*par[DirectTotal]/sinb;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	167)    for (int v = 0; v < 3; ++v) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	168)        double absorbed = shaded[Absorption] + XGAUSS3[v]*perpLight;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	169)        sunlit[Absorption] += WGAUSS3[v]*absorbed;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	170)        sunlit[Assimilation] += WGAUSS3[v]*assimilation(absorbed);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	171)    }
+dea3d287	(Niels Holst	2010-02-16 13:32:38 +0100	172)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	173)    double fsl = exp(-sumELAI[DirectDirect]);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	174)    double perLA[2];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	175)    for (int i = 0; i < 2; ++i)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	176)        perLA[i] = (1. - fsl)*shaded[i] + fsl*sunlit[i];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	177)    perLA[Absorption] *= 3600*1e-6;
+9e75854b	(Niels Holst	2010-07-16 01:45:56 +0200	178)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	179)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	180)    double densityAt = density->at(height);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	181)    double increment[2];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	182)    for (int i = 0; i < 2; ++i) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	183)        increment[i] = perLA[i]*lai*densityAt*plantHeight*dayLength*WGAUSS3[hourPoint]*WGAUSS5[heightPoint];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	184)        photosynthesisPerDay[i] += increment[i];
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	185)    }
+00000000	(Not Committed Yet	2011-03-22 10:08:11 +0100	186)    grossProduction = 30./44.*photosynthesisPerDay[Assimilation];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	187)    if (writeTestOutput) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	188)        QString s;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	189)        QTextStream str(&s);
+5185f3c1	(Niels Holst	2011-02-17 11:48:45 +0100	190)        str << calendar->pullVariable<int>("dayOfYear") << '\t' << calendar->pullVariable<double>("daylength") << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	191)            << hourPoint << '\t' << heightPoint << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	192)            << par[Diffuse] << '\t' << par[DirectDirect] << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	193)            << shaded[Absorption] << '\t' << shaded[Assimilation] << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	194)            << sunlit[Absorption] << '\t' << sunlit[Assimilation] << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	195)            << fsl << '\t' << height << '\t' << densityAt << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	196)            << perLA[0] << '\t' << perLA[1] << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	197)            << increment[0] << '\t' << increment[1] << '\t'
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	198)            << photosynthesisPerDay[0] << '\t' << photosynthesisPerDay[1];
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	199)        for (int i = 0; i < 3; ++i) {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	200)            double available = (1. - reflection[i])*par[i]*exp(-sumELAI[i]);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	201)            str << '\t' << available;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	202)        }
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	203)        str << '\n';
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	204)        test.write(str.string()->toAscii());
+5e949abf	(Niels Holst	2010-05-07 13:49:37 +0200	205)    }
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	206)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	207)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	208)void Area::updateReflection() {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	209)    double refHorz = (1 - sqrt(0.8))/(1 + sqrt(0.8));
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	210)    double refSphec = refHorz*2./(1. + 1.6*sinb);
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	211)    reflection[Diffuse] = refHorz;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	212)    reflection[DirectDirect] = scatteringCoeff;
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	213)    reflection[DirectTotal] = refSphec;
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	214)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	215)
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	216)double Area::assimilation(double absorption) const {
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	217)    double efficiency = lightUseEfficiency->pullVariable<double>("value");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	218)    double amax = assimilationMax->pullVariable<double>("value");
+6cdd7857	(Niels Holst	2011-02-09 10:33:25 +0100	219)    return amax == 0. ? 0. : amax*(1. - exp(-absorption*efficiency/amax));
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	220)}
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	221)
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	222)} //namespace
+a7543198	(Niels Holst	2010-01-22 12:28:03 +0100	223)

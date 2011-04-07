@@ -18,8 +18,10 @@ include ($${US_ENGINE}/engine.pri)
 #include ($${US_PLUGINS}/intercom_models/intercom_models.pri)
 
 HEADERS += \
+    $${US_BASE}/test/xml_node.h \
     $${US_BASE}/test/test_component.h \
     $${US_BASE}/test/test_identifier.h \
+    $${US_BASE}/test/test_xml_node.h \
     $${US_BASE}/test/test_parameter.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
@@ -29,6 +31,7 @@ HEADERS += \
     $${US_ENGINE}/test/test_simulation_trickle.h \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
+    $${US_ENGINE}/test/test_xml_expander.h \
     $${US_PLUGINS}/intercom_models/optimize_allocation.h \
     $${US_PLUGINS}/intercom_models/test/test_plant.h \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
@@ -46,12 +49,14 @@ HEADERS += \
 	../log_base.h \
     frequency_distribution.h \
     test_frequency_distribution.h \
-    test_live_simulation.h
+    #test_live_simulation.h
     #test_plugins.h
 
 SOURCES += \
+    $${US_BASE}/test/xml_node.cpp \
     $${US_BASE}/test/test_component.cpp \
     $${US_BASE}/test/test_identifier.cpp \
+    $${US_BASE}/test/test_xml_node.cpp \
     $${US_BASE}/test/test_parameter.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
@@ -61,6 +66,7 @@ SOURCES += \
     $${US_ENGINE}/test/test_simulation_trickle.cpp \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
+    $${US_ENGINE}/test/test_xml_expander.cpp \
     $${US_PLUGINS}/intercom_models/optimize_allocation.cpp \
     $${US_PLUGINS}/intercom_models/test/test_plant.cpp \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
@@ -78,6 +84,6 @@ SOURCES += \
 	../log_base.cpp \
     frequency_distribution.cpp \
     test_frequency_distribution.cpp \
-    test_live_simulation.cpp \
+    #test_live_simulation.cpp \
     #test_plugins.cpp \
 	main.cpp 

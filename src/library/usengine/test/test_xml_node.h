@@ -14,6 +14,7 @@ private slots:
     void testParseNodesOneRoot();
     void testParseNodesManyRoots();
     void testParseWithAttributes();
+    void testParseFromFile();
 
     void testDeepEqualsTrue();
     void testDeepEqualsUnequalNodes();
@@ -22,8 +23,16 @@ private slots:
     void testMergeAttributes();
     void testMergeNodes();
 
+    void testBuildQueryString();
+    void testCompileNoSelect();
+    void testCompileInvalidSelect();
+    void testCompileEmptySelect();
+    void testCompileOneSelect();
+    void testCompileNestedSelect();
+
 private:
     void checkParsedNodes(QObject *a);
+    QString filePath(QString fileName) const;
 };
 
 DECLARE_TEST(TestXmlNode)

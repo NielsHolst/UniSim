@@ -19,7 +19,9 @@ class NamedObject : public QObject
 public:
     NamedObject(Identifier name, QObject *parent=0);
     Identifier id() const;
+    void setId(Identifier id);
     QString fullName() const;
+    QString fullLabel() const;
 
     template <class T> T peekOneChild(QString name);
     template <class T> T seekOneChild(QString name);

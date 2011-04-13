@@ -13,6 +13,11 @@ NamedObject::NamedObject(Identifier name, QObject *parent)
 {
     setObjectName(name.key());
 }
+
+void NamedObject::setId(Identifier id) {
+    _id = id;
+}
+
 Identifier NamedObject::id() const {
     return _id;
 }
@@ -20,5 +25,13 @@ Identifier NamedObject::id() const {
 QString NamedObject::fullName() const {
     return UniSim::fullName(this);
 }
+
+QString NamedObject::fullLabel() const {
+    QString heading;
+    if (parent())
+        heading = dynamic_cast<NamedObject*>(parent())->fullLabel();
+    return heading + "/" + _id.label();
+}
+
 } //namespace
 

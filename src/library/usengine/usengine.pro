@@ -26,6 +26,7 @@ HEADERS += 	\
             $${US_ENGINE}/test_dataset.h \
             $${US_ENGINE}/xml_elements_reader.h \
             $${US_ENGINE}/xml_expander.h \
+            $${US_ENGINE}/xml_node.h \
             $${US_ENGINE}/xml_query_to_writer.h
 
 SOURCES += 	\
@@ -42,5 +43,6 @@ SOURCES += 	\
             $${US_ENGINE}/test_dataset.cpp \
             $${US_ENGINE}/xml_elements_reader.cpp \
             $${US_ENGINE}/xml_expander.cpp \
+            $${US_ENGINE}/xml_node.cpp \
             $${US_ENGINE}/xml_query_to_writer.cpp
 			

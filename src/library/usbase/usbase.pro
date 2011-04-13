@@ -37,8 +37,7 @@ HEADERS += \
         $${US_BASE}/time.h \
         $${US_BASE}/utilities.h \
         $${US_BASE}/version.h \
-        $${US_BASE}/weather_file.h
-
+        $${US_BASE}/weather_file.h 
 SOURCES += \
         $${US_BASE}/authors.cpp \
         $${US_BASE}/clock.cpp \
@@ -63,5 +62,5 @@ SOURCES += \
         $${US_BASE}/time.cpp \
         $${US_BASE}/utilities.cpp \
         $${US_BASE}/version.cpp \
-        $${US_BASE}/weather_file.cpp
+        $${US_BASE}/weather_file.cpp 
 

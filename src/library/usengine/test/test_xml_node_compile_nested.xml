@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation>
+	<model name="A">
+		<model name="local" origin="base">
+			<model name="local1"/>
+		</model>
+		<model name="x" origin="base">
+			<model name="d" origin="base">
+				<model name="new1" select="/simulation/model[@name='A']/model[@name='local']"/>
+				<model name="d1" origin="base"/>
+				<model name="new2" select="/simulation/model[@name='A']/model[@name='local']"/>
+				<model name="d2"/>
+			</model>"
+			<model name="e"/>
+		</model>
+	</model>
+	<model name="B">
+		<model name="xyz" origin="derived" extra="x" select="../../model[@name='A']/model[@name='x']">
+			<model name="d1">
+				<model name="e"/>
+			</model>
+			<model origin="derived" name="d" >
+				<model name="a"/>
+				<model name="d1" origin="derived" />
+			</model>
+			<model name="x1" extra="x"/>
+			<model name="x2"/>
+		</model>
+	</model>
+	<model name="C"/>
+</simulation>

@@ -70,6 +70,12 @@ bool Identifier::equals(const char *label) const {
     return equals(QString(label));
 }
 
+Identifier& Identifier::operator=(const Identifier &id) {
+    _label = id._label;
+    _key = id._key;
+    return *this;
+}
+
 bool operator<(const Identifier &id1, const Identifier &id2) {
     return id1.key() < id2.key();
 }
@@ -77,6 +83,11 @@ bool operator<(const Identifier &id1, const Identifier &id2) {
 bool operator==(const Identifier &id1, const Identifier &id2) {
     return id1.key() == id2.key();
 }
+
+bool operator!=(const Identifier &id1, const Identifier &id2) {
+    return id1.key() != id2.key();
+}
+
 
 }
 

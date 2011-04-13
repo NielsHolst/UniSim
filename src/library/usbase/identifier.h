@@ -19,6 +19,7 @@ public:
     QString withoutNamespace() const;
     bool equals(QString label) const;
     bool equals(const char *label) const;
+    Identifier& operator=(const Identifier &id);
 private:
     void makeKey();
     QString _label, _key;
@@ -26,6 +27,7 @@ private:
 
 bool operator<(const Identifier &id1, const Identifier &id2);
 bool operator==(const Identifier &id1, const Identifier &id2);
+bool operator!=(const Identifier &id1, const Identifier &id2);
 
 typedef QList<Identifier> Identifiers;
 

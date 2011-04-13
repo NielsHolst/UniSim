@@ -22,19 +22,29 @@ public:
     typedef QMap<Identifier, QString> Attributes;
 
     XmlNode(Identifier name, QObject *parent);
+    static XmlNode* createFromString(QString s);
+    static XmlNode* createFromFile(QString filePath);
+    static XmlNode* createFromReader(QXmlStreamReader *reader, QString errorText);
+
     void setAttribute(Identifier name, QString value);
     QString attribute(Identifier name) const;
     const Attributes& attributes() const;
     XmlNode* childNode(int i) const;
-    bool equals(const XmlNode *node);
+    QString xmlPath() const;
+    void getTree(QString *s, int level = 0);
 
-    static XmlNode* fromString(QString s);
     void merge(XmlNode *node);
+    void compile(QString filePath);
+    QString buildQueryString(QString filePath, QString queryAttr) const;
+    static QString insertDocPath(QString filePath, QString queryAttr);
 
 private:
     void readNode(QXmlStreamReader *reader, QObject *parent);
     void mergeAttributes(XmlNode *node);
     XmlNode* findMatchingChild(const XmlNode *node);
+    static void readNext(QXmlStreamReader *reader);
+    void overtake(XmlNode *victim);
+
     Attributes _attributes;
 };
 

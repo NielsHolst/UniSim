@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<model name="a">
+	<model name="d">
+		<!-- comment -->
+		<model name="d1"/>
+		<model name="d2"/>
+	</model>
+	<model name="e"/>
+</model>

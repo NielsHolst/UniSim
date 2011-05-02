@@ -15,6 +15,7 @@ private slots:
     void testParseNodesManyRoots();
     void testParseWithAttributes();
     void testParseFromFile();
+    void testWriteToFile();
 
     void testDeepEqualsTrue();
     void testDeepEqualsUnequalNodes();

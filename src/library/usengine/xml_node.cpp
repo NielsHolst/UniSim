@@ -101,6 +101,17 @@ void XmlNode::readNext(QXmlStreamReader *reader) {
            !reader->isEndDocument());
 }
 
+void XmlNode::writeToFile(QString filePath, QString isoCode) const {
+    QString header = "<?xml version=\"1.0\" encoding=\"" + isoCode + "\"?>\n";
+    QString tree;
+    const_cast<XmlNode*>(this)->getTree(&tree);
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::Text | QIODevice::WriteOnly))
+        throw Exception("Cannot open XML file for writing: " + filePath);
+    file.write(qPrintable(header + tree));
+}
+
 void XmlNode::compile(QString filePath) {
     QString queryAttr = attribute("select").trimmed();
     if (!queryAttr.isEmpty()) {
@@ -118,20 +129,8 @@ void XmlNode::compile(QString filePath) {
 
         XmlNode *baseNode = XmlNode::createFromString(queryOutput);
         baseNode->setId(id());
-
-        QString s;
-        baseNode->getTree(&s);
-        std::cout << "BASENODE\n" << qPrintable(queryInput) << "\n"
-                << qPrintable(s) << "\n";
-
         baseNode->merge(this);
-        baseNode->getTree(&s);
-        std::cout << "BASENODE MERGED\n" << qPrintable(s) << "\n";
-
         overtake(baseNode);
-
-        getTree(&s);
-        std::cout << "OVERTAKEN\n" << qPrintable(s) << "\n";
         _attributes.remove("select");
     }
     for (int i = 0; i < children().size(); ++i)
@@ -274,10 +273,16 @@ void XmlNode::getTree(QString *s, int level) {
     *s +=  margin + "<" + id().label();
     for (int i = 0; i < _attributes.size(); ++i)
         *s += " " + _attributes.keys()[i].label() + "=\"" + _attributes.values()[i] + "\"";
-    *s += ">\n";
-    for (int i = 0; i < children().size(); ++i)
-        childNode(i)->getTree(s,level+1);
-    *s += margin + "</" + id().label() + ">\n";
+
+    if (children().isEmpty()) {
+        *s += "/>\n";
+    }
+    else {
+        *s += ">\n";
+        for (int i = 0; i < children().size(); ++i)
+            childNode(i)->getTree(s,level+1);
+        *s += margin + "</" + id().label() + ">\n";
+    }
 }
 
 } //namespace

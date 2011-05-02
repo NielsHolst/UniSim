@@ -17,9 +17,9 @@ private slots:
 	void testParameters();
 	void testOutputOneXY();
 	void testOutputManyXY();
-	void testXmlQuery();
 	void cleanupTestCase();
 private:
+    QString filePath(QString fileName) const;
     UniSim::Simulation *_simulation;
 };
 

@@ -25,7 +25,8 @@ public:
     static XmlNode* createFromString(QString s);
     static XmlNode* createFromFile(QString filePath);
     static XmlNode* createFromReader(QXmlStreamReader *reader, QString errorText);
-
+    void writeToFile(QString filePath, QString isoCode="ISO-8859-1") const;
+	
     void setAttribute(Identifier name, QString value);
     QString attribute(Identifier name) const;
     const Attributes& attributes() const;

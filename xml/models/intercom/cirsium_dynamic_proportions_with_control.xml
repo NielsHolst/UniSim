@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<simulation version="1.0">
+<simulation version="1.0" select="doc('cirsium_output.xml')/simulation">
 
      <integrator type="TimeStepLimited">
          <parameter name="maxSteps" value="200"/>
@@ -169,138 +169,20 @@
 					</model>
 				</model>
 			</model>
+
+			<!-- Observations -->
+			<dataset name="obs_height">
+				<parameter name="filename" value="cirar_height_2005.txt"/>
+				<parameter name="headerLines" value ="1"/>
+				<parameter name="columns" value="((day_in_year 2) (height 3))"/>
+			</dataset>
+			<dataset name="obs_mass">
+				<parameter name="filename" value="cirar_organs_2005.txt"/>
+				<parameter name="headerLines" value ="1"/>
+				<parameter name="columns" 
+				value="((day_in_year 2) (leaves 3)(stem 4)(flowers 5))"/>
+			</dataset>
 		</model>
 	</model>
-
-    <!-- Plots of environment -->
-
-	<output type="plot">
-		<parameter name="title" value="Day length (hours)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="hours" axis="y" value="calendar[dayLength]"/>
-	</output>
-    
-	<output type="plot">
-		<parameter name="title" value="Time scales"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Time" axis="y" value="time[total]"/>
-	</output>
-
-	<output type="plot">
-		<parameter name="title" value="Temperature (oC) and irradiation (MJ/m2/d)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Tday" axis="y" value="weather[Tday]"/>
-		<variable label="Itotal" axis="y" value="weather/records[irradiationMJ]"/>
-    </output>
-
-    <!-- Plots of plant -->
-    <output type="plot">
-		<parameter name="title" value="Plant growth stage"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="GS" axis="y" value="cirsium/phenology/*[number]"/>
-    </output>
-
-    <output type="plot">
-		<parameter name="title" value="Plant density (plants/m2)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="density" axis="y" value="cirsium[density]"/>
-    </output>
-
-    <output type="plot">
-		<parameter name="title" value="Plant height (m)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="height" axis="y" value="cirsium/height[height]"/>
-    </output>
-
-    <output type="plot">
-		<parameter name="title" value="Plant LAI"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="LAI" axis="y" value="cirsium[lai]"/>
-    </output>
-
-    <output type="plot">
-		<parameter name="title" value="Plant energy budget (kg/ha/day)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="CO2 assim." axis="y" value="cirsium[CO2assimilation]"/>
-		<variable label="gross prod." axis="y" value="cirsium[grossProduction]"/>
-		<variable label="maint. resp." axis="y" value="cirsium[maintenanceResp]"/>
-		<variable label="avail. prod." axis="y" value="cirsium[availableProduction]"/>
-    </output>
-
-    <output type="plot">
-		<parameter name="title" value="Plant allocation (g/day)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Leaves" axis="y" value="cirsium/leaves[allocatedPerPlant]"/>
-		<variable label="Stem" axis="y" value="cirsium/stem[allocatedPerPlant]"/>
-		<variable label="Flowers" axis="y" value="cirsium/flowers[allocatedPerPlant]"/>
-		<variable label="Root" axis="y" value="cirsium/root[allocatedPerPlant]"/>
-		<variable label="Total" axis="y" value="cirsium[allocatedPerPlant]"/>
-    </output>
-
-    <!-- Plots of organs -->
-	
-	<output type="plot">
-		<parameter name="title" value="Amax (kg CO2/ha leaf/hour)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="amax[value]"/>
-	</output>
-
-	<output type="plot">
-		<parameter name="title" value="Light use efficiency (kg CO2/ha leaf/hour)/(W/m2 leaf)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="lightUseEfficiency[value]"/>
-	</output>
-
-    <output type="plot">
-		<parameter name="title" value="Mass of organs (g/plant)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="mass/mass[number]"/>
-    </output>
-	
-	<output type="plot">
-		<parameter name="title" value="Area of organs (cm2/plant)"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="area/area[number]"/>
-    </output>
-
-	<output type="plot">
-		<parameter name="title" value="Ideal organ partition"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="partition[value]"/>
-    </output>
-
-	<output type="plot">
-		<parameter name="title" value="Actual organ partition"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="mass[currentPartition]"/>
-    </output>
-
-	<output type="plot">
-		<parameter name="title" value="Relative allocation rates"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Organ" axis="y" value="cirsium/*[propAllocatedPerPlant]"/>
-    </output>
-
-	<!-- Outputs on file -->
-
-	<output type="table">
-		<parameter name="filename" value="intercom.prn"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Day length" axis="y" value="calendar[dayLength]"/>
-		<variable label="Pt-time" axis="y" value="time[total]"/>
-		<variable label="areaLAI" axis="y" value="leaves/area[lai]"/>
-
-		<variable label="Plant CO2 assim" axis="y" value="cirsium[CO2assimilation]"/>
-
-		<variable label="Organ" axis="y" value="mass/partition[value]"/>
-		
-		<variable label="AllocTotal" axis="y" value="cirsium[netAllocation]"/>
-		<variable label="AllocOrgan" axis="y" value="cirsium/*[allocatedPerPlant]"/>
-		
-		<variable label="leaves-mass" axis="y" value="cirsium/leaves/mass/mass[number]"/>
-		<variable label="leaves-area" axis="y" value="cirsium/leaves/area[area]"/>
-		<variable label="SLA" axis="y" value="specificLeafArea[value]"/>
-		
-	</output>
 
 </simulation>

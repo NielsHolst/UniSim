@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+    <integrator name="integrator" type="TimeStepLimited">
+        <parameter name="maxSteps" value="365"/>
+        <sequence>
+            <model name="world"/>
+            <model name="wasp"/>
+            <model name="butterfly"/>
+        </sequence>
+    </integrator>
+    <model name="world" type="ConstantWorld">
+        <parameter name="temperature" value="20"/>
+    </model>
+    <model type="LifeCycle" name="butterfly">
+        <model type="LifeStage" name="egg">
+            <parameter name="duration" value="1.1"/>
+            <parameter name="k" value="5"/>
+        </model>
+        <model type="LifeStage" name="larva">
+            <parameter name="duration" value="2.3"/>
+            <parameter name="k" value="10"/>
+        </model>
+        <model type="LifeStage" name="pupa">
+            <parameter name="duration" value="5.8"/>
+            <parameter name="k" value="20"/>
+        </model>
+        <model type="LifeStage" name="adult">
+            <parameter name="duration" value="13.21"/>
+            <parameter name="k" value="40"/>
+        </model>
+    </model>
+    <model type="LifeCycle" name="wasp">
+        <model type="LifeStage" name="egg">
+            <parameter name="duration" value="5"/>
+            <parameter name="k" value="15"/>
+        </model>
+        <model type="LifeStage" name="larva">
+            <parameter name="duration" value="14"/>
+            <parameter name="k" value="30"/>
+        </model>
+        <model type="LifeStage" name="pupa">
+            <parameter name="duration" value="3"/>
+            <parameter name="k" value="20"/>
+        </model>
+        <model type="LifeStage" name="adult">
+            <parameter name="duration" value="90"/>
+            <parameter name="k" value="10"/>
+        </model>
+    </model>
+    <output name="butterflyTable" type="table">
+        <parameter name="filename" value="unit_test_output.prn"/>
+        <variable label="larva" axis="x" value="butterfly/egg[contents]"/>
+        <variable label="larva" axis="y" value="butterfly/adult[contents]"/>
+    </output>
+    <output name="waspTable" type="table">
+        <parameter name="filename" value="unit_test_output.prn"/>
+        <variable label="larva" axis="x" value="wasp/egg[contents]"/>
+        <variable label="larva" axis="y" value="wasp/adult[contents]"/>
+    </output>
+</simulation>

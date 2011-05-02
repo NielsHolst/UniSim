@@ -26,7 +26,7 @@
 #include "output_maker.h"
 #include "simulation.h"
 #include "simulation_maker.h"
-#include "xml_expander.h"
+#include "xml_node.h"
 #include "xy_state_variables.h"
 
 namespace UniSim{
@@ -55,21 +55,25 @@ bool SimulationMaker::nextElementDelim()
 
 Simulation* SimulationMaker::parse(QString fileName_)
 {
-    fileName = fileName_;
 	QString simName, simVersion;
-
 
     redirectedParameters.clear();
     outputVariableParam.clear();
     outputParameterParam.clear();
     outputDataParam.clear();
 
+    emit beginExpansion();
+    fileName = compileToFile(fileName_);
+    emit endExpansion();
+
+    /*
     XmlExpander expander(fileName);
 	emit beginExpansion();
 	expander.expand();
 	emit endExpansion();	
     fileName = expander.newFileName();
-	
+    */
+
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) throw Exception(message("Cannot open file: '"+fileName+"' for reading."));
 	reader->setDevice(&file);
@@ -113,6 +117,19 @@ Simulation* SimulationMaker::parse(QString fileName_)
     emit endInitialization();
 
     return sim;
+}
+
+QString SimulationMaker::compileToFile(QString filePath) {
+    QDir dir = FileLocations::location(FileLocationInfo::Temporary);
+    QString fileName = QFileInfo(filePath).baseName();
+    fileName += "_compiled.xml";
+    QString compiledFilePath = dir.absolutePath() + "/" + fileName;
+
+    XmlNode *original = XmlNode::createFromFile(filePath);
+    original->compile(filePath);
+    original->writeToFile(compiledFilePath);
+    delete original;
+    return compiledFilePath;
 }
 
 bool SimulationMaker::readIntegratorElement(QObject* parent)

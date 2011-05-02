@@ -11,7 +11,6 @@
 #include "../output_destination_maker_file.h"
 #include "../simulation.h"
 #include "../simulation_maker.h"
-#include "../xml_expander.h"
 #include "../xy_state_variables.h"
 #include "test_simulation_maker.h"
 
@@ -60,7 +59,7 @@ void TestSimulationMaker::cleanupTestCase()
 void TestSimulationMaker::testSimulation()
 {
 	QVERIFY(_simulation);
-    QCOMPARE(_simulation->children().size(), 6);
+    QCOMPARE(_simulation->children().size(), 7);
 	QVERIFY(_simulation->parent()==0);
 	
     Model *butterfly = seekOneDescendant<Model*>("butterfly", 0);
@@ -161,42 +160,9 @@ void TestSimulationMaker::testOutputManyXY()
 	QCOMPARE(y.size(), 1);
 */
 }
-
-void writeQuery(QString q, int number)
-{
-    QXmlQuery query;
-    query.setQuery("doc('" + local::testFilePath() +"')" + q);
-  	
-    QString queryResultFilePath = local::testFolder() + "/test_UniSim_query_" + QString::number(number) + ".xml";
-  	QFile file(queryResultFilePath);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QCOMPARE(file.error(), QFile::NoError);
-
-  	QXmlSerializer serializer(query, &file);
-  	query.evaluateTo(&serializer);
-}
-
-void TestSimulationMaker::testXmlQuery()
-{
-	writeQuery("/simulation/model", 1);
-	writeQuery("/simulation//model[@type='LifeCycle']", 2);
-	writeQuery("/simulation/model[@name='wasp']/model[@name='egg']/parameter[@name='k']", 3);
-	writeQuery("/simulation/output[@name='butterflyOutput']/"
-	               "presentation[@name='butterflyPlot']/xyvariables[@name='butterflyXY']", 4);
-	
-	QXmlQuery query;
-	query.setQuery("<e/>, 1, 'two'");
-	QXmlResultItems result;
-	
-	if (query.isValid()) {
-		query.evaluateTo(&result);
-		QXmlItem item(result.next());
-		while (!item.isNull()) {
-			// use item
-			item = result.next();
-		}
-		if (result.hasError())
-	 /* Runtime error! */;
-	}
-}
 	 
+QString TestSimulationMaker::filePath(QString fileName) const {
+    QDir dir = FileLocations::location(FileLocationInfo::Weather);
+    dir.cdUp();
+    return dir.absolutePath() + "/src/library/usengine/test/" + fileName;
+}

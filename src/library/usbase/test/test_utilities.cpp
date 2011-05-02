@@ -183,8 +183,6 @@ void TestUtilities::initTestCase() {
     dogsModel = create<Model>("dogs", mammals);
     femaleDogsModel = create<Model>("female", dogsModel);
     maleDogsModel = create<Model>("male", dogsModel);
-
-    writeObjectTree(animals);
 }
 
 void TestUtilities::cleanupTestCase() {

@@ -134,6 +134,32 @@ void TestXmlNode::testParseFromFile() {
     QVERIFY(deepEquals(rootStr,rootFile));
 }
 
+void TestXmlNode::testWriteToFile() {
+    QString xml =
+    "<model name=\"a\">"
+        "<model name=\"d\">"
+            "<model name=\"d1\"/>"
+            "<model name=\"d2\"/>"
+        "</model>"
+        "<model name=\"e\"/>"
+    "</model>"
+    ;
+    QDir dir = FileLocations::location(FileLocationInfo::Temporary);
+    QString filePath = dir.absolutePath() + "/test_xml_node.xml";
+
+    XmlNode *rootStr, *rootFile;
+    try {
+        rootStr = XmlNode::createFromString(xml);
+        rootStr->writeToFile(filePath);
+        rootFile = XmlNode::createFromFile(filePath);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+    QVERIFY(deepEquals(rootStr,rootFile));
+}
+
 void TestXmlNode::testDeepEqualsTrue() {
     QString xml =
     "<a>"
@@ -473,10 +499,6 @@ void TestXmlNode::testCompileNestedSelect() {
         merged = XmlNode::createFromString(strMerged);
         root = XmlNode::createFromFile(path);
         root->compile(path);
-
-		QString s;
-		root->getTree(&s);
-        std::cout << "NESTED\n"<< qPrintable(s) << "\n";
 	}
     catch (Exception &ex) {
         QString msg = "Unexpected exception. " + ex.message();

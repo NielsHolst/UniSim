@@ -29,7 +29,6 @@ HEADERS += \
     $${US_ENGINE}/test/test_simulation_trickle.h \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
-    $${US_ENGINE}/test/test_xml_expander.h \
     $${US_ENGINE}/test/test_xml_node.h \
     $${US_PLUGINS}/intercom_models/optimize_allocation.h \
     $${US_PLUGINS}/intercom_models/test/test_plant.h \
@@ -63,7 +62,6 @@ SOURCES += \
     $${US_ENGINE}/test/test_simulation_trickle.cpp \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
-    $${US_ENGINE}/test/test_xml_expander.cpp \
     $${US_ENGINE}/test/test_xml_node.cpp \
     $${US_PLUGINS}/intercom_models/optimize_allocation.cpp \
     $${US_PLUGINS}/intercom_models/test/test_plant.cpp \

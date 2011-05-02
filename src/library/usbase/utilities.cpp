@@ -413,7 +413,7 @@ namespace local {
 	void writeModel(QXmlStreamWriter *xw)
 	{
 				
-		// Butterfly
+        // Butterfly
 		xw->writeStartElement("model");
 		xw->writeAttribute("type", "LifeCycle");
 		xw->writeAttribute("name", "butterfly");
@@ -435,7 +435,12 @@ namespace local {
 		writeStage(xw, "adult", 90, 10);
 		xw->writeEndElement();
 
-	} 
+        // Extra
+        xw->writeStartElement("model");
+        xw->writeAttribute("select", "../model[@name='butterfly']");
+        xw->writeAttribute("name", "extra");
+        xw->writeEndElement();
+    }
 
     void writeVariable(QXmlStreamWriter *xw, QString label, QString axis, QString value) {
         xw->writeEmptyElement("variable");

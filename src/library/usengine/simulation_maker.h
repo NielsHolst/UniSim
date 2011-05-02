@@ -32,20 +32,6 @@ public:
 	//! Destructor
 	~SimulationMaker();
     // Create Simulation object from UniSim file
-	/*!
-		Parsing happens in two steps:
-	
-        (1) Expansion, in which a temporary UniSim file is constructed by following all references, in the
-        original UniSim file, to other UniSim files. The resulting UniSim file has the contents of the
-		original plus the contents of all files referred to (recursively). XmlExpander is used to expand the 
-        original UniSim file.
-		
-		(2) Creation, in which the Simulation object and all its children are created by interpreting
-        the expanded UniSim file. ModelMaker is used to create the models specified in UniSim.
-			
-        \param fileName name of UniSim file
-		\return New simulation object
-	*/	
     Simulation* parse(QString fileName);
 
     void setupOutputVariableElements();
@@ -79,6 +65,8 @@ private:
     QList<OutputParam> outputVariableParam, outputDataParam, outputParameterParam;
 
     // methods
+    QString compileToFile(QString filePath);
+
     bool nextElementDelim();
 	
 	bool readIntegratorElement(QObject* parent);

@@ -35,7 +35,12 @@ public:
 
     template <class T> T peekOneSibling(QString name);
     template <class T> T seekOneSibling(QString name);
-    template <class T> QList<T> seekSiblings(QString name);
+    template <class T> T peekPrecedingSibling(QString name);
+    template <class T> T seekPrecedingSibling(QString name);
+    template <class T> T peekFollowingSibling(QString name);
+    template <class T> T seekFollowingSibling(QString name);
+    template <class T> int seekSiblingPosition(QString name);
+    template <class T> QList<T> seekSiblings(QString name, int *ixPreceding = 0);
 
     template <class T> T peekOneDescendant(QString name);
     template <class T> T seekOneDescendant(QString name);
@@ -43,6 +48,9 @@ public:
 
     template <class T> T peekOneAscendant(QString name);
     template <class T> T seekOneAscendant(QString name);
+    template <class T> T peekNearestAscendant(QString name);
+    template <class T> T seekNearestAscendant(QString name);
+    template <class T> QList<T> seekAscendants(QString name);
 
 private:
 	Identifier _id;
@@ -97,21 +105,66 @@ template <class T> T NamedObject::peekOneSibling(QString name) {
 template <class T> T NamedObject::seekOneSibling(QString name) {
     T sibling = peekOneSibling<T>(name);
     if (!sibling)
-        throw UniSim::Exception(objectName() + " has no sibling with name " + name);
+        throw UniSim::Exception("No sibling with name " + name +
+                                " of class " + typeid(T).name(), this);
     return sibling;
 }
 
+//! Finds preceding sibling or none (n==1 || n==0)
+template <class T> T NamedObject::peekPrecedingSibling(QString name) {
+    int ixPreceding;
+    QList<T> siblings = seekSiblings<T>(name, &ixPreceding);
+    return ixPreceding == -1 ? 0 : siblings.at(ixPreceding);
+}
+
+//! Finds preceding sibling (n==1)
+template <class T> T NamedObject::seekPrecedingSibling(QString name) {
+    T sibling = peekPrecedingSibling<T>(name);
+    if (!sibling)
+        throw UniSim::Exception("No preceding sibling with name " + name +
+                                " of class " + typeid(T).name(), this);
+    return sibling;
+}
+
+//! Finds following sibling or none (n==1 || n==0)
+template <class T> T NamedObject::peekFollowingSibling(QString name) {
+    int ixPreceding, ixFollowing;
+    QList<T> siblings = seekSiblings<T>(name, &ixPreceding);
+    ixFollowing = ixPreceding + 1;
+    return ixFollowing >= siblings.size() ? 0 : siblings.at(ixFollowing);
+}
+
+//! Finds following sibling (n==1)
+template <class T> T  NamedObject::seekFollowingSibling(QString name) {
+    T sibling = peekFollowingSibling<T>(name);
+    if (!sibling)
+        throw UniSim::Exception("No following sibling with name " + name +
+                                " of class " + typeid(T).name(), this);
+    return sibling;
+}
+//! Finds my position among siblings
+template <class T> int NamedObject::seekSiblingPosition(QString name) {
+    int ixPreceding;
+    seekSiblings<T>(name, &ixPreceding);
+    return ixPreceding + 1;
+}
+
 //! Finds a number (n>=0) of siblings
-template <class T> QList<T> NamedObject::seekSiblings(QString name) {
+template <class T> QList<T> NamedObject::seekSiblings(QString name, int *ixPreceding) {
+    QList<T> siblingsAndMe;
     if (!parent())
-        throw UniSim::Exception(objectName() + " has no siblings");
-    QList<T> siblingsAndMe = UniSim::seekChildren<T>(name, parent());
+        return siblingsAndMe;
+    siblingsAndMe = UniSim::seekChildren<T>(name, parent());
 
     QList<T> siblings;
     for (int i=0; i < siblingsAndMe.size(); ++i) {
         T sib = siblingsAndMe[i];
-        if (sib != this)
+        if (sib == this) {
+            if (ixPreceding) *ixPreceding = i-1;
+        }
+        else {
             siblings.append(sib);
+        }
     }
     return siblings;
 }
@@ -141,6 +194,20 @@ template <class T> T NamedObject::seekOneAscendant(QString name) {
     return UniSim::seekOneAscendant<T>(name, this);
 }
 
+//! Finds nearest ascendant or none (n==1 || n==0)
+template <class T> T NamedObject::peekNearestAscendant(QString name) {
+    return UniSim::peekNearestAscendant<T>(name, this);
+}
+
+//! Finds nearest ascendant (n==1)
+template <class T> T NamedObject::seekNearestAscendant(QString name) {
+    return UniSim::seekNearestAscendant<T>(name, this);
+}
+
+//! Finds a number (n>=0) of ascendants
+template <class T> QList<T> NamedObject::seekAscendants(QString name) {
+    return UniSim::seekAscendants<T>(name, this);
+}
 
 } //namespace
 

@@ -6,6 +6,10 @@ TARGET = test-unisim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += console
 QT += testlib
 
+INCLUDEPATH += $${US_QWT}/include
+LIBS += -L$${US_QWT}/lib \
+    -lqwt$${DEBUG_SUFFIX}5
+
 # Load application icon
 RC_FILE = ../../../resources/unisim.rc
  
@@ -21,6 +25,7 @@ HEADERS += \
     $${US_BASE}/test/test_component.h \
     $${US_BASE}/test/test_identifier.h \
     $${US_BASE}/test/test_parameter.h \
+    $${US_BASE}/test/test_push_variable.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
     $${US_ENGINE}/test/test_model_maker.h \
@@ -42,11 +47,14 @@ HEADERS += \
     $${US_PLUGINS}/unisim_models/test/test_records.h \
     $${US_PLUGINS}/unisim_models/test/test_scheduled.h \
     $${US_PLUGINS}/unisim_models/test/test_stage.h \
+    $${US_PLUGINS}/unisim_outputs/plot.h \
+    $${US_PLUGINS}/unisim_outputs/test/test_plot.h \
     ../graph_generator.h \
 	../live_simulation.h \
 	../log_base.h \
     frequency_distribution.h \
     test_frequency_distribution.h \
+    test_numeric_limits.h
     #test_live_simulation.h
     #test_plugins.h
 
@@ -54,6 +62,7 @@ SOURCES += \
     $${US_BASE}/test/test_component.cpp \
     $${US_BASE}/test/test_identifier.cpp \
     $${US_BASE}/test/test_parameter.cpp \
+    $${US_BASE}/test/test_push_variable.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
     $${US_ENGINE}/test/test_model_maker.cpp \
@@ -75,11 +84,14 @@ SOURCES += \
     $${US_PLUGINS}/unisim_models/test/test_records.cpp \
     $${US_PLUGINS}/unisim_models/test/test_scheduled.cpp \
     $${US_PLUGINS}/unisim_models/test/test_stage.cpp \
+    $${US_PLUGINS}/unisim_outputs/plot.cpp \
+    $${US_PLUGINS}/unisim_outputs/test/test_plot.cpp \
     ../graph_generator.cpp \
 	../live_simulation.cpp \
 	../log_base.cpp \
     frequency_distribution.cpp \
     test_frequency_distribution.cpp \
+    test_numeric_limits.cpp \
     #test_live_simulation.cpp \
     #test_plugins.cpp \
 	main.cpp 

@@ -160,7 +160,21 @@ void TestSimulationMaker::testOutputManyXY()
 	QCOMPARE(y.size(), 1);
 */
 }
-	 
+
+void TestSimulationMaker::testCommonElement() {
+    QString filename = filePath("test_simulation_maker_common.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+    delete sim;
+}
+
 QString TestSimulationMaker::filePath(QString fileName) const {
     QDir dir = FileLocations::location(FileLocationInfo::Weather);
     dir.cdUp();

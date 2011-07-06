@@ -6,7 +6,10 @@
 #ifndef UNISIM_PUSH_VARIABLE_H
 #define UNISIM_PUSH_VARIABLE_H
 
+#include <QDate>
+#include <QDateTime>
 #include <QObject>
+#include <QTime>
 #include <QVariant>
 #include "push_variable_base.h"
 
@@ -23,6 +26,8 @@ public:
     QVariant toVariant() const;
     QString typeId() const;
     void setValue(T newValue);
+    void addValue(T addition);
+    void resetValue();
 
 private:
     T *_valuePtr;
@@ -70,6 +75,27 @@ void PushVariable<T>::setValue(T newValue)
     *_valuePtr = newValue;
 }
 
+namespace {
+    template <class T> void add(T *a, T b) { *a += b; }
+    template <> void add<bool>(bool *a, bool b) { *a = *a || b; }
+    template <> void add<QDateTime>(QDateTime *a, QDateTime b) { *a = b; }
+    template <> void add<QDate>(QDate *a, QDate b) { *a = b; }
+    template <> void add<QTime>(QTime *a, QTime b) { *a = b; }
+}
+
+template <class T>
+void PushVariable<T>::addValue(T addition)
+{
+    Q_ASSERT(_valuePtr);
+    add(_valuePtr, addition);
+}
+
+template <class T>
+void PushVariable<T>::resetValue()
+{
+    Q_ASSERT(_valuePtr);
+    *_valuePtr = T();
+}
 } //namespace
 
 #endif

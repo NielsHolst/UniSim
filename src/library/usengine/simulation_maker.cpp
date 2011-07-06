@@ -44,13 +44,37 @@ SimulationMaker::~SimulationMaker()
 
 bool SimulationMaker::nextElementDelim()
 {
-	if (!reader->hasError() && !reader->isEndDocument()) {
+    QString myTest = elementName();
+    QXmlStreamReader::TokenType myType;
+    bool unusedElement;
+    if (moreToRead()) {
 		do {
 			reader->readNext();
-		} while (!reader->hasError() && !reader->isEndDocument() && 
-				!reader->isStartElement() && !reader->isEndElement()); 
+            myTest = elementName();
+            myType = reader->tokenType();
+            bool commonElement = reader->isStartElement() && elementNameEquals("common");
+
+            unusedElement = commonElement || !(reader->isStartElement() || reader->isEndElement());
+            if (commonElement)
+                ignoreElement();
+        } while (unusedElement && moreToRead());
 	}
 	return reader->isStartElement() || reader->isEndElement();
+}
+
+bool SimulationMaker::moreToRead() {
+    return !reader->hasError() && !reader->isEndDocument();
+}
+
+void SimulationMaker::ignoreElement() {
+    int levels = 1;
+    while (levels>0  && moreToRead()) {
+        reader->readNext();
+        if (reader->isStartElement())
+            ++levels;
+        else if (reader->isEndElement())
+            --levels;
+    }
 }
 
 Simulation* SimulationMaker::parse(QString fileName_)
@@ -65,14 +89,6 @@ Simulation* SimulationMaker::parse(QString fileName_)
     emit beginExpansion();
     fileName = compileToFile(fileName_);
     emit endExpansion();
-
-    /*
-    XmlExpander expander(fileName);
-	emit beginExpansion();
-	expander.expand();
-	emit endExpansion();	
-    fileName = expander.newFileName();
-    */
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) throw Exception(message("Cannot open file: '"+fileName+"' for reading."));
@@ -477,8 +493,8 @@ namespace {
         if (matchedT) {
             T *redirectTo = const_cast<T*>(variableT->valuePtr());
             parameterT->redirectValuePtr(redirectTo);
-            Component *sender = seekFirstAscendant<Component*>("*", parameter);
-            Component *receiver = seekFirstAscendant<Component*>("*", variable);
+            Component *sender = seekNearestAscendant<Component*>("*", parameter);
+            Component *receiver = seekNearestAscendant<Component*>("*", variable);
             QObject::connect(sender, SIGNAL(pullVariableChanged(PullVariableBase*,ParameterBase*)),
                              receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
         }

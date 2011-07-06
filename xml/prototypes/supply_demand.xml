@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="SupplyDemand" type="model">
+    <class name="Holometabola">
+		<model name="insect"/>
+	</class> 
+    <class name="Stage">
+		<model name="egg"/>
+		<model name="larva"/>
+		<model name="pupa"/>
+		<model name="adult"/>
+	</class> 
+    <class name="Consumption">
+		<model name="consumption"/>
+	</class>		
+</plugin>

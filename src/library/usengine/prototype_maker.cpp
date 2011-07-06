@@ -201,7 +201,7 @@ void PrototypeMaker::writeClassHeaderFile(ClassName className) const {
         << "\t// parameters" << '\n'
         << "\tdouble Ninit, K, r;" << '\n'
         << '\n'
-        << "\t// state" << '\n'
+        << "\t// pull variables" << '\n'
         << "\tdouble density;" << '\n'
         << '\n'
         << "};" << '\n'
@@ -238,6 +238,7 @@ void PrototypeMaker::writeClassSourceFile(ClassName className) const{
     QTextStream text(&cppCode);
     text
         << copyrightNotice()
+        << "#include <usbase/parameter.h>\n"
         << "#include <usbase/pull_variable.h>\n"
         << "#include \"" << makeFileName(className) << ".h\"" << '\n'
         << "\nusing namespace UniSim;\n\n"
@@ -480,7 +481,7 @@ void PrototypeMaker::WriteXmlModelFile() const {
     text
         << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << '\n'
         << "<simulation version=\"1.0\">" << '\n'
-        << "\t<integrator class=\"TimeStepLimited\">" << '\n'
+        << "\t<integrator type=\"TimeStepLimited\">" << '\n'
         << "\t\t<parameter name=\"maxSteps\" value=\"60\"/>" << '\n'
         << "\t\t<sequence>" << '\n'
         << xmlModelNames()
@@ -525,7 +526,7 @@ QString PrototypeMaker::xmlOutputs() const {
     for (Classes::const_iterator cl = classes.begin(); cl != classes.end(); ++cl) {
         const ObjectNames &objectNames(cl.value());
         for (int i = 0; i < objectNames.size(); ++i) {
-            s += "\t<output class=\"plot\">\n"
+            s += "\t<output type=\"plot\">\n"
                  "\t\t<parameter name=\"title\" value =\"" +
                  makeClassName(objectNames[i]) + "\"/>\n"
 

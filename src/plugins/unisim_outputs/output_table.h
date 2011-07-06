@@ -36,7 +36,8 @@ private:
     int resultsSize() const;
     int dataSize(const OutputResults &results) const;
     void writeLabels();
-    void writeLabels(const OutputResults &results);
+    void writeXLabels();
+    void writeYLabels();
     void writeResults();
     void writeResults(const OutputResults &results, int dataIx);
     void writeCR();

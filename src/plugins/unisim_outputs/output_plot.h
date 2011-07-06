@@ -3,11 +3,12 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_OUTPUT_PLOT
-#define UNISIM_OUTPUT_PLOT
+#ifndef UNISIM_OUTPUT_OUTPUT_PLOT
+#define UNISIM_OUTPUT_OUTPUT_PLOT
 
 #include <QColor>
 #include <QList>
+#include <QVector>
 #include <usbase/output.h>
 
 namespace UniSim{
@@ -29,12 +30,14 @@ public:
 private:
     // parameters
     QString title;
+    bool logy;
+    double ymin, ymax;
+    int penWidth, symbolSize;
 
     // housekeeping
     MainWindowInterface *mainWindow;
     PlotWidget *plotWidget;
     static QList<QColor> colors;
-    QList<Identifier> yLabels;
 
     // methods
     void showPlot();
@@ -42,13 +45,13 @@ private:
     void fillPlotWidget();
     void fillWithResults();
     void fillWithData();
+//    void filter(const QVector<double> *x0,
+//                const QVector<double> *y0,
+//                QVector<double> *x,
+//                QVector<double> *y);
     void showPlotWidget();
     bool emptyResults() const;
     bool emptyData() const;
-    void setYLabels();
-    bool setYLabelsFromLabels();
-    void setYLabelsFromIds();
-    QList<Identifier> getIds(QList<NamedObject*> &objects, bool *areEqual) const;
 };
 
 } //namespace

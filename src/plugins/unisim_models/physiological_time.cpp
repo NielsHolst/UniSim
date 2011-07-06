@@ -16,7 +16,8 @@ PhysiologicalTime::PhysiologicalTime(UniSim::Identifier name, QObject *parent)
     new PullVariable<double>("step", &step, this,
         "Duration of latest time step (physiological time units)");
     new PullVariable<double>("total", &total, this,
-        "Total duration since beginning of simulation (physiological time units)");
+        "Total duration since beginning of simulation (physiological time units)"
+        "or since most recent trigger");
 }
 
 void PhysiologicalTime::initialize() {
@@ -24,6 +25,10 @@ void PhysiologicalTime::initialize() {
     calendarTimeStep = calendar->parameter<int>("timeStep");
     Time::Unit unit = Time::charToUnit( calendar->parameter<char>("timeUnit") );
     calendarTimeStep /= Time::conversionFactor(unit, Time::Days);
+
+    static bool always = true;
+    Model *trigger = peekOneChild<Model*>("trigger");
+    triggered = trigger ? trigger->pullVariablePtr<bool>("value") : &always;
 }
 
 void PhysiologicalTime::reset() {
@@ -31,8 +36,13 @@ void PhysiologicalTime::reset() {
 }
 
 void PhysiologicalTime::update() {
-    step = calcDailyTimeStep()*calendarTimeStep;
-    total += step;
+    if (*triggered) {
+        step = calcDailyTimeStep()*calendarTimeStep;
+        total += step;
+    }
+    else {
+        step = total = 0.;
+    }
 }
 
 } //namespace

@@ -7,6 +7,7 @@
 #define UNISIM_TRIGGER_BY_DATE
 #include <Qdate>
 #include <QObject>
+#include <usbase/date_interval.h>
 #include <usbase/model.h>
 
 namespace UniSim{
@@ -24,13 +25,12 @@ private:
     // methods
     void decodeFrequency();
     // parameters
-    typedef enum {Daily, Monthly, Yearly, Once} Frequency;
-    Frequency frequency;
+    DateInterval::Frequency frequency;
     QString frequencyAsString;
-    QDate byDate;
+    QDate fromDate, toDate;
     bool triggerAtReset;
     // pull variables
-    bool triggered;
+    bool value;
     // links
     Model *calendar;
 };

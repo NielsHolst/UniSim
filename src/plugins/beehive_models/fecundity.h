@@ -31,7 +31,8 @@ private:
     double eggsLaid;
 
     // links
-    UniSim::Model *adult;
+    Model *adult;
+
 };
 
 } //namespace

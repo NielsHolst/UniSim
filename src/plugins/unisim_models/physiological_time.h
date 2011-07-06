@@ -24,12 +24,13 @@ public:
     virtual double calcDailyTimeStep() = 0;
 
 private:
+    // data
+    double calendarTimeStep;
     // pull variables
     double step, total;
     // links
     UniSim::Model *calendar;
-    // state
-    double calendarTimeStep;
+    const bool *triggered;
 };
 
 } //namespace

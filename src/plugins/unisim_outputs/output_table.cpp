@@ -67,9 +67,10 @@ void OutputTable::openFile() {
 }
 
 void OutputTable::writeLabels() {
-    writeLabels(xResults());
+    writeXLabels();
     writeTab();
-    writeLabels(yResults());
+    setYLabels();
+    writeYLabels();
     writeCR();
 }
 
@@ -98,15 +99,25 @@ QString OutputTable::ammendedFileName(QString fileName, int number) {
     return path + "/" + base + runCode + "." + suffix;
 }
 
-void OutputTable::writeLabels(const OutputResults &results) {
-    if (results.isEmpty())
+void OutputTable::writeXLabels() {
+    if (xResults().isEmpty())
         return;
-
     QString s;
     QTextStream text(&s);
-    text << results[0]->id().label();
-    for (int i = 1; i < results.size(); ++i)
-        text << "\t" << results[i]->id().label();
+    text << xResults()[0]->id().label();
+    for (int i = 1; i < xResults().size(); ++i)
+        text << "\t" << xResults()[i]->id().label();
+    file.write(qPrintable(s));
+}
+
+void OutputTable::writeYLabels() {
+    if (yLabels.isEmpty())
+        return;
+    QString s;
+    QTextStream text(&s);
+    text << yLabels[0].label();
+    for (int i = 1; i < yLabels.size(); ++i)
+        text << "\t" << yLabels[i].label();
     file.write(qPrintable(s));
 }
 

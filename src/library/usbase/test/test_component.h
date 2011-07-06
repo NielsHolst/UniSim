@@ -24,6 +24,8 @@ private slots:
     void testSeekOneSiblingNotMe();
     void testSeekSiblings();
     void testSeekSiblingsNotMe();
+    void testSeekPrecedingSibling();
+    void testSeekFollowingSibling();
     void testSeekOneDescendant();
     void testSeekDescendants();
     void testSeekOneAscendant();

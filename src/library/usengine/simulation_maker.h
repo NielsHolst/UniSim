@@ -68,7 +68,9 @@ private:
     QString compileToFile(QString filePath);
 
     bool nextElementDelim();
-	
+    bool moreToRead();
+    void ignoreElement();
+
 	bool readIntegratorElement(QObject* parent);
 	void readSequenceElement(QObject *parent);
 

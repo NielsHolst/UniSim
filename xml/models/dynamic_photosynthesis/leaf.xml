@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+
+
+    <integrator type="TimeStepLimited">
+         <parameter name="maxSteps" value="2400"/>
+         <sequence>
+             <model name="calendar"/>
+             <model name="weather"/>
+             <model name="leaf"/>
+         </sequence>
+     </integrator>
+	
+	<!--
+	=== Models ==
+	-->
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="timeUnit" value="s"/>
+	</model>
+	
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="dynamic_photosynthesis/light_input_2.txt"/>
+	</model>
+	
+	<model name ="leaf" type="dynamic_photosynthesis::Leaf">
+		<parameter name="Sini" value="0.2"/>
+		<parameter name="alpha" value="0.001"/>
+		<parameter name="a" value="0.3"/>
+		<parameter name="b" value="0.005"/>
+		<parameter name="c" value="0.002"/>
+		<parameter name="gSini" value="50"/>
+	</model>
+		
+	<!--
+	=== Output ==
+	-->
+	
+	<output type="plot">
+		<parameter name="title" value="Environment"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>		
+		<variable label="PAR" axis="y" value="weather[PAR]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Leaf"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>		
+		<variable label="S" axis="y" value="leaf[S]"/>
+		<variable label="Seq" axis="y" value="leaf[Seq]"/>
+		<variable label="S60" axis="y" value="leaf[S60]"/>
+	</output>
+
+</simulation>

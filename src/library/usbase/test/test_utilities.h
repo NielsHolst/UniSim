@@ -81,6 +81,8 @@ private slots:
     void testDecodeListOfStringDoubles2();
     void testDecodeListOfIntDates();
 
+    void testDivBounded();
+
 private:
     QObject
         *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,

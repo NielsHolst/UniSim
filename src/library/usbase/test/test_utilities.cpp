@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <QDate>
 #include <QList>
 #include <QMap>
@@ -855,4 +856,13 @@ void TestUtilities::testDecodeListOfIntDates() {
     expected[-2] = QDate(2008,8,4);
     expected[0] = QDate(2017,12,24);
     QCOMPARE(decoded, expected);
+}
+
+void TestUtilities::testDivBounded() {
+    const double MAX = std::numeric_limits<double>::max();
+    const double EPS = std::numeric_limits<double>::epsilon();
+
+    QCOMPARE(divBounded(42.,0.), MAX);
+    QCOMPARE(divBounded(MAX, EPS), MAX);
+    QCOMPARE(divBounded(MAX, EPS, 42.), 42.);
 }

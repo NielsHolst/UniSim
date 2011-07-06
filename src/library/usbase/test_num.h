@@ -1,5 +1,9 @@
-/*
-** Implementation of Comparing Floats: How To Determine if Floating Quantities Are Close Enough 
+/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+** Copyrights reserved.
+** Released under the terms of the GNU General Public License version 3.0 or later.
+** See www.gnu.org/copyleft/gpl.html.
+*/
+/* Implementation of Comparing Floats: How To Determine if Floating Quantities Are Close Enough
 ** Once a Tolerance Has Been Reached. By Alberto Squassabia. Application Development Trends, 16 March 2000.
 ** [http://adtmag.com/articles/2000/03/16/comparing-floats-how-to-determine-if-floating-
 ** quantities-are-close-enough-once-a-tolerance-has-been.aspx]
@@ -35,45 +39,45 @@ inline bool eq(double n, double d, double feps = 1e-6) {
 }
 
 inline bool ne(double n, double d, double feps = 1e-6) {
-	return !eq(n,d);
+    return !eq(n,d,feps);
 }
 
 inline bool lt(double n, double d, double feps = 1e-6) {
-	return n<d && !eq(n,d);
+    return n<d && !eq(n,d,feps);
 }
 
 inline bool le(double n, double d, double feps = 1e-6) {
-	return n<d || eq(n,d);
+    return n<d || eq(n,d,feps);
 }
 
 inline bool gt(double n, double d, double feps = 1e-6) {
-	return n>d && !eq(n,d);
+    return n>d && !eq(n,d,feps);
 }
 
 inline bool ge(double n, double d, double feps = 1e-6) {
-	return n>d || eq(n,d);
+    return n>d || eq(n,d,feps);
 }
 
 // Fuzzy comparison of one number with zero
 
 inline bool neZero(double n, double feps = 1e-6) {
-	return !eqZero(n);
+    return !eqZero(n,feps);
 }
 
 inline bool ltZero(double n, double feps = 1e-6) {
-    return n<0. && !eqZero(n);
+    return n<0. && !eqZero(n,feps);
 }
 
 inline bool leZero(double n, double feps = 1e-6) {
-    return n<0. || eqZero(n);
+    return n<0. || eqZero(n,feps);
 }
 
 inline bool gtZero(double n, double feps = 1e-6) {
-    return n>0. && !eqZero(n);
+    return n>0. && !eqZero(n,feps);
 }
 
 inline bool geZero(double n, double feps = 1e-6) {
-    return n>0. || eqZero(n);
+    return n>0. || eqZero(n,feps);
 }
 
 // Fuzzy rounding in zero neighbourhood

@@ -32,7 +32,12 @@ public:
     bool isSummary() const;
     void setIsSummary(bool value);
 protected:
+    // data
+    QList<Identifier> yLabels;
+    // methods
     int runNumber() const;
+    void setYLabels();
+
 private:
     // data
     bool _isSummary;
@@ -40,6 +45,10 @@ private:
     QList<OutputResult *> results, xRes, yRes;
     QList<OutputData *> data, xDat, yDat;
     Integrator *integrator;
+    // methods
+    bool setYLabelsFromLabels();
+    void setYLabelsFromIds();
+    QList<Identifier> getIds(QList<NamedObject*> &objects, bool *areEqual) const;
 };
 
 typedef QList<Output*> Outputs;

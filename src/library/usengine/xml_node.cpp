@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QFile>
 #include <QList>
+#include <QMessageBox>
 #include <QXmlQuery>
 #include <QXmlStreamReader>
 #include <usbase/exception.h>

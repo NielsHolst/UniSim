@@ -17,6 +17,7 @@ private slots:
 	void testParameters();
 	void testOutputOneXY();
 	void testOutputManyXY();
+    void testCommonElement();
 	void cleanupTestCase();
 private:
     QString filePath(QString fileName) const;

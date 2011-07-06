@@ -7,6 +7,7 @@
 #include "output.h"
 #include "output_data.h"
 #include "output_result.h"
+#include "output_variable.h"
 #include "parameter.h"
 
 namespace UniSim{
@@ -62,6 +63,57 @@ bool Output::isSummary() const {
 
 void Output::setIsSummary(bool value) {
     _isSummary = value;
+}
+
+
+void Output::setYLabels() {
+    if (!setYLabelsFromLabels() && yLabels.size() > 1)
+        setYLabelsFromIds();
+}
+
+bool Output::setYLabelsFromLabels() {
+    QList<NamedObject*> namedObjs;
+    for (int i = 0; i < yResults().size(); ++i)
+        namedObjs.append(yResults()[i]);
+
+    bool areEqual;
+    yLabels = getIds(namedObjs, &areEqual);
+    return !areEqual;
+}
+
+QList<Identifier> Output::getIds(QList<NamedObject*> &objects, bool *areEqual) const{
+    QList<Identifier> ids;
+    *areEqual = true;
+    Identifier prevId;
+    for (int i = 0; i < objects.size(); ++i) {
+        Identifier id = objects[i]->id();
+        ids.append(id);
+        *areEqual = *areEqual && (i==0 || id==prevId);
+        prevId = id;
+    }
+    return ids;
+}
+
+void Output::setYLabelsFromIds() {
+    QList<NamedObject*> ancestors;
+    for (int i = 0; i < yResults().size(); ++i) {
+        OutputVariable *var = dynamic_cast<OutputVariable*>(yResults()[i]);
+        Q_ASSERT(var);
+        NamedObject *ancestor = dynamic_cast<NamedObject*>(var->pullVariable()->parent());
+        Q_ASSERT(ancestor);
+        ancestors.append(ancestor);
+    }
+
+    bool areEqual(true), checkAgain(true);
+    while (areEqual && checkAgain) {
+        yLabels = getIds(ancestors, &areEqual);
+        if (areEqual) {
+            for (int i = 0; checkAgain && (i < ancestors.size()); ++i) {
+                ancestors[i] = dynamic_cast<NamedObject*>(ancestors[i]->parent());
+                checkAgain = ancestors[i];
+            }
+        }
+    }
 }
 
 } //namespace

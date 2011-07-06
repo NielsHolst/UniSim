@@ -75,7 +75,7 @@ OutputResult::Summary OutputResult::summary() const {
     return _summary;
 }
 
-const QVector<double>* OutputResult::history() const {
+QVector<double>* OutputResult::history() {
     return &_history;
 }
 

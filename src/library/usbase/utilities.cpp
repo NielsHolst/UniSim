@@ -102,6 +102,25 @@ double negExp(double x)
     return (x > MAX_EXP) ? 0. : (x < MIN_EXP) ? 1. : exp(-x);
 }
 
+//! Safe floating point division with bound on result
+double divBounded(double x, double y, double bound) {
+    if (y==0)
+        return bound;
+    bool positive_xy = (x>0. && y>0.) || (x<0. && y<0.);
+    if (positive_xy) {
+        if (bound>0. && x/bound > y)
+            return bound;
+        else
+            return x/y;
+    }
+    else {
+        if (bound<0. && x/bound < y)
+            return bound;
+        else
+            return x/y;
+    }
+}
+
 //! Gutierrez-Baumgärtner functional response
 double GBFuncResp(double demand, double supply) {
     if (demand < 0 ||  supply < 0)

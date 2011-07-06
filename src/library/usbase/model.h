@@ -24,6 +24,7 @@ public:
     Model(Identifier name, QObject *parent=0);
 
     template <class T> T parameter(Identifier name);
+    template <class T> PushVariable<T>* pushVariable(Identifier name);
     template <class T> void pushVariable(Identifier name, T value);
     template <class T> T pullVariable(Identifier name);
     template <class T> const T* pullVariablePtr(Identifier name);
@@ -47,6 +48,11 @@ T Model::parameter(Identifier name)
     return variant.value<T>();
 }
 
+template <class T>
+PushVariable<T>* Model::pushVariable(Identifier name)
+{
+    return seekOneChild<PushVariable<T>*>(name.key());
+}
 
 template <class T>
 void Model::pushVariable(Identifier name, T value)

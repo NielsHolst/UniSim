@@ -9,6 +9,8 @@
 #include <cmath>
 #include <cfloat>
 #include <iostream>
+#include <limits>
+#include <typeinfo>
 #include <QDate>
 #include <QDir>
 #include <QList>
@@ -62,7 +64,8 @@ template <class T> QList<T> seekDescendants(QString name, QObject *root);
 
 template <class T> T peekOneAscendant(QString name, QObject *child);
 template <class T> T seekOneAscendant(QString name, QObject *child);
-template <class T> T seekFirstAscendant(QString name, QObject *child);
+template <class T> T peekNearestAscendant(QString name, QObject *child);
+template <class T> T seekNearestAscendant(QString name, QObject *child);
 template <class T> QList<T> seekAscendants(QString name, QObject *child);
 
 template <class T> QList<T> filterByName(QString name, const QList<QObject*> &candidates);
@@ -87,6 +90,7 @@ QObject* simulationObject();
 double interpolate(const QMap<int, double> xy, int x);
 double pow0(double x, double c);
 double negExp(double x);
+double divBounded(double x, double y, double bound = std::numeric_limits<double>::max());
 double GBFuncResp(double demand, double apparency);
 int toDayOfYear(int day, int month);
 //@}
@@ -173,10 +177,13 @@ template <class T> QList<T> seekMany(QString name) {
 */
 template <class TParentPtr, class TChildPtr> TChildPtr seekOne(QString expression) {
     QList<TChildPtr> result = seekMany<TParentPtr, TChildPtr>(expression);
+    QString msg = expression +
+                  " with parent class: " + typeid(TParentPtr).name() +
+                  " and child class: " + typeid(TChildPtr).name();
     if (result.isEmpty())
-        throw Exception("No object found matching: " + expression);
+        throw Exception("No object found matching: " + msg);
     else if (result.size() > 1)
-        throw Exception("More than one object found matching: " + expression);
+        throw Exception("More than one object found matching: " + msg);
     return result[0];
 }
 
@@ -209,8 +216,8 @@ template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString e
     if (matches.size() == 0)
         return 0;
     else if (matches.size() > 1)
-        throw Exception("'" + useRoot->objectName() +
-                        "' has more than one descendant called '" + name + "'", useRoot);
+        throw Exception("More than one descendant called '" + name + "'" +
+                        " of class " + typeid(T).name(), useRoot);
     return matches[0];
 }
 
@@ -222,8 +229,8 @@ template <class T> T seekOneDescendant(QString name, QObject *root) {
     QObject *useRoot = root ? root : simulationObject();
     T result = peekOneDescendant<T>(name, root);
     if (!result)
-        throw Exception("'" + useRoot->objectName() +
-                        "' has no descendant called '" + name + "'", useRoot);
+        throw Exception("No descendant called '" + name + "'" +
+                        " of class " + typeid(T).name(), useRoot);
     return result;
 }
 
@@ -268,7 +275,8 @@ template <class T> T peekParent(QString name, QObject *object) {
 template <class T> T seekParent(QString name, QObject *object) {
     T p = peekParent<T>(name, object);
     if (!p)
-        throw Exception("Cound not find parent: " +  name, object);
+        throw Exception("Cound not find parent: " +  name +
+                        " of class " + typeid(T).name(), object);
     return p;
 }
 
@@ -287,7 +295,8 @@ template <class T> T peekOneNearest(QString name, QObject *parent) {
 template <class T> T seekOneNearest(QString name, QObject *parent) {
     T child = peekOneNearest<T>(name, parent);
     if (child) return child;
-    throw Exception("Found no nearest object called '" + name + "'", parent);
+    throw Exception("Found no nearest object called '" + name + "'" +
+                    " of class " + typeid(T).name(), parent);
 }
 
 
@@ -302,7 +311,8 @@ template <class T> T peekOneChild(QString name, QObject *parent) {
         return 0;
     else if (matches.size() > 1)
         throw Exception("'" + useParent->objectName() +
-                        "' has more than one child called '" + name + "'", useParent);
+                        "' has more than one child called '" + name + "'" +
+                        " of class " + typeid(T).name(), useParent);
     return matches[0];
 }
 
@@ -315,7 +325,8 @@ template <class T> T seekOneChild(QString name, QObject *parent) {
     T result = peekOneChild<T>(name, parent);
     if (!result)
         throw Exception("'" + useParent->objectName() +
-                        "' has no child called '" + name + "'", useParent );
+                        "' has no child called '" + name + "'" +
+                        " of class " + typeid(T).name(), useParent );
     return result;
 }
 
@@ -328,7 +339,8 @@ template <class T> T peekOneAscendant(QString name, QObject *child) {
     if (ascendants.size() == 0)
         return 0;
     if (ascendants.size() > 1)
-        throw Exception("More than one ascendant called '" + name +"'", child);
+        throw Exception("More than one ascendant called '" + name +"'" +
+                        " of class " + typeid(T).name(), child);
     return ascendants.at(0);
 }
 
@@ -339,21 +351,28 @@ template <class T> T peekOneAscendant(QString name, QObject *child) {
 template <class T> T seekOneAscendant(QString name, QObject *child) {
     T result = peekOneAscendant<T>(name, child);
     if (!result)
-        throw Exception("No ascendants called '" +
-                        name + "', or it is not of the expected type", child);
+        throw Exception("No ascendants called '" + name + " of class " + typeid(T).name(), child);
     return result;
 }
 
-//! Finds first ascendant of child or throws an exception
+//! Finds nearest ascendant of child or none
 /*!
-    Finds first (nearest) ascendant matching name and type, or throws an Exception
+    Finds nearest ascendant matching name and type, or null
 */
-template <class T> T seekFirstAscendant(QString name, QObject *child) {
+template <class T> T peekNearestAscendant(QString name, QObject *child) {
     QList<T> ascendants = seekAscendants<T>(name, child);;
-    if (ascendants.size() == 0)
-        throw Exception("No ascendants called '" +
-                        name + "', or it is not of the expected type", child);
-    return ascendants.at(0);
+    return ascendants.isEmpty() ? 0 : ascendants.at(0);
+}
+
+//! Finds nearest ascendant of child or throws an exception
+/*!
+    Finds nearest ascendant matching name and type, or throws an Exception
+*/
+template <class T> T seekNearestAscendant(QString name, QObject *child) {
+    T result = peekNearestAscendant<T>(name, child);
+    if (!result)
+        throw Exception("No ascendants called '" + name + " of class " + typeid(T).name(), child);
+    return result;
 }
 
 

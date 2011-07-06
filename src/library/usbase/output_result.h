@@ -32,7 +32,7 @@ public:
     Axis axis() const;
     Summary summary() const;
 
-    const QVector<double>* history() const;
+    QVector<double>* history();
     bool isOutputSummary() const;
 
 protected:

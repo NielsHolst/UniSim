@@ -160,6 +160,32 @@ void TestComponent::testSeekSiblingsNotMe() {
     }
 }
 
+void TestComponent::testSeekPrecedingSibling() {
+    Component *one = mice[1]->seekPrecedingSibling<Component*>("*");
+    QCOMPARE(one, mice[0]);
+    Component *none;
+    try {
+        none = mice[0]->seekPrecedingSibling<Component*>("*");
+        QFAIL("Exception expected");
+    }
+    catch (Exception &ex) {
+    }
+}
+
+
+void TestComponent::testSeekFollowingSibling() {
+    Component *one = elephants->seekFollowingSibling<Component*>("*");
+    QCOMPARE(one, dogs);
+    Component *none;
+    try {
+        none = dogs->seekFollowingSibling<Component*>("*");
+        QFAIL("Exception expected");
+    }
+    catch (Exception &ex) {
+    }
+}
+
+
 void TestComponent::testSeekOneDescendant() {
     try {
         Component *liz = reptiles->seekOneDescendant<Component*>("lizards");

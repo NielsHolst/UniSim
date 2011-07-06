@@ -7,6 +7,7 @@
 #define UNISIM_STAGE_H
 
 #include <QObject>
+#include <QVector>
 #include <usbase/model.h>
 
 namespace UniSim {
@@ -16,26 +17,24 @@ class Stage : public UniSim::Model
 	Q_OBJECT
 public:
     Stage(Identifier name, QObject *parent=0);
-    ~Stage();
     // standard methods
 	void initialize();
 	void reset();
 	void update();
 
     // special methods
-    const double* ageClasses() const;
+    QVector<double>* getBuffer();
 
 private:
 	// parameters
     double _L, initialInflow;
-	int _k;
+    int k;
 
     // pull variables
-	double *_x;
-    double _dt, _prevDel;
-	mutable bool _dirtySum, _firstUpdate;
-	mutable double _sum, _input, _output, _inputTotal, _outputTotal;
     QObject *ageClassesPtr;
+    double _dt;
+    mutable bool _dirtySum, firstUpdate;
+    mutable double _sum, _input, _output, _inputTotal, _outputTotal, _prevInflow;
 
     // push variables
     double _inflow, _instantMortality;
@@ -43,14 +42,16 @@ private:
     // push-pull variables
     double _fgr;
 
-    // models
+    // links
     Model *time;
 
 	// methods
-    void deleteVariable(QString name);
-    void fill(double value);
 	double sum() const;
     void applyInstantMortality();;
+
+    // data
+    QVector<double> buffer;
+    double *x;
 };
 
 }

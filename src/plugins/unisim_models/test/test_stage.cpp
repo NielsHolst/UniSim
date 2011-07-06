@@ -1,4 +1,5 @@
 #include <usbase/model.h>
+#include <usbase/test_num.h>
 #include <usengine/model_maker.h>
 #include "../stage.h"
 #include "test_stage.h"
@@ -39,5 +40,5 @@ void TestStage::testAgeClasses()
     classes = stage->pullVariablePtr<double>("ageClasses");
     QVERIFY(classes);
     double test = classes[0] + classes[299];
-    QCOMPARE(test, 0.);
+    QVERIFY(TestNum::eqZero(test));
 }

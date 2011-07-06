@@ -3,12 +3,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <float.h>
 #include <QBrush>
 #include <QMessageBox>
+#include <QPair>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_canvas.h>
 #include <qwt_plot_zoomer.h>
+#include <qwt_scale_engine.h>
 #include <qwt_symbol.h>
 #include <usbase/dataset.h>
 #include <usbase/file_locations.h>
@@ -20,6 +23,7 @@
 #include <usbase/pull_variable_base.h>
 #include <usengine/main_window_interface.h>
 #include <usengine/plot_widget.h>
+#include "plot.h"
 #include "output_plot.h"
 
 namespace UniSim{
@@ -31,6 +35,16 @@ OutputPlot::OutputPlot(Identifier name, QObject *parent)
 {
     new Parameter<QString>("title", &title, QString(), this,
                            "Title of plot shown in window top bar");
+    new Parameter<bool>("logy", &logy, false, this,
+                        "Log-transform y-axis? Log base 10 is used");
+    new Parameter<double>("ymin", &ymin, -DBL_MAX, this,
+                          "Minimum value displayed on y-axis. Write as log-transformed value if @F {logy}");
+    new Parameter<double>("ymax", &ymax, DBL_MAX, this,
+                          "Maximum value displayed on y-axis. Write as log-transformed value if @F {logy}");
+    new Parameter<int>("penWidth", &penWidth, 2, this,
+                          "Pen width for curves and symbols");
+    new Parameter<int>("symbolSize", &symbolSize, 8, this,
+                          "Size of symbols");
 
     colors
     << QColor("#FF416E")
@@ -51,15 +65,15 @@ void OutputPlot::initialize() {
 
     const OutputResults &xs(xResults()), &ys(yResults());
     if (ys.size() == 0) {
-        QString msg = "Output plot " + id().label() + " has no y-results";
+        QString msg = QString("Output plot (%1) has no y-results").arg(id().label());
         throw Exception(msg, this);
     }
     if (xs.size() == 0) {
-        QString msg = "Output plot " + id().label() + " has no x-result";
+        QString msg = QString("Output plot (%1) has no x-result").arg(id().label());
         throw Exception(msg, this);
     }
     else if (xs.size() > 1) {
-        QString msg = "Output plot " + id().label() + " has more than one x-result:";
+        QString msg = QString("Output plot (%1) has more than one x-result:").arg(id().label());
         for (int i = 0; i < xs.size(); ++ i)
             msg += "\n" + xs.at(i)->id().key();
         throw Exception(msg, this);
@@ -100,6 +114,9 @@ bool OutputPlot::emptyData() const {
 void OutputPlot::createPlotWidget() {
     plotWidget = mainWindow->createPlotWidget(title);
     plotWidget->showLegend(true);
+    // This works but zero values must be ignored somehow
+    //plotWidget->plot()->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine);
+
     //QwtPlotCanvas *canvas = plotWidget->plot()->canvas();
     //new QwtPlotZoomer(canvas);   crash!!½
 }
@@ -112,94 +129,35 @@ void OutputPlot::fillPlotWidget() {
 
 void OutputPlot::fillWithResults() {
     if (emptyResults()) return;
-
-    OutputResults xv, yv;
-    xv = xResults();
-    yv = yResults();
-    Q_ASSERT(xv.size() == 1);
-    OutputResult *x = xv[0];
+    Q_ASSERT(xResults().size() == 1);
+    OutputResult *x = xResults()[0];
 
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
     setYLabels();
 
-    bool symbolsOnly = x->isOutputSummary();
+    for (int i = 0; i < yResults().size(); ++i) {
+        Plot p;
 
-    for (int i = 0; i < yv.size(); ++i) {
-        OutputResult *y = yv[i];
-        QwtPlotCurve *curve = new QwtPlotCurve(yLabels[i].label());
-        bool showLegend = (runNumber() == 1);
-        curve->setItemAttribute(QwtPlotItem::Legend, showLegend);
-        plotWidget->addCurve(curve);
+        p.x = x->history();
+        p.y = yResults()[i]->history();
+        p.yLegend = yLabels[i].label();
+        p.showLegend = (runNumber() == 1);
+        p.plotWidget = plotWidget;
+
+        p.logy = logy;
+        p.ymin = ymin;
+        p.ymax = ymax;
 
         QColor color = colors[i % colors.size()];
         QPen pen = QPen(color);
-        pen.setWidth(2);
+        pen.setWidth(penWidth);
+        p.pen = pen;
+        p.type = x->isOutputSummary() ? Plot::Symbols : Plot::Curve;
 
-        if (symbolsOnly) {
-            QBrush brush;
-            QwtSymbol symbol(QwtSymbol::Ellipse, brush, pen, QSize(8,8));
-            curve->setStyle(QwtPlotCurve::NoCurve);
-            curve->setSymbol(symbol);
-        }
-        else {
-            curve->setPen(pen);
-        }
-
-
-        int numPoints = x->history()->size();
-        Q_ASSERT(numPoints == y->history()->size());
-        curve->setData(x->history()->data(), y->history()->data(), numPoints);
-    }
-}
-
-void OutputPlot::setYLabels() {
-    if (!setYLabelsFromLabels() && yLabels.size() > 1)
-        setYLabelsFromIds();
-}
-
-bool OutputPlot::setYLabelsFromLabels() {
-    QList<NamedObject*> namedObjs;
-    for (int i = 0; i < yResults().size(); ++i)
-        namedObjs.append(yResults()[i]);
-
-    bool areEqual;
-    yLabels = getIds(namedObjs, &areEqual);
-    return !areEqual;
-}
-
-QList<Identifier> OutputPlot::getIds(QList<NamedObject*> &objects, bool *areEqual) const{
-    QList<Identifier> ids;
-    *areEqual = true;
-    Identifier prevId;
-    for (int i = 0; i < objects.size(); ++i) {
-        Identifier id = objects[i]->id();
-        ids.append(id);
-        *areEqual = *areEqual && (i==0 || id==prevId);
-        prevId = id;
-    }
-    return ids;
-}
-
-void OutputPlot::setYLabelsFromIds() {
-    QList<NamedObject*> ancestors;
-    for (int i = 0; i < yResults().size(); ++i) {
-        OutputVariable *var = dynamic_cast<OutputVariable*>(yResults()[i]);
-        Q_ASSERT(var);
-        NamedObject *ancestor = dynamic_cast<NamedObject*>(var->pullVariable()->parent());
-        Q_ASSERT(ancestor);
-        ancestors.append(ancestor);
-    }
-
-    bool areEqual(true), checkAgain(true);
-    while (areEqual && checkAgain) {
-        yLabels = getIds(ancestors, &areEqual);
-        if (areEqual) {
-            for (int i = 0; checkAgain && (i < ancestors.size()); ++i) {
-                ancestors[i] = dynamic_cast<NamedObject*>(ancestors[i]->parent());
-                checkAgain = ancestors[i];
-            }
-        }
+        QBrush brush;
+        p.symbol = QwtSymbol(QwtSymbol::Ellipse, brush, pen, QSize(symbolSize,symbolSize));
+        p.add();
     }
 }
 

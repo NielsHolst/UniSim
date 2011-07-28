@@ -1,5 +1,11 @@
+@rem Set enviroment for older Qt versions (up to 2010)
 @set QTENV="%QT_ROOT%\bin\qtenv.bat"
 @if exist %QTENV% goto :qt_root_ok
+
+@rem Set enviroment for newer Qt versions (from 2011)
+@set QTENV="%QT_ROOT%\mingw\bin\qtenv2.bat"
+@if exist %QTENV% goto :qt_root_ok
+
 @echo .
 @echo Batch file (build_all.bat) could not find %QTENV%
 @echo Set the QT_ROOT environment variable correctly and try again

@@ -5,6 +5,7 @@
 */
 #include <QDir>
 #include <QFileInfo>
+#include <QPixmap>
 #include <QtGui>
 #include <QSettings>
 #include <QVector>
@@ -100,6 +101,9 @@ void MainWindow::createMenus() {
 
     windowMenu->addAction( windowTile = new QAction("&Tile", this) );
     connect( windowTile, SIGNAL(triggered()), _mdiArea, SLOT(tileSubWindows ()) );
+
+    windowMenu->addAction( windowsSaveGraphics = new QAction("Save &graphics", this) );
+    connect( windowsSaveGraphics, SIGNAL(triggered()), this, SLOT(doWindowsSaveGraphics()) );
 
     windowMenu->addAction( windowCloseAll = new QAction("Close &all", this) );
     connect( windowCloseAll, SIGNAL(triggered()), _mdiArea, SLOT(closeAllSubWindows()) );
@@ -252,6 +256,46 @@ void MainWindow::editFile(QString filePath)
 {
     _xmlEditors.append(new XmlEditor);
     _xmlEditors.last()->execute(filePath);
+}
+
+void MainWindow::doWindowsSaveGraphics() {
+    QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
+    QList<QMdiSubWindow *> windows = _mdiArea->subWindowList();
+
+    int fileNo = 0;
+    try {
+        for (int i = 0; i < windows.size(); ++i) {
+            SubWindow *subWindow = dynamic_cast<SubWindow*>(windows[i]);
+            if (!subWindow)
+                continue;
+            if (subWindow->type() == SubWindow::Output) {
+                QPixmap pixmap = QPixmap::grabWidget(windows[i]->widget());
+                if (pixmap.isNull())
+                    throw Exception("Could not grab graphics for saving");
+                QString filePath = QString("%1/%2-graphics-%3.png").arg(path).arg(++fileNo).arg(windows[i]->windowTitle());
+                bool ok = pixmap.save(filePath);
+                if (!ok)
+                    throw Exception("Could save graphics file:\n" + filePath);
+            }
+            else if (subWindow->type() == SubWindow::View) {
+                QString sourceFilePath = liveSim->graphFilePath();
+                QString destFilePath = QString("%1/%2-model diagram.png").arg(path).arg(++fileNo);
+                QFile::remove(destFilePath);
+                bool ok = QFile::copy(sourceFilePath, destFilePath);
+                if (!ok)
+                    throw Exception("Could not write file with model diagram:\n" + destFilePath);
+            }
+        }
+    }
+    catch (UniSim::Exception &ex) {
+        QMessageBox::information(this, "Error", ex.message());
+    }
+
+    if (fileNo == 0)
+        QMessageBox::information(this, "Message", "No graphics found on screen for saving");
+    else
+        QMessageBox::information(this, "Message", QString("%1 file(s) written to folder %2").arg(fileNo).arg(path));
+
 }
 
 void MainWindow::doFileClose()

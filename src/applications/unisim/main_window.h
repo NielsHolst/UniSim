@@ -54,6 +54,7 @@ private slots:
 	void doViewLog();
     void doHelpAbout();
     void standardizeSubWindows();
+    void doWindowsSaveGraphics();
 
     void liveSimulatorStateChanged(int oldState, int newState);
 
@@ -71,7 +72,7 @@ private:
 		*simulationRun,
         *toolsPrototyping, *toolsGenerateDocs,
 		*viewComponents, *viewLog,
-        *windowCloseAll, *windowCascade, *windowTile, *windowStandardize,
+        *windowCloseAll, *windowCascade, *windowTile, *windowStandardize, *windowsSaveGraphics,
         *helpAbout;
 	QSettings *settings;
 		

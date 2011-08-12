@@ -17,16 +17,26 @@ public:
     Maize(UniSim::Identifier name, QObject *parent=0);
 	// standard methods
     void initialize();
+    void reset();
     void update();
 
 private:
 	// parameters
-    double pollenProduction, depositionRate, btConcentration;
+    double alpha, beta, c, minDist, halfDist, halfLife, Pmax, btQuantum, distance;
+    QDate dateMax;
+
+    // derived
+    double tmax, survivalRate;
+
     // pull variables
+    double pollenDepositionRate, pollenDepositionTotal, pollen, toxin;
 
     // links
-    UniSim::Model *sowing, *vegetative, *pollenRelease, *btDeposited;
-    const double *vegetativeOutflow, *pollenReleased;
+    const int *dayOfYear;
+
+    // methods
+    double Pdist();
+    double Ptime(int t);
 };
 
 } //namespace

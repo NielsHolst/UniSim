@@ -5,6 +5,7 @@
 */
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
+#include "sensitivity_analysis.h"
 #include "time_limited.h"
 #include "time_step_limited.h"
 #include "unisim_integrator_maker.h"
@@ -29,6 +30,9 @@ const QMap<Identifier, QString>& UniSimIntegratorMaker::supportedClasses() {
     if (!desc.isEmpty())
         return desc;
 
+    desc["SensitivityAnalysis"] =
+    "@I pending";
+
     desc["TimeLimited"] =
     "@I pending";
 
@@ -47,7 +51,9 @@ Integrator* UniSimIntegratorMaker::create(Identifier integratorType, Identifier 
 	// Remember to add integratorType to the list above as well
     UniSim::setSimulationObjectFromDescendent(parent);
     Integrator *integrator = 0;
-    if (integratorType.equals("TimeLimited"))
+    if (integratorType.equals("SensitivityAnalysis"))
+        integrator = new SensitivityAnalysis(objectName, parent);
+    else if (integratorType.equals("TimeLimited"))
         integrator = new TimeLimited(objectName, parent);
     else if (integratorType.equals("TimeStepLimited"))
         integrator = new TimeStepLimited(objectName, parent);

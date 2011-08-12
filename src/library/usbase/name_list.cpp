@@ -12,29 +12,26 @@ NameList::NameList(const QStringList &names_)
 QStringList NameList::simplified() {
     if (names.isEmpty())
         return names;
+    else if (names.size() == 1)
+        return QStringList() << names[0].section("/",-1);
 
-    test = 0;
-    prepareNames();
     root = new QObject;
+    root->setObjectName("/");
     for (int i = 0; i < names.size(); ++i) {
-        addNameToTree(names[i]);
+        addNameToTree(names[i], i);
     }
-
-    names.clear();
     appendLeaves(root);
-    delete root;
-    return names;
-}
 
-void NameList::prepareNames() {
-    names.sort();
-    for (int i = 1; i < names.size(); ++i) {
-        if (names[i-1] == names[i])
-            throw Exception(QString("Name is not unique: %1").arg(names[i]));
+    result = names;
+    for (int i = 0; i < leaves.size(); ++i) {
+        putResult(leaves[i]);
     }
+
+    delete root;
+    return result;
 }
 
-void NameList::addNameToTree(QString name) {
+void NameList::addNameToTree(QString name, int index) {
     QStringList items = name.split('/');
     QString tail;
     for (int i = items.size()-1; i >= 0; --i) {
@@ -42,39 +39,48 @@ void NameList::addNameToTree(QString name) {
         if (!tail.isEmpty())
             tail.prepend("/");
         tail.prepend(items[i]);
-        addChildToTree(parent, tail);
+        addChildToTree(parent, tail, index);
     }
 }
 
-void NameList::addChildToTree(QString parentName, QString childName) {
-    QObject *child = new QObject;
-    child->setObjectName(childName);
-    QObject *parent = parentName.isEmpty() ? root : root->findChild<QObject*>(parentName);
-    Q_ASSERT(parent);
-    child->setParent(parent);
-    cout << qPrintable(QString("\n\n%1:%2 %3 =>\n").arg(++test).arg(parentName).arg(childName));
-    writeObjectTree(root);
+void NameList::addChildToTree(QString parentName, QString childName, int index) {
+    bool childExists = root->findChild<QObject*>(childName) != 0;
+    if (!childExists) {
+        QObject *child = new QObject;
+        child->setObjectName(childName);
+        child->setProperty("index", index);
+        QObject *parent = parentName.isEmpty() ? root : root->findChild<QObject*>(parentName);
+        Q_ASSERT(parent);
+        child->setParent(parent);
+    }
 }
 
-void NameList::appendLeaves(QObject *tree) {
-    QObjectList children = tree->children();
+void NameList::appendLeaves(QObject *object) {
+    QObjectList children = object->children();
     if (children.isEmpty())
-        appendAtFork(tree);
+        leaves.append(object);
     else for (int i = 0; i < children.size(); ++i) {
         appendLeaves(children[i]);
     }
 }
 
-void NameList::appendAtFork(QObject *tree) {
-    QObject *base = tree;
-    while (base->parent()->children().isEmpty()) {
-        QObject *parent = base->parent();
-        if (parent->parent())
-            base = parent;
-        else
-            break;
+namespace {
+    inline bool hasSiblings(QObject *object) {
+        QObject *parent = object->parent();
+        return parent ? parent->children().size() > 1 : false;
     }
-    names.append(base->objectName());
+}
+
+void NameList::putResult(QObject *object) {
+    QObject *p = object;
+    while (!hasSiblings(p)) {
+        p = p->parent();
+    }
+    bool ok;
+    int index = p->property("index").toInt(&ok);
+    Q_ASSERT(ok && index < result.size());
+    result[index] = p->objectName();
+
 }
 
 

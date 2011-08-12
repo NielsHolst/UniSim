@@ -11,39 +11,22 @@ void TestNameList::testEmpty() {
     QCOMPARE(dest.size(), 0);
 }
 
-void TestNameList::testZero() {
-    QStringList source, dest;
+void TestNameList::testOne() {
+    QStringList source, expected, result;
     source
-        << "/abc/def"
         << "/abc/def";
+    expected
+        << "def";
     NameList nl(source);
 
-    bool excepted = false;
     try {
-        nl.simplified();
+        result = nl.simplified();
     }
     catch(Exception &) {
-        excepted = true;
+        QFAIL("Unexpected exception");
     }
-    QVERIFY(excepted);
+    QCOMPARE(result, expected);
 }
-
-//void TestNameList::testOne() {
-//    QStringList source, expected, result;
-//    source
-//        << "/abc/def";
-//    expected
-//        << "def";
-//    NameList nl(source);
-
-//    try {
-//        result = nl.simplified();
-//    }
-//    catch(Exception &) {
-//        QFAIL("Unexpected exception");
-//    }
-//    QCOMPARE(result, expected);
-//}
 
 void TestNameList::testMany() {
     QStringList source, expected, result;
@@ -63,8 +46,8 @@ void TestNameList::testMany() {
         << "A/B/D"
         << "D/E"
         << "/C"
-        << "/E/B/C"
-        << "/E/B/D"
+        << "E/B/C"
+        << "E/B/D"
         << "F"
         << "F/E";
     NameList nl(source);

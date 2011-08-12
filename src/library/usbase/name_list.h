@@ -14,20 +14,19 @@ namespace UniSim{
 
 class NameList {
 	public:
-	NameList(const QStringList &names);
+    NameList(const QStringList &names);
 	QStringList simplified();
 	
 	private:
     QObject *root;
-    QStringList names;
+    QStringList names, result;
+    QObjectList leaves;
     int test;
 
-    void prepareNames();
-    void addNameToTree(QString name);
-    void addChildToTree(QString parentName, QString childName);
-    void appendLeaves(QObject *tree);
-    void appendAtFork(QObject *tree);
-
+    void addNameToTree(QString name, int index);
+    void addChildToTree(QString parentName, QString childName, int index);
+    void appendLeaves(QObject *object);
+    void putResult(QObject *object);
 };
 
 } //namespace

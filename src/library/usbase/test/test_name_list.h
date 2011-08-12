@@ -12,8 +12,7 @@ class TestNameList : public QObject
     
 private slots:
     void testEmpty();
-    void testZero();
-//    void testOne();
+    void testOne();
     void testMany();
 };
 

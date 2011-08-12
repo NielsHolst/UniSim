@@ -8,19 +8,18 @@
 #include <QMdiSubWindow>
 #include <QObject>
 #include <QString>
-#include "stored_widget.h"
 
 class QCloseEvent;
 class QMdiArea;
 
-class SubWindow : public QMdiSubWindow, public StoredWidget
+class SubWindow : public QMdiSubWindow
 {
 	Q_OBJECT
 
 public:
     typedef enum{View, Output, Log, Untyped, All} Type;
     SubWindow(QMdiArea *area, QString title);
-    void closeEvent(QCloseEvent *event);
+    // void closeEvent(QCloseEvent *event);
 
     void setType(Type type);
     Type type() const;

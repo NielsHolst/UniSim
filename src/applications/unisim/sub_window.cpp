@@ -8,26 +8,28 @@
 #include "sub_window.h"
 
 SubWindow::SubWindow(QMdiArea *area, QString title)
-    : QMdiSubWindow(area), StoredWidget(area, "geometries/" + title),
+    : QMdiSubWindow(area),
       _type(Untyped)
 {
     Q_ASSERT(area);
     area->addSubWindow(this);
     setWindowTitle(title);
-
-    //useStoredGeometry();
-    //useStoredVisibility();
 }
 
+/* Why were these windows not allowed to close?
 void SubWindow::closeEvent(QCloseEvent *event) {
     if (_type == Output) {
         event->ignore();
         hide();
     }
 }
+*/
 
 void SubWindow::setType(Type type) {
     _type = type;
+    if (type==Output)
+        setAttribute(Qt::WA_DeleteOnClose);
+
 }
 
 SubWindow::Type SubWindow::type() const {

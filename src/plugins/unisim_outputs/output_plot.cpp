@@ -186,11 +186,11 @@ void OutputPlot::fillWithData() {
         QBrush brush;
         QwtSymbol symbol(QwtSymbol::Ellipse, brush, pen, QSize(8,8));
         curve->setStyle(QwtPlotCurve::NoCurve);
-        curve->setSymbol(symbol);
+        curve->setSymbol(&symbol);
 
         int numPoints = x->data()->size();
         Q_ASSERT(numPoints == y->data()->size());
-        curve->setData(x->data()->data(), y->data()->data(), numPoints);
+        curve->setRawSamples(x->data()->data(), y->data()->data(), numPoints);
     }
 }
 

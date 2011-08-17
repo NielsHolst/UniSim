@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<simulation version="1.0">
-	<integrator type="TimeStepLimited">
+<simulation name="simulation" version="1.0">
+	<integrator type="SensitivityAnalysis">
 		<parameter name="maxSteps" value="365"/> <!-- all years = 20440 -->
 		<sequence>
 			<model name="calendar"/>

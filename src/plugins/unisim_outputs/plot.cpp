@@ -7,6 +7,7 @@
 #include <float.h>
 #include <cmath>
 #include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
 #include <usengine/plot_widget.h>
 #include "plot.h"
 
@@ -27,7 +28,7 @@ void Plot::add() {
 
         if (type == Symbols) {
             curve->setStyle(QwtPlotCurve::NoCurve);
-            curve->setSymbol(symbol);
+            curve->setSymbol(&symbol);
         }
         else {
             curve->setPen(pen);
@@ -36,7 +37,7 @@ void Plot::add() {
         int numPoints = iv.second - iv.first + 1;
         if (numPoints <=0 )
         Q_ASSERT(numPoints > 0);
-        curve->setData(x->data() + iv.first, y->data() + iv.first, numPoints);
+        curve->setRawSamples(x->data() + iv.first, y->data() + iv.first, numPoints);
     }
 
 }

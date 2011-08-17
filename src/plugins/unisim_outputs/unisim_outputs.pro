@@ -3,15 +3,11 @@ include(../../config.pri)
 TEMPLATE	= lib
 DESTDIR	= 	$${US_PLUGINS}
 TARGET 	= unisim_outputs_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
-INCLUDEPATH += $${US_QWT}/include
 
 CONFIG		+= plugin
 
-LIBS += -L$${US_QWT}/lib \
-    -lqwt$${DEBUG_SUFFIX}5
-
-
 include ($${US_BASE}/base.pri)
+include($${US_QWT}/qwt.pri)
 
 HEADERS	+= 	\
         $${US_ENGINE}/main_window_interface.h \

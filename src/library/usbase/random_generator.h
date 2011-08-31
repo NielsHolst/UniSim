@@ -7,6 +7,7 @@
 #define UNISIM_RANDOM_GENERATOR
 #include <QObject>
 #include <boost/random/mersenne_twister.hpp>
+#include <usbase/object_pool.h>
 
 namespace UniSim{
 
@@ -18,11 +19,23 @@ public:
 
     RandomGenerator();
     ~RandomGenerator();
+    static QString id();
 
     Generator* generator();
 private:
-    Generator *_generator;
+    Generator* _generator;
+    // Singleton
+    static RandomGenerator *theRandomGenerator;
+    friend RandomGenerator* randomGenerator();
+
 };
+
+inline RandomGenerator* randomGenerator()
+{
+    if (!RandomGenerator::theRandomGenerator)
+        RandomGenerator::theRandomGenerator = objectPool()->find<RandomGenerator*>(RandomGenerator::id());
+    return RandomGenerator::theRandomGenerator;
+}
 
 } //namespace
 #endif

@@ -25,7 +25,7 @@ public:
     virtual void reset();
 
     // special methods
-    bool nextRun();
+    virtual bool nextRun();
     virtual bool nextStep() = 0;
     void acceptException(Exception *e);
 	

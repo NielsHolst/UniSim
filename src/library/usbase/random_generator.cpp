@@ -4,13 +4,11 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#include <usbase/exception.h>
-#include <usbase/object_pool.h>
-#include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
 #include "random_generator.h"
 
 namespace UniSim{
+
+RandomGenerator *RandomGenerator::theRandomGenerator = 0;
 
 RandomGenerator::RandomGenerator()
     : _generator(0)
@@ -19,6 +17,10 @@ RandomGenerator::RandomGenerator()
 
 RandomGenerator::~RandomGenerator() {
     delete _generator;
+}
+
+QString RandomGenerator::id() {
+    return "RandomGenerator";
 }
 
 RandomGenerator::Generator* RandomGenerator::generator() {

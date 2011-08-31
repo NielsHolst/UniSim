@@ -6,10 +6,6 @@ TARGET = test-unisim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += console
 QT += testlib
 
-INCLUDEPATH += $${US_QWT}/include
-LIBS += -L$${US_QWT}/lib \
-    -lqwt$${DEBUG_SUFFIX}5
-
 # Load application icon
 RC_FILE = ../../../resources/unisim.rc
  
@@ -19,7 +15,7 @@ RESOURCES = ../../../resources/unisim.qrc
 # Input
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
-#include ($${US_PLUGINS}/intercom_models/intercom_models.pri)
+include($${US_QWT}/qwt.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \
@@ -27,6 +23,7 @@ HEADERS += \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
     $${US_BASE}/test/test_push_variable.h \
+    $${US_BASE}/test/test_strata.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
     $${US_ENGINE}/test/test_model_maker.h \
@@ -65,6 +62,7 @@ SOURCES += \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
     $${US_BASE}/test/test_push_variable.cpp \
+    $${US_BASE}/test/test_strata.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
     $${US_ENGINE}/test/test_model_maker.cpp \

@@ -20,28 +20,103 @@ namespace UniSim {
 SensitivityAnalysis::SensitivityAnalysis(Identifier name, QObject *parent)
     : TimeStepLimited(name, parent)
 {
-    new Parameter<double>("factor", &factor, 2, this, "description");
+    new Parameter<double>("factor", &factor, -1., this, "description");
+    new Parameter<double>("relative", &relative, -1., this, "description");
+    new Parameter<double>("absolute", &absolute, -1., this, "description");
+    new Parameter<int>("days", &days, -1., this, "description");
+    new Parameter<int>("seconds", &seconds, -1., this, "description");
 }
 
 void SensitivityAnalysis::initialize() {
     TimeStepLimited::initialize();
-    models = seekMany<Model*>("*");
+    checkParameters();
+    findParameters();
+    stratifyParameters();
+    setNames();
 
     QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
-    QString fn = path + QString("/sa-%1.txt").arg(models.size());
+    QString fn = path + QString("/sa-%1.txt").arg(names.size());
     QFile file(fn);
     file.open(QIODevice::Text | QIODevice::WriteOnly);
-    QStringList names;
-    for (int i = 0; i < models.size(); ++i) {
-        names.append(models[i]->fullName());
-    }
-
-    NameList nl(names);
-    QStringList simpleNames = nl.simplified();
     for (int i = 0; i < names.size(); ++i) {
-        QString s = names[i] + " - " + simpleNames[i] + "\n";
+        QString s = names[i] + "\n";
         file.write(s.toAscii());
     }
+}
+
+void SensitivityAnalysis::checkParameters() {
+    int n = 0;
+    if (factor<0.)
+        ++n;
+    else {
+        type = StrataBase::Factor;
+        deviance = factor;
+    }
+    if	(relative<0.)
+        ++n;
+    else {
+        type = StrataBase::Relative;
+        deviance = relative;
+    }
+    if (absolute<0.)
+        ++n;
+    else {
+        type = StrataBase::Absolute;
+        deviance = absolute;
+    }
+    QString s = " of these parameters to a positive number: absolute, factor, or relative";
+    if (n == 3)
+        throw Exception("Set one" + s, this);
+    if (n < 2)
+        throw Exception("Set at most one" + s, this);
+}
+
+void SensitivityAnalysis::findParameters() {
+    Models models = seekMany<Model*>("*");
+    int me = models.indexOf(this);
+    Q_ASSERT(me > -1);
+    models.removeAt(me);
+    for (int i = 0; i < models.size(); ++i) {
+        parameters << models[i]->seekChildren<ParameterBase*>("*");
+    }
+}
+
+void SensitivityAnalysis::stratifyParameters() {
+    Model *iterator = seekOneChild<Model*>("RunIterator");
+    int iterations = iterator->pullVariable<int>("numIterations");
+    for (int i = 0; i < parameters.size(); ++i) {
+        ParameterBase *parameter = parameters[i];
+        if (dynamic_cast<Parameter<QDate>*>(parameter)) {
+            if (days == -1)
+                throw Exception("You must specify 'days' parameter for sensitivity analysis", parameter);
+            deviance = days;
+        }
+        else if (dynamic_cast<Parameter<QTime>*>(parameter)) {
+            if (seconds == -1)
+                throw Exception("You must specify 'seconds' parameter for sensitivity analysis", parameter);
+            deviance = seconds;
+        }
+        parameters[i]->createStrata(deviance, iterations, type);
+    }
+}
+
+void SensitivityAnalysis::setNames() {
+    QStringList fullNames;
+    for (int i = 0; i < parameters.size(); ++i) {
+        fullNames.append(UniSim::fullName(parameters[i]));
+    }
+    NameList nl(fullNames);
+    names = nl.simplified();
+}
+
+bool SensitivityAnalysis::nextRun() {
+    bool doNext = Integrator::nextRun();
+    if (doNext) {
+        for (int i = 0; i < parameters.size(); ++i) {
+            parameters[i]->setValueFromNextSample();
+        }
+    }
+    return doNext;
 }
 
 } //namespace

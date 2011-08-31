@@ -3,6 +3,7 @@
 #include <usbase/clock.h>
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
+#include <usbase/random_generator.h>
 #include <usengine/integrator_maker.h>
 #include <usengine/file_locations_strict.h>
 #include <usengine/model_maker.h>
@@ -20,7 +21,7 @@ void createSingletons(){
     objectPool()->attach(IntegratorMaker::id(), new IntegratorMaker);
     objectPool()->attach(ModelMaker::id(), new ModelMaker);
     objectPool()->attach(OutputMaker::id(), new OutputMaker);
-    //objectPool()->attach(RandomUniform::id(), new RandomUniform);
+    objectPool()->attach(RandomGenerator::id(), new RandomGenerator);
     objectPool()->attach(Clock::id(), new Clock);
 }
 

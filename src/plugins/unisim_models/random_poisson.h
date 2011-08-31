@@ -8,8 +8,8 @@
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <QObject>
+#include <usbase/random_generator.h>
 #include "random_base.h"
-#include "random_generator.h"
 
 namespace UniSim{
 

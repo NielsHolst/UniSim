@@ -11,6 +11,7 @@
 #include <QVariant>
 #include "exception.h"
 #include "parameter_base.h"
+#include "strata.h"
 #include "utilities.h"
 
 namespace UniSim{
@@ -21,11 +22,15 @@ class Parameter : public ParameterBase
     // no Q_OBJECT
 public:
     Parameter(Identifier name, T *valuePtr, T defaultvalue, QObject *parent, QString desc);
+    ~Parameter();
     // generic
     QVariant toVariant() const;
     QString toString() const;
     QString typeId() const;
     void setValueFromString(QString newValue);
+    void createStrata(double deviance, int n, StrataBase::Type type);
+    void setValueFromNextSample();
+
     // special
     T value() const;
     T* valuePtr() const;
@@ -34,19 +39,25 @@ public:
     void followRedirection();
 
 private:
-
     T *_valuePtr;
     T *redirectedValuePtr;
     T defaultValue;
+    StrataBase *strata;
 };
 
 template <class T>
 Parameter<T>::Parameter(Identifier id, T *valuePtr, T defaultvalue_, QObject *parent, QString desc)
-    :  ParameterBase(id, parent, desc), _valuePtr(valuePtr), redirectedValuePtr(0), defaultValue(defaultvalue_)
+    :  ParameterBase(id, parent, desc), _valuePtr(valuePtr), redirectedValuePtr(0), defaultValue(defaultvalue_),
+    strata(0)
 {
     assertUniqueness(id, parent);
     Q_ASSERT(_valuePtr);
     setValue(defaultValue);
+}
+
+template <class T>
+Parameter<T>::~Parameter() {
+    delete strata;
 }
 
 template <class T>
@@ -110,6 +121,32 @@ template <class T>
 void Parameter<T>::followRedirection() {
     if (redirectedValuePtr)
         *_valuePtr = *redirectedValuePtr;
+}
+
+namespace {
+    template <class T>
+    Strata<T>* doCreateStrata(T value, double deviance, int n, StrataBase::Type type) {
+        return new Strata<T>(value, deviance, n, type);
+    }
+
+    template <>
+    Strata<QString>* doCreateStrata<QString>(QString value, double deviance, int n, StrataBase::Type type) {
+        return 0;
+    }
+
+}
+
+template <class T>
+void Parameter<T>::createStrata(double deviance, int n, StrataBase::Type type) {
+    Q_ASSERT(!strata);
+    strata = doCreateStrata(value(), deviance, n, type);
+}
+
+template <class T>
+void Parameter<T>::setValueFromNextSample() {
+    Strata<T> *strataT = dynamic_cast<Strata<T>*>(strata);
+    Q_ASSERT(strataT);
+    setValue(strataT->nextSample());
 }
 
 } //namespace

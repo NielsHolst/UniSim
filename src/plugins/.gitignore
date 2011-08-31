@@ -24,6 +24,7 @@ plugins.pro
 #
 */object_script.*.*
 */*.user
+*/*.1pre1
 
 ###
 ### Generated target files 

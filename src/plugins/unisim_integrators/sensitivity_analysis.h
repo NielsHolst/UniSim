@@ -6,11 +6,12 @@
 #ifndef UNISIM_SENSITIVITY_ANALYSIS_H
 #define UNISIM_SENSITIVITY_ANALYSIS_H
 
+#include <usbase/strata_base.h>
 #include "time_step_limited.h"
 
 namespace UniSim {
 	
-class Model;
+class ParameterBase;
 
 class SensitivityAnalysis : public TimeStepLimited
 {
@@ -21,13 +22,23 @@ public:
 
     // standard methods
     void initialize();
+    bool nextRun();
 
 private:
     // Parameters
-    double factor;
+    double factor, relative, absolute, deviance;
+    int days, seconds;
+    StrataBase::Type type;
 
     // Links
-    Models models;
+    QList<ParameterBase*> parameters;
+    QStringList names;
+
+    // Methods
+    void checkParameters();
+    void findParameters();
+    void stratifyParameters();
+    void setNames();
 };
 
 

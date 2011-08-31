@@ -3,35 +3,38 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_RANDOM_NORMAL
-#define UNISIM_RANDOM_NORMAL
-#include <boost/random/normal_distribution.hpp>
+#ifndef UNISIM_STRATA_BASE_H
+#define UNISIM_STRATA_BASE_H
+#include <cmath>
+#include <QVector>
+#include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
-#include <QObject>
+#include <QDate>
+#include <QTime>
+#include <usbase/exception.h>
+#include <usbase/object_pool.h>
 #include <usbase/random_generator.h>
-#include "random_base.h"
 
 namespace UniSim{
 
-class RandomNormal : public RandomBase
+class StrataBase
 {
-	Q_OBJECT
-public: 
-    RandomNormal(UniSim::Identifier name, QObject *parent=0);
-    ~RandomNormal();
-    // standard methods
-    void initialize();
-private:
-    // parameters
-    double mean, sd;
-    // methods
-    double drawValue();
+public:
+    enum Type {Absolute, Factor, Relative};
+    StrataBase(Type type_) : type(type_) {}
+protected:
+    virtual void stratify() = 0;
+    Type type;
     // random number generation
-    typedef boost::normal_distribution<double> Distribution;
+    RandomGenerator *generator;
+    typedef boost::uniform_real<double> Distribution;
     typedef boost::variate_generator<RandomGenerator::Generator&, Distribution> Variate;
     Distribution *distribution;
     Variate *variate;
+    double u() { return (*variate)(); }
 };
 
 } //namespace
+
 #endif
+

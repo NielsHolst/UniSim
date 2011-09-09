@@ -21,7 +21,7 @@ RandomPoisson::~RandomPoisson() {
 void RandomPoisson::initialize() {
     RandomBase::initialize();
     distribution = new Distribution(mean);
-    variate = new Variate(*(generator->generator()), *distribution);
+    variate = new Variate(*randomGenerator(), *distribution);
 }
 
 double RandomPoisson::drawValue() {

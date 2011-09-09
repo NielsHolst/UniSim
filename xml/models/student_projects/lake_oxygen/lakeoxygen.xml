@@ -9,15 +9,17 @@
 			<model name="netproduction"/>
 			<model name="OxygenConcentration"/>
 		</sequence>
+		
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="30"/>
 		</model>
-	</integrator>
+			</integrator>
 	
-	<model name="random"> <!-- In the model we have implemented a stochastic module to generate random numbers in a range for the Reaeration coefficient-->
+	<!-- In the model we have implemented a stochastic module to generate random numbers in a range for the Reaeration coefficient-->
+	<model name="random"> 
 		<model name="Kl" type="UniSim::RandomUniform">
-			<parameter name="minValue" value="0.2"/> <!--Lowest value of the interval for stochastic number generating -->
-			<parameter name="maxValue" value="2"/> <!--Highest value of the interval for stochastic number generating -->
+			<parameter name="minValue" value="0.2" comment="Lowest value of the interval for stochastic number generating"/>
+			<parameter name="maxValue" value="2" comment="Highest value of the interval for stochastic number generating"/> 
 		</model>
 	</model>
 	
@@ -33,10 +35,8 @@
 	<model name="netproduction" type="lakeoxygen::Netproduction">
 		<parameter name="Unit" value="0"/> <!--Converts between Oxygen and Carbon as output if 0 then Oxygen if 1 then carbon-->
 		<parameter name="K" variable="random/Kl[value]" old_value="0.2"/>
-		
 	</model>
-	
-		
+			
 	<model name="OxygenConcentration" type="lakeoxygen::OxygenConcentration">
 	</model>
 
@@ -56,7 +56,6 @@
 		<variable axis="y" label="NCP (KL stochastic)" value="Netproduction[NetProd]"/>
 	</output>
 
-	
 	<output type="plot" name="plot">
 		<parameter name="title" value ="Accumulated Net Community Production"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
@@ -65,7 +64,7 @@
 	</output>
 	
 	<output type="plot">
-		<parameter name="title" value ="Averaged estimated reaeration coefficent (from wind speed)"/>
+		<parameter name="title" value ="Av estimated reaeration coefficent (from wind)"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Kl" value="Netproduction[Kwind]" summary = "average" />
 	</output>
@@ -76,7 +75,6 @@
 		<variable axis="y" label="DO[mg/l]" value="weather[obsDO]"/>
 		<variable axis="y" label="Water temp[oC]" value="weather[tempW]"/>
 	</output>
-	
 	
 	<output type="plot" summary ="yes">
 		<parameter name="title" value ="Parameter"/>

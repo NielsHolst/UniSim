@@ -15,6 +15,7 @@ private slots:
     void testParseNodesManyRoots();
     void testParseWithAttributes();
     void testParseFromFile();
+    void testParseMissingFile();
     void testWriteToFile();
 
     void testDeepEqualsTrue();
@@ -26,10 +27,13 @@ private slots:
 
     void testBuildQueryString();
     void testCompileNoSelect();
+    void testCompileMissingFile();
     void testCompileInvalidSelect();
     void testCompileEmptySelect();
     void testCompileOneSelect();
     void testCompileNestedSelect();
+
+    void testCaseCirsium();
 
 private:
     void checkParsedNodes(QObject *a);

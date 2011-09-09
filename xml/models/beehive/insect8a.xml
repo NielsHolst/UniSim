@@ -14,7 +14,6 @@
 		</model>
 	</integrator>
 
-	
 	<model name="random">
 		<model name="fecundity_scale" type="UniSim::RandomUniform">
 			<parameter name="minValue" value="0.01"/>
@@ -27,7 +26,7 @@
 
 	<model name="weather" type="Beehive::Weather">
 		<model name="records" type="UniSim::Records">
-			<parameter name="fileName" value="AZ_96.txt"/>
+			<parameter name="fileName" value="Harlingen2008.txt"/>
 			<parameter name="imposeInitialDateAndTime" value="yes"/>
 		</model>
 	</model>
@@ -81,26 +80,7 @@
 	</model>
 
 	<!-- *** Outputs *** -->
-	
-	<output type="table">
-		<parameter name="filename" value="insect_stages.txt"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Egg" axis="y" value="insect/egg[number]"/>
-		<variable label="Larva" axis="y" value="insect/larva[number]"/>
-		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
-		<variable label="Adult" axis="y" value="insect/adult[number]"/>
-		<variable label="Pollen" axis="y" value="pollen[mass]"/>
-		<variable label="Pollen120" axis="y" value="pollen[mass]" summary="(xAtThreshold 120.)"/>
-		<variable label="Pollen80" axis="y" value="pollen[mass]" summary="(xAtThreshold 80.)"/>
-		<variable label="Pollen10" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
-	</output>
-
-	<output type="plot">
-		<parameter name="title" value="Fecundity scaling"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<read-parameter label="scale" axis="y" value="fecundity[scale]"/>
-	</output>
-	
+		
 	<output type="plot">
 		<parameter name="title" value="Insect stages"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
@@ -146,9 +126,30 @@
 		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
 		<variable label="Larva" axis="y" value="insect/larva[number]" summary="max"/>
 	</output>
+	<!--
 	<output type="plot" summary="yes">
 		<parameter name="title" value="Days until pollen = 10"/>
 		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
 		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10)"/>
+	</output>
+	-->
+
+	<output type="table">
+		<parameter name="filename" value="insect_stages.txt"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
+		<variable label="Egg" axis="y" value="insect/egg[number]"/>
+		<variable label="Larva" axis="y" value="insect/larva[number]"/>
+		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
+		<variable label="Adult" axis="y" value="insect/adult[number]"/>
+		<variable label="Pollen" axis="y" value="pollen[mass]"/>
+		<variable label="Pollen120" axis="y" value="pollen[mass]" summary="(xAtThreshold 120.)"/>
+		<variable label="Pollen80" axis="y" value="pollen[mass]" summary="(xAtThreshold 80.)"/>
+		<variable label="Pollen10" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Fecundity scaling"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
+		<read-parameter label="scale" axis="y" value="fecundity[scale]"/>
 	</output>
 </simulation>

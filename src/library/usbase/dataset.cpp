@@ -98,7 +98,7 @@ bool Dataset::contains(QString columnName) const {
 }
 
 
-const QVector<double>* Dataset::columnData(QString columnName) const {
+QVector<double>* Dataset::columnData(QString columnName) {
     if (!contains(columnName))
         throw("Dataset does not contain column named: '" + columnName + "'", this);
     return &(data[columnName].values);

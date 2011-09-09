@@ -13,7 +13,7 @@
 #include <QTime>
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
-#include <usbase/random_generator.h>
+#include <usbase/random.h>
 
 namespace UniSim{
 
@@ -22,13 +22,13 @@ class StrataBase
 public:
     enum Type {Absolute, Factor, Relative};
     StrataBase(Type type_) : type(type_) {}
+    virtual ~StrataBase() {}
 protected:
     virtual void stratify() = 0;
     Type type;
     // random number generation
-    RandomGenerator *generator;
     typedef boost::uniform_real<double> Distribution;
-    typedef boost::variate_generator<RandomGenerator::Generator&, Distribution> Variate;
+    typedef boost::variate_generator<Random::Generator&, Distribution> Variate;
     Distribution *distribution;
     Variate *variate;
     double u() { return (*variate)(); }

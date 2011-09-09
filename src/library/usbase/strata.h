@@ -13,7 +13,7 @@
 #include <QVector>
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
-#include <usbase/random_generator.h>
+#include <usbase/random.h>
 #include "strata_base.h"
 
 namespace UniSim{
@@ -69,9 +69,8 @@ template <class T>
 Strata<T>::Strata(T value_, double deviance_, int n_, StrataBase::Type type)
     : StrataBase(type), value(value_), deviance(deviance_), n(n_)
 {
-    generator = randomGenerator();
     distribution = new Distribution(0., 1.);
-    variate = new Variate(*(generator->generator()), *distribution);
+    variate = new Variate(*randomGenerator(), *distribution);
     stratify();
 }
 

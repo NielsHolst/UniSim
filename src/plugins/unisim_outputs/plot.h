@@ -12,7 +12,8 @@
 #include <QPen>
 #include <QString>
 #include <QVector>
-#include <qwt_symbol.h>
+
+class QwtSymbol;
 
 namespace UniSim{
 
@@ -29,7 +30,7 @@ struct Plot
     PlotWidget *plotWidget;
     Type type;
     QPen pen;
-    QwtSymbol symbol;
+    const QwtSymbol *symbol;
 
     Plot();
     void add();

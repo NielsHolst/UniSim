@@ -9,6 +9,7 @@
 #include <QColor>
 #include <QList>
 #include <QVector>
+#include <qwt_symbol.h>
 #include <usbase/output.h>
 
 namespace UniSim{
@@ -35,12 +36,14 @@ private:
     int penWidth, symbolSize;
 
     // housekeeping
+    static QList<QColor> colors;
+    static QList<QwtSymbol> symbols;
     MainWindowInterface *mainWindow;
     PlotWidget *plotWidget;
-    static QList<QColor> colors;
 
     // methods
-    void showPlot();
+    void initDesignInfo();
+	void showPlot();
     void createPlotWidget();
     void fillPlotWidget();
     void fillWithResults();

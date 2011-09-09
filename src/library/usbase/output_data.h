@@ -24,7 +24,7 @@ public:
     // special methods
     typedef enum {XAxis, YAxis} Axis;
     Axis axis() const;
-    const QVector<double>* data() const;
+    QVector<double>* data() const;
 
 private:
     // methods

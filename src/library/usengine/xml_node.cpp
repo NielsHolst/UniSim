@@ -5,6 +5,7 @@
 */
 #include <iostream>
 #include <QFile>
+#include <QFileInfo>
 #include <QList>
 #include <QMessageBox>
 #include <QXmlQuery>
@@ -114,6 +115,8 @@ void XmlNode::writeToFile(QString filePath, QString isoCode) const {
 }
 
 void XmlNode::compile(QString filePath) {
+    if (!QFileInfo(filePath).exists())
+        throw Exception("File does not exist: " + filePath);
     QString queryAttr = attribute("select").trimmed();
     if (!queryAttr.isEmpty()) {
         QString queryInput = buildQueryString(filePath, queryAttr);
@@ -139,7 +142,7 @@ void XmlNode::compile(QString filePath) {
 }
 
 QString XmlNode::buildQueryString(QString filePath, QString queryAttr) const {
-    QString query;
+    QString query;;
     if (queryAttr.startsWith("doc")) {
         query = queryAttr.contains("http") ? queryAttr : insertDocPath(filePath, queryAttr);
     }

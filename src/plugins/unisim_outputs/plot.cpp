@@ -14,7 +14,7 @@
 namespace UniSim{
 
 Plot::Plot()
-    : x(0), y(0), logy(false), ymin(-DBL_MAX), ymax(DBL_MAX), showLegend(true), plotWidget(0), type(Curve)
+    : x(0), y(0), logy(false), ymin(-DBL_MAX), ymax(DBL_MAX), showLegend(true), plotWidget(0), type(Curve), symbol(0)
 {
 }
 
@@ -27,8 +27,9 @@ void Plot::add() {
         plotWidget->addCurve(curve);
 
         if (type == Symbols) {
+            Q_ASSERT(symbol);
+            curve->setSymbol(symbol);
             curve->setStyle(QwtPlotCurve::NoCurve);
-            curve->setSymbol(&symbol);
         }
         else {
             curve->setPen(pen);
@@ -37,7 +38,7 @@ void Plot::add() {
         int numPoints = iv.second - iv.first + 1;
         if (numPoints <=0 )
         Q_ASSERT(numPoints > 0);
-        curve->setRawSamples(x->data() + iv.first, y->data() + iv.first, numPoints);
+        curve->setSamples(x->data() + iv.first, y->data() + iv.first, numPoints);
     }
 
 }
@@ -61,8 +62,7 @@ void Plot::setIntervals() {
         if (!doInclude || i==n-1) {
             if (insideInterval) {
                 interval.second = i==n-1 ? i : i-1;
-                if (interval.first > interval.second)
-                    Q_ASSERT(interval.first <= interval.second);
+                Q_ASSERT(interval.first <= interval.second);
                 intervals.append(interval);
                 insideInterval = false;
             }

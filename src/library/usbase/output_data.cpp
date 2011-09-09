@@ -30,7 +30,7 @@ OutputData::Axis OutputData::axis() const {
     return _axis;
 }
 
-const QVector<double>* OutputData::data() const {
+QVector<double>* OutputData::data() const {
     return dataset->columnData(columnName);
 }
 

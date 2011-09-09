@@ -4,11 +4,12 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QApplication>
+#include <QDir>
 #include <QtGui>
 #include <usbase/authors.h>
 #include <usbase/clock.h>
 #include <usbase/object_pool.h>
-#include <usbase/random_generator.h>
+#include <usbase/random.h>
 #include <usengine/integrator_maker.h>
 #include <usengine/model_maker.h>
 #include <usengine/output_maker.h>
@@ -29,7 +30,7 @@ void createSingletons(){
     objectPool()->attach(IntegratorMaker::id(), new IntegratorMaker);
     objectPool()->attach(ModelMaker::id(), new ModelMaker);
     objectPool()->attach(OutputMaker::id(), new OutputMaker);
-    objectPool()->attach(RandomGenerator::id(), new RandomGenerator);
+    objectPool()->attach(Random::id(), new Random);
 }
 
 int main(int arbc, char *argv[])

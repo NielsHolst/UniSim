@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0" select="doc('case_cirsium_output.xml')/simulation">
+
+     <integrator type="TimeStepLimited">
+         <parameter name="maxSteps" value="270"/>
+         <sequence>
+             <model name="calendar"/>
+             <model name="weather"/>
+             <model name="field"/>
+         </sequence>
+     </integrator>
+	
+	<model name="calendar" type="unisim::Calendar">
+		<parameter name="latitude" value="55"/>
+		<parameter name="initialDate" value="1/1/2005"/>
+	</model>
+	
+	<model name="weather" type="intercom::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value ="intercom/foulum 2005.txt" alternative = "flakkebjerg 2005-06.txt"/>
+		</model>
+	</model>
+
+	<model name="field" type="intercom::Community">
+		<parameter name="earlyGrowthThreshold" value="1"/>
+				
+		<model name="cirsium" type="intercom::Plant">
+			<parameter name="density" value="40"/> 
+			
+			<model name="phenology" type="intercom::Phenology">
+				<model name="vegetative" type="UniSim::Stage">
+					<parameter name="duration" value="1000"/>
+					<parameter name="k" value="10"/>
+				</model>
+				<model name="flowering" type="UniSim::Stage">
+					<parameter name="duration" value="300"/>
+					<parameter name="k" value="60"/>
+				</model>
+				<model name="senescent" type="UniSim::Stage">
+					<model name="time" type="UniSim::Days"/>
+					<parameter name="duration" value="60"/>
+					<parameter name="k" value="10"/>
+				</model>
+			</model>
+
+			<model name="time" type="UniSim::PhotoThermalTime">
+				<parameter name="T0" value="0"/>
+			</model>
+			
+			<model name="height" type="intercom::Height">
+				<parameter name="h0" value="0"/>
+				<parameter name="hmax" value="1.6"/>
+				<parameter name="tm" value="500"/>
+			</model>
+			
+			<model name="earlyGrowth" type="UniSim::exponential"> 
+				<parameter name="initialValue" value="1" comment="cm2 per plant"/>
+				<parameter name="growthRate" value="0.03"/>
+			</model>
+
+			<!-- Leaves -->
+			<model name="leaves" type="intercom::Organ">
+			
+				<model name="area" type="intercom::Area">
+					<parameter name="kDiffuse" value="0.7"/>
+
+					<model name="area" type="UniSim::Stage">
+						<parameter name="duration" value="500"/>
+					</model>
+
+					<model name="specificLeafArea" type="intercom::SpecificLeafArea">
+						<parameter name="initial" value="240"/>
+						<parameter name="slope" value="0"/>
+					</model>
+
+					<model name="density" type="intercom::AreaDensitySymmetric"/>
+					<model name="amax" type="intercom::AssimilationMaxGivenTemp"/>
+					<model name="lightUseEfficiency" type="intercom::LightUseEfficiencyGivenTemp"/>
+				</model>
+
+				<model name="mass" type="intercom::Mass">
+					<model name="mass" type="UniSim::Stage">
+						<parameter name="duration" value="300"/>
+					</model>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0.45)(flowering 0)(senescent 0))"/>
+					</model>
+				</model>
+			</model>
+
+			<!-- Stem -->
+			<model name="stem" type="intercom::Organ">
+
+				<model name="area" type="intercom::Area">
+					<parameter name="kDiffuse" value="0.3"/>
+
+					<model name="area" type="UniSim::Stage">
+						<parameter name="duration" value="600"/>
+					</model>
+
+					<model name="specificLeafArea" type="intercom::SpecificLeafArea">
+						<parameter name="initial" value="20"/>
+						<parameter name="slope" value="0"/>
+					</model>
+
+					<model name="density" type="intercom::AreaDensityTapering"/>
+					<model name="amax" type="intercom::AssimilationMaxGivenTemp"/>
+					<model name="lightUseEfficiency" type="intercom::LightUseEfficiencyGivenTemp"/>
+				</model>
+
+				<model name="mass" type="intercom::Mass">
+					<model name="mass" type="UniSim::Stage">
+						<parameter name="duration" value="600"/>
+					</model>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0.45)(flowering 0)(senescent 0))"/>
+					</model>
+				</model>
+			</model>
+
+			<!-- Flowers -->
+			<model name="flowers" type="intercom::Organ">
+
+				<model name="area" type="intercom::Area">
+					<parameter name="kDiffuse" value="0.4"/>
+
+					<model name="area" type="UniSim::Stage">
+						<parameter name="duration" value="200"/>
+					</model>
+
+					<model name="specificLeafArea" type="intercom::SpecificLeafArea">
+						<parameter name="initial" value="20"/>
+						<parameter name="slope" value="0"/>
+					</model>
+
+					<model name="density" type="intercom::AreaDensityTopheavy"/>
+					<model name="amax" type="intercom::AssimilationMaxGivenTemp"/>
+					<model name="lightUseEfficiency" type="intercom::LightUseEfficiencyGivenTemp"/>
+				</model>
+
+				<model name="mass" type="intercom::Mass">
+					<model name="mass" type="UniSim::Stage">
+						<parameter name="duration" value="200"/>
+					</model>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0)(flowering 0.2)(senescent 0))"/>
+					</model>
+				</model>
+			</model>
+			
+			<!-- Root -->
+			<model name="root" type="intercom::Organ">
+				<model name="mass" type="intercom::Mass">
+					<model name="mass" type="UniSim::Stage">
+						<parameter name="duration" value="600"/>
+					</model>
+					<model name="partition" type="intercom::PartitioningFixedByStage">
+						<parameter name="value" value="((vegetative 0.1)(flowering 0.8)(senescent 1))"/>
+					</model>
+				</model>
+			</model>
+
+			<!-- Observations -->
+			<dataset name="obs_height">
+				<parameter name="filename" value="cirar_height_2005.txt"/>
+				<parameter name="headerLines" value ="1"/>
+				<parameter name="columns" value="((day_in_year 2) (height 3))"/>
+			</dataset>
+			<dataset name="obs_mass">
+				<parameter name="filename" value="cirar_organs_2005.txt"/>
+				<parameter name="headerLines" value ="1"/>
+				<parameter name="columns" 
+				value="((day_in_year 2) (leaves 3)(stem 4)(flowers 5))"/>
+			</dataset>
+		</model>
+	</model>
+
+</simulation>

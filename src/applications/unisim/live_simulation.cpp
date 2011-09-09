@@ -199,7 +199,7 @@ void LiveSimulation::graphProcessChanged(QProcess::ProcessState processState)
 void LiveSimulation::run() {
     if (_state != Ready) {
         LogBase::LogItem message =
-            { "Warning", "Simulation not ready  (may  not opened or in error?)" };
+            { "Warning", "Simulation not ready (maybe not opened or in error?)" };
         log->tell(message);
         return;
     }

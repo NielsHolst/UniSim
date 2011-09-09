@@ -19,5 +19,5 @@ release/
 #
 object_script.*.*
 *.user
-
+*.1pre1
 

@@ -5,30 +5,20 @@
 */
 #ifndef UNISIM_RANDOM_BASE
 #define UNISIM_RANDOM_BASE
-#include <QObject>
-#include <boost/random/mersenne_twister.hpp>
 #include <usbase/identifier.h>
 #include <usbase/model.h>
 
 namespace UniSim{
-
-class RandomGenerator ;
 
 class RandomBase : public Model
 {
 	Q_OBJECT
 public: 
     RandomBase(Identifier name, QObject *parent=0);
-    virtual ~RandomBase();
     // standard methods
     virtual void initialize();
     virtual void reset();
     virtual void update();
-    // special methods
-    static Identifier id();
-protected:
-    // Common random number generator
-    RandomGenerator *generator;
 private:
     // methods
     virtual double drawValue() = 0;

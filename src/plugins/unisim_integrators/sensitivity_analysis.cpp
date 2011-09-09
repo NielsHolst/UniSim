@@ -23,8 +23,8 @@ SensitivityAnalysis::SensitivityAnalysis(Identifier name, QObject *parent)
     new Parameter<double>("factor", &factor, -1., this, "description");
     new Parameter<double>("relative", &relative, -1., this, "description");
     new Parameter<double>("absolute", &absolute, -1., this, "description");
-    new Parameter<int>("days", &days, -1., this, "description");
-    new Parameter<int>("seconds", &seconds, -1., this, "description");
+    new Parameter<int>("days", &days, 10., this, "description");
+    new Parameter<int>("seconds", &seconds, 60., this, "description");
 }
 
 void SensitivityAnalysis::initialize() {
@@ -85,18 +85,19 @@ void SensitivityAnalysis::stratifyParameters() {
     Model *iterator = seekOneChild<Model*>("RunIterator");
     int iterations = iterator->pullVariable<int>("numIterations");
     for (int i = 0; i < parameters.size(); ++i) {
+        double useDeviance = deviance;
         ParameterBase *parameter = parameters[i];
         if (dynamic_cast<Parameter<QDate>*>(parameter)) {
             if (days == -1)
                 throw Exception("You must specify 'days' parameter for sensitivity analysis", parameter);
-            deviance = days;
+            useDeviance = days;
         }
         else if (dynamic_cast<Parameter<QTime>*>(parameter)) {
             if (seconds == -1)
                 throw Exception("You must specify 'seconds' parameter for sensitivity analysis", parameter);
-            deviance = seconds;
+            useDeviance = seconds;
         }
-        parameters[i]->createStrata(deviance, iterations, type);
+        parameters[i]->createStrata(useDeviance, iterations, type);
     }
 }
 

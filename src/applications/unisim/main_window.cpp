@@ -124,7 +124,7 @@ PlotWidget* MainWindow::createPlotWidget(QString title) {
     SubWindow *subWindow = new SubWindow(_mdiArea, title);
     subWindow->setType(SubWindow::Output);
 
-    QwtPlot *plot = new QwtPlot(_mdiArea);
+    QwtPlot *plot = new QwtPlot(subWindow);
     subWindow->setWidget(plot);
 
     return new PlotWidget(plot, subWindow);

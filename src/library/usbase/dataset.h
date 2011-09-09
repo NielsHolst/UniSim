@@ -21,7 +21,7 @@ public:
 
     // special methods
     bool contains(QString columnName) const;
-    const QVector<double>* columnData(QString columnName) const;
+    QVector<double>* columnData(QString columnName);
 
 private:
     // parameters

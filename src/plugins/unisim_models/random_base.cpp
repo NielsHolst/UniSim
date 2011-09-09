@@ -8,7 +8,6 @@
 #include <usbase/object_pool.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
-#include <usbase/random_generator.h>
 #include "random_base.h"
 
 namespace UniSim{
@@ -16,17 +15,9 @@ namespace UniSim{
 RandomBase::RandomBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    generator = randomGenerator();
     new Parameter<double>("minValue", &minValue, 0., this, "Minimum random value");
     new Parameter<double>("maxValue", &maxValue, 0., this, "Maximum random value");
     new PullVariable<double>("value", &value, this, "Random value");
-}
-
-RandomBase::~RandomBase() {
-}
-
-Identifier RandomBase::id() {
-    return "RandomBase";
 }
 
 void RandomBase::initialize() {

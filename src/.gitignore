@@ -3,3 +3,5 @@
 ###
 
 plugins_hide/
+[Mm]akefile
+[Mm]akefile*.*

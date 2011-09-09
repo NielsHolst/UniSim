@@ -25,8 +25,10 @@ public:
     bool contains(Identifier id);
     void deferTo(ObjectPool *pool);
     template <class T> T find(UniSim::Identifier);
+    QString diagnose();
 private:
     typedef QMap<Identifier, QObject*> ObjectMap;
+    typedef QMapIterator<Identifier, QObject*> ObjectIterator;
     ObjectMap objects;
     ObjectPool *deferredPool;
 
@@ -48,15 +50,7 @@ template <class T> T ObjectPool::find(UniSim::Identifier id) {
     }
 }
 
-inline ObjectPool* objectPool()
-{
-    if (!ObjectPool::_objectPool) {
-        ObjectPool::_objectPool = new ObjectPool(0);
-    }
-    return ObjectPool::_objectPool->deferredPool ?
-           ObjectPool::_objectPool->deferredPool :
-           ObjectPool::_objectPool;
-}
+ObjectPool* objectPool();
 
 } //namespace
 

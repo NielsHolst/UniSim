@@ -69,16 +69,6 @@
 
 	<!-- *** Outputs *** -->
 	
-	<output type="table">
-		<parameter name="filename" value="insect_stages.txt"/>
-		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
-		<variable label="Egg" axis="y" value="insect/egg[number]"/>
-		<variable label="Larva" axis="y" value="insect/larva[number]"/>
-		<variable label="Pupa" axis="y" value="insect/pupa[number]"/>
-		<variable label="Adult" axis="y" value="insect/adult[number]"/>
-		<variable label="Pollen" axis="y" value="pollen[mass]"/>
-	</output>
-
 	<output type="plot">
 		<parameter name="title" value="Insect stages"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>

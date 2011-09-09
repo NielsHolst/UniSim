@@ -8,8 +8,6 @@
 
 using namespace UniSim;
 
-
-
 void TestXmlNode::testParseNodesOneRoot() {
     QString xml =
     "<a>"
@@ -132,6 +130,18 @@ void TestXmlNode::testParseFromFile() {
         QFAIL(qPrintable(msg));
     }
     QVERIFY(deepEquals(rootStr,rootFile));
+}
+
+void TestXmlNode::testParseMissingFile() {
+    XmlNode *rootFile;
+    bool excepted = false;
+    try {
+        rootFile = XmlNode::createFromFile(filePath("non_exising_file.xml"));
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
 }
 
 void TestXmlNode::testWriteToFile() {
@@ -357,7 +367,7 @@ void TestXmlNode::testCompileNoSelect() {
     try {
         uncompiled = XmlNode::createFromFile(filePath(FN));
         compiled = XmlNode::createFromFile(filePath(FN));
-        compiled->compile(FN);
+        compiled->compile(filePath(FN));
     }
     catch (Exception &ex) {
         QString msg = "Unexpected exception. " + ex.message();
@@ -365,6 +375,21 @@ void TestXmlNode::testCompileNoSelect() {
     }
     QVERIFY(deepEquals(uncompiled, compiled));
 }
+
+void TestXmlNode::testCompileMissingFile() {
+    XmlNode *root;
+    QString xml = "<b><b1/></b>";
+    root = XmlNode::createFromString(xml);
+    bool excepted = false;
+    try {
+        root->compile(filePath("non_exising_file.xml"));
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
 
 void TestXmlNode::testCompileInvalidSelect() {
     QString path = filePath("test_xml_node_compile_invalid.xml");
@@ -509,8 +534,26 @@ void TestXmlNode::testCompileNestedSelect() {
     delete merged;
 }
 
+void TestXmlNode::testCaseCirsium() {
+
+    XmlNode *original;
+    QString s;
+    try {
+        QString fp = filePath("case_cirsium.xml");
+        original = XmlNode::createFromFile(fp);
+        original->compile(fp);
+        original->getTree(&s);
+        cout << qPrintable(s);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+}
+
 QString TestXmlNode::filePath(QString fileName) const {
     QDir dir = FileLocations::location(FileLocationInfo::Weather);
     dir.cdUp();
     return dir.absolutePath() + "/src/library/usengine/test/" + fileName;
 }
+

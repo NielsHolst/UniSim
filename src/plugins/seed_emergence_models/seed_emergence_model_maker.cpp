@@ -44,9 +44,6 @@ const QMap<Identifier, QString>& Seed_emergenceModelMaker::supportedClasses()
 	return desc;
 }
 
-void Seed_emergenceModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
 Model* Seed_emergenceModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

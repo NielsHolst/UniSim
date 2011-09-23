@@ -216,13 +216,30 @@ bool SimulationMaker::readModelElement(QObject* parent)
     QString modelType = attributeValue("type", "anonymous");
     QString objectName = attributeValue("name", "anonymous");
     QString hide = attributeValue("hide", "");
+    QString instancesStr = attributeValue("instances", "");
+
+    bool manyInstances = !instancesStr.isEmpty();
+    int instances = 1;
+    if (manyInstances) {
+        bool ok(true);
+        instances = instancesStr.toInt(&ok);
+        if (!ok || instances <= 0)
+            throw Exception("instances must a number larger than zero");
+    }
 
     Model *model;
     try {
-        model = ModelMaker::create(modelType, objectName, parent);
-        if (!hide.isEmpty()) {
-            bool isHidden = UniSim::stringToValue<bool>(hide);
-            model->setHide(isHidden);
+        for (int i = 0; i < instances; ++i) {
+            QString objectInstanceName = objectName;
+            if (manyInstances)
+                objectInstanceName += "(" + QString::number(i+1) + ")";
+
+            model = ModelMaker::create(modelType, objectInstanceName, parent);
+
+            if (!hide.isEmpty()) {
+                bool isHidden = UniSim::stringToValue<bool>(hide);
+                model->setHide(isHidden);
+            }
         }
     }
     catch (Exception &ex) {

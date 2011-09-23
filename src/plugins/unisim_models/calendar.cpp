@@ -91,7 +91,6 @@ void Calendar::reset() {
     updateDerived();
 }
 
-
 void Calendar::update() {
     ++totalTimeSteps;
     dateTime = dateTime + Time(timeStep, timeUnit);

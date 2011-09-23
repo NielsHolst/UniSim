@@ -35,7 +35,7 @@ private:
     QString dotCommand();
     void writeDotFile();
     void writeOutputFile(OutputFormat format);
-	void writeModel(QFile *f, QObject *parent, QObject *child, int parentNumber);
+    void writeModel(QFile *f, QObject *parent, QObject *child, int parentNumber);
 	
 	// Data
     UniSim::Simulation *simulation;

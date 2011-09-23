@@ -72,9 +72,6 @@ const QMap<Identifier, QString>& MicrobialCommunityModelMaker::supportedClasses(
 	return desc;
 }
 
-void MicrobialCommunityModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
 Model* MicrobialCommunityModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

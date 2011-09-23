@@ -19,7 +19,6 @@
 namespace UniSim{
 
 class Model;
-class ObjectPool;
 	
 class ModelMakerPlugIn
 {
@@ -38,9 +37,6 @@ public:
     //! Returns the list of authors for this plugin
     virtual QStringList authors() const = 0;
 
-    //! Sets ObjectPool to be used by plug-in
-    virtual void useObjectPool(ObjectPool *pool) const = 0;
-
     //! Create a Model object based on its type
 	/*!
 		\param modelType type of model to create
@@ -56,6 +52,6 @@ protected:
 
 } //namespace
 
-Q_DECLARE_INTERFACE(UniSim::ModelMakerPlugIn, "org.UniSim.UniSimToys.ModelMakerPlugIn/0.1")
+Q_DECLARE_INTERFACE(UniSim::ModelMakerPlugIn, "org.ecolmod.UniSim.ModelMakerPlugIn/0.x")
 
 #endif

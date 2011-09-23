@@ -209,6 +209,7 @@ template <class T> QList<T> NamedObject::seekAscendants(QString name) {
     return UniSim::seekAscendants<T>(name, this);
 }
 
+
 } //namespace
 
 

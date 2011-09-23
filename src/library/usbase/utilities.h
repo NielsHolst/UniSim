@@ -24,7 +24,6 @@
 #include "exception.h"
 #include "file_locations.h"
 #include "identifier.h"
-#include "object_pool.h"
 
 using std::cout;
 
@@ -516,7 +515,6 @@ void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers) {
 
             TPlugin *plugin = qobject_cast<TPlugin*>(loader.instance());
             if (plugin) {
-                plugin->useObjectPool(objectPool());
 				QList<Identifier> classes = plugin->supportedClasses().keys();
                 foreach (Identifier id, classes) {
                     (*makers)[id] = plugin;

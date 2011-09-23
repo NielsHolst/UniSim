@@ -10,8 +10,6 @@
 
 namespace UniSim{
 
-class ObjectPool;
-
 class UniSimOutputMaker : public QObject, public OutputMakerPlugIn
 {
 	Q_OBJECT
@@ -21,8 +19,6 @@ public:
     QString pluginDesc() const;
     QStringList authors() const;
     const QMap<UniSim::Identifier, QString>& supportedClasses();
-
-    void useObjectPool(ObjectPool *pool) const;
 
     Output* create(Identifier outputType, Identifier objectName, QObject *parent=0);
 };

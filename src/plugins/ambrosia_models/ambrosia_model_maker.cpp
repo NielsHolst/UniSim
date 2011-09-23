@@ -45,10 +45,6 @@ const QMap<Identifier, QString>& AmbrosiaModelMaker::supportedClasses() {
     return desc;
 }
 
-void AmbrosiaModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
-
 Model* AmbrosiaModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

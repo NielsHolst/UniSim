@@ -37,10 +37,6 @@ const QMap<Identifier, QString>& CottonModelMaker::supportedClasses() {
     return desc;
 }
 
-void CottonModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
-
 Model* CottonModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

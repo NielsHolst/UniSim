@@ -46,6 +46,8 @@ protected:
     Integrator *_integrator;
 
 private:
+    QList<Model*> modelInstances(QString modelName);
+
     QList<Model*> _models;  // models ordered in sequence of execution
     QList<Output*> _outputs;
     State _state;

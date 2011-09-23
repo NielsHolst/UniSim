@@ -3,20 +3,43 @@
 	<integrator type="TimeStepLimited">
 		<parameter name="maxSteps" value="365"/> <!-- all years = 20440 -->
 		<sequence>
+			<model name="random"/>
 			<model name="calendar"/>
 			<model name="weather"/>
 			<model name="maize"/>
 			<model name="ressources"/>
 			<model name="insect"/>
+			<model name="exposure"/>
 		</sequence>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="20"/>
+		</model>
 	</integrator>
+
+	<model name="random">
+		<model name="dateShift" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="-15"/>
+			<parameter name="maxValue" value="15"/>
+		</model>
+		<model name="Pmax" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="120"/>
+			<parameter name="maxValue" value="240"/>
+		</model>
+		<model name="timeCompression" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0.5"/>
+			<parameter name="maxValue" value="2"/>
+		</model>
+		<model name="halfLife" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="5"/>
+			<parameter name="maxValue" value="60"/>
+		</model>
+	</model>
 
 	<model name="calendar" type="Calendar"/>
 
 	<model name="weather" type="SupplyDemand::Weather">
 		<model name="records" type="UniSim::Records">
 			<parameter name="fileName" value="denmark-odum-1953-2009.txt"/>
-			<parameter name="imposeInitialDateAndTime" value="yes"/>
 		</model>
 	</model>
 
@@ -32,12 +55,13 @@
 		</model>
 	</model>
 
-	
 	<model name="maize" type="SupplyDemand::Maize">
-		<parameter name="halfLife" value="30"/>
+		<parameter name="halfLife" variable="random/halfLife[value]"/>
 		<parameter name="distance" value="1"/>
 		<parameter name="dateMax" value="31/7/2011"/>
-		<parameter name="Pmax" value="120"/>
+		<parameter name="dateShift" variable="random/dateShift[value]"/>
+		<parameter name="Pmax" variable="random/Pmax[value]"/>
+		<parameter name="c" variable="random/timeCompression[value]"/>
 	</model>
 	
 	<model name="insect" type="SupplyDemand::Holometabola">
@@ -192,6 +216,8 @@
 
 	</model>
 
+	<model name="exposure" type="Exposure"/>
+	
 	<!-- 
 	*** Plots  ***
 	-->
@@ -202,7 +228,6 @@
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 		<variable label="Tmin" axis="y" value="weather/records[Tmin]"/>
 		<variable label="Tmax" axis="y" value="weather/records[Tmax]"/>
-		<variable label="Day length" axis="y" value="calendar[daylength]"/>
 	</output>
 
 	<output type="plot" name="lifeStages">
@@ -223,27 +248,60 @@
 	</output>
 
 	<output type="plot">
-		<parameter name="title" value ="Pollen deposition"/>
+		<parameter name="title" value ="Pollen deposition (per cm2)"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Deposition rate" value="maize[pollenDepositionRate]"/>
+		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]"/>
 	</output>
 
 	<output type="plot">
-		<parameter name="title" value ="Pollen density (per cm2)"/>
+		<parameter name="title" value ="Pollen deposition (per cm2)"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Deposition rate" value="maize[pollenDepositionRate]"/>
-		<variable axis="y" label="Deposition total" value="maize[pollenDepositionTotal]"/>
-		<variable axis="y" label="Pollen" value="maize[pollen]"/>
-		<variable axis="y" label="Toxin (pg)" value="maize[toxin]"/>
+		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]"/>
+		<variable axis="y" label="Total" value="maize[pollenDepositionTotal]"/>
+		<variable axis="y" label="Actual" value="maize[pollen]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Bt exposure"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Toxin (pg/cm2)" value="maize[toxin]"/>
+		<variable axis="y" label="Pollen" value="maize[pollen]"/>
 		<variable axis="y" label="Larva" value="insect/larva/lifeTable/number[value]"/>
 	</output>
-	
+
+	<output type="plot">
+		<parameter name="title" value ="Bt exposure index"/>
+		<parameter name="logy" value ="yes"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Exposure" value="exposure[total]"/>
+	</output>
+
+	<output type="plot" summary="yes">
+		<parameter name="title" value="Sensitivity to deposition"/>
+		<parameter name="logy" value ="yes"/>
+		<variable label="Time shift" axis="x" value="random/dateShift[value]"/>		
+		<variable axis="y" label="Exposure" value="exposure[total]" summary="max"/>
+	</output>
+
+	<output type="plot" summary="yes">
+		<parameter name="title" value="Sensitivity to deposition"/>
+		<parameter name="logy" value ="yes"/>
+		<variable label="Total pollen" axis="x" value="random/Pmax[value]"/>		
+		<variable axis="y" label="Exposure" value="exposure[total]" summary="max"/>
+	</output>
+
+	<output type="plot" summary="yes">
+		<parameter name="title" value="Sensitivity to deposition"/>
+		<parameter name="logy" value ="yes"/>
+		<variable label="Time compression" axis="x" value="random/timeCompression[value]"/>		
+		<variable axis="y" label="Exposure" value="exposure[total]" summary="max"/>
+	</output>
+
+		<output type="plot" summary="yes">
+		<parameter name="title" value="Sensitivity to deposition"/>
+		<parameter name="logy" value ="yes"/>
+		<variable label="Half life" axis="x" value="random/halfLife[value]"/>		
+		<variable axis="y" label="Exposure" value="exposure[total]" summary="max"/>
+	</output>
 
 	<!-- 
 	*** Tables  ***

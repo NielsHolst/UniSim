@@ -3,18 +3,18 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef SUPPLYDEMAND_MAIZE
-#define SUPPLYDEMAND_MAIZE
+#ifndef SUPPLYDEMAND_EXPOSURE
+#define SUPPLYDEMAND_EXPOSURE
 #include <QObject>
 #include <usbase/model.h>
 
 namespace SupplyDemand {
 
-class Maize : public UniSim::Model
+class Exposure : public UniSim::Model
 {
 	Q_OBJECT
 public: 
-    Maize(UniSim::Identifier name, QObject *parent=0);
+    Exposure(UniSim::Identifier name, QObject *parent=0);
 	// standard methods
     void initialize();
     void reset();
@@ -22,21 +22,12 @@ public:
 
 private:
 	// parameters
-    double alpha, beta, c, minDist, halfDist, halfLife, Pmax, btQuantum, distance, dateShift;
-    QDate dateMax;
-
-    // derived
-    double tmax, survivalRate;
 
     // pull variables
-    double pollenDepositionRate, pollenDepositionTotal, pollen, toxin;
+    double current, total;
 
     // links
-    const int *dayOfYear;
-
-    // methods
-    double Pdist();
-    double Ptime(int t);
+    const double *larvae, *pollen;
 };
 
 } //namespace

@@ -19,7 +19,6 @@
 namespace UniSim{
 
 class Output;
-class ObjectPool;
 
 class OutputMakerPlugIn
 {
@@ -38,9 +37,6 @@ public:
     //! Returns the list of authors for this plugin
     virtual QStringList authors() const = 0;
 
-    //! Sets ObjectPool to be used by plug-in
-    virtual void useObjectPool(ObjectPool *pool) const = 0;
-
     //! Create an Output object based on its type
 	/*!
 		\param outputType type of output to create
@@ -55,6 +51,6 @@ protected:
 
 } //namespace
 
-Q_DECLARE_INTERFACE(UniSim::OutputMakerPlugIn, "org.UniSim.UniSimToys.OutputMakerPlugIn/0.1")
+Q_DECLARE_INTERFACE(UniSim::OutputMakerPlugIn, "org.ecolmod.UniSim.OutputMakerPlugIn/0.x")
 
 #endif

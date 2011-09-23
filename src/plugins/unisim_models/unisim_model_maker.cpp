@@ -140,10 +140,6 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     return desc;
 }
 
-void UniSimModelMaker::useObjectPool(ObjectPool *pool) const {
-    objectPool()->deferTo(pool);
-}
-
 Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	// Remember to add modelType to the list above as well

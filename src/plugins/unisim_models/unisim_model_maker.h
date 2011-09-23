@@ -10,8 +10,6 @@
 
 namespace UniSim{
 
-class ObjectPool;
-
 class UniSimModelMaker : public QObject, public ModelMakerPlugIn
 {
 	Q_OBJECT
@@ -21,8 +19,6 @@ public:
     QString pluginDesc() const;
     QStringList authors() const;
     const QMap<UniSim::Identifier, QString>& supportedClasses();
-
-    void useObjectPool(ObjectPool *pool) const;
 
     Model* create(Identifier modelType, Identifier objectName, QObject *parent=0);
 };

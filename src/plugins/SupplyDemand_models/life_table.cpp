@@ -9,6 +9,7 @@
 #include <usbase/pull_variable.h>
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
+#include "holometabola.h"
 #include "life_table.h"
 #include "life_stage.h"
 
@@ -28,9 +29,10 @@ LifeTable::LifeTable(UniSim::Identifier name, QObject *parent)
 }
 
 void LifeTable::initialize() {
+    Holometabola *holometabola = seekOneAscendant<Holometabola*>("*");
     QList<QString> listPreceding = decodeList<QString>(strPreceding, this);
     for (int i= 0; i < listPreceding.size(); ++i) {
-        LifeStage* preceding = seekOne<LifeStage*>(listPreceding[i]);
+        LifeStage* preceding = holometabola->seekOneDescendant<LifeStage*>(listPreceding[i]);
         precedingMass.append( preceding->seekOneDescendant<Model*>("lifetable/mass") );
         precedingNumber.append( preceding->seekOneDescendant<Model*>("lifetable/number") );
     }

@@ -86,10 +86,6 @@ const QMap<Identifier, QString>& AweModelMaker::supportedClasses() {
     return desc;
 }
 
-void AweModelMaker::useObjectPool(ObjectPool *pool) const {
-    objectPool()->deferTo(pool);
-}
-
 Model* AweModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	// Remember to add modelType to the list above as well

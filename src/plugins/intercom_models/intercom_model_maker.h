@@ -8,10 +8,6 @@
 
 #include <usbase/model_maker_plug_in.h>
 
-namespace UniSim {
-    class ObjectPool;
-}
-
 namespace intercom{
 
 class IntercomModelMaker : public QObject, public UniSim::ModelMakerPlugIn
@@ -23,9 +19,6 @@ public:
     QString pluginDesc() const;
     QStringList authors() const;
     const QMap<UniSim::Identifier, QString>& supportedClasses();
-
-    void useObjectPool(UniSim::ObjectPool *pool) const;
-
     UniSim::Model* create(UniSim::Identifier modelType,
                       UniSim::Identifier objectName,
                       QObject *parent=0);

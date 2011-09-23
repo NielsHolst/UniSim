@@ -22,7 +22,6 @@ class QStringList;
 namespace UniSim{
 
 class Integrator;
-class ObjectPool;
 
 class IntegratorMakerPlugIn
 {
@@ -41,9 +40,6 @@ public:
     //! Returns the list of authors for this plugin
     virtual QStringList authors() const = 0;
 
-    //! Sets ObjectPool to be used by plug-in
-    virtual void useObjectPool(ObjectPool *pool) const = 0;
-
     //! Create a Integrator object based on its type
 	/*!
         \param integratorType type of integrator to create
@@ -58,6 +54,6 @@ protected:
 
 } //namespace
 
-Q_DECLARE_INTERFACE(UniSim::IntegratorMakerPlugIn, "org.UniSim.UniSimToys.IntegratorMakerPlugIn/0.1")
+Q_DECLARE_INTERFACE(UniSim::IntegratorMakerPlugIn, "org.ecolmod.UniSim.IntegratorMakerPlugIn/0.x")
 
 #endif

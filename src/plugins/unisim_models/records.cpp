@@ -1,9 +1,13 @@
 #include <iostream>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/variate_generator.hpp>
 #include <QTime>
+#include <usbase/exception.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/pull_variable_base.h>
-#include <usbase/utilities.h>          
+#include <usbase/random.h>
+#include <usbase/utilities.h>
 #include "records.h"
 
 namespace UniSim {
@@ -16,10 +20,14 @@ Records::Records(Identifier name, QObject *parent)
     new Parameter<QString>("fileLocation", &fileLocation, "weather", this,
     "Valid locations are the standard folders: datasets, plugins and weather. "
     "The standard folders can be set from the File|Locations menu.");
+    /*
     new Parameter<bool>("imposeInitialDateAndTime", &imposeInitialDateTime, false, this,
     "Set this to 'yes' if you want the simulation to begin on the first date (and time, possibly) "
     "found in the input file. This initial date (and time) will then be imposed on the @F calendar model "
     "for its @F initialDate (and @F {initialTime}) parameters.");
+    */
+    new Parameter<bool>("randomizeInitialYear", &randomizeInitialYear, false, this,
+    "Pick a random initial year from the years available in @F weather/records model");
 
     new PullVariable<QDateTime>("currentDateTime", &currentDateTime, this,
     "The date and time of the current line in the input file. The @F calendar date and time will be at "
@@ -27,6 +35,10 @@ Records::Records(Identifier name, QObject *parent)
     new PullVariable<QDateTime>("nextDateTime", &nextDateTime, this,
     "The date and time of the next line in the input file. The @F calendar date and time will be at "
     "or before this");
+    new PullVariable<QDateTime>("firstDateTime", &firstDateTime, this,
+    "The date and time of the first line in the input file");
+    new PullVariable<QDateTime>("lastDateTime", &lastDateTime, this,
+    "The date and time of the last line in the input file");
     new PullVariable<QDate>("currentDate", &currentDate, this, "The date part of @F {currentDateTime}");
     new PullVariable<QDate>("nextDate", &nextDate, this, "The date part of @F {nextDateTime}");
     new PullVariable<QTime>("currentTime", &currentTime, this, "The time part of @F {currentDateTime}");
@@ -43,21 +55,10 @@ Records::~Records() {
 
 void Records::initialize() {
 	calendar = seekOne<Model*>("calendar");
-
     setFileLocationType();
-
     readColumnNames();
-    int n = columnNames.size();
-    values.fill(0., n);
-    currentColumnValues->fill(0., n);
-    nextColumnValues->fill(0., n);
-
-    for (int i = 0; i < n; ++i) {
-        Identifier id = columnNames[i];
-        double *valuePtr = &values[i];
-        if (i != dateColumn && i != timeColumn)
-            new PullVariable<double>(id, valuePtr, this, id.label() + " from file records");
-    }
+    createColumnPullVariables();
+    readFromFirstToLastLine();
 }
 
 void Records::setFileLocationType() {
@@ -73,7 +74,6 @@ void Records::setFileLocationType() {
                         fileLocation +"'");
 }
 
-
 void Records::readColumnNames() {
     openFile();
     readLineItems();
@@ -82,13 +82,18 @@ void Records::readColumnNames() {
 
     dateColumn = -1;
     timeColumn = -1;
+    imposeInitialDateTime = false;
     for (int i = 0; i < lineItems.size(); ++i) {
         Identifier id = Identifier(lineItems[i]);
         columnNames.append(id);
-        if (id.equals("date"))
+        if (id.equals("date")) {
             dateColumn = i;
-        else if (id.equals("time"))
+            imposeInitialDateTime = true;
+        }
+        else if (id.equals("time")) {
             timeColumn = i;
+            imposeInitialDateTime = true;
+        }
     }
     file.close();
 }
@@ -114,20 +119,68 @@ void Records::readLineItems() {
     pastLastLine = lineItems.isEmpty();
 }
 
-void Records::reset() {
-    currentDate = nextDate = QDate(2000,1,1);
-    currentTime = nextTime = QTime(0,0,0);
-    currentDateTime = nextDateTime = QDateTime(currentDate, currentTime, Qt::UTC);
+void Records::createColumnPullVariables() {
+    int n = columnNames.size();
+    values.fill(0., n);
+    currentColumnValues->fill(0., n);
+    nextColumnValues->fill(0., n);
+    for (int i = 0; i < n; ++i) {
+        Identifier id = columnNames[i];
+        double *valuePtr = &values[i];
+        if (i != dateColumn && i != timeColumn)
+            new PullVariable<double>(id, valuePtr, this, id.label() + " from file records");
+    }
+}
 
+void Records::readFromFirstToLastLine() {
     openFile();
-    readLineItems(); // skip labels (already read)
+    readLineItems(); // skip labels
     advanceFirstLine();
+    firstDateTime = currentDateTime;
+    while (!pastLastLine)
+        advanceLine();
+    lastDateTime = currentDateTime;
+    file.close();
+}
+
+void Records::reset() {
+    readToFirstLine();
+    if (randomizeInitialYear)
+        readToInitialYear();
     if (imposeInitialDateTime) {
         calendar->pushVariable<QDate>("initialDate", currentDate);
         calendar->pushVariable<QTime>("initialTimeOfDay", currentTime);
         calendar->deepReset();
     }
     update();
+}
+
+void Records::readToFirstLine() {
+    currentDate = nextDate = QDate(2000,1,1);
+    currentTime = nextTime = QTime(0,0,0);
+    currentDateTime = nextDateTime = QDateTime(currentDate, currentTime, Qt::UTC);
+
+    openFile();
+    readLineItems(); // skip labels
+    advanceFirstLine();
+}
+
+void Records::readToInitialYear() {
+    int fromYear =  firstDateTime.date().year();
+    int toYear =  lastDateTime.date().year();
+
+    typedef boost::uniform_int<> Distribution;
+    typedef boost::variate_generator<Random::Generator&, Distribution> Variate;
+    Distribution distribution(fromYear, toYear);
+    Variate variate(*randomGenerator(), distribution);
+    int rndYear = variate();
+
+    QDate initialDate = QDate(rndYear, 1, 1);
+    while (initialDate > currentDate && !pastLastLine)
+        advanceLine();
+    if (pastLastLine)
+        throw Exception("Read past end in records witout reaching" +
+                        initialDate.toString() + " in file " + fileName);
 }
 
 void Records::advanceFirstLine() {
@@ -164,16 +217,6 @@ void Records::extractValues() {
     nextDateTime = QDateTime(nextDate, nextTime, Qt::UTC);
 }
 
-/*
-namespace {
-    template <class T>
-    void swap(T &a, T &b) {
-        T c = a;
-        a = b;
-        b = c;
-    }
-}
-*/
 void Records::advanceLine() {
     advanceTime();
     swap(currentColumnValues, nextColumnValues);

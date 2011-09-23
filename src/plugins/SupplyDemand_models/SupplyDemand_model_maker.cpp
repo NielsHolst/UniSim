@@ -8,6 +8,7 @@
 #include "SupplyDemand_model_maker.h"
 #include "acquisition.h"
 #include "energy_budget.h"
+#include "exposure.h"
 #include "growth_demand.h"
 #include "holometabola.h"
 #include "life_table.h"
@@ -77,11 +78,10 @@ const QMap<Identifier, QString>& SupplyDemandModelMaker::supportedClasses()
     desc["Weather"] =
     "Description";
 
-	return desc;
-}
+    desc["Exposure"] =
+    "Description";
 
-void SupplyDemandModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
+    return desc;
 }
 
 #define UNISIM_CREATE(Name) if (modelType.equals(#Name)) model = new Name(objectName, parent)
@@ -92,6 +92,7 @@ Model* SupplyDemandModelMaker::create(Identifier modelType, Identifier objectNam
 	Model *model = 0;
     UNISIM_CREATE(Acquisition);
     UNISIM_CREATE(EnergyBudget);
+    UNISIM_CREATE(Exposure);
     UNISIM_CREATE(GrowthDemand);
     UNISIM_CREATE(Holometabola);
     UNISIM_CREATE(LifeTable);

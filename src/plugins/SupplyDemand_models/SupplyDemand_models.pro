@@ -11,6 +11,7 @@ HEADERS += \
 	SupplyDemand_model_maker.h \
     acquisition.h \
     energy_budget.h \
+    exposure.h \
 	growth_demand.h \
 	holometabola.h \
     life_table.h \
@@ -27,7 +28,8 @@ SOURCES += \
 	SupplyDemand_model_maker.cpp \
     acquisition.cpp \
     energy_budget.cpp \
-	growth_demand.cpp \
+    exposure.cpp \
+    growth_demand.cpp \
 	holometabola.cpp \
     life_table.cpp \
     life_stage.cpp \

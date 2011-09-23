@@ -80,28 +80,15 @@ void Simulation::initialize(const Identifiers &sequence, SimulationMaker *simMak
 	_integrator = integrators[0];
 
 	// Put models in sequence		
-	if (sequence.size() == 0) {
+    if (sequence.isEmpty()) {
 		if (models.size() == 1) 
-			_models.append(models[0]);
+            _models.append(models[0]);
 		else 
 			throw Exception("Sequence of models must be specified in 'integrator' element");
 	} 
 	else {
         for (Identifiers::const_iterator se = sequence.begin(); se != sequence.end(); ++se) {
-			bool foundModel = false;
-			for (Models::const_iterator mo = models.begin(); mo != models.end(); ++mo) {
-                if ((*mo)->objectName() == se->key()) {
-					if (!foundModel) {
-						_models.append(*mo);
-						foundModel = true;
-					}
-					else {
-                        throw Exception("Top-level model defined more than once: '" + se->label() + "'");
-					}
-				}							
-			}
-			if (!foundModel) 
-                throw Exception("Model defined in sequence ='"+se->label()+"' is not a top-level model");
+            _models.append(modelInstances(se->key()));
 		}
 	}
 
@@ -116,6 +103,25 @@ void Simulation::initialize(const Identifiers &sequence, SimulationMaker *simMak
 
 	_state = Initialized;
 	_runCount = _stepCount = 0;
+}
+
+Models Simulation::modelInstances(QString modelName) {
+    Models instances;
+    Model *oneModel = peekOneChild<Model*>(modelName, this);
+    if (oneModel) {
+        instances << oneModel;
+    }
+    else {
+        int i = 0;
+        Model *instance;
+        do {
+            QString instanceName = modelName + "(" + QString::number(++i) + ")";
+            instance = peekOneChild<Model*>(instanceName, this);
+            if (instance)
+                instances << instance;
+        } while (instance);
+    }
+    return instances;
 }
 
 //! Executes one or more runs of the simulation as determined by the integrator

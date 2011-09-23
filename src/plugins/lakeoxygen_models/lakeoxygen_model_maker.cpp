@@ -45,9 +45,6 @@ const QMap<Identifier, QString>& LakeoxygenModelMaker::supportedClasses()
 	return desc;
 }
 
-void LakeoxygenModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
 Model* LakeoxygenModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

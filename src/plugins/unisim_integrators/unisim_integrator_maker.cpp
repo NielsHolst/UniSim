@@ -42,9 +42,6 @@ const QMap<Identifier, QString>& UniSimIntegratorMaker::supportedClasses() {
     return desc;
 }
 
-void UniSimIntegratorMaker::useObjectPool(ObjectPool *pool) const {
-    objectPool()->deferTo(pool);
-}
 
 Integrator* UniSimIntegratorMaker::create(Identifier integratorType, Identifier objectName, QObject *parent)
 {

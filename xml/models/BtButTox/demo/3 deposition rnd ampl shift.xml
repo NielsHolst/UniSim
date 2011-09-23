@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation" version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="365"/> <!-- all years = 20440 -->
+		<sequence>
+			<model name="random"/>
+			<model name="calendar"/>
+			<model name="maize"/>
+		</sequence>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="5"/>
+		</model>
+	</integrator>
+
+	<model name="random">
+		<model name="dateShift" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="-15"/>
+			<parameter name="maxValue" value="15"/>
+		</model>
+		<model name="Pmax" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="120"/>
+			<parameter name="maxValue" value="240"/>
+		</model>
+	</model>
+	
+	<model name="calendar" type="Calendar"/>
+
+	<model name="maize" type="SupplyDemand::Maize">
+		<parameter name="halfLife" value="30"/>
+		<parameter name="distance" value="1"/>
+		<parameter name="dateMax" value="31/7/2011"/>
+		<parameter name="dateShift" variable="random/dateShift[value]"/>
+		<parameter name="Pmax" variable="random/Pmax[value]"/>
+	</model>
+	
+	<!-- 
+	*** Plots  ***
+	-->
+	<output type="plot">
+		<parameter name="title" value ="Pollen deposition (per cm2)"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Pollen deposition (per cm2)"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]"/>
+		<variable axis="y" label="Total" value="maize[pollenDepositionTotal]"/>
+		<variable axis="y" label="Actual" value="maize[pollen]"/>
+	</output>
+
+</simulation>

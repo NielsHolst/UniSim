@@ -45,10 +45,6 @@ const QMap<Identifier, QString>& TestModelMaker::supportedClasses() {
     return desc;
 }
 
-void TestModelMaker::useObjectPool(ObjectPool *pool) const {
-    objectPool()->deferTo(pool);
-}
-
 Model* TestModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
     UniSim::setSimulationObjectFromDescendent(parent);

@@ -49,10 +49,6 @@ const QMap<Identifier, QString>& ConductanceModelMaker::supportedClasses() {
     return desc;
 }
 
-void ConductanceModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
-
 Model* ConductanceModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

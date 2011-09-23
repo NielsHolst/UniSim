@@ -93,10 +93,6 @@ const QMap<Identifier, QString>& BeehiveModelMaker::supportedClasses() {
     return desc;
 }
 
-void BeehiveModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
-
 Model* BeehiveModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

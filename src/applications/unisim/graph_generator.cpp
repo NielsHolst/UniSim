@@ -80,17 +80,22 @@ void GraphGenerator::writeDotFile()
 }
 
 namespace {
-	
-	void writeNode(QTextStream *sink, QObject *node, int number)
+
+    QString nodeId(QObject *node) {
+        QString nodeId = node->objectName();
+        return nodeId.remove("(").remove(")");
+    }
+
+    void writeNode(QTextStream *sink, QObject *node, int number)
 	{
         QString className = node->metaObject()->className();
         if (className.contains("Anonymous"))
             className.clear();
-        *sink << node->objectName() << number << "[label=\"" << className;
-        if (node->objectName() != "anonymous") {
+        *sink << nodeId(node) << number << "[label=\"" << className;
+        if (nodeId(node) != "anonymous") {
             if (!className.isEmpty())
                 *sink << "\\n";
-			*sink << node->objectName();
+            *sink << node->objectName();
         }
 		*sink << "\"];";
 	}
@@ -105,7 +110,7 @@ void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int p
     int myNumber = ++nodeNumber;
 	writeNode(&sink, parent, parentNumber);
 	writeNode(&sink, child, myNumber);
-	sink << parent->objectName() << parentNumber << "->" << child->objectName() << myNumber << ";\n";
+    sink << nodeId(parent) << parentNumber << "->" << nodeId(child) << myNumber << ";\n";
 			
 	f->write(qPrintable(statement));
 

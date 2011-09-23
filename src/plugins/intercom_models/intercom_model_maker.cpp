@@ -134,10 +134,6 @@ const QMap<Identifier, QString>& IntercomModelMaker::supportedClasses() {
     return desc;
 }
 
-void IntercomModelMaker::useObjectPool(ObjectPool *pool) const {
-    objectPool()->deferTo(pool);
-}
-
 Model* IntercomModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

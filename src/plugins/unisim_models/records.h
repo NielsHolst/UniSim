@@ -31,6 +31,10 @@ private:
     void openFile();
     void readLineItems();
     void readColumnNames();
+    void createColumnPullVariables();
+    void readFromFirstToLastLine();
+    void readToInitialYear();
+    void readToFirstLine();
     void advanceFirstLine();
     void advanceLine();
     void extractValues();
@@ -38,11 +42,11 @@ private:
 
     // parameters
     QString fileName, fileLocation;
-    bool imposeInitialDateTime;
+    bool randomizeInitialYear;
     FileLocationInfo::FileType fileLocationType;
 
     // pull variables
-    QDateTime currentDateTime, nextDateTime;
+    QDateTime currentDateTime, nextDateTime, firstDateTime, lastDateTime;
     QDate currentDate, nextDate;
     QTime currentTime, nextTime;
     QVector<double> values;
@@ -57,14 +61,7 @@ private:
     QList<Identifier> columnNames;
     int dateColumn, timeColumn;
     QVector<double> *currentColumnValues, *nextColumnValues;
-
-    /*
-    QDateTime curTime, time[2];
-	typedef QList<PullVariableBase*> Variables;
-	typedef Variables* VariablesPtr;
-	Variables curValues;
-	VariablesPtr variables[2];
-    */
+    bool imposeInitialDateTime;
 };
 
 }

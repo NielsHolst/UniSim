@@ -35,6 +35,8 @@ Maize::Maize(Identifier name, QObject *parent)
                           "Half-life of pollen (days)");
     new Parameter<QDate>("dateMax", &dateMax, QDate(2011,7,31), this,
                           "Date when pollen deposition peaks");
+    new Parameter<double>("dateShift", &dateShift, 0., this,
+                          "Shift dateMax @F dateShift days");
     new Parameter<double>("Pmax", &Pmax, 121, this,
                           "Max. pollen deposition rate at zero distance (pollen per cm @Sup2");
     new Parameter<double>("btQuantum", &btQuantum, 0.1, this,
@@ -51,10 +53,11 @@ void Maize::initialize() {
 }
 
 void Maize::reset() {
+    pollenDepositionRate = pollenDepositionTotal = 0.;
     pollen = toxin = 0.;
     if (distance < minDist)
         distance = minDist;
-    tmax = dateMax.dayOfYear();
+    tmax = dateMax.dayOfYear() + dateShift;
     survivalRate = pow(0.5, 1./halfLife);
 }
 

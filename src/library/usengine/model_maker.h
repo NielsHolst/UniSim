@@ -42,7 +42,8 @@ public:
 		\return Model created or null of modelType was unknown
 	*/
     static Model* create(Identifier modelType, Identifier objectName, QObject *parent=0);
-	
+    static QList<Model*> create(Identifier modelType, Identifier objectName, QObjectList &parents);
+
 	//! Checks whether a model type is valid
 	/*!
 		The valid model types are those supplied by ModelMakerPlugIn's.

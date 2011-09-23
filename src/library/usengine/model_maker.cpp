@@ -42,6 +42,14 @@ UniSim::Model* ModelMaker::create(Identifier modelType, Identifier objectName, Q
 
 }
 
+Models ModelMaker::create(Identifier modelType, Identifier objectName, QObjectList &parents)
+{
+    Models models;
+    for (int i = 0; i < models.size(); ++i)
+        models << create(modelType, objectName, parents[i]);
+    return models;
+}
+
 bool ModelMaker::canCreate(Identifier modelType)
 {
     return me()->_modelMakers.count(modelType) > 0;

@@ -49,7 +49,6 @@ HEADERS += \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.h \
     ../graph_generator.h \
 	../live_simulation.h \
-	../log_base.h \
     frequency_distribution.h \
     test_frequency_distribution.h \
     test_numeric_limits.h
@@ -88,7 +87,6 @@ SOURCES += \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.cpp \
     ../graph_generator.cpp \
 	../live_simulation.cpp \
-	../log_base.cpp \
     frequency_distribution.cpp \
     test_frequency_distribution.cpp \
     test_numeric_limits.cpp \

@@ -5,7 +5,7 @@
 */
 #include "version.h"
 
-const char VERSION[] = "1.27";
+const char VERSION[] = "1.28";
 
 namespace UniSim {
 

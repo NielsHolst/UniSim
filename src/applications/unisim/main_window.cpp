@@ -21,7 +21,6 @@
 #include "file_locations_sub_window.h"
 #include "image_widget.h"
 #include "live_simulation.h"
-#include "log_sub_window.h"
 #include "main_window.h"
 #include "xml_editor.h"
 
@@ -43,11 +42,9 @@ MainWindow::MainWindow()
     statusBar()->addPermanentWidget(permanentMessage = new QLabel(this));
     setPermanentMessage("No model");
 
-    liveSim = new LiveSimulation(this,_logSubWindow = new LogSubWindow(_mdiArea));
+    liveSim = new LiveSimulation(this);
     connect(liveSim, SIGNAL(stateChanged(int, int)),
             this, SLOT(liveSimulatorStateChanged(int , int)));
-
-    _logSubWindow->hide();
 
     useStoredGeometry();	
 }
@@ -90,9 +87,6 @@ void MainWindow::createMenus() {
     //View menu
     viewMenu = menuBar()->addMenu("&View");
 
-    viewMenu->addAction( viewLog = new QAction("&Log", this) );
-    connect( viewLog, SIGNAL(triggered()), this, SLOT(doViewLog()) );
-
     // Window menu
     windowMenu = menuBar()->addMenu("&Window");
 
@@ -121,8 +115,7 @@ void MainWindow::createMenus() {
 }
 
 PlotWidget* MainWindow::createPlotWidget(QString title) {
-    SubWindow *subWindow = new SubWindow(_mdiArea, title);
-    subWindow->setType(SubWindow::Output);
+    SubWindow *subWindow = new SubWindow(_mdiArea, title, SubWindow::SimulationOutput);
 
     QwtPlot *plot = new QwtPlot(subWindow);
     subWindow->setWidget(plot);
@@ -213,16 +206,21 @@ void MainWindow::openFile(QString filePath)
     setTitle(QFileInfo(filePath).fileName());
     FileLocationInfo::setLocation(FileLocationInfo::Models, filePath);
 
-    liveSim->open(filePath);
-    liveSim->writeGraph();
+    try {
+        liveSim->open(filePath);
+        liveSim->writeGraph();
+    }
+    catch (Exception &ex) {
+        showErrorMessage(ex);
+    }
 
     QSettings().setValue("latestModelFile", filePath);
 }
 
 
-
 void  MainWindow::viewModel() {
-    if (!viewModelSubWindow) viewModelSubWindow = new SubWindow(_mdiArea, "Model view");
+    if (!viewModelSubWindow)
+        viewModelSubWindow = new SubWindow(_mdiArea, "Model view", SubWindow::ModelView);
 
     imageLabel = new QLabel;
     imageLabel->setBackgroundRole(QPalette::Base);
@@ -239,7 +237,6 @@ void  MainWindow::viewModel() {
     scaleFactor = 1.0;
     scrollArea->setWidgetResizable(true);
 
-    viewModelSubWindow->setType(SubWindow::View);
     viewModelSubWindow->adjustSize();
     viewModelSubWindow->showMaximized();
 }
@@ -268,7 +265,7 @@ void MainWindow::doWindowsSaveGraphics() {
             SubWindow *subWindow = dynamic_cast<SubWindow*>(windows[i]);
             if (!subWindow)
                 continue;
-            if (subWindow->type() == SubWindow::Output) {
+            if (subWindow->type() == SubWindow::SimulationOutput) {
                 QPixmap pixmap = QPixmap::grabWidget(windows[i]->widget());
                 if (pixmap.isNull())
                     throw Exception("Could not grab graphics for saving");
@@ -277,7 +274,7 @@ void MainWindow::doWindowsSaveGraphics() {
                 if (!ok)
                     throw Exception("Could save graphics file:\n" + filePath);
             }
-            else if (subWindow->type() == SubWindow::View) {
+            else if (subWindow->type() == SubWindow::ModelView) {
                 QString sourceFilePath = liveSim->graphFilePath();
                 QString destFilePath = QString("%1/%2-model diagram.png").arg(path).arg(++fileNo);
                 QFile::remove(destFilePath);
@@ -288,13 +285,13 @@ void MainWindow::doWindowsSaveGraphics() {
         }
     }
     catch (UniSim::Exception &ex) {
-        QMessageBox::information(this, "Error", ex.message());
+        showErrorMessage(ex);
     }
 
     if (fileNo == 0)
-        QMessageBox::information(this, "Message", "No graphics found on screen for saving");
+        showErrorMessage("No graphics found on screen for saving");
     else
-        QMessageBox::information(this, "Message", QString("%1 file(s) written to folder %2").arg(fileNo).arg(path));
+        showErrorMessage(QString("%1 file(s) written to folder %2").arg(fileNo).arg(path));
 
 }
 
@@ -302,7 +299,7 @@ void MainWindow::doFileClose()
 {
     setTitle("");
     liveSim->close();
-    _mdiArea->closeAllSubWindows();
+    closeSubWindows();
 }
 
 void MainWindow::doFileLocations()
@@ -310,7 +307,7 @@ void MainWindow::doFileLocations()
     if (!fileLocationsSubWindow)
         fileLocationsSubWindow = new FileLocationsSubWindow(_mdiArea);
     fileLocationsSubWindow->adjustSize();
-    fileLocationsSubWindow->showNormal();
+    fileLocationsSubWindow->show();
 }
 
 void MainWindow::doFileExit()
@@ -320,8 +317,14 @@ void MainWindow::doFileExit()
 
 void MainWindow::doSimulationRun()
 {
-    minimizeSubWindows(SubWindow::View);
-    liveSim->run();
+    closeSubWindows(SubWindow::ModelView);
+    closeSubWindows(SubWindow::SettingsView);
+    try {
+        liveSim->run();
+    }
+    catch (Exception &ex) {
+        showErrorMessage(ex);
+    }
     tile();
 }
 
@@ -341,14 +344,10 @@ void MainWindow::doToolsPrototyping() {
     }
     catch (UniSim::Exception &ex) {
         ok = false;
-        LogBase::LogItem message = { "Error", ex.message() };
-        _logSubWindow->tell(message);
+        showErrorMessage(ex);
     }
-    if (ok) {
-        QString msg = "Prototype successfully written to " +
-                      maker.destinationFolder();
-        QMessageBox::information(this, "Message", msg);
-    }
+    if (ok)
+        showMessage("Prototype successfully written to " + maker.destinationFolder());
 }
 
 void MainWindow::doToolsGenerateDocs() {
@@ -358,20 +357,11 @@ void MainWindow::doToolsGenerateDocs() {
         writer.write();
     }
     catch (UniSim::Exception &ex) {
+        showErrorMessage(ex);
         ok = false;
-        LogBase::LogItem message = { "Error", ex.message() };
-        _logSubWindow->tell(message);
     }
-    if (ok) QMessageBox::information(
-            this,
-            "Message",
-            "Documentation successfully written to output folder");
-}
-
-void MainWindow::doViewLog()
-{
-	_logSubWindow->adjustSize();
-	_logSubWindow->show();
+    if (ok)
+        showMessage("Documentation successfully written to output folder");
 }
 
 namespace {
@@ -409,7 +399,7 @@ void MainWindow::doHelpAbout() {
         }
     }
     catch (UniSim::Exception &ex) {
-        QMessageBox::information(this, "Message", "Could not retrieve author information due to the following error:\n" + ex.message());
+        showErrorMessage("Could not retrieve author information due to the following error:\n" + ex.message());
     }
 
     QMessageBox::about(this, "About Universal Simulator", text);
@@ -427,10 +417,21 @@ void MainWindow::liveSimulatorStateChanged(int iOldState, int iNewState) {
 		setPermanentMessage("No model");
     else if (newState == LiveSimulation::Error) {
 		setPermanentMessage("Error");
-        doViewLog();
     }
 	else {
 		setPermanentMessage("Busy...");
 		statusBar()->showMessage(LiveSimulation::stateText(newState));	
 	}
+}
+
+void MainWindow::showErrorMessage(Exception &ex) {
+    showErrorMessage(ex.message());
+}
+
+void MainWindow::showErrorMessage(QString message) {
+    QMessageBox::information(this, "Error", message);
+}
+
+void MainWindow::showMessage(QString message) {
+    QMessageBox::information(this, "Information", message);
 }

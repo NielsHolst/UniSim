@@ -15,7 +15,6 @@
 
 	<model name="weather" type="UniSim::Records">
 		<parameter name="fileName" value="geneva 2009.txt"/>
-		<parameter name="imposeInitialDateAndTime" value="yes"/>
 	</model>
 
 	<model name="plants">

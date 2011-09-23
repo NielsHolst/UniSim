@@ -20,12 +20,6 @@ Records::Records(Identifier name, QObject *parent)
     new Parameter<QString>("fileLocation", &fileLocation, "weather", this,
     "Valid locations are the standard folders: datasets, plugins and weather. "
     "The standard folders can be set from the File|Locations menu.");
-    /*
-    new Parameter<bool>("imposeInitialDateAndTime", &imposeInitialDateTime, false, this,
-    "Set this to 'yes' if you want the simulation to begin on the first date (and time, possibly) "
-    "found in the input file. This initial date (and time) will then be imposed on the @F calendar model "
-    "for its @F initialDate (and @F {initialTime}) parameters.");
-    */
     new Parameter<bool>("randomizeInitialYear", &randomizeInitialYear, false, this,
     "Pick a random initial year from the years available in @F weather/records model");
 
@@ -82,17 +76,16 @@ void Records::readColumnNames() {
 
     dateColumn = -1;
     timeColumn = -1;
-    imposeInitialDateTime = false;
+    imposeInitialDate = false;
     for (int i = 0; i < lineItems.size(); ++i) {
         Identifier id = Identifier(lineItems[i]);
         columnNames.append(id);
         if (id.equals("date")) {
             dateColumn = i;
-            imposeInitialDateTime = true;
+            imposeInitialDate = true;
         }
         else if (id.equals("time")) {
             timeColumn = i;
-            imposeInitialDateTime = true;
         }
     }
     file.close();
@@ -147,7 +140,7 @@ void Records::reset() {
     readToFirstLine();
     if (randomizeInitialYear)
         readToInitialYear();
-    if (imposeInitialDateTime) {
+    if (imposeInitialDate) {
         calendar->pushVariable<QDate>("initialDate", currentDate);
         calendar->pushVariable<QTime>("initialTimeOfDay", currentTime);
         calendar->deepReset();

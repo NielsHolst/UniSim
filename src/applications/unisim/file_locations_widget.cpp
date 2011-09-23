@@ -13,8 +13,9 @@
 using namespace UniSim;
 
 FileLocationsWidget::FileLocationsWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), parentWidget(parent)
 {
+    setParent(parent);
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addLayout(createEntries());
     layout->addLayout(createButtons());
@@ -22,9 +23,7 @@ FileLocationsWidget::FileLocationsWidget(QWidget *parent)
 }
 
 void FileLocationsWidget::doClose() {
-    SubWindow *window = dynamic_cast<SubWindow*>(parent());
-    Q_ASSERT(window);
-    window->close();
+    parentWidget->close();
 }
 
 QLayout* FileLocationsWidget::createEntries() {
@@ -43,7 +42,9 @@ QLayout* FileLocationsWidget::createButtons() {
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addStretch();
     layout->addWidget(closeButton = new QPushButton("Close", this));
-    closeButton->setDefault(true);
+    /* closeButton->setDefault(true);
+    ** This does not work. The keyboard event does not propagate through.
+    */
     return layout;
 }
 

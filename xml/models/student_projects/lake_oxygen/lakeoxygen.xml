@@ -29,7 +29,6 @@
 
 	<model name="weather" type="UniSim::Records">
 		<parameter name="filename" value="LakedataOBS2004-2005.txt"/>
-		<parameter name="imposeInitialDateAndTime" value="yes"/>
 	</model>
 	
 	<model name="netproduction" type="lakeoxygen::Netproduction">

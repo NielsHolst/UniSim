@@ -7,29 +7,19 @@
 #include <QMdiArea>
 #include "sub_window.h"
 
-SubWindow::SubWindow(QMdiArea *area, QString title)
-    : QMdiSubWindow(area),
-      _type(Untyped)
+SubWindow::SubWindow(QMdiArea *area, QString title, Type type)
+    : QMdiSubWindow(area), _type(type)
 {
     Q_ASSERT(area);
     area->addSubWindow(this);
     setWindowTitle(title);
-}
 
-/* Why were these windows not allowed to close?
-void SubWindow::closeEvent(QCloseEvent *event) {
-    if (_type == Output) {
-        event->ignore();
-        hide();
-    }
-}
-*/
-
-void SubWindow::setType(Type type) {
-    _type = type;
-    if (type==Output)
+    /* When a window is closed, the default behavior is to hide it;
+    ** it is not deleted from memory. For SimulationOutput windows we override
+    ** this, so that these windows are deleted when closed.
+    */
+    if (_type == SimulationOutput)
         setAttribute(Qt::WA_DeleteOnClose);
-
 }
 
 SubWindow::Type SubWindow::type() const {

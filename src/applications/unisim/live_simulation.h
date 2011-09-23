@@ -39,7 +39,7 @@ public:
         Closing
 	};
 	
-    LiveSimulation(QObject *parent, LogBase *log);
+    LiveSimulation(QObject *parent);
 	~LiveSimulation();
     void open(QString filePath);
     void writeGraph();
@@ -74,7 +74,6 @@ private:
 	void changeState(State newState);
 
 	// Data
-    LogBase *log;
     State _state;
     UniSim::Simulation *_simulation;
     UniSim::SimulationMaker *simulationMaker;

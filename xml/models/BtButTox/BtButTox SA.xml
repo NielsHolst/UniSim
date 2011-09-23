@@ -23,7 +23,6 @@
 	<model name="weather" type="SupplyDemand::Weather">
 		<model name="records" type="UniSim::Records">
 			<parameter name="fileName" value="denmark-odum-1953-2009.txt"/>
-			<parameter name="imposeInitialDateAndTime" value="yes"/>
 		</model>
 	</model>
 

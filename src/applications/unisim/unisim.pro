@@ -24,8 +24,6 @@ HEADERS += \
     file_locations_widget.h \
     graph_generator.h \
     live_simulation.h \
-    log_base.h \
-    log_sub_window.h \
     main_window.h \
     stored_widget.h \
     sub_window.h \
@@ -40,8 +38,6 @@ SOURCES += \
     file_locations_widget.cpp \
     graph_generator.cpp \
     live_simulation.cpp \
-    log_base.cpp \
-    log_sub_window.cpp \
     main_window.cpp \
     stored_widget.cpp \
     sub_window.cpp \

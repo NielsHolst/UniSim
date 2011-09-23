@@ -8,8 +8,17 @@
 #include "file_locations_widget.h"
 
 FileLocationsSubWindow::FileLocationsSubWindow(QMdiArea *area)
-    : SubWindow(area, "File Locations")
+    : SubWindow(area, "File Locations", SettingsView)
 {
-    setType(SubWindow::View);
     setWidget(widget = new FileLocationsWidget(this));
+}
+
+
+void FileLocationsSubWindow::setVisible(bool visible) {
+
+    /* This should not be necessary but otherwise the widget
+    ** wont ever show again, if it has been closed just once.
+    */
+    SubWindow::setVisible(visible);
+    widget->setVisible(visible);
 }

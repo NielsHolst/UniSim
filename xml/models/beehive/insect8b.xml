@@ -32,7 +32,6 @@
 	<model name="weather" type="Beehive::Weather">
 		<model name="records" type="UniSim::Records">
 			<parameter name="fileName" value="AZ_96.txt"/>
-			<parameter name="imposeInitialDateAndTime" value="yes"/>
 		</model>
 	</model>
 

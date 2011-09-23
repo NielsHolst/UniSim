@@ -24,6 +24,7 @@ class LiveSimulation;
 class LogSubWindow;
 
 namespace UniSim {
+    class Exception;
     class PlotWidget;
     class XmlEditor;
 }
@@ -37,9 +38,6 @@ class MainWindow : public QMainWindow,
 public:
     void createMenus();
     UniSim::PlotWidget* createPlotWidget(QString title);
-    void tile();
-    void closeSubWindows(SubWindow::Type type = SubWindow::All);
-    void minimizeSubWindows(SubWindow::Type type = SubWindow::All);
 
 private slots:
 	void doFileOpen();
@@ -51,7 +49,6 @@ private slots:
 	void doSimulationRun();
     void doToolsPrototyping();
     void doToolsGenerateDocs();
-	void doViewLog();
     void doHelpAbout();
     void standardizeSubWindows();
     void doWindowsSaveGraphics();
@@ -71,14 +68,13 @@ private:
         *fileOpen, *fileReopen, *fileEdit, *fileClose, *fileLocations, *fileExit,
 		*simulationRun,
         *toolsPrototyping, *toolsGenerateDocs,
-		*viewComponents, *viewLog,
+        *viewComponents,
         *windowCloseAll, *windowCascade, *windowTile, *windowStandardize, *windowsSaveGraphics,
         *helpAbout;
 	QSettings *settings;
 		
 	QLabel *permanentMessage;
 	QMdiArea *_mdiArea;
-	LogSubWindow *_logSubWindow;
     SubWindow *fileLocationsSubWindow, *viewModelSubWindow;
         QLabel *imageLabel;
         QScrollArea *scrollArea;
@@ -98,7 +94,16 @@ private:
 	void setPermanentMessage(QString message);
     void viewModel();
     QString versionText() const;
-	
+
+    void tile();
+    void closeSubWindows(SubWindow::Type type = SubWindow::All);
+    void minimizeSubWindows(SubWindow::Type type = SubWindow::All);
+
+    void showErrorMessage(UniSim::Exception &ex);
+    void showErrorMessage(QString message);
+    void showMessage(QString message);
+
+
 };
 
 inline MainWindow* mainWindow()

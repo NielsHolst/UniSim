@@ -36,10 +36,11 @@
 	</model>
 
 	<model name="calendar" type="Calendar"/>
-
+	
 	<model name="weather" type="SupplyDemand::Weather">
 		<model name="records" type="UniSim::Records">
 			<parameter name="fileName" value="denmark-odum-1953-2009.txt"/>
+			<parameter name="randomizeInitialYear" value="yes"/>
 		</model>
 	</model>
 
@@ -271,6 +272,7 @@
 	<output type="plot">
 		<parameter name="title" value ="Bt exposure index"/>
 		<parameter name="logy" value ="yes"/>
+		<parameter name="ymin" value ="-2"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Exposure" value="exposure[total]"/>
 	</output>
@@ -296,10 +298,17 @@
 		<variable axis="y" label="Exposure" value="exposure[total]" summary="max"/>
 	</output>
 
-		<output type="plot" summary="yes">
+	<output type="plot" summary="yes">
 		<parameter name="title" value="Sensitivity to deposition"/>
 		<parameter name="logy" value ="yes"/>
 		<variable label="Half life" axis="x" value="random/halfLife[value]"/>		
+		<variable axis="y" label="Exposure" value="exposure[total]" summary="max"/>
+	</output>
+
+		<output type="plot" summary="yes">
+		<parameter name="title" value="Sensitivity to deposition"/>
+		<parameter name="logy" value ="yes"/>
+		<variable label="Year" axis="x" value="calendar[year]"/>		
 		<variable axis="y" label="Exposure" value="exposure[total]" summary="max"/>
 	</output>
 

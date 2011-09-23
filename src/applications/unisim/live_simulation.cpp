@@ -7,18 +7,19 @@
 #include <iostream>
 #include <QDir>
 #include <QTimer>
+#include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usengine/simulation.h>
 #include <usengine/simulation_maker.h>
 #include "graph_generator.h"
 #include "live_simulation.h"
-#include "log_base.h"
+
+using namespace UniSim;
 
 QMap<LiveSimulation::State, QString> LiveSimulation::stateTexts;
 
-LiveSimulation::LiveSimulation(QObject *parent, LogBase *log_)
-        : QObject(parent), log(log_),
-        _state(Closed), _simulation(0)
+LiveSimulation::LiveSimulation(QObject *parent)
+        : QObject(parent), _state(Closed), _simulation(0)
 {
     simulationMaker = new UniSim::SimulationMaker();
 
@@ -75,14 +76,9 @@ LiveSimulation::~LiveSimulation() {
 
 void LiveSimulation::open(QString filePath) {
     checkFilePath(filePath);
-    if (_state != Ready) {
-        parseFile();
-    }
-	else {
-        LogBase::LogItem message =
-            { "Warning", "Close current simulation before opening another" };
-        log->tell(message);
-    }
+    if (_state == Ready)
+        throw Exception("Close current simulation before opening another");
+    parseFile();
 }
 
 void LiveSimulation::checkFilePath(QString filePath_) {
@@ -90,45 +86,20 @@ void LiveSimulation::checkFilePath(QString filePath_) {
                qPrintable("Must have absolute file path, got '" + filePath_ + "'"));
 
     filePath = filePath_;
-    LogBase::LogItem message = {"Opening file", filePath};
-    log->tell(message);
 }
 
 void LiveSimulation::parseFile() {
     Q_ASSERT(!_simulation);
-    try {
-        changeState(Opening);
-        _simulation = simulationMaker->parse(filePath);
-        changeState(EndOpening);
-    }
-    catch (UniSim::Exception &ex) {
-        _simulation = 0;
-        LogBase::LogItem message = { "Error", ex.message() };
-        log->tell(message);
-        changeState(Error);
-    }
-    catch(...) {
-        _simulation = 0;
-        LogBase::LogItem message =
-            { "Error", "An unknown error occured when parsing " + filePath };
-        log->tell(message);
-        changeState(Error);
-    }
+    changeState(Opening);
+    _simulation = simulationMaker->parse(filePath);
+    changeState(EndOpening);
 }
 
 void LiveSimulation::writeGraph() {
-	State prevState = _state;
+    if (_state != Ready)
+        throw Exception("Simulation not ready (maybe not opened or in error?)");
 	changeState(ViewBuilding);
-
-	if (prevState == Ready) {
-        createGraphProcess();
-	}
-	else {
-        LogBase::LogItem message =
-            { "Warning", "Simulation not ready (maybe not opened or in error?)" };
-        log->tell(message);
-    	changeState(prevState);
-    }
+    createGraphProcess();
 }
 
 void LiveSimulation::createGraphProcess() {
@@ -141,30 +112,17 @@ void LiveSimulation::createGraphProcess() {
     }
     _graphFilePath.clear();
 
-    try {
-        bool noProcess = establishNullProcess(graphProcesses[0]);
-        if (noProcess) {
-            GraphGenerator generator(_simulation);
-            graphProcesses[0] = generator.generate(GraphGenerator::PNG);
-            graphProcesses[1] = generator.generate(GraphGenerator::Postscript);
+    bool noProcess = establishNullProcess(graphProcesses[0]);
+    if (noProcess) {
+        GraphGenerator generator(_simulation);
+        graphProcesses[0] = generator.generate(GraphGenerator::PNG);
+        graphProcesses[1] = generator.generate(GraphGenerator::Postscript);
 
-            _graphFilePath = generator.outputFilePath(GraphGenerator::PNG);
-            connect(graphProcesses[0], SIGNAL(stateChanged (QProcess::ProcessState)),
-                    this, SLOT(graphProcessChanged(QProcess::ProcessState)));
-        }
-        else {
-            changeState(Error);
-        }
+        _graphFilePath = generator.outputFilePath(GraphGenerator::PNG);
+        connect(graphProcesses[0], SIGNAL(stateChanged (QProcess::ProcessState)),
+                this, SLOT(graphProcessChanged(QProcess::ProcessState)));
     }
-    catch (UniSim::Exception &ex) {
-        LogBase::LogItem message = { "Error", ex.message() };
-        log->tell(message);
-        changeState(Error);
-    }
-    catch(...) {
-        LogBase::LogItem message =
-            { "Unknown error", "Unknown error when building graph: " + graphFilePath() };
-        log->tell(message);
+    else {
         changeState(Error);
     }
 }
@@ -177,10 +135,7 @@ bool LiveSimulation::establishNullProcess(QProcess *process) {
             return true;
         }
         else {
-            LogBase::LogItem message =
-                { "Error", "Already generating a view of this simulation.\nPlease wait" };
-            log->tell(message);
-            return false;
+            throw Exception("Already generating a view of this simulation.\nPlease wait");
         }
     }
     return true;
@@ -197,22 +152,11 @@ void LiveSimulation::graphProcessChanged(QProcess::ProcessState processState)
 }
 
 void LiveSimulation::run() {
-    if (_state != Ready) {
-        LogBase::LogItem message =
-            { "Warning", "Simulation not ready (maybe not opened or in error?)" };
-        log->tell(message);
-        return;
-    }
-    try {
-        changeState(Running);
-        _simulation->execute();
-        changeState(EndRunning);
-    }
-    catch (UniSim::Exception &ex) {
-        LogBase::LogItem message = { "Error", ex.message() };
-        log->tell(message);
-        changeState(Error);
-    }
+    if (_state != Ready)
+        throw Exception("Simulation not ready (maybe not opened or in error?)");
+    changeState(Running);
+    _simulation->execute();
+    changeState(EndRunning);
 }
 
 void LiveSimulation::close() {

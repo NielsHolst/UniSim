@@ -61,7 +61,7 @@ private:
     QList<Identifier> columnNames;
     int dateColumn, timeColumn;
     QVector<double> *currentColumnValues, *nextColumnValues;
-    bool imposeInitialDateTime;
+    bool imposeInitialDate;
 };
 
 }

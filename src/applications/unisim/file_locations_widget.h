@@ -23,6 +23,7 @@ private:
     QLayout* createEntries();
     QLayout* createButtons();
     QPushButton *closeButton;
+    QWidget *parentWidget;
 };
 
 

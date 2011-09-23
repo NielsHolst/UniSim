@@ -17,11 +17,8 @@ class SubWindow : public QMdiSubWindow
 	Q_OBJECT
 
 public:
-    typedef enum{View, Output, Log, Untyped, All} Type;
-    SubWindow(QMdiArea *area, QString title);
-    // void closeEvent(QCloseEvent *event);
-
-    void setType(Type type);
+    typedef enum{ModelView, SettingsView, SimulationOutput, All} Type;
+    SubWindow(QMdiArea *area, QString title, Type type);
     Type type() const;
 
 

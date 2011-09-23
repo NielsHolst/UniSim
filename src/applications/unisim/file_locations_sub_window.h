@@ -16,7 +16,7 @@ class FileLocationsSubWindow : public SubWindow
 
 public:
     FileLocationsSubWindow(QMdiArea *area);
-	
+    void setVisible ( bool visible );
 private:
     FileLocationsWidget *widget;
 };	

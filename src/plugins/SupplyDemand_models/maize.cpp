@@ -44,7 +44,7 @@ Maize::Maize(Identifier name, QObject *parent)
     new PullVariable<double>("pollenDepositionRate", &pollenDepositionRate, this, "Pollen deposition rate (per day per cm @Sup {2})");
     new PullVariable<double>("pollenDepositionTotal", &pollenDepositionTotal, this, "Pollen deposition total (per cm @Sup {2})");
     new PullVariable<double>("pollen", &pollen, this, "Current pollen density (per cm @Sup {2})");
-    new PullVariable<double>("toxin", &toxin, this, "Current toxin density (pg\"/\"cm @Sup {2})");
+    new PullVariable<double>("toxin", &toxin, this, "Current toxin density (pg/cm @Sup {2})");
 }
 
 void Maize::initialize() {

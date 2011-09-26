@@ -35,7 +35,7 @@ Identifier SupplyDemandModelMaker::pluginName() const {
 
 QStringList SupplyDemandModelMaker::authors() const
 {
-	return QStringList() << "author1" << "author2";
+	return QStringList() << "Niels";
 }
 
 const QMap<Identifier, QString>& SupplyDemandModelMaker::supportedClasses()

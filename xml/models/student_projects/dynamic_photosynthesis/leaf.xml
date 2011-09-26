@@ -3,11 +3,11 @@
 
 
     <integrator type="TimeStepLimited">
-         <parameter name="maxSteps" value="2400"/>
+         <parameter name="maxSteps" value="4000"/>
          <sequence>
              <model name="calendar"/>
              <model name="weather"/>
-             <model name="leaf"/>
+             <model name="plants"/>
          </sequence>
      </integrator>
 	
@@ -16,38 +16,105 @@
 	-->
 
 	<model name="calendar" type="UniSim::Calendar">
-		<parameter name="timeUnit" value="s"/>
+			<parameter name="timeUnit" value="s"/>
+			<parameter name="timeStep" value="10"/>
+
 	</model>
 	
 	<model name="weather" type="UniSim::Records">
-		<parameter name="fileName" value="dynamic_photosynthesis/light_input_2.txt"/>
+		<parameter name="fileName" value="student_projects/dynamic_photosynthesis/spinachunisim.txt"/>
 	</model>
 	
-	<model name ="leaf" type="dynamic_photosynthesis::Leaf">
-		<parameter name="Sini" value="0.2"/>
-		<parameter name="alpha" value="0.001"/>
-		<parameter name="a" value="0.3"/>
-		<parameter name="b" value="0.005"/>
-		<parameter name="c" value="0.002"/>
-		<parameter name="gSini" value="50"/>
+	<model name="plants">
+		<model name ="sp1" type="dynamic_photosynthesis::Leaf">
+			<parameter name="Sini" value="0.2"/>
+			<parameter name="S0" value="1"/>
+			<parameter name="alpha" value="0.001"/>
+			<parameter name="a" value="0.3"/>
+			<parameter name="b" value="0.005"/>
+			<parameter name="c" value="0.007"/>			
+			<parameter name="tm" value="29"/>
+			<parameter name="ts" value="25"/>
+			<parameter name="gSini" value="80"/>
+			<parameter name="useTemperature" value="no"/>
+		</model>
+
+		<model name ="sp2" type="dynamic_photosynthesis::Leaf">
+			<parameter name="Sini" value="0.2"/>
+			<parameter name="S0" value="1"/>
+			<parameter name="alpha" value="0.007"/>
+			<parameter name="a" value="0.27"/>
+			<parameter name="b" value="0.017"/>
+			<parameter name="c" value="0.007"/>
+			<parameter name="tm" value="30"/>
+			<parameter name="ts" value="25"/>
+			<parameter name="gSini" value="250"/>
+			<parameter name="useTemperature" value="no"/>
+		</model>
 	</model>
-		
 	<!--
 	=== Output ==
 	-->
 	
 	<output type="plot">
-		<parameter name="title" value="Environment"/>
+		<parameter name="title" value="Irradiance"/>
 		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>		
 		<variable label="PAR" axis="y" value="weather[PAR]"/>
 	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>		
+		<variable label="Temperature" axis="y" value="weather[temp]"/>
+	</output>
 
 	<output type="plot">
-		<parameter name="title" value="Leaf"/>
+		<parameter name="title" value="Species 1"/>
 		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>		
-		<variable label="S" axis="y" value="leaf[S]"/>
-		<variable label="Seq" axis="y" value="leaf[Seq]"/>
-		<variable label="S60" axis="y" value="leaf[S60]"/>
+		<variable label="S" axis="y" value="sp1[S]"/>
+		<variable label="Seq(temp)" axis="y" value="sp1[Seq]"/>
+		<variable label="Seq(PAR)" axis="y" value="sp1[Seq]"/>		
+		<variable label="S60" axis="y" value="sp1[S60]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Species 2"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>		
+		<variable label="S" axis="y" value="sp2[S]"/>		
+		<variable label="Seq(PAR, temp)" axis="y" value="sp2[Seq]"/>
+		<variable label="S60 (PAR, gSini)" axis="y" value="sp2[S60]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Species 2"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp2[A]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Species 1"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp2[A]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value="A Species 2.txt"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>
+		<variable label="PAR" axis="y" value="weather[PAR]"/>
+		<variable label="S" axis="y" value="sp2[S]"/>		
+		<variable label="Seq(PAR, temp)" axis="y" value="sp2[Seq]"/>
+		<variable label="S60 (PAR, gSini)" axis="y" value="sp2[S60]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp2[A]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value="A Species 1.txt"/>
+		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>
+		<variable label="PAR" axis="y" value="weather[PAR]"/>
+		<variable label="S" axis="y" value="sp1[S]"/>		
+		<variable label="Seq(PAR, temp)" axis="y" value="sp1[Seq]"/>
+		<variable label="S60 (PAR, gSini)" axis="y" value="sp1[S60]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp1[A]"/>
 	</output>
 
 </simulation>

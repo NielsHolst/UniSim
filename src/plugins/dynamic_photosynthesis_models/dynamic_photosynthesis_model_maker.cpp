@@ -14,7 +14,8 @@ namespace dynamic_photosynthesis{
 
 QString Dynamic_photosynthesisModelMaker::pluginDesc() const
 {
-	return "Description of dynamic_photosynthesis";
+    return "The @F dynamic_photosynthesis plug-in contains just one model @F {Leaf}, "
+            "which models photosynthesis based on induction state";
 }
 
 Identifier Dynamic_photosynthesisModelMaker::pluginName() const {
@@ -31,11 +32,14 @@ const QMap<Identifier, QString>& Dynamic_photosynthesisModelMaker::supportedClas
 	if (!desc.isEmpty()) return desc;
 
     desc["Leaf"] =
-	"Description";
+        "To simulate leaf photosynthesis in C3 plants";
 
 	return desc;
 }
 
+void Dynamic_photosynthesisModelMaker::useObjectPool(ObjectPool *pool) const {
+	objectPool()->deferTo(pool);
+}
 Model* Dynamic_photosynthesisModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

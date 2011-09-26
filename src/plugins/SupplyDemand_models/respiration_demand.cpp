@@ -15,7 +15,7 @@ namespace SupplyDemand {
 RespirationDemand::RespirationDemand(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("resp20", &respRate, 0.1, this, "Respiration rate (g/g per time step) at 20 {@Ring}C");
+    new Parameter<double>("resp20", &respRate, 0.1, this, "Respiration rate (g/g per time step) at 20 @Char ring C");
     new PullVariable<double>("value", &value, this, "Respiration during this time step (g)");
 }
 

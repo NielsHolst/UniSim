@@ -18,14 +18,15 @@ public:
 	// standard methods
     void initialize();
     void reset();
-	void update();
+    void update();
 
 private:
 	// parameters
-    double Sini, alpha, a, b, c, gSini, PARmin;
+    double Sini, S0, alpha, a, b, c, gSini, c0, PARmin, tm, ts, A0, theta;
+    bool useTemperature;
 
     // pull variables
-    double S, Seq, S60;
+    double S, Seq, S60, A;
 
     // links
     UniSim::Model *weather;

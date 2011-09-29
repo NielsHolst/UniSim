@@ -19,7 +19,7 @@
 
 	<model name="community" type="conductance::Community">
 		<model name="carrot" type="conductance::Plant">
-			<parameter name="n" value="1" />
+			<parameter name="n" value="200" />
 			<parameter name="initWeight" value="0.014" />
 			<parameter name="F" value="0.0097"/>
 			<parameter name="theta" value="0.7966"/>

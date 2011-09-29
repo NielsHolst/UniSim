@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="360"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="pollen"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar"/>
+	<model name="pollen" type="EcoTox::Pollen"/>
+
+	<output type="plot">
+		<parameter name="title" value ="Pollen"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Density" value="pollen[toxin]"/>
+	</output>
+</simulation>

@@ -3,14 +3,21 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef DYNAMIC_PHOTOSYNTHESIS_MODEL_MAKER_H
-#define DYNAMIC_PHOTOSYNTHESIS_MODEL_MAKER_H
+#ifndef ECOTOX_MODEL_MAKER_H
+#define ECOTOX_MODEL_MAKER_H
 
 #include <usbase/model_maker_plug_in.h>
 
-namespace dynamic_photosynthesis {
+namespace UniSim {
 
-class Dynamic_photosynthesisModelMaker : public QObject, public UniSim::ModelMakerPlugIn
+	class ObjectPool;
+
+}
+
+
+namespace ecotox {
+
+class EcotoxModelMaker : public QObject, public UniSim::ModelMakerPlugIn
 {
 	Q_OBJECT
 	Q_INTERFACES(UniSim::ModelMakerPlugIn)

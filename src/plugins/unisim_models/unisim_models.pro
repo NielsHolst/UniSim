@@ -17,6 +17,7 @@ HEADERS += \
     exponential.h \
     fixed.h \
     hydro_thermal_time.h \
+    insect.h \
     lactin_time.h \
     photo_thermal_time.h \
     physiological_time.h \
@@ -40,6 +41,7 @@ SOURCES += \
     exponential.cpp \
     fixed.cpp \
     hydro_thermal_time.cpp \
+    insect.cpp \
     lactin_time.cpp \
     photo_thermal_time.cpp \
     physiological_time.cpp \

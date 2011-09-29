@@ -224,7 +224,7 @@ bool SimulationMaker::readModelElement(QObject* parent)
         bool ok(true);
         instances = instancesStr.toInt(&ok);
         if (!ok || instances <= 0)
-            throw Exception("instances must a number larger than zero");
+            throw Exception("Attribute 'instances'' must a number larger than zero");
     }
 
     Model *model;
@@ -266,6 +266,14 @@ bool SimulationMaker::readModelElement(QObject* parent)
 	
 	return model;
 }
+
+int SimulationMaker::readModelElement(QList<QObject*> parents) {
+    for (int i = 0; i < parents.size(); ++i) {
+        readModelElement(parents[i]);
+    }
+    return parents.size();
+}
+
 
 void SimulationMaker::readDatasetElement(QObject* parent)
 {

@@ -2,7 +2,7 @@
 <simulation version="1.0">
 
     <integrator type="TimeStepLimited">
-        <parameter name="maxSteps" value="730"/>
+        <parameter name="maxSteps" value="7300"/>
         <sequence>
             <model name="calendar"/>
             <model name="weather"/>

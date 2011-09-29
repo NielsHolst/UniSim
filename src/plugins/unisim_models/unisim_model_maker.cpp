@@ -12,6 +12,7 @@
 #include "exponential.h"
 #include "fixed.h"
 #include "hydro_thermal_time.h"
+#include "insect.h"
 #include "lactin_time.h"
 #include "photo_thermal_time.h"
 #include "random_lognormal.h"
@@ -76,6 +77,9 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "is set to zero if soil water potential is less than the threshold, otherwise the "
     "daily increment is unaltered. A @F Model named @F {weather} with a pull "
     "variable named @F SWP must exist to supply @F HydroThermalTime with soil water potential.";
+
+    desc["Insect"] =
+    "A stage-structured insect model. Under development";
 
     desc["LactinTime"] =
     "This is the physiological time scale of Lactin et al. (reference to be added). "
@@ -159,6 +163,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new Fixed(objectName, parent);
     else if (modelType.equals("HydroThermalTime"))
         model = new HydroThermalTime(objectName, parent);
+    else if (modelType.equals("Insect"))
+        model = new Insect(objectName, parent);
     else if (modelType.equals("LactinTime"))
         model = new LactinTime(objectName, parent);
     else if (modelType.equals("PhotoThermalTime"))

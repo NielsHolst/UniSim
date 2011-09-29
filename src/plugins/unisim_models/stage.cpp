@@ -22,7 +22,7 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
 {
     new Parameter<int>("k", &k, 30, this,
         "The number of age classes in the stage. The fewer age classes, the larger the variance on @F {duration}");
-    new Parameter<double>("duration", &_L, 100., this,
+        new Parameter<double>("duration", &_L, 100., this,
         "The average duration of the stage: an inflow will emerge as an outflow dispersed "
         "over time, with a delay of @F duration on average and a variance of @Math {@F duration sup 2 slash @F k sup 2} "
         "@Cite{$label{(Manetsch 1976)}manetsch}. @F duration is also a pull/push variable");

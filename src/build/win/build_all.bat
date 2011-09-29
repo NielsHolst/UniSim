@@ -33,7 +33,6 @@ call clean_build_desktops
 
 @rem Make own tools
 call make_tool write_unisim_root
-call make_tool update_settings
 call make_tool write_clean_ephemerals
 call make_tool write_plugins_project
 
@@ -74,6 +73,7 @@ copy ..\..\library\*.dll ..\..\applications
 
 
 @rem Update registry settings
+call make_tool update_settings
 ..\own_tools\update_settings
 @echo .
 @echo *** Updated registry for UniSim ***

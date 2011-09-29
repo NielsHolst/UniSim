@@ -19,7 +19,7 @@
 
 	<model name="community" type="conductance::Community">
 		<model name="stellaria" type="conductance::Plant">
-			<parameter name="n" value="1" />
+			<parameter name="n" value="100" />
 			<parameter name="initWeight" value="0.0514" />
 			<parameter name="F" value="0.0184"/>
 			<parameter name="theta" value="0.8282"/>

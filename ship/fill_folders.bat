@@ -39,6 +39,7 @@ pushd %QT_ROOT%\mingw\lib
 copy qtcore4.dll %UNISIM_BIN%
 copy qtgui4.dll %UNISIM_BIN%
 copy QtNetwork4.dll %UNISIM_BIN%
+copy qtsvg4.dll %UNISIM_BIN%
 copy qtxml4.dll %UNISIM_BIN%
 copy qtxmlpatterns4.dll %UNISIM_BIN%
 popd

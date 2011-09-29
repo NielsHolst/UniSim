@@ -75,6 +75,8 @@ private:
 	void readSequenceElement(QObject *parent);
 
 	bool readModelElement(QObject *parent);
+    int readModelElement(QList<QObject*> parents);
+
     void readDatasetElement(QObject* parent);
     void readParameterElement(QObject *parent);
     void readOutputParameterElement(QObject *parent);

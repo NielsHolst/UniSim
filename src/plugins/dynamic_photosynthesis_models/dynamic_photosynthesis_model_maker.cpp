@@ -37,9 +37,6 @@ const QMap<Identifier, QString>& Dynamic_photosynthesisModelMaker::supportedClas
 	return desc;
 }
 
-void Dynamic_photosynthesisModelMaker::useObjectPool(ObjectPool *pool) const {
-	objectPool()->deferTo(pool);
-}
 Model* Dynamic_photosynthesisModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
 	setSimulationObjectFromDescendent(parent);

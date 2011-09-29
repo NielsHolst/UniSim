@@ -292,7 +292,6 @@ void PrototypeMaker::writeMakerHeaderFile() const {
         << "\tQString pluginDesc() const;" << '\n'
         << "\tQStringList authors() const;" << '\n'
         << "\tconst QMap<UniSim::Identifier, QString>& supportedClasses();" << '\n'
-        << "\tvoid useObjectPool(UniSim::ObjectPool *pool) const;" << '\n'
         << "\tUniSim::Model* create(UniSim::Identifier modelType," << '\n'
         << "\t                      UniSim::Identifier objectName," << '\n'
         << "\t                      QObject *parent=0);" << '\n'
@@ -328,7 +327,6 @@ void PrototypeMaker::writeMakerSourceFile() const {
         << plugInName()
         << authors()
         << supportedClasses()
-        << useObjectPool()
         << create()
 
         << '\n'
@@ -401,15 +399,6 @@ QString PrototypeMaker::plugInName() const {
     s += "}\n\n";
     return s;
 }
-
-QString PrototypeMaker::useObjectPool() const {
-    QString s;
-    s = "void " + classMakerName + "::useObjectPool(ObjectPool *pool) const {\n";
-    s += "\tobjectPool()->deferTo(pool);\n";
-    s += "}\n";
-    return s;
-}
-
 
 QString PrototypeMaker::modelIdentifiers() const {
     QString s;

@@ -26,7 +26,6 @@ class LogSubWindow;
 namespace UniSim {
     class Exception;
     class PlotWidget;
-    class XmlEditor;
 }
 
 class MainWindow : public QMainWindow,
@@ -42,14 +41,17 @@ public:
 private slots:
 	void doFileOpen();
     void doFileReopen();
-    void doFileEdit();
+    void doFileReopenRun();
     void doFileLocations();
     void doFileClose();
 	void doFileExit();
-	void doSimulationRun();
+    void doEditModel();
+    void doEditHelp();
+    void doSimulationRun();
     void doToolsPrototyping();
     void doToolsGenerateDocs();
     void doHelpAbout();
+    void doHelpHome();
     void standardizeSubWindows();
     void doWindowsSaveGraphics();
 
@@ -63,14 +65,15 @@ private:
 	friend MainWindow* mainWindow();
 	
 	// Main window GUI
-    QMenu *fileMenu, *simulationMenu, *toolsMenu, *viewMenu, *windowMenu, *helpMenu;
+    QMenu *fileMenu, *editMenu, *simulationMenu, *toolsMenu, *viewMenu, *windowMenu, *helpMenu;
 	QAction 
-        *fileOpen, *fileReopen, *fileEdit, *fileClose, *fileLocations, *fileExit,
+        *fileOpen, *fileReopen, *fileReopenRun, *fileEdit, *fileClose, *fileLocations, *fileExit,
+        *editModel, *editHelp,
 		*simulationRun,
         *toolsPrototyping, *toolsGenerateDocs,
         *viewComponents,
         *windowCloseAll, *windowCascade, *windowTile, *windowStandardize, *windowsSaveGraphics,
-        *helpAbout;
+        *helpAbout, *helpHome;
 	QSettings *settings;
 		
 	QLabel *permanentMessage;
@@ -80,16 +83,17 @@ private:
         QScrollArea *scrollArea;
 	
 	// Data
-    QList<UniSim::XmlEditor*> _xmlEditors;
-	LiveSimulation *liveSim;
+    QString currentFilePath;
+    LiveSimulation *liveSim;
     double scaleFactor;
 
     // Events
     void closeEvent (QCloseEvent * event);
 
     // Methods
+    enum {ShowGraph, SkipGraph} fileOpenOption;
+
     void openFile(QString filePath);
-    void editFile(QString filePath);
     void setTitle(QString subTitle);
 	void setPermanentMessage(QString message);
     void viewModel();

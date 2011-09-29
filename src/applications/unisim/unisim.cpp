@@ -5,9 +5,11 @@
 */
 #include <QApplication>
 #include <QDir>
+#include <QErrorMessage>
 #include <QtGui>
 #include <usbase/authors.h>
 #include <usbase/clock.h>
+#include <usbase/exception.h>
 #include <usbase/object_pool.h>
 #include <usbase/random.h>
 #include <usengine/integrator_maker.h>
@@ -20,7 +22,7 @@ using namespace UniSim;
 
 void myMsgHandler(QtMsgType type, const char *msg)
 {
-	QMessageBox::warning(0, "Fatal Error", msg);
+    throw Exception(QString(msg));
 }
 
 void createSingletons(){
@@ -35,8 +37,8 @@ void createSingletons(){
 
 int main(int arbc, char *argv[])
 {
-	qInstallMsgHandler(myMsgHandler);
-	
+    qInstallMsgHandler(myMsgHandler);
+
 	QApplication app(arbc, argv);
 
 	QCoreApplication::setOrganizationName("Aarhus University");
@@ -49,8 +51,11 @@ int main(int arbc, char *argv[])
         mainWindow()->show();
         result = app.exec();
     }
-    catch (UniSim::Exception &ex) {
+    catch (Exception &ex) {
         QMessageBox::information(0, "Program Error", "Uncaught exception: " + ex.message());
+    }
+    catch (...) {
+        QMessageBox::information(0, "Program Error", "Uncaught exception");
     }
 
     delete objectPool();

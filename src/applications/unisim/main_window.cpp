@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QDesktopServices>
 #include <QDir>
 #include <QFileInfo>
 #include <QPixmap>
@@ -31,7 +32,8 @@ MainWindow* MainWindow::_mainWindow;
 MainWindow::MainWindow()
     : StoredWidget(this, "geometries/main"),
     fileLocationsSubWindow(0),
-    viewModelSubWindow(0)
+    viewModelSubWindow(0),
+    fileOpenOption(ShowGraph)
 {
 	settings = new QSettings(this);
 
@@ -53,11 +55,14 @@ void MainWindow::createMenus() {
     // File menu
     fileMenu = menuBar()->addMenu("&File");
 
-    fileMenu->addAction( fileOpen = new QAction("&Open", this) );
+    fileMenu->addAction( fileOpen = new QAction("&Open...", this) );
     connect( fileOpen, SIGNAL(triggered()), this, SLOT(doFileOpen()) );
 
-    fileMenu->addAction( fileReopen = new QAction("&Reopen", this) );
+    fileMenu->addAction( fileReopen = new QAction("&Reopen..", this) );
     connect( fileReopen, SIGNAL(triggered()), this, SLOT(doFileReopen()) );
+
+//    fileMenu->addAction( fileReopenRun = new QAction("Reopen and r&un...", this) );
+//    connect( fileReopenRun, SIGNAL(triggered()), this, SLOT(doFileReopenRun()) );
 
     fileMenu->addAction( fileClose = new QAction("&Close", this) );
     connect( fileClose, SIGNAL(triggered()), this, SLOT(doFileClose()) );
@@ -68,15 +73,25 @@ void MainWindow::createMenus() {
     fileMenu->addAction( fileExit = new QAction("E&xit", this) );
     connect( fileExit, SIGNAL(triggered()), this, SLOT(doFileExit()) );
 
+    // Edit menu
+    editMenu = menuBar()->addMenu("&Edit");
+
+    editMenu->addAction( editModel = new QAction("&Model..", this) );
+    connect( editModel, SIGNAL(triggered()), this, SLOT(doEditModel()) );
+
+    editMenu->addAction( editHelp = new QAction("&Help..", this) );
+    connect( editHelp, SIGNAL(triggered()), this, SLOT(doEditHelp()) );
+
     // Simulation menu
     simulationMenu = menuBar()->addMenu("&Simulation");
 
-    simulationMenu->addAction( simulationRun = new QAction("&Run", this) );
+    simulationMenu->addAction( simulationRun = new QAction("&Run...", this) );
     connect( simulationRun, SIGNAL(triggered()), this, SLOT(doSimulationRun()) );
 
     // Tools menu
     if (isDeveloperVersion()) {
         toolsMenu = menuBar()->addMenu("&Tools");
+
         toolsMenu->addAction( toolsPrototyping = new QAction("&Create plugin...", this) );
         connect( toolsPrototyping, SIGNAL(triggered()), this, SLOT(doToolsPrototyping()) );
 
@@ -85,7 +100,7 @@ void MainWindow::createMenus() {
     }
 
     //View menu
-    viewMenu = menuBar()->addMenu("&View");
+    // viewMenu = menuBar()->addMenu("&View");
 
     // Window menu
     windowMenu = menuBar()->addMenu("&Window");
@@ -110,7 +125,10 @@ void MainWindow::createMenus() {
     // Help menu
     helpMenu = menuBar()->addMenu("&Help");
 
-    helpMenu->addAction( helpAbout = new QAction("&About", this) );
+    helpMenu->addAction( helpHome = new QAction("&Home...", this) );
+    connect( helpHome, SIGNAL(triggered()), this, SLOT(doHelpHome()) );
+
+    helpMenu->addAction( helpAbout = new QAction("&About...", this) );
     connect( helpAbout, SIGNAL(triggered()), this, SLOT(doHelpAbout()) );
 }
 
@@ -138,9 +156,6 @@ void MainWindow::setTitle(QString subTitle) {
 
 void MainWindow::closeEvent (QCloseEvent * event) {
     store();
-    for (int i = 0; i <_xmlEditors.size(); ++i)
-        delete _xmlEditors[i];
-    _xmlEditors.clear();
     event->accept();
 }
 
@@ -183,12 +198,12 @@ void MainWindow::setPermanentMessage(QString message) {
 
 void MainWindow::doFileOpen() {
     QString folder = FileLocations::possibleLocation(FileLocationInfo::Models).absolutePath();
-    QString filePath = QFileDialog::getOpenFileName(this,
+    currentFilePath = QFileDialog::getOpenFileName(this,
                                                     "Open model file",
                                                     folder,
                                                     "Model files (*.xml)");
-    if (filePath.isEmpty()) return;
-    openFile(filePath);
+    if (currentFilePath.isEmpty()) return;
+    openFile(currentFilePath);
 }
 
 void MainWindow::doFileReopen() {
@@ -197,6 +212,13 @@ void MainWindow::doFileReopen() {
         openFile(settings.value("latestModelFile").toString());
     else
         doFileOpen();
+}
+
+void MainWindow::doFileReopenRun() {
+    // This function is not used
+    // doSimulationRun() must wait for graph drawing process to end
+    doFileReopen();
+    doSimulationRun();
 }
 
 void MainWindow::openFile(QString filePath)
@@ -208,7 +230,8 @@ void MainWindow::openFile(QString filePath)
 
     try {
         liveSim->open(filePath);
-        liveSim->writeGraph();
+        if (fileOpenOption == ShowGraph)
+            liveSim->writeGraph();
     }
     catch (Exception &ex) {
         showErrorMessage(ex);
@@ -239,20 +262,6 @@ void  MainWindow::viewModel() {
 
     viewModelSubWindow->adjustSize();
     viewModelSubWindow->showMaximized();
-}
-
-void MainWindow::doFileEdit() {
-    if (liveSim->state() != LiveSimulation::Ready)
-        doFileOpen();
-    if (liveSim->state() != LiveSimulation::Ready)
-        return;
-    editFile(FileLocations::location(FileLocationInfo::Models).absolutePath());
-}
-
-void MainWindow::editFile(QString filePath)
-{
-    _xmlEditors.append(new XmlEditor);
-    _xmlEditors.last()->execute(filePath);
 }
 
 void MainWindow::doWindowsSaveGraphics() {
@@ -313,6 +322,27 @@ void MainWindow::doFileLocations()
 void MainWindow::doFileExit()
 {
 	close();
+}
+
+void MainWindow::doEditModel() {
+    if (currentFilePath.isEmpty())
+        showMessage("Use menu File|Open to open a model file");
+    else
+        QDesktopServices::openUrl(QUrl("file:///" + currentFilePath));
+}
+
+void MainWindow::doEditHelp() {
+    QString msg =
+            "If nothing happens when you select Edit|Model on the menu, "
+            "or if the model file does not open in an editor, it is because the file type of model files (which is XML) "
+            "is not associated with an editor program, such as Notepad or Notepad++.\n\n"
+            "To fix this, choose File|Open and right-click any model file. "
+            "On the pop-up menu, choose 'Open with...' and select a text editor from the list of programs. "
+            "Remember to check the box 'Always use the selected program to open this kind of file'.\n\n"
+            "From now on, Edit|Model should work correctly. Depending on your operating system, "
+            "the steps may vary from the above.";
+    showMessage(msg);
+
 }
 
 void MainWindow::doSimulationRun()
@@ -403,6 +433,10 @@ void MainWindow::doHelpAbout() {
     }
 
     QMessageBox::about(this, "About Universal Simulator", text);
+}
+
+void MainWindow::doHelpHome() {
+    QDesktopServices::openUrl(QUrl("http://www.ecolmod.org"));
 }
 
 void MainWindow::liveSimulatorStateChanged(int iOldState, int iNewState) {

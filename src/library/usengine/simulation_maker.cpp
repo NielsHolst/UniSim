@@ -30,7 +30,13 @@
 #include "xy_state_variables.h"
 
 namespace UniSim{
-	
+
+namespace {
+    inline QList<QObject*> asList(QObject * object) {
+        return (QList<QObject*>() << object);
+    }
+}
+
 SimulationMaker::SimulationMaker()
 	: QObject()
 {
@@ -104,26 +110,28 @@ Simulation* SimulationMaker::parse(QString fileName_)
     UniSim::setSimulationObject(sim);
 
 	nextElementDelim();
-    int iCon=0, iMod=0, iOut=0;
+    int numIntegrators(0);
+    bool noModels(true), noOutputs(true);
     while (!reader->hasError() && reader->isStartElement()) {
-        if (elementNameEquals("integrator") || elementNameEquals("controller")) {
-			if (readIntegratorElement(sim)) ++iCon;
+        if (elementNameEquals("integrator")) {
+            readIntegratorElement(sim);
+            ++numIntegrators;
         } else if (elementNameEquals("model")) {
-			if (readModelElement(sim)) ++iMod;
+            readModelElement(asList(sim));
+            noModels = false;
         } else if (elementNameEquals("output")) {
-			if (readOutputElement(sim)) ++iOut;
+            readOutputElement(sim);
+            noOutputs = false;
 		} else {
             throw Exception(message("Unexpected element: '" + elementName() + "'"), sim);
-
-
 		}
 	}
 	Q_ASSERT(reader->isEndElement());
     if (reader->hasError()) throw Exception(message(""));
-    if (iCon==0) throw Exception(message("Missing 'integrator' element in 'simulation'"));
-    else if (iCon>1) throw Exception(message("Only one 'integrator' element allowed in 'simulation'"));
-    if (iMod==0) throw Exception(message("Missing 'model' element in 'simulation'"));
-    if (iOut==0) throw Exception(message("Missing 'output' element in 'simulation'"));
+    if (numIntegrators==0) throw Exception(message("Missing 'integrator' element in 'simulation'"));
+    else if (numIntegrators>1) throw Exception(message("Only one 'integrator' element allowed in 'simulation'"));
+    if (noModels) throw Exception(message("Missing 'model' element in 'simulation'"));
+    if (noOutputs) throw Exception(message("Missing 'output' element in 'simulation'"));
 
     redirectParameters();
 
@@ -148,8 +156,7 @@ QString SimulationMaker::compileToFile(QString filePath) {
     return compiledFilePath;
 }
 
-bool SimulationMaker::readIntegratorElement(QObject* parent)
-{
+void SimulationMaker::readIntegratorElement(QObject* parent) {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
     QString type = attributeValue("type", parent);
@@ -170,10 +177,10 @@ bool SimulationMaker::readIntegratorElement(QObject* parent)
 			readSequenceElement(integrator);
         }
         else if (elementNameEquals("parameter")){
-            readParameterElement(integrator);
+            readParameterElement(asList(integrator));
         }
         else if (elementNameEquals("model")){
-            readModelElement(integrator);
+            readModelElement(asList(integrator));
         }
         else {
             throw Exception(message(
@@ -182,8 +189,6 @@ bool SimulationMaker::readIntegratorElement(QObject* parent)
 	}	
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
-	
-	return integrator;
 }	
 
 void SimulationMaker::readSequenceElement(QObject* parent)
@@ -209,97 +214,111 @@ void SimulationMaker::readSequenceElement(QObject* parent)
 	nextElementDelim();
 }
 
-bool SimulationMaker::readModelElement(QObject* parent)
-{
-	Q_ASSERT(reader->isStartElement());
-	
+void SimulationMaker::readModelElement(QList<QObject*> parents) {
+    Q_ASSERT(!parents.isEmpty());
+    Q_ASSERT(reader->isStartElement());
+    QList<QObject*> models;
+    for (int i = 0; i < parents.size(); ++i) {
+        models << createModelElement(parents[i]);
+    }
+	nextElementDelim();
+	while (!reader->hasError() && reader->isStartElement()) {
+        if (elementNameEquals("model"))
+            readModelElement(models);
+        else if (elementNameEquals("dataset"))
+            readDatasetElement(models);
+        else if (elementNameEquals("parameter"))
+            readParameterElement(models);
+        else
+            throw Exception(message("Unexpected element: '" + elementName() + "'"));
+	}	
+	Q_ASSERT(reader->isEndElement());
+	nextElementDelim();
+}
+
+QList<QObject*> SimulationMaker::createModelElement(QObject *parent) {
     QString modelType = attributeValue("type", "anonymous");
     QString objectName = attributeValue("name", "anonymous");
     QString hide = attributeValue("hide", "");
     QString instancesStr = attributeValue("instances", "");
 
-    bool manyInstances = !instancesStr.isEmpty();
-    int instances = 1;
-    if (manyInstances) {
+    int numInstances = 1;
+    if (!instancesStr.isEmpty()) {
         bool ok(true);
-        instances = instancesStr.toInt(&ok);
-        if (!ok || instances <= 0)
+        numInstances = instancesStr.toInt(&ok);
+        if (!ok || numInstances <= 0)
             throw Exception("Attribute 'instances'' must a number larger than zero");
     }
 
-    Model *model;
+    QList<QObject*> models;
+    Models instances;
     try {
-        for (int i = 0; i < instances; ++i) {
+        for (int i = 0; i < numInstances; ++i) {
             QString objectInstanceName = objectName;
-            if (manyInstances)
+            if (numInstances > 1)
                 objectInstanceName += "(" + QString::number(i+1) + ")";
 
-            model = ModelMaker::create(modelType, objectInstanceName, parent);
+            Model *model = ModelMaker::create(modelType, objectInstanceName, parent);
+            models << model;
+            instances << model;
 
             if (!hide.isEmpty()) {
                 bool isHidden = UniSim::stringToValue<bool>(hide);
                 model->setHide(isHidden);
             }
         }
+        for (int i = 0; i < numInstances; ++i) {
+            Model *prev = (i==0) ? 0 : instances[i-1];
+            Model *next = (i<numInstances-1) ? instances[i+1] : 0;
+            instances[i]->setInstances(prev, next);
+
+        }
     }
     catch (Exception &ex) {
         throw Exception(message(ex.message()), parent);
     }
-
-	nextElementDelim();
-	while (!reader->hasError() && reader->isStartElement()) {
-        if (elementNameEquals("model")) {
-			readModelElement(model);
-        }
-        else if (elementNameEquals("dataset")){
-            readDatasetElement(model);
-        }
-        else if (elementNameEquals("parameter")){
-            readParameterElement(model);
-        }
-        else {
-            throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
-        }
-	}	
-	Q_ASSERT(reader->isEndElement());
-	nextElementDelim();
-	
-	return model;
+    return models;
 }
 
-int SimulationMaker::readModelElement(QList<QObject*> parents) {
-    for (int i = 0; i < parents.size(); ++i) {
-        readModelElement(parents[i]);
-    }
-    return parents.size();
-}
-
-
-void SimulationMaker::readDatasetElement(QObject* parent)
+void SimulationMaker::readDatasetElement(QList<QObject*> parents)
 {
+    Q_ASSERT(!parents.isEmpty());
     Q_ASSERT(reader->isStartElement());
-
-    QString objectName = attributeValue("name", parent);
-
-    Dataset *dataset = new Dataset(objectName, parent);
-
+    QList<QObject*> datasets;
+    for (int i = 0; i < parents.size(); ++i) {
+        datasets << createDatasetElement(parents[i]);
+    }
     nextElementDelim();
     while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("parameter")){
-            readParameterElement(dataset);
+            readParameterElement(datasets);
         }
         else {
-            throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
+            throw Exception(message("Unexpected element: '" + elementName() + "'"));
         }
     }
     Q_ASSERT(reader->isEndElement());
     nextElementDelim();
 }
 
-void SimulationMaker::readParameterElement(QObject* parent)
-{
-    Q_ASSERT(reader->isStartElement() && parent);
+Dataset* SimulationMaker::createDatasetElement(QObject *parent) {
+    QString objectName = attributeValue("name", parent);
+    return new Dataset(objectName, parent);
+}
 
+void SimulationMaker::readParameterElement(QList<QObject*> parents)
+{
+    Q_ASSERT(!parents.isEmpty());
+    Q_ASSERT(reader->isStartElement());
+    for (int i = 0; i < parents.size(); ++i) {
+        setParameterElement(parents[i]);
+    }
+	nextElementDelim();
+	Q_ASSERT(reader->isEndElement());
+	nextElementDelim();
+}
+
+void SimulationMaker::setParameterElement(QObject *parent) {
     QString name = attributeValue("name", parent);
     QString value = attributeValue("value", "");
     QString variableName = attributeValue("variable", "");
@@ -318,17 +337,12 @@ void SimulationMaker::readParameterElement(QObject* parent)
         parameter->setValueFromString(value.trimmed());
     else
         redirectedParameters.append(RedirectedParameter(parameter, variableName));
-
-	nextElementDelim();
-	Q_ASSERT(reader->isEndElement());
-	nextElementDelim();
 }
 
-bool SimulationMaker::readOutputElement(QObject* parent)
+void SimulationMaker::readOutputElement(QObject* parent)
 {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
-
     QString objectName = attributeValue("name", "anonymous");
     QString type = attributeValue("type", parent);
     QString summary = attributeValue("summary", "");
@@ -348,7 +362,7 @@ bool SimulationMaker::readOutputElement(QObject* parent)
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("parameter")) {
-            readParameterElement(output);
+            readParameterElement(asList(output));
         }
         else if (elementNameEquals("read-parameter")) {
             readOutputParameterElement(output);
@@ -365,7 +379,6 @@ bool SimulationMaker::readOutputElement(QObject* parent)
 	}	
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
-    return output;
 }	
 
 void SimulationMaker::readOutputVariableElement(QObject* parent)

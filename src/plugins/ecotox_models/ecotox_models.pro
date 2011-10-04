@@ -9,9 +9,11 @@ include ($${US_BASE}/base.pri)
 
 HEADERS += \
 	ecotox_model_maker.h \
+    log_logistic.h \
 	pollen.h
 
 SOURCES += \
 	ecotox_model_maker.cpp \
-	pollen.cpp
+    log_logistic.cpp \
+    pollen.cpp
 

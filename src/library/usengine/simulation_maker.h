@@ -15,6 +15,8 @@ class QXmlStreamReader;
 
 namespace UniSim{
 
+class Dataset;
+class Model;
 class ParameterBase;
 class Parameters;
 class Simulation;
@@ -71,17 +73,21 @@ private:
     bool moreToRead();
     void ignoreElement();
 
-	bool readIntegratorElement(QObject* parent);
+    void readIntegratorElement(QObject* parent);
 	void readSequenceElement(QObject *parent);
 
-	bool readModelElement(QObject *parent);
-    int readModelElement(QList<QObject*> parents);
+    void readModelElement(QList<QObject*> parents);
+    QList<QObject*> createModelElement(QObject *parent);
 
-    void readDatasetElement(QObject* parent);
-    void readParameterElement(QObject *parent);
+    void readDatasetElement(QList<QObject*> parents);
+    Dataset* createDatasetElement(QObject *parent);
+
+    void readParameterElement(QList<QObject*> parents);
+    void setParameterElement(QObject *parent);
+
     void readOutputParameterElement(QObject *parent);
 
-	bool readOutputElement(QObject *parent);
+    void readOutputElement(QObject *parent);
     void readOutputVariableElement(QObject* parent);
     void readOutputDataElement(QObject* parent);
 

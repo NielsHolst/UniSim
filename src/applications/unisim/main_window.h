@@ -91,8 +91,6 @@ private:
     void closeEvent (QCloseEvent * event);
 
     // Methods
-    enum {ShowGraph, SkipGraph} fileOpenOption;
-
     void openFile(QString filePath);
     void setTitle(QString subTitle);
 	void setPermanentMessage(QString message);

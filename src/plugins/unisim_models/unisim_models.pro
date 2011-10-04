@@ -18,6 +18,7 @@ HEADERS += \
     fixed.h \
     hydro_thermal_time.h \
     insect.h \
+    insect_life_cycle.h \
     lactin_time.h \
     photo_thermal_time.h \
     physiological_time.h \
@@ -30,7 +31,8 @@ HEADERS += \
     run_iterator_fixed.h \
     scheduled.h \
     trigger_by_date.h \
-    unisim_model_maker.h
+    unisim_model_maker.h \
+    weather.h
 
 SOURCES += \
     stage.cpp \
@@ -42,6 +44,7 @@ SOURCES += \
     fixed.cpp \
     hydro_thermal_time.cpp \
     insect.cpp \
+    insect_life_cycle.cpp \
     lactin_time.cpp \
     photo_thermal_time.cpp \
     physiological_time.cpp \
@@ -54,4 +57,5 @@ SOURCES += \
     run_iterator_fixed.cpp \
     scheduled.cpp \
     trigger_by_date.cpp \
-    unisim_model_maker.cpp
+    unisim_model_maker.cpp \
+    weather.cpp

@@ -42,7 +42,7 @@ private:
 
     // parameters
     QString fileName, fileLocation;
-    bool randomizeInitialYear;
+    bool randomizeInitialYear, imposeInitialDateTime;
     FileLocationInfo::FileType fileLocationType;
 
     // pull variables
@@ -61,7 +61,6 @@ private:
     QList<Identifier> columnNames;
     int dateColumn, timeColumn;
     QVector<double> *currentColumnValues, *nextColumnValues;
-    bool imposeInitialDate;
 };
 
 }

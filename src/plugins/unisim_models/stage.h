@@ -47,7 +47,7 @@ private:
 
 	// methods
 	double sum() const;
-    void applyInstantMortality();;
+    void applyInstantMortality();
 
     // data
     QVector<double> buffer;

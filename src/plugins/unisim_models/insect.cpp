@@ -8,6 +8,7 @@
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "insect.h"
+#include "insect_life_cycle.h"
 #include "stage.h"
 
 namespace UniSim{
@@ -20,45 +21,45 @@ Insect::Insect(Identifier name, QObject *parent)
                           "Proportion females");
     new Parameter<double>("eggProduction", &eggProduction, 100., this,
                           "Lifetime egg production of one female");
-    new PullVariable<double>("newAdults", &newAdults, this, "Number of individuals entering adult stage");
-    new PullVariable<double>("lostAdults", &lostAdults, this, "Number of individuals dead from senescence");
-
 }
 
 void Insect::initialize() {
-    Model *lifeCycle = seekOneChild<Model*>("lifeCycle");
-    stages = lifeCycle->seekChildren<Stage*>("*");
-    if (stages.size() < 3)
-        throw Exception("There must be at least two Stage models in lifeCycle", this);
-    eggLayingPhase = seekOneChild<Model*>("eggLayingPhase");
-    hibernatingAdult = seekOneChild<Model*>("hibernatingAdult");
+    hibernatingAdult = seekOneChild<Stage*>("hibernatingAdult");
+    generations = seekChildren<InsectLifeCycle*>("*");
 }
 
 void Insect::reset() {
-    newAdults = lostAdults = 0.;
+    QList<Stage*> test = generations[0]->stages();
 }
 
 void Insect::update() {
-    reproduce();
-    stages[0]->deepUpdate();
-    double transfer = stages[0]->pullVariable<double>("outflow");
-    int n = stages.size();
-    for (int i = 0;  i < n; ++i) {
-        stages[i]->pushVariable<double>("inflow", transfer);
-        stages[i]->deepUpdate();
-        if (i == n-1)
-            newAdults = transfer;
-        transfer = stages[i]->pullVariable<double>("outflow");
+    // Transfer hibernating adults from the reproductive stage of the last generation
+    double transfer = generations.last()->pullVariable<double>("adultsToHibernation");
+    hibernatingAdult->pushVariable<double>("inflow", transfer);
+    hibernatingAdult->deepUpdate();
+
+    // Transfer woken hibernating adults to reproductive stage of first generation
+    double emergedReproductiveAdults = hibernatingAdult->pullVariable<double>("outflow");
+    generations.first()->stages().last()->pushVariable<double>("inflow", emergedReproductiveAdults);
+
+    // And put eggs into the first stage of first generation
+    double eggsToLay = reproduction(emergedReproductiveAdults);
+    generations.first()->stages().first()->pushVariable<double>("inflow", eggsToLay);
+
+    int n = generations.size();
+    for (int gen = 0; gen < n; ++gen ) {
+        generations[gen]->update();
+        double reproAdults = generations[gen]->pullVariable<double>("eclosedReproductiveAdults");
+        double eggsToLay = reproduction(reproAdults);
+        if (gen < n-1)
+            generations[gen+1]->stages().first()->pushVariable<double>("inflow", eggsToLay);
+        else
+            Q_ASSERT(eggsToLay==0);
     }
-    lostAdults = transfer;
 }
 
-void Insect::reproduce() {
-    double eggsToLay = newAdults*sexRatio*eggProduction;
-    eggLayingPhase->pushVariable<double>("inflow", eggsToLay);
-    eggLayingPhase->deepUpdate();
-    double eggsLaid = eggLayingPhase->pullVariable<double>("outflow");
-    stages[0]->pushVariable<double>("inflow", eggsLaid);
+double Insect::reproduction(double adults) {
+    return adults*sexRatio*eggProduction;
 }
 
 } //namespace

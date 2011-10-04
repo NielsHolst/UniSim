@@ -36,6 +36,9 @@ void TestRecords::cleanup() {
 
 void TestRecords::testCalendarDateIsFirst() {
     createSimulation("test_records.xml");
+    Model *records = seekOneDescendant<Model*>("records", sim);
+    records->seekOneChild<Parameter<bool>*>("imposeInitialDateTime") -> setValue(false);
+
     try {
         sim->execute();
     }
@@ -86,6 +89,9 @@ void TestRecords::testCalendarDateIsFirst() {
 
 void TestRecords::testCalendarDateIsInside() {
     createSimulation("test_records.xml");
+    Model *records = seekOneDescendant<Model*>("records", sim);
+    records->seekOneChild<Parameter<bool>*>("imposeInitialDateTime") -> setValue(false);
+
     Model *calendar = seekOneDescendant<Model*>("calendar", sim);
     calendar->seekOneChild<Parameter<QDate>*>("initialDate") -> setValue(QDate(2010,1,4));
 
@@ -141,9 +147,6 @@ void TestRecords::testCalendarDateIsInside() {
 
 void TestRecords::testImposeDate() {
     createSimulation("test_records.xml");
-    Model *records = seekOneDescendant<Model*>("records", sim);
-    records->seekOneChild<Parameter<bool>*>("imposeInitialDateAndTime") -> setValue(true);
-
     try {
         sim->execute();
     }

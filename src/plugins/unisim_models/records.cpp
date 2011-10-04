@@ -16,12 +16,16 @@ Records::Records(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new Parameter<QString>("fileName", &fileName, "records.txt", this,
-    "Name of input file");
+    "Name of input file. If date and time are included, their column titles must be @F date and @F {time}");
     new Parameter<QString>("fileLocation", &fileLocation, "weather", this,
     "Valid locations are the standard folders: datasets, plugins and weather. "
     "The standard folders can be set from the File|Locations menu.");
+    new Parameter<bool>("imposeInitialDateTime", &imposeInitialDateTime, true, this,
+    "Impose the first date and time on @F {calendar}. Either or both, date and time, are imposed; "
+    "it depends on which are include in the file. If neither is included, there is no effect "
+    "of setting @F imposeInitialDateTime to @F {true}" );
     new Parameter<bool>("randomizeInitialYear", &randomizeInitialYear, false, this,
-    "Pick a random initial year from the years available in @F weather/records model");
+    "Pick a random initial year from the years available in the records file");
 
     new PullVariable<QDateTime>("currentDateTime", &currentDateTime, this,
     "The date and time of the current line in the input file. The @F calendar date and time will be at "
@@ -76,18 +80,17 @@ void Records::readColumnNames() {
 
     dateColumn = -1;
     timeColumn = -1;
-    imposeInitialDate = false;
     for (int i = 0; i < lineItems.size(); ++i) {
         Identifier id = Identifier(lineItems[i]);
         columnNames.append(id);
         if (id.equals("date")) {
             dateColumn = i;
-            imposeInitialDate = true;
         }
         else if (id.equals("time")) {
             timeColumn = i;
         }
     }
+    imposeInitialDateTime = imposeInitialDateTime && (dateColumn > -1 || timeColumn > -1);
     file.close();
 }
 
@@ -140,7 +143,7 @@ void Records::reset() {
     readToFirstLine();
     if (randomizeInitialYear)
         readToInitialYear();
-    if (imposeInitialDate) {
+    if (imposeInitialDateTime) {
         calendar->pushVariable<QDate>("initialDate", currentDate);
         calendar->pushVariable<QTime>("initialTimeOfDay", currentTime);
         calendar->deepReset();

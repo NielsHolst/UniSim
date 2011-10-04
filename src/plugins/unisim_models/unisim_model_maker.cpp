@@ -13,6 +13,7 @@
 #include "fixed.h"
 #include "hydro_thermal_time.h"
 #include "insect.h"
+#include "insect_life_cycle.h"
 #include "lactin_time.h"
 #include "photo_thermal_time.h"
 #include "random_lognormal.h"
@@ -25,6 +26,7 @@
 #include "stage.h"
 #include "trigger_by_date.h"
 #include "unisim_model_maker.h"
+#include "weather.h"
 
 namespace UniSim{
 
@@ -79,6 +81,9 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "variable named @F SWP must exist to supply @F HydroThermalTime with soil water potential.";
 
     desc["Insect"] =
+    "A stage-structured insect model. Under development";
+
+    desc["InsectLifeCycle"] =
     "A stage-structured insect model. Under development";
 
     desc["LactinTime"] =
@@ -141,6 +146,11 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     desc["TriggerByDate"] =
     "The  @F TriggerByDate model can be used by other models to trigger changes in their behaviour.";
 
+    desc["Weather"] =
+    "This @F Weather model simply supplies a daily reading from a @F Records child model. If the records file contains a column named @F Tavg "
+    "then that colum is used. Otherwise, if columns named @F Tmin and @F Tmax are present "
+    "then @F Tavg is calculated as the average of those";
+
     return desc;
 }
 
@@ -165,6 +175,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new HydroThermalTime(objectName, parent);
     else if (modelType.equals("Insect"))
         model = new Insect(objectName, parent);
+    else if (modelType.equals("InsectLifeCycle"))
+        model = new InsectLifeCycle(objectName, parent);
     else if (modelType.equals("LactinTime"))
         model = new LactinTime(objectName, parent);
     else if (modelType.equals("PhotoThermalTime"))
@@ -187,6 +199,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new Stage(objectName, parent);
     else if (modelType.equals("TriggerByDate"))
         model = new TriggerByDate(objectName, parent);
+    else if (modelType.equals("Weather"))
+        model = new Weather(objectName, parent);
     return model;
 }
 

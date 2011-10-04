@@ -3,8 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_INSECT_H
-#define UNISIM_INSECT_H
+#ifndef UNISIM_INSECT_LIFE_CYCLE_H
+#define UNISIM_INSECT_LIFE_CYCLE_H
 
 #include <QObject>
 #include <QMap>
@@ -12,28 +12,27 @@
 
 namespace UniSim{
 
-class InsectLifeCycle;
 class Stage;
 
-class Insect : public Model
+class InsectLifeCycle : public Model
 {
 	Q_OBJECT
 public:
-    Insect(Identifier name, QObject *parent=0);
+    InsectLifeCycle(Identifier name, QObject *parent=0);
     // standard methods
     void initialize();
     void reset();
     void update();
+    // special methods
+    QList<Stage*>& stages();
 private:
-    // parameters
-    double sexRatio, eggProduction;
     // pull variables
-    double newAdults, lostAdults;
+    double eclosedReproductiveAdults, adultsToHibernation, deadAdults;
     // links
-    Stage *hibernatingAdult;
-    QList<InsectLifeCycle*> generations;
+    QList<Stage*> _stages;
+    const double *pollen;
     // methods
-    double reproduction(double adults);
+    double updateStage(Stage *stage);
 };
 
 } //namespace

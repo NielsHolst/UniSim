@@ -64,6 +64,8 @@ void Stage::initialize()
     if (ageClassesPtr)
         delete ageClassesPtr;
     ageClassesPtr = new PullVariable<double>("ageClasses", x, this, "Pointer to buffer with age classes of length @F {k}");
+
+
 }
 
 
@@ -82,9 +84,6 @@ void Stage::update()
     applyInstantMortality();
 
     if (firstUpdate) {
-//        Model *test = peekOneAscendant<Model*>("hibernating");
-//        if (test)
-//            QMessageBox::information(0, "test", "Update hibernating");
         _inflow += initialInflow;
         firstUpdate = false;
     }

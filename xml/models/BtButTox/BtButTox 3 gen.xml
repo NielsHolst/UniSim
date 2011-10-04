@@ -43,7 +43,7 @@
 			<parameter name="initialInflow" value="1"/>
 		</model>
 
-		<model name="generation" type="UniSim::InsectLifeCycle" instances="2">
+		<model name="generation" type="UniSim::InsectLifeCycle" instances="3">
 			<model name ="eggLayingDelay" type="UniSim::Stage" >
 				<model name="time" type="UniSim::Days"/>
 				<parameter name="duration" value="7"/>
@@ -98,7 +98,13 @@
 	*** Plots  ***
 	-->
 
+	<options type="plot">
+		<parameter name="rows" value="3"/>
+		<parameter name="columns" value="3"/>		
+	</options>
+	
 	<output type="plot">
+		<parameter name="order" value="1"/>
 		<parameter name="title" value="Environment"/>
 		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
@@ -123,10 +129,20 @@
 	</output>
 
 	<output type="plot">
+		<parameter name="title" value ="3. generation"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Egg-3" value="generation(3)/egg[value]"/>
+		<variable axis="y" label="Larva-3" value="generation(3)/larva[value]"/>
+		<variable axis="y" label="Pupa-3" value="generation(3)/pupa[value]"/>
+		<variable axis="y" label="AdRep-3" value="generation(3)/adult[value]"/>
+	</output>
+
+	<output type="plot">
 		<parameter name="title" value ="Population response"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
 		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Larva-3" value="generation(3)/larva[value]"/>
 		<variable axis="y" label="AdHib" value="hibernatingAdult[value]"/>
 	</output>
 	
@@ -151,6 +167,7 @@
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
 		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Larva-3" value="generation(3)/larva[value]"/>
 		<variable axis="y" label="Pollen (per cm2)" value="pollen[pollen]"/>
 	</output>
 	

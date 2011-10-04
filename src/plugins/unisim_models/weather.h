@@ -7,13 +7,13 @@
 #define SUPPLYDEMAND_WEATHER
 #include <usbase/model.h>
 
-namespace SupplyDemand {
+namespace UniSim {
 
-    class Weather : public UniSim::Model
+    class Weather : public Model
 {
 	Q_OBJECT
 public: 
-    Weather(UniSim::Identifier name, QObject *parent=0);
+    Weather(Identifier name, QObject *parent=0);
     // standard methods
     void initialize();
     void reset();
@@ -24,7 +24,8 @@ private:
     double Tavg;
 
     // links
-    UniSim::Model *records;
+    const double *ptrAvg, *ptrMin, *ptrMax;
+    bool avgIsPresent, minMaxIsPresent;
 
 };
 

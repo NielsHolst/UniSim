@@ -16,7 +16,7 @@
 #include "utilities.h"
 
 namespace UniSim{
-	
+
 class Model : public UniSim::Component
 {
 	Q_OBJECT
@@ -31,8 +31,14 @@ public:
 
     bool hide() const;
     void setHide(bool value);
+
+    Model* prevInstance() { return prev; }
+    Model* nextInstance() { return next; }
+    bool hasInstances();
+    void setInstances(Model *prev, Model *next);
 private:
     bool _hide;
+    Model *prev, *next;
 };
 
 typedef QList<Model*> Models;

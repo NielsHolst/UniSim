@@ -32,8 +32,7 @@ MainWindow* MainWindow::_mainWindow;
 MainWindow::MainWindow()
     : StoredWidget(this, "geometries/main"),
     fileLocationsSubWindow(0),
-    viewModelSubWindow(0),
-    fileOpenOption(ShowGraph)
+    viewModelSubWindow(0)
 {
 	settings = new QSettings(this);
 
@@ -190,6 +189,25 @@ void MainWindow::standardizeSubWindows() {
     QList<QMdiSubWindow *> windows = _mdiArea->subWindowList();
     for (int i = 0; i < windows.size(); ++i)
         windows[i]->resize(width, height);
+    /*
+    QList<QMdiSubWindow *> tiles = _mdiArea->subWindowList();
+    int ixTile = 0, n = tiles.size();
+
+    int rows = 3, columns = 3;
+    QSize scene = centralWidget()->size();
+    QSize tile(scene.width()/columns, scene.height()/rows);
+    for (int row = 0; row < rows; ++row) {
+        for (int col = 0; col < columns; ++col) {
+            QPoint pos(col*tile.width(), row*tile.height());
+            if (ixTile < n) {
+                tiles[ixTile]->resize(tile);
+                tiles[ixTile]->move(pos);
+                ++ixTile;
+            }
+        }
+
+    }
+    */
 }
 
 void MainWindow::setPermanentMessage(QString message) {
@@ -198,12 +216,12 @@ void MainWindow::setPermanentMessage(QString message) {
 
 void MainWindow::doFileOpen() {
     QString folder = FileLocations::possibleLocation(FileLocationInfo::Models).absolutePath();
-    currentFilePath = QFileDialog::getOpenFileName(this,
+    QString filePath = QFileDialog::getOpenFileName(this,
                                                     "Open model file",
                                                     folder,
                                                     "Model files (*.xml)");
-    if (currentFilePath.isEmpty()) return;
-    openFile(currentFilePath);
+    if (filePath.isEmpty()) return;
+    openFile(filePath);
 }
 
 void MainWindow::doFileReopen() {
@@ -221,8 +239,9 @@ void MainWindow::doFileReopenRun() {
     doSimulationRun();
 }
 
-void MainWindow::openFile(QString filePath)
-{
+void MainWindow::openFile(QString filePath) {
+    currentFilePath = filePath;
+
     if (liveSim->state() != LiveSimulation::Closed) doFileClose();
 
     setTitle(QFileInfo(filePath).fileName());
@@ -230,8 +249,7 @@ void MainWindow::openFile(QString filePath)
 
     try {
         liveSim->open(filePath);
-        if (fileOpenOption == ShowGraph)
-            liveSim->writeGraph();
+        liveSim->writeGraph();
     }
     catch (Exception &ex) {
         showErrorMessage(ex);

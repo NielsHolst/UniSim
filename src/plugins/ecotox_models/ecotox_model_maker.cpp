@@ -6,6 +6,7 @@
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
 #include "ecotox_model_maker.h"
+#include "log_logistic.h"
 #include "pollen.h"
 
 using namespace UniSim;
@@ -23,14 +24,17 @@ Identifier EcotoxModelMaker::pluginName() const {
 
 QStringList EcotoxModelMaker::authors() const
 {
-	return QStringList() << "author1" << "author2";
+    return QStringList() << "Niels";
 }
 
 const QMap<Identifier, QString>& EcotoxModelMaker::supportedClasses()
 {
 	if (!desc.isEmpty()) return desc;
 
-	desc["Pollen"] =
+    desc["LogLogistic"] =
+    "Description";
+
+    desc["Pollen"] =
 	"Description";
 
 	return desc;
@@ -40,7 +44,9 @@ Model* EcotoxModelMaker::create(Identifier modelType, Identifier objectName, QOb
 {
 	setSimulationObjectFromDescendent(parent);
 	Model *model = 0;
-	if (modelType.equals("pollen"))
+    if (modelType.equals("LogLogistic"))
+        model = new LogLogistic(objectName, parent);
+    else if (modelType.equals("pollen"))
 		model = new Pollen(objectName, parent);
 	return model;
 }

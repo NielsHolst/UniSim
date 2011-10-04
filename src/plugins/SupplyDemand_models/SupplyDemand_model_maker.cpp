@@ -18,7 +18,6 @@
 #include "respiration_demand.h"
 #include "split_on_shortening_days.h"
 #include "life_stage.h"
-#include "weather.h"
 
 using namespace UniSim;
 
@@ -75,9 +74,6 @@ const QMap<Identifier, QString>& SupplyDemandModelMaker::supportedClasses()
     desc["LifeStage"] =
     "Description";
 
-    desc["Weather"] =
-    "Description";
-
     desc["Exposure"] =
     "Description";
 
@@ -102,7 +98,6 @@ Model* SupplyDemandModelMaker::create(Identifier modelType, Identifier objectNam
     UNISIM_CREATE(ReproductionDemandSizeDependent);
     UNISIM_CREATE(RespirationDemand);
     UNISIM_CREATE(SplitOnShorteningDays);
-    UNISIM_CREATE(Weather);
 	return model;
 }
 

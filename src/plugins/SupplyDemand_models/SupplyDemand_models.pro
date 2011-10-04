@@ -21,9 +21,7 @@ HEADERS += \
     reproduction_demand_per_capita.h \
     reproduction_demand_size_dependent.h \
 	respiration_demand.h \
-    split_on_shortening_days.h \
-    weather.h
-
+    split_on_shortening_days.h
 SOURCES += \
 	SupplyDemand_model_maker.cpp \
     acquisition.cpp \
@@ -38,6 +36,4 @@ SOURCES += \
     reproduction_demand_per_capita.cpp \
     reproduction_demand_size_dependent.cpp \
     respiration_demand.cpp \
-    split_on_shortening_days.cpp \
-    weather.cpp
-
+    split_on_shortening_days.cpp

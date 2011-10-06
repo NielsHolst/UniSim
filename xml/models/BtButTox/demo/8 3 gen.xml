@@ -3,39 +3,18 @@
 	<integrator type="TimeStepLimited">
 		<parameter name="maxSteps" value="365"/> <!-- all years = 20440 -->
 		<sequence>
-			<model name="random"/>
 			<model name="calendar"/>
 			<model name="weather"/>
 			<model name="pollen"/>
 			<model name="insect"/>
 		</sequence>
-		<model name="RunIterator" type="UniSim::RunIteratorFixed">
-			<parameter name="numIterations" value="20"/>
-		</model>
 	</integrator>
 
-	<model name="random">
-		<model name="dateShift" type="UniSim::RandomUniform">
-			<parameter name="minValue" value="-15"/>
-			<parameter name="maxValue" value="15"/>
-		</model>
-		<model name="Pmax" type="UniSim::RandomUniform">
-			<parameter name="minValue" value="1000"/>
-			<parameter name="maxValue" value="10000"/>
-		</model>
-		<model name="timeCompression" type="UniSim::RandomUniform">
-			<parameter name="minValue" value="0.5"/>
-			<parameter name="maxValue" value="2"/>
-		</model>
-	</model>
-
-	
 	<model name="calendar" type="Calendar"/>
 
 	<model name="weather" type="UniSim::Weather">
 		<model name="records" type="UniSim::Records">
-			<parameter name="fileName" value="denmark-odum-1953-2009.txt"/>
-			<parameter name="randomizeInitialYear" value="yes"/>
+			<parameter name="fileName" value="ljubljana 2009.txt"/>
 		</model>
 	</model>
 
@@ -43,9 +22,7 @@
 		<parameter name="halfLife" value="30"/>
 		<parameter name="distance" value="1"/>
 		<parameter name="dateMax" value="31/7/2011"/>
-		<parameter name="dateShift" variable="random/dateShift[value]"/>
-		<parameter name="Pmax" variable="random/Pmax[value]"/>
-		<parameter name="c" variable="random/timeCompression[value]"/>
+		<parameter name="Pmax" value="1000"/>
 	</model>
 	
 	<model name="insect" type="UniSim::Insect">
@@ -66,7 +43,7 @@
 			<parameter name="initialInflow" value="1"/>
 		</model>
 
-		<model name="generation" type="UniSim::InsectLifeCycle" instances="1">
+		<model name="generation" type="UniSim::InsectLifeCycle" instances="3">
 			<model name ="eggLayingDelay" type="UniSim::Stage" >
 				<model name="time" type="UniSim::Days"/>
 				<parameter name="duration" value="7"/>
@@ -120,7 +97,7 @@
 	<!-- 
 	*** Plots  ***
 	-->
-
+	
 	<output type="plot">
 		<parameter name="title" value="Environment"/>
 		<variable label="Day" axis="x" value="calendar[totalTime]"/>
@@ -128,18 +105,38 @@
 	</output>
 
 	<output type="plot">
-		<parameter name="title" value ="One generation"/>
+		<parameter name="title" value ="1. generation"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Egg" value="generation/egg[value]"/>
-		<variable axis="y" label="Larva" value="generation/larva[value]"/>
-		<variable axis="y" label="Pupa" value="generation/pupa[value]"/>
-		<variable axis="y" label="AdRep" value="generation/adult[value]"/>
+		<variable axis="y" label="Egg-1" value="generation(1)/egg[value]"/>
+		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Pupa-1" value="generation(1)/pupa[value]"/>
+		<variable axis="y" label="AdRep-1" value="generation(1)/adult[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="2. generation"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Egg-2" value="generation(2)/egg[value]"/>
+		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Pupa-2" value="generation(2)/pupa[value]"/>
+		<variable axis="y" label="AdRep-2" value="generation(2)/adult[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="3. generation"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Egg-3" value="generation(3)/egg[value]"/>
+		<variable axis="y" label="Larva-3" value="generation(3)/larva[value]"/>
+		<variable axis="y" label="Pupa-3" value="generation(3)/pupa[value]"/>
+		<variable axis="y" label="AdRep-3" value="generation(3)/adult[value]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Population response"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Larva" value="generation/larva[value]"/>
+		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Larva-3" value="generation(3)/larva[value]"/>
 		<variable axis="y" label="AdHib" value="hibernatingAdult[value]"/>
 	</output>
 	
@@ -162,33 +159,10 @@
 		<parameter name="logy" value ="yes"/>
 		<parameter name="ymin" value ="-2"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Larva" value="generation/larva[value]"/>
+		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Larva-3" value="generation(3)/larva[value]"/>
 		<variable axis="y" label="Pollen (per cm2)" value="pollen[pollen]"/>
-	</output>
-
-
-	<output type="plot" summary="yes">
-		<parameter name="title" value="Net reproduction"/>
-		<variable label="Time shift" axis="x" value="random/dateShift[value]"/>		
-		<variable axis="y" label="R" value="hibernatingAdult[value]" summary="final"/>
-	</output>
-
-	<output type="plot" summary="yes">
-		<parameter name="title" value="Net reproduction"/>
-		<variable label="Total pollen" axis="x" value="random/Pmax[value]"/>		
-		<variable axis="y" label="R" value="hibernatingAdult[value]" summary="final"/>
-	</output>
-
-	<output type="plot" summary="yes">
-		<parameter name="title" value="Net reproduction"/>
-		<variable label="Time compression" axis="x" value="random/timeCompression[value]"/>		
-		<variable axis="y" label="R" value="hibernatingAdult[value]" summary="final"/>
-	</output>
-
-	<output type="plot" summary="yes">
-		<parameter name="title" value="Net reproduction"/>
-		<variable label="Year" axis="x" value="calendar[year]"/>		
-		<variable axis="y" label="R" value="hibernatingAdult[value]" summary="final"/>
 	</output>
 	
 </simulation>

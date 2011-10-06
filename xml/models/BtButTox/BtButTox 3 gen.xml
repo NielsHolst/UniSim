@@ -98,13 +98,7 @@
 	*** Plots  ***
 	-->
 
-	<options type="plot">
-		<parameter name="rows" value="3"/>
-		<parameter name="columns" value="3"/>		
-	</options>
-	
 	<output type="plot">
-		<parameter name="order" value="1"/>
 		<parameter name="title" value="Environment"/>
 		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>

@@ -11,6 +11,8 @@ CONFIG += unisim_development     # Activate this if targets are under developmen
 # Ensuing configuration (should not be edited)
 #
 
+QMAKE_LFLAGS +=  -enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
+
 DEFINES += UNISIM_VERSION
 
 CONFIG(unisim_development) {

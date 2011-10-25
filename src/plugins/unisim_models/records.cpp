@@ -18,12 +18,12 @@ Records::Records(Identifier name, QObject *parent)
     new Parameter<QString>("fileName", &fileName, "records.txt", this,
     "Name of input file. If date and time are included, their column titles must be @F date and @F {time}");
     new Parameter<QString>("fileLocation", &fileLocation, "weather", this,
-    "Valid locations are the standard folders: datasets, plugins and weather. "
+    "Valid locations are the standard folders: @F {datasets}, @F {plugins} and @F {weather}. "
     "The standard folders can be set from the File|Locations menu.");
     new Parameter<bool>("imposeInitialDateTime", &imposeInitialDateTime, true, this,
     "Impose the first date and time on @F {calendar}. Either or both, date and time, are imposed; "
-    "it depends on which are include in the file. If neither is included, there is no effect "
-    "of setting @F imposeInitialDateTime to @F {true}" );
+    "it depends on which are included in the file. If neither is included, there is no effect "
+    "of setting @F imposeInitialDateTime to @F {yes}" );
     new Parameter<bool>("randomizeInitialYear", &randomizeInitialYear, false, this,
     "Pick a random initial year from the years available in the records file");
 

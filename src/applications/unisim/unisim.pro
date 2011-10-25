@@ -27,7 +27,6 @@ HEADERS += \
     main_window.h \
     stored_widget.h \
     sub_window.h \
-    xml_editor.h \
     image_widget.h
 
 SOURCES += \
@@ -42,5 +41,4 @@ SOURCES += \
     stored_widget.cpp \
     sub_window.cpp \
     unisim.cpp \
-    xml_editor.cpp \
     image_widget.cpp

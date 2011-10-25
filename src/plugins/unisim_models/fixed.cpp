@@ -9,17 +9,12 @@ Fixed::Fixed(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new Parameter<QString>("parameters", &parametersAsString, QString("()"), this,
-    "Parameters as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}. "
-    "Currently, values are assumed to be of type double.");
+    "Parameters as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}. ");
     new Parameter<QString>("pullvariables", &pullVariablesAsString, QString("()"), this,
-    "Pull variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}. "
-    "Currently, values are assumed to be of type double.");
+    "Pull variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}.");
     new Parameter<QString>("pushvariables", &pushVariablesAsString, QString("()"), this,
-    "Push variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}. "
-    "Currently, values are assumed to be of type double.");
+    "Push variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}.");
 }
-
-
 
 void Fixed::initialize() {
     initParameters();

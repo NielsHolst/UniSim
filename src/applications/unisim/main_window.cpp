@@ -23,7 +23,6 @@
 #include "image_widget.h"
 #include "live_simulation.h"
 #include "main_window.h"
-#include "xml_editor.h"
 
 using namespace UniSim;
 
@@ -299,7 +298,7 @@ void MainWindow::doWindowsSaveGraphics() {
                 QString filePath = QString("%1/%2-graphics-%3.png").arg(path).arg(++fileNo).arg(windows[i]->windowTitle());
                 bool ok = pixmap.save(filePath);
                 if (!ok)
-                    throw Exception("Could save graphics file:\n" + filePath);
+                    throw Exception("Could not save graphics file to:\n" + filePath);
             }
             else if (subWindow->type() == SubWindow::ModelView) {
                 QString sourceFilePath = liveSim->graphFilePath();
@@ -307,7 +306,7 @@ void MainWindow::doWindowsSaveGraphics() {
                 QFile::remove(destFilePath);
                 bool ok = QFile::copy(sourceFilePath, destFilePath);
                 if (!ok)
-                    throw Exception("Could not write file with model diagram:\n" + destFilePath);
+                    throw Exception("Could not write file with model diagram to:\n" + destFilePath);
             }
         }
     }

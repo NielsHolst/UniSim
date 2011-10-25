@@ -10,7 +10,7 @@
 			<model name="insect"/>
 		</sequence>
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
-			<parameter name="numIterations" value="20"/>
+			<parameter name="numIterations" value="100"/>
 		</model>
 	</integrator>
 

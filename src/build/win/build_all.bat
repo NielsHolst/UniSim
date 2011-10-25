@@ -1,8 +1,8 @@
-@rem Set enviroment for older Qt versions (up to 2010)
+@rem Set environment for older Qt versions (up to 2010)
 @set QTENV="%QT_ROOT%\bin\qtenv.bat"
 @if exist %QTENV% goto :qt_root_ok
 
-@rem Set enviroment for newer Qt versions (from 2011)
+@rem Set environment for newer Qt versions (from 2011)
 @set QTENV="%QT_ROOT%\mingw\bin\qtenv2.bat"
 @if exist %QTENV% goto :qt_root_ok
 
@@ -53,7 +53,8 @@ qmake build_all.pro
 @echo *** Finished qmake ***
 @echo .
 
-..\vendor\gnu_make\make
+mingw32-make
+
 popd
 @echo .
 @echo *** Finished make ***

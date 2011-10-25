@@ -268,7 +268,27 @@ void DocumentationWriter::writeTableRow(QString format, QString a, QString b, QS
 }
 
 void DocumentationWriter::write(QString s) {
-    file.write(qPrintable(s.replace("/", "\"/\"").replace("|", "\"|\"")));
+    if (s.contains("#include")) {
+        file.write(qPrintable(s));
+        return;
+    }
+    QString t;
+    int n = s.size();
+    for (int i = 0; i < n; ++i) {
+        if (s[i] == '/') {
+            if (i < n-1 && s[i+1] == '/') {
+                t += "//";
+                ++i;
+            }
+            else
+                t += "\"/\"";
+        }
+        else
+            t += s[i];
+
+    }
+    t.replace("|", "\"|\"");
+    file.write(qPrintable(t));
 }
 
 void DocumentationWriter::write(const char *s) {

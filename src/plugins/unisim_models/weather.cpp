@@ -16,8 +16,9 @@ Weather::Weather(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new PullVariable<double>("Tavg", &Tavg, this,
-    "Daily average temperature calculated read from records file "
-    "or calculated as the daily average of minimum and maximum temperature");
+    "Daily average temperature, either read from records file, "
+    "or calculated as the daily average of minimum and maximum temperature. "
+    "Must have a child model called @F {records}.");
 }
 
 void Weather::initialize() {

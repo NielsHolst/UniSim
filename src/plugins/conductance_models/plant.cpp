@@ -18,11 +18,11 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("initWeight", &initWeight, 2., this,
                  "Initial plant weight at time zero (g per plant)");
     new Parameter<int>("initDay", &initDay, 0, this,
-                 "Day of month when growth begins, and @F weight is set to @F {initWeight}. "
+                 "Day of month when growth begins and @F weight is set to @F {initWeight}. "
                  "Use together with @F {initMonth}. If @F initDay or @F initMonth is zero,"
                  "they are not used and growth will start on day 1 in the simulation");
     new Parameter<int>("initMonth", &initMonth, 0, this,
-                 "See @F {initday}");
+                 "See @F {initDay}");
     new Parameter<double>("A", &A, 0.03, this,
                  "Coefficient in allometric relation for crown zone area: @Math {A w sup phione}");
     new Parameter<double>("phi", &phi, 0.67, this,
@@ -39,7 +39,7 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
                  "Plant density (plants per m @Sup {2})");
 
     new PullVariable<double>("weight", &weight, this,
-                     "Plant weight (g per plant");
+                     "Plant weight (g per plant)");
     new PullVariable<double>("totalWeight", &totalWeight, this,
                      "Total population plant weight (g/m @Sup 2 ground area available)");
     new PullVariable<double>("sz", &sz, this,
@@ -62,7 +62,7 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
                      "@F UnderCompression or @F {WeightProportional}.");
     new PullVariable<double>("LAI", &lai, this,
                      "Leaf area index of whole population "
-                     "(m @Sup 2 leaf area per m @Sup 2 ground area available");
+                     "(m @Sup 2 leaf area per m @Sup 2 ground area available)");
 }
 
 void Plant::initialize() {

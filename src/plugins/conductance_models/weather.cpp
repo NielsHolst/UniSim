@@ -18,7 +18,7 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("irradiation", &irradiation, 10., this,
                  "Constant value");
     new PullVariable<double>("irradiation", &irradiation, this,
-                     "Global irradiation (MJ/m @Sup {2}/d");
+                     "Global irradiation (MJ/m @Sup {2}/d)");
 }
 
 void Weather::reset() {

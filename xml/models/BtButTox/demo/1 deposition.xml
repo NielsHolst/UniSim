@@ -34,4 +34,11 @@
 		<variable axis="y" label="Actual" value="maize[pollen]"/>
 	</output>
 
+	<output type="table">
+		<parameter name="filename" value ="bt_test.txt"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Date" value="calendar[date]"/>
+		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]"/>
+	</output>
+
 </simulation>

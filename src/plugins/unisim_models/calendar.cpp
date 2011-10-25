@@ -42,8 +42,8 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     "The first values are reported to plot and table outputs after one time step. "
     "With the default value of -1 for @F timeStepOffset, the first output will occur "
     "at time zero, defined by @F initialDay and @F {initialTimeOfDay}. "
-    "Often this is what is intuitively expected. With a value of zero the first output "
-    "will occur one time step after time zero.");
+    "Often this is what is intuitively expected. With a @F timeStepOffset value of zero "
+    "the first output will occur one time step after time zero.");
 
     new PullVariable<QDate>("date", &date, this, "Current date");
     new PullVariable<QTime>("timeOfDay", &timeOfDay, this, "Current time of day");

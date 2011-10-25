@@ -16,8 +16,8 @@ PhysiologicalTime::PhysiologicalTime(UniSim::Identifier name, QObject *parent)
     new PullVariable<double>("step", &step, this,
         "Duration of latest time step (physiological time units)");
     new PullVariable<double>("total", &total, this,
-        "Total duration since beginning of simulation (physiological time units)"
-        "or since most recent trigger");
+        "Total duration since beginning of simulation (in physiological time units) "
+        "or since most recent trigger event (see e.g. @F TriggerByDate)");
 }
 
 void PhysiologicalTime::initialize() {

@@ -31,21 +31,32 @@ GraphGenerator::GraphGenerator(UniSim::Simulation *simulation_)
 }
 
 QString GraphGenerator::dotCommand() {
-    QDir dir = UniSim::FileLocations::location(UniSim::FileLocationInfo::DotTool);
+    QDir dir = FileLocations::location(FileLocationInfo::DotTool);
     QString command = dir.absolutePath() + "/dot.exe";
     if (!QFile::exists(command))
         command = dir.absolutePath() + "/bin/dot.exe";
-    if (!QFile::exists(command))
-        throw UniSim::Exception("Could not find dot program to draw graph:'" + command + "'");
+    if (!QFile::exists(command)) {
+        QString msg =
+                "Could not find the program \"dot.exe\" of the Graphviz package to draw the model diagram. "
+                "The program was not found here: '" + command + "'\n\n"
+                "Set the correct path through the File|Locations menu. The correct path should be something like:\n\n'C:/Program Files/Graphviz2.26.3/bin'"
+                "\n\nor\n\n"
+                "'C:/Program Files/UniSim-1-29/Graphviz2.26.3/bin'\n\n"
+                "Alternatively, you may have to download Graphviz from www.graphviz.org.";
+        throw Exception(msg);
+    }
     return "\"" + command + "\"";
 }
 
 QString GraphGenerator::outputFilePath(OutputFormat format) {
-    QDir dir = UniSim::FileLocations::location(UniSim::FileLocationInfo::Temporary);
+    QDir dir = FileLocations::location(FileLocationInfo::Temporary);
     QString path = dir.absolutePath() + "/" + simulation->objectName() + "." + fileType[format];
     return path;
 }
 
+// Denne funktion kalder programmet dot.exe
+// Den starter en process, som selv melder tilbage når diagrammet er genereret
+// Diagrammet ligger i en PNG fil som derefter vises på skærmen. Nå...
 QProcess* GraphGenerator::generate(OutputFormat format)
 {
     Q_ASSERT(format != Dot);
@@ -62,6 +73,8 @@ QProcess* GraphGenerator::generate(OutputFormat format)
 	return process;
 }
 
+// Denne funktion (writeDotFile) skriver en tekstfil, som bagefter læses af programmet dot.exe
+// Dot er et open-source program, en del af Graphviz
 void GraphGenerator::writeDotFile()
 {
     QString dotFilePath = outputFilePath(Dot);
@@ -105,7 +118,7 @@ namespace {
 void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int parentNumber)
 {
 	QString statement;
-	QTextStream sink(&	statement);
+        QTextStream sink(&statement);
 
     int myNumber = ++nodeNumber;
 	writeNode(&sink, parent, parentNumber);

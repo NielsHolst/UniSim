@@ -18,7 +18,7 @@ Community::Community(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new PullVariable<double>("sum_sz", &sum_sz, this,
-                     "Total crown zone area of the one or two plants present"
+                     "Total crown zone area of the one or two plants present "
                      "(m @Sup 2 ground area owned per m @Sup 2 ground area available)");
 }
 

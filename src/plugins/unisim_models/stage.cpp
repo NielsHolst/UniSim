@@ -28,11 +28,11 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
         "@Cite{$label{(Manetsch 1976)}manetsch}. @F duration is also a pull/push variable");
     new Parameter<double>("growthRate", &_fgr, 1., this,
         "For every quantity @I x that enters as inflow, @I growthRate*x will emerge as outflow. "
-        "@F growthRate can be changed during the simulation but must be larger than zero."
+        "@F growthRate can be changed during the simulation but must be larger than zero. "
         "Use small values (e.g., @Math {10 sup {-6}}) instead of zero. "
         "@F growthRate is also a pull/push variable");
     new Parameter<double>("initialInflow", &initialInflow, 0., this,
-        "The initial inflow is entered as inflow at time 0");
+        "The @F initialInflow is entered as inflow at time 0");
 
 
     new PullVariable<double>("value", &_sum, this, "Number of units (e.g. individuals) in stage");
@@ -49,7 +49,7 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
     new PushVariable<double>("growthRate", &_fgr, this, "Same as the @F growthRate parameter.");
     new PushVariable<double>("inflow", &_inflow, this, "Number of units to be put into the stage in the next time step");
     new PushVariable<double>("instantMortality", &_instantMortality, this,
-                     "The mortality [0..100] will be applied in the next time step, before the @F inflow is added");
+    "Mortality [0..100] will be applied in the next time step, before @F inflow is added");
 }
 
 void Stage::initialize()

@@ -60,7 +60,7 @@ private:
     QList<RedirectedParameter> redirectedParameters;
 
     struct OutputParam {
-        QString axis, label, value, summary;
+        QString axis, label, value, summary, type;
         QObject *parent;
     };
 
@@ -74,7 +74,7 @@ private:
     void ignoreElement();
 
     void readIntegratorElement(QObject* parent);
-	void readSequenceElement(QObject *parent);
+    void readSequenceElement(QObject *parent);
 
     void readModelElement(QList<QObject*> parents);
     QList<QObject*> createModelElement(QObject *parent);

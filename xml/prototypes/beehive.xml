@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<plugin name="beehive" type="model">
-    <class name="Aethina">
-		<model name="shb"/>
-	</class> 
-</plugin>

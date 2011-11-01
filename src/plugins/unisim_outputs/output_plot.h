@@ -30,7 +30,9 @@ public:
 	
 private:
     // parameters
-    QString title;
+    enum Type {Lines, Symbols, Both};
+    Type type;
+    QString title, typeAsString;
     bool logy;
     double ymin, ymax;
     int penWidth, symbolSize;
@@ -42,16 +44,13 @@ private:
     PlotWidget *plotWidget;
 
     // methods
-    void initDesignInfo();
-	void showPlot();
+    void createDesignInfo();
+    void initType();
+    void showPlot();
     void createPlotWidget();
     void fillPlotWidget();
     void fillWithResults();
     void fillWithData();
-//    void filter(const QVector<double> *x0,
-//                const QVector<double> *y0,
-//                QVector<double> *x,
-//                QVector<double> *y);
     void showPlotWidget();
     bool emptyResults() const;
     bool emptyData() const;

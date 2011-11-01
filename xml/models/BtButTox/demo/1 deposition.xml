@@ -23,14 +23,14 @@
 	<output type="plot">
 		<parameter name="title" value ="Pollen deposition (per cm2)"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]"/>
+		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]" type ="symbols"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Pollen deposition (per cm2)"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Rate" value="maize[pollenDepositionRate]"/>
-		<variable axis="y" label="Total" value="maize[pollenDepositionTotal]"/>
+		<variable axis="y" label="Total" value="maize[pollenDepositionTotal]" type ="symbols"/>
 		<variable axis="y" label="Actual" value="maize[pollen]"/>
 	</output>
 

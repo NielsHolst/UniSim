@@ -384,13 +384,14 @@ void SimulationMaker::readOutputElement(QObject* parent)
 void SimulationMaker::readOutputVariableElement(QObject* parent)
 {
 
-	Q_ASSERT(reader->isStartElement() && parent);
+    Q_ASSERT(reader->isStartElement() && parent);
 
     OutputParam param;
     param.label = attributeValue("label", parent),
     param.axis = attributeValue("axis", parent),
     param.value = attributeValue("value", parent);
     param.summary = attributeValue("summary", "");
+    param.type = attributeValue("type", "");
     param.parent = parent;
 
     outputVariableParam.append(param);

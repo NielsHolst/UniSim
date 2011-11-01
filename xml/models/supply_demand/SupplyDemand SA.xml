@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="SensitivityAnalysis">
+		<parameter name="maxSteps" value="365" value2="20440"/>
+		<parameter name="factor" value="2"/>
+		<parameter name="days" value="10"/>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="4"/>
+		</model>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="maize"/>
+			<model name="ressources"/>
+			<model name="insect"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" type="SupplyDemand::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="denmark-odum-1953-2009.txt"/>
+		</model>
+	</model>
+
+	<model name="ressources">
+		<model name="leaves" type="UniSim::Fixed">
+			<parameter name="pullVariables" value="((value 1e6))"/>
+			<parameter name="pushVariables" value="((consumption 0))"/>
+		</model>
+
+		<model name="nectar" type="UniSim::Fixed">
+			<parameter name="pullVariables" value="((value 1e6))"/>
+			<parameter name="pushVariables" value="((consumption 0))"/>
+		</model>
+	</model>
+
+	
+	<model name="maize" type="SupplyDemand::Maize">
+		<parameter name="density" value="100"/>
+		<parameter name="depositionRate" value="0.9"/>
+		
+		<model name="sowing" type="UniSim::TriggerByDate">
+			<parameter name="fromDate" value="10/5/1900"/>
+			<parameter name="toDate" value="10/5/2200"/>
+			<parameter name="frequency" value="yearly"/>
+			<parameter name="triggerAtReset" value="No"/>
+		</model>
+
+		<model name="harvest" type="UniSim::TriggerByDate">
+			<parameter name="fromDate" value="15/9/1900"/>
+			<parameter name="toDate" value="15/9/2200"/>
+			<parameter name="frequency" value="yearly"/>
+			<parameter name="triggerAtReset" value="No"/>
+		</model>
+		
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="8"/>
+			<parameter name="Topt" value="28"/>
+			<parameter name="Tmax" value="36"/>
+		</model>
+		<model name="vegetative" type="UniSim::Stage" >
+			<parameter name="duration" value="600"/>
+			<parameter name="k" value="100"/>
+		</model>
+		<model name="pollenRelease" type="UniSim::Stage" >
+			<parameter name="duration" value="70"/>
+			<parameter name="k" value="30"/>
+		</model>
+		<model name="pollenDeposited" type="UniSim::Stage" >
+			<model name="time" type="UniSim::Days"/>
+			<parameter name="duration" value="14"/>
+			<parameter name="k" value="1"/>
+		</model>
+	</model>
+
+	<model name="insect" type="SupplyDemand::Holometabola">
+	
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="9.2"/>
+			<parameter name="Topt" value="32"/>
+			<parameter name="Tmax" value="37"/>
+		</model>
+
+		<model name="egg" type="SupplyDemand::LifeStage">
+			<model name="lifeTable" type="lifeTable">
+				<common type="UniSim::Stage" >
+					<parameter name="duration" value="70"/>
+					<parameter name="k" value="30"/>
+					<parameter name="growthRate" value="0.215"/>
+				</common>
+				<model name="number" select ="../common"/>
+				<model name="mass" select ="../common"/>
+			</model>
+		</model>
+
+		<model name="larva" type="SupplyDemand::LifeStage">
+			<model name="lifeTable" type="lifeTable">
+				<parameter name="preceding" value="(insect/egg)"/>
+				<common type="UniSim::Stage" >
+					<parameter name="duration" value="360" comment="Out of a total 420 DD"/>
+					<parameter name="k" value="60"/>
+					<parameter name="growthRate" value="0.215"/>
+				</common>
+				<model name="number" select ="../common"/>
+				<model name="mass" select ="../common"/>
+			</model>
+
+			<model name="energyBudget" type="SupplyDemand::EnergyBudget">
+				<model name="egestion" type="UniSim::Fixed">
+					<parameter name="pullVariables" value="((value 0.5))"/>
+				</model>
+
+				<model name="respiration" type="SupplyDemand::RespirationDemand">
+					<parameter name="resp20" value="0.1"/>
+				</model>
+
+				<model name="growth" type="SupplyDemand::GrowthDemand">
+					<parameter name="maxGrowthRate" value="6000"/>
+				</model>
+
+				<model name="acquisition" type="SupplyDemand::Acquisition">
+					<parameter name="resource" value="leaves"/>
+					<parameter name="attackRate" value="1."/>
+				</model>
+			</model>
+		</model>
+		<model name="pupa" type="SupplyDemand::LifeStage">
+			<model name="split" type="SplitOnShorteningDays">
+				<parameter name="critDayLength" value="16"/>
+			</model>
+			<model name="forReproduction" type="SupplyDemand::LifeStage">
+				<model name="lifeTable" type="lifeTable">
+					<parameter name="preceding" value="(insect/larva)"/>
+					<model name="number" type="UniSim::Stage" >
+						<parameter name="duration" value="60" comment="Out of a total 420 DD"/>
+						<parameter name="k" value="60"/>
+						<parameter name="growthRate" value="0.215"/>
+					</model>
+					<model name="mass" type="UniSim::Stage" >
+						<parameter name="duration" value="60" comment="Out of a total 420 DD"/>
+						<parameter name="k" value="60"/>
+						<parameter name="growthRate" value="0.172" comment="0.8*0.215"/>
+					</model>
+				</model>
+			</model>
+			<model name="forHibernation" select="../model[@name='forReproduction']"/>
+		</model>
+		
+		<model name="adult" type="SupplyDemand::LifeStage">
+			<model name="hibernating" type="SupplyDemand::LifeStage">
+				<model name="time" type="UniSim::Days">
+					<model name="trigger" type="UniSim::TriggerByDate">
+						<parameter name="fromDate" value="25/4/1900"/>
+						<parameter name="toDate" value="30/5/2200"/>
+						<parameter name="frequency" value="yearly"/>
+						<parameter name="triggerAtReset" value="No"/>
+					</model>
+				</model>
+				<model name="lifeTable" type="lifeTable">
+					<parameter name="preceding" value="(insect/pupa/forHibernation)"/>
+					<common type="UniSim::Stage" >
+						<parameter name="duration" value="7"/>
+						<parameter name="k" value="30"/>
+						<parameter name="growthRate" value="0.5"/>
+					</common>
+					<model name="number" select ="../common">
+						<parameter name="initialInflow" value="1"/>
+					</model>
+					<model name="mass" select ="../common">
+						<parameter name="initialInflow" value="600"/>
+					</model>
+					</model>
+			</model>
+		
+			<model name="reproductive" type="SupplyDemand::LifeStage">
+				<model name="time" type="UniSim::Days"/>
+				<model name="lifeTable" type="lifeTable">
+					<parameter name="preceding" value="(insect/pupa/forReproduction insect/adult/hibernating)"/>
+					<common type="UniSim::Stage" >
+						<parameter name="duration" value="60"/>
+						<parameter name="k" value="30"/>
+					</common>
+					<model name="number" select ="../common"/>
+					<model name="mass" select ="../common"/>
+				</model>
+
+				<model name="energyBudget" type="SupplyDemand::EnergyBudget">
+					<model name="egestion" type="UniSim::Fixed">
+						<parameter name="pullVariables" value="((value 0.1))"/>
+					</model>
+
+					<model name="respiration" type="SupplyDemand::RespirationDemand">
+						<parameter name="resp20" value="0.15"/>
+					</model>
+
+					<model name="reproduction" type="SupplyDemand::ReproductionDemandPerCapita">
+						<model name ="unlaidEggs" type="UniSim::Stage" >
+							<parameter name="duration" value="7"/>
+							<parameter name="k" value="30"/>
+						</model>
+						<parameter name="eggProduction" value="400"/>
+						<parameter name="eggWeight" value="0.1"/>
+					</model>
+
+					<model name="acquisition" type="SupplyDemand::Acquisition">
+						<parameter name="resource" value="nectar"/>
+						<parameter name="attackRate" value="1."/>
+					</model>
+				</model>
+			</model>
+		</model>
+
+	</model>
+
+	<!-- 
+	*** Plots  ***
+	-->
+
+	<output type="plot">
+		<parameter name="title" value="Environment"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
+		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
+		<variable label="Tmin" axis="y" value="weather/records[Tmin]"/>
+		<variable label="Tmax" axis="y" value="weather/records[Tmax]"/>
+		<variable label="Day length" axis="y" value="calendar[daylength]"/>
+	</output>
+
+	<output type="plot" name="lifeStages">
+		<parameter name="title" value ="Life stage numbers"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="AdHib" value="insect/adult/hibernating/lifeTable/number[value]"/>
+		<variable axis="y" label="AdRep" value="insect/adult/reproductive/lifeTable/number[value]"/>
+		<variable axis="y" label="Egg" value="insect/egg/lifeTable/number[value]"/>
+		<variable axis="y" label="Larva" value="insect/larva/lifeTable/number[value]"/>
+		<variable axis="y" label="PupaHib" value="insect/pupa/forHibernation/lifeTable/number[value]"/>
+		<variable axis="y" label="PupaRep" value="insect/pupa/forReproduction/lifeTable/number[value]"/>
+	</output>
+
+	<output type="plot" select="../output[@name='lifeStages']">
+		<parameter name="title" value ="Life stage numbers (log)"/>
+		<parameter name="logy" value ="yes"/>
+		<parameter name="ymin" value ="-2"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Maize pollen"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Veg. maize" value="maize/vegetative[value]"/>
+		<variable axis="y" label="Pollen release" value="maize/pollenRelease[value]"/>
+		<variable axis="y" label="Pollen deposited" value="maize/pollenDeposited[value]"/>
+	</output>
+	
+
+	<!-- 
+	*** Tables  ***
+	-->
+	<output type="table">
+		<parameter name="filename" value ="odum.txt"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="x" label="Julian" value="calendar[dayOfYear]"/>
+		<variable axis="y" label="Tavg" value="weather[Tavg]"/>
+		<variable axis="y" label="AdHib" value="insect/adult/hibernating/lifeTable/number[value]"/>
+		<variable axis="y" label="AdRep" value="insect/adult/reproductive/lifeTable/number[value]"/>
+		<variable axis="y" label="Egg" value="insect/egg/lifeTable/number[value]"/>
+		<variable axis="y" label="Larva" value="insect/larva/lifeTable/number[value]"/>
+		<variable axis="y" label="PupaHib" value="insect/pupa/forHibernation/lifeTable/number[value]"/>
+		<variable axis="y" label="PupaRep" value="insect/pupa/forReproduction/lifeTable/number[value]"/>	</output>
+
+</simulation>

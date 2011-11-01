@@ -10,9 +10,11 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_canvas.h>
+#include <qwt_plot_panner.h>
 #include <qwt_plot_zoomer.h>
 #include <qwt_scale_engine.h>
 #include <usbase/dataset.h>
+#include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/named_object.h>
 #include <usbase/object_pool.h>
@@ -32,9 +34,11 @@ QList<QwtSymbol> OutputPlot::symbols;
 
 OutputPlot::OutputPlot(Identifier name, QObject *parent)
     : Output(name, parent), plotWidget(0)
-{
+{    
     new Parameter<QString>("title", &title, QString(), this,
                            "Title of plot shown in window top bar");
+    new Parameter<QString>("type", &typeAsString, QString("lines"), this,
+                        "Type of plot: @F {lines], @F symbols or @F {both}");
     new Parameter<bool>("logy", &logy, false, this,
                         "Log-transform y-axis? Log base 10 is used");
     new Parameter<double>("ymin", &ymin, -DBL_MAX, this,
@@ -45,11 +49,11 @@ OutputPlot::OutputPlot(Identifier name, QObject *parent)
                           "Pen width for curves and symbols");
     new Parameter<int>("symbolSize", &symbolSize, 6, this,
                           "Size of symbols");	
-	initDesignInfo();
+    createDesignInfo();
 }
 
-void OutputPlot::initDesignInfo() {
-    if (colors.isEmpty()) 
+void OutputPlot::createDesignInfo() {
+    if (colors.isEmpty())
         colors
         << QColor("#FF416E")
         << QColor("#3760D5")
@@ -60,15 +64,15 @@ void OutputPlot::initDesignInfo() {
         << QColor("#39DE52");
 		
     if (symbols.isEmpty()) {
-		int penWidth = 2;
-		int symbolSize = 6;
-		for (int i = 0; i < colors.size(); ++i) {
-			QPen pen = QPen(colors[i]);
-			pen.setWidth(penWidth);
-			QColor fill = Qt::white;
-			symbols << QwtSymbol(QwtSymbol::Ellipse, QBrush(fill), pen, QSize(symbolSize,symbolSize));
-		}
-	}
+        int penWidth = 2;
+        int symbolSize = 6;
+        for (int i = 0; i < colors.size(); ++i) {
+            QPen pen = QPen(colors[i]);
+            pen.setWidth(penWidth);
+            QColor fill = Qt::white;
+            symbols << QwtSymbol(QwtSymbol::Ellipse, QBrush(fill), pen, QSize(symbolSize,symbolSize));
+        }
+    }
 }
 
 OutputPlot::~OutputPlot() {
@@ -77,6 +81,7 @@ OutputPlot::~OutputPlot() {
 
 void OutputPlot::initialize() {
     Output::initialize();
+    initType();
 
     const OutputResults &xs(xResults()), &ys(yResults());
     if (ys.size() == 0) {
@@ -96,6 +101,17 @@ void OutputPlot::initialize() {
 
     mainWindow = objectPool()->find<MainWindowInterface*>("mainWindow");
     Q_ASSERT(mainWindow);
+}
+
+void OutputPlot::initType() {
+    QMap<QString, Type> types;
+    types["lines"] = Lines;
+    types["symbols"] = Symbols;
+    types["both"] = Both;
+    QString s = typeAsString.toLower();
+    if (!types.contains(s))
+        throw Exception("Unknown type of plot: '" + typeAsString + "'");
+    type = types[s];
 }
 
 void OutputPlot::cleanup() {
@@ -129,8 +145,20 @@ bool OutputPlot::emptyData() const {
 void OutputPlot::createPlotWidget() {
     plotWidget = mainWindow->createPlotWidget(title);
     plotWidget->showLegend(true);
-    //QwtPlotCanvas *canvas = plotWidget->plot()->canvas();
-    //new QwtPlotZoomer(canvas);   crash!!½
+
+    QwtPlotCanvas *canvas = plotWidget->plot()->canvas();
+    QwtPlotZoomer* zoomer = new QwtPlotZoomer( canvas );
+    zoomer->setRubberBandPen( QColor( Qt::black ) );
+    zoomer->setTrackerPen( QColor( Qt::black ) );
+    // Walk up zoom stack
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect3, Qt::RightButton );
+    // Walk down zoom stack
+    zoomer->setMousePattern( QwtEventPattern::MouseSelect6, Qt::RightButton, Qt::ShiftModifier );
+
+    QwtPlotPanner *panner = new QwtPlotPanner( canvas );
+    panner->setMouseButton( Qt::LeftButton );
+
+
 }
 
 void OutputPlot::fillPlotWidget() {
@@ -167,8 +195,7 @@ void OutputPlot::fillWithResults() {
         pen.setWidth(penWidth);
         p.pen = pen;
         p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
-        p.type = x->isOutputSummary() ? Plot::Symbols : Plot::Curve;
-
+        p.type = (x->isOutputSummary() || type==Symbols) ? Plot::Symbols : Plot::Curve;
         p.add();
     }
 }

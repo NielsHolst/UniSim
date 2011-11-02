@@ -70,6 +70,12 @@ template <class T> QList<T> seekAscendants(QString name, QObject *child);
 template <class T> QList<T> filterByName(QString name, const QList<QObject*> &candidates);
 //@}
 
+//! @name File handling
+//@{
+QFileInfo findNearestFile(QDir home, QString subFolder, QString fileName);
+//@}
+
+
 //! \cond
 class SimulationObject {
     private:

@@ -39,8 +39,6 @@ int main(int argc, char *argv[])
     dir = getXmlDir();
     dir.cd("models");
     FileLocationInfo::setLocation(FileLocationInfo::Models, dir);
-    //cout << qPrintable(dir.absolutePath()) << "\n";
-    //getchar();
 
     dir = getXmlDir();
     dir.cd("prototypes");
@@ -53,14 +51,6 @@ int main(int argc, char *argv[])
     dir = getApplicationsDir();
     cdmk(dir, "temporary");
     FileLocationInfo::setLocation(FileLocationInfo::Temporary, dir);
-
-    dir = getUniSimDir();
-    dir.cd("weather");
-    FileLocationInfo::setLocation(FileLocationInfo::Weather, dir);
-
-    dir = getUniSimDir();
-    dir.cd("datasets");
-    FileLocationInfo::setLocation(FileLocationInfo::Datasets, dir);
 
     return 0;
 }

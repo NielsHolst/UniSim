@@ -15,7 +15,6 @@ class QXmlStreamReader;
 
 namespace UniSim{
 
-class Dataset;
 class Model;
 class ParameterBase;
 class Parameters;
@@ -79,9 +78,6 @@ private:
     void readModelElement(QList<QObject*> parents);
     QList<QObject*> createModelElement(QObject *parent);
 
-    void readDatasetElement(QList<QObject*> parents);
-    Dataset* createDatasetElement(QObject *parent);
-
     void readParameterElement(QList<QObject*> parents);
     void setParameterElement(QObject *parent);
 
@@ -89,7 +85,6 @@ private:
 
     void readOutputElement(QObject *parent);
     void readOutputVariableElement(QObject* parent);
-    void readOutputDataElement(QObject* parent);
 
     void splitOutputDataValue(QString value, QString *datasetName, QString *columnName);
     bool elementNameEquals(QString s) const;

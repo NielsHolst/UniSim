@@ -7,11 +7,12 @@ TARGET = unisim_models_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += plugin
 
 include ($${US_BASE}/base.pri)
+include ($${US_ENGINE}/engine.pri)
 
 HEADERS += \
-	stage.h \
-	anonymous_model.h \
-	calendar.h \
+    stage.h \
+    anonymous_model.h \
+    calendar.h \
     day_degrees.h \
     days.h \
     exponential.h \
@@ -36,8 +37,8 @@ HEADERS += \
 
 SOURCES += \
     stage.cpp \
-	anonymous_model.cpp \
-	calendar.cpp \
+    anonymous_model.cpp \
+    calendar.cpp \
     day_degrees.cpp \
     days.cpp \
     exponential.cpp \

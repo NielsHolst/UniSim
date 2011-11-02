@@ -6,11 +6,13 @@
 #include <QSet>
 #include <QStringList>
 #include <usbase/component.h>
+#include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "test_utilities.h"
 
+using std::cout;
 using namespace UniSim;
 
 
@@ -865,4 +867,48 @@ void TestUtilities::testDivBounded() {
     QCOMPARE(divBounded(42.,0.), MAX);
     QCOMPARE(divBounded(MAX, EPS), MAX);
     QCOMPARE(divBounded(MAX, EPS, 42.), 42.);
+}
+
+void TestUtilities::testFindNearestFile() {
+    QDir testDir = FileLocations::location(FileLocationInfo::Models);
+    testDir.cdUp();
+    testDir.cdUp();
+    testDir.cd("src/library/usbase/test");
+    QVERIFY(testDir.exists());
+
+    QDir homeDir = testDir;
+    homeDir.cd("test_nearest_file/test_nearest_file/test_nearest_file");
+    QVERIFY(homeDir.exists());
+
+    QFileInfo expectedFile, foundFile;
+
+    try {
+        expectedFile = homeDir.filePath("test_nearest_file_a.txt");
+        foundFile = findNearestFile(homeDir, "sub", "test_nearest_file_a.txt");
+        QCOMPARE(foundFile.absoluteFilePath(), expectedFile.absoluteFilePath());
+
+        expectedFile = homeDir.filePath("sub/test_nearest_file_b.txt");
+        foundFile = findNearestFile(homeDir, "sub", "test_nearest_file_b.txt");
+        QCOMPARE(foundFile.absoluteFilePath(), expectedFile.absoluteFilePath());
+
+        expectedFile = testDir.filePath("test_nearest_file/test_nearest_file/test_nearest_file_c.txt");
+        foundFile = findNearestFile(homeDir, "sub", "test_nearest_file_c.txt");
+        QCOMPARE(foundFile.absoluteFilePath(), expectedFile.absoluteFilePath());
+
+        expectedFile = testDir.filePath("test_nearest_file/test_nearest_file/sub/test_nearest_file_d.txt");
+        foundFile = findNearestFile(homeDir, "sub", "test_nearest_file_d.txt");
+        QCOMPARE(foundFile.absoluteFilePath(), expectedFile.absoluteFilePath());
+
+        expectedFile = testDir.filePath("test_nearest_file/test_nearest_file_e.txt");
+        foundFile = findNearestFile(homeDir, "sub", "test_nearest_file_e.txt");
+        QCOMPARE(foundFile.absoluteFilePath(), expectedFile.absoluteFilePath());
+
+        expectedFile = testDir.filePath("test_nearest_file/sub/test_nearest_file_f.txt");
+        foundFile = findNearestFile(homeDir, "sub", "test_nearest_file_f.txt");
+        QCOMPARE(foundFile.absoluteFilePath(), expectedFile.absoluteFilePath());
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
 }

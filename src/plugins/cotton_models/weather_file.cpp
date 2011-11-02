@@ -8,6 +8,7 @@
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
+#include <usengine/simulation.h>
 #include "weather_file.h"
 
 using namespace std;
@@ -67,8 +68,7 @@ void WeatherFile::reset()
     if (hasBeenReset) return;
 
     if (file.isOpen()) file.close();
-    QString filePath = FileLocations::location(FileLocationInfo::Weather).absolutePath() +
-                       "/" + fileName;
+    QString filePath = simulation()->inputFilePath(fileName);
     file.setFileName(filePath);
 
     bool fileOk = file.open(QIODevice::ReadOnly | QIODevice::Text);

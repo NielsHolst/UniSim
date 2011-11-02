@@ -50,10 +50,8 @@ private:
     void createPlotWidget();
     void fillPlotWidget();
     void fillWithResults();
-    void fillWithData();
     void showPlotWidget();
     bool emptyResults() const;
-    bool emptyData() const;
 };
 
 } //namespace

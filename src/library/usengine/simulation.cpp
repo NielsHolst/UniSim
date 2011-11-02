@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QString>
 #include <QStringList>
+#include <usbase/exception.h>
 #include <usbase/model.h>
 #include <usbase/integrator.h>
 #include <usbase/output.h>
@@ -29,10 +30,9 @@
 
 namespace UniSim{
 
-Simulation::Simulation(QString name, QString version, QObject *parent)
-    : QObject(parent), _state(Uninitialized), _version(version)
+Simulation::Simulation(Identifier name, QString version, QObject *parent)
+    : NamedObject(name, parent), _state(Uninitialized), _version(version)
 {
-	setObjectName(name);	
 }
 
 //! Sorts children and sets the sequence of model updating
@@ -96,7 +96,6 @@ void Simulation::initialize(const Identifiers &sequence, SimulationMaker *simMak
     for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepInitialize();
     if (simMaker) {
         simMaker->setupOutputVariableElements();
-        simMaker->setupOutputDataElements();
         simMaker->setupOutputParameterElements();
     }
     for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou) (*ou)->deepInitialize();
@@ -107,7 +106,7 @@ void Simulation::initialize(const Identifiers &sequence, SimulationMaker *simMak
 
 Models Simulation::modelInstances(QString modelName) {
     Models instances;
-    Model *oneModel = peekOneChild<Model*>(modelName, this);
+    Model *oneModel = peekOneChild<Model*>(modelName);
     if (oneModel) {
         instances << oneModel;
     }
@@ -116,7 +115,7 @@ Models Simulation::modelInstances(QString modelName) {
         Model *instance;
         do {
             QString instanceName = modelName + "(" + QString::number(++i) + ")";
-            instance = peekOneChild<Model*>(instanceName, this);
+            instance = peekOneChild<Model*>(instanceName);
             if (instance)
                 instances << instance;
         } while (instance);
@@ -172,7 +171,7 @@ QString Simulation::version() const {
 	return _version;
 }
 
-//! Gets state of the simulation
+//! Get state of the simulation
 Simulation::State Simulation::state() const {
 	return _state;
 }
@@ -197,6 +196,34 @@ void Simulation::stopCurrentRun() {
 
 void Simulation::stopAllRuns() {
     _stopAllRuns = _stopCurrentRun = true;
+}
+
+//! Set the file path of the simulation XML file
+/*! Do not use this to open an XML parser. Use SimulationMaker::parse.
+*/
+void Simulation::setFilePath(QString filePath) {
+    _filePath = filePath;
+    _fileFolder = QFileInfo(filePath).absoluteDir();
+}
+
+//! Return the full path for the input file with given file name
+/*! The file is searched in the order:
+    1. Folder of the simulation XML file
+    2. "input" sub-folder of that
+    3. "input" sub-folder of the parent
+    4. "input" sub-folder of the grandparent, and so forth
+    If the file is not found, a file path in location 1 above is returned,
+    in which case the returned path refers to a non-existing file
+*/
+QString Simulation::inputFilePath(QString fileName) {
+    return findNearestFile(_fileFolder, "input", fileName).absoluteFilePath();
+}
+
+//! Return the current simulation object or null
+Simulation* simulation() {
+    Simulation *sim = dynamic_cast<Simulation*>(simulationObject());
+    Q_ASSERT(sim);
+    return sim;
 }
 
 } //namespace

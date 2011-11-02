@@ -83,6 +83,7 @@ private slots:
 
     void testDivBounded();
 
+    void testFindNearestFile();
 private:
     QObject
         *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,

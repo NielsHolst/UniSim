@@ -13,12 +13,10 @@
 #include <qwt_plot_panner.h>
 #include <qwt_plot_zoomer.h>
 #include <qwt_scale_engine.h>
-#include <usbase/dataset.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/named_object.h>
 #include <usbase/object_pool.h>
-#include <usbase/output_data.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable_base.h>
@@ -138,10 +136,6 @@ bool OutputPlot::emptyResults() const {
     return xResults().isEmpty() || yResults().isEmpty();
 }
 
-bool OutputPlot::emptyData() const {
-    return xData().isEmpty() || yData().isEmpty();
-}
-
 void OutputPlot::createPlotWidget() {
     plotWidget = mainWindow->createPlotWidget(title);
     plotWidget->showLegend(true);
@@ -164,7 +158,6 @@ void OutputPlot::createPlotWidget() {
 void OutputPlot::fillPlotWidget() {
     Q_ASSERT(plotWidget);
     fillWithResults();
-    fillWithData();
 }
 
 void OutputPlot::fillWithResults() {
@@ -200,40 +193,6 @@ void OutputPlot::fillWithResults() {
     }
 }
 
-void OutputPlot::fillWithData() {
-    // Note: Shouldn't we fill in data only for runNumber == 1?
-    if (emptyData()) return;
-    Q_ASSERT(xData().size() == 1);
-    OutputData *x = xData()[0];
-
-    QString yAxisTitle(" ");
-    plotWidget->setXYtitles(x->id().label(), yAxisTitle);
-    setYLabels();
-
-    for (int i = 0; i < yData().size(); ++i) {
-        Plot p;
-        int ix = i % colors.size();
-
-        p.x = x->data();
-        p.y = yData()[i]->data();
-        p.yLegend = yLabels[i].label();
-        p.showLegend = (runNumber() == 1);
-        p.plotWidget = plotWidget;
-
-        p.logy = logy;
-        p.ymin = ymin;
-        p.ymax = ymax;
-
-        QColor color = colors[ix];
-        QPen pen = QPen(color);
-        pen.setWidth(penWidth);
-        p.pen = pen;
-        p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
-        p.type = Plot::Symbols;
-
-        p.add();
-    }
-}
 
 void OutputPlot::showPlotWidget() {
     Q_ASSERT(plotWidget);

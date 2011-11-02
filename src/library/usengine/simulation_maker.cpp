@@ -9,11 +9,9 @@
 #include <QTextStream>
 #include <QtXml/QXmlStreamReader>
 #include <usbase/model.h>
-#include <usbase/dataset.h>
 #include <usbase/integrator.h>
 #include <usbase/exception.h>
 #include <usbase/output.h>
-#include <usbase/output_data.h>
 #include <usbase/output_parameter.h>
 #include <usbase/output_variable.h>
 #include <usbase/parameter.h>
@@ -85,7 +83,7 @@ void SimulationMaker::ignoreElement() {
 
 Simulation* SimulationMaker::parse(QString fileName_)
 {
-	QString simName, simVersion;
+    QString simName, simVersion;
 
     redirectedParameters.clear();
     outputVariableParam.clear();
@@ -97,19 +95,25 @@ Simulation* SimulationMaker::parse(QString fileName_)
     emit endExpansion();
 
     QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) throw Exception(message("Cannot open file: '"+fileName+"' for reading."));
+    if (!file.open(QIODevice::ReadOnly)) {
+        QString msg("Cannot open file '%1' for reading.");
+        throw Exception(message(msg.arg(fileName)));
+    }
 	reader->setDevice(&file);
 
-    if (!nextElementDelim()) throw Exception(message("File is not in valid XML format"));
-    if (elementNameNotEquals("simulation")) throw Exception(message("Root element must be 'simulation'"));
+    if (!nextElementDelim())
+        throw Exception(message("File is not in valid XML format"));
+    if (elementNameNotEquals("simulation"))
+        throw Exception(message("Root element must be 'simulation'"));
 
     simName = attributeValue("name", "anonymous");
     simVersion = attributeValue("version", "1.0");
 	
-	Simulation *sim = new Simulation(simName, simVersion);
+    Simulation *sim = new Simulation(simName, simVersion);
     UniSim::setSimulationObject(sim);
+    sim->setFilePath(fileName_);
 
-	nextElementDelim();
+    nextElementDelim();
     int numIntegrators(0);
     bool noModels(true), noOutputs(true);
     while (!reader->hasError() && reader->isStartElement()) {
@@ -123,15 +127,21 @@ Simulation* SimulationMaker::parse(QString fileName_)
             readOutputElement(sim);
             noOutputs = false;
 		} else {
-            throw Exception(message("Unexpected element: '" + elementName() + "'"), sim);
+            QString msg("Unexpected element: '%1'");
+            throw Exception(message(msg.arg(elementName())), sim);
 		}
 	}
 	Q_ASSERT(reader->isEndElement());
-    if (reader->hasError()) throw Exception(message(""));
-    if (numIntegrators==0) throw Exception(message("Missing 'integrator' element in 'simulation'"));
-    else if (numIntegrators>1) throw Exception(message("Only one 'integrator' element allowed in 'simulation'"));
-    if (noModels) throw Exception(message("Missing 'model' element in 'simulation'"));
-    if (noOutputs) throw Exception(message("Missing 'output' element in 'simulation'"));
+    if (reader->hasError())
+        throw Exception(message(""));
+    if (numIntegrators == 0)
+        throw Exception(message("Missing 'integrator' element in 'simulation'"));
+    if (numIntegrators > 1)
+        throw Exception(message("Only one 'integrator' element allowed in 'simulation'"));
+    if (noModels)
+        throw Exception(message("Missing 'model' element in 'simulation'"));
+    if (noOutputs)
+        throw Exception(message("Missing 'output' element in 'simulation'"));
 
     redirectParameters();
 
@@ -183,8 +193,8 @@ void SimulationMaker::readIntegratorElement(QObject* parent) {
             readModelElement(asList(integrator));
         }
         else {
-            throw Exception(message(
-                           "Unexpected element: '" + elementName() + "'"), parent);
+            QString msg("Unexpected element: '%1'");
+            throw Exception(message(msg.arg(elementName())), parent);
 		}
 	}	
 	Q_ASSERT(reader->isEndElement());
@@ -202,8 +212,8 @@ void SimulationMaker::readSequenceElement(QObject* parent)
             _sequence.append(model);
         }
         else {
-            throw Exception(message(
-                           "Unknown child element of 'sequence' element: " + elementName()), parent);
+            QString msg("Unknown child element of 'sequence' element: '%1'");
+            throw Exception(message(msg.arg(elementName())), parent);
 		}
 		nextElementDelim();
 		Q_ASSERT(reader->isEndElement());
@@ -225,12 +235,12 @@ void SimulationMaker::readModelElement(QList<QObject*> parents) {
 	while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("model"))
             readModelElement(models);
-        else if (elementNameEquals("dataset"))
-            readDatasetElement(models);
         else if (elementNameEquals("parameter"))
             readParameterElement(models);
-        else
-            throw Exception(message("Unexpected element: '" + elementName() + "'"));
+        else {
+            QString msg("Unexpected element: '%1'");
+            throw Exception(message(msg.arg(elementName())));
+        }
 	}	
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
@@ -247,7 +257,7 @@ QList<QObject*> SimulationMaker::createModelElement(QObject *parent) {
         bool ok(true);
         numInstances = instancesStr.toInt(&ok);
         if (!ok || numInstances <= 0)
-            throw Exception("Attribute 'instances'' must a number larger than zero");
+            throw Exception(message("Attribute 'instances'' must a number larger than zero"));
     }
 
     QList<QObject*> models;
@@ -280,32 +290,6 @@ QList<QObject*> SimulationMaker::createModelElement(QObject *parent) {
     return models;
 }
 
-void SimulationMaker::readDatasetElement(QList<QObject*> parents)
-{
-    Q_ASSERT(!parents.isEmpty());
-    Q_ASSERT(reader->isStartElement());
-    QList<QObject*> datasets;
-    for (int i = 0; i < parents.size(); ++i) {
-        datasets << createDatasetElement(parents[i]);
-    }
-    nextElementDelim();
-    while (!reader->hasError() && reader->isStartElement()) {
-        if (elementNameEquals("parameter")){
-            readParameterElement(datasets);
-        }
-        else {
-            throw Exception(message("Unexpected element: '" + elementName() + "'"));
-        }
-    }
-    Q_ASSERT(reader->isEndElement());
-    nextElementDelim();
-}
-
-Dataset* SimulationMaker::createDatasetElement(QObject *parent) {
-    QString objectName = attributeValue("name", parent);
-    return new Dataset(objectName, parent);
-}
-
 void SimulationMaker::readParameterElement(QList<QObject*> parents)
 {
     Q_ASSERT(!parents.isEmpty());
@@ -322,15 +306,18 @@ void SimulationMaker::setParameterElement(QObject *parent) {
     QString name = attributeValue("name", parent);
     QString value = attributeValue("value", "");
     QString variableName = attributeValue("variable", "");
+    QString dimensions = attributeValue("dimensions", "");
 
     bool hasValue = !value.isEmpty();
     bool hasVariable = !variableName.isEmpty();
-    if (hasValue && hasVariable)
-        throw Exception("Parameter '" + name +
-                        "' cannot have both a 'value' and a 'variable' attribute", parent);
-    if (!hasValue && !hasVariable)
-        throw Exception("Parameter '" + name +
-                        "' must have either a 'value' or a 'variable' attribute", parent);
+    if (hasValue && hasVariable) {
+        QString msg("Parameter '%1' cannot have both a 'value' and a 'variable' attribute");
+        throw Exception(message(msg.arg(name)), parent);
+    }
+    if (!hasValue && !hasVariable) {
+        QString msg("Parameter '%1' must have either a 'value' or a 'variable' attribute");
+        throw Exception(message(msg.arg(name)), parent);
+    }
 
     ParameterBase *parameter = seekOneChild<ParameterBase*>(name, parent);
     if (hasValue)
@@ -369,9 +356,6 @@ void SimulationMaker::readOutputElement(QObject* parent)
         }
         else if (elementNameEquals("variable")) {
             readOutputVariableElement(output);
-        }
-        else if (elementNameEquals("data")) {
-            readOutputDataElement(output);
         }
         else {
             throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
@@ -412,40 +396,6 @@ void SimulationMaker::setupOutputVariableElements()
     }
 }
 
-void SimulationMaker::readOutputDataElement(QObject* parent)
-{
-
-    Q_ASSERT(reader->isStartElement() && parent);
-
-    OutputParam param;
-    param.label = attributeValue("label", parent),
-    param.axis = attributeValue("axis", parent),
-    param.value = attributeValue("value", parent);
-    param.parent = parent;
-
-    outputDataParam.append(param);
-
-    nextElementDelim();
-    Q_ASSERT(reader->isEndElement());
-    nextElementDelim();
-}
-
-void SimulationMaker::setupOutputDataElements()
-{
-    for (int i = 0; i < outputDataParam.size(); ++i) {
-        OutputParam param = outputDataParam[i];
-        QString datasetName, columnName;
-        splitOutputDataValue(param.value, &datasetName, &columnName);
-
-        Dataset *dataset = seekOne<Dataset*>(datasetName);
-        if (!dataset->contains(columnName)) {
-            QString msg = "Dataset '" + datasetName + "' has no column named '" + columnName + "'";
-            throw Exception(message(msg));
-        }
-        new OutputData(param.label, param.axis, dataset, columnName, param.parent);
-    }
-}
-
 void SimulationMaker::readOutputParameterElement(QObject* parent)
 {
 
@@ -482,8 +432,10 @@ void SimulationMaker::splitOutputDataValue(QString value, QString *datasetName, 
         *datasetName = items[0];
         *columnName = items[1].left( items[1].size() - 1 );
     }
-    if (!ok)
-        throw Exception(message("Value badly formatted: " + value));
+    if (!ok) {
+        QString msg("Value badly formatted: '%1");
+        throw Exception(message(msg.arg(value)));
+    }
 }
 
 bool SimulationMaker::elementNameEquals(QString s) const {
@@ -505,8 +457,10 @@ QString SimulationMaker::attributeValue(QString name, QString defaultValue) cons
 
 QString SimulationMaker::attributeValue(QString name, QObject *parent) const {
     QString result = attributeValue(name, "");
-    if (result.isEmpty())
-        throw Exception("Missing attribute '" + name + "'", parent);
+    if (result.isEmpty()) {
+        QString msg("Missing attribute: '%1'");
+        throw Exception(message(msg.arg(name)), parent);
+    }
     return result;
 }
 
@@ -555,9 +509,10 @@ void SimulationMaker::redirectParameters() {
             couple<double>(parameter, variable) ||
             couple<QDate>(parameter, variable) ||
             couple<QString>(parameter, variable);
-        if (!coupled)
-            throw Exception("The type of variable '" + variableName +
-                            "' does not match that of the parameter", parameter);
+        if (!coupled) {
+            QString msg("The type of variable '%1'does not match that of the parameter");
+            throw Exception(message(msg.arg(variableName)), parameter);
+        }
     }
 }
 

@@ -8,6 +8,7 @@
 #include <cmath>
 #include <QDate>
 #include <QFile>
+#include <QFileInfo>
 #include <QMap>
 #include <QObject>
 #include <QStringList>
@@ -59,6 +60,40 @@ QObject* simulationObject() {
     if (!SimulationObject::simulation)
         throw Exception("Simulation object has not been set");
     return SimulationObject::simulation;
+}
+
+//
+// File handling
+//
+
+//! Returns the full path for the file with given file name
+/*! The file is searched in the order:
+    1. The given home directory
+    2. In the given sub-folder of that
+    3. In the given sub-folder of the parent to home directory
+    4. In the given sub-folder of the grandparent to home directory, and so forth
+    If the file is not found, a file path in the home directory is returned, in which case the returned
+    full path refers to a non-existing file
+*/
+QFileInfo findNearestFile(QDir home, QString subFolder, QString fileName) {
+    QDir dir = home;
+    while (true) {
+        QString filePath[2];
+        filePath[0] = dir.absolutePath() + "/" + fileName;
+        filePath[1] = dir.absolutePath() + "/" + subFolder + "/" + fileName;
+        if (QFileInfo(filePath[0]).exists()) {
+            break;
+        }
+        if (QFileInfo(filePath[1]).exists()) {
+            dir.cd(subFolder);
+            break;
+        }
+        if (!dir.cdUp()) {
+            dir = home;
+            break;
+        }
+    }
+    return QFileInfo(dir.filePath(fileName));
 }
 
 //

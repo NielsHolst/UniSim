@@ -5,7 +5,7 @@
 */
 #ifndef INTERCOM_WEATHER_INTERFACE
 #define INTERCOM_WEATHER_INTERFACE
-#include <usbase/weather_file.h>
+#include "weather_file.h"
 
 
 namespace intercom {

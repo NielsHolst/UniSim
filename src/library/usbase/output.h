@@ -12,7 +12,6 @@
 namespace UniSim{
 
 class Integrator;
-class OutputData;
 class OutputResult;
 
 class Output : public Component
@@ -25,9 +24,6 @@ public:
     // special methods
     const QList<OutputResult *>& xResults() const;
     const QList<OutputResult *>& yResults() const;
-
-    const QList<OutputData *>& xData() const;
-    const QList<OutputData *>& yData() const;
 
     bool isSummary() const;
     void setIsSummary(bool value);
@@ -43,7 +39,6 @@ private:
     bool _isSummary;
     // links
     QList<OutputResult *> results, xRes, yRes;
-    QList<OutputData *> data, xDat, yDat;
     Integrator *integrator;
     // methods
     bool setYLabelsFromLabels();

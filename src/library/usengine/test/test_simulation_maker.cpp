@@ -176,7 +176,8 @@ void TestSimulationMaker::testCommonElement() {
 }
 
 QString TestSimulationMaker::filePath(QString fileName) const {
-    QDir dir = FileLocations::location(FileLocationInfo::Weather);
+    QDir dir = FileLocations::location(FileLocationInfo::Models);
+    dir.cdUp();
     dir.cdUp();
     return dir.absolutePath() + "/src/library/usengine/test/" + fileName;
 }

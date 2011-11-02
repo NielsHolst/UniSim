@@ -48,8 +48,6 @@ void FileLocationInfo::setLabels() {
     labels[Output] = "Output files";
     labels[DotTool] = "Dot tool";
     labels[Temporary] = "Temporary files";
-    labels[Weather] = "Weather files";
-    labels[Datasets] = "Dataset files";
 }
 
 QString FileLocationInfo::hint(FileType fileType) {
@@ -80,12 +78,6 @@ void FileLocationInfo::setHints() {
     hints[Temporary] = beginning +
                     "Universal Simulator needs to store temporary files somewhere.\n\n"
                     "For this purpose create or select any folder."
-                    + ending;
-    hints[Weather] = beginning +
-                    "Universal Simulator needs to know where you have put the weather files.\n\n"
-                    + ending;
-    hints[Datasets] = beginning +
-                    "Universal Simulator needs to know where you have put the dataset files.\n\n"
                     + ending;
 }
 

@@ -5,7 +5,6 @@
 */
 #include "integrator.h"
 #include "output.h"
-#include "output_data.h"
 #include "output_result.h"
 #include "output_variable.h"
 #include "parameter.h"
@@ -26,14 +25,6 @@ void Output::initialize() {
             yRes.append(results[i]);
     }
 
-    data = seekChildren<OutputData*>("*");
-    for (int i = 0; i < data.size(); ++i) {
-        if (data[i]->axis() == OutputData::XAxis)
-            xDat.append(data[i]);
-        else
-            yDat.append(data[i]);
-    }
-
     integrator = seekOne<Integrator*>("*");
 }
 
@@ -43,14 +34,6 @@ const OutputResults& Output::xResults() const {
 
 const OutputResults& Output::yResults() const {
     return yRes;
-}
-
-const OutputDatas& Output::xData() const {
-    return xDat;
-}
-
-const OutputDatas& Output::yData() const {
-    return yDat;
 }
 
 int Output::runNumber() const {

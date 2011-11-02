@@ -22,7 +22,7 @@
 	</model>
 	
 	<model name="weather" type="UniSim::Records">
-		<parameter name="fileName" value="student_projects/dynamic_photosynthesis/spinachunisim.txt"/>
+		<parameter name="fileName" value="spinachunisim.txt"/>
 	</model>
 	
 	<model name="plants">

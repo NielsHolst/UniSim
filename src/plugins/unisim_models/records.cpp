@@ -8,6 +8,7 @@
 #include <usbase/pull_variable_base.h>
 #include <usbase/random.h>
 #include <usbase/utilities.h>
+#include <usengine/simulation.h>
 #include "records.h"
 
 namespace UniSim {
@@ -17,8 +18,8 @@ Records::Records(Identifier name, QObject *parent)
 {
     new Parameter<QString>("fileName", &fileName, "records.txt", this,
     "Name of input file. If date and time are included, their column titles must be @F date and @F {time}");
-    new Parameter<QString>("fileLocation", &fileLocation, "weather", this,
-    "Valid locations are the standard folders: @F {datasets}, @F {plugins} and @F {weather}. "
+    new Parameter<QString>("fileLocation", &fileLocation, "input", this,
+    "Valid locations are the standard folders: @F {input} and @F {plugins}. "
     "The standard folders can be set from the File|Locations menu.");
     new Parameter<bool>("imposeInitialDateTime", &imposeInitialDateTime, true, this,
     "Impose the first date and time on @F {calendar}. Either or both, date and time, are imposed; "
@@ -53,23 +54,9 @@ Records::~Records() {
 
 void Records::initialize() {
 	calendar = seekOne<Model*>("calendar");
-    setFileLocationType();
     readColumnNames();
     createColumnPullVariables();
     readFromFirstToLastLine();
-}
-
-void Records::setFileLocationType() {
-    Identifier id(fileLocation);
-    if (id.equals("weather"))
-        fileLocationType = FileLocationInfo::Weather;
-    else if (id.equals("datasets"))
-        fileLocationType = FileLocationInfo::Datasets;
-    else if (id.equals("plugins"))
-        fileLocationType = FileLocationInfo::Plugins;
-    else
-        throw Exception("File location must be 'weather' or 'datasets', not '" +
-                        fileLocation +"'");
 }
 
 void Records::readColumnNames() {
@@ -95,15 +82,23 @@ void Records::readColumnNames() {
 }
 
 void Records::openFile() {
-    QString filePath = FileLocations::location(fileLocationType).absolutePath() +
-                       "/" + fileName;
-    file.setFileName(filePath);
-
+    file.setFileName(filePath(fileName));
     bool fileOk = file.open(QIODevice::ReadOnly | QIODevice::Text);
     if (!fileOk)
-        throw Exception("Cannot open records file: " + filePath, this);
-
+        throw Exception("Cannot open records file: " + filePath(fileName), this);
     pastLastLine = false;
+}
+
+QString Records::filePath(QString fileName) {
+    Identifier id(fileLocation);
+    if (id.equals("input"))
+        return simulation()->inputFilePath(fileName);
+    if (id.equals("plugins")) {
+        QDir folder = FileLocations::location(FileLocationInfo::Plugins);
+        return folder.absolutePath() + "/" + fileName;
+    }
+    QString msg("File location must be 'input' or 'plugins', not '%1'");
+    throw Exception(msg.arg(fileLocation), this);
 }
 
 void Records::readLineItems() {
@@ -239,12 +234,6 @@ void Records::update() {
         double x = currentDateTime.secsTo(calendarDateTime);
         values[i] = ((dx > 0) ? x*dy/dx : 0.) + currentColumnValues->at(i);
     }
-    /*
-    QString s = calendarDate.toString("d/M/yyyy") + " "
-                + currentDate.toString("d/M/yyyy") + " "
-                + nextDate.toString("d/M/yyyy") + "\n";
-    std::cout << qPrintable(s);
-    */
 }
 
 void Records::cleanup() {

@@ -3,6 +3,7 @@
 
 #include <QDate>
 #include <QDateTime>
+#include <QDir>
 #include <QFile>
 #include <QTime>
 #include <QVector>
@@ -27,7 +28,7 @@ public:
 
 private:
     // methods
-    void setFileLocationType();
+    QString filePath(QString fileName);
     void openFile();
     void readLineItems();
     void readColumnNames();
@@ -43,7 +44,6 @@ private:
     // parameters
     QString fileName, fileLocation;
     bool randomizeInitialYear, imposeInitialDateTime;
-    FileLocationInfo::FileType fileLocationType;
 
     // pull variables
     QDateTime currentDateTime, nextDateTime, firstDateTime, lastDateTime;

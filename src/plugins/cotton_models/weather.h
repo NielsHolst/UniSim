@@ -5,7 +5,7 @@
 */
 #ifndef BEEHIVE_WEATHER
 #define BEEHIVE_WEATHER
-#include <usbase/weather_file.h>
+#include "weather_file.h"
 
 namespace cotton{
 

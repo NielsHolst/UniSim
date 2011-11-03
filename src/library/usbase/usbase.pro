@@ -29,7 +29,9 @@ HEADERS += \
         $${US_BASE}/named_object.h \
         $${US_BASE}/name_list.h \
         $${US_BASE}/parameter.h \
+        $${US_BASE}/parameter_file_base.h \
         $${US_BASE}/parameter_base.h \
+        $${US_BASE}/parameter_file.h \
         $${US_BASE}/pull_variable.h \
         $${US_BASE}/pull_variable_base.h \
         $${US_BASE}/push_variable.h \
@@ -60,6 +62,7 @@ SOURCES += \
         $${US_BASE}/output_result.cpp \
         $${US_BASE}/output_variable.cpp \
         $${US_BASE}/parameter_base.cpp \
+        $${US_BASE}/parameter_file_base.cpp \
         $${US_BASE}/pull_variable_base.cpp \
         $${US_BASE}/push_variable_base.cpp \
         $${US_BASE}/random.cpp \

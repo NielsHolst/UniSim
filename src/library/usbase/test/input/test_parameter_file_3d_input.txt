@@ -1,0 +1,5 @@
+Crop	Soiltype	Treatment	Nitrogen	Water	isCase
+barley	sandy	1	90.1	70	no
+wheat	clay	1	80.2	75	yes
+clover	sandy	2	65.3	50	no
+maize	clay	1	95.4	85	no

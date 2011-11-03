@@ -68,10 +68,9 @@ QObject* simulationObject() {
 
 //! Returns the full path for the file with given file name
 /*! The file is searched in the order:
-    1. The given home directory
-    2. In the given sub-folder of that
-    3. In the given sub-folder of the parent to home directory
-    4. In the given sub-folder of the grandparent to home directory, and so forth
+    1. The given home directory or the subFolder of that
+    2. In the parent folder or the subFolder of that
+    3. In the grandparent folder or the subFolder of that, and so on
     If the file is not found, a file path in the home directory is returned, in which case the returned
     full path refers to a non-existing file
 */

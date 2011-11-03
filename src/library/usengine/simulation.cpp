@@ -207,13 +207,7 @@ void Simulation::setFilePath(QString filePath) {
 }
 
 //! Return the full path for the input file with given file name
-/*! The file is searched in the order:
-    1. Folder of the simulation XML file
-    2. "input" sub-folder of that
-    3. "input" sub-folder of the parent
-    4. "input" sub-folder of the grandparent, and so forth
-    If the file is not found, a file path in location 1 above is returned,
-    in which case the returned path refers to a non-existing file
+/*! The seach order of findNearestFile is used
 */
 QString Simulation::inputFilePath(QString fileName) {
     return findNearestFile(_fileFolder, "input", fileName).absoluteFilePath();

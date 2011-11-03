@@ -22,6 +22,7 @@ HEADERS += \
     $${US_BASE}/test/test_identifier.h \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
+    $${US_BASE}/test/test_parameter_file.h \
     $${US_BASE}/test/test_push_variable.h \
     $${US_BASE}/test/test_strata.h \
     $${US_BASE}/test/test_time.h \
@@ -35,6 +36,7 @@ HEADERS += \
     $${US_ENGINE}/test/test_xml_node.h \
     $${US_PLUGINS}/intercom_models/optimize_allocation.h \
     $${US_PLUGINS}/intercom_models/test/test_plant.h \
+    $${US_PLUGINS}/test_models/with_parameter_file.h \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
     $${US_PLUGINS}/unisim_models/anonymous_model.h \
     $${US_PLUGINS}/unisim_models/stage.h \
@@ -48,7 +50,6 @@ HEADERS += \
     $${US_PLUGINS}/unisim_outputs/plot.h \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.h \
     ../graph_generator.h \
-	../live_simulation.h \
     frequency_distribution.h \
     test_frequency_distribution.h \
     test_numeric_limits.h
@@ -60,6 +61,7 @@ SOURCES += \
     $${US_BASE}/test/test_identifier.cpp \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
+    $${US_BASE}/test/test_parameter_file.cpp \
     $${US_BASE}/test/test_push_variable.cpp \
     $${US_BASE}/test/test_strata.cpp \
     $${US_BASE}/test/test_time.cpp \
@@ -73,6 +75,7 @@ SOURCES += \
     $${US_ENGINE}/test/test_xml_node.cpp \
     $${US_PLUGINS}/intercom_models/optimize_allocation.cpp \
     $${US_PLUGINS}/intercom_models/test/test_plant.cpp \
+    $${US_PLUGINS}/test_models/with_parameter_file.cpp \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
     $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
     $${US_PLUGINS}/unisim_models/stage.cpp \
@@ -86,7 +89,6 @@ SOURCES += \
     $${US_PLUGINS}/unisim_outputs/plot.cpp \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.cpp \
     ../graph_generator.cpp \
-	../live_simulation.cpp \
     frequency_distribution.cpp \
     test_frequency_distribution.cpp \
     test_numeric_limits.cpp \

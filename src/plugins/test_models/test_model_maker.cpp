@@ -9,6 +9,7 @@
 #include "constant_world.h"
 #include "life_cycle.h"
 #include "life_stage.h"
+#include "with_parameter_file.h"
 
 using namespace UniSim;
 
@@ -42,6 +43,9 @@ const QMap<Identifier, QString>& TestModelMaker::supportedClasses() {
     desc["LifeStage"] =
     "@I pending";
 
+    desc["WithParameterFile"] =
+    "@I pending";
+
     return desc;
 }
 
@@ -55,7 +59,9 @@ Model* TestModelMaker::create(Identifier modelType, Identifier objectName, QObje
 		model = new LifeCycle(objectName, parent);
 	else if (modelType.equals("lifestage"))
 		model = new LifeStage(objectName, parent);
-	return model;
+    else if (modelType.equals("WithParameterFile"))
+        model = new WithParameterFile(objectName, parent);
+    return model;
 }
 
 Q_EXPORT_PLUGIN2(test_model_maker, TestModelMaker)

@@ -116,6 +116,7 @@ void OutputPlot::cleanup() {
     if (!isSummary()) {
         if (runNumber() == 1) createPlotWidget();
         showPlot();
+        setZoomer();
     }
 }
 
@@ -123,6 +124,7 @@ void OutputPlot::debrief() {
     if (isSummary()) {
         createPlotWidget();
         showPlot();
+        setZoomer();
     }
 }
 
@@ -132,14 +134,7 @@ void OutputPlot::showPlot() {
     mainWindow->tile();
 }
 
-bool OutputPlot::emptyResults() const {
-    return xResults().isEmpty() || yResults().isEmpty();
-}
-
-void OutputPlot::createPlotWidget() {
-    plotWidget = mainWindow->createPlotWidget(title);
-    plotWidget->showLegend(true);
-
+void OutputPlot::setZoomer() {
     QwtPlotCanvas *canvas = plotWidget->plot()->canvas();
     QwtPlotZoomer* zoomer = new QwtPlotZoomer( canvas );
     zoomer->setRubberBandPen( QColor( Qt::black ) );
@@ -148,11 +143,15 @@ void OutputPlot::createPlotWidget() {
     zoomer->setMousePattern( QwtEventPattern::MouseSelect3, Qt::RightButton );
     // Walk down zoom stack
     zoomer->setMousePattern( QwtEventPattern::MouseSelect6, Qt::RightButton, Qt::ShiftModifier );
+}
 
-    QwtPlotPanner *panner = new QwtPlotPanner( canvas );
-    panner->setMouseButton( Qt::LeftButton );
+bool OutputPlot::emptyResults() const {
+    return xResults().isEmpty() || yResults().isEmpty();
+}
 
-
+void OutputPlot::createPlotWidget() {
+    plotWidget = mainWindow->createPlotWidget(title);
+    plotWidget->showLegend(true);
 }
 
 void OutputPlot::fillPlotWidget() {

@@ -306,24 +306,24 @@ void SimulationMaker::setParameterElement(QObject *parent) {
     QString name = attributeValue("name", parent);
     QString value = attributeValue("value", "");
     QString variableName = attributeValue("variable", "");
-    QString dimensions = attributeValue("dimensions", "");
+    QString fileName = attributeValue("fileName", "").trimmed();
 
-    bool hasValue = !value.isEmpty();
-    bool hasVariable = !variableName.isEmpty();
-    if (hasValue && hasVariable) {
-        QString msg("Parameter '%1' cannot have both a 'value' and a 'variable' attribute");
-        throw Exception(message(msg.arg(name)), parent);
-    }
-    if (!hasValue && !hasVariable) {
-        QString msg("Parameter '%1' must have either a 'value' or a 'variable' attribute");
+    int numEmpty = value.isEmpty() + variableName.isEmpty() + fileName.isEmpty();
+    if (numEmpty != 2) {
+        QString msg("Parameter '%1' must have either a 'value', a 'variable' or a 'fileName' attribute");
         throw Exception(message(msg.arg(name)), parent);
     }
 
     ParameterBase *parameter = seekOneChild<ParameterBase*>(name, parent);
-    if (hasValue)
+    if (!value.isEmpty()) {
         parameter->setValueFromString(value.trimmed());
-    else
+    }
+    else if (!fileName.isEmpty()) {
+        parameter->setValueFromString(simulation()->inputFilePath(fileName));
+    }
+    else {
         redirectedParameters.append(RedirectedParameter(parameter, variableName));
+    }
 }
 
 void SimulationMaker::readOutputElement(QObject* parent)

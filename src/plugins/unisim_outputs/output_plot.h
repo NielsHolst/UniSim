@@ -52,6 +52,7 @@ private:
     void fillWithResults();
     void showPlotWidget();
     bool emptyResults() const;
+    void setZoomer();
 };
 
 } //namespace

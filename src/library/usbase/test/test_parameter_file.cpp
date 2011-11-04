@@ -150,9 +150,26 @@ void TestParameterFile::testInXmlModel() {
     Crops *crops = model->theCrops();
     QCOMPARE(crops->value<double>("barley","sandy","nitrogen"), 90.1);
     QCOMPARE(crops->value<int>("barley","sandy","water"), 70);
+    QCOMPARE(crops->value<QString>("barley","sandy","comment"), QString("No comment"));
+    QCOMPARE(crops->value<QString>("barley","clay","comment"), QString("NA"));
 
     delete simulation;
 }
+
+void TestParameterFile::testInXmlModelCase1() {
+    Simulation *simulation = 0;
+    SimulationMaker maker;
+    try {
+        simulation = maker.parse(filePath("model_with_parameter_file_case_1.xml"));
+        setSimulationObject(simulation);
+    }
+    catch (const Exception &ex) {
+        QString msg = "Unexpected exception: " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+    delete simulation;
+}
+
 
 QString TestParameterFile::filePath(QString fileName) {
     return QFileInfo(inputFolder(), fileName).absoluteFilePath();

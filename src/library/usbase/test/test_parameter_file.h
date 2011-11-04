@@ -26,6 +26,7 @@ private slots:
     void testWrongKeyType();
     void testWrongColumnType();
     void testInXmlModel();
+    void testInXmlModelCase1();
 private:
     QString filePath(QString fileName);
     QDir inputFolder();

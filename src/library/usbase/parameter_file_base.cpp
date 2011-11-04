@@ -26,8 +26,8 @@ QString ParameterFileBase::stringValue(QString rowKey, QString columnKey) {
     readData();
     QStringList row = data.value(rowKey);
     if (row.isEmpty()) {
-        QString msg("ParameterFileBase '%1': file '%2' has no row matching the key: '%3'");
-        throw Exception(msg.arg(id().label()).arg(filePath()).arg(rowKey), this);
+        QString msg("ParameterFileBase '%1': file '%2' has no row matching the key: '%3'.\nThe number of rows/columns is %4/%5");
+        throw Exception(msg.arg(id().label()).arg(filePath()).arg(rowKey).arg(data.size()).arg(columnNames.size()), this);
     }
 
     int columnIndex = columnNames.indexOf(Identifier(columnKey));
@@ -82,9 +82,9 @@ void ParameterFileBase::readData() {
 void ParameterFileBase::readLineItems() {
     QString line;
     while (!file.atEnd() && line.isEmpty()) {
-        line = QString(file.readLine().simplified());
+        line = QString(file.readLine().trimmed());
     }
-    lineItems = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    lineItems = line.split("\t", QString::SkipEmptyParts);
     pastLastLine = lineItems.isEmpty();
 }
 

@@ -1,0 +1,41 @@
+Identifier	CropName	Fixed	sellingPrice	subsidy	priceLM	priceHerb	priceFi	priceG	priceH	priceW	alfa	beta1	beta2	alfaHerb	betaHerb	alfaFi	betaFi	alfaG	betaG	alfaH	betaH	alfaW	betaW
+SBarley	spring barley	NO	66	30	100	30	40	10	10	10	26.4345	0.2544	-0.0009	7.767	8	25.81	16	2.47	2.5	0	0	0	0
+Oats	oats	NO	70	30	100	30	40	10	10	10	27.54	0.2998	-0.0012	8.738	9	8.74	8	1.85	2.5	0	0	0	0
+OSCrops	other spring crops	YES	71	30	100	30	40	10	10	10	26.4345	0.2544	-0.0009	7.767	8	25.81	16	2.47	2.5	0	0	0	0
+WBarley	winter barley	NO	75.8	30	100	30	40	10	10	10	21.4042	0.2785	-0.0007	9.63	13	10.99	10	2.22	3	0	0	0	0
+WWheat	winter wheat	NO	70	30	100	30	40	10	10	10	37.5735	0.2676	-0.0006	12.593	17	23.08	21	2.59	3.5	0	0	0	0
+WRye	winter rye	NO	72	30	100	30	40	10	10	10	23.9105	0.3517	-0.0012	4.444	6	7.69	7	2.22	3	0	0	0	0
+Triticale	triticale	NO	68	30	100	30	40	10	10	10	17.9608	0.2425	-0.0005	4.444	6	7.69	7	2.22	3	0	0	0	0
+SRape	spring rape	NO	69	30	100	30	40	10	10	10	20.7141	0.0375	-0.0001	5.263	5	30.65	19	0	0	1.58	1.5	0	0
+WRape	winter rape	NO	80	30	100	30	40	10	10	10	24.5493	0.1444	-0.0003	5.263	5	14.52	9	0	0	3.16	3	0	0
+OOilseed	other oilseeds	YES	80	30	100	30	40	10	10	10	24.5493	0.1444	-0.0003	5.263	5	30.65	19	0	0	1.58	1.5	0	0
+Peas	peas	YES	79	0	100	30	40	10	10	10	40	0	0	5.9	12	3.15	4	1.48	3	0	0	0	0
+OLSeed	other legume seed	YES	78	30	100	30	40	10	10	10	40	0	0	5.9	12	3.15	4	1.48	3	0	0	0	0
+GrassSeed	grass seed 	NO	80	0	100	30	40	10	10	10	683.35	7.3975	-0.0256	40	50	17.65	3	0	0	0	0	0	0
+Potato	potatoes	YES	80	30	100	30	40	10	10	10	349.75	1.4446	-0.0028	0	0	0	0	0	0	0	0	0	0
+PotatoFood	potatoes-food	YES	78	30	100	30	40	10	10	10	349.75	1.4446	-0.0028	0	0	0	0	0	0	0	0	0	0
+SugarBeet	sugar beets	YES	77	0	100	30	40	10	10	10	98.714	0.5878	-0.0025	0	0	28.13	18	0	0	1.75	4	21.93	50
+GrassClover	grass-clover	YES	77	30	100	30	40	10	10	10	58.939	0.1586	-0.0002	60	3	150	3	0	0	0	0	0	0
+OLSeedCut	other legume seed - cut	NO	40	0	100	30	40	10	10	10	58.939	0.1586	-0.0002	5.9	12	3.15	4	1.48	3	0	0	0	0
+SCerealSil	spring cereals - silage	NO	70	0	100	30	40	10	10	10	37.4708	0.4569	-0.0012	7.767	8	8.06	5	2.91	3	0	0	0	0
+PeasSil	peas - silage	YES	68	23	100	30	40	10	10	10	37.4708	0.4569	-0.0012	5.9	12	3.15	4	1.48	3	0	0	0	0
+MaizeSil	maize silage	NO	68	25	100	30	40	10	10	10	137.0854	0.2626	-0.0008	8.176	13	150	3	2.52	4	1.89	3	3.14	5
+WCerealSil	winter cereals silage	NO	0	0	100	30	40	10	10	10	37.4708	0.4569	-0.0012	7.767	8	8.06	5	2.91	3	0	0	0	0
+SCerealG	"spring cereals, green"	NO	90	0	100	30	40	10	10	10	26.4345	0.2544	-0.0009	7.767	8	25.81	16	2.47	2.5	0	0	0	0
+PerGrassLow	"permanent grass, low yield"	YES	77	0	100	30	40	10	10	10	33.252	0.3536	-0.0001	60	3	150	3	0	0	0	0	0	0
+PerGrassNorm	"permanent grass, normal yield"	YES	77	30	100	30	40	10	10	10	33.252	0.3536	-0.0001	60	3	150	3	0	0	0	0	0	0
+GrassEnv1	grass-environment1	YES	40	0	100	30	40	10	10	10	33.252	0.3536	-0.0001	60	3	150	3	0	0	0	0	0	0
+GrassEnv2	grass-environment2	YES	70	0	100	30	40	10	10	10	33.252	0.3536	-0.0001	60	3	150	3	0	0	0	0	0	0
+GrassRot	grass/pasture in rotation	NO	68	23	100	30	40	10	10	10	33.252	0.3536	-0.0001	60	3	150	3	0	0	0	0	0	0
+Setaside	set-aside	YES	68	25	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Uncult	uncultivated	YES	0	0	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+OUncult	other-uncultivated	YES	90	0	100	30	40	10	10	10	0	0	0	0	0	1	0	0	0	0	0	0	0
+FodderBeet	fodder beet	NO	77	0	100	30	40	10	10	10	98.714	0.5878	-0.0025	0	0	28.13	18	0	0	1.75	4	21.93	50
+CloverGrz	"clover, grazing"	NO	77	30	100	30	40	10	10	10	58.939	0.1586	-0.0002	60	3	150	3	0	0	0	0	0	0
+Veg	vegetables	YES	40	0	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	1.75	4	21.93	50
+Fruit	fruit and berries	YES	70	0	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+FruitTree	fruit trees	YES	68	23	100	30	40	10	10	10	0	0	0	0	0	0	0	1.48	3	0	0	0	0
+OSpecCrops	other special crops	YES	68	25	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+ChrisTree	Christmas trees	YES	0	0	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+EnergyFor	energy forest and other production	YES	90	0	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Other	other	YES	68	25	100	30	40	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0

@@ -19,8 +19,7 @@ WithParameterFile::WithParameterFile(Identifier name, QObject *parent)
 
 void WithParameterFile::initialize() {
     // Example on how to access crops
-    int water = crops->value<int>("barley","sandy","water");
-    Q_ASSERT(water == 70);
+    // int water = crops->value<int>("barley","sandy","water");
 }
 
 WithParameterFile::CropParameters* WithParameterFile::theCrops() {

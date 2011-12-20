@@ -4,10 +4,12 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <iostream>
+#include <typeinfo>
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
 #include <QtXml/QXmlStreamReader>
+#include <usbase/data_grid.h>
 #include <usbase/model.h>
 #include <usbase/integrator.h>
 #include <usbase/exception.h>
@@ -43,7 +45,13 @@ SimulationMaker::SimulationMaker()
 
 SimulationMaker::~SimulationMaker()
 {
-	delete reader;
+    /*
+    QHashIterator<QString, const DataGrid*> i(tables);
+    while (i.hasNext()) {
+        i.next();
+        delete i.value();
+    }*/
+    delete reader;
 }
 
 bool SimulationMaker::nextElementDelim()
@@ -88,7 +96,6 @@ Simulation* SimulationMaker::parse(QString fileName_)
     redirectedParameters.clear();
     outputVariableParam.clear();
     outputParameterParam.clear();
-    outputDataParam.clear();
 
     emit beginExpansion();
     fileName = compileToFile(fileName_);
@@ -144,7 +151,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
         throw Exception(message("Missing 'output' element in 'simulation'"));
 
     redirectParameters();
-
+    setSequence(sim);
     reader->clear();
     emit beginInitialization();
     sim->initialize(_sequence, this);
@@ -227,50 +234,119 @@ void SimulationMaker::readSequenceElement(QObject* parent)
 void SimulationMaker::readModelElement(QList<QObject*> parents) {
     Q_ASSERT(!parents.isEmpty());
     Q_ASSERT(reader->isStartElement());
+
+    const DataGrid *table = createTable();
     QList<QObject*> models;
-    for (int i = 0; i < parents.size(); ++i) {
-        models << createModelElement(parents[i]);
+    for (int i = 0; i < parents.size(); ++i) {;
+        QObject *parent = parents[i];
+        QVector<int> indices = instanceIndices(table, parent);
+        models << createModelElement(indices, table, parent);
     }
+
 	nextElementDelim();
-	while (!reader->hasError() && reader->isStartElement()) {
-        if (elementNameEquals("model"))
-            readModelElement(models);
-        else if (elementNameEquals("parameter"))
-            readParameterElement(models);
-        else {
-            QString msg("Unexpected element: '%1'");
-            throw Exception(message(msg.arg(elementName())));
+    if (!models.isEmpty()) {
+        while (!reader->hasError() && reader->isStartElement()) {
+            if (elementNameEquals("model"))
+                readModelElement(models);
+            else if (elementNameEquals("parameter"))
+                readParameterElement(models);
+            else {
+                QString msg("Unexpected element: '%1'");
+                throw Exception(message(msg.arg(elementName())));
+            }
         }
-	}	
+    }
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
+
+    delete table;
 }
 
-QList<QObject*> SimulationMaker::createModelElement(QObject *parent) {
-    QString modelType = attributeValue("type", "anonymous");
-    QString objectName = attributeValue("name", "anonymous");
-    QString hide = attributeValue("hide", "");
-    QString instancesStr = attributeValue("instances", "");
+const DataGrid* SimulationMaker::createTable() {
+    QString fileName = attributeValue("table", "");
+    if (fileName.isEmpty())
+        return 0;
 
-    int numInstances = 1;
-    if (!instancesStr.isEmpty()) {
+    QString filePath = simulation()->inputFilePath(fileName);
+    if (tables.contains(filePath))
+        return tables.value(filePath);
+
+    DataGrid *table = new DataGrid(filePath);
+    if (table->numKeys() == 0)
+        throw Exception("Table must hold at least one column marked as key with '*'");
+    tables[filePath] = table;
+    return table;
+}
+
+QVector<int> SimulationMaker::instanceIndices(const DataGrid *table, QObject *parent) {
+    QString instancesStr = attributeValue("instances", "");
+    bool hasInstances = !instancesStr.isEmpty();
+    if (table && hasInstances)
+        throw Exception("Set either attribute 'instances' or 'fileName', not both");
+
+    int numIndices;
+    QVector<int> indices;
+    enum {All, One, Lookup} method;
+    if (table)
+        if (table->numKeys() == 1) {
+            method = All;
+            numIndices = table->rowNames().size();
+        }
+        else
+            method = Lookup;
+    else if (hasInstances) {
+        method = All;
         bool ok(true);
-        numInstances = instancesStr.toInt(&ok);
-        if (!ok || numInstances <= 0)
+        numIndices = instancesStr.toInt(&ok);
+        if (!ok || numIndices <= 0)
             throw Exception(message("Attribute 'instances'' must a number larger than zero"));
     }
+    else
+        method = One;
 
+    switch (method) {
+    case One:
+        indices << -1;  // use object name for the one instance
+        break;
+    case All:
+        for (int i = 0; i < numIndices; ++i) {
+            indices << i;
+        }
+        break;
+    case Lookup:
+        DataGrid::KeySubset keys;
+        int excludeKey = columnIndexOfModelType(table);
+        for (int i = 0; i < table->numKeys(); ++i) {
+            if (i==excludeKey) continue;
+            Identifier id = Identifier( table->columnNames().value(i) );
+            Model *model = dynamic_cast<Model*>(parent);
+            Q_ASSERT(model);
+            keys[i] = lookupKeyValue(model, id);
+        }
+        indices = QVector<int>::fromList( table->rowIndices(keys) );
+    }
+    return indices;
+}
+
+QList<QObject*> SimulationMaker::createModelElement(
+            const QVector<int> &instanceIndices,
+            const DataGrid *table,
+            QObject *parent)
+{
+    QString modelType = attributeValue("type", "anonymous");
+    QString hide = attributeValue("hide", "");
     QList<QObject*> models;
     Models instances;
+    int numInstances = instanceIndices.size();
     try {
         for (int i = 0; i < numInstances; ++i) {
-            QString objectInstanceName = objectName;
-            if (numInstances > 1)
-                objectInstanceName += "(" + QString::number(i+1) + ")";
-
-            Model *model = ModelMaker::create(modelType, objectInstanceName, parent);
+            int index = instanceIndices.value(i);
+            Model *model = ModelMaker::create(modelType, instanceName(index, table), parent);
             models << model;
             instances << model;
+
+            if (table)
+                updateColumnParameters(model, *table);
 
             if (!hide.isEmpty()) {
                 bool isHidden = UniSim::stringToValue<bool>(hide);
@@ -290,6 +366,66 @@ QList<QObject*> SimulationMaker::createModelElement(QObject *parent) {
     return models;
 }
 
+QString SimulationMaker::instanceName(int instanceIndex, const DataGrid *table) {
+    if (table)
+        return table->cell(instanceIndex, columnIndexOfModelType(table));
+    QString objectName = attributeValue("name", "anonymous");
+    return (instanceIndex==-1) ? objectName : QString("%1(%2)").arg(objectName).arg(instanceIndex+1);
+}
+
+int SimulationMaker::columnIndexOfModelType(const DataGrid *table) {
+    QString modelType = attributeValue("type", "");
+    int col = table->columnNames().indexOf(modelType);
+    if (col == -1) {
+        QString msg("Table needs a column heading: '%1'");
+        throw Exception(msg.arg("*"+modelType));
+    }
+    return col;
+}
+
+namespace {
+    Identifier classId(Model *model) {
+        QVariant label = model->property("classLabel");
+        Q_ASSERT(label.isValid());
+        return Identifier(label.toString());
+    }
+}
+
+QString SimulationMaker::lookupKeyValue(Model *model, Identifier keyId) {
+    Identifier id = classId(model);
+    if (id == keyId)
+        return model->id().label();
+
+    Model *ascendant = model->peekParent<Model*>("*");
+    while (ascendant) {
+        Identifier id = classId(ascendant);
+        if (id == keyId)
+            return ascendant->id().label();
+        QList<ParameterBase*> parameter = ascendant->seekChildren<ParameterBase*>(keyId.label());
+        if (parameter.size() == 1)
+            return parameter.value(0)->toString();
+        Q_ASSERT(parameter.isEmpty());
+        ascendant = ascendant->peekParent<Model*>("*");
+    }
+    QString msg("Unable to find value for key value '%1' in table");
+    throw Exception(msg.arg(keyId.label()), model);
+}
+
+void SimulationMaker::updateColumnParameters(Model *model, const DataGrid &table) {
+    QStringList keys;
+    int numKeys = table.numKeys();
+    for (int i = 0; i < numKeys; ++i) {
+        Identifier id = Identifier( table.columnNames().value(i) );
+        keys << lookupKeyValue(model, id);
+    }
+    for (int j = numKeys; j < table.columnNames().size(); ++j) {
+        QString columnName = table.columnNames().value(j);
+        ParameterBase *parameter = seekOneChild<ParameterBase*>(columnName, model);
+        QString value = table.cell(keys, columnName);
+        parameter->setValueFromString(value);
+    }
+}
+
 void SimulationMaker::readParameterElement(QList<QObject*> parents)
 {
     Q_ASSERT(!parents.isEmpty());
@@ -303,26 +439,35 @@ void SimulationMaker::readParameterElement(QList<QObject*> parents)
 }
 
 void SimulationMaker::setParameterElement(QObject *parent) {
-    QString name = attributeValue("name", parent);
+    QString name = attributeValue("name", "");
     QString value = attributeValue("value", "");
     QString variableName = attributeValue("variable", "");
-    QString fileName = attributeValue("fileName", "").trimmed();
+    QString table = attributeValue("table", "");
 
-    int numEmpty = value.isEmpty() + variableName.isEmpty() + fileName.isEmpty();
+    int numEmpty = value.isEmpty() + variableName.isEmpty() + table.isEmpty();
     if (numEmpty != 2) {
-        QString msg("Parameter '%1' must have either a 'value', a 'variable' or a 'fileName' attribute");
+        QString msg("Parameter '%1' must have either a 'value', a 'variable' or a 'table' attribute");
         throw Exception(message(msg.arg(name)), parent);
     }
 
-    ParameterBase *parameter = seekOneChild<ParameterBase*>(name, parent);
-    if (!value.isEmpty()) {
-        parameter->setValueFromString(value.trimmed());
+    if (name.isEmpty() && table.isEmpty()) {
+        QString msg("Parameter '%1' must have either a 'name' or a 'table' attribute");
+        throw Exception(message(msg.arg(name)), parent);
     }
-    else if (!fileName.isEmpty()) {
-        parameter->setValueFromString(simulation()->inputFilePath(fileName));
+
+    if (!table.isEmpty()) {
+        const DataGrid *table = createTable();
+        Model *model = dynamic_cast<Model*>(parent);
+        if (!model)
+            throw Exception (message("Parent of a 'table' parameter must be a model"), parent);
+        updateColumnParameters(model, *table);
     }
     else {
-        redirectedParameters.append(RedirectedParameter(parameter, variableName));
+        ParameterBase *parameter = seekOneChild<ParameterBase*>(name, parent);
+        if (!value.isEmpty())
+            parameter->setValueFromString(value.trimmed());
+        else
+            redirectedParameters.append(RedirectedParameter(parameter, variableName));
     }
 }
 
@@ -352,33 +497,33 @@ void SimulationMaker::readOutputElement(QObject* parent)
             readParameterElement(asList(output));
         }
         else if (elementNameEquals("read-parameter")) {
-            readOutputParameterElement(output);
+            readOutputSubElement(&outputParameterParam, output);
         }
         else if (elementNameEquals("variable")) {
-            readOutputVariableElement(output);
+            readOutputSubElement(&outputVariableParam, output);
         }
         else {
             throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
         }
-	}	
+    }
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
 }	
 
-void SimulationMaker::readOutputVariableElement(QObject* parent)
+void SimulationMaker::readOutputSubElement(QList<OutputParam> *parameters, QObject* parent)
 {
 
     Q_ASSERT(reader->isStartElement() && parent);
 
     OutputParam param;
-    param.label = attributeValue("label", parent),
-    param.axis = attributeValue("axis", parent),
-    param.value = attributeValue("value", parent);
-    param.summary = attributeValue("summary", "");
-    param.type = attributeValue("type", "");
+    param.attributes["label"] = attributeValue("label", parent);
+    param.attributes["value"] = attributeValue("value", parent);
+    param.attributes["axis"] = attributeValue("axis", parent);
+    param.attributes["summary"] = attributeValue("summary", "");
+    param.attributes["type"] = attributeValue("type", "");
     param.parent = parent;
 
-    outputVariableParam.append(param);
+    parameters->append(param);
 
     nextElementDelim();
     Q_ASSERT(reader->isEndElement());
@@ -389,38 +534,22 @@ void SimulationMaker::setupOutputVariableElements()
 {
     for (int i = 0; i < outputVariableParam.size(); ++i) {
         OutputParam param = outputVariableParam[i];
-        QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(param.value);
-        for (int j = 0; j < variables.size(); ++j){
-            new OutputVariable(param.label, param.axis, param.summary, variables[j], param.parent);
+        QString value = param.attributes.value("value");
+        QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
+        for (int j = 0; j < variables.size(); ++j) {
+            new OutputVariable(param.attributes, variables[j], param.parent);
         }
     }
-}
-
-void SimulationMaker::readOutputParameterElement(QObject* parent)
-{
-
-    Q_ASSERT(reader->isStartElement() && parent);
-
-    OutputParam param;
-    param.label = attributeValue("label", parent),
-    param.axis = attributeValue("axis", parent),
-    param.value = attributeValue("value", parent);
-    param.parent = parent;
-
-    outputParameterParam.append(param);
-
-    nextElementDelim();
-    Q_ASSERT(reader->isEndElement());
-    nextElementDelim();
 }
 
 void SimulationMaker::setupOutputParameterElements()
 {
     for (int i = 0; i < outputParameterParam.size(); ++i) {
         OutputParam param = outputParameterParam[i];
-        QList<ParameterBase*> parameters = seekMany<QObject*, ParameterBase*>(param.value);
+        QString value = param.attributes.value("value");
+        QList<ParameterBase*> parameters = seekMany<QObject*, ParameterBase*>(value);
         for (int i = 0; i < parameters.size(); ++i)
-            new OutputParameter(param.label, param.axis, parameters[i], param.parent);
+            new OutputParameter(param.attributes, parameters[i], param.parent);
     }
 }
 
@@ -476,7 +605,6 @@ QString SimulationMaker::message(QString text) const {
     return s;
 }
 
-
 namespace {
     template <class T>
     bool couple(ParameterBase *parameter, PullVariableBase *variable) {
@@ -510,9 +638,18 @@ void SimulationMaker::redirectParameters() {
             couple<QDate>(parameter, variable) ||
             couple<QString>(parameter, variable);
         if (!coupled) {
-            QString msg("The type of variable '%1'does not match that of the parameter");
+            QString msg("The type of variable '%1' does not match that of the parameter");
             throw Exception(message(msg.arg(variableName)), parameter);
         }
+    }
+}
+
+void SimulationMaker::setSequence(Simulation *sim) {
+    if (!_sequence.isEmpty()) return;
+
+    Models models = seekChildren<Model*>("*", sim);
+    for (int i = 0; i < models.size(); ++i) {
+        _sequence << models.value(i)->id();
     }
 }
 

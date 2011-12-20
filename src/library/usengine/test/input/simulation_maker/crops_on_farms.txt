@@ -1,0 +1,8 @@
+*test::Farm	*test::Crop	Area
+A	Oats	10
+A	SBarley	30
+B	Oats	20
+B	WBarley	40
+D	SBarley	15
+D	WBarley	25
+D	Oats	55

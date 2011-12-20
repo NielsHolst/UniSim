@@ -201,7 +201,7 @@ void TestRecords::testImposeDate() {
 
 void TestRecords::createSimulation(QString fileName) {
     QDir dir = FileLocations::location(FileLocationInfo::Plugins);
-    QString filePath = dir.absolutePath() + "/unisim_models/test/" + fileName;
+    QString filePath = dir.absolutePath() + "/unisim_models/test/input/" + fileName;
     SimulationMaker maker;
     sim = maker.parse(filePath);
 }

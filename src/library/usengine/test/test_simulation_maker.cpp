@@ -162,7 +162,7 @@ void TestSimulationMaker::testOutputManyXY()
 }
 
 void TestSimulationMaker::testCommonElement() {
-    QString filename = filePath("test_simulation_maker_common.xml");
+    QString filename = filePath("common.xml");
     SimulationMaker maker;
     Simulation * sim = 0;
     try {
@@ -175,9 +175,126 @@ void TestSimulationMaker::testCommonElement() {
     delete sim;
 }
 
+void TestSimulationMaker::testModelInstances() {
+    QString filename = filePath("model_instances.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+    Models all = sim->seekDescendants<Model*>("*");
+    QCOMPARE(all.size(), 3*(4*4+3)+1);
+    QVERIFY(sim->peekOneChild<Model*>("generations(1)"));
+    QVERIFY(sim->peekOneDescendant<Model*>("generations(2)/egg"));
+    QVERIFY(sim->peekOneDescendant<Model*>("generations(3)/pupa"));
+    QVERIFY(sim->peekOneDescendant<Model*>("generations(1)/larva(1)"));
+    QVERIFY(sim->peekOneDescendant<Model*>("generations(2)/larva(2)/kidney"));
+    QVERIFY(sim->peekOneDescendant<Model*>("generations(3)/larva(4)/ovary(2)"));
+
+    delete sim;
+}
+
+void TestSimulationMaker::testModelsFromFileOneLevel() {
+    QString filename = filePath("models_from_file.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+    Models all = sim->seekDescendants<Model*>("*");
+    QCOMPARE(all.size(), 2*4+1+1);
+    QVERIFY(sim->peekOneDescendant<Model*>("A"));
+    QVERIFY(sim->peekOneDescendant<Model*>("D/stat"));
+    QCOMPARE(sim->seekOneDescendant<Model*>("A")->parameter<int>("farmRealId"),
+             474840);
+    QCOMPARE(sim->seekOneDescendant<Model*>("D")->parameter<QString>("soilType"),
+             QString("Clay"));
+    delete sim;
+}
+
+void TestSimulationMaker::testModelsFromFileTwoLevels() {
+    QString filename = filePath("models_from_file_nested.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    Models all = sim->seekDescendants<Model*>("*");
+    QCOMPARE(all.size(), 1+1+4+7+4);
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/Oats"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/stat"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/C/stat"));
+
+    Model *crop = sim->peekOneDescendant<Model*>("landscape/B/WBarley");
+    QCOMPARE(crop->parameter<int>("Area"), 40);
+
+    delete sim;
+}
+
+void TestSimulationMaker::testModelsFromFileThreeLevels()
+{
+    QString filename = filePath("models_from_file_nested_twice.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+    Models all = sim->seekDescendants<Model*>("*");
+    QCOMPARE(all.size(), 1+1+4+7+4+16);
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/Oats/Harvest"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/stat"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/C/stat"));
+
+    Model *harvest = sim->peekOneDescendant<Model*>("landscape/A/Oats/Harvest");
+    QCOMPARE(harvest->parameter<QDate>("Date"), QDate(2010,8,15));
+
+    delete sim;
+//    std::cout << "\n";
+//    for (int i = 0; i < all.size(); ++i)
+//        std::cout << i << " " << qPrintable(all[i]->fullLabel()) << "\n";
+    //    std::cout << "\n";
+}
+
+void TestSimulationMaker::testModelsAndParametersFromFile() {
+    QString filename = filePath("models_and_parameters_from_files.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    Model *harvest = sim->peekOneDescendant<Model*>("landscape/A/Oats/Harvest");
+    QCOMPARE(harvest->parameter<QDate>("Date"), QDate(2010,8,15));
+    QCOMPARE(harvest->parameter<int>("Cost"), 350);
+    QCOMPARE(harvest->parameter<bool>("IsOrganic"), true);
+}
+
 QString TestSimulationMaker::filePath(QString fileName) const {
-    QDir dir = FileLocations::location(FileLocationInfo::Models);
-    dir.cdUp();
-    dir.cdUp();
-    return dir.absolutePath() + "/src/library/usengine/test/" + fileName;
+    QDir uniSimDir = QDir("../..");
+    return uniSimDir.absolutePath() +
+            "/src/library/usengine/test/input/simulation_maker/" +
+            fileName;
 }

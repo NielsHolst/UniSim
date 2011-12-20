@@ -25,9 +25,11 @@ GraphGenerator::GraphGenerator(UniSim::Simulation *simulation_)
 {	
     dotOption[Postscript] = "ps";
     dotOption[PNG] = "png";
+    dotOption[SVG] = "svg";
     fileType[Postscript] = "eps";
     fileType[PNG] = "png";
     fileType[Dot] = "dot";
+    fileType[SVG] = "svg";
 }
 
 QString GraphGenerator::dotCommand() {
@@ -87,7 +89,8 @@ void GraphGenerator::writeDotFile()
 
     Models models = seekChildren<Model*>("*", simulation);
     for (Models::const_iterator mo = models.begin(); mo != models.end(); ++mo) {
-        writeModel(&f, simulation, *mo, 0);
+        if (!(*mo)->hide())
+            writeModel(&f, simulation, *mo, 0);
 	}
 	f.write("\n}\n");
 }
@@ -129,7 +132,8 @@ void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int p
 
 	for (QList<QObject*>::const_iterator ch = child->children().begin(); ch != child->children().end(); ++ch) {
 		Model *model = dynamic_cast<Model*>(*ch);
-		if (model) writeModel(f, child, *ch, myNumber);
+        if (model && ! model->hide())
+            writeModel(f, child, *ch, myNumber);
 	}
 }
 

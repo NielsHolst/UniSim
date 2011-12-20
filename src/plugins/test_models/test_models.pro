@@ -8,16 +8,20 @@ CONFIG += plugin
 include ($${US_BASE}/base.pri)
 
 HEADERS += \
-    test_model_maker.h \
     constant_world.h \
+    crop.h \
+    farm.h \
     life_cycle.h \
     life_stage.h \
-    with_parameter_file.h
+    operation.h \
+    test_model_maker.h
 
 SOURCES += \
-    test_model_maker.cpp \
     constant_world.cpp \
+    crop.cpp \
+    farm.cpp \
     life_cycle.cpp \
     life_stage.cpp \
-    with_parameter_file.cpp
+    operation.cpp \
+    test_model_maker.cpp
 

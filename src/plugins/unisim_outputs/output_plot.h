@@ -11,6 +11,7 @@
 #include <QVector>
 #include <qwt_symbol.h>
 #include <usbase/output.h>
+//#include "output_attributes.h"
 
 namespace UniSim{
 
@@ -30,7 +31,7 @@ public:
 	
 private:
     // parameters
-    enum Type {Lines, Symbols, Both};
+    enum Type {Lines, Symbols, Both} ;
     Type type;
     QString title, typeAsString;
     bool logy;

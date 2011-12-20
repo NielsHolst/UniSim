@@ -18,7 +18,7 @@ class OutputVariable : public OutputResult
 {
 	Q_OBJECT
 public:
-    OutputVariable(QString label, QString axis, QString summary, PullVariableBase *variable, QObject *parent = 0);
+    OutputVariable(const QMap<QString,QString> &attributes, PullVariableBase *variable, QObject *parent = 0);
 	
     // standard methods
     void initialize();

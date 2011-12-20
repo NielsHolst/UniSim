@@ -67,9 +67,18 @@ void TestScheduled::testSchedule() {
 //
 
 void TestScheduled::createSimulation(QString fileName) {
-    QDir dir = FileLocations::location(FileLocationInfo::Plugins);
-    QString filePath = dir.absolutePath() + "/unisim_models/test/" + fileName;
     SimulationMaker maker;
-    sim = maker.parse(filePath);
+    sim = maker.parse(filePath(fileName));
+}
+
+QString TestScheduled::filePath(QString fileName) {
+    return QFileInfo(inputFolder(), fileName).absoluteFilePath();
+}
+
+QDir TestScheduled::inputFolder() {
+    QDir testDir = QDir("../..");
+    testDir.cd("src/plugins/unisim_models/test/input");
+    Q_ASSERT(testDir.exists());
+    return testDir;
 }
 

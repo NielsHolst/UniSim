@@ -5,11 +5,13 @@
 */
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
-#include "test_model_maker.h"
 #include "constant_world.h"
+#include "crop.h"
+#include "farm.h"
 #include "life_cycle.h"
 #include "life_stage.h"
-#include "with_parameter_file.h"
+#include "operation.h"
+#include "test_model_maker.h"
 
 using namespace UniSim;
 
@@ -37,15 +39,20 @@ const QMap<Identifier, QString>& TestModelMaker::supportedClasses() {
     desc["ConstantWorld"] =
     "@I pending";
 
+    desc["Crop"] =
+    "@I pending";
+
+    desc["Farm"] =
+    "@I pending";
+
     desc["LifeCycle"] =
     "@I pending";
 
     desc["LifeStage"] =
     "@I pending";
 
-    desc["WithParameterFile"] =
+    desc["Operation"] =
     "@I pending";
-
     return desc;
 }
 
@@ -55,12 +62,16 @@ Model* TestModelMaker::create(Identifier modelType, Identifier objectName, QObje
     Model *model = 0;
 	if (modelType.equals("constantworld"))
 		model = new ConstantWorld(objectName, parent);
-	else if (modelType.equals("lifecycle"))
+    else if (modelType.equals("Crop"))
+        model = new Crop(objectName, parent);
+    else if (modelType.equals("Farm"))
+        model = new Farm(objectName, parent);
+    else if (modelType.equals("lifecycle"))
 		model = new LifeCycle(objectName, parent);
 	else if (modelType.equals("lifestage"))
 		model = new LifeStage(objectName, parent);
-    else if (modelType.equals("WithParameterFile"))
-        model = new WithParameterFile(objectName, parent);
+    else if (modelType.equals("Operation"))
+        model = new Operation(objectName, parent);
     return model;
 }
 

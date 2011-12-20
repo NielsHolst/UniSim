@@ -11,8 +11,8 @@
 
 namespace UniSim{
 	
-OutputParameter::OutputParameter(QString label, QString axis, ParameterBase *parameter, QObject *parent)
-    : OutputResult(label, axis, parent), parameterPtr(parameter)
+OutputParameter::OutputParameter(const QMap<QString,QString> &attributes,  ParameterBase *parameter, QObject *parent)
+    : OutputResult(attributes, parent), parameterPtr(parameter)
 {
     Q_ASSERT(parameterPtr);
 }

@@ -58,7 +58,7 @@ public:
 
     //! Provides a list of the available model plugins
     static QList<ModelMakerPlugIn*> plugins();
-	
+
 	private:
     static ModelMaker* me();
     static ModelMaker *_me;

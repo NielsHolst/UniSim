@@ -1,5 +1,0 @@
-Crop	Soiltype	Nitrogen	Water	Comment	isCase
-barley	sandy	90.1	70	No comment	no
-wheat	clay	80.2	75	NA	yes
-wheat	sandy	65.3	50	NA	no
-barley	clay	95.4	85	NA	no

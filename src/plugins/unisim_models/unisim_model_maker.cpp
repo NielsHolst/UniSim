@@ -108,7 +108,7 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     desc["PhotoThermalTime"] =
     "Photothermal time accounts for temperature and day length at the same time. "
     "In this implementation the daily increment, as calculated by the @F DayDegrees model, "
-    "is multiplied by day length in hours (acquired from the @F weather object) "
+    "is multiplied by day length in hours (acquired from the @F calendar object) "
     "divided by 24 hours.";
 
     desc["RandomLognormal"] =

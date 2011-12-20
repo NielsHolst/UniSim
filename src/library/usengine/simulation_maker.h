@@ -5,9 +5,12 @@
 */
 #ifndef UNISIM_SIMULATION_MAKER
 #define UNISIM_SIMULATION_MAKER
+#include <QHash>
 #include <QList>
+#include <QMap>
 #include <QObject>
 #include <QPair>
+#include <QStack>
 #include <QStringList>
 #include <usbase/identifier.h>
 
@@ -15,6 +18,7 @@ class QXmlStreamReader;
 
 namespace UniSim{
 
+class DataGrid;
 class Model;
 class ParameterBase;
 class Parameters;
@@ -54,16 +58,18 @@ private:
     QXmlStreamReader *reader;
     QString fileName;
     Identifiers _sequence;
+    QStack<QPair<QString, Model*> > keyStack;
+    QHash<QString, const DataGrid*> tables;
 
     typedef QPair<ParameterBase*, QString> RedirectedParameter;
     QList<RedirectedParameter> redirectedParameters;
 
     struct OutputParam {
-        QString axis, label, value, summary, type;
+        QMap<QString, QString> attributes;
         QObject *parent;
     };
 
-    QList<OutputParam> outputVariableParam, outputDataParam, outputParameterParam;
+    QList<OutputParam> outputVariableParam, outputParameterParam;
 
     // methods
     QString compileToFile(QString filePath);
@@ -76,15 +82,19 @@ private:
     void readSequenceElement(QObject *parent);
 
     void readModelElement(QList<QObject*> parents);
-    QList<QObject*> createModelElement(QObject *parent);
+    QList<QObject*> createModelElement(const QVector<int> &instanceIndices, const DataGrid *table, QObject *parent);
+    const DataGrid* createTable();
+    QVector<int> instanceIndices(const DataGrid *table, QObject *parent);
+    QString instanceName(int instanceIndex, const DataGrid *table);
+    int columnIndexOfModelType(const DataGrid *table);
+    void updateColumnParameters(Model *model, const DataGrid &table);
+    QString lookupKeyValue(Model *model, Identifier keyId);
 
     void readParameterElement(QList<QObject*> parents);
     void setParameterElement(QObject *parent);
 
-    void readOutputParameterElement(QObject *parent);
-
     void readOutputElement(QObject *parent);
-    void readOutputVariableElement(QObject* parent);
+    void readOutputSubElement(QList<OutputParam> *param, QObject* parent);
 
     void splitOutputDataValue(QString value, QString *datasetName, QString *columnName);
     bool elementNameEquals(QString s) const;
@@ -95,6 +105,7 @@ private:
 
     QString message(QString text) const;
     void redirectParameters();
+    void setSequence(Simulation *sim);
 };
 
 //@}

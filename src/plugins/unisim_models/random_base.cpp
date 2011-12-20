@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
+#include <limits>
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
 #include <usbase/parameter.h>
@@ -15,9 +15,15 @@ namespace UniSim{
 RandomBase::RandomBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("minValue", &minValue, 0., this, "Minimum random value");
-    new Parameter<double>("maxValue", &maxValue, 0., this, "Maximum random value");
-    new PullVariable<double>("value", &value, this, "Random value");
+    new Parameter<double>("minValue", &minValue, -std::numeric_limits<double>::max(), this,
+                          "Minimum random value");
+    new Parameter<double>("maxValue", &maxValue, std::numeric_limits<double>::max(), this,
+                          "Maximum random value");
+    new Parameter<int>("maxTries", &maxTries, 100, this,
+                       "Maximum number of tries to find a number inside the interval "
+                       "@F minValue to @F {maxValue}. An exception is cast if exceeded");
+    new PullVariable<double>("value", &value, this,
+                             "Random value");
 }
 
 void RandomBase::initialize() {
@@ -45,18 +51,14 @@ bool RandomBase::triggered() {
 }
 
 void RandomBase::nextValue() {
-    bool inBounds = false;
     int i = 0;
-    const int IMAX = 30;
-    while (!inBounds && i<IMAX) {
+    do {
         value = drawValue();
-        inBounds = value>=minValue && value<=maxValue;
-        ++i;
-    }
-    if (value < minValue)
-        value = minValue;
-    else if (value > maxValue)
-        value = maxValue;
+        if (++i == maxTries) {
+            QString msg = "Max number of tries exceeded to find random value inside interval: %1 to %2";
+            throw Exception(msg.arg(minValue).arg(maxValue), this);
+        }
+    } while (value < minValue || value > maxValue);
 }
 
 } //namespace

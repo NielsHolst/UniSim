@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	
+    <integrator name="integrator" type="TimeStepLimited">
+        <parameter name="maxSteps" value="10"/>
+        <sequence>
+            <model name="generations"/>
+        </sequence>
+    </integrator>
+
+	<model name="generations" type="UniSim::Fixed" instances="3">
+		<model name="egg" type="UniSim::Fixed"/>
+		<model name="larva" type="UniSim::Fixed" instances="4">
+			<model name="kidney" type="UniSim::Fixed"/>
+			<model name="ovary" type="UniSim::Fixed" instances="2"/>
+		</model>
+		<model name="pupa" type="UniSim::Fixed">
+			<parameter name="pullVariables" value="((x 2)(y 3))"/>;
+		</model>
+	</model>
+
+    <output name="out" type="Table">
+		<parameter name="fileName" value="test.txt"/>
+		<variable label="larva" axis="x" value="generations(2)/pupa[x]"/>
+		<variable label="larva" axis="y" value="generations(2)/pupa[y]"/>
+    </output>
+</simulation>

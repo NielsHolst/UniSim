@@ -18,7 +18,7 @@ class OutputParameter : public OutputResult
 {
 	Q_OBJECT
 public:
-    OutputParameter(QString label, QString axis, ParameterBase *parameter, QObject *parent = 0);
+    OutputParameter(const QMap<QString,QString> &attributes,  ParameterBase *parameter, QObject *parent = 0);
 	
     // standard methods
 	void update();

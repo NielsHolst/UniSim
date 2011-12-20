@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="3"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="landscape"/>
+		</sequence>
+	</integrator>
+	
+	<model name="calendar" type="Calendar">
+	  <parameter name="initialDate" value="1/1/2005"/>
+	  <parameter name="timeUnit" value="y"/>
+	 </model>
+	 
+	<model name="landscape" type="Landscape">
+	    <parameter name="Method_fert" value="YES"/>
+	    <parameter name="CropParameters3" fileName="crop_parameters_all_farms_business.txt"/>
+		<parameter name="CropAreas" fileName="crop_areas_all.txt"/>
+		<parameter name="FarmsData" fileName="farms_data_all.txt"/>	
+		<parameter name="LivestockParameters" fileName="livestock_parameters.txt"/>
+		<parameter name="LivestockNumbers" fileName="livestock_numbers.txt"/>
+		
+		<parameter name="WinterMaxValues" fileName="winterMax.txt"/>		
+		<parameter name="PriceNt" value="1.93"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1"/>
+		<variable axis="x" label="Day" value="calendar[year]"/>
+		<variable axis="y" label="Day" value="calendar[year]"/>
+	</output>
+	
+
+	<!--
+	<output type="plot">
+		<parameter name="title" value ="Farm1"/>
+		<variable axis="x" label="Day" value="calendar[year]"/>
+		<variable axis="y" label="total area" value="farm1[TotalArea]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 - animal fertilizer"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="NanimUsable[kg]/Cattle" value="Cattle[NanimUsable]"/>
+		<variable axis="y" label="NanimUsable[kg]/Pigs" value="Pigs[NanimUsable]"/>
+		<variable axis="y" label="totalNanim[kg]" value="farm1[TotalNanim]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Nanim[kg/ha]" value="farm1[Nanim]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 SBarley"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="N-applied fertilzer[kg/ha]" value="SBarley[N]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 SBarley"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Response[hkg/ha]" value="SBarley[Response]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 SBarley"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="BI" value="SBarley[BI]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 SBarley"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Grooming" value="SBarley[Grooming]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 SBarley"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Total Loss" value="SBarley[TotalLoss]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 assigned"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="assigned" value="farm1[Assigned]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 FU demand"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="FU demand" value="farm1[TotalFUdemand]"/>
+	</output>	
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 - GM"/>
+		<variable axis="x" label="Day" value="calendar[TotalTime]"/>
+		<variable axis="y" label="GM" value="SBarley[GM]"/>
+		<variable axis="y" label="GM" value="Oats[GM]"/>
+		<variable axis="y" label="GM" value="OSCrops[GM]"/>
+		<variable axis="y" label="GM" value="WBarley[GM]"/>
+		<variable axis="y" label="GM" value="WWheat[GM]"/>
+		<variable axis="y" label="GM" value="WRye[GM]"/>
+		<variable axis="y" label="GM" value="Triticale[GM]"/>
+		<variable axis="y" label="GM" value="SRape[GM]"/>
+		<variable axis="y" label="GM" value="WRape[GM]"/>
+		<variable axis="y" label="GM" value="OOilseed[GM]"/>
+		<variable axis="y" label="GM" value="Peas[GM]"/>
+		<variable axis="y" label="GM" value="OLSeed[GM]"/>
+		<variable axis="y" label="GM" value="GrassSeed[GM]"/>
+		<variable axis="y" label="GM" value="Potato[GM]"/>
+		<variable axis="y" label="GM" value="PotatoFood[GM]"/>
+		<variable axis="y" label="GM" value="SugarBeet[GM]"/>
+		<variable axis="y" label="GM" value="GrassClover[GM]"/>
+		<variable axis="y" label="GM" value="OLSeedCut[GM]"/>
+		<variable axis="y" label="GM" value="SCerealSil[GM]"/>
+		<variable axis="y" label="GM" value="PeasSil[GM]"/>
+		<variable axis="y" label="GM" value="MaizeSil[GM]"/>
+		<variable axis="y" label="GM" value="WCerealSil[GM]"/>
+		<variable axis="y" label="GM" value="SCerealG[GM]"/>
+		<variable axis="y" label="GM" value="PerGrassLow[GM]"/>
+		<variable axis="y" label="GM" value="PerGrassNorm[GM]"/>
+		<variable axis="y" label="GM" value="GrassEnv1[GM]"/>
+		<variable axis="y" label="GM" value="GrassEnv2[GM]"/>
+		<variable axis="y" label="GM" value="GrassRot[GM]"/>
+		<variable axis="y" label="GM" value="Setaside[GM]"/>
+		<variable axis="y" label="GM" value="Uncult[GM]"/>
+		<variable axis="y" label="GM" value="OUncult[GM]"/>
+		<variable axis="y" label="GM" value="FodderBeet[GM]"/>
+		<variable axis="y" label="GM" value="CloverGrz[GM]"/>
+		<variable axis="y" label="GM" value="Veg[GM]"/>
+		<variable axis="y" label="GM" value="Fruit[GM]"/>
+		<variable axis="y" label="GM" value="FruitTree[GM]"/>
+		<variable axis="y" label="GM" value="OSpecCrops[GM]"/>
+		<variable axis="y" label="GM" value="ChrisTree[GM]"/>
+		<variable axis="y" label="GM" value="EnergyFor[GM]"/>
+		<variable axis="y" label="GM" value="Other[GM]"/>	
+		
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Farm1 - area percent"/>
+		<variable axis="x" label="Day" value="calendar[TotalTime]"/>
+		<variable axis="y" label="Area Percent" value="SBarley[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Oats[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="OSCrops[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="WBarley[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="WWheat[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="WRye[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Triticale[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="SRape[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="WRape[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="OOilseed[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Peas[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="OLSeed[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="GrassSeed[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Potato[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="PotatoFood[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="SugarBeet[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="GrassClover[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="OLSeedCut[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="SCerealSil[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="PeasSil[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="MaizeSil[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="WCerealSil[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="SCerealG[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="PerGrassLow[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="PerGrassNorm[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="GrassEnv1[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="GrassEnv2[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="GrassRot[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Setaside[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Uncult[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="OUncult[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="FodderBeet[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="CloverGrz[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Veg[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Fruit[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="FruitTree[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="OSpecCrops[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="ChrisTree[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="EnergyFor[AreaPercent]"/>
+		<variable axis="y" label="Area Percent" value="Other[AreaPercent]"/>
+	</output>
+	
+	
+	<output type="table">
+		<parameter name="filename" value ="Farm1 N-applied.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="N-applied" value="Farm1/*[N]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value ="Farm1 Response.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Response" value="Farm1/*[Response]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value ="Farm1 GM.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Gross margin" value="Farm1/*[GM]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value ="Farm1 area percent.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Area percent" value="Farm1/*[AreaPercent]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value ="Farm1 BIHerb.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="BIHerb" value="Farm1/*[BIHerb]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value ="Farm1 area_ha.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="Area in ha" value="Farm1/*[Area_ha]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value ="Farm1 totals.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<variable axis="y" label="total Nt" value="Farm1[TotalNt]"/>
+		<variable axis="y" label="total BI" value="Farm1[TotalBI]"/>
+		<variable axis="y" label="total Profit" value="Farm1[TotalProfit]"/>
+	</output>
+-->
+	
+
+</simulation>

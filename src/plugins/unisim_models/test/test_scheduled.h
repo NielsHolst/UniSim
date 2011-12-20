@@ -1,6 +1,7 @@
 #ifndef TEST_UNISIM_SCHEDULED_H
 #define TEST_UNISIM_SCHEDULED_H
 
+#include <QDir>
 #include <QFile>
 #include <QVector>
 #include <QStringList>
@@ -19,6 +20,8 @@ private slots:
 
 private:
     void createSimulation(QString filename);
+    QString filePath(QString fileName);
+    QDir inputFolder();
 
     UniSim::Simulation *sim;
 };

@@ -30,7 +30,7 @@ private:
     double eclosedReproductiveAdults, adultsToHibernation, deadAdults;
     // links
     QList<Stage*> _stages;
-    const double *pollen;
+//    const double *pollen;
     // methods
     double updateStage(Stage *stage);
 };

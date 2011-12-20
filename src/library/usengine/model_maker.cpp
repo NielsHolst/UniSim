@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <typeinfo>
 #include <QDir>
 #include <QPluginLoader>
 #include <QSettings>
@@ -30,16 +31,19 @@ QString ModelMaker::id() {
 UniSim::Model* ModelMaker::create(Identifier modelType, Identifier objectName, QObject *parent)
 {
     ModelMakerPlugIn *maker;
+    Model *model;
     switch (me()->_modelMakers.count(modelType)) {
-        case 0:
-            throw Exception("No model of type: " + modelType.key());
-        case 1:
-            maker = me()->find(modelType);
-            return maker->create(modelType.withoutNamespace(), objectName, parent);
-        default:
-            throw Exception("More than one model of type: " + modelType.key()+". Qualify type with plug-in name.");
+    case 0:
+        throw Exception("No model of type: " + modelType.key());
+    case 1:
+        maker = me()->find(modelType);
+        model = maker->create(modelType.withoutNamespace(), objectName, parent);
+        model->setProperty("classLabel", modelType.label());
+        break;
+    default:
+        throw Exception("More than one model of type: " + modelType.key()+". Qualify type with plug-in name.");
     }
-
+    return model;
 }
 
 Models ModelMaker::create(Identifier modelType, Identifier objectName, QObjectList &parents)

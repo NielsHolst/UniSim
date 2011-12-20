@@ -1,4 +1,0 @@
-
-Crop	Soiltype	Treatment	Treated	Nitrogen	Water	isCase
-
-barley	sandy	1	no	90.1	70	no

@@ -22,21 +22,23 @@ public:
 
 private:
     // parameters
-    double alpha, beta, c, minDist, halfDist, halfLife, Pmax, btQuantum, distance, dateShift;
-    QDate dateMax;
+    double distance, minDist, halfDist, maxTotal,
+        pollenMass, stdPollenMass, toxinConc, stdToxinConc;
 
     // derived
-    double tmax, survivalRate;
+    double PdistRate;
 
     // pull variables
-    double pollenDepositionRate, pollenDepositionTotal, pollen, toxin;
+    double
+    pollenDepositionRate, pollenDepositionTotal,
+    pollenDensity, toxinDensity,
+    stdPollenDensity;
 
     // links
-    const int *dayOfYear;
+    const double *depositionRate, *lossRate;
 
     // methods
-    double Pdist();
-    double Ptime(int t);
+    double Pdist(double distance);
 };
 
 } //namespace

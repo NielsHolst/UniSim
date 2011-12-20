@@ -543,7 +543,7 @@ void TestXmlNode::testCaseCirsium() {
         original = XmlNode::createFromFile(fp);
         original->compile(fp);
         original->getTree(&s);
-        cout << qPrintable(s);
+        // cout << qPrintable(s);
     }
     catch (Exception &ex) {
         QString msg = "Unexpected exception. " + ex.message();
@@ -552,9 +552,7 @@ void TestXmlNode::testCaseCirsium() {
 }
 
 QString TestXmlNode::filePath(QString fileName) const {
-    QDir dir = FileLocations::location(FileLocationInfo::Models);
-    dir.cdUp();
-	dir.cdUp();
-    return dir.absolutePath() + "/src/library/usengine/test/" + fileName;
+    QDir uniSimDir = QDir("../..");
+    return uniSimDir.absolutePath() + "/src/library/usengine/test/input/" + fileName;
 }
 

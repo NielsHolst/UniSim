@@ -28,6 +28,7 @@ private:
     DateInterval::Frequency frequency;
     QString frequencyAsString;
     QDate fromDate, toDate;
+    double dateShift;
     bool triggerAtReset;
     // pull variables
     bool value;

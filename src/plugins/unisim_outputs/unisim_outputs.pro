@@ -10,16 +10,17 @@ include ($${US_BASE}/base.pri)
 include($${US_QWT}/qwt.pri)
 
 HEADERS	+= 	\
-        $${US_ENGINE}/main_window_interface.h \
-        $${US_ENGINE}/plot_widget.h \
-        plot.h \
-        output_plot.h \
-        output_table.h \
-        unisim_output_maker.h
+    $${US_ENGINE}/main_window_interface.h \
+    $${US_ENGINE}/plot_widget.h \
+    plot.h \
+    output_attributes.h \
+    output_plot.h \
+    output_table.h \
+    unisim_output_maker.h
 			  	
 SOURCES	+= 	\
-        $${US_ENGINE}/plot_widget.cpp \
-        plot.cpp \
-        output_plot.cpp \
-        output_table.cpp \
-        unisim_output_maker.cpp
+    $${US_ENGINE}/plot_widget.cpp \
+    plot.cpp \
+    output_plot.cpp \
+    output_table.cpp \
+    unisim_output_maker.cpp

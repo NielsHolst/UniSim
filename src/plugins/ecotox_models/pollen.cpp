@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QMessageBox>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "pollen.h"
@@ -15,73 +16,73 @@ namespace ecotox {
 Pollen::Pollen(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("alpha", &alpha, 21.54, this,
-                          "Pollen phenology shape parameter");
-    new Parameter<double>("beta", &beta, 1.868, this,
-                          "Pollen phenology shape parameter");
-    new Parameter<double>("c", &c, 1., this,
-                          "Pollen phenology compression. "
-                          "@F c < 1 prolongs the periods of pollen deposition. "
-                          "@F c > 1 shortens the period.");
-    new Parameter<double>("distance", &distance, 1., this,
+    new Parameter<double>("distance", &distance, 0.3, this,
                           "Distance to maize field (m)");
     new Parameter<double>("minDist", &minDist, 0.3, this,
                           "Minimum distance of pollen dispersion model (m)");
     new Parameter<double>("halfDist", &halfDist, 3.55, this,
-                          "Half-distance of pollen dispersion (m)");
-    new Parameter<double>("halfLife", &halfLife, 14., this,
-                          "Half-life of pollen (days)");
-    new Parameter<QDate>("dateMax", &dateMax, QDate(2011,7,31), this,
-                          "Date when pollen deposition peaks");
-    new Parameter<double>("dateShift", &dateShift, 0., this,
-                          "Shift dateMax @F dateShift days");
-    new Parameter<double>("Pmax", &Pmax, 121, this,
-                          "Max. pollen deposition rate at zero distance (pollen per cm @Sup2");
-    new Parameter<double>("btQuantum", &btQuantum, 0.1, this,
-                          "Quantum of Bt toxin per pollen (pg)");
-    new PullVariable<double>("pollenDepositionRate", &pollenDepositionRate, this, "Pollen deposition rate (per day per cm @Sup {2})");
-    new PullVariable<double>("pollenDepositionTotal", &pollenDepositionTotal, this, "Pollen deposition total (per cm @Sup {2})");
-    new PullVariable<double>("pollen", &pollen, this, "Current pollen density (per cm @Sup {2})");
-    new PullVariable<double>("toxin", &toxin, this, "Current toxin density (pg/cm @Sup {2})");
+                          "Pollen deposition declines as a negative exponential with distance from the maize field. "
+                          "@F halfDist denotes the distance (m) at which deposition is halfed");
+    new Parameter<double>("maxTotal", &maxTotal, 120., this,
+                          "Maximum of total pollen deposited on food plant (pollen per cm @Sup {2})."
+                          "This occurs at @F minDist distance from the maize field");
+
+    new Parameter<double>("pollenMass", &pollenMass, 0.25, this,
+                          "Fresh weight of one pollen grain (@Sym{mu}g)");
+    new Parameter<double>("stdPollenMass", &stdPollenMass, 0.25, this,
+                          "Standard fresh weight of one pollen grain (@Sym{mu}g)");
+    new Parameter<double>("toxinConc", &toxinConc, 0.01, this,
+                          "Toxin concentration in pollen (@Sym{mu}g/g fresh weight)");
+    new Parameter<double>("stdToxinConc", &stdToxinConc, 0.01, this,
+                          "Standard toxin concentration in pollen (@Sym{mu}g/g fresh weight)");
+
+    new PullVariable<double>("pollenDepositionRate", &pollenDepositionRate, this,
+                             "Current pollen deposition rate (per day per cm @Sup {2})");
+    new PullVariable<double>("pollenDepositionTotal", &pollenDepositionTotal, this,
+                             "Total pollen deposition (per cm @Sup {2})");
+    new PullVariable<double>("pollenDensity", &pollenDensity, this,
+                             "Current pollen density (per cm @Sup {2})");
+    new PullVariable<double>("toxinDensity", &toxinDensity, this,
+                             "Current toxin density (@Sym{mu}g per cm @Sup {2})");
+    new PullVariable<double>("stdPollenDensity", &stdPollenDensity, this,
+                             "Current pollen density, "
+                             "expressed as standard pollen correct for mass and toxin concentration "
+                             "(per cm @Sup {2})");
 }
 
 void Pollen::initialize() {
-    Model *calendar = seekOne<Model*>("calendar");
-    dayOfYear = calendar->pullVariablePtr<int>("dayOfYear");
+    Model *flush = peekOneChild<Model*>("depositionFlush");
+    if (flush) {
+        depositionRate = flush->pullVariablePtr<double>("value");
+    }
+    else {
+        Model *deposition = seekOneChild<Model*>("depositionRate");
+        depositionRate = deposition->pullVariablePtr<double>("value");
+    }
+    Model *loss = seekOneChild<Model*>("lossRate");
+    lossRate = loss->pullVariablePtr<double>("value");
 }
 
 void Pollen::reset() {
-    pollenDepositionRate = pollenDepositionTotal = 0.;
-    pollen = toxin = 0.;
-    if (distance < minDist)
-        distance = minDist;
-    tmax = dateMax.dayOfYear() + dateShift;
-    survivalRate = pow(0.5, 1./halfLife);
+    pollenDepositionRate =
+    pollenDepositionTotal =
+    pollenDensity =
+    toxinDensity =
+    stdPollenDensity = 0.;
+    PdistRate = log(2)/log(halfDist);
 }
 
 void Pollen::update() {
-    pollenDepositionRate = Pdist()*Ptime(*dayOfYear);
+    pollenDepositionRate = Pdist(distance)*(*depositionRate);
     pollenDepositionTotal += pollenDepositionRate;
-    pollen = pollen*survivalRate + pollenDepositionRate;
-    toxin = pollen*btQuantum;
+    pollenDensity *= 1. - (*lossRate);
+    pollenDensity +=  pollenDepositionRate;
+    toxinDensity = pollenDensity*pollenMass*toxinConc;
+    stdPollenDensity = pollenDensity*pollenMass/stdPollenMass*toxinConc/stdToxinConc;
 }
 
-double Pollen::Pdist() {
-    return Pmax/pow(distance,log(2)/log(halfDist));
+double Pollen::Pdist(double distance) {
+    return maxTotal*pow(distance, PdistRate)/pow(minDist, PdistRate);
 }
-
-double Pollen::Ptime(int t) {
-    double m = (beta - 1.)/beta;
-    double t0 = tmax - alpha*pow(m,1./beta);
-    double tp = t0 + c*(t - t0);
-    if (tp <= t0)
-        return 0.;
-    double n = (tp - tmax)/alpha;
-    double mp = pow(m, 1./beta);
-    double a = beta*exp(-pow(n+mp, beta))*pow(alpha*mp, beta)*pow(n+mp, beta-1.);
-    double b = pow(alpha, beta+1.)*pow(m,(beta*m+1.)/beta);
-    return c*a/b;
-}
-
 } //namespace
 

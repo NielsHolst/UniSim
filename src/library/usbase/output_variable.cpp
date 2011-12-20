@@ -16,8 +16,12 @@
 
 namespace UniSim{
 	
-OutputVariable::OutputVariable(QString label, QString axis, QString summary_, PullVariableBase *variable, QObject *parent)
-    : OutputResult(label, axis, parent), summaryString(summary_), pullVarPtr(variable)
+OutputVariable::OutputVariable(const QMap<QString,QString> &attributes,
+                               PullVariableBase *variable,
+                               QObject *parent)
+    : OutputResult(attributes, parent),
+      summaryString(attributes.value("summary")),
+      pullVarPtr(variable)
 {
     Q_ASSERT(pullVarPtr);
 }

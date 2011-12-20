@@ -28,9 +28,6 @@ void InsectLifeCycle::initialize() {
     _stages = seekChildren<Stage*>("*");
     if (_stages.size() < 3)
         throw Exception("There must be at least two Stage models in lifeCycle", this);
-
-    Model *pollenModel = seekOne<Model*>("pollen");
-    pollen = pollenModel->pullVariablePtr<double>("pollen");
 }
 
 void InsectLifeCycle::reset() {
@@ -66,7 +63,6 @@ void InsectLifeCycle::update() {
 double InsectLifeCycle::updateStage(Stage *stage) {
     Model *survival = stage->peekOneChild<Model*>("survival");
     if (survival) {
-        survival->pushVariable<double>("dose", *pollen);
         survival->deepUpdate();
         stage->pushVariable<double>("growthRate", survival->pullVariable<double>("value"));
     }

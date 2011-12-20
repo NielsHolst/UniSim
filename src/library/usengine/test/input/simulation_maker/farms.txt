@@ -1,0 +1,5 @@
+*test::Farm	FarmType	SoilType	Economy	FarmRealId
+A	Cattle	Sand	business	474840
+B	Cattle	Sand	private	709961
+C	Plant	Sand	business	242040
+D	Plant	Clay	business	254383

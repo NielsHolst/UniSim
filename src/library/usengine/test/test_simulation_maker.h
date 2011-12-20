@@ -18,7 +18,12 @@ private slots:
 	void testOutputOneXY();
 	void testOutputManyXY();
     void testCommonElement();
-	void cleanupTestCase();
+    void testModelInstances();
+    void testModelsFromFileOneLevel();
+    void testModelsFromFileTwoLevels();
+    void testModelsFromFileThreeLevels();
+    void testModelsAndParametersFromFile();
+    void cleanupTestCase();
 private:
     QString filePath(QString fileName) const;
     UniSim::Simulation *_simulation;

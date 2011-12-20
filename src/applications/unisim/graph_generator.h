@@ -24,7 +24,7 @@ class GraphGenerator : public QObject
 public:
     GraphGenerator(UniSim::Simulation *simulation);
 
-    typedef enum {Postscript, PNG, Dot} OutputFormat;
+    typedef enum {Postscript, PNG, SVG, Dot} OutputFormat;
 
 	//! Returns a QProcess which the caller must not delete until it has finished
     QProcess* generate(OutputFormat format);

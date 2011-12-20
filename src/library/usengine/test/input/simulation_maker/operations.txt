@@ -1,0 +1,4 @@
+*test::Operation	Cost	IsOrganic
+Sowing	100	yes
+Harvest	350	yes
+Spraying	20	no

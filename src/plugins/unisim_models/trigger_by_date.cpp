@@ -16,6 +16,9 @@ TriggerByDate::TriggerByDate(UniSim::Identifier name, QObject *parent)
     new Parameter<QDate>("fromDate", &fromDate, QDate(1900,1,1), this,
     "The trigger will be true between @F fromDate and @F toDate at the specified @F{frequency}");
 
+    new Parameter<double>("dateShift", &dateShift, 0., this,
+    "The value of @F dateShift is added to @F {fromDate}, This is useful for adding stochasticity.");
+
     new Parameter<QDate>("toDate", &toDate, QDate(1900,1,1), this,
     "The trigger will be true between @F fromDate and @F toDate at the specified @F{frequency}");
 
@@ -52,6 +55,7 @@ void TriggerByDate::reset() {
 
 void TriggerByDate::update() {
     QDate today = calendar->pullVariable<QDate>("date");
+//    DateInterval interval(fromDate.addDays((int) dateShift), toDate, frequency);
     DateInterval interval(fromDate, toDate, frequency);
     value = interval.includes(today);
 }

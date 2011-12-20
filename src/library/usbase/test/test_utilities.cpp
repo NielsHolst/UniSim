@@ -870,9 +870,8 @@ void TestUtilities::testDivBounded() {
 }
 
 void TestUtilities::testFindNearestFile() {
-    QDir testDir = FileLocations::location(FileLocationInfo::Models);
-    testDir.cdUp();
-    testDir.cdUp();
+    QDir uniSimDir = QDir("../..");
+    QDir testDir = uniSimDir;
     testDir.cd("src/library/usbase/test");
     QVERIFY(testDir.exists());
 

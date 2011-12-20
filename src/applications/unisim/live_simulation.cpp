@@ -25,6 +25,7 @@ LiveSimulation::LiveSimulation(QObject *parent)
 
     graphProcesses.append(0);
     graphProcesses.append(0);
+    graphProcesses.append(0);
 
     connect(simulationMaker, SIGNAL(beginExpansion()), this, SLOT(acceptBeginExpansion()));
     connect(simulationMaker, SIGNAL(endExpansion()), this, SLOT(acceptEndExpansion()));
@@ -70,8 +71,10 @@ void LiveSimulation::setupStateTexts() {
 
 LiveSimulation::~LiveSimulation() {
     delete simulationMaker;
+
     delete graphProcesses[0];
     delete graphProcesses[1];
+    delete graphProcesses[2];
 }
 
 void LiveSimulation::open(QString filePath) {
@@ -103,8 +106,8 @@ void LiveSimulation::writeGraph() {
 }
 
 void LiveSimulation::createGraphProcess() {
-    Q_ASSERT(graphProcesses.size() == 2);
-    for (int i = 0; i < 2; ++i) {
+    Q_ASSERT(graphProcesses.size() == 3);
+    for (int i = 0; i < 3; ++i) {
         if (graphProcesses[i]) {
             delete graphProcesses[i];
             graphProcesses[i] = 0;
@@ -117,6 +120,7 @@ void LiveSimulation::createGraphProcess() {
         GraphGenerator generator(_simulation);
         graphProcesses[0] = generator.generate(GraphGenerator::PNG);
         graphProcesses[1] = generator.generate(GraphGenerator::Postscript);
+        graphProcesses[2] = generator.generate(GraphGenerator::SVG);
 
         _graphFilePath = generator.outputFilePath(GraphGenerator::PNG);
         connect(graphProcesses[0], SIGNAL(stateChanged (QProcess::ProcessState)),

@@ -15,6 +15,8 @@ namespace ecotox {
 LogLogistic::LogLogistic(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("dose", &dose, 0., this,
+                          "Dose for which response will be calculated. You can use this also as a push variable");
     new Parameter<double>("lower", &lower, 0., this,
                           "Asymptotic response at low dose");
     new Parameter<double>("upper", &upper, 1., this,

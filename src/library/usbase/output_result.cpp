@@ -9,10 +9,14 @@
 
 namespace UniSim{
 	
-OutputResult::OutputResult(QString label, QString axis, QObject *parent)
-    : Component(label, parent), axisString(axis), _summary(None), historyCleared(false)
+OutputResult::OutputResult(const QMap<QString,QString> &attributes, QObject *parent)
+    : Component(attributes.value("label"), parent),
+      _summary(None),
+      historyCleared(false)
 {
     output = dynamic_cast<Output*>(parent);
+    setAxisFromString(attributes.value("axis"));
+    setSummaryFromString(attributes.value("summary"));
 }
 
 void OutputResult::setSummaryFromString(QString summary) {
@@ -40,10 +44,6 @@ void OutputResult::setSummaryFromString(QString summary) {
         _summary = XAtMin;
     else
         throw Exception("Unknown summary '" + summary + "'", this);
-}
-
-void OutputResult::initialize() {
-    setAxisFromString(axisString);
 }
 
 void OutputResult::setAxisFromString(QString axis) {

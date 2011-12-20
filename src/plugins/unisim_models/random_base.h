@@ -26,6 +26,7 @@ private:
     void nextValue();
     // parameters
     double minValue, maxValue;
+    int maxTries;
     // pull variables
     double value;
     // links

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation" version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="365"/> 
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="pollen"/>
+			<model name="insect"/>
+		</sequence>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="15"/>
+		</model>
+	</integrator>
+	
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="Westerloge - Bad Hersfeld.txt"/>
+		<parameter name="randomizeInitialYear" value="yes"/>
+	</model>
+	
+	<model name="pollen" type="EcoTox::Pollen">
+		<model name="depositionRate" type="EcoTox::DepositionMonotonicSampled"/>
+		<model name="depositionFlush" type="EcoTox::DepositionFlush">
+			<parameter name="duration" value="14"/>
+		</model>
+		<model name="lossRate" type="EcoTox::PollenLossSampled">
+			<parameter name="rates" value ="(0, 0 ,0 ,0, 0.06, 0.15, 0.20, 0.22, 0.29, 0.986)"/>;
+		</model>
+		<parameter name="distance" value="0.3"/>
+		<parameter name="maxTotal" value="120"/>
+	</model>
+	
+	<model name="insect" type="UniSim::Insect">
+		<parameter name="sexRatio" value="0.5"/>
+		<parameter name="eggProduction" value="2"/>
+
+		<model name="hibernatingAdult" type="UniSim::Stage">
+			<model name="time" type="UniSim::Days">
+				<model name="trigger" type="UniSim::TriggerByDate">
+					<parameter name="fromDate" value="25/4/1900"/>
+					<parameter name="toDate" value="30/5/2200"/>
+					<parameter name="frequency" value="yearly"/>
+					<parameter name="triggerAtReset" value="No"/>
+				</model>
+			</model>
+			<parameter name="duration" value="7"/>
+			<parameter name="k" value="30"/>
+			<parameter name="initialInflow" value="1"/>
+		</model>
+
+		<model name="generation" type="UniSim::InsectLifeCycle" instances="1">
+			<model name ="eggLayingDelay" type="UniSim::Stage" >
+				<model name="time" type="UniSim::Days"/>
+				<parameter name="duration" value="7"/>
+				<parameter name="k" value="30"/>
+			</model>
+			
+			<model name="egg" type="UniSim::Stage">
+				<model name="time" type="UniSim::DayDegrees">
+					<parameter name="T0" value="8.3" ref="Bryant et al. 2002"/>
+					<parameter name="Topt" value="32.3" ref="Bryant et al. 2000"/>
+					<parameter name="Tmax" value="37"/>
+				</model>
+				<parameter name="duration" value="70"/>
+				<parameter name="k" value="30"/>
+			</model>
+
+			<model name="larva" type="UniSim::Stage">
+				<model name="survival" type="EcoTox::LogLogistic">
+					<parameter name="dose" variable="pollen[pollenDensity]"/>
+					<parameter name="upper" value="1"/>
+					<parameter name="lower" value="0"/>
+					<parameter name="slope" value="-1.5"/>
+					<parameter name="ED50" value="900"/>
+				</model>
+				<model name="time" type="UniSim::DayDegrees">
+					<parameter name="T0" value="8.3" ref="Bryant et al. 2002"/>
+					<parameter name="Topt" value="32.3" ref="Bryant et al. 2000"/>
+					<parameter name="Tmax" value="37"/>
+				</model>
+				<parameter name="duration" value="315.2" ref="Bryant et al. 2002"/>
+				<parameter name="k" value="30"/>
+			</model>
+
+			<model name="pupa" type="UniSim::Stage">
+				<model name="time" type="UniSim::DayDegrees">
+					<parameter name="T0" value="10.9" ref="Bryant et al. 2002"/>
+					<parameter name="Topt" value="32.3" ref="Bryant et al. 2000"/>
+					<parameter name="Tmax" value="37"/>
+				</model>
+				<parameter name="duration" value="110" ref="Bryant et al. 2002"/>
+				<parameter name="k" value="30"/>
+			</model>
+
+			<model name="adult" type="UniSim::Stage">
+				<model name="time" type="UniSim::Days"/>
+				<parameter name="duration" value="60"/>
+				<parameter name="k" value="30"/>
+			</model>
+		</model> <!-- lifeCycle -->
+	</model> <!-- insect -->
+
+	<!-- 
+	*** Plots  ***
+	-->
+
+	<output type="plot">
+		<parameter name="title" value="Environment"/>
+		<variable label="Day" axis="x" value="calendar[totalTime]"/>
+		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="One generation"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Egg" value="generation/egg[value]"/>
+		<variable axis="y" label="Larva" value="generation/larva[value]"/>
+		<variable axis="y" label="Pupa" value="generation/pupa[value]"/>
+		<variable axis="y" label="AdRep" value="generation/adult[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Population response"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Larva" value="generation/larva[value]"/>
+		<variable axis="y" label="AdHib" value="hibernatingAdult[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Pollen deposition rate"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Rate" value="pollen[pollenDepositionRate]"/>
+		<variable axis="y" label="Current" value="pollen[pollenDensity]"/>
+		<variable axis="y" label="Total" value="pollen[pollenDepositionTotal]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Bt exposure (log10)"/>
+		<parameter name="logy" value ="yes"/>
+		<parameter name="ymin" value ="-2"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Larva" value="generation/larva[value]"/>
+		<variable axis="y" label="Pollen (per cm2)" value="pollen[pollenDensity]"/>
+	</output>
+
+
+	
+</simulation>

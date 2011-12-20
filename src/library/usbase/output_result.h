@@ -18,11 +18,10 @@ class OutputResult : public Component
 {
 	Q_OBJECT
 public:
-    OutputResult(QString label, QString axis, QObject *parent = 0);
+    OutputResult(const QMap<QString,QString> &attributes, QObject *parent = 0);
 	
     // standard methods
-    void initialize();
-	void reset();
+    void reset();
     void debrief();
 
     // special methods
@@ -41,7 +40,6 @@ protected:
     void setSummaryFromString(QString axis);
 
     // data
-    QString axisString;
     Axis _axis;
     Summary _summary;
     QVector<double> _history;	//!< Series of collected values

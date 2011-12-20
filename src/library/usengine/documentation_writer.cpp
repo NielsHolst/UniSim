@@ -192,13 +192,17 @@ Model* DocumentationWriter::createModel(ModelMakerPlugIn *plugin, Identifier mod
 // Refactor the three methods below when they have been given a common base class
 // Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
 void DocumentationWriter::writeParameters(Model *model) {
-    writeTableTitle("Parameters");
     QList<ParameterBase*> params = seekChildren<ParameterBase*>("*", model);
     int n = params.size();
+    if (n == 0) return;
+
+    writeTableTitle("Parameters");
+    /* If an empty section is wanted
     if (n == 0)  {
         QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
         writeTableRow(format, "", "", "@I None");
     }
+    */
     for (int i = 0; i < n; ++i) {
         Identifier id = params[i]->id();
         QString value = params[i]->toString();
@@ -212,14 +216,17 @@ void DocumentationWriter::writeParameters(Model *model) {
 }
 
 void DocumentationWriter::writePushVariables(Model *model) {
-    writeTableTitle("Push variables");
     QList<PushVariableBase*> var = model->seekChildren<PushVariableBase*>("*");
-
     int n = var.size();
+    if (n == 0) return;
+
+    writeTableTitle("Push variables");
+    /* If an empty section is wanted
     if (n == 0)  {
         QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
         writeTableRow(format, "", "", "@I None");
     }
+    */
     for (int i = 0; i < n; ++i) {
         QString format;
         if (i == 0)
@@ -231,14 +238,17 @@ void DocumentationWriter::writePushVariables(Model *model) {
 }
 
 void DocumentationWriter::writePullVariables(Model *model) {
-    writeTableTitle("Pull variables");
     QList<PullVariableBase*> var = model->seekChildren<PullVariableBase*>("*");
-
     int n = var.size();
+    if (n == 0) return;
+
+    writeTableTitle("Pull variables");
+    /* If an empty section is wanted
     if (n == 0)  {
         QString format = QString(FORMAT_FIRST_ROW) + FORMAT_VERY_LAST_ROW;
         writeTableRow(format, "", "", "@I None");
     }
+    */
     for (int i = 0; i < n; ++i) {
         QString format;
         if (i == 0)

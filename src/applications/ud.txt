@@ -1,0 +1,370 @@
+********* Start testing of TestNumericLimits *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestNumericLimits::initTestCase()
+
+1 1
+inf 1.79769e+308 2.22045e-016 inf
+PASS   : TestNumericLimits::testInfinity()
+PASS   : TestNumericLimits::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestNumericLimits *********
+********* Start testing of TestFrequencyDistribution *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestFrequencyDistribution::initTestCase()
+PASS   : TestFrequencyDistribution::testCalculations()
+PASS   : TestFrequencyDistribution::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestFrequencyDistribution *********
+********* Start testing of TestPlot *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestPlot::initTestCase()
+PASS   : TestPlot::testSetIntervals1()
+PASS   : TestPlot::testSetIntervals2()
+PASS   : TestPlot::testSetIntervals3()
+PASS   : TestPlot::testSetIntervals4()
+PASS   : TestPlot::cleanupTestCase()
+Totals: 6 passed, 0 failed, 0 skipped
+********* Finished testing of TestPlot *********
+********* Start testing of TestStage *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestStage::initTestCase()
+PASS   : TestStage::testAgeClasses()
+PASS   : TestStage::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestStage *********
+********* Start testing of TestScheduled *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestScheduled::initTestCase()
+PASS   : TestScheduled::testSchedule()
+PASS   : TestScheduled::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestScheduled *********
+********* Start testing of TestRecords *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestRecords::initTestCase()
+PASS   : TestRecords::testCalendarDateIsFirst()
+PASS   : TestRecords::testCalendarDateIsInside()
+PASS   : TestRecords::testImposeDate()
+PASS   : TestRecords::cleanupTestCase()
+Totals: 5 passed, 0 failed, 0 skipped
+********* Finished testing of TestRecords *********
+********* Start testing of TestRandom *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestRandom::initTestCase()
+PASS   : TestRandom::testLargestDiff()
+PASS   : TestRandom::testP()
+PASS   : TestRandom::testUniform()
+PASS   : TestRandom::testLognormal()
+PASS   : TestRandom::testNormal()
+PASS   : TestRandom::testPoisson()
+PASS   : TestRandom::testMinMaxOk()
+PASS   : TestRandom::testMinMaxError()
+PASS   : TestRandom::cleanupTestCase()
+Totals: 10 passed, 0 failed, 0 skipped
+********* Finished testing of TestRandom *********
+********* Start testing of TestLifeCycle *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestLifeCycle::initTestCase()
+PASS   : TestLifeCycle::testUpdate()
+PASS   : TestLifeCycle::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestLifeCycle *********
+********* Start testing of TestLifeStage *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestLifeStage::initTestCase()
+WARNING: TestLifeStage::testUpdate() Use FrequencyDistribution here !
+PASS   : TestLifeStage::testUpdate()
+PASS   : TestLifeStage::testState()
+PASS   : TestLifeStage::cleanupTestCase()
+Totals: 4 passed, 0 failed, 0 skipped
+********* Finished testing of TestLifeStage *********
+********* Start testing of TestFixed *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestFixed::initTestCase()
+PASS   : TestFixed::testPullVariables()
+PASS   : TestFixed::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestFixed *********
+********* Start testing of TestCalendar *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestCalendar::initTestCase()
+PASS   : TestCalendar::testSolarElevation()
+Day length deviation (h)0: -0.217118
+Day length deviation (h)0: -0.244155
+Day length deviation (h)0: -0.152248
+Day length deviation (h)0: -0.248678
+Day length deviation (h)1: -0.115949
+Day length deviation (h)1: -0.0694329
+Day length deviation (h)1: -0.170312
+Day length deviation (h)1: -0.0649395
+Day length deviation (h)2: -0.140682
+Day length deviation (h)2: -0.0685004
+Day length deviation (h)2: -0.144534
+Day length deviation (h)2: -0.0665926
+Day length deviation (h)3: -0.354978
+Day length deviation (h)3: -0.41103
+Day length deviation (h)3: -0.354042
+Day length deviation (h)3: -0.412309
+PASS   : TestCalendar::testDayLength()
+PASS   : TestCalendar::testDaySteps()
+PASS   : TestCalendar::testHourSteps()
+PASS   : TestCalendar::cleanupTestCase()
+Totals: 6 passed, 0 failed, 0 skipped
+********* Finished testing of TestCalendar *********
+********* Start testing of TestPlant *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestPlant::initTestCase()
+PASS   : TestPlant::testOptimizeAllocationMixed()
+PASS   : TestPlant::testOptimizeAllocationAllPositive()
+PASS   : TestPlant::cleanupTestCase()
+Totals: 4 passed, 0 failed, 0 skipped
+********* Finished testing of TestPlant *********
+********* Start testing of TestXmlNode *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestXmlNode::initTestCase()
+PASS   : TestXmlNode::testParseNodesOneRoot()
+PASS   : TestXmlNode::testParseNodesManyRoots()
+PASS   : TestXmlNode::testParseWithAttributes()
+PASS   : TestXmlNode::testParseFromFile()
+PASS   : TestXmlNode::testParseMissingFile()
+PASS   : TestXmlNode::testWriteToFile()
+PASS   : TestXmlNode::testDeepEqualsTrue()
+PASS   : TestXmlNode::testDeepEqualsUnequalNodes()
+PASS   : TestXmlNode::testDeepEqualsUnequalAttributes()
+PASS   : TestXmlNode::testMergeAttributes()
+PASS   : TestXmlNode::testMergeNodes()
+PASS   : TestXmlNode::testBuildQueryString()
+PASS   : TestXmlNode::testCompileNoSelect()
+PASS   : TestXmlNode::testCompileMissingFile()
+PASS   : TestXmlNode::testCompileInvalidSelect()
+PASS   : TestXmlNode::testCompileEmptySelect()
+PASS   : TestXmlNode::testCompileOneSelect()
+PASS   : TestXmlNode::testCompileNestedSelect()
+PASS   : TestXmlNode::testCaseCirsium()
+PASS   : TestXmlNode::cleanupTestCase()
+Totals: 21 passed, 0 failed, 0 skipped
+********* Finished testing of TestXmlNode *********
+********* Start testing of TestSimulationTrickle *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestSimulationTrickle::initTestCase()
+FAIL!  : TestSimulationTrickle::testExecute() Compared values are not the same
+   Actual (models.size()): 0
+   Expected (1): 1
+..\..\..\library\usengine\test\test_simulation_trickle.cpp(46) : failure location
+FAIL!  : TestSimulationTrickle::testExecute() Compared values are not the same
+   Actual (models.size()): 0
+   Expected (1): 1
+..\..\..\library\usengine\test\test_simulation_trickle.cpp(46) : failure location
+FAIL!  : TestSimulationTrickle::testExecute() Compared values are not the same
+   Actual (models.size()): 0
+   Expected (1): 1
+..\..\..\library\usengine\test\test_simulation_trickle.cpp(46) : failure location
+PASS   : TestSimulationTrickle::cleanupTestCase()
+Totals: 2 passed, 3 failed, 0 skipped
+********* Finished testing of TestSimulationTrickle *********
+********* Start testing of TestSimulationMaker *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestSimulationMaker::initTestCase()
+PASS   : TestSimulationMaker::testSimulation()
+PASS   : TestSimulationMaker::testModel()
+PASS   : TestSimulationMaker::testParameters()
+PASS   : TestSimulationMaker::testOutputOneXY()
+PASS   : TestSimulationMaker::testOutputManyXY()
+PASS   : TestSimulationMaker::testCommonElement()
+PASS   : TestSimulationMaker::testModelInstances()
+PASS   : TestSimulationMaker::testModelsFromFileOneLevel()
+PASS   : TestSimulationMaker::testModelsFromFileTwoLevels()
+PASS   : TestSimulationMaker::testModelsFromFileThreeLevels()
+PASS   : TestSimulationMaker::testModelsAndParametersFromFile()
+PASS   : TestSimulationMaker::cleanupTestCase()
+Totals: 13 passed, 0 failed, 0 skipped
+********* Finished testing of TestSimulationMaker *********
+********* Start testing of TestSimulation *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestSimulation::initTestCase()
+FAIL!  : TestSimulation::testInitialize() Compared values are not the same
+..\..\..\library\usengine\test\test_simulation.cpp(54) : failure location
+PASS   : TestSimulation::testFindModels()
+PASS   : TestSimulation::testFindOutputs()
+PASS   : TestSimulation::testExecute()
+PASS   : TestSimulation::cleanupTestCase()
+Totals: 5 passed, 1 failed, 0 skipped
+********* Finished testing of TestSimulation *********
+********* Start testing of TestModelMaker *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestModelMaker::initTestCase()
+PASS   : TestModelMaker::testCreation()
+PASS   : TestModelMaker::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestModelMaker *********
+********* Start testing of TestUtilities *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestUtilities::initTestCase()
+PASS   : TestUtilities::testDecodeSimpleListEmpty()
+PASS   : TestUtilities::testDecodeSimpleListOne()
+PASS   : TestUtilities::testDecodeSimpleListMany()
+PASS   : TestUtilities::testDecodeSimpleListFaulty()
+PASS   : TestUtilities::testSplitAtNamespace()
+PASS   : TestUtilities::testFindAtomicGloballyAll()
+PASS   : TestUtilities::testFindAtomicGloballySome()
+PASS   : TestUtilities::testFindAtomicGloballyNone()
+PASS   : TestUtilities::testFindAtomicDescendantsAll()
+PASS   : TestUtilities::testFindAtomicDescendantsSome()
+PASS   : TestUtilities::testFindAtomicDescendantsNone()
+PASS   : TestUtilities::testFindJokerFirst()
+PASS   : TestUtilities::testFindJokerInside()
+PASS   : TestUtilities::testFindJokerLast()
+PASS   : TestUtilities::testQStringSplit()
+PASS   : TestUtilities::testFindSlashes()
+PASS   : TestUtilities::testFindExceptions()
+PASS   : TestUtilities::testFindEmpty()
+PASS   : TestUtilities::testFindChildrenFromRoot()
+PASS   : TestUtilities::testFindChildrenFromParent()
+PASS   : TestUtilities::testFindChildFromRoot()
+PASS   : TestUtilities::testFindChildFromParent()
+PASS   : TestUtilities::testSplitParentChildExpression()
+PASS   : TestUtilities::testMissingLeftBracket()
+PASS   : TestUtilities::testMissingRightBracket()
+PASS   : TestUtilities::testMissplacedLeftBracket()
+PASS   : TestUtilities::testMissingChildName()
+PASS   : TestUtilities::testSeekChildAndParentNone()
+PASS   : TestUtilities::testSeekChildAndParentOne()
+PASS   : TestUtilities::testSeekChildrenAndParentsMany()
+PASS   : TestUtilities::testSeekChildrenAndParentsJoker()
+PASS   : TestUtilities::testPeekOne()
+PASS   : TestUtilities::testPeekOneChild()
+PASS   : TestUtilities::testPeekOneDescendant()
+PASS   : TestUtilities::testPeekOneAscendant()
+PASS   : TestUtilities::testPeekOneNearest()
+PASS   : TestUtilities::testSeekOneNearest()
+PASS   : TestUtilities::testPeekParent()
+PASS   : TestUtilities::testSeekParent()
+PASS   : TestUtilities::testStringToValueChar()
+PASS   : TestUtilities::testStringToValueTime()
+PASS   : TestUtilities::testDecodeListFaulty()
+PASS   : TestUtilities::testDecodeListEmpty()
+PASS   : TestUtilities::testDecodeListEmptyItems()
+PASS   : TestUtilities::testDecodeListDepth1()
+PASS   : TestUtilities::testDecodeListDepth2()
+PASS   : TestUtilities::testDecodeListOfInts()
+PASS   : TestUtilities::testDecodeListOfDates()
+PASS   : TestUtilities::testDecodeListOfStringDoubles()
+PASS   : TestUtilities::testDecodeListOfStringDoubles2()
+PASS   : TestUtilities::testDecodeListOfIntDates()
+PASS   : TestUtilities::testDivBounded()
+PASS   : TestUtilities::testFindNearestFile()
+PASS   : TestUtilities::cleanupTestCase()
+Totals: 55 passed, 0 failed, 0 skipped
+********* Finished testing of TestUtilities *********
+********* Start testing of TestTime *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestTime::initTestCase()
+PASS   : TestTime::testConversion()
+PASS   : TestTime::testAddSeconds()
+PASS   : TestTime::testAddMinutes()
+PASS   : TestTime::testAddHours()
+PASS   : TestTime::testAddDays()
+PASS   : TestTime::testAddYears()
+PASS   : TestTime::cleanupTestCase()
+Totals: 8 passed, 0 failed, 0 skipped
+********* Finished testing of TestTime *********
+********* Start testing of TestStrata *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestStrata::initTestCase()
+PASS   : TestStrata::testAbsoluteInt()
+PASS   : TestStrata::testAbsoluteDouble()
+PASS   : TestStrata::testAbsoluteDate()
+PASS   : TestStrata::testRelativeInt()
+PASS   : TestStrata::testRelativeDouble()
+PASS   : TestStrata::testFactorInt()
+PASS   : TestStrata::testFactorDouble()
+PASS   : TestStrata::cleanupTestCase()
+Totals: 9 passed, 0 failed, 0 skipped
+********* Finished testing of TestStrata *********
+********* Start testing of TestPushVariable *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestPushVariable::initTestCase()
+PASS   : TestPushVariable::testInt()
+PASS   : TestPushVariable::testBool()
+PASS   : TestPushVariable::testDate()
+PASS   : TestPushVariable::cleanupTestCase()
+Totals: 5 passed, 0 failed, 0 skipped
+********* Finished testing of TestPushVariable *********
+********* Start testing of TestParameter *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestParameter::initTestCase()
+PASS   : TestParameter::testDefaultInt()
+PASS   : TestParameter::testChangeInt()
+PASS   : TestParameter::testSetIntWithStringValue()
+PASS   : TestParameter::testDefaultString()
+PASS   : TestParameter::testChangeString()
+PASS   : TestParameter::testSetStringWithStringValue()
+PASS   : TestParameter::testDefaultDate()
+PASS   : TestParameter::testChangeDate()
+PASS   : TestParameter::testSetDateWithStringValue()
+PASS   : TestParameter::testDefaultBool()
+PASS   : TestParameter::testChangeBool()
+PASS   : TestParameter::testSetBoolWithStringValue()
+PASS   : TestParameter::testIntToDouble()
+PASS   : TestParameter::testDoubleToInt()
+PASS   : TestParameter::testIntToDate()
+PASS   : TestParameter::testMissing()
+PASS   : TestParameter::cleanupTestCase()
+Totals: 18 passed, 0 failed, 0 skipped
+********* Finished testing of TestParameter *********
+********* Start testing of TestNameList *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestNameList::initTestCase()
+PASS   : TestNameList::testEmpty()
+PASS   : TestNameList::testOne()
+PASS   : TestNameList::testMany()
+PASS   : TestNameList::cleanupTestCase()
+Totals: 5 passed, 0 failed, 0 skipped
+********* Finished testing of TestNameList *********
+********* Start testing of TestIdentifier *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestIdentifier::initTestCase()
+PASS   : TestIdentifier::testConstruction()
+PASS   : TestIdentifier::testEquality()
+PASS   : TestIdentifier::testInequality()
+PASS   : TestIdentifier::testIdentifiers()
+PASS   : TestIdentifier::cleanupTestCase()
+Totals: 6 passed, 0 failed, 0 skipped
+********* Finished testing of TestIdentifier *********
+********* Start testing of TestDataGrid *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestDataGrid::initTestCase()
+PASS   : TestDataGrid::test1D()
+PASS   : TestDataGrid::test2D()
+PASS   : TestDataGrid::testOneLineFile()
+PASS   : TestDataGrid::testMissingFile()
+PASS   : TestDataGrid::testEmptyFile()
+PASS   : TestDataGrid::testIllFormedFile()
+PASS   : TestDataGrid::testOnlyColumnHeadings()
+PASS   : TestDataGrid::testRowIndices()
+PASS   : TestDataGrid::cleanupTestCase()
+Totals: 10 passed, 0 failed, 0 skipped
+********* Finished testing of TestDataGrid *********
+********* Start testing of TestComponent *********
+Config: Using QTest library 4.7.4, Qt 4.7.4
+PASS   : TestComponent::initTestCase()
+PASS   : TestComponent::testSeekOne()
+PASS   : TestComponent::testSeekMany()
+PASS   : TestComponent::testSeekOneChild()
+PASS   : TestComponent::testSeekChildren()
+PASS   : TestComponent::testSeekOneSibling()
+PASS   : TestComponent::testSeekOneSiblingNotMe()
+PASS   : TestComponent::testSeekSiblings()
+PASS   : TestComponent::testSeekSiblingsNotMe()
+PASS   : TestComponent::testSeekPrecedingSibling()
+PASS   : TestComponent::testSeekFollowingSibling()
+PASS   : TestComponent::testSeekOneDescendant()
+PASS   : TestComponent::testSeekDescendants()
+PASS   : TestComponent::testSeekOneAscendant()
+PASS   : TestComponent::testSeekOneAscendantWithJoker()
+PASS   : TestComponent::cleanupTestCase()
+Totals: 16 passed, 0 failed, 0 skipped
+********* Finished testing of TestComponent *********
+
+
+One or more tests failed

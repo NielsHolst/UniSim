@@ -14,15 +14,13 @@
 
 namespace UniSim{
 
-class SimulationMaker;
-
 class Simulation : public NamedObject
 {
 	Q_OBJECT
 public:
     enum State {Uninitialized, Initialized, Faulty};
 
-    Simulation(Identifier name, SimulationMaker *myMaker = 0);
+    Simulation(Identifier name);
     void execute();
     QString version() const;
     State state() const;
@@ -36,7 +34,6 @@ public:
     QString inputFilePath(QString fileName);
 
 private:
-    SimulationMaker *myMaker;
     State _state;
     QString _version;
     bool _stopCurrentRun, _stopAllRuns;

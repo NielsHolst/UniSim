@@ -21,6 +21,7 @@ class NetProduction : public UniSim::Model
 public: 
     NetProduction(UniSim::Identifier name, QObject *parent=0);
 	// standard methods
+    void ammend();
     void initialize();
 	void reset();
 	void update();

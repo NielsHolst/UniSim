@@ -101,41 +101,47 @@ void Component::followRedirections() {
 }
 
 //! Initializes this and all children according to the RecursionPolicy.
-void Component::deepInitialize()
-{
-    // Update parameters twice since initialize could create additional parameters
-    parameters = seekChildren<ParameterBase*>("*");
+void Component::deepInitialize() {
+    QList<QObject*> before= seekDescendants<QObject*>("*");
     call(this, &Component::initialize, &Component::deepInitialize, recursionPolicy(Component::Initialize));
-    parameters = seekChildren<ParameterBase*>("*");
+    QList<QObject*> after = seekDescendants<QObject*>("*");
+
+    if (before.size() != after.size()) {
+        QString msg("It is illegal to create children in initialize(). "
+                    "Descendant count before/after deepInitialize: %1/%2. "
+                    "Additional children must be created in constructor or ammend().\n");
+        msg += "Before:\n";
+        for (int i = 0; i < before.size(); ++i)
+            msg += before.at(i)->objectName() + "\n";
+        msg += "After:\n";
+        for (int i = 0; i < after.size(); ++i)
+            msg += after.at(i)->objectName() + "\n";
+        throw Exception(msg.arg(before.size()).arg(after.size()));
+    }
 }
 
 //! Resets this and all children according to the RecursionPolicy.
-void Component::deepReset()
-{
+void Component::deepReset() {
     call(this, &Component::reset, &Component::deepReset, recursionPolicy(Component::Reset));
 }
 
 //! Updates this and all children according to the RecursionPolicy.
-void Component::deepUpdate()
-{
+void Component::deepUpdate() {
     call(this, &Component::update, &Component::deepUpdate, recursionPolicy(Component::Update));
 }
 
 //! Cleans up this and all children according to the RecursionPolicy.
-void Component::deepCleanup()
-{
+void Component::deepCleanup() {
     call(this, &Component::cleanup, &Component::deepCleanup, recursionPolicy(Component::Cleanup));
 }
 
 //! Debriefs this this and all children according to the RecursionPolicy.
-void Component::deepDebrief()
-{
+void Component::deepDebrief() {
     call(this, &Component::debrief, &Component::deepDebrief, recursionPolicy(Component::Debrief));
 }
 
 //! Sets the RecursionPolicy
-void Component::setRecursionPolicy(Function function, RecursionPolicy policy_)
-{
+void Component::setRecursionPolicy(Function function, RecursionPolicy policy_) {
     if (function == AllFunctions) {
         for (int f = Initialize; f < AllFunctions; ++f)
             policy[Function(f)] = policy_;
@@ -146,13 +152,13 @@ void Component::setRecursionPolicy(Function function, RecursionPolicy policy_)
 }	
 
 //! Gets the recursion Policy
-Component::RecursionPolicy Component::recursionPolicy(Function function) const
-{
+Component::RecursionPolicy Component::recursionPolicy(Function function) const {
     Q_ASSERT(function != AllFunctions);
     return policy[function];
 }
 
-void Component::acceptPullVariableChanged(PullVariableBase *variable, ParameterBase *parameter) {
+void Component::acceptPullVariableChanged(PullVariableBase *variable,
+                                          ParameterBase *parameter) {
     parameter->setValueFromString(variable->toVariant().toString());
 }
 

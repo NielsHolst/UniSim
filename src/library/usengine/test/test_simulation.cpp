@@ -50,8 +50,6 @@ void TestSimulation::cleanupTestCase()
 void TestSimulation::testInitialize()
 {
 	QVERIFY(_simulation);
-	//writeObjectTree(_simulation);
-    QCOMPARE(_simulation->state(), Simulation::Initialized);
 }
 
 void TestSimulation::testFindModels() 

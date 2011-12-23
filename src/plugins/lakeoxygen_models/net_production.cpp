@@ -4,7 +4,6 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/output.h>
-#include <usbase/output_variable.h>
 #include "usbase/parameter.h"
 #include "lake_environment.h"
 #include "net_production.h"
@@ -60,8 +59,12 @@ NetProduction::NetProduction(UniSim::Identifier name, QObject *parent)
     "Calculated light at a certain depth ({@Sym mu}mol/m @Sup 2/d)");
 
 }
+
+void NetProduction::ammend() {
+    CreateLayers(); //Was moved from the constructor to ensure that the xml file has been read.
+}
+
 void NetProduction::initialize() {
-    CreateLayers(); //Was moved from the constructor to the initialize to ensure that the xml file has been read.
 
     weather = seekOne<Model*>("weather");
     calendar = seekOne<Model*>("calendar");

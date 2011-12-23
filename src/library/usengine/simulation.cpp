@@ -31,8 +31,8 @@
 
 namespace UniSim{
 
-Simulation::Simulation(Identifier name, SimulationMaker *myMaker_)
-    : NamedObject(name, 0), myMaker(myMaker_)
+Simulation::Simulation(Identifier name)
+    : NamedObject(name, 0)
 {
 }
 
@@ -54,8 +54,6 @@ void Simulation::execute()
     mo.toFront();
     while (mo.hasNext())
         mo.next()->deepInitialize();
-    if (myMaker)
-        myMaker->createTraces();
     ou.toFront();
     while (ou.hasNext())
         ou.next()->deepInitialize();

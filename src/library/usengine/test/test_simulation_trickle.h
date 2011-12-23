@@ -18,7 +18,7 @@ private slots:
     void cleanupTestCase();
 private:
     void executeAndTest(int steps, int check0, int check1, int check2);
-    void textBox(int boxNumber, int contents);
+    void testBox(int boxNumber, int contents);
     UniSim::Simulation *simulation;
     UniSim::Integrator *integrator;
     TrickleBox	 *boxes[3];

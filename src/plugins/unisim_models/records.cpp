@@ -47,6 +47,12 @@ Records::Records(Identifier name, QObject *parent)
     nextColumnValues = new QVector<double>;
 }
 
+void Records::ammend() {
+    readColumnNames();
+    createColumnPullVariables();
+    readFromFirstToLastLine();
+}
+
 Records::~Records() {
     delete currentColumnValues;
     delete nextColumnValues;
@@ -54,9 +60,6 @@ Records::~Records() {
 
 void Records::initialize() {
 	calendar = seekOne<Model*>("calendar");
-    readColumnNames();
-    createColumnPullVariables();
-    readFromFirstToLastLine();
 }
 
 void Records::readColumnNames() {

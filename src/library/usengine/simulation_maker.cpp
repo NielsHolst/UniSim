@@ -114,7 +114,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
 
     simName = attributeValue("name", "anonymous");
 	
-    Simulation *sim = new Simulation(simName, this);
+    Simulation *sim = new Simulation(simName);
     UniSim::setSimulationObject(sim);
     sim->setFilePath(fileName_);
 
@@ -148,9 +148,11 @@ Simulation* SimulationMaker::parse(QString fileName_)
     if (noOutputs)
         throw Exception(message("Missing 'output' element in 'simulation'"));
 
+    ammendComponents();
     redirectParameters();
-    reader->clear();
+    createTraces();
 
+    reader->clear();
     return sim;
 }
 
@@ -500,7 +502,6 @@ void SimulationMaker::readOutputElement(QObject* parent)
 
 void SimulationMaker::readOutputSubElement(QList<TraceParam> *parameters, QObject* parent)
 {
-
     Q_ASSERT(reader->isStartElement() && parent);
 
     TraceParam param;
@@ -510,7 +511,6 @@ void SimulationMaker::readOutputSubElement(QList<TraceParam> *parameters, QObjec
     param.setAttribute( "summary", attributeValue("summary", "") );
     param.setAttribute( "type", attributeValue("type", "") );
     param.parent = parent;
-
     parameters->append(param);
 
     nextElementDelim();
@@ -524,13 +524,10 @@ void SimulationMaker::createTracesKindOf(const QList<TraceParam> &traceParam) {
         const TraceParam &param( traceParam.value(i) );
         QString label = param.attribute("label").toString();
         QString value = param.attribute("value").toString();
-        std::cout << qPrintable(label+" = "+value+"\n");
         QList<T*> bases = seekMany<QObject*, T*>(value);
         // If several bases are found they will all get the same label.
         // This must be fixed, as needed, by Output
         for (int i = 0; i < bases.size(); ++i) {
-            std::cout
-                << qPrintable("createTrace "+label+" "+param.parent->objectName()+"\n");
             U *trace = new U(label, bases[i], param.parent);
             trace->appendAttributes(param);
         }
@@ -538,10 +535,8 @@ void SimulationMaker::createTracesKindOf(const QList<TraceParam> &traceParam) {
 }
 
 void SimulationMaker::createTraces() {
-    std::cout << "createTraces A\n";
     createTracesKindOf<PullVariableBase, Trace<PullVariableBase> >(traceVariableParam);
     createTracesKindOf<ParameterBase, Trace<ParameterBase> >(traceParameterParam);
-    std::cout << "createTraces Z\n";
 }
 
 bool SimulationMaker::elementNameEquals(QString s) const {
@@ -597,6 +592,14 @@ namespace {
                              receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
         }
         return matchedT;
+    }
+}
+
+void SimulationMaker::ammendComponents() {
+    QList<Component*> components = seekMany<Component*>("*");
+    QListIterator<Component*>  i(components);
+    while (i.hasNext()) {
+        i.next()->ammend();
     }
 }
 

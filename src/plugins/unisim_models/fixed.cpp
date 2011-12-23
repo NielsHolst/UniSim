@@ -16,13 +16,13 @@ Fixed::Fixed(Identifier name, QObject *parent)
     "Push variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}.");
 }
 
-void Fixed::initialize() {
-    initParameters();
-    initPullVariables();
-    initPushVariables();
+void Fixed::ammend() {
+    ammendParameters();
+    ammendPullVariables();
+    ammendPushVariables();
 }
 
-void Fixed::initParameters() {
+void Fixed::ammendParameters() {
     QMap<QString, double> pList = decodeList<QString, double>(parametersAsString, this);
     int n = pList.size();
     parameters.fill(0, n);
@@ -39,7 +39,7 @@ void Fixed::initParameters() {
     }
 }
 
-void Fixed::initPullVariables() {
+void Fixed::ammendPullVariables() {
     QMap<QString, double> pvList = decodeList<QString, double>(pullVariablesAsString, this);
     int n = pvList.size();
     pullVariables.fill(0, n);
@@ -56,7 +56,7 @@ void Fixed::initPullVariables() {
     }
 }
 
-void Fixed::initPushVariables() {
+void Fixed::ammendPushVariables() {
     QMap<QString, double> pvList = decodeList<QString, double>(pushVariablesAsString, this);
     int n = pvList.size();
     pushVariables.fill(0, n);

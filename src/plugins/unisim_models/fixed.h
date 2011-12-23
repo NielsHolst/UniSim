@@ -12,13 +12,12 @@ class Fixed : public Model
 public:
     Fixed(UniSim::Identifier name, QObject *parent=0);
     // standard methods
-    void initialize();
-
+    void ammend();
 private:
     //methods
-    void initParameters();
-    void initPullVariables();
-    void initPushVariables();
+    void ammendParameters();
+    void ammendPullVariables();
+    void ammendPushVariables();
 
     // parameters
     QString parametersAsString, pullVariablesAsString, pushVariablesAsString;

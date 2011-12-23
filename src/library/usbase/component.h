@@ -34,6 +34,7 @@ public:
 	
     Component(Identifier name, QObject *parent=0);
 		
+    virtual void ammend() { }
     virtual void initialize() { }
     virtual void reset() { }
     virtual void update() { }

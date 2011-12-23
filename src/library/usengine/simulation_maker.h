@@ -25,22 +25,14 @@ class ParameterBase;
 class Parameters;
 class Simulation;
 
-//! \addtogroup UniSim
-//@{
-//! The %SimulationMaker class provides a factory to create simulations from UniSim files
 class SimulationMaker : public QObject
 {
 	Q_OBJECT
 	
 public:
-	//! Constructor
 	SimulationMaker();
-	//! Destructor
 	~SimulationMaker();
-    // Create Simulation object from UniSim file
     Simulation* parse(QString fileName);
-
-    void createTraces();
 
 signals: 
     //! Signals when the parser begins expanding the original UniSim file
@@ -102,7 +94,9 @@ private:
     QString attributeValue(QString name, QObject *parent) const;
 
     QString message(QString text) const;
+    void ammendComponents();
     void redirectParameters();
+    void createTraces();
 };
 
 //@}

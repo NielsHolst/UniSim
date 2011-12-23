@@ -9,7 +9,7 @@
 #include <QFile>
 #include <QList>
 #include <usbase/output.h>
-#include <usbase/output_result.h>
+#include <usbase/trace_base.h>
 
 namespace UniSim{
 
@@ -33,13 +33,12 @@ private:
     void openFile();
     void closeFile();
     QString ammendedFileName(QString fileName, int number);
-    int resultsSize() const;
-    int dataSize(const OutputResults &results) const;
+    int traceSize() const;
     void writeLabels();
     void writeXLabels();
     void writeYLabels();
-    void writeResults();
-    void writeResults(const OutputResults &results, int dataIx);
+    void writeTraces();
+    void writeTraces(const QList<TraceBase*> &results, int dataIx);
     void writeCR();
     void writeTab();
 };

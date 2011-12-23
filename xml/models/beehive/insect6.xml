@@ -63,7 +63,6 @@
 	
 	<output type="plot">
 		<parameter name="title" value="Insect stages"/>
-		<parameter name="type" value="symbols"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Egg" axis="y" value="insect/egg[number]"/>
 		<variable label="Larva" axis="y" value="insect/larva[number]"/>

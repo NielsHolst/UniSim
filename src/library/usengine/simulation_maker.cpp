@@ -14,8 +14,7 @@
 #include <usbase/integrator.h>
 #include <usbase/exception.h>
 #include <usbase/output.h>
-#include <usbase/output_parameter.h>
-#include <usbase/output_variable.h>
+#include <usbase/trace.h>
 #include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
 #include <usbase/pull_variable.h>
@@ -91,11 +90,11 @@ void SimulationMaker::ignoreElement() {
 
 Simulation* SimulationMaker::parse(QString fileName_)
 {
-    QString simName, simVersion;
+    QString simName;
 
     redirectedParameters.clear();
-    outputVariableParam.clear();
-    outputParameterParam.clear();
+    traceVariableParam.clear();
+    traceParameterParam.clear();
 
     emit beginExpansion();
     fileName = compileToFile(fileName_);
@@ -114,9 +113,8 @@ Simulation* SimulationMaker::parse(QString fileName_)
         throw Exception(message("Root element must be 'simulation'"));
 
     simName = attributeValue("name", "anonymous");
-    simVersion = attributeValue("version", "1.0");
 	
-    Simulation *sim = new Simulation(simName, simVersion);
+    Simulation *sim = new Simulation(simName, this);
     UniSim::setSimulationObject(sim);
     sim->setFilePath(fileName_);
 
@@ -151,11 +149,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
         throw Exception(message("Missing 'output' element in 'simulation'"));
 
     redirectParameters();
-    setSequence(sim);
     reader->clear();
-    emit beginInitialization();
-    sim->initialize(_sequence, this);
-    emit endInitialization();
 
     return sim;
 }
@@ -187,7 +181,6 @@ void SimulationMaker::readIntegratorElement(QObject* parent) {
         throw Exception(message(ex.message()));
     }
 	
-	_sequence.clear();
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("sequence")) {
@@ -216,7 +209,7 @@ void SimulationMaker::readSequenceElement(QObject* parent)
 	while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("model")) {
             QString model = attributeValue("name", parent);
-            _sequence.append(model);
+            // deprecated: sequence.append(model);
         }
         else {
             QString msg("Unknown child element of 'sequence' element: '%1'");
@@ -477,15 +470,10 @@ void SimulationMaker::readOutputElement(QObject* parent)
 	
     QString objectName = attributeValue("name", "anonymous");
     QString type = attributeValue("type", parent);
-    QString summary = attributeValue("summary", "");
 
     Output *output;
     try {
         output = OutputMaker::create(type, objectName, parent);
-        if (!summary.isEmpty()) {
-            bool isSummary = UniSim::stringToValue<bool>(summary);
-            output->setIsSummary(isSummary);
-        }
     }
     catch (Exception &ex) {
         throw Exception(message(ex.message()));
@@ -497,10 +485,10 @@ void SimulationMaker::readOutputElement(QObject* parent)
             readParameterElement(asList(output));
         }
         else if (elementNameEquals("read-parameter")) {
-            readOutputSubElement(&outputParameterParam, output);
+            readOutputSubElement(&traceParameterParam, output);
         }
         else if (elementNameEquals("variable")) {
-            readOutputSubElement(&outputVariableParam, output);
+            readOutputSubElement(&traceVariableParam, output);
         }
         else {
             throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
@@ -510,17 +498,17 @@ void SimulationMaker::readOutputElement(QObject* parent)
 	nextElementDelim();
 }	
 
-void SimulationMaker::readOutputSubElement(QList<OutputParam> *parameters, QObject* parent)
+void SimulationMaker::readOutputSubElement(QList<TraceParam> *parameters, QObject* parent)
 {
 
     Q_ASSERT(reader->isStartElement() && parent);
 
-    OutputParam param;
-    param.attributes["label"] = attributeValue("label", parent);
-    param.attributes["value"] = attributeValue("value", parent);
-    param.attributes["axis"] = attributeValue("axis", parent);
-    param.attributes["summary"] = attributeValue("summary", "");
-    param.attributes["type"] = attributeValue("type", "");
+    TraceParam param;
+    param.setAttribute( "label", attributeValue("label", parent) );
+    param.setAttribute( "value", attributeValue("value", parent) );
+    param.setAttribute( "axis", attributeValue("axis", parent) );
+    param.setAttribute( "summary", attributeValue("summary", "") );
+    param.setAttribute( "type", attributeValue("type", "") );
     param.parent = parent;
 
     parameters->append(param);
@@ -530,41 +518,30 @@ void SimulationMaker::readOutputSubElement(QList<OutputParam> *parameters, QObje
     nextElementDelim();
 }
 
-void SimulationMaker::setupOutputVariableElements()
-{
-    for (int i = 0; i < outputVariableParam.size(); ++i) {
-        OutputParam param = outputVariableParam[i];
-        QString value = param.attributes.value("value");
-        QList<PullVariableBase*> variables = seekMany<QObject*, PullVariableBase*>(value);
-        for (int j = 0; j < variables.size(); ++j) {
-            new OutputVariable(param.attributes, variables[j], param.parent);
+template <class T, class U>
+void SimulationMaker::createTracesKindOf(const QList<TraceParam> &traceParam) {
+    for (int i = 0; i < traceParam.size(); ++i) {
+        const TraceParam &param( traceParam.value(i) );
+        QString label = param.attribute("label").toString();
+        QString value = param.attribute("value").toString();
+        std::cout << qPrintable(label+" = "+value+"\n");
+        QList<T*> bases = seekMany<QObject*, T*>(value);
+        // If several bases are found they will all get the same label.
+        // This must be fixed, as needed, by Output
+        for (int i = 0; i < bases.size(); ++i) {
+            std::cout
+                << qPrintable("createTrace "+label+" "+param.parent->objectName()+"\n");
+            U *trace = new U(label, bases[i], param.parent);
+            trace->appendAttributes(param);
         }
     }
 }
 
-void SimulationMaker::setupOutputParameterElements()
-{
-    for (int i = 0; i < outputParameterParam.size(); ++i) {
-        OutputParam param = outputParameterParam[i];
-        QString value = param.attributes.value("value");
-        QList<ParameterBase*> parameters = seekMany<QObject*, ParameterBase*>(value);
-        for (int i = 0; i < parameters.size(); ++i)
-            new OutputParameter(param.attributes, parameters[i], param.parent);
-    }
-}
-
-void SimulationMaker::splitOutputDataValue(QString value, QString *datasetName, QString *columnName) {
-    bool ok = false;
-    QStringList items = value.trimmed().split("[");
-    if (items.size() == 2 && items[1].endsWith("]")) {
-        ok = true;
-        *datasetName = items[0];
-        *columnName = items[1].left( items[1].size() - 1 );
-    }
-    if (!ok) {
-        QString msg("Value badly formatted: '%1");
-        throw Exception(message(msg.arg(value)));
-    }
+void SimulationMaker::createTraces() {
+    std::cout << "createTraces A\n";
+    createTracesKindOf<PullVariableBase, Trace<PullVariableBase> >(traceVariableParam);
+    createTracesKindOf<ParameterBase, Trace<ParameterBase> >(traceParameterParam);
+    std::cout << "createTraces Z\n";
 }
 
 bool SimulationMaker::elementNameEquals(QString s) const {
@@ -641,15 +618,6 @@ void SimulationMaker::redirectParameters() {
             QString msg("The type of variable '%1' does not match that of the parameter");
             throw Exception(message(msg.arg(variableName)), parameter);
         }
-    }
-}
-
-void SimulationMaker::setSequence(Simulation *sim) {
-    if (!_sequence.isEmpty()) return;
-
-    Models models = seekChildren<Model*>("*", sim);
-    for (int i = 0; i < models.size(); ++i) {
-        _sequence << models.value(i)->id();
     }
 }
 

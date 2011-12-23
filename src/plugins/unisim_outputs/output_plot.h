@@ -11,7 +11,6 @@
 #include <QVector>
 #include <qwt_symbol.h>
 #include <usbase/output.h>
-//#include "output_attributes.h"
 
 namespace UniSim{
 
@@ -31,9 +30,7 @@ public:
 	
 private:
     // parameters
-    enum Type {Lines, Symbols, Both} ;
-    Type type;
-    QString title, typeAsString;
+    QString title;
     bool logy;
     double ymin, ymax;
     int penWidth, symbolSize;
@@ -46,13 +43,10 @@ private:
 
     // methods
     void createDesignInfo();
-    void initType();
     void showPlot();
     void createPlotWidget();
     void fillPlotWidget();
-    void fillWithResults();
     void showPlotWidget();
-    bool emptyResults() const;
     void setZoomer();
 };
 

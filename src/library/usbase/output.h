@@ -12,7 +12,7 @@
 namespace UniSim{
 
 class Integrator;
-class OutputResult;
+class TraceBase;
 
 class Output : public Component
 {
@@ -22,11 +22,10 @@ public:
     // standard methods
     virtual void initialize();
     // special methods
-    const QList<OutputResult *>& xResults() const;
-    const QList<OutputResult *>& yResults() const;
-
-    bool isSummary() const;
-    void setIsSummary(bool value);
+    const QList<TraceBase*>& traces() const;
+    const QList<TraceBase*>& xTraces() const;
+    const QList<TraceBase*>& yTraces() const;
+    bool hasSummary() const;
 protected:
     // data
     QList<Identifier> yLabels;
@@ -36,9 +35,9 @@ protected:
 
 private:
     // data
-    bool _isSummary;
+    bool _hasSummary;
     // links
-    QList<OutputResult *> results, xRes, yRes;
+    QList<TraceBase *> _traces, _xTraces, _yTraces;
     Integrator *integrator;
     // methods
     bool setYLabelsFromLabels();

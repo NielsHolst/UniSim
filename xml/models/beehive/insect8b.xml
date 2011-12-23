@@ -2,13 +2,6 @@
 <simulation version="1.0">
 	<integrator type="UniSim::TimeStepLimited">
 		<parameter name="maxSteps" value="90"/>
-		<sequence>
-			<model name="random"/>
-			<model name="calendar"/>
-			<model name="weather"/>
-			<model name="pollen"/>
-			<model name="insect"/>
-		</sequence>
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="30"/>
 		</model>
@@ -145,29 +138,29 @@
 		<variable label="TavgXAtMax" axis="y" value="weather[Tavg]" summary="xAtMax"/>
 	</output>
 
-	<output type="plot" summary="yes">
+	<output type="plot">
 		<parameter name="title" value="Max. larva density"/>
 		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
 		<variable label="Larva" axis="y" value="insect/larva[number]" summary="max"/>
 	</output>
-	<output type="plot" summary="yes">
+	<output type="plot">
 		<parameter name="title" value="Days until pollen = 10"/>
 		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
 		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
 	</output>
 
-	<output type="plot" summary="yes">
+	<output type="plot">
 		<parameter name="title" value="Max. larva density"/>
 		<variable label="Demand rate" axis="x" value="random/demandRate[value]"/>		
 		<variable label="Larva" axis="y" value="insect/larva[number]" summary="max"/>
 	</output>
-	<output type="plot" summary="yes">
+	<output type="plot">
 		<parameter name="title" value="Days until pollen = 10"/>
 		<variable label="Demand rate" axis="x" value="random/demandRate[value]"/>		
 		<variable label="Pollen threshold" axis="y" value="pollen[mass]" summary="(xAtThreshold 10.)"/>
 	</output>
 
-	<output type="table" summary="yes">
+	<output type="table">
 		<parameter name="fileName" value="insect summary.txt"/>
 		<variable label="FecScale" axis="x" value="random/fecundity_scale[value]"/>		
 		<variable label="Demand rate" axis="x" value="random/demandRate[value]"/>		

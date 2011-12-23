@@ -51,12 +51,12 @@ void TestSimulation::testInitialize()
 {
 	QVERIFY(_simulation);
 	//writeObjectTree(_simulation);
-	QCOMPARE(_simulation->state(), Simulation::Initialized);
+    QCOMPARE(_simulation->state(), Simulation::Initialized);
 }
 
 void TestSimulation::testFindModels() 
 {
-    Simulation *sim = new Simulation("apple-tree", "1.0");
+    Simulation *sim = new Simulation("apple-tree");
     setSimulationObject(sim);
     new TimeStepLimited("integrator", sim);
 	
@@ -73,9 +73,6 @@ void TestSimulation::testFindModels()
 	new AnonymousModel("nymph", mite);
 	new AnonymousModel("adult", mite);
 	
-    sim->initialize(Identifiers() << "butterfly" << "mite");
-	QCOMPARE(_simulation->state(), Simulation::Initialized);
-
     QList<Model*> models;
     models = seekDescendants<Model*>("adult", 0);
 	QCOMPARE(models.size(), 2);

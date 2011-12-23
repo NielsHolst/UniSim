@@ -17,9 +17,9 @@
 #include <usbase/file_locations.h>
 #include <usbase/named_object.h>
 #include <usbase/object_pool.h>
-#include <usbase/output_variable.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable_base.h>
+#include <usbase/trace_base.h>
 #include <usengine/main_window_interface.h>
 #include <usengine/plot_widget.h>
 #include "plot.h"
@@ -35,8 +35,6 @@ OutputPlot::OutputPlot(Identifier name, QObject *parent)
 {    
     new Parameter<QString>("title", &title, QString(), this,
                            "Title of plot shown in window top bar");
-    new Parameter<QString>("type", &typeAsString, QString("lines"), this,
-                        "Type of plot: @F {lines], @F symbols or @F {both}");
     new Parameter<bool>("logy", &logy, false, this,
                         "Log-transform y-axis? Log base 10 is used");
     new Parameter<double>("ymin", &ymin, -DBL_MAX, this,
@@ -79,21 +77,19 @@ OutputPlot::~OutputPlot() {
 
 void OutputPlot::initialize() {
     Output::initialize();
-    initType();
 
-    const OutputResults &xs(xResults()), &ys(yResults());
-    if (ys.size() == 0) {
-        QString msg = QString("Output plot (%1) has no y-results").arg(id().label());
+    if (yTraces().size() == 0) {
+        QString msg = QString("Output plot '%1'' has no y-results").arg(id().label());
         throw Exception(msg, this);
     }
-    if (xs.size() == 0) {
-        QString msg = QString("Output plot (%1) has no x-result").arg(id().label());
+    if (xTraces().size() == 0) {
+        QString msg = QString("Output plot '%1'' has no x-results").arg(id().label());
         throw Exception(msg, this);
     }
-    else if (xs.size() > 1) {
-        QString msg = QString("Output plot (%1) has more than one x-result:").arg(id().label());
-        for (int i = 0; i < xs.size(); ++ i)
-            msg += "\n" + xs.at(i)->id().key();
+    else if (xTraces().size() > 1) {
+        QString msg = QString("Output plot '%1'' has more than one x-result:").arg(id().label());
+        for (int i = 0; i < xTraces().size(); ++ i)
+            msg += "\n" + xTraces().at(i)->id().label();
         throw Exception(msg, this);
     }
 
@@ -101,19 +97,8 @@ void OutputPlot::initialize() {
     Q_ASSERT(mainWindow);
 }
 
-void OutputPlot::initType() {
-    QMap<QString, Type> types;
-    types["lines"] = Lines;
-    types["symbols"] = Symbols;
-    types["both"] = Both;
-    QString s = typeAsString.toLower();
-    if (!types.contains(s))
-        throw Exception("Unknown type of plot: '" + typeAsString + "'");
-    type = types[s];
-}
-
 void OutputPlot::cleanup() {
-    if (!isSummary()) {
+    if (!hasSummary()) {
         if (runNumber() == 1) createPlotWidget();
         showPlot();
         setZoomer();
@@ -121,7 +106,7 @@ void OutputPlot::cleanup() {
 }
 
 void OutputPlot::debrief() {
-    if (isSummary()) {
+    if (hasSummary()) {
         createPlotWidget();
         showPlot();
         setZoomer();
@@ -145,37 +130,26 @@ void OutputPlot::setZoomer() {
     zoomer->setMousePattern( QwtEventPattern::MouseSelect6, Qt::RightButton, Qt::ShiftModifier );
 }
 
-bool OutputPlot::emptyResults() const {
-    return xResults().isEmpty() || yResults().isEmpty();
-}
-
 void OutputPlot::createPlotWidget() {
     plotWidget = mainWindow->createPlotWidget(title);
     plotWidget->showLegend(true);
 }
 
 void OutputPlot::fillPlotWidget() {
-    Q_ASSERT(plotWidget);
-    fillWithResults();
-}
-
-void OutputPlot::fillWithResults() {
-    if (emptyResults()) return;
-    Q_ASSERT(xResults().size() == 1);
-    OutputResult *x = xResults()[0];
+    TraceBase *x = xTraces()[0];
 
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
     setYLabels();
 
-    for (int i = 0; i < yResults().size(); ++i) {
+    for (int i = 0; i < yTraces().size(); ++i) {
         Plot p;
         int ix = i % colors.size();
 
         p.x = x->history();
-        p.y = yResults()[i]->history();
+        p.y = yTraces()[i]->history();
         p.yLegend = yLabels[i].label();
-        p.showLegend = (runNumber() == 1 || x->isOutputSummary());
+        p.showLegend = (runNumber() == 1 || hasSummary());
         p.plotWidget = plotWidget;
 
         p.logy = logy;
@@ -187,11 +161,10 @@ void OutputPlot::fillWithResults() {
         pen.setWidth(penWidth);
         p.pen = pen;
         p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
-        p.type = (x->isOutputSummary() || type==Symbols) ? Plot::Symbols : Plot::Curve;
+        p.type = yTraces()[i]->type();
         p.add();
     }
 }
-
 
 void OutputPlot::showPlotWidget() {
     Q_ASSERT(plotWidget);

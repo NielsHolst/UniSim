@@ -5,49 +5,49 @@
 */
 #include "integrator.h"
 #include "output.h"
-#include "output_result.h"
-#include "output_variable.h"
 #include "parameter.h"
+#include "trace_base.h"
 
 namespace UniSim{
 	
 Output::Output(Identifier name, QObject *parent)
-    : Component(name, parent), _isSummary(false)
+    : Component(name, parent), _hasSummary(false)
 {
 }
 
 void Output::initialize() {
-    results = seekChildren<OutputResult*>("*");
-    for (int i = 0; i < results.size(); ++i) {
-        if (results[i]->axis() == OutputResult::XAxis)
-            xRes.append(results[i]);
+    _traces = seekChildren<TraceBase*>("*");
+    _hasSummary = false;
+    for (int i = 0; i < _traces.size(); ++i) {
+        TraceBase *trace = _traces[i];
+        if (trace->axis() == TraceBase::XAxis)
+            _xTraces << trace;
         else
-            yRes.append(results[i]);
+            _yTraces << trace;
+        _hasSummary = _hasSummary || trace->summary() != TraceBase::None;
     }
-
     integrator = seekOne<Integrator*>("*");
 }
 
-const OutputResults& Output::xResults() const {
-    return xRes;
+const QList<TraceBase*>& Output::traces() const {
+    return _traces;
 }
 
-const OutputResults& Output::yResults() const {
-    return yRes;
+const QList<TraceBase*>& Output::xTraces() const {
+    return _xTraces;
+}
+
+const QList<TraceBase*>& Output::yTraces() const {
+    return _yTraces;
 }
 
 int Output::runNumber() const {
     return integrator->pullVariable<int>("runNumber");
 }
 
-bool Output::isSummary() const {
-    return _isSummary;
+bool Output::hasSummary() const {
+    return _hasSummary;
 }
-
-void Output::setIsSummary(bool value) {
-    _isSummary = value;
-}
-
 
 void Output::setYLabels() {
     if (!setYLabelsFromLabels() && yLabels.size() > 1)
@@ -55,12 +55,12 @@ void Output::setYLabels() {
 }
 
 bool Output::setYLabelsFromLabels() {
-    QList<NamedObject*> namedObjs;
-    for (int i = 0; i < yResults().size(); ++i)
-        namedObjs.append(yResults()[i]);
+    QList<NamedObject*> asNamedObjs;
+    for (int i = 0; i < _yTraces.size(); ++i)
+        asNamedObjs << _yTraces[i];
 
     bool areEqual;
-    yLabels = getIds(namedObjs, &areEqual);
+    yLabels = getIds(asNamedObjs, &areEqual);
     return !areEqual;
 }
 
@@ -78,22 +78,20 @@ QList<Identifier> Output::getIds(QList<NamedObject*> &objects, bool *areEqual) c
 }
 
 void Output::setYLabelsFromIds() {
-    QList<NamedObject*> ancestors;
-    for (int i = 0; i < yResults().size(); ++i) {
-        OutputVariable *var = dynamic_cast<OutputVariable*>(yResults()[i]);
-        Q_ASSERT(var);
-        NamedObject *ancestor = dynamic_cast<NamedObject*>(var->pullVariable()->parent());
-        Q_ASSERT(ancestor);
-        ancestors.append(ancestor);
+    QList<NamedObject*> parents;
+    for (int i = 0; i < _yTraces.size(); ++i) {
+        NamedObject *parent = _yTraces[i]->traceParent();
+        Q_ASSERT(parent);
+        parents << parent;
     }
 
     bool areEqual(true), checkAgain(true);
     while (areEqual && checkAgain) {
-        yLabels = getIds(ancestors, &areEqual);
+        yLabels = getIds(parents, &areEqual);
         if (areEqual) {
-            for (int i = 0; checkAgain && (i < ancestors.size()); ++i) {
-                ancestors[i] = dynamic_cast<NamedObject*>(ancestors[i]->parent());
-                checkAgain = ancestors[i];
+            for (int i = 0; checkAgain && (i < parents.size()); ++i) {
+                parents[i] = dynamic_cast<NamedObject*>(parents[i]->parent());
+                checkAgain = parents[i];
             }
         }
     }

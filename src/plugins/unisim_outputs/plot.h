@@ -12,6 +12,7 @@
 #include <QPen>
 #include <QString>
 #include <QVector>
+#include <usbase/trace_base.h>
 
 class QwtSymbol;
 
@@ -21,14 +22,13 @@ class PlotWidget;
 
 struct Plot
 {
-    enum Type {Curve, Symbols};
     QVector<double> *x, *y;
     bool logy;
     double ymin, ymax;
     QString yLegend;
     bool showLegend;
     PlotWidget *plotWidget;
-    Type type;
+    TraceBase::Type type;
     QPen pen;
     const QwtSymbol *symbol;
 

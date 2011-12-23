@@ -5,6 +5,7 @@
 */
 #include <iostream>
 #include <QMessageBox>
+#include <QListIterator>
 #include <QString>
 #include <QStringList>
 #include <usbase/exception.h>
@@ -30,97 +31,9 @@
 
 namespace UniSim{
 
-Simulation::Simulation(Identifier name, QString version, QObject *parent)
-    : NamedObject(name, parent), _state(Uninitialized), _version(version)
+Simulation::Simulation(Identifier name, SimulationMaker *myMaker_)
+    : NamedObject(name, 0), myMaker(myMaker_)
 {
-}
-
-//! Sorts children and sets the sequence of model updating
-/*! The children are seggregated into three types: Integrator, Model and Output. There must be one child of
-    the first type and one or more of the others.
-
-    If sequence is empty then only one top-level Model child is allowed. Otherwise sequence tells in
-    which order the top-level models will be managed.
-
-    \sa Component management functions
-
-    After seggregation and sequencing all children are initialized through Component::initialize().
-
-    The initialize() function can be effectuated only once for each %Simulation object. Subsequent calls
-    will be ignored.
-
-    \param sequence list of top-level models in the order they will be managed
-*/
-void Simulation::initialize(const Identifiers &sequence, SimulationMaker *simMaker)
-{
-	if (_state == Initialized)  return;
-	
-	_state = Faulty;
-	_models.clear();
-    _outputs.clear();
-
-	// Segregate my children
-	QList<Integrator*> integrators;
-	QList<Model*> models;
-	for (QList<QObject*>::const_iterator ch = children().begin(); ch != children().end(); ++ch) {
-		Integrator *integrator = dynamic_cast<Integrator*>(*ch);
-		Model *model = dynamic_cast<Model*>(*ch);
-		Output *output = dynamic_cast<Output*>(*ch);
-		if (integrator)
-			integrators.append(integrator);
-		else if (model)
-			models.append(model);
-		else if (output)
-			_outputs.append(output);
-	}
-	Q_ASSERT(integrators.size() == 1);
-	Q_ASSERT(models.size() > 0);
-    Q_ASSERT(children().size() == integrators.size() + models.size() + _outputs.size());
-	
-	_integrator = integrators[0];
-
-	// Put models in sequence		
-    if (sequence.isEmpty()) {
-		if (models.size() == 1) 
-            _models.append(models[0]);
-		else 
-			throw Exception("Sequence of models must be specified in 'integrator' element");
-	} 
-	else {
-        for (Identifiers::const_iterator se = sequence.begin(); se != sequence.end(); ++se) {
-            _models.append(modelInstances(se->key()));
-		}
-	}
-
-	// Initialize integrator, models and outputs
-    for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepInitialize();
-    if (simMaker) {
-        simMaker->setupOutputVariableElements();
-        simMaker->setupOutputParameterElements();
-    }
-    for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou) (*ou)->deepInitialize();
-
-	_state = Initialized;
-	_runCount = _stepCount = 0;
-}
-
-Models Simulation::modelInstances(QString modelName) {
-    Models instances;
-    Model *oneModel = peekOneChild<Model*>(modelName);
-    if (oneModel) {
-        instances << oneModel;
-    }
-    else {
-        int i = 0;
-        Model *instance;
-        do {
-            QString instanceName = modelName + "(" + QString::number(++i) + ")";
-            instance = peekOneChild<Model*>(instanceName);
-            if (instance)
-                instances << instance;
-        } while (instance);
-    }
-    return instances;
 }
 
 //! Executes one or more runs of the simulation as determined by the integrator
@@ -132,52 +45,70 @@ Models Simulation::modelInstances(QString modelName) {
 */
 void Simulation::execute()
 {
-    initialize(Identifiers()); // Try initializing with empty sequence at the least
-    if (_state != Initialized)
-		throw Exception("Simulation could not be inialized. Correct the model specification file(s).");
+    Integrator *integrator = seekOneChild<Integrator*>("*");
+    QList<Model*> models = seekChildren<Model*>("*");       //integrator is also a model
+    QList<Output*> outputs = seekChildren<Output*>("*");
+    QListIterator<Model*> mo(models);
+    QListIterator<Output*> ou(outputs);
 
-	_runCount = 0;
+    mo.toFront();
+    while (mo.hasNext())
+        mo.next()->deepInitialize();
+    if (myMaker)
+        myMaker->createTraces();
+    ou.toFront();
+    while (ou.hasNext())
+        ou.next()->deepInitialize();
+
+    _state = Initialized;
+    _runCount = _stepCount = 0;
 	_stopCurrentRun = _stopAllRuns = false;
 	
-    _integrator->deepInitialize();
-    while (_integrator->nextRun() && !_stopAllRuns) {
+    while (integrator->nextRun() && !_stopAllRuns) {
         ++_runCount;
 		_stepCount = 0;
 		
-        _integrator->deepReset();
-        for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepReset();
-        for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepReset();
-		
-        _integrator->deepReset();
-        while (_integrator->nextStep() && !_stopCurrentRun) {
-			++_stepCount;
-            _integrator->deepUpdate();
-            for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepUpdate();
-            for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepUpdate();
-		}
+        mo.toFront();
+        while (mo.hasNext())
+            mo.next()->deepReset();
+        ou.toFront();
+        while (ou.hasNext())
+            ou.next()->deepReset();
 
-        _integrator->deepCleanup();
-        for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepCleanup();
-        for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepCleanup();
+        while (integrator->nextStep() && !_stopCurrentRun) {
+			++_stepCount;
+            mo.toFront();
+            while (mo.hasNext())
+                mo.next()->deepUpdate();
+            ou.toFront();
+            while (ou.hasNext())
+                ou.next()->deepUpdate();
+        }
+
+            mo.toFront();
+            while (mo.hasNext())
+                mo.next()->deepCleanup();
+            ou.toFront();
+            while (ou.hasNext())
+                ou.next()->deepCleanup();
     }
 
-    _integrator->deepDebrief();
-    for (Models::iterator mo = _models.begin(); mo != _models.end(); ++mo)  (*mo)->deepDebrief();
-    for (Outputs::iterator ou = _outputs.begin(); ou != _outputs.end(); ++ou)  (*ou)->deepDebrief();
+    mo.toFront();
+    while (mo.hasNext())
+        mo.next()->deepDebrief();
+    ou.toFront();
+    while (ou.hasNext())
+        ou.next()->deepDebrief();
 }
 
 //! Gets version number
 QString Simulation::version() const {
-	return _version;
+    return _version;
 }
 
 //! Get state of the simulation
 Simulation::State Simulation::state() const {
-	return _state;
-}
-
-const QList<Model*>& Simulation::sequence() const {
-    return _models;
+    return _state;
 }
 
 //! Get number of runs simulated
@@ -202,18 +133,18 @@ void Simulation::stopAllRuns() {
 /*! Do not use this to open an XML parser. Use SimulationMaker::parse.
 */
 void Simulation::setFilePath(QString filePath) {
-    _filePath = filePath;
-    _fileFolder = QFileInfo(filePath).absoluteDir();
+    filePath = filePath;
+    fileFolder = QFileInfo(filePath).absoluteDir();
 }
 
 //! Return the full path for the input file with given file name
 /*! The seach order of findNearestFile is used
 */
 QString Simulation::inputFilePath(QString fileName) {
-    return findNearestFile(_fileFolder, "input", fileName).absoluteFilePath();
+    return findNearestFile(fileFolder, "input", fileName).absoluteFilePath();
 }
 
-//! Return the current simulation object or null
+//! Return the current simulation object; guaranteed to be a valid object
 Simulation* simulation() {
     Simulation *sim = dynamic_cast<Simulation*>(simulationObject());
     Q_ASSERT(sim);

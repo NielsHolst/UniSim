@@ -12,6 +12,7 @@
 #include <QPair>
 #include <QStack>
 #include <QStringList>
+#include <usbase/attributes.h>
 #include <usbase/identifier.h>
 
 class QXmlStreamReader;
@@ -39,9 +40,7 @@ public:
     // Create Simulation object from UniSim file
     Simulation* parse(QString fileName);
 
-    void setupOutputVariableElements();
-    void setupOutputDataElements();
-    void setupOutputParameterElements();
+    void createTraces();
 
 signals: 
     //! Signals when the parser begins expanding the original UniSim file
@@ -57,19 +56,17 @@ private:
     // data
     QXmlStreamReader *reader;
     QString fileName;
-    Identifiers _sequence;
     QStack<QPair<QString, Model*> > keyStack;
     QHash<QString, const DataGrid*> tables;
 
     typedef QPair<ParameterBase*, QString> RedirectedParameter;
     QList<RedirectedParameter> redirectedParameters;
 
-    struct OutputParam {
-        QMap<QString, QString> attributes;
+    struct TraceParam : public Attributes {
         QObject *parent;
     };
 
-    QList<OutputParam> outputVariableParam, outputParameterParam;
+    QList<TraceParam> traceVariableParam, traceParameterParam;
 
     // methods
     QString compileToFile(QString filePath);
@@ -94,9 +91,10 @@ private:
     void setParameterElement(QObject *parent);
 
     void readOutputElement(QObject *parent);
-    void readOutputSubElement(QList<OutputParam> *param, QObject* parent);
+    void readOutputSubElement(QList<TraceParam> *param, QObject* parent);
+    template <class T, class U>
+        void createTracesKindOf(const QList<TraceParam> &traceParam);
 
-    void splitOutputDataValue(QString value, QString *datasetName, QString *columnName);
     bool elementNameEquals(QString s) const;
     bool elementNameNotEquals(QString s) const;
     QString elementName() const;
@@ -105,7 +103,6 @@ private:
 
     QString message(QString text) const;
     void redirectParameters();
-    void setSequence(Simulation *sim);
 };
 
 //@}

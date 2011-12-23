@@ -9,6 +9,7 @@ TARGET = $${US_BASE_LIB_NAME}
 # Source code
 HEADERS += \
         $${US_BASE}/authors.h \
+        $${US_BASE}/attributes.h \
         $${US_BASE}/clock.h \
         $${US_BASE}/component.h \
         $${US_BASE}/data_grid.h \
@@ -22,9 +23,6 @@ HEADERS += \
         $${US_BASE}/object_pool.h \
         $${US_BASE}/output.h \
         $${US_BASE}/output_maker_plug_in.h \
-        $${US_BASE}/output_parameter.h \
-        $${US_BASE}/output_result.h \
-        $${US_BASE}/output_variable.h \
         $${US_BASE}/model.h \
         $${US_BASE}/model_maker_plug_in.h \
         $${US_BASE}/named_object.h \
@@ -40,6 +38,8 @@ HEADERS += \
         $${US_BASE}/strata_base.h \
         $${US_BASE}/test_num.h \
         $${US_BASE}/time.h \
+        $${US_BASE}/trace.h \
+        $${US_BASE}/trace_base.h \
         $${US_BASE}/utilities.h \
         $${US_BASE}/version.h
 SOURCES += \
@@ -58,13 +58,11 @@ SOURCES += \
         $${US_BASE}/name_list.cpp \
         $${US_BASE}/object_pool.cpp \
         $${US_BASE}/output.cpp \
-        $${US_BASE}/output_parameter.cpp \
-        $${US_BASE}/output_result.cpp \
-        $${US_BASE}/output_variable.cpp \
         $${US_BASE}/parameter_base.cpp \
         $${US_BASE}/pull_variable_base.cpp \
         $${US_BASE}/push_variable_base.cpp \
         $${US_BASE}/random.cpp \
         $${US_BASE}/time.cpp \
+        $${US_BASE}/trace_base.cpp \
         $${US_BASE}/utilities.cpp \
         $${US_BASE}/version.cpp

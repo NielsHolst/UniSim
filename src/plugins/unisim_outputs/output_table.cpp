@@ -24,26 +24,26 @@ OutputTable::OutputTable(Identifier name, QObject *parent)
 
 
 void OutputTable::cleanup() {
-    if (!isSummary()) {
+    if (!hasSummary()) {
         openFile();
         writeLabels();
-        writeResults();
+        writeTraces();
         closeFile();
     }
 }
 
 void OutputTable::debrief() {
-    if (isSummary()) {
+    if (hasSummary()) {
         openFile();
         writeLabels();
-        writeResults();
+        writeTraces();
         closeFile();
     }
 }
 
 void OutputTable::openFile() {
     QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
-    QString useFileName = (runNumber() == 1 || isSummary()) ?
+    QString useFileName = (runNumber() == 1 || hasSummary()) ?
                           fileName :
                           ammendedFileName(fileName, runNumber());
     QString filePath = path + "/" + useFileName;
@@ -53,7 +53,7 @@ void OutputTable::openFile() {
         throw Exception("Could not open output file to write table:\n'" + filePath + "'");
 
     // If more than one file then give the first file a number too
-    if (runNumber() == 2 && !isSummary()) {
+    if (runNumber() == 2 && !hasSummary()) {
         QString filePath = path + "/" + fileName;
         QFile prevFile(filePath);
 
@@ -64,28 +64,6 @@ void OutputTable::openFile() {
         toDelete.remove();
         prevFile.rename(newName);
     }
-}
-
-void OutputTable::writeLabels() {
-    writeXLabels();
-    writeTab();
-    setYLabels();
-    writeYLabels();
-    writeCR();
-}
-
-void OutputTable::writeResults() {
-    int n = resultsSize();
-    for (int i = 0; i < n; ++i) {
-        writeResults(xResults(), i);
-        writeTab();
-        writeResults(yResults(), i);
-        writeCR();
-    }
-}
-
-void OutputTable::closeFile() {
-    file.close();
 }
 
 QString OutputTable::ammendedFileName(QString fileName, int number) {
@@ -99,14 +77,22 @@ QString OutputTable::ammendedFileName(QString fileName, int number) {
     return path + "/" + base + runCode + "." + suffix;
 }
 
+void OutputTable::writeLabels() {
+    writeXLabels();
+    writeTab();
+    setYLabels();
+    writeYLabels();
+    writeCR();
+}
+
 void OutputTable::writeXLabels() {
-    if (xResults().isEmpty())
+    if (xTraces().isEmpty())
         return;
     QString s;
     QTextStream text(&s);
-    text << xResults()[0]->id().label();
-    for (int i = 1; i < xResults().size(); ++i)
-        text << "\t" << xResults()[i]->id().label();
+    text << xTraces()[0]->id().label();
+    for (int i = 1; i < xTraces().size(); ++i)
+        text << "\t" << xTraces()[i]->id().label();
     file.write(qPrintable(s));
 }
 
@@ -121,47 +107,55 @@ void OutputTable::writeYLabels() {
     file.write(qPrintable(s));
 }
 
+void OutputTable::writeTraces() {
+    int n = traceSize();
+    for (int i = 0; i < n; ++i) {
+        writeTraces(xTraces(), i);
+        writeTab();
+        writeTraces(yTraces(), i);
+        writeCR();
+    }
+}
+
+int OutputTable::traceSize() const {
+    if (traces().isEmpty())
+        return 0;
+    int theSize = -1;
+    for (int i = 0; i < traces().size(); ++i) {
+        int nextSize = traces()[i]->history()->size();
+        if (theSize == -1)
+            theSize = nextSize;
+        else if (nextSize != theSize) {
+            QString msg ("Output variable data buffers are of unequal size. %1 vs. %2");
+            throw Exception(msg.arg(nextSize).arg(theSize));
+        }
+    }
+    return theSize;
+}
+
+void OutputTable::writeTraces(const QList<TraceBase*> &traces, int dataIx) {
+    if (traces.isEmpty())
+        return;
+    QString s;
+    QTextStream text(&s);
+    text.setRealNumberPrecision(10);
+    text << traces[0]->history()->value(dataIx);
+    for (int i = 1; i < traces.size(); ++i) {
+        text << "\t" << traces[i]->history()->value(dataIx);
+    }
+    file.write(qPrintable(s));
+}
+
+void OutputTable::closeFile() {
+    file.close();
+}
+
 void OutputTable::writeTab() {
     file.write("\t");
 }
 
 void OutputTable::writeCR() {
     file.write("\n");
-}
-
-int OutputTable::resultsSize() const {
-    int xSize = dataSize(xResults());
-    int ySize = dataSize(yResults());
-    bool ok = xSize==0 || ySize==0 || xSize==ySize;
-    if (!ok)
-        throw Exception("x and y output variable data buffers are of unequal size");
-    return max(xSize, ySize);
-}
-
-int OutputTable::dataSize(const OutputResults &results) const {
-    if (results.isEmpty()) return 0;
-    int theSize = -1;
-    for (int i = 0; i < results.size(); ++i) {
-        int nextSize = results[i]->history()->size();
-        if (theSize == -1)
-            theSize = nextSize;
-        else if (nextSize != theSize)
-            throw Exception("Output variable data buffers are of unequal size");
-    }
-    return theSize;
-}
-
-void OutputTable::writeResults(const OutputResults &results, int dataIx) {
-    if (results.isEmpty())
-        return;
-
-    QString s;
-    QTextStream text(&s);
-    text.setRealNumberPrecision(10);
-    text << results[0]->history()->value(dataIx);
-    for (int i = 1; i < results.size(); ++i)
-        text << "\t" << results[i]->history()->value(dataIx);
-    file.write(qPrintable(s));
 }
 
 } //namespace

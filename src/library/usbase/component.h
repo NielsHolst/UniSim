@@ -66,7 +66,6 @@ private slots:
 
 private:
     // data
-    Identifier _id;
     static QObject* _root;
     QMap<Function, RecursionPolicy> policy;
     QList<ParameterBase*> parameters;

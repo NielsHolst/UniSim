@@ -16,8 +16,8 @@ void TestDataset::read(QString fileName) {
     data.clear();
     data.reserve(N);
     readData();
-    if (!data.size() == N)
-        throw Exception("Wrong dataset size. Expcted: " + QString::number(N) +
+    if (data.size() != N)
+        throw Exception("Wrong dataset size. Expected: " + QString::number(N) +
                         ". Got: " + QString::number(data.size()));
     file.close();
 }

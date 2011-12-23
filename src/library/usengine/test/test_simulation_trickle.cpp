@@ -11,18 +11,9 @@
 using namespace UniSim;
 
 void TestSimulationTrickle::initTestCase() {
-    simulation = new Simulation("trickles", "1.0");
+    simulation = new Simulation("trickles");
     setSimulationObject(simulation);
     integrator = new TimeStepLimited("integrator", simulation);
-
-    TrickleSequence *seq;
-    seq = new TrickleSequence("sequence", simulation);
-    boxes[0] = new TrickleBox("box0", seq);
-    boxes[1] = new TrickleBox("box1", seq);
-    boxes[2] = new TrickleBox("box2", seq);
-
-    simulation->initialize(Identifiers() << "sequence");
-    seq->deepReset();
 }
 
 void TestSimulationTrickle::cleanupTestCase() {

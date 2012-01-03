@@ -17,7 +17,7 @@ class Phenology : public UniSim::Model
 public: 
     Phenology(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
-	void initialize();
+    void amend();
     void reset();
 	void update();
 

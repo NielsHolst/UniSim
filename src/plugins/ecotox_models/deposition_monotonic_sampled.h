@@ -27,7 +27,6 @@ private:
 
     // pull variables
     double value, total;
-    QString columnName;
 
     // links
     const double *airPollen;

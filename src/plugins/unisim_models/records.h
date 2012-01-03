@@ -21,7 +21,7 @@ public:
     Records(UniSim::Identifier name, QObject *parent=0);
     ~Records();
     // standard methods
-    void ammend();
+    void amend();
     void initialize();
     void reset();
     void update();

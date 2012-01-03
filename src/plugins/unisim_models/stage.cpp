@@ -52,20 +52,23 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
     "Mortality [0..100] will be applied in the next time step, before @F inflow is added");
 }
 
-void Stage::initialize()
-{
+void Stage::amend() {
     if (k <= 0)
         throw Exception(QString("k (%1) must be > 0").arg(k), this);
-    if (_L <= 0)
-        throw Exception(QString("Duration (%1) must be > 0").arg(_L), this);
-    time = seekOneNearest<Model*>("time");
     buffer.fill(0., k);
     x = buffer.data();
     if (ageClassesPtr)
         delete ageClassesPtr;
-    ageClassesPtr = new PullVariable<double>("ageClasses", x, this, "Pointer to buffer with age classes of length @F {k}");
+    ageClassesPtr =
+            new PullVariable<double>("ageClasses", x, this,
+            "Pointer to buffer with age classes of length @F {k}");
+}
 
-
+void Stage::initialize()
+{
+    if (_L <= 0)
+        throw Exception(QString("Duration (%1) must be > 0").arg(_L), this);
+    time = seekOneNearest<Model*>("time");
 }
 
 

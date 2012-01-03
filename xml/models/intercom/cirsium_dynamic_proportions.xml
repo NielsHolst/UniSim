@@ -3,11 +3,6 @@
 
      <integrator type="TimeStepLimited">
          <parameter name="maxSteps" value="270"/>
-         <sequence>
-             <model name="calendar"/>
-             <model name="weather"/>
-             <model name="field"/>
-         </sequence>
      </integrator>
 	
 	<model name="calendar" type="unisim::Calendar">
@@ -17,7 +12,7 @@
 	
 	<model name="weather" type="intercom::Weather">
 		<model name="records" type="UniSim::Records">
-			<parameter name="fileName" value ="intercom/foulum 2005.txt" alternative = "flakkebjerg 2005-06.txt"/>
+			<parameter name="fileName" value ="foulum 2005.txt" alternative = "flakkebjerg 2005-06.txt"/>
 		</model>
 	</model>
 
@@ -160,7 +155,7 @@
 				</model>
 			</model>
 
-			<!-- Observations -->
+			<!-- Observations
 			<dataset name="obs_height">
 				<parameter name="filename" value="cirar_height_2005.txt"/>
 				<parameter name="headerLines" value ="1"/>
@@ -172,6 +167,7 @@
 				<parameter name="columns" 
 				value="((day_in_year 2) (leaves 3)(stem 4)(flowers 5))"/>
 			</dataset>
+			-->
 		</model>
 	</model>
 

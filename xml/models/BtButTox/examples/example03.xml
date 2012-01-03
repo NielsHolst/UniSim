@@ -2,12 +2,6 @@
 <simulation name="simulation" version="1.0">
 	<integrator type="TimeStepLimited">
 		<parameter name="maxSteps" value="365"/> 
-		<sequence>
-			<model name="calendar"/>
-			<model name="weather"/>
-			<model name="pollen"/>
-			<model name="insect"/>
-		</sequence>
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="15"/>
 		</model>
@@ -112,16 +106,16 @@
 	<output type="plot">
 		<parameter name="title" value ="One generation"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Egg" value="generation/egg[value]"/>
-		<variable axis="y" label="Larva" value="generation/larva[value]"/>
-		<variable axis="y" label="Pupa" value="generation/pupa[value]"/>
-		<variable axis="y" label="AdRep" value="generation/adult[value]"/>
+		<variable axis="y" label="Egg" value="generation(1)/egg[value]"/>
+		<variable axis="y" label="Larva" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Pupa" value="generation(1)/pupa[value]"/>
+		<variable axis="y" label="AdRep" value="generation(1)/adult[value]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Population response"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Larva" value="generation/larva[value]"/>
+		<variable axis="y" label="Larva" value="generation(1)/larva[value]"/>
 		<variable axis="y" label="AdHib" value="hibernatingAdult[value]"/>
 	</output>
 	
@@ -138,7 +132,7 @@
 		<parameter name="logy" value ="yes"/>
 		<parameter name="ymin" value ="-2"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Larva" value="generation/larva[value]"/>
+		<variable axis="y" label="Larva" value="generation(1)/larva[value]"/>
 		<variable axis="y" label="Pollen (per cm2)" value="pollen[pollenDensity]"/>
 	</output>
 

@@ -23,7 +23,8 @@
 	</model>
 
 	<model name="insect" type="Beehive::Insect8">
-		<parameter name="initEggs" value="100"/>
+		<parameter name="initEggs" value="0"/>
+		<parameter name="initAdults" value="100"/>
 		<model name="egg" type="UniSim::Stage">
 			<parameter name="duration" value="20"/>
 			<parameter name="k" value="30"/>

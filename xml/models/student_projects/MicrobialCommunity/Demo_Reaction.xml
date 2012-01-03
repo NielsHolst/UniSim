@@ -3,12 +3,6 @@
 
 	<integrator type="TimeStepLimited">
 		<parameter name="maxSteps" value="500"/>
-		
-		<sequence>
-			<model name="Calendar"/>
-			<model name="Community"/>
-		</sequence>
-
 	</integrator>
 
 	<model name="Calendar" type="UniSim::Calendar">

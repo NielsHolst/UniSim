@@ -71,7 +71,6 @@ namespace MicrobialCommunity {
 
         } //if(enableStochasticCommunity)
 
-        reset();
 
     } //initialize
 

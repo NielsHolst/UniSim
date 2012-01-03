@@ -2,12 +2,6 @@
 <simulation name="simulation" version="1.0">
 	<integrator type="TimeStepLimited">
 		<parameter name="maxSteps" value="365"/> 
-		<sequence>
-			<model name="random"/>
-			<model name="calendar"/>
-			<model name="weather"/>
-			<model name="insect"/>
-		</sequence>
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="20"/>
 		</model>

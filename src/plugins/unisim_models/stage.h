@@ -18,6 +18,7 @@ class Stage : public UniSim::Model
 public:
     Stage(Identifier name, QObject *parent=0);
     // standard methods
+    void amend();
 	void initialize();
 	void reset();
 	void update();

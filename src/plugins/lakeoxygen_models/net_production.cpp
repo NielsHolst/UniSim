@@ -60,7 +60,7 @@ NetProduction::NetProduction(UniSim::Identifier name, QObject *parent)
 
 }
 
-void NetProduction::ammend() {
+void NetProduction::amend() {
     CreateLayers(); //Was moved from the constructor to ensure that the xml file has been read.
 }
 

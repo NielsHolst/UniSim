@@ -2,22 +2,13 @@
 <simulation version="1.0">
 
 	<integrator type="TimeStepLimited">
-		<parameter name="maxSteps" value="400"/>
-		<sequence>
-			<model name="Random"/>
-			<model name="Calendar"/>
-			<model name="Community"/>
-		</sequence>
-		
+		<parameter name="maxSteps" value="400"/>		
+
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="20" />
 		</model>
 
 	</integrator>
-
-	<model name="Calendar" type="UniSim::Calendar">
-		<parameter name="initialDate" value="1/1/2010" />		
-	</model>
 
 	<model name="Random">
 		
@@ -73,6 +64,10 @@
 		
 	</model>
 
+	<model name="Calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="1/1/2010" />		
+	</model>
+
 	<model name="Community" type="MicrobialCommunity::Community">
 		<parameter name="EnableStochasticCommunity" value="true"/>
 		<parameter name="MinPopulations" value="1"/>
@@ -106,7 +101,7 @@
 	
 		<model name="MOB_1" type="MicrobialCommunity::Population">
 			<parameter name="SpeciesName" value="MOB 1"/>
-			<parameter name="InitialDensity" variable="random/initDensity1[value]"/>
+			<parameter name="InitialDensity" variable="Random/initDensity1[value]"/>
 			<parameter name="LagPhase" value="0"/>
 			<parameter name="GrowthRate" value="0.03"/>
 			<parameter name="MortalityRate" value="0.01"/>
@@ -262,7 +257,15 @@
 		<variable axis="y" label="Richness" value="Community[Richness]"/>
 	</output>
 -->
-	
+
+	<output type="plot">
+		<parameter name="title" value ="Test"/>
+		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>
+		<variable axis="y" label="MOB 1" value="random/initDensity1[value]"/>
+		<variable axis="y" label="MOB 2" value="random/initDensity2[value]"/>
+		<variable axis="y" label="MOB 3" value="random/initDensity3[value]"/>
+	</output>
+		
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
 		<variable axis="x" label="Hour" value="Calendar[totalTime]"/>

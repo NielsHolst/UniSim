@@ -16,7 +16,7 @@ Fixed::Fixed(Identifier name, QObject *parent)
     "Push variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}.");
 }
 
-void Fixed::ammend() {
+void Fixed::amend() {
     ammendParameters();
     ammendPullVariables();
     ammendPushVariables();

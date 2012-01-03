@@ -109,13 +109,13 @@ void Component::deepInitialize() {
     if (before.size() != after.size()) {
         QString msg("It is illegal to create children in initialize(). "
                     "Descendant count before/after deepInitialize: %1/%2. "
-                    "Additional children must be created in constructor or ammend().\n");
-        msg += "Before:\n";
+                    "Additional children must be created in constructor or amend().\n");
+        msg += "Before: ";
         for (int i = 0; i < before.size(); ++i)
-            msg += before.at(i)->objectName() + "\n";
-        msg += "After:\n";
+            msg += before.at(i)->objectName() + ", ";
+        msg += "\nAfter: ";
         for (int i = 0; i < after.size(); ++i)
-            msg += after.at(i)->objectName() + "\n";
+            msg += after.at(i)->objectName() + ", ";
         throw Exception(msg.arg(before.size()).arg(after.size()));
     }
 }

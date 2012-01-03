@@ -12,7 +12,7 @@ class Fixed : public Model
 public:
     Fixed(UniSim::Identifier name, QObject *parent=0);
     // standard methods
-    void ammend();
+    void amend();
 private:
     //methods
     void ammendParameters();

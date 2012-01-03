@@ -9,16 +9,17 @@ using namespace UniSim;
 
 namespace {
     const double L = 50;
-    const int K = 30;
+    const int k = 30;
 }
 
 void TestStage::initTestCase()
 {
     model = ModelMaker::create("UniSim::Stage", "adults");
     ModelMaker::create("UniSim::Days", "time", model);
-    model->initialize();
-    model->seekOneChild<Parameter<int>*>("k") -> setValue(K);
+    model->seekOneChild<Parameter<int>*>("k") -> setValue(k);
     model->seekOneChild<Parameter<double>*>("duration") -> setValue(L);
+    model->amend();
+    model->initialize();
 }
 
 void TestStage::cleanupTestCase()
@@ -35,10 +36,6 @@ void TestStage::testAgeClasses()
     classes = stage->pullVariablePtr<double>("ageClasses");
     QVERIFY(classes);
 
-    model->seekOneChild<Parameter<int>*>("k") -> setValue(300);
-    stage->reset();
-    classes = stage->pullVariablePtr<double>("ageClasses");
-    QVERIFY(classes);
-    double test = classes[0] + classes[299];
+    double test = classes[0] + classes[k-1];
     QVERIFY(TestNum::eqZero(test));
 }

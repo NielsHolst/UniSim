@@ -21,7 +21,7 @@ Phenology::Phenology(UniSim::Identifier name, QObject *parent)
                              "defined as child of @F {Phenology}.");
 }
 
-void Phenology::initialize() {
+void Phenology::amend() {
     stages = seekChildren<Model*>("*");
     int n = stages.size();
     if (n == 0)

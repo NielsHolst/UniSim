@@ -1,0 +1,36 @@
+/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+** Copyrights reserved.
+** Released under the terms of the GNU General Public License version 3.0 or later.
+** See www.gnu.org/copyleft/gpl.html.
+*/
+#include <usbase/parameter.h>
+#include <usbase/pull_variable.h>
+#include "stocking_capacity.h"
+
+using namespace UniSim;
+
+
+namespace AnimalStocking {
+
+StockingCapacity::StockingCapacity(UniSim::Identifier name, QObject *parent)
+	: Model(name, parent)
+{
+    new Parameter<double>("requirement", &requirement, 20., this, "Description");
+    new PullVariable<double>("value", &value, this, "Description");
+}
+
+void StockingCapacity::initialize() {
+    productivity = seekOneSibling<Model*>("productivity");
+}
+
+void StockingCapacity::reset() {
+    update();
+}
+
+void StockingCapacity::update() {
+    double prod = productivity->pullVariable<double>("energy");
+    value = prod/requirement;
+}
+
+} //namespace
+

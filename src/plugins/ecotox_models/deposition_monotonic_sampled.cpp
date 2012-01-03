@@ -18,13 +18,11 @@ DepositionMonotonicSampled::DepositionMonotonicSampled(UniSim::Identifier name, 
                            "Deposition rate (0..1)");
     new PullVariable<double>("total", &total, this,
                           "Accumulated deposition total (0..1)");
-    new PullVariable<QString>("columnName", &columnName, this,
-                          "Name of column in @F weather records, from which deposition data is read");
 }
 
 void DepositionMonotonicSampled::initialize() {
     Model *weather = seekOne<Model*>("weather");
-    airPollen = weather->pullVariablePtr<double>(columnName);
+    airPollen = weather->pullVariablePtr<double>("Pollen");
 }
 
 void DepositionMonotonicSampled::reset() {

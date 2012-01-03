@@ -3,11 +3,6 @@
 
      <integrator type="TimeStepLimited">
          <parameter name="maxSteps" value="30"/>
-         <sequence>
-             <model name="calendar"/>
-             <model name="weather"/>
-             <model name="field"/>
-         </sequence>
      </integrator>
 	
 	<model name="calendar" type="unisim::Calendar">
@@ -158,12 +153,13 @@
 				</model>
 			</model>
 			
-			<!-- Observations -->
+			<!-- Observations
 			<dataset name="obs_height">
 				<parameter name="filename" value="cirar_height_2005.txt"/>
 				<parameter name="headerLines" value ="1"/>
 				<parameter name="columns" value="((day_in_year 2) (height 3))"/>
 			</dataset>
+			-->
 		</model>
 	</model>
 
@@ -205,8 +201,10 @@
 		<parameter name="title" value="Plant height (m)"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="height" axis="y" value="cirsium/height[height]"/>
+		<!--
 		<data axis="x" label="Day" value="obs_height[day_in_year]"/>
 		<data axis="y" label="Obs" value="obs_height[height]"/>
+		-->
     </output>
 
     <output type="plot">

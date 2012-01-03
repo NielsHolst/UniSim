@@ -47,7 +47,7 @@ Records::Records(Identifier name, QObject *parent)
     nextColumnValues = new QVector<double>;
 }
 
-void Records::ammend() {
+void Records::amend() {
     readColumnNames();
     createColumnPullVariables();
     readFromFirstToLastLine();

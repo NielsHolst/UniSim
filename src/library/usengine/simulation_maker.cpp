@@ -148,7 +148,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
     if (noOutputs)
         throw Exception(message("Missing 'output' element in 'simulation'"));
 
-    ammendComponents();
+    amendComponents();
     redirectParameters();
     createTraces();
 
@@ -595,11 +595,11 @@ namespace {
     }
 }
 
-void SimulationMaker::ammendComponents() {
+void SimulationMaker::amendComponents() {
     QList<Component*> components = seekMany<Component*>("*");
     QListIterator<Component*>  i(components);
     while (i.hasNext()) {
-        i.next()->ammend();
+        i.next()->amend();
     }
 }
 

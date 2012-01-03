@@ -2,11 +2,6 @@
 <simulation version="1.0">
     <integrator type="TimeStepLimited">
         <parameter name="maxSteps" value="100"/>
-        <sequence>
-            <model name="calendar"/>
-            <model name="weather"/>
-            <model name="community"/>
-        </sequence>
     </integrator>
 	
 	<model name="calendar" type="Calendar">

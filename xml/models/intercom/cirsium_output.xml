@@ -38,8 +38,10 @@
 		<parameter name="title" value="Plant height (m)"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="height" axis="y" value="cirsium/height[height]"/>
+		<!--
 		<data axis="x" label="Day" value="obs_height[day_in_year]"/>
 		<data axis="y" label="Obs" value="obs_height[height]"/>
+		-->
     </output>
 
     <output type="plot">
@@ -86,10 +88,12 @@
 		<parameter name="title" value="Mass of organs (g/plant)"/>
 		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
 		<variable label="Organ" axis="y" value="mass/mass[number]"/>
+		<!--
 		<data axis="x" label="Day" value="obs_mass[day_in_year]"/>
 		<data axis="y" label="obs le" value="obs_mass[leaves]"/>
 		<data axis="y" label="obs st" value="obs_mass[stem]"/>
 		<data axis="y" label="obs fl" value="obs_mass[flowers]"/>
+		-->
     </output>
 	
 	<output type="plot">

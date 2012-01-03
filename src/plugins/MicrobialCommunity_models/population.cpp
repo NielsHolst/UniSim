@@ -18,7 +18,7 @@ namespace MicrobialCommunity {
         new PushVariable<bool>("IsActive", &isActive, this, "");
 
         new Parameter<double>("InitialDensity", &initialDensity, 0., this, "Initial density");
-        new PushVariable<double>("InitialDensity", &initialDensity, this, "Initial density");
+        //new PushVariable<double>("InitialDensity", &initialDensity, this, "Initial density");
 
         new Parameter<double>("CarryingCapacity", &carryingCapacity, 0., this, "Carrying capacity");
         new PushVariable<double>("CarryingCapacity", &carryingCapacity, this, "Carrying capacity");
@@ -59,17 +59,12 @@ namespace MicrobialCommunity {
     }
 
     void Population::initialize() {
-
         calendar = seekOne<Model*>("Calendar");
-
-        // Reset values
-        reset();
-
     }
 
     void Population::reset() {
 
-        //isActive = true;
+        isActive = true;
 
         densityActivityCoef = 1;
         sdRatio = 1;

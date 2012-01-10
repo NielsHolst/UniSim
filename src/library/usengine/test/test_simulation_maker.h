@@ -1,3 +1,4 @@
+void testModelsFromCondensedFileParameterKey();
 #ifndef TEST_MODEL_PARSER_H
 #define TEST_MODEL_PARSER_H
 
@@ -11,18 +12,21 @@ class TestSimulationMaker : public QObject
 {
     Q_OBJECT
 private slots:
-	void initTestCase();
-	void testSimulation();
-	void testModel();
-	void testParameters();
-	void testOutputOneXY();
-	void testOutputManyXY();
+    void initTestCase();
+    void testSimulation();
+    void testModel();
+    void testParameters();
+    void testOutputOneXY();
+    void testOutputManyXY();
     void testCommonElement();
     void testModelInstances();
     void testModelsFromFileOneLevel();
     void testModelsFromFileTwoLevels();
+    void testModelsFromFileCondensed();
     void testModelsFromFileThreeLevels();
     void testModelsAndParametersFromFile();
+    void testModelsAndParametersFromFileCondensed();
+    void testModelsFromCondensedFileParameterKey();
     void cleanupTestCase();
 private:
     QString filePath(QString fileName) const;

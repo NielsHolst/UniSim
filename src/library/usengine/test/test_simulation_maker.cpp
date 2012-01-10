@@ -233,7 +233,42 @@ void TestSimulationMaker::testModelsFromFileTwoLevels() {
     }
 
     Models all = sim->seekDescendants<Model*>("*");
+    std::cout << "\n";
+    for (int i = 0; i < all.size(); ++i)
+        std::cout << i << " " << qPrintable(all[i]->fullLabel()) << "\n";
+    std::cout << "\n";
     QCOMPARE(all.size(), 1+1+4+7+4);
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/Oats"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/stat"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/C/stat"));
+
+    try {
+        Model *crop = sim->seekOneDescendant<Model*>("landscape/B/WBarley");
+        QCOMPARE(crop->parameter<int>("Area"), 40);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    delete sim;
+}
+
+void TestSimulationMaker::testModelsFromFileCondensed() {
+    QString filename = filePath("models_from_file_condensed.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    Models all = sim->seekDescendants<Model*>("*");
+    QCOMPARE(all.size(), 1+1+4*5);
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A"));
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/Oats"));
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/stat"));
@@ -241,6 +276,8 @@ void TestSimulationMaker::testModelsFromFileTwoLevels() {
 
     Model *crop = sim->peekOneDescendant<Model*>("landscape/B/WBarley");
     QCOMPARE(crop->parameter<int>("Area"), 40);
+    crop = sim->peekOneDescendant<Model*>("landscape/D/SBarley");
+    QCOMPARE(crop->parameter<int>("Area"), 15);
 
     delete sim;
 }
@@ -271,7 +308,7 @@ void TestSimulationMaker::testModelsFromFileThreeLevels()
 //    std::cout << "\n";
 //    for (int i = 0; i < all.size(); ++i)
 //        std::cout << i << " " << qPrintable(all[i]->fullLabel()) << "\n";
-    //    std::cout << "\n";
+//    std::cout << "\n";
 }
 
 void TestSimulationMaker::testModelsAndParametersFromFile() {
@@ -290,6 +327,64 @@ void TestSimulationMaker::testModelsAndParametersFromFile() {
     QCOMPARE(harvest->parameter<QDate>("Date"), QDate(2010,8,15));
     QCOMPARE(harvest->parameter<int>("Cost"), 350);
     QCOMPARE(harvest->parameter<bool>("IsOrganic"), true);
+}
+
+void TestSimulationMaker::testModelsAndParametersFromFileCondensed() {
+    QString filename = filePath("models_and_parameters_from_file_condensed.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    Models all = sim->seekDescendants<Model*>("*");
+    QCOMPARE(all.size(), 1+1+4*5);
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/Oats"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/stat"));
+    QVERIFY(sim->peekOneDescendant<Model*>("landscape/C/stat"));
+
+    Model *crop = sim->seekOneDescendant<Model*>("landscape/B/WBarley");
+    QCOMPARE(crop->parameter<int>("Area"), 40);
+    QCOMPARE(crop->parameter<int>("numFields"), 4);
+    crop = sim->seekOneDescendant<Model*>("landscape/D/SBarley");
+    QCOMPARE(crop->parameter<int>("Area"), 15);
+    QCOMPARE(crop->parameter<int>("numFields"), 5);
+
+    delete sim;
+}
+
+void TestSimulationMaker::testModelsFromCondensedFileParameterKey() {
+    QString filename = filePath("models_from_condensed_file_parameter_key.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    Models all = sim->seekDescendants<Model*>("*");
+        std::cout << "\n";
+        for (int i = 0; i < all.size(); ++i)
+            std::cout << i << " " << qPrintable(all[i]->fullLabel()) << "\n";
+        std::cout << "\n";
+
+    QCOMPARE(all.size(), 1+1+4*5);
+
+    Model *crop = sim->seekOneDescendant<Model*>("landscape/C/WBarley");
+    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 130);
+
+    crop = sim->seekOneDescendant<Model*>("landscape/D/SBarley");
+    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 90);
+
+    delete sim;
 }
 
 QString TestSimulationMaker::filePath(QString fileName) const {

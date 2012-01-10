@@ -19,9 +19,10 @@ class QXmlStreamReader;
 
 namespace UniSim{
 
-class DataGrid;
+class InstanceIndex;
 class Model;
 class ParameterBase;
+class ParameterIndex;
 class Parameters;
 class Simulation;
 
@@ -48,8 +49,8 @@ private:
     // data
     QXmlStreamReader *reader;
     QString fileName;
-    QStack<QPair<QString, Model*> > keyStack;
-    QHash<QString, const DataGrid*> tables;
+    QHash<QString, InstanceIndex*> instanceTables;
+    QHash<QString, ParameterIndex*> parameterTables;
 
     typedef QPair<ParameterBase*, QString> RedirectedParameter;
     QList<RedirectedParameter> redirectedParameters;
@@ -57,10 +58,10 @@ private:
     struct TraceParam : public Attributes {
         QObject *parent;
     };
-
     QList<TraceParam> traceVariableParam, traceParameterParam;
 
     // methods
+    void clearTables();
     QString compileToFile(QString filePath);
 
     bool nextElementDelim();
@@ -71,16 +72,12 @@ private:
     void readSequenceElement(QObject *parent);
 
     void readModelElement(QList<QObject*> parents);
-    QList<QObject*> createModelElement(const QVector<int> &instanceIndices, const DataGrid *table, QObject *parent);
-    const DataGrid* createTable();
-    QVector<int> instanceIndices(const DataGrid *table, QObject *parent);
-    QString instanceName(int instanceIndex, const DataGrid *table);
-    int columnIndexOfModelType(const DataGrid *table);
-    void updateColumnParameters(Model *model, const DataGrid &table);
-    QString lookupKeyValue(Model *model, Identifier keyId);
+    QList<QObject*> createModelElement(InstanceIndex *table, QObject *parent);
+    UniSim::InstanceIndex *createIndexTable();
 
     void readParameterElement(QList<QObject*> parents);
     void setParameterElement(QObject *parent);
+    UniSim::ParameterIndex *createParameterTable(QString fileName);
 
     void readOutputElement(QObject *parent);
     void readOutputSubElement(QList<TraceParam> *param, QObject* parent);

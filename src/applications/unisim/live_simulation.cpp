@@ -19,20 +19,8 @@ using namespace UniSim;
 QMap<LiveSimulation::State, QString> LiveSimulation::stateTexts;
 
 LiveSimulation::LiveSimulation(QObject *parent)
-        : QObject(parent), _state(Closed), _simulation(0)
+    : QObject(parent), _state(Closed), _simulation(0), simulationMaker(0)
 {
-    simulationMaker = new UniSim::SimulationMaker();
-
-    graphProcesses.append(0);
-    graphProcesses.append(0);
-    graphProcesses.append(0);
-
-    connect(simulationMaker, SIGNAL(beginExpansion()), this, SLOT(acceptBeginExpansion()));
-    connect(simulationMaker, SIGNAL(endExpansion()), this, SLOT(acceptEndExpansion()));
-
-    connect(simulationMaker, SIGNAL(beginInitialization()), this, SLOT(acceptBeginInitialization()));
-    connect(simulationMaker, SIGNAL(endInitialization()), this, SLOT(acceptEndInitialization()));
-
 	setupStateTexts();   
 }
 
@@ -69,18 +57,21 @@ void LiveSimulation::setupStateTexts() {
     Q_ASSERT(stateTexts.size() == int(Closing) + 1);
 }
 
-LiveSimulation::~LiveSimulation() {
-    delete simulationMaker;
-
-    delete graphProcesses[0];
-    delete graphProcesses[1];
-    delete graphProcesses[2];
-}
-
 void LiveSimulation::open(QString filePath) {
     checkFilePath(filePath);
     if (_state == Ready)
         throw Exception("Close current simulation before opening another");
+
+    simulationMaker = new UniSim::SimulationMaker();
+    graphProcesses.append(0);
+    graphProcesses.append(0);
+    graphProcesses.append(0);
+
+    connect(simulationMaker, SIGNAL(beginExpansion()), this, SLOT(acceptBeginExpansion()));
+    connect(simulationMaker, SIGNAL(endExpansion()), this, SLOT(acceptEndExpansion()));
+    connect(simulationMaker, SIGNAL(beginInitialization()), this, SLOT(acceptBeginInitialization()));
+    connect(simulationMaker, SIGNAL(endInitialization()), this, SLOT(acceptEndInitialization()));
+
     parseFile();
 }
 
@@ -165,6 +156,10 @@ void LiveSimulation::run() {
 
 void LiveSimulation::close() {
 	changeState(Closing);
+    delete simulationMaker;
+    simulationMaker = 0;
+    qDeleteAll(graphProcesses);
+    graphProcesses.clear();
     delete _simulation;
     _simulation = 0;
     changeState(Closed);

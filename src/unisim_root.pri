@@ -1,2 +1,2 @@
-# Generated on 3 Jan 12 18:10
-UNISIM_ROOT = "C:/data/QDev/UniSim"
+# Generated on 10 Jan 12 13:54
+UNISIM_ROOT = "C:/data/QDev/unisim"

@@ -53,8 +53,6 @@ HEADERS += \
     frequency_distribution.h \
     test_frequency_distribution.h \
     test_numeric_limits.h
-    #test_live_simulation.h
-    #test_plugins.h
 
 SOURCES += \
     $${US_BASE}/test/test_component.cpp \
@@ -92,6 +90,4 @@ SOURCES += \
     frequency_distribution.cpp \
     test_frequency_distribution.cpp \
     test_numeric_limits.cpp \
-    #test_live_simulation.cpp \
-    #test_plugins.cpp \
-	main.cpp 
+    main.cpp

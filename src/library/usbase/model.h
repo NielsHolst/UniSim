@@ -29,6 +29,9 @@ public:
     template <class T> T pullVariable(Identifier name);
     template <class T> const T* pullVariablePtr(Identifier name);
 
+    Identifier classId();
+    QString peekKeyValue(Identifier key);
+
     bool hide() const;
     void setHide(bool value);
 

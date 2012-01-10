@@ -16,9 +16,17 @@ HEADERS += 	\
     $${US_ENGINE}/documentation_writer.h \
     $${US_ENGINE}/integrator_maker.h \
     $${US_ENGINE}/file_locations_strict.h \
+    $${US_ENGINE}/instance_index.h \
+    $${US_ENGINE}/instance_index_from_condensed_table.h \
+    $${US_ENGINE}/instance_index_from_table.h \
+    $${US_ENGINE}/instance_index_numbered.h \
+    $${US_ENGINE}/instance_index_one.h \
     $${US_ENGINE}/main_window_interface.h \
     $${US_ENGINE}/model_maker.h \
     $${US_ENGINE}/output_maker.h \
+    $${US_ENGINE}/parameter_index.h \
+    $${US_ENGINE}/parameter_index_from_condensed_table.h \
+    $${US_ENGINE}/parameter_index_from_table.h \
     $${US_ENGINE}/plot_widget.h \
     $${US_ENGINE}/prototype_maker.h \
     $${US_ENGINE}/simulation.h \
@@ -32,8 +40,16 @@ SOURCES += 	\
     $${US_ENGINE}/documentation_writer.cpp \
     $${US_ENGINE}/integrator_maker.cpp \
     $${US_ENGINE}/file_locations_strict.cpp \
+    $${US_ENGINE}/instance_index.cpp \
+    $${US_ENGINE}/instance_index_from_condensed_table.cpp \
+    $${US_ENGINE}/instance_index_from_table.cpp \
+    $${US_ENGINE}/instance_index_numbered.cpp \
+    $${US_ENGINE}/instance_index_one.cpp \
     $${US_ENGINE}/model_maker.cpp \
     $${US_ENGINE}/output_maker.cpp \
+    $${US_ENGINE}/parameter_index.cpp \
+    $${US_ENGINE}/parameter_index_from_condensed_table.cpp \
+    $${US_ENGINE}/parameter_index_from_table.cpp \
     $${US_ENGINE}/plot_widget.cpp \
     $${US_ENGINE}/prototype_maker.cpp \
     $${US_ENGINE}/simulation.cpp \

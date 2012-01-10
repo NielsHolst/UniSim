@@ -118,6 +118,7 @@ namespace {
 	
 }	
 
+//Limit the number!!
 void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int parentNumber)
 {
 	QString statement;

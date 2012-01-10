@@ -1,0 +1,5 @@
+*Crop	Soiltype	*Nitrogen	Water	isCase
+barley	sandy	90.1	70	no
+wheat	clay	80.2	75	yes
+wheat	sandy	65.3	50	no
+barley	clay	95.4	85	no

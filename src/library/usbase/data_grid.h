@@ -42,7 +42,7 @@ private:
         QStringList columnNamesInOrder;
         int numKeys;
     } data;
-    QHash<QByteArray, Index*> subIndices;
+    //QHash<QByteArray, Index*> subIndices;
 
     // methods
     QByteArray keyToSubIndex(const QList<int> &keyColumns) const;

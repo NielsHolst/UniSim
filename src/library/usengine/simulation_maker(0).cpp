@@ -46,12 +46,16 @@ SimulationMaker::SimulationMaker()
 	: QObject()
 {
 	reader = new QXmlStreamReader;
-    instanceTables.clear();
-    parameterTables.clear();
 }
 
 SimulationMaker::~SimulationMaker()
 {
+    /*
+    QHashIterator<QString, const DataGrid*> i(tables);
+    while (i.hasNext()) {
+        i.next();
+        delete i.value();
+    }*/
     delete reader;
 }
 
@@ -161,7 +165,20 @@ Simulation* SimulationMaker::parse(QString fileName_)
 }
 
 void SimulationMaker::clearTables() {
+    QString n = "C:\\data\\QDev\\unisim\\src\\library\\usengine\\test\\input\\simulation_maker\\farms.txt";
+    InstanceIndexFromTable *table = new InstanceIndexFromTable(n);
+    delete table;
+
+    InstanceIndex *table2 = new InstanceIndexFromTable(n);
+    delete table2;
+
     qDeleteAll(instanceTables);
+    QHashIterator<QString, InstanceIndex*> i(instanceTables);
+    while (i.hasNext()) {
+        InstanceIndex *table = i.value();
+        delete table;
+    }
+
     qDeleteAll(parameterTables);
     instanceTables.clear();
     parameterTables.clear();
@@ -268,6 +285,8 @@ void SimulationMaker::readModelElement(QList<QObject*> parents) {
     }
 	Q_ASSERT(reader->isEndElement());
 	nextElementDelim();
+
+    delete table;
 }
 
 InstanceIndex* SimulationMaker::createIndexTable() {

@@ -40,7 +40,6 @@ public:
 	};
 	
     LiveSimulation(QObject *parent);
-	~LiveSimulation();
     void open(QString filePath);
     void writeGraph();
     void run();

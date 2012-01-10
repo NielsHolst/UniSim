@@ -76,6 +76,18 @@ void TestDataGrid::testOnlyColumnHeadings() {
     QCOMPARE(data.rowNames().size(), 0);
 }
 
+void TestDataGrid::testWrongKeys() {
+    bool excepted = false;
+    DataGrid *data;
+    try {
+        data = new DataGrid("data_grid_wrong_keys.txt");
+    }
+    catch (Exception &) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
 void TestDataGrid::testRowIndices() {
     DataGrid data( filePath("data_grid_2_keys.txt") );
     DataGrid::KeySubset keys;

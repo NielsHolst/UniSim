@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	
+    <integrator name="integrator" type="TimeStepLimited">
+        <parameter name="maxSteps" value="10"/>
+    </integrator>
+
+	<model name="landscape" type="UniSim::Fixed">
+		<model type="test::Farm" table="farms.txt">
+			<model type="test::Crop" crosstab="crops_area_on_farms_condensed.txt" parameter="Area">
+				<parameter name="numFields" crosstab="crops_num_fields_on_farms_condensed.txt"/>
+			</model>
+			<model name="stat" type="UniSim::Fixed">
+				<parameter name="pullVariables" value="((x 2)(y 3))"/>;
+			</model>
+		</model>
+	</model>
+	
+    <output name="out" type="Table">
+		<parameter name="fileName" value="test.txt"/>
+		<variable label="larva" axis="x" value="farm(A)/stat[x]"/>
+		<variable label="larva" axis="y" value="farm(B)/stat[y]"/>
+    </output>
+</simulation>

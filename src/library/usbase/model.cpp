@@ -17,6 +17,30 @@ Model::Model(Identifier name, QObject *parent)
 {
 }
 
+Identifier Model::classId() {
+    QVariant label = property("classLabel");
+    Q_ASSERT(label.isValid());
+    return Identifier(label.toString());
+}
+
+QString Model::peekKeyValue(Identifier key) {
+    if (key == classId())
+        return id().label();
+
+    Model *ascendant = peekParent<Model*>("*");
+    while (ascendant) {
+        if (key == ascendant->classId())
+            return ascendant->id().label();
+
+        QList<ParameterBase*> parameter = ascendant->seekChildren<ParameterBase*>(key.label());
+        if (parameter.size() == 1)
+            return parameter.value(0)->toString();
+        Q_ASSERT(parameter.isEmpty());
+        ascendant = ascendant->peekParent<Model*>("*");
+    }
+    return QString();
+}
+
 bool Model::hide() const {
     return _hide;
 }

@@ -1,0 +1,5 @@
+*test::Farm	Oats	SBarley	WBarley
+A	10	30	0
+B	20	0	40
+C	0	0	0
+D	55	15	25

@@ -77,7 +77,7 @@ QByteArray DataGrid::keyToSubIndex(const QList<int> &keyColumns) const {
 
 void DataGrid::createSubIndex(const QList<int> &keyColumns) {
     Index *subIndex = new Index;
-    subIndices[ keyToSubIndex(keyColumns) ] = subIndex;
+    //subIndices[ keyToSubIndex(keyColumns) ] = subIndex;
 
     QStringList keys;
     int nrow = data.rows.size();
@@ -151,6 +151,11 @@ void DataGrid::setColumnIndex() {
     for (int i = 0; i < lineItems.size(); ++i) {
         QString name = lineItems.value(i);
         if (name.startsWith("*")) {
+            if (i != data.numKeys) {
+                QString msg("Key columns (marked with '*') must be the leftmost columns in the file. "
+                            "Fix column '%1' in file '%2'");
+                throw Exception(msg.arg(name).arg(filePath));
+            }
             ++data.numKeys;
             name.remove(0,1);
         }

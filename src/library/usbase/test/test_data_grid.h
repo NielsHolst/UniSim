@@ -21,6 +21,7 @@ private slots:
     void testEmptyFile();
     void testIllFormedFile();
     void testOnlyColumnHeadings();
+    void testWrongKeys();
     void testRowIndices();
 private:
     QString filePath(QString fileName);

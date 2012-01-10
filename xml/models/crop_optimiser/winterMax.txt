@@ -1,5 +1,0 @@
-FarmType	WinterMax
-Other	100
-Cattle	65
-Plant	100
-Pig	65

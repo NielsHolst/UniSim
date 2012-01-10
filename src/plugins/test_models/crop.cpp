@@ -15,7 +15,9 @@ namespace test{
 Crop::Crop(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
+    new Parameter<int>("numFields", &numFields, 1, this, "description");
     new Parameter<double>("Area", &initArea, 100., this, "description");
+    new Parameter<double>("nitrogenNorm", &nitrogenNorm, 0., this, "description");
 }
 
 

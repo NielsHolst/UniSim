@@ -19,7 +19,8 @@ public:
 
 private:
     // parameters
-    double initArea;
+    int numFields;
+    double initArea, nitrogenNorm;
 };
 
 } //namespace

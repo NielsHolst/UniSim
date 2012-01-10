@@ -1,0 +1,3 @@
+*SoilType	SBarley	WBarley	Oats
+Clay	90	110	120
+Sand	105	130	145

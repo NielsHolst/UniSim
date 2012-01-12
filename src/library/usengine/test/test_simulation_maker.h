@@ -27,6 +27,7 @@ private slots:
     void testModelsAndParametersFromFile();
     void testModelsAndParametersFromFileCondensed();
     void testModelsFromCondensedFileParameterKey();
+    void testModelsFromCondensedFileParameter2Keys();
     void cleanupTestCase();
 private:
     QString filePath(QString fileName) const;

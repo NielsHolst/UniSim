@@ -76,8 +76,6 @@ OutputPlot::~OutputPlot() {
 }
 
 void OutputPlot::initialize() {
-    Output::initialize();
-
     if (yTraces().size() == 0) {
         QString msg = QString("Output plot '%1'' has no y-results").arg(id().label());
         throw Exception(msg, this);
@@ -116,7 +114,7 @@ void OutputPlot::debrief() {
 void OutputPlot::showPlot() {
     fillPlotWidget();
     showPlotWidget();
-    mainWindow->tile();
+//    mainWindow->tile();
 }
 
 void OutputPlot::setZoomer() {

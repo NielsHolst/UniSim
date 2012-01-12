@@ -140,7 +140,31 @@ PlotWidget* MainWindow::createPlotWidget(QString title) {
 }
 
 void MainWindow::tile() {
-    _mdiArea->tileSubWindows();
+//    _mdiArea->tileSubWindows();
+    QList<SubWindow*> tiles = subWindowList(SubWindow::SimulationOutput);
+    int rows = 2, columns = 2, n = tiles.size();
+    while (rows*columns < n) {
+        if (rows == columns)
+            ++columns;
+        else
+            ++rows;
+    }
+
+    QSize scene = centralWidget()->size();
+    QSize tile(scene.width()/columns, scene.height()/rows);
+    int ixTile = 0;
+    for (int row = 0; row < rows; ++row) {
+        for (int col = 0; col < columns; ++col) {
+            QPoint pos(col*tile.width(), row*tile.height());
+            if (ixTile < n) {
+                tiles[ixTile]->resize(tile);
+                tiles[ixTile]->move(pos);
+                ++ixTile;
+            }
+        }
+
+    }
+
 }
 
 void MainWindow::setTitle(QString subTitle) {
@@ -157,28 +181,36 @@ void MainWindow::closeEvent (QCloseEvent * event) {
     event->accept();
 }
 
+QList<SubWindow*> MainWindow::subWindowList(SubWindow::Type type) {
+    QList<QMdiSubWindow *> candidates = _mdiArea->subWindowList();
+    QList<SubWindow*> result;
+    for (int i = 0; i < candidates.size(); ++i) {
+        SubWindow *win = dynamic_cast<SubWindow*>(candidates[i]);
+        if (win && win->type() == type)
+            result << win;
+    }
+    return result;
+}
+
 void MainWindow::closeSubWindows(SubWindow::Type type) {
     if (type == SubWindow::All) {
         _mdiArea->closeAllSubWindows();
         return;
     }
-    QList<QMdiSubWindow *> windows = _mdiArea->subWindowList();
+    QList<SubWindow*> windows = subWindowList(type);
     for (int i = 0; i < windows.size(); ++i) {
-        SubWindow *subWindow = dynamic_cast<SubWindow*>(windows[i]);
-        bool doClose = subWindow && subWindow->type() == type;
-        if (doClose)
-            subWindow->close();
+        windows[i]->close();
     }
 }
 
 void MainWindow::minimizeSubWindows(SubWindow::Type type) {
-    QList<QMdiSubWindow *> windows = _mdiArea->subWindowList();
+    if (type == SubWindow::All) {
+        _mdiArea->closeAllSubWindows();
+        return;
+    }
+    QList<SubWindow*> windows = subWindowList(type);
     for (int i = 0; i < windows.size(); ++i) {
-        SubWindow *subWindow = dynamic_cast<SubWindow*>(windows[i]);
-        bool doMinimize = type == SubWindow::All ||
-                          ( subWindow && subWindow->type() == type );
-        if (doMinimize)
-            windows[i]->showMinimized();
+        windows[i]->showMinimized();
     }
 }
 
@@ -188,25 +220,6 @@ void MainWindow::standardizeSubWindows() {
     QList<QMdiSubWindow *> windows = _mdiArea->subWindowList();
     for (int i = 0; i < windows.size(); ++i)
         windows[i]->resize(width, height);
-    /*
-    QList<QMdiSubWindow *> tiles = _mdiArea->subWindowList();
-    int ixTile = 0, n = tiles.size();
-
-    int rows = 3, columns = 3;
-    QSize scene = centralWidget()->size();
-    QSize tile(scene.width()/columns, scene.height()/rows);
-    for (int row = 0; row < rows; ++row) {
-        for (int col = 0; col < columns; ++col) {
-            QPoint pos(col*tile.width(), row*tile.height());
-            if (ixTile < n) {
-                tiles[ixTile]->resize(tile);
-                tiles[ixTile]->move(pos);
-                ++ixTile;
-            }
-        }
-
-    }
-    */
 }
 
 void MainWindow::setPermanentMessage(QString message) {
@@ -486,3 +499,4 @@ void MainWindow::showErrorMessage(QString message) {
 void MainWindow::showMessage(QString message) {
     QMessageBox::information(this, "Information", message);
 }
+

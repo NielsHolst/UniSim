@@ -20,7 +20,7 @@ class Output : public Component
 public:
     Output(Identifier name, QObject *parent=0);
     // standard methods
-    virtual void initialize();
+    virtual void amend();
     // special methods
     const QList<TraceBase*>& traces() const;
     const QList<TraceBase*>& xTraces() const;

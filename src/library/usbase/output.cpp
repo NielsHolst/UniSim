@@ -15,7 +15,7 @@ Output::Output(Identifier name, QObject *parent)
 {
 }
 
-void Output::initialize() {
+void Output::amend() {
     _traces = seekChildren<TraceBase*>("*");
     _hasSummary = false;
     for (int i = 0; i < _traces.size(); ++i) {

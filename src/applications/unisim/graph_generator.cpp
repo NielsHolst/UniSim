@@ -56,9 +56,6 @@ QString GraphGenerator::outputFilePath(OutputFormat format) {
     return path;
 }
 
-// Denne funktion kalder programmet dot.exe
-// Den starter en process, som selv melder tilbage når diagrammet er genereret
-// Diagrammet ligger i en PNG fil som derefter vises på skærmen. Nå...
 QProcess* GraphGenerator::generate(OutputFormat format)
 {
     Q_ASSERT(format != Dot);
@@ -75,8 +72,6 @@ QProcess* GraphGenerator::generate(OutputFormat format)
 	return process;
 }
 
-// Denne funktion (writeDotFile) skriver en tekstfil, som bagefter læses af programmet dot.exe
-// Dot er et open-source program, en del af Graphviz
 void GraphGenerator::writeDotFile()
 {
     QString dotFilePath = outputFilePath(Dot);
@@ -118,13 +113,15 @@ namespace {
 	
 }	
 
-//Limit the number!!
 void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int parentNumber)
 {
-	QString statement;
-        QTextStream sink(&statement);
-
     int myNumber = ++nodeNumber;
+    if (myNumber > 50)
+        return;
+
+    QString statement;
+    QTextStream sink(&statement);
+
 	writeNode(&sink, parent, parentNumber);
 	writeNode(&sink, child, myNumber);
     sink << nodeId(parent) << parentNumber << "->" << nodeId(child) << myNumber << ";\n";

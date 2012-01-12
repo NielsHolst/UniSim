@@ -17,7 +17,7 @@ TraceBase::TraceBase(QString name, QObject *parent)
     output = dynamic_cast<Output*>(parent);
 }
 
-void UniSim::TraceBase::initialize() {
+void UniSim::TraceBase::amend() {
     setSummary();
     setAxis();
     setType();

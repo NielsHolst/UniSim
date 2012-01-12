@@ -100,6 +100,11 @@ void Component::followRedirections() {
         parameters[i]->followRedirection();
 }
 
+//! Amends this and all children according to the RecursionPolicy.
+void Component::deepAmend() {
+    call(this, &Component::amend, &Component::deepAmend, recursionPolicy(Component::Amend));
+}
+
 //! Initializes this and all children according to the RecursionPolicy.
 void Component::deepInitialize() {
     QList<QObject*> before= seekDescendants<QObject*>("*");

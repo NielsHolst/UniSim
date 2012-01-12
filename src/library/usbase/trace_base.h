@@ -22,7 +22,7 @@ public:
     TraceBase(QString name, QObject *parent = 0);
 	
     // standard methods
-    void initialize();
+    void amend();
     void reset();
     void update();
     void cleanup();

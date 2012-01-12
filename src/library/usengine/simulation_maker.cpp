@@ -40,12 +40,20 @@ namespace {
     inline QList<QObject*> asList(QObject * object) {
         return (QList<QObject*>() << object);
     }
+
+    template <class T> void amend() {
+        QList<T> components = seekChildren<T>("*", simulation());
+        QListIterator<T>  i(components);
+        while (i.hasNext()) {
+            i.next()->deepAmend();
+        }
+    }
 }
 
 SimulationMaker::SimulationMaker()
 	: QObject()
 {
-	reader = new QXmlStreamReader;
+    reader = new QXmlStreamReader;
     instanceTables.clear();
     parameterTables.clear();
 }
@@ -151,9 +159,17 @@ Simulation* SimulationMaker::parse(QString fileName_)
     if (noOutputs)
         throw Exception(message("Missing 'output' element in 'simulation'"));
 
-    amendComponents();
+    Output *test = new Output("test");
+    test->amend();
+
+    Component *test2 = new Output("test");
+    test2->amend();
+
+    amend<Integrator*>();
+    amend<Model*>();
     redirectParameters();
     createTraces();
+    amend<Output*>();
 
     reader->clear();
     clearTables();
@@ -560,14 +576,6 @@ namespace {
                              receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
         }
         return matchedT;
-    }
-}
-
-void SimulationMaker::amendComponents() {
-    QList<Component*> components = seekMany<Component*>("*");
-    QListIterator<Component*>  i(components);
-    while (i.hasNext()) {
-        i.next()->amend();
     }
 }
 

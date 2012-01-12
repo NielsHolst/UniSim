@@ -371,11 +371,6 @@ void TestSimulationMaker::testModelsFromCondensedFileParameterKey() {
     }
 
     Models all = sim->seekDescendants<Model*>("*");
-        std::cout << "\n";
-        for (int i = 0; i < all.size(); ++i)
-            std::cout << i << " " << qPrintable(all[i]->fullLabel()) << "\n";
-        std::cout << "\n";
-
     QCOMPARE(all.size(), 1+1+4*5);
 
     Model *crop = sim->seekOneDescendant<Model*>("landscape/C/WBarley");
@@ -383,6 +378,33 @@ void TestSimulationMaker::testModelsFromCondensedFileParameterKey() {
 
     crop = sim->seekOneDescendant<Model*>("landscape/D/SBarley");
     QCOMPARE(crop->parameter<int>("nitrogenNorm"), 90);
+
+    delete sim;
+}
+
+void TestSimulationMaker::testModelsFromCondensedFileParameter2Keys() {
+    QString filename = filePath("models_from_condensed_file_parameter_2_keys.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    Models all = sim->seekDescendants<Model*>("*");
+    QCOMPARE(all.size(), 1+1+4*5);
+
+    Model *crop = sim->seekOneDescendant<Model*>("landscape/C/WBarley");
+    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 130);
+
+    crop = sim->seekOneDescendant<Model*>("landscape/D/SBarley");
+    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 90);
+
+    crop = sim->seekOneDescendant<Model*>("landscape/B/Oats");
+    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 125);
 
     delete sim;
 }

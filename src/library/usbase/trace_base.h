@@ -35,6 +35,7 @@ public:
     Summary summary() const;
     enum Type {Line, Symbols, Both} ;
     Type type() const;
+    bool hasWildCard() const;
 
     virtual NamedObject* traceParent() = 0;
     virtual double currentValue() = 0;

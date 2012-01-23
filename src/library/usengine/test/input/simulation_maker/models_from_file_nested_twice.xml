@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This file is also used to test UniSim::Output -->
 <simulation version="1.0">
 	
     <integrator name="integrator" type="TimeStepLimited">
@@ -8,6 +9,8 @@
         </sequence>
     </integrator>
 
+	<model name="calendar" type="UniSim::Calendar"/>
+	
 	<model name="landscape" type="UniSim::Fixed">
 		<model type="test::Farm" table="farms.txt">
 			<model type="test::Crop" table="crops_on_farms.txt">
@@ -19,9 +22,22 @@
 		</model>
 	</model>
 	
-    <output name="out" type="Table">
-		<parameter name="fileName" value="test.txt"/>
-		<variable label="larva" axis="x" value="A/stat[x]"/>
-		<variable label="larva" axis="y" value="B/stat[y]"/>
+	<output type="Table">
+		<parameter name="fileName" value="test_3levels_output.txt"/>
+		<variable label="*time" axis = "x" value="calendar[totalTimeSteps]"/>
+		<variable label="x" value="landscape/a/stat[x]"/>
+		<variable label="labour" value="landscape/a/oats/sowing[labour]"/>
+	</output>
+	
+	<output type="Table">
+		<parameter name="fileName" value="test_3levels_jokers_output.txt"/>
+		<variable label="*time" axis = "x" value="calendar[totalTimeSteps]"/>
+		<variable label="x" value="landscape/a/stat[x]"/>
+		<variable label="labour" value="landscape/*/*/*[labour]"/>
+	</output>
+	
+    <output name="cross" type="Crosstab" constrain="calendar[totalTimeSteps]==*">
+		<parameter name="fileName" value="test_crosstab.txt"/>
+		<variable label="farm" value="landscape/*/*[area]"/>
     </output>
 </simulation>

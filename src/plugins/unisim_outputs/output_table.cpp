@@ -17,7 +17,7 @@ using std::max;
 namespace UniSim{
 	
 OutputTable::OutputTable(Identifier name, QObject *parent)
-    : Output(name, parent)
+    : Output(name, parent), fileType(FileLocationInfo::Output)
 {
     new Parameter<QString>("fileName", &fileName, QString("output_table.prn"), this, "description");
 }
@@ -42,11 +42,12 @@ void OutputTable::debrief() {
 }
 
 void OutputTable::openFile() {
-    QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
+    QString path = FileLocations::location(fileType).absolutePath();
     QString useFileName = (runNumber() == 1 || hasSummary()) ?
                           fileName :
-                          ammendedFileName(fileName, runNumber());
+                          amendedFileName(fileName, runNumber());
     QString filePath = path + "/" + useFileName;
+    _outputFilePaths << filePath;
 
     file.setFileName(filePath);
     if (!file.open(QIODevice::Text | QIODevice::WriteOnly))
@@ -57,7 +58,8 @@ void OutputTable::openFile() {
         QString filePath = path + "/" + fileName;
         QFile prevFile(filePath);
 
-        QString newName = path + "/" + ammendedFileName(fileName, 1);
+        QString newName = path + "/" + amendedFileName(fileName, 1);
+        _outputFilePaths[0] = newName;
 
         // Delete any existing file named newName
         QFile toDelete(newName);
@@ -66,7 +68,7 @@ void OutputTable::openFile() {
     }
 }
 
-QString OutputTable::ammendedFileName(QString fileName, int number) {
+QString OutputTable::amendedFileName(QString fileName, int number) {
     QString runCode = QString::number(number);
     runCode = runCode.rightJustified(4, '0');
 
@@ -78,32 +80,20 @@ QString OutputTable::ammendedFileName(QString fileName, int number) {
 }
 
 void OutputTable::writeLabels() {
-    writeXLabels();
+    writeLabels(xTraces());
     writeTab();
-    setYLabels();
-    writeYLabels();
+    writeLabels(yTraces());
     writeCR();
 }
 
-void OutputTable::writeXLabels() {
-    if (xTraces().isEmpty())
+void OutputTable::writeLabels(const QList<TraceRecord> &traces) {
+    if (traces.isEmpty())
         return;
     QString s;
     QTextStream text(&s);
-    text << xTraces()[0]->id().label();
-    for (int i = 1; i < xTraces().size(); ++i)
-        text << "\t" << xTraces()[i]->id().label();
-    file.write(qPrintable(s));
-}
-
-void OutputTable::writeYLabels() {
-    if (yLabels.isEmpty())
-        return;
-    QString s;
-    QTextStream text(&s);
-    text << yLabels[0].label();
-    for (int i = 1; i < yLabels.size(); ++i)
-        text << "\t" << yLabels[i].label();
+    text << traces[0].label;
+    for (int i = 1; i < traces.size(); ++i)
+        text << "\t" << traces[i].label;
     file.write(qPrintable(s));
 }
 
@@ -133,15 +123,15 @@ int OutputTable::traceSize() const {
     return theSize;
 }
 
-void OutputTable::writeTraces(const QList<TraceBase*> &traces, int dataIx) {
+void OutputTable::writeTraces(const QList<TraceRecord> &traces, int dataIx) {
     if (traces.isEmpty())
         return;
     QString s;
     QTextStream text(&s);
     text.setRealNumberPrecision(10);
-    text << traces[0]->history()->value(dataIx);
+    text << traces.at(0).trace->history()->value(dataIx);
     for (int i = 1; i < traces.size(); ++i) {
-        text << "\t" << traces[i]->history()->value(dataIx);
+        text << "\t" << traces.at(i).trace->history()->value(dataIx);
     }
     file.write(qPrintable(s));
 }
@@ -156,6 +146,10 @@ void OutputTable::writeTab() {
 
 void OutputTable::writeCR() {
     file.write("\n");
+}
+
+QStringList OutputTable::outputFilePaths() {
+    return _outputFilePaths;
 }
 
 } //namespace

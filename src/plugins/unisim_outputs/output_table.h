@@ -8,6 +8,7 @@
 
 #include <QFile>
 #include <QList>
+#include <usbase/file_location_info.h>
 #include <usbase/output.h>
 #include <usbase/trace_base.h>
 
@@ -21,24 +22,28 @@ public:
     // standard methods
     void cleanup();
     void debrief();
+    // special methods
+    QStringList outputFilePaths();
 
+protected:
+    FileLocationInfo::FileType fileType;
 private:
     // parameters
     QString fileName;
 
     // housekeeping
     QFile file;
+    QStringList _outputFilePaths;
 
     // methods
     void openFile();
     void closeFile();
-    QString ammendedFileName(QString fileName, int number);
+    QString amendedFileName(QString fileName, int number);
     int traceSize() const;
     void writeLabels();
-    void writeXLabels();
-    void writeYLabels();
+    void writeLabels(const QList<TraceRecord> &traces);
     void writeTraces();
-    void writeTraces(const QList<TraceBase*> &results, int dataIx);
+    void writeTraces(const QList<TraceRecord> &traces, int dataIx);
     void writeCR();
     void writeTab();
 };

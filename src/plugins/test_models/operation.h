@@ -17,12 +17,16 @@ class Operation : public UniSim::Model
 public: 
     Operation(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
+    void reset();
+    void update();
 
 private:
     // parameters
     QDate date;
     int cost;
     bool isOrganic;
+    // pull variables
+    int energy, labour, CO2;
 };
 
 } //namespace

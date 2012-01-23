@@ -32,7 +32,6 @@
 #include "simulation.h"
 #include "simulation_maker.h"
 #include "xml_node.h"
-#include "xy_state_variables.h"
 
 namespace UniSim{
 
@@ -158,12 +157,6 @@ Simulation* SimulationMaker::parse(QString fileName_)
         throw Exception(message("Missing 'model' element in 'simulation'"));
     if (noOutputs)
         throw Exception(message("Missing 'output' element in 'simulation'"));
-
-    Output *test = new Output("test");
-    test->amend();
-
-    Component *test2 = new Output("test");
-    test2->amend();
 
     amend<Integrator*>();
     amend<Model*>();
@@ -491,7 +484,7 @@ void SimulationMaker::readOutputSubElement(QList<TraceParam> *parameters, QObjec
     TraceParam param;
     param.setAttribute( "label", attributeValue("label", parent) );
     param.setAttribute( "value", attributeValue("value", parent) );
-    param.setAttribute( "axis", attributeValue("axis", parent) );
+    param.setAttribute( "axis", attributeValue("axis", "y") );
     param.setAttribute( "summary", attributeValue("summary", "") );
     param.setAttribute( "type", attributeValue("type", "") );
     param.parent = parent;

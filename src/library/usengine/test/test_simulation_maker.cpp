@@ -8,10 +8,8 @@
 #include <usbase/model.h>
 #include <usbase/output.h>
 #include <usbase/utilities.h>
-#include "../output_destination_maker_file.h"
 #include "../simulation.h"
 #include "../simulation_maker.h"
-#include "../xy_state_variables.h"
 #include "test_simulation_maker.h"
 
 using namespace UniSim;
@@ -34,17 +32,17 @@ void TestSimulationMaker::initTestCase()
 {	
     writeStandardTestFile(local::testFilePath());
 
-	_simulation = 0;
+    simulation = 0;
 	SimulationMaker maker;
 	bool modelOk = false;
 	try {
-        _simulation = maker.parse(local::testFilePath());
-        UniSim::setSimulationObject(_simulation);
+        simulation = maker.parse(local::testFilePath());
+        UniSim::setSimulationObject(simulation);
         modelOk = true;
 	}
 	catch (const Exception &ex) {
-		delete _simulation;
-		_simulation = 0;
+        delete simulation;
+        simulation = 0;
 		QWARN(qPrintable(ex.message()));
 		QVERIFY(false);
 	}
@@ -52,15 +50,15 @@ void TestSimulationMaker::initTestCase()
 
 void TestSimulationMaker::cleanupTestCase()
 {
-	delete _simulation;
-	_simulation = 0;
+    delete simulation;
+    simulation = 0;
 }
 
 void TestSimulationMaker::testSimulation()
 {
-	QVERIFY(_simulation);
-    QCOMPARE(_simulation->children().size(), 7);
-	QVERIFY(_simulation->parent()==0);
+    QVERIFY(simulation);
+    QCOMPARE(simulation->children().size(), 7);
+    QVERIFY(simulation->parent()==0);
 	
     Model *butterfly = seekOneDescendant<Model*>("butterfly", 0);
 	QVERIFY(butterfly);
@@ -72,7 +70,7 @@ void TestSimulationMaker::testModel()
     QCOMPARE(models.size(), 1);
     Model *butterfly = models[0];
     QVERIFY(butterfly);
-	QVERIFY(butterfly->parent() == _simulation);
+    QVERIFY(butterfly->parent() == simulation);
     QCOMPARE(butterfly->metaObject()->className(), "test::LifeCycle");
 	QCOMPARE(butterfly->metaObject()->superClass()->className(), "UniSim::Model");
 	QCOMPARE(butterfly->parent()->metaObject()->className(), "UniSim::Simulation");
@@ -98,68 +96,6 @@ void TestSimulationMaker::testParameters()
 	
 }
 
-void dumpVariables(const XYStateVariables::Variables &var) {
-	QString s;
-	QTextStream text(&s);
-	for (int i = 0;i < var.size(); ++i) {
-        text << i << " " << var[i].label << " " << var[i].stateName
-		<< " " << var[i].model->objectName() << " " << *(var[i].value) << "\n";
-	}
-	std::cout << qPrintable(s);
-}
-
-void TestSimulationMaker::testOutputOneXY()
-{
-/*	QList<Output*> outputs;
-	Output *output;
-	QList<XYStateVariables*> xys;
-	XYStateVariables *xy;
-	
-    outputs = UniSim::find<Output*>("butterflyPlot");
-	QCOMPARE(outputs.size(), 1);
-	
-	output = outputs[0];
-	QVERIFY(output->parent() == _simulation);
-
-	
-    xys = UniSim::findChildren<XYStateVariables*>("*", output);
-	QCOMPARE(xys.size(), 1);
-	
-	xy = xys[0];
-	XYStateVariables::Variables 
-		x =  xy->xVariables(), 
-		y = xy->yVariables();
-	QCOMPARE(x.size(), 1);
-	dumpVariables(y);
-	QCOMPARE(y.size(), 5);
-*/
-}
-
-void TestSimulationMaker::testOutputManyXY()
-{/*
-	QList<Output*> outputs;
-	Output *output;
-	QList<XYStateVariables*> xys;
-	XYStateVariables *xy;
-	
-    outputs = UniSim::find<Output*>("butterflyPhasePlot");
-	QCOMPARE(outputs.size(), 1);
-	
-	output = outputs[0];
-	QVERIFY(output->parent() == _simulation);
-
-	
-    xys = UniSim::findChildren<XYStateVariables*>("*", output);
-    QCOMPARE(xys.size(), 2);
-	
-	xy = xys[1];
-	XYStateVariables::Variables 
-		x =  xy->xVariables(), 
-		y = xy->yVariables();
-	QCOMPARE(x.size(), 1);
-	QCOMPARE(y.size(), 1);
-*/
-}
 
 void TestSimulationMaker::testCommonElement() {
     QString filename = filePath("common.xml");
@@ -233,10 +169,6 @@ void TestSimulationMaker::testModelsFromFileTwoLevels() {
     }
 
     Models all = sim->seekDescendants<Model*>("*");
-    std::cout << "\n";
-    for (int i = 0; i < all.size(); ++i)
-        std::cout << i << " " << qPrintable(all[i]->fullLabel()) << "\n";
-    std::cout << "\n";
     QCOMPARE(all.size(), 1+1+4+7+4);
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A"));
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/Oats"));
@@ -295,7 +227,11 @@ void TestSimulationMaker::testModelsFromFileThreeLevels()
         QFAIL(qPrintable(msg));
     }
     Models all = sim->seekDescendants<Model*>("*");
-    QCOMPARE(all.size(), 1+1+4+7+4+16);
+//        std::cout << "\n";
+//        for (int i = 0; i < all.size(); ++i)
+//            std::cout << i << " " << qPrintable(all[i]->fullLabel()) << "\n";
+//        std::cout << "\n";
+    QCOMPARE(all.size(), 1+1+1+4+7+4+16);
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A"));
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/Oats/Harvest"));
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/A/stat"));

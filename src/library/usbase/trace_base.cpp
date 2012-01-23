@@ -209,6 +209,11 @@ TraceBase::Type TraceBase::type() const {
     return _type;
 }
 
+bool TraceBase::hasWildCard() const {
+    QString value = attribute("value").toString();
+    return value.contains("*");
+}
+
 QVector<double>* TraceBase:: history() {
     return &_history;
 }

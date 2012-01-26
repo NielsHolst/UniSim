@@ -30,7 +30,7 @@ public:
 	};
 	
     //! This enum identifies the transformation functions.
-    enum Function {Initialize, Reset, Update, Cleanup, Debrief, AllFunctions};
+    enum Function {Amend, Initialize, Reset, Update, Cleanup, Debrief, AllFunctions};
 	
     Component(Identifier name, QObject *parent=0);
 		
@@ -41,6 +41,7 @@ public:
     virtual void cleanup() { }
     virtual void debrief() { }
 
+    void deepAmend();
     void deepInitialize();
     void deepReset();
     void deepUpdate();

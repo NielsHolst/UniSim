@@ -20,29 +20,30 @@ class Output : public Component
 public:
     Output(Identifier name, QObject *parent=0);
     // standard methods
-    virtual void initialize();
+    virtual void amend();
     // special methods
+    struct TraceRecord {
+        TraceBase *trace;
+        QString label;
+    };
+
     const QList<TraceBase*>& traces() const;
-    const QList<TraceBase*>& xTraces() const;
-    const QList<TraceBase*>& yTraces() const;
+    QList<TraceRecord>& xTraces();
+    QList<TraceRecord>& yTraces();
     bool hasSummary() const;
 protected:
-    // data
-    QList<Identifier> yLabels;
     // methods
     int runNumber() const;
-    void setYLabels();
 
 private:
     // data
     bool _hasSummary;
     // links
-    QList<TraceBase *> _traces, _xTraces, _yTraces;
+    QList<TraceBase *> _traces;
+    QList<TraceRecord> _xTraces, _yTraces;
     Integrator *integrator;
     // methods
-    bool setYLabelsFromLabels();
-    void setYLabelsFromIds();
-    QList<Identifier> getIds(QList<NamedObject*> &objects, bool *areEqual) const;
+    void setYLabels();
 };
 
 typedef QList<Output*> Outputs;

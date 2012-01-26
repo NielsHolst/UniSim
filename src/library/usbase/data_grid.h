@@ -25,8 +25,10 @@ public:
     typedef QMap<int,QString> KeySubset; // <column number, key value>
 
     int numKeys() const;
-    QStringList columnNames() const;
+    int rowNumber() const;
+    int columnNumber() const;
     QStringList rowNames() const;
+    QStringList columnNames() const;
     QStringList row(int row) const;
     QStringList row(const QStringList &rowKeys) const;
     QList<int> rowIndices(const KeySubset &rowKeys) const;

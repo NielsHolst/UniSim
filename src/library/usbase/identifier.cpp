@@ -3,7 +3,6 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <iostream>
 #include "identifier.h"
 
 /*! \class UniSim::Identifier
@@ -31,7 +30,6 @@ Identifier::Identifier()
 Identifier::Identifier(QString label)
     : _label(label)
 {
-    qPrintable(label); //??
     makeKey();
 }
 

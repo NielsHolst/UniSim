@@ -17,9 +17,8 @@ using std::max;
 namespace UniSim{
 	
 OutputTable::OutputTable(Identifier name, QObject *parent)
-    : Output(name, parent)
+    : OutputTableBase(name, parent)
 {
-    new Parameter<QString>("fileName", &fileName, QString("output_table.prn"), this, "description");
 }
 
 
@@ -41,121 +40,45 @@ void OutputTable::debrief() {
     }
 }
 
-void OutputTable::openFile() {
-    QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
-    QString useFileName = (runNumber() == 1 || hasSummary()) ?
-                          fileName :
-                          ammendedFileName(fileName, runNumber());
-    QString filePath = path + "/" + useFileName;
-
-    file.setFileName(filePath);
-    if (!file.open(QIODevice::Text | QIODevice::WriteOnly))
-        throw Exception("Could not open output file to write table:\n'" + filePath + "'");
-
-    // If more than one file then give the first file a number too
-    if (runNumber() == 2 && !hasSummary()) {
-        QString filePath = path + "/" + fileName;
-        QFile prevFile(filePath);
-
-        QString newName = path + "/" + ammendedFileName(fileName, 1);
-
-        // Delete any existing file named newName
-        QFile toDelete(newName);
-        toDelete.remove();
-        prevFile.rename(newName);
-    }
-}
-
-QString OutputTable::ammendedFileName(QString fileName, int number) {
-    QString runCode = QString::number(number);
-    runCode = runCode.rightJustified(4, '0');
-
-    QFileInfo info(fileName);
-    QString path = info.path();
-    QString base = info.baseName();
-    QString suffix = info.completeSuffix();
-    return path + "/" + base + runCode + "." + suffix;
-}
-
 void OutputTable::writeLabels() {
-    writeXLabels();
-    writeTab();
-    setYLabels();
-    writeYLabels();
-    writeCR();
+    writeLabels(xTraces());
+    writeString("\t");
+    writeLabels(yTraces());
+    writeString("\n");
 }
 
-void OutputTable::writeXLabels() {
-    if (xTraces().isEmpty())
+void OutputTable::writeLabels(const QList<TraceRecord> &traces) {
+    if (traces.isEmpty())
         return;
     QString s;
     QTextStream text(&s);
-    text << xTraces()[0]->id().label();
-    for (int i = 1; i < xTraces().size(); ++i)
-        text << "\t" << xTraces()[i]->id().label();
-    file.write(qPrintable(s));
-}
-
-void OutputTable::writeYLabels() {
-    if (yLabels.isEmpty())
-        return;
-    QString s;
-    QTextStream text(&s);
-    text << yLabels[0].label();
-    for (int i = 1; i < yLabels.size(); ++i)
-        text << "\t" << yLabels[i].label();
-    file.write(qPrintable(s));
+    text << traces[0].label;
+    for (int i = 1; i < traces.size(); ++i)
+        text << "\t" << traces[i].label;
+    writeString(s);
 }
 
 void OutputTable::writeTraces() {
     int n = traceSize();
     for (int i = 0; i < n; ++i) {
         writeTraces(xTraces(), i);
-        writeTab();
+        writeString("\t");
         writeTraces(yTraces(), i);
-        writeCR();
+        writeString("\n");
     }
 }
 
-int OutputTable::traceSize() const {
-    if (traces().isEmpty())
-        return 0;
-    int theSize = -1;
-    for (int i = 0; i < traces().size(); ++i) {
-        int nextSize = traces()[i]->history()->size();
-        if (theSize == -1)
-            theSize = nextSize;
-        else if (nextSize != theSize) {
-            QString msg ("Output variable data buffers are of unequal size. %1 vs. %2");
-            throw Exception(msg.arg(nextSize).arg(theSize));
-        }
-    }
-    return theSize;
-}
-
-void OutputTable::writeTraces(const QList<TraceBase*> &traces, int dataIx) {
+void OutputTable::writeTraces(const QList<TraceRecord> &traces, int dataIx) {
     if (traces.isEmpty())
         return;
     QString s;
     QTextStream text(&s);
     text.setRealNumberPrecision(10);
-    text << traces[0]->history()->value(dataIx);
+    text << traces.at(0).trace->history()->value(dataIx);
     for (int i = 1; i < traces.size(); ++i) {
-        text << "\t" << traces[i]->history()->value(dataIx);
+        text << "\t" << traces.at(i).trace->history()->value(dataIx);
     }
-    file.write(qPrintable(s));
-}
-
-void OutputTable::closeFile() {
-    file.close();
-}
-
-void OutputTable::writeTab() {
-    file.write("\t");
-}
-
-void OutputTable::writeCR() {
-    file.write("\n");
+    writeString(s);
 }
 
 } //namespace

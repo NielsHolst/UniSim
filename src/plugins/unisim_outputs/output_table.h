@@ -8,12 +8,13 @@
 
 #include <QFile>
 #include <QList>
-#include <usbase/output.h>
+#include <usbase/file_location_info.h>
 #include <usbase/trace_base.h>
+#include "output_table_base.h"
 
 namespace UniSim{
 
-class OutputTable : public Output
+class OutputTable : public OutputTableBase
 {
 	Q_OBJECT
 public:
@@ -21,26 +22,12 @@ public:
     // standard methods
     void cleanup();
     void debrief();
-
 private:
-    // parameters
-    QString fileName;
-
-    // housekeeping
-    QFile file;
-
     // methods
-    void openFile();
-    void closeFile();
-    QString ammendedFileName(QString fileName, int number);
-    int traceSize() const;
     void writeLabels();
-    void writeXLabels();
-    void writeYLabels();
+    void writeLabels(const QList<TraceRecord> &traces);
     void writeTraces();
-    void writeTraces(const QList<TraceBase*> &results, int dataIx);
-    void writeCR();
-    void writeTab();
+    void writeTraces(const QList<TraceRecord> &traces, int dataIx);
 };
 
 } //namespace

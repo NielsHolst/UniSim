@@ -32,7 +32,6 @@
 #include "simulation.h"
 #include "simulation_maker.h"
 #include "xml_node.h"
-#include "xy_state_variables.h"
 
 namespace UniSim{
 
@@ -40,12 +39,20 @@ namespace {
     inline QList<QObject*> asList(QObject * object) {
         return (QList<QObject*>() << object);
     }
+
+    template <class T> void amend() {
+        QList<T> components = seekChildren<T>("*", simulation());
+        QListIterator<T>  i(components);
+        while (i.hasNext()) {
+            i.next()->deepAmend();
+        }
+    }
 }
 
 SimulationMaker::SimulationMaker()
 	: QObject()
 {
-	reader = new QXmlStreamReader;
+    reader = new QXmlStreamReader;
     instanceTables.clear();
     parameterTables.clear();
 }
@@ -151,9 +158,11 @@ Simulation* SimulationMaker::parse(QString fileName_)
     if (noOutputs)
         throw Exception(message("Missing 'output' element in 'simulation'"));
 
-    amendComponents();
+    amend<Integrator*>();
+    amend<Model*>();
     redirectParameters();
     createTraces();
+    amend<Output*>();
 
     reader->clear();
     clearTables();
@@ -475,9 +484,11 @@ void SimulationMaker::readOutputSubElement(QList<TraceParam> *parameters, QObjec
     TraceParam param;
     param.setAttribute( "label", attributeValue("label", parent) );
     param.setAttribute( "value", attributeValue("value", parent) );
-    param.setAttribute( "axis", attributeValue("axis", parent) );
+    param.setAttribute( "axis", attributeValue("axis", "y") );
     param.setAttribute( "summary", attributeValue("summary", "") );
     param.setAttribute( "type", attributeValue("type", "") );
+    param.setAttribute( "columns", attributeValue("columns", "") );
+    param.setAttribute( "rows", attributeValue("rows", "") );
     param.parent = parent;
     parameters->append(param);
 
@@ -560,14 +571,6 @@ namespace {
                              receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
         }
         return matchedT;
-    }
-}
-
-void SimulationMaker::amendComponents() {
-    QList<Component*> components = seekMany<Component*>("*");
-    QListIterator<Component*>  i(components);
-    while (i.hasNext()) {
-        i.next()->amend();
     }
 }
 

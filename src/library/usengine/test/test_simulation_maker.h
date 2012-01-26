@@ -1,4 +1,3 @@
-void testModelsFromCondensedFileParameterKey();
 #ifndef TEST_MODEL_PARSER_H
 #define TEST_MODEL_PARSER_H
 
@@ -16,8 +15,6 @@ private slots:
     void testSimulation();
     void testModel();
     void testParameters();
-    void testOutputOneXY();
-    void testOutputManyXY();
     void testCommonElement();
     void testModelInstances();
     void testModelsFromFileOneLevel();
@@ -25,12 +22,14 @@ private slots:
     void testModelsFromFileCondensed();
     void testModelsFromFileThreeLevels();
     void testModelsAndParametersFromFile();
+    void testModelsAndParametersFromFileSame();
     void testModelsAndParametersFromFileCondensed();
     void testModelsFromCondensedFileParameterKey();
+    void testModelsFromCondensedFileParameter2Keys();
     void cleanupTestCase();
 private:
     QString filePath(QString fileName) const;
-    UniSim::Simulation *_simulation;
+    UniSim::Simulation *simulation;
 };
 
 DECLARE_TEST(TestSimulationMaker)

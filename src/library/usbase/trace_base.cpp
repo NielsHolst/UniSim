@@ -17,7 +17,7 @@ TraceBase::TraceBase(QString name, QObject *parent)
     output = dynamic_cast<Output*>(parent);
 }
 
-void UniSim::TraceBase::initialize() {
+void UniSim::TraceBase::amend() {
     setSummary();
     setAxis();
     setType();
@@ -76,8 +76,10 @@ void TraceBase::setAxis() {
         _axis = XAxis;
     else if (id.equals("y"))
         _axis = YAxis;
+    else if (id.equals("z"))
+        _axis = ZAxis;
     else {
-        QString msg("Axis must be either 'x'' or 'y', not '%1'");
+        QString msg("Axis must be either 'x', 'y' or 'z', not '%1'");
         throw Exception(msg.arg(id.label()), this);
     }
 }
@@ -207,6 +209,11 @@ TraceBase::Summary TraceBase::summary() const {
 
 TraceBase::Type TraceBase::type() const {
     return _type;
+}
+
+bool TraceBase::hasWildCard() const {
+    QString value = attribute("value").toString();
+    return value.contains("*");
 }
 
 QVector<double>* TraceBase:: history() {

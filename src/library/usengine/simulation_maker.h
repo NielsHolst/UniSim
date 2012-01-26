@@ -91,7 +91,6 @@ private:
     QString attributeValue(QString name, QObject *parent) const;
 
     QString message(QString text) const;
-    void amendComponents();
     void redirectParameters();
     void createTraces();
 };

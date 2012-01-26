@@ -19,7 +19,7 @@ public:
 
 private:
     // parameters
-    int realId;
+    int realId, leakageRate;
     QString farmType, soilType, economicType;
 };
 

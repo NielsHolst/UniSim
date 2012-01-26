@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	
+    <integrator name="integrator" type="TimeStepLimited">
+        <parameter name="maxSteps" value="10"/>
+        <sequence>
+            <model name="landscape"/>
+        </sequence>
+    </integrator>
+
+	<model name="calendar" type="UniSim::Calendar"/>
+	
+	<model name="landscape" type="UniSim::Fixed">
+		<model type="test::Farm" table="farms.txt">
+			<model type="test::Crop" table="crops_on_farms.txt">
+				<model type="test::Operation" table="operations_on_crops_on_farms.txt"/>
+			</model>
+		</model>
+	</model>
+	
+    <output type="Crosstab">
+		<parameter name="fileName" value="test_crosstab_output1.txt"/>
+		<variable label="*time" axis="x" value="calendar[totalTimeSteps]"/>
+		<variable label="area" value="landscape/*/*[currentArea]" rows="test::Farm" columns="test::Crop"/>
+    </output>
+
+    <output type="Crosstab">
+		<parameter name="fileName" value="test_crosstab_output2.txt"/>
+		<variable label="*time" axis="x" value="calendar[totalTimeSteps]"/>
+		<variable label="area" value="landscape/*/*[currentArea]" rows="test::Crop" columns="test::Farm"/>
+    </output>
+
+</simulation>

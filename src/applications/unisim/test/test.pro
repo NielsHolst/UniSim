@@ -48,7 +48,9 @@ HEADERS += \
     $${US_PLUGINS}/unisim_models/test/test_scheduled.h \
     $${US_PLUGINS}/unisim_models/test/test_stage.h \
     $${US_PLUGINS}/unisim_outputs/plot.h \
+    $${US_PLUGINS}/unisim_outputs/test/test_crosstab.h \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.h \
+    $${US_PLUGINS}/unisim_outputs/test/test_table.h \
     ../graph_generator.h \
     frequency_distribution.h \
     test_frequency_distribution.h \
@@ -85,7 +87,9 @@ SOURCES += \
     $${US_PLUGINS}/unisim_models/test/test_scheduled.cpp \
     $${US_PLUGINS}/unisim_models/test/test_stage.cpp \
     $${US_PLUGINS}/unisim_outputs/plot.cpp \
+    $${US_PLUGINS}/unisim_outputs/test/test_crosstab.cpp \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.cpp \
+    $${US_PLUGINS}/unisim_outputs/test/test_table.cpp \
     ../graph_generator.cpp \
     frequency_distribution.cpp \
     test_frequency_distribution.cpp \

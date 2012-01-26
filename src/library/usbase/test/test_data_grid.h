@@ -14,6 +14,7 @@ class TestDataGrid : public QObject
     Q_OBJECT
     
 private slots:
+    void testNoKeys();
     void test1D();
     void test2D();
     void testOneLineFile();

@@ -1,0 +1,5 @@
+*FarmType	*SoilType	SBarley	WBarley	Oats
+Cattle	Clay	60	85	95
+Cattle	Sand	80	100	125
+Plant	Clay	90	110	120
+Plant	Sand	105	130	145

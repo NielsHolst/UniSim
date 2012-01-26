@@ -76,8 +76,6 @@ OutputPlot::~OutputPlot() {
 }
 
 void OutputPlot::initialize() {
-    Output::initialize();
-
     if (yTraces().size() == 0) {
         QString msg = QString("Output plot '%1'' has no y-results").arg(id().label());
         throw Exception(msg, this);
@@ -89,7 +87,7 @@ void OutputPlot::initialize() {
     else if (xTraces().size() > 1) {
         QString msg = QString("Output plot '%1'' has more than one x-result:").arg(id().label());
         for (int i = 0; i < xTraces().size(); ++ i)
-            msg += "\n" + xTraces().at(i)->id().label();
+            msg += "\n" + xTraces().at(i).label;
         throw Exception(msg, this);
     }
 
@@ -116,7 +114,7 @@ void OutputPlot::debrief() {
 void OutputPlot::showPlot() {
     fillPlotWidget();
     showPlotWidget();
-    mainWindow->tile();
+//    mainWindow->tile();
 }
 
 void OutputPlot::setZoomer() {
@@ -136,19 +134,18 @@ void OutputPlot::createPlotWidget() {
 }
 
 void OutputPlot::fillPlotWidget() {
-    TraceBase *x = xTraces()[0];
+    TraceBase *x = xTraces()[0].trace;
 
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
-    setYLabels();
 
     for (int i = 0; i < yTraces().size(); ++i) {
         Plot p;
         int ix = i % colors.size();
 
         p.x = x->history();
-        p.y = yTraces()[i]->history();
-        p.yLegend = yLabels[i].label();
+        p.y = yTraces()[i].trace->history();
+        p.yLegend = yTraces()[i].label;
         p.showLegend = (runNumber() == 1 || hasSummary());
         p.plotWidget = plotWidget;
 
@@ -161,7 +158,7 @@ void OutputPlot::fillPlotWidget() {
         pen.setWidth(penWidth);
         p.pen = pen;
         p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
-        p.type = yTraces()[i]->type();
+        p.type = yTraces()[i].trace->type();
         p.add();
     }
 }

@@ -3,7 +3,9 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QSet>
 #include "integrator.h"
+#include "name_list.h"
 #include "output.h"
 #include "parameter.h"
 #include "trace_base.h"
@@ -15,17 +17,20 @@ Output::Output(Identifier name, QObject *parent)
 {
 }
 
-void Output::initialize() {
+void Output::amend() {
     _traces = seekChildren<TraceBase*>("*");
     _hasSummary = false;
     for (int i = 0; i < _traces.size(); ++i) {
-        TraceBase *trace = _traces[i];
-        if (trace->axis() == TraceBase::XAxis)
-            _xTraces << trace;
+        TraceRecord rec;
+        rec.trace = _traces[i];
+        rec.label = rec.trace->id().label();
+        if (rec.trace->axis() == TraceBase::XAxis)
+            _xTraces << rec;
         else
-            _yTraces << trace;
-        _hasSummary = _hasSummary || trace->summary() != TraceBase::None;
+            _yTraces << rec;
+        _hasSummary = _hasSummary || rec.trace->summary() != TraceBase::None;
     }
+    setYLabels();
     integrator = seekOne<Integrator*>("*");
 }
 
@@ -33,11 +38,11 @@ const QList<TraceBase*>& Output::traces() const {
     return _traces;
 }
 
-const QList<TraceBase*>& Output::xTraces() const {
+QList<Output::TraceRecord>& Output::xTraces() {
     return _xTraces;
 }
 
-const QList<TraceBase*>& Output::yTraces() const {
+QList<Output::TraceRecord>& Output::yTraces() {
     return _yTraces;
 }
 
@@ -50,50 +55,21 @@ bool Output::hasSummary() const {
 }
 
 void Output::setYLabels() {
-    if (!setYLabelsFromLabels() && yLabels.size() > 1)
-        setYLabelsFromIds();
-}
-
-bool Output::setYLabelsFromLabels() {
-    QList<NamedObject*> asNamedObjs;
-    for (int i = 0; i < _yTraces.size(); ++i)
-        asNamedObjs << _yTraces[i];
-
-    bool areEqual;
-    yLabels = getIds(asNamedObjs, &areEqual);
-    return !areEqual;
-}
-
-QList<Identifier> Output::getIds(QList<NamedObject*> &objects, bool *areEqual) const{
-    QList<Identifier> ids;
-    *areEqual = true;
-    Identifier prevId;
-    for (int i = 0; i < objects.size(); ++i) {
-        Identifier id = objects[i]->id();
-        ids.append(id);
-        *areEqual = *areEqual && (i==0 || id==prevId);
-        prevId = id;
-    }
-    return ids;
-}
-
-void Output::setYLabelsFromIds() {
-    QList<NamedObject*> parents;
+    QStringList sl;
     for (int i = 0; i < _yTraces.size(); ++i) {
-        NamedObject *parent = _yTraces[i]->traceParent();
-        Q_ASSERT(parent);
-        parents << parent;
+        TraceRecord &rec( _yTraces[i] );
+        NamedObject *parent = rec.trace->variableParent();
+        QString name;
+        if (parent)
+            name = parent->fullLabel() + "/";
+        name += rec.label;
+        sl << name;
     }
-
-    bool areEqual(true), checkAgain(true);
-    while (areEqual && checkAgain) {
-        yLabels = getIds(parents, &areEqual);
-        if (areEqual) {
-            for (int i = 0; checkAgain && (i < parents.size()); ++i) {
-                parents[i] = dynamic_cast<NamedObject*>(parents[i]->parent());
-                checkAgain = parents[i];
-            }
-        }
+    NameList nl(sl);
+    QStringList yLabels = nl.simplified();
+    for (int i = 0; i < _yTraces.size(); ++i) {
+        TraceRecord &rec( _yTraces[i] );
+        rec.label = yLabels[i];
     }
 }
 

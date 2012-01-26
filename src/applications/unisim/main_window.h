@@ -98,6 +98,7 @@ private:
     QString versionText() const;
 
     void tile();
+    QList<SubWindow*> subWindowList(SubWindow::Type type);
     void closeSubWindows(SubWindow::Type type = SubWindow::All);
     void minimizeSubWindows(SubWindow::Type type = SubWindow::All);
 

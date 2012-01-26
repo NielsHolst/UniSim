@@ -20,6 +20,14 @@ int DataGrid::numKeys() const {
     return data.numKeys;
 }
 
+int DataGrid::rowNumber() const {
+    return data.rows.size();
+}
+
+int DataGrid::columnNumber() const {
+    return data.columnNamesInOrder.size();
+}
+
 QStringList DataGrid::columnNames() const {
     return data.columnNamesInOrder;
 }
@@ -179,6 +187,10 @@ void DataGrid::checkLine() {
 }
 
 void DataGrid::appendLine() {
+    data.rows.append(lineItems);
+    if (data.numKeys == 0)
+        return;
+
     QStringList rowKeys( lineItems.mid(0, data.numKeys) );
     QString rowKey = joinKeys(rowKeys);
     if (data.rowIndex.contains(rowKey)) {
@@ -187,7 +199,6 @@ void DataGrid::appendLine() {
                     "Row keys must be unique: '%3' occurs twice");
         throw Exception(msg.arg(filePath).arg(rowNumber).arg(rowKey));
     }
-    data.rows.append(lineItems);
     data.rowIndex[rowKey] = data.rows.size() - 1;
 }
 

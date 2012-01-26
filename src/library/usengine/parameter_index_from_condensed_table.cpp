@@ -11,16 +11,18 @@ namespace UniSim{
 ParameterIndexFromCondensedTable::ParameterIndexFromCondensedTable(QString filePath, QString parameterName_)
     : ParameterIndex(filePath), parameterName(parameterName_)
 {
-    if (table->numKeys() != 1) {
-        QString msg = "Table in file '%1' must hold one column marked as a key with '*'";
+    if (table->numKeys() == 0) {
+        QString msg = "Table in file '%1' must hold at least one column marked as a key with '*'";
         throw Exception(msg.arg(filePath));
     }
 }
 
 void ParameterIndexFromCondensedTable::reset(Model *model) {
     DataGrid::KeySubset keys;
-    Identifier id = Identifier( table->columnNames().value(0) );
-    keys[0] = model->peekKeyValue(id);
+    for (int i = 0; i < table->numKeys(); ++i) {
+        Identifier id = Identifier( table->columnNames().value(i) );
+        keys[i] = model->peekKeyValue(id);
+    }
     QVector<int> rowIndices = QVector<int>::fromList( table->rowIndices(keys) );
     if (rowIndices.size() == 0) {
         _hasNext = false;

@@ -8,6 +8,8 @@
 
 #include <QList>
 #include <QVector>
+#include "component.h"
+#include "model.h"
 #include "trace_base.h"
 
 namespace UniSim{	
@@ -17,7 +19,8 @@ class Trace : public TraceBase
 {
 public:
     Trace(QString name, T *variable, QObject *parent = 0);
-    NamedObject* traceParent();
+    Output* traceParent();
+    Model* variableParent();
     double currentValue();
 private:
     const T *variable;
@@ -32,8 +35,15 @@ Trace<T>::Trace(QString name, T *variable_, QObject *parent)
 }
 
 template <class T>
-NamedObject* Trace<T>::traceParent() {
-    return dynamic_cast<NamedObject*>(variable->parent());
+Output* Trace<T>::traceParent() {
+    Output *output = dynamic_cast<Output*>(parent());
+    return output;
+}
+
+template <class T>
+Model* Trace<T>::variableParent() {
+    Model *model = dynamic_cast<Model*>(variable->parent());
+    return model;
 }
 
 template <class T>

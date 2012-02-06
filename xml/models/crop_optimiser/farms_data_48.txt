@@ -1,0 +1,2 @@
+*crop_optimiser::Farm	FarmType	SoilType	FarmSize	FarmRealID
+48	Cattle	Sand	business	476636

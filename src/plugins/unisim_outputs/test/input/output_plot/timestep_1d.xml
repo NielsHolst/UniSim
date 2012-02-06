@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="30"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+		<parameter name="initialDate" value="1/4/2008"/>
+		<parameter name="timeStep" value="1"/>
+		<parameter name="timeUnit" value="d"/>
+	</model>
+
+	<model name="statics" type="UniSim::Fixed">
+		<parameter name="pullVariables" value="((x 2)(y 3))"/>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value ="Test"/>
+		<variable axis="x" label="Time" value="calendar[dayOfYear]"/>
+		<variable axis="y" label="y" value="statics[x]"/>
+		<table table="table_by_date.txt"/>
+	</output>
+
+</simulation>

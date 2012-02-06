@@ -1,0 +1,4 @@
+*SoilType	SBarley	Oats	OSCrops	WBarley	WWheat	WRye	Triticale	SRape	WRape	OOilseed	Peas	OLSeed	GrassSeed	Potato	PotatoFood	SugarBeet	GrassClover	OLSeedCut	SCerealSil	PeasSil	MaizeSil	WCerealSil	SCerealG	PerGrassLow	PerGrassNorm	GrassEnv1	GrassEnv2	GrassRot	Setaside	Uncult	OUncult	FodderBeet	CloverGrz	Veg	Fruit	FruitTree	OSpecCrops	ChrisTree	EnergyFor	Other
+Sand	135	114	109	157	171	129	145	122	164	123	0	0	124	184	155	131	371	0	132	0	181	181	107	69	133	80	0	344	0	0	0	184	371	265	0	0	0	0	0	0
+Other	135	114	109	157	171	129	145	122	164	123	0	0	124	184	155	131	371	0	132	0	181	181	107	69	133	80	0	344	0	0	0	184	371	265	0	0	0	0	0	0
+Clay	122	93	96	151	165	121	132	101	171	101	0	0	124	163	134	110	345	0	117	0	158	176	92	69	133	80	0	326	0	0	0	171	345	240	0	0	0	0	0	0

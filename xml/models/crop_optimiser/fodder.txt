@@ -1,0 +1,5 @@
+*FarmType	SBarley	Oats	OSCrops	WBarley	WWheat	WRye	Triticale	SRape	WRape	OOilseed	Peas	OLSeed	GrassSeed	Potato	PotatoFood	SugarBeet	GrassClover	OLSeedCut	SCerealSil	PeasSil	MaizeSil	WCerealSil	SCerealG	PerGrassLow	PerGrassNorm	GrassEnv1	GrassEnv2	GrassRot	Setaside	Uncult	OUncult	FodderBeet	CloverGrz	Veg	Fruit	FruitTree	OSpecCrops	ChrisTree	EnergyFor	Other
+Other	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO
+Cattle	YES	YES	NO	YES	NO	NO	YES	NO	NO	NO	NO	NO	NO	NO	NO	NO	YES	YES	YES	YES	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	NO	YES	YES	NO	NO	NO	NO	NO	NO	NO
+Plant	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO
+Pig	YES	YES	NO	YES	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	NO	YES	YES	YES	YES	YES	YES	NO	NO	NO	NO	NO	NO	NO	NO	YES	NO	NO	NO	NO	NO	NO	NO	NO

@@ -13,6 +13,7 @@
 
 namespace UniSim{	
 
+class Model;
 class Output;
 
 class TraceBase : public Component, public Attributes
@@ -29,7 +30,7 @@ public:
     void debrief();
 
     // special methods
-    enum Axis {XAxis, YAxis};
+    enum Axis {XAxis, YAxis, ZAxis};
     Axis axis() const;
     enum Summary {None, Max, Min, Average, Sum, Final, XAtThreshold, XAtMax, XAtMin};
     Summary summary() const;
@@ -37,7 +38,8 @@ public:
     Type type() const;
     bool hasWildCard() const;
 
-    virtual NamedObject* traceParent() = 0;
+    virtual Output* traceParent() = 0;
+    virtual Model* variableParent() = 0;
     virtual double currentValue() = 0;
     QVector<double>* history();
 

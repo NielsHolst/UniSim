@@ -76,8 +76,10 @@ void TraceBase::setAxis() {
         _axis = XAxis;
     else if (id.equals("y"))
         _axis = YAxis;
+    else if (id.equals("z"))
+        _axis = ZAxis;
     else {
-        QString msg("Axis must be either 'x'' or 'y', not '%1'");
+        QString msg("Axis must be either 'x', 'y' or 'z', not '%1'");
         throw Exception(msg.arg(id.label()), this);
     }
 }

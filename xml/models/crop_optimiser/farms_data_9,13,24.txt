@@ -1,0 +1,4 @@
+*crop_optimiser::Farm	FarmType	SoilType	FarmSize	FarmRealID
+9	Cattle	Clay	private	267816
+13	Cattle	Sand	private	247119
+24	Cattle	Sand	private	344335

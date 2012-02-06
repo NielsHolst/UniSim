@@ -1,0 +1,5 @@
+*crop_optimiser::Farm	FarmType	SoilType	FarmSize	FarmRealID
+1	Other	Sand	business	243581
+2	Other	Sand	private	420865
+3	Other	Sand	business	480258
+4	Cattle	Other	business	253642

@@ -14,6 +14,7 @@ class TestDataGrid : public QObject
     Q_OBJECT
     
 private slots:
+    void testNoKeys();
     void test1D();
     void test2D();
     void testOneLineFile();
@@ -23,6 +24,8 @@ private slots:
     void testOnlyColumnHeadings();
     void testWrongKeys();
     void testRowIndices();
+    void testColumnString();
+    void testColumnInt();
 private:
     QString filePath(QString fileName);
     QDir inputFolder();

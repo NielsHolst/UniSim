@@ -19,6 +19,7 @@ Farm::Farm(Identifier name, QObject *parent)
     new Parameter<QString>("farmType", &farmType, QString("Plant"), this, "description");
     new Parameter<QString>("soilType", &soilType, QString("Clay"), this, "description");
     new Parameter<QString>("economy", &economicType, QString("Private"), this, "description");
+    new Parameter<int>("leakageRate", &leakageRate, -1, this, "description");
 }
 
 

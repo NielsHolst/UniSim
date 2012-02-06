@@ -14,6 +14,8 @@ private slots:
     void testEmpty();
     void testOne();
     void testMany();
+    void testEqual();
+    void testSomeEqual();
 };
 
 DECLARE_TEST(TestNameList)

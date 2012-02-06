@@ -1,0 +1,4 @@
+*SoilType	leakageRate
+Sand	120
+Silt	60
+Clay	30

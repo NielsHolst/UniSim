@@ -16,11 +16,15 @@ class Crop : public UniSim::Model
 public: 
     Crop(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
+    void reset();
+    void update();
 
 private:
     // parameters
-    int numFields;
-    double initArea, nitrogenNorm;
+    int numFields, initArea;
+    double nitrogenNorm;
+    // pull variables
+    int currentArea;
 };
 
 } //namespace

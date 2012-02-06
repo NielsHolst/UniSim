@@ -9,12 +9,12 @@
 #include <QFile>
 #include <QList>
 #include <usbase/file_location_info.h>
-#include <usbase/output.h>
 #include <usbase/trace_base.h>
+#include "output_table_base.h"
 
 namespace UniSim{
 
-class OutputTable : public Output
+class OutputTable : public OutputTableBase
 {
 	Q_OBJECT
 public:
@@ -22,30 +22,12 @@ public:
     // standard methods
     void cleanup();
     void debrief();
-    // special methods
-    QStringList outputFilePaths();
-
-protected:
-    FileLocationInfo::FileType fileType;
 private:
-    // parameters
-    QString fileName;
-
-    // housekeeping
-    QFile file;
-    QStringList _outputFilePaths;
-
     // methods
-    void openFile();
-    void closeFile();
-    QString amendedFileName(QString fileName, int number);
-    int traceSize() const;
     void writeLabels();
     void writeLabels(const QList<TraceRecord> &traces);
     void writeTraces();
     void writeTraces(const QList<TraceRecord> &traces, int dataIx);
-    void writeCR();
-    void writeTab();
 };
 
 } //namespace

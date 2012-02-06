@@ -8,6 +8,7 @@
 #include <usengine/file_locations_strict.h>
 #include <usengine/model_maker.h>
 #include <usengine/output_maker.h>
+#include "main_window_stub.h"
 
 using namespace UniSim;
 
@@ -23,6 +24,7 @@ void createSingletons(){
     objectPool()->attach(OutputMaker::id(), new OutputMaker);
     objectPool()->attach(Random::id(), new Random);
     objectPool()->attach(Clock::id(), new Clock);
+    objectPool()->attach("mainWindow", new MainWindowStub);
 }
 
 int main(int arbc, char *argv[])

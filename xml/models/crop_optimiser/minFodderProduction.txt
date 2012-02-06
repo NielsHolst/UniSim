@@ -1,0 +1,3 @@
+*FarmType	MinFodderProduction
+Pig	20
+Cattle	35

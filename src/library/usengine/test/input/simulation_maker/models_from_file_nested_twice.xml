@@ -35,9 +35,4 @@
 		<variable label="x" value="landscape/a/stat[x]"/>
 		<variable label="labour" value="landscape/*/*/*[labour]"/>
 	</output>
-	
-    <output name="cross" type="Crosstab" constrain="calendar[totalTimeSteps]==*">
-		<parameter name="fileName" value="test_crosstab.txt"/>
-		<variable label="farm" value="landscape/*/*[area]"/>
-    </output>
 </simulation>

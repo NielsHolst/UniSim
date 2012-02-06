@@ -265,6 +265,24 @@ void TestSimulationMaker::testModelsAndParametersFromFile() {
     QCOMPARE(harvest->parameter<bool>("IsOrganic"), true);
 }
 
+void TestSimulationMaker::testModelsAndParametersFromFileSame() {
+    QString filename = filePath("models_and_parameters_from_files_same.xml");
+    SimulationMaker maker;
+    Simulation * sim = 0;
+    try {
+        sim = maker.parse(filename);
+    }
+    catch (Exception &ex) {
+        QString msg = "Unexpected exception. " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+
+    Model *farmA = sim->peekOneDescendant<Model*>("landscape/A");
+    Model *farmD = sim->peekOneDescendant<Model*>("landscape/D");
+    QCOMPARE(farmA->parameter<int>("leakageRate"), 120);
+    QCOMPARE(farmD->parameter<int>("leakageRate"), 30);
+}
+
 void TestSimulationMaker::testModelsAndParametersFromFileCondensed() {
     QString filename = filePath("models_and_parameters_from_file_condensed.xml");
     SimulationMaker maker;

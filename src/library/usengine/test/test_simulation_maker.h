@@ -22,6 +22,7 @@ private slots:
     void testModelsFromFileCondensed();
     void testModelsFromFileThreeLevels();
     void testModelsAndParametersFromFile();
+    void testModelsAndParametersFromFileSame();
     void testModelsAndParametersFromFileCondensed();
     void testModelsFromCondensedFileParameterKey();
     void testModelsFromCondensedFileParameter2Keys();

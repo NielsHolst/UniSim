@@ -68,6 +68,8 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     new PullVariable<double>("sinb", &sinb, this, "Sine of sun elevation, updated by the @F tick event of the @F clock object");
     new PullVariable<double>("sinLD", &sinLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
     new PullVariable<double>("cosLD", &cosLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
+    new PullVariable<QDate>("initialDate", &initialDate, this, "Initial date of simulation");
+    new PullVariable<QTime>("initialTimeOfDay", &initialTimeOfDay, this, "Initial time of day of simulation");
 
     new PushVariable<QDate>("initialDate", &initialDate, this,
     "Even though @F initialDate is a parameter, you may want to change it from outside, "

@@ -1,0 +1,11 @@
+*FarmType	*SoilType	SBarley	Oats	OSCrops	WBarley	WWheat	WRye	Triticale	SRape	WRape	OOilseed	Peas	OLSeed	GrassSeed	Potato	PotatoFood	SugarBeet	GrassClover	OLSeedCut	SCerealSil	PeasSil	MaizeSil	WCerealSil	SCerealG	PerGrassLow	PerGrassNorm	GrassEnv1	GrassEnv2	GrassRot	Setaside	Uncult	OUncult	FodderBeet	CloverGrz	Veg	Fruit	FruitTree	OSpecCrops	ChrisTree	EnergyFor	Other
+Other	Sand	83	75	83	93	94	72	80	163	163	163	97	97	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Cattle	Sand	0	0	83	0	94	72	0	163	163	163	97	97	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Cattle	Other	0	0	83	0	94	72	0	163	163	163	97	97	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Cattle	Clay	0	0	83	0	94	72	0	163	163	163	97	97	934.67	27	104	31	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Plant	Sand	83	75	83	93	94	72	80	163	163	163	97	97	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Plant	Other	83	75	83	93	94	72	80	163	163	163	97	97	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Plant	Clay	83	75	83	93	94	72	80	163	163	163	97	97	934.67	27	104	31	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Pig	Sand	0	0	83	0	94	72	80	163	163	163	97	97	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Pig	Other	0	0	83	0	94	72	80	163	163	163	97	97	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+Pig	Clay	0	0	83	0	94	72	80	163	163	163	97	97	934.67	27	104	31	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1

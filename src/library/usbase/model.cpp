@@ -23,19 +23,29 @@ Identifier Model::classId() {
     return Identifier(label.toString());
 }
 
-QString Model::peekKeyValue(Identifier key) {
-    if (key == classId())
-        return id().label();
+namespace {
+    QString peekIdOrParameter(Identifier key, Model *model) {
+        if (key == model->classId())
+            return model->id().label();
 
-    Model *ascendant = peekParent<Model*>("*");
-    while (ascendant) {
-        if (key == ascendant->classId())
-            return ascendant->id().label();
-
-        QList<ParameterBase*> parameter = ascendant->seekChildren<ParameterBase*>(key.label());
+        QList<ParameterBase*> parameter = model->seekChildren<ParameterBase*>(key.label());
         if (parameter.size() == 1)
             return parameter.value(0)->toString();
         Q_ASSERT(parameter.isEmpty());
+        return QString();
+    }
+}
+
+QString Model::peekKeyValue(Identifier key) {
+    QString result = peekIdOrParameter(key, this);
+    if (!result.isEmpty())
+        return result;
+
+    Model *ascendant = peekParent<Model*>("*");
+    while (ascendant) {
+        result = peekIdOrParameter(key, ascendant);
+        if (!result.isEmpty())
+            return result;
         ascendant = ascendant->peekParent<Model*>("*");
     }
     return QString();

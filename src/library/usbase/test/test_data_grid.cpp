@@ -112,6 +112,22 @@ void TestDataGrid::testRowIndices() {
     QCOMPARE(rows.size(), 0);
 }
 
+void TestDataGrid::testColumnString() {
+    DataGrid data( filePath("data_grid_0_keys.txt") );
+    QList<QString> soilType = QList<QString>::fromVector(data.column<QString>(1));
+    QList<QString> expected;
+    expected << "sandy" << "clay" << "sandy" << "clay";
+    QCOMPARE(soilType, expected);
+}
+
+void TestDataGrid::testColumnInt() {
+    DataGrid data( filePath("data_grid_0_keys.txt") );
+    QList<int> water= QList<int>::fromVector(data.column<int>(3));
+    QList<int> expected;
+    expected << 70 << 75 << 50 << 85;
+    QCOMPARE(water, expected);
+}
+
 //
 // Helpers
 //

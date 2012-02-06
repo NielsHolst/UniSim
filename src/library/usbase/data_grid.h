@@ -9,17 +9,19 @@
 #include <QFile>
 #include <QHash>
 #include <QList>
+#include <QObject>
 #include <QMap>
 #include <QPair>
 #include <QStringList>
 #include <QVector>
+#include "utilities.h"
 
 namespace UniSim{
 
-class DataGrid
+class DataGrid : public QObject
 {
 public:
-    DataGrid(QString filePath);
+    DataGrid(QString filePath, QObject *parent = 0);
 
     typedef QMapIterator<int,QString> KeySubsetIterator; // <column number, key value>
     typedef QMap<int,QString> KeySubset; // <column number, key value>
@@ -34,6 +36,7 @@ public:
     QList<int> rowIndices(const KeySubset &rowKeys) const;
     QString cell(int row, int col) const;
     QString cell(const QStringList &rowKeys, QString colKey) const;
+    template<class T> QVector<T> column(int i);
 
 private:
     // grid data
@@ -63,6 +66,16 @@ private:
     QStringList lineItems;
     bool pastLastLine;
 };
+
+template<class T> QVector<T> DataGrid::column(int col) {
+    QVector<T> result;
+    result.resize(rowNumber());
+    for (int i = 0; i < rowNumber(); ++i) {
+        QString s = cell(i,col);
+        result[i] = stringToValue<T>(s);
+    }
+    return result;
+}
 
 } //namespace
 

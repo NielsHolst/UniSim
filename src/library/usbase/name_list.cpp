@@ -67,7 +67,7 @@ void NameList::appendLeaves(QObject *object) {
 namespace {
     inline bool hasSiblings(QObject *object) {
         QObject *parent = object->parent();
-        return parent ? parent->children().size() > 1 : false;
+        return parent ? parent->children().size() > 1 : true;
     }
 }
 
@@ -78,9 +78,8 @@ void NameList::putResult(QObject *object) {
     }
     bool ok;
     int index = p->property("index").toInt(&ok);
-    Q_ASSERT(ok && index < result.size());
-    result[index] = p->objectName();
-
+    if (ok && index < result.size())
+        result[index] = p->objectName();
 }
 
 

@@ -60,3 +60,45 @@ void TestNameList::testMany() {
     }
     QCOMPARE(result, expected);
 }
+
+void TestNameList::testEqual() {
+    QStringList source, expected, result;
+    source
+        << "/A/B/C"
+        << "/A/B/C"
+        << "/A/B/C";
+    expected
+        << "/A/B/C"
+        << "/A/B/C"
+        << "/A/B/C";
+    NameList nl(source);
+    try {
+        result = nl.simplified();
+    }
+    catch(Exception &) {
+        QFAIL("Unexpected exception");
+    }
+    QCOMPARE(result, expected);
+}
+
+void TestNameList::testSomeEqual() {
+    QStringList source, expected, result;
+    source
+        << "/A/B"
+        << "/A/B/C"
+        << "/A/B/C"
+        << "/A/B/C";
+    expected
+        << "B"
+        << "C"
+        << "/A/B/C"
+        << "/A/B/C";
+    NameList nl(source);
+    try {
+        result = nl.simplified();
+    }
+    catch(Exception &) {
+        QFAIL("Unexpected exception");
+    }
+    QCOMPARE(result, expected);
+}

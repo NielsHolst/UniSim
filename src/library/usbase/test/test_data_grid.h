@@ -24,6 +24,8 @@ private slots:
     void testOnlyColumnHeadings();
     void testWrongKeys();
     void testRowIndices();
+    void testColumnString();
+    void testColumnInt();
 private:
     QString filePath(QString fileName);
     QDir inputFolder();

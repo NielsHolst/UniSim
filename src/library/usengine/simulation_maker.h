@@ -80,6 +80,7 @@ private:
     UniSim::ParameterIndex *createParameterTable(QString fileName);
 
     void readOutputElement(QObject *parent);
+    void readOutputTableElement(QObject* parent);
     void readOutputSubElement(QList<TraceParam> *param, QObject* parent);
     template <class T, class U>
         void createTracesKindOf(const QList<TraceParam> &traceParam);

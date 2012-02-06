@@ -17,14 +17,7 @@
 	</model>
 
 	<model name="seedbank">
-		<!--
-		<dataset name="observations">
-			<parameter name="filename" value ="emergence data.txt"/>
-			<parameter name="headerLines" value ="1"/>
-			<parameter name="columns" value="((day_in_year 2) (large_crabgrass 3) (goosegrass 4) (green_foxtail 5) (yellow_foxtail 6))"/>
-		</dataset>
-		-->
-		
+
 		<model name="large_crabgrass">
 			<model name="time" type = "UniSim::HydroThermalTime">
 				<parameter name="T0" value="8.4"/>
@@ -112,14 +105,7 @@
 		<variable axis="y" label="Green foxtail" value="green_foxtail/emergence[accumulated]"/>
 		<variable axis="y" label="Goosegrass" value="goosegrass/emergence[accumulated]"/>
 		<variable axis="y" label="Yellow foxtail" value="yellow_foxtail/emergence[accumulated]"/>
-
-		<!--
-		<data axis="x" label="Day" value="observations[day_in_year]"/>
-		<data axis="y" label="Large crabgrass obs" value="observations[large_crabgrass]"/>
-		<data axis="y" label="Green foxtail obs" value="observations[green_foxtail]"/>
-		<data axis="y" label="Goosegrass obs" value="observations[goosegrass]"/>
-		<data axis="y" label="Yellow foxtail obs" value="observations[yellow_foxtail]"/>
-		-->
+		<variable table="emergence data.txt"/>
 	</output>
 
 </simulation>

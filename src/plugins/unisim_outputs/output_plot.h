@@ -14,6 +14,7 @@
 
 namespace UniSim{
 
+class DataGrid;
 class MainWindowInterface;
 class PlotWidget;
 
@@ -24,10 +25,26 @@ public:
     OutputPlot(Identifier name, QObject *parent=0);
     ~OutputPlot();
     // standard methods
-	void initialize();
+    void amend();
     void cleanup();
     void debrief();
-	
+
+    struct YRecord {
+        QVector<double> data;
+        QString label;
+        int index;
+    };
+
+    struct TableRecord {
+        DataGrid *data;
+        QVector<double> x;
+        QList<YRecord> yList;
+        void initX();
+        void initY();
+    };
+    // methods for unit tests
+    const QList<TableRecord>& tableRecords();
+
 private:
     // parameters
     QString title;
@@ -41,11 +58,15 @@ private:
     MainWindowInterface *mainWindow;
     PlotWidget *plotWidget;
 
+    QList<TableRecord> _tableRecords;
+
     // methods
     void createDesignInfo();
     void showPlot();
     void createPlotWidget();
     void fillPlotWidget();
+    void add(TraceBase &x, TraceRecord  &y);
+    void add(QVector<double> *x, YRecord &y);
     void showPlotWidget();
     void setZoomer();
 };

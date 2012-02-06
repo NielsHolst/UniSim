@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QtXml/QXmlStreamReader>
+#include <usbase/data_grid.h>
 #include <usbase/model.h>
 #include <usbase/integrator.h>
 #include <usbase/exception.h>
@@ -469,6 +470,9 @@ void SimulationMaker::readOutputElement(QObject* parent)
         else if (elementNameEquals("variable")) {
             readOutputSubElement(&traceVariableParam, output);
         }
+        else if (elementNameEquals("table")) {
+            readOutputTableElement(output);
+        }
         else {
             throw Exception(message("Unexpected element: '" + elementName() + "'"), parent);
         }
@@ -507,11 +511,21 @@ void SimulationMaker::createTracesKindOf(const QList<TraceParam> &traceParam) {
         // If several bases are found they will all get the same label.
         // This must be fixed, as needed, by Output
         for (int i = 0; i < bases.size(); ++i) {
-            U *trace = new U(label, bases[i], param.parent);
+            T *base = bases[i];
+            QString useLabel = (label == "*") ? base->id().label() : label;
+            U *trace = new U(useLabel, base, param.parent);
             trace->appendAttributes(param);
         }
     }
 }
+
+void SimulationMaker::readOutputTableElement(QObject* parent) {
+    Q_ASSERT(reader->isStartElement() && parent);
+    QString fileName = attributeValue("table", parent);
+    QString filePath = simulation()->inputFilePath(fileName);
+    new DataGrid(filePath, parent);
+    nextElementDelim();
+ }
 
 void SimulationMaker::createTraces() {
     createTracesKindOf<PullVariableBase, Trace<PullVariableBase> >(traceVariableParam);

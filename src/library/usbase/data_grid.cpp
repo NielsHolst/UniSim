@@ -10,8 +10,8 @@
 
 namespace UniSim{
 
-DataGrid::DataGrid(QString _filePath)
-    : filePath(_filePath)
+DataGrid::DataGrid(QString _filePath, QObject *parent)
+    : QObject(parent), filePath(_filePath)
 {
     readData();
 }

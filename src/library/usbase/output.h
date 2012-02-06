@@ -11,6 +11,7 @@
 
 namespace UniSim{
 
+class DataGrid;
 class Integrator;
 class TraceBase;
 
@@ -20,11 +21,12 @@ class Output : public Component
 public:
     Output(Identifier name, QObject *parent=0);
     // standard methods
-    virtual void amend();
+    void amend();
     // special methods
     struct TraceRecord {
         TraceBase *trace;
         QString label;
+        int index;
     };
 
     const QList<TraceBase*>& traces() const;

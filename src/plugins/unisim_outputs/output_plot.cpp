@@ -13,13 +13,16 @@
 #include <qwt_plot_panner.h>
 #include <qwt_plot_zoomer.h>
 #include <qwt_scale_engine.h>
+#include <usbase/data_grid.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
+#include <usbase/model.h>
 #include <usbase/named_object.h>
 #include <usbase/object_pool.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable_base.h>
 #include <usbase/trace_base.h>
+#include <usbase/utilities.h>
 #include <usengine/main_window_interface.h>
 #include <usengine/plot_widget.h>
 #include "plot.h"
@@ -75,7 +78,8 @@ OutputPlot::~OutputPlot() {
     delete plotWidget;
 }
 
-void OutputPlot::initialize() {
+void OutputPlot::amend() {
+    Output::amend();
     if (yTraces().size() == 0) {
         QString msg = QString("Output plot '%1'' has no y-results").arg(id().label());
         throw Exception(msg, this);
@@ -91,8 +95,55 @@ void OutputPlot::initialize() {
         throw Exception(msg, this);
     }
 
+    QList<DataGrid*> tables = seekChildren<DataGrid*>("*");
+    for (int i = 0; i < tables.size(); ++i) {
+        TableRecord rec;
+        rec.data = tables[i];
+        rec.initX();
+        rec.initY();
+        _tableRecords << rec;
+    }
+
     mainWindow = objectPool()->find<MainWindowInterface*>("mainWindow");
     Q_ASSERT(mainWindow);
+}
+
+void OutputPlot::TableRecord::initX() {
+    int nRows = data->rowNumber();
+    QString xString = data->cell(0,0);
+    try {
+        stringToValue<QDate>(xString);
+        Model *calendar = seekOne<Model*>("calendar");
+        QDate initialDate = calendar->pullVariable<QDate>("initialDate");
+        QVector<QDate> xDate = data->column<QDate>(0);
+        for (int i = 0; i < nRows; ++i) {
+            x << initialDate.daysTo(xDate[i]);
+        }
+    }
+    catch(Exception &) {
+        try {
+            stringToValue<QTime>(xString);
+            Model *calendar = seekOne<Model*>("calendar");
+            QTime initialTime = calendar->pullVariable<QTime>("initialTimeOfDay");
+            QVector<QTime> xTime = data->column<QTime>(0);
+            for (int i = 0; i < nRows; ++i) {
+                x << initialTime.secsTo(xTime[i]);
+            }
+        }
+        catch(Exception &) {
+            x = data->column<double>(0);
+        }
+    }
+}
+
+void OutputPlot::TableRecord::initY() {
+    for (int i = 1; i < data->columnNumber(); ++i) {
+        YRecord rec;
+        rec.data = data->column<double>(i);
+        rec.label = data->columnNames()[i];
+        rec.index = i-1;
+        yList << rec;
+    }
 }
 
 void OutputPlot::cleanup() {
@@ -135,37 +186,70 @@ void OutputPlot::createPlotWidget() {
 
 void OutputPlot::fillPlotWidget() {
     TraceBase *x = xTraces()[0].trace;
-
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
-
     for (int i = 0; i < yTraces().size(); ++i) {
-        Plot p;
-        int ix = i % colors.size();
-
-        p.x = x->history();
-        p.y = yTraces()[i].trace->history();
-        p.yLegend = yTraces()[i].label;
-        p.showLegend = (runNumber() == 1 || hasSummary());
-        p.plotWidget = plotWidget;
-
-        p.logy = logy;
-        p.ymin = ymin;
-        p.ymax = ymax;
-
-        QColor color = colors[ix];
-        QPen pen = QPen(color);
-        pen.setWidth(penWidth);
-        p.pen = pen;
-        p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
-        p.type = yTraces()[i].trace->type();
-        p.add();
+        add(*x, yTraces()[i]);
     }
+
+    for (int i = 0; i < _tableRecords.size(); ++i) {
+        TableRecord &rec(_tableRecords[i]);
+        for (int j = 0; j < rec.yList.size(); ++j) {
+            add(&(rec.x), rec.yList[i]);
+        }
+    }
+
+}
+
+void OutputPlot::add(TraceBase &x, TraceRecord  &y) {
+    Plot p;
+    p.x = x.history();
+    p.y = y.trace->history();
+    p.yLegend = y.label;
+    p.showLegend = (runNumber() == 1 || hasSummary());
+    p.plotWidget = plotWidget;
+
+    p.logy = logy;
+    p.ymin = ymin;
+    p.ymax = ymax;
+
+    QColor color = colors[y.index % colors.size()];
+    QPen pen = QPen(color);
+    pen.setWidth(penWidth);
+    p.pen = pen;
+    p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
+    p.type = y.trace->type();
+    p.add();
+}
+
+void OutputPlot::add(QVector<double> *x, YRecord &y) {
+    Plot p;
+    p.x = x;
+    p.y = &(y.data);
+    p.yLegend = y.label;
+    p.showLegend = true;
+    p.plotWidget = plotWidget;
+
+    p.logy = logy;
+    p.ymin = ymin;
+    p.ymax = ymax;
+
+    QColor color = colors[y.index % colors.size()];
+    QPen pen = QPen(color);
+    pen.setWidth(penWidth);
+    p.pen = pen;
+    p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
+    p.type = TraceBase::Symbols;
+    p.add();
 }
 
 void OutputPlot::showPlotWidget() {
     Q_ASSERT(plotWidget);
     plotWidget->show();
+}
+
+const QList<OutputPlot::TableRecord>& OutputPlot::tableRecords() {
+    return _tableRecords;
 }
 
 } //namespace

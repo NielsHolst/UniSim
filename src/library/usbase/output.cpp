@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QSet>
+#include "data_grid.h"
 #include "integrator.h"
 #include "name_list.h"
 #include "output.h"
@@ -20,14 +21,18 @@ Output::Output(Identifier name, QObject *parent)
 void Output::amend() {
     _traces = seekChildren<TraceBase*>("*");
     _hasSummary = false;
+    int yIndex = 0;
     for (int i = 0; i < _traces.size(); ++i) {
         TraceRecord rec;
         rec.trace = _traces[i];
         rec.label = rec.trace->id().label();
+        rec.index = 0;
         if (rec.trace->axis() == TraceBase::XAxis)
             _xTraces << rec;
-        else
+        else {
+            rec.index = yIndex++;
             _yTraces << rec;
+        }
         _hasSummary = _hasSummary || rec.trace->summary() != TraceBase::None;
     }
     setYLabels();

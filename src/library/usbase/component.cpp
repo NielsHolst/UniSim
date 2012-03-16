@@ -102,6 +102,7 @@ void Component::followRedirections() {
 
 //! Amends this and all children according to the RecursionPolicy.
 void Component::deepAmend() {
+    parameters = seekChildren<ParameterBase*>("*");
     call(this, &Component::amend, &Component::deepAmend, recursionPolicy(Component::Amend));
 }
 

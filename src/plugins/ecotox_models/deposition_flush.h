@@ -5,16 +5,12 @@
 */
 #ifndef ECOTOX_DEPOSITION_FLUSH
 #define ECOTOX_DEPOSITION_FLUSH
-#include <boost/random/uniform_01.hpp>
 #include <QObject>
 #include <usbase/model.h>
 
-namespace UniSim {
-    class Random;
-    class Generator;
-}
-
 namespace ecotox {
+
+class PollenOnsetDate;
 
 class DepositionFlush : public UniSim::Model
 {
@@ -23,36 +19,36 @@ public:
     DepositionFlush(UniSim::Identifier name, QObject *parent=0);
     ~DepositionFlush();
 	// standard methods
+    void amend();
     void initialize();
 	void reset();
 	void update();
 
 private:
     // parameters
+    double durationAsDouble;
     int duration;
+    QString onsetFileName;
 
     // derived
     double scaling;
+    QDate onsetDate;
 
     // pull variables
     double value, total, percentile;
 
     // links
-    const double *depositionTotal;
+    Model *calendar, *loss;
+    PollenOnsetDate *pollenOnsetDate;
 
     // state
     enum {Before, Inside, After} phase;
     int phaseTime;
 
     // methods
-    inline double f(int x);
     void calcScaling();
+    inline double f(int x);
 
-    // random number generation
-    typedef boost::uniform_01<double>  Distribution;
-    typedef boost::variate_generator<UniSim::Random::Generator&, Distribution> Variate;
-    Distribution *distribution;
-    Variate *variate;
 };
 
 double DepositionFlush::f(int x) {

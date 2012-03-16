@@ -3,9 +3,12 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QMessageBox>
+#include <usbase/exception.h>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include "deposition_flush.h"
+#include "pollen_onset_date.h"
 
 using namespace UniSim;
 
@@ -13,10 +16,13 @@ using namespace UniSim;
 namespace ecotox {
 
 DepositionFlush::DepositionFlush(UniSim::Identifier name, QObject *parent)
-    : Model(name, parent), distribution(0), variate(0)
+    : Model(name, parent)
 {
-    new Parameter<int>("duration", &duration, 14, this,
+    new Parameter<double>("duration", &durationAsDouble, 14., this,
                           "Duration (days) of pollen release from crop");
+    new Parameter<QString>("onsetFileName", &onsetFileName, QString(), this,
+                           "Optional file with dates of pollen onset. "
+                           "Date will be picked at random within calendar year");
 
     new PullVariable<double>("value", &value, this,
                            "Deposition rate (0..1)");
@@ -25,22 +31,38 @@ DepositionFlush::DepositionFlush(UniSim::Identifier name, QObject *parent)
 }
 
 DepositionFlush::~DepositionFlush() {
-    delete distribution;
-    delete variate;
+    delete pollenOnsetDate;
+}
+
+void DepositionFlush::amend() {
+    Model *depositionRate = peekOneSibling<Model*>("depositionRate");
+    if (depositionRate) {
+        if (!onsetFileName.isEmpty()) {
+            QString msg = "If you have a 'depositionRate'' model in Pollen, you cannot also set the 'onsetFileName' parameter";
+            throw Exception(msg);
+        }
+        pollenOnsetDate = new PollenOnsetDateFromCurve(depositionRate);
+    }
+    else {
+        if (onsetFileName.isEmpty()) {
+            QString msg = "You must either have a 'depositionRate'' model in Pollen or, set the 'onsetFileName' parameter";
+            throw Exception(msg);
+        }
+        pollenOnsetDate = new PollenOnsetDateFromFile(onsetFileName);
+    }
+
+    loss = seekOneSibling<Model*>("lossRate");
+    calendar = seekOne<Model*>("calendar");
 }
 
 void DepositionFlush::initialize() {
-    Model *depositionRate = seekOneSibling<Model*>("depositionRate");
-    depositionTotal = depositionRate->pullVariablePtr<double>("total");
-    distribution = new Distribution;
-    variate = new Variate(*randomGenerator(), *distribution);
 }
 
 void DepositionFlush::reset() {
+    duration = static_cast<unsigned int>(durationAsDouble + 0.5);
     value = total = 0.;
     calcScaling();
-    percentile = (*variate)();
-    Q_ASSERT(percentile >= 0. && percentile < 1.);
+    onsetDate = pollenOnsetDate->calculate();
     phase = Before;
 }
 
@@ -49,12 +71,17 @@ void DepositionFlush::calcScaling() {
     for (int i = 1; i < duration; ++i) {
         sum += f(i);
     }
-    scaling = 1./sum;
+    double scaling1 = sum;
+
+    double eps = loss->parameter<double>("rate");
+    double scaling2 = -50.0700*eps*eps*eps + 28.0483*eps*eps - 6.95117*eps + 1;
+
+    scaling = 1/scaling1/scaling2;
 }
 
 void DepositionFlush::update() {
-    bool passedPercentile = *depositionTotal >= percentile;
-    if (phase == Before && passedPercentile) {
+    bool passedOnset = calendar->pullVariable<QDate>("date") >= onsetDate;
+    if (phase == Before && passedOnset) {
         phase = Inside;
         phaseTime = 0;
     }

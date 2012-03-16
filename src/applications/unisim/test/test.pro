@@ -30,6 +30,7 @@ HEADERS += \
     $${US_ENGINE}/test/test_model_maker.h \
     $${US_ENGINE}/test/test_simulation.h \
     $${US_ENGINE}/test/test_simulation_maker.h \
+    $${US_ENGINE}/test/test_simulation_maker_from_file.h \
     $${US_ENGINE}/test/test_simulation_trickle.h \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
@@ -72,6 +73,7 @@ SOURCES += \
     $${US_ENGINE}/test/test_model_maker.cpp \
     $${US_ENGINE}/test/test_simulation.cpp \
     $${US_ENGINE}/test/test_simulation_maker.cpp \
+    $${US_ENGINE}/test/test_simulation_maker_from_file.cpp \
     $${US_ENGINE}/test/test_simulation_trickle.cpp \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \

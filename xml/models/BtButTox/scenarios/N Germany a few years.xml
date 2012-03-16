@@ -2,26 +2,30 @@
 <simulation name="simulation" version="1.0">
 	<integrator type="TimeStepLimited">
 		<parameter name="maxSteps" value="365"/> 
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="5"/>
+		</model>
 	</integrator>
 	
 	<model name="calendar" type="Calendar"/>
 
 	<model name="weather" type="UniSim::Records">
 		<parameter name="fileName" value="Westerloge - Bad Hersfeld.txt"/>
+		<parameter name="randomizeInitialYear" value="yes"/>
 	</model>
 	
 	<model name="pollen" type="EcoTox::Pollen">
-		<model name="depositionRate" type="EcoTox::DepositionMonotonicWeibull">
-			<parameter name="dateMax" value="31/7/2011"/>
-			<parameter name="c" value="1"/>
+		<model name="depositionRate" type="EcoTox::DepositionMonotonicSampled"/>
+		<model name="depositionFlush" type="EcoTox::DepositionFlush">
+			<parameter name="duration" value="14"/>
 		</model>
 		<model name="lossRate" type="EcoTox::PollenLossConstant">
-			<parameter name="rate" value="0.1"/>
+			<parameter name="rate" value="0.01"/>
 		</model>
 		<parameter name="distance" value="0.3"/>
-		<parameter name="maxTotal" value="5200"/>
+		<parameter name="maxTotal" value="3000"/>
 	</model>
-	
+
 	<model name="io" type="UniSim::Inachis">
 		<parameter name="sexRatio" value="0.5"/>
 		<parameter name="eggProduction" value="2"/>
@@ -30,7 +34,7 @@
 			<model name="time" type="UniSim::Days">
 				<model name="trigger" type="UniSim::TriggerByDate">
 					<parameter name="fromDate" value="1/3/1900" ref="Ebert and Rennwald 1991"/>
-					<parameter name="toDate" value="30/5/2200"/>
+					<parameter name="toDate" value="30/6/2200"/>
 					<parameter name="frequency" value="yearly"/>
 					<parameter name="triggerAtReset" value="No"/>
 				</model>
@@ -96,13 +100,13 @@
 	*** Plots  ***
 	-->
 
-	<output name="A"  type="plot">
+	<output type="plot">
 		<parameter name="title" value="Environment"/>
 		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 	</output>
 
-	<output name="B" type="plot">
+	<output type="plot">
 		<parameter name="title" value ="One generation"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Egg" value="generation(1)/egg[value]"/>
@@ -111,14 +115,14 @@
 		<variable axis="y" label="AdRep" value="generation(1)/adult[value]"/>
 	</output>
 
-	<output name="C" type="plot">
+	<output type="plot">
 		<parameter name="title" value ="Population response"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Larva" value="generation(1)/larva[value]"/>
 		<variable axis="y" label="AdHib" value="hibernatingAdult[value]"/>
 	</output>
 	
-	<output name="D" type="plot">
+	<output type="plot">
 		<parameter name="title" value ="Pollen deposition rate"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Rate" value="pollen[pollenDepositionRate]"/>
@@ -126,7 +130,7 @@
 		<variable axis="y" label="Total" value="pollen[pollenDepositionTotal]"/>
 	</output>
 
-	<output name="E" type="plot">
+	<output type="plot">
 		<parameter name="title" value ="Bt exposure (log10)"/>
 		<parameter name="logy" value ="yes"/>
 		<parameter name="ymin" value ="-2"/>
@@ -135,6 +139,13 @@
 		<variable axis="y" label="Pollen (per cm2)" value="pollen[pollenDensity]"/>
 	</output>
 
+	<output type="table">
+		<parameter name="filename" value ="pollen_deposition_rate.txt"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Rate" value="pollen[pollenDepositionRate]"/>
+		<variable axis="y" label="Current" value="pollen[pollenDensity]"/>
+		<variable axis="y" label="Total" value="pollen[pollenDepositionTotal]"/>
+	</output>
 
 	
 </simulation>

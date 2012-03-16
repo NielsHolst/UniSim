@@ -1,6 +1,7 @@
 #include <iostream>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/variate_generator.hpp>
+#include <QtAlgorithms>
 #include <QTime>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
@@ -213,7 +214,7 @@ void Records::extractValues() {
 
 void Records::advanceLine() {
     advanceTime();
-    swap(currentColumnValues, nextColumnValues);
+    qSwap(currentColumnValues, nextColumnValues);
     readLineItems();
 
     if (!pastLastLine) {

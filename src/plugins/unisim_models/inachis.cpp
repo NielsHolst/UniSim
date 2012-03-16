@@ -7,13 +7,13 @@
 #include <QString>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
-#include "insect.h"
+#include "inachis.h"
 #include "insect_life_cycle.h"
 #include "stage.h"
 
 namespace UniSim{
 	
-Insect::Insect(Identifier name, QObject *parent)
+Inachis::Inachis(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     setRecursionPolicy(Update,ChildrenNot);
@@ -23,16 +23,16 @@ Insect::Insect(Identifier name, QObject *parent)
                           "Lifetime egg production of one female");
 }
 
-void Insect::initialize() {
+void Inachis::initialize() {
     hibernatingAdult = seekOneChild<Stage*>("hibernatingAdult");
     generations = seekChildren<InsectLifeCycle*>("*");
 }
 
-void Insect::reset() {
+void Inachis::reset() {
     QList<Stage*> test = generations[0]->stages();
 }
 
-void Insect::update() {
+void Inachis::update() {
     // Transfer hibernating adults from the reproductive stage of the last generation
     double transfer = generations.last()->pullVariable<double>("adultsToHibernation");
     hibernatingAdult->pushVariable<double>("inflow", transfer);
@@ -58,7 +58,7 @@ void Insect::update() {
     }
 }
 
-double Insect::reproduction(double adults) {
+double Inachis::reproduction(double adults) {
     return adults*sexRatio*eggProduction;
 }
 

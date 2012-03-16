@@ -12,7 +12,7 @@
 #include "exponential.h"
 #include "fixed.h"
 #include "hydro_thermal_time.h"
-#include "insect.h"
+#include "inachis.h"
 #include "insect_life_cycle.h"
 #include "lactin_time.h"
 #include "photo_thermal_time.h"
@@ -92,7 +92,7 @@ const QMap<Identifier, QString>& UniSimModelMaker::supportedClasses() {
     "daily increment is unaltered. A @F Model named @F {weather} with a pull "
     "variable named @F SWP must exist to supply @F HydroThermalTime with soil water potential.";
 
-    desc["Insect"] =
+    desc["Inachis"] =
     "A stage-structured insect model. Under development";
 
     desc["InsectLifeCycle"] =
@@ -186,8 +186,8 @@ Model* UniSimModelMaker::create(Identifier modelType, Identifier objectName, QOb
         model = new Fixed(objectName, parent);
     else if (modelType.equals("HydroThermalTime"))
         model = new HydroThermalTime(objectName, parent);
-    else if (modelType.equals("Insect"))
-        model = new Insect(objectName, parent);
+    else if (modelType.equals("Inachis"))
+        model = new Inachis(objectName, parent);
     else if (modelType.equals("InsectLifeCycle"))
         model = new InsectLifeCycle(objectName, parent);
     else if (modelType.equals("LactinTime"))

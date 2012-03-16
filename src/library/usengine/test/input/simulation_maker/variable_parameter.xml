@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation" version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="365"/> 
+	</integrator>
+	
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="rheinfelden 1995-2000.txt"/>
+	</model>
+	
+	<model name="pollen" type="EcoTox::Pollen">
+		<model name="depositionRate" type="EcoTox::DepositionMonotonicWeibull">
+			<parameter name="dateMax" value="31/7/2011"/>
+			<parameter name="c" value="1"/>
+		</model>
+		<model name="depositionFlush" type="EcoTox::DepositionFlush">
+			<parameter name="duration" value="14"/>
+		</model>
+		<model name="lossRate" type="EcoTox::PollenLossConstant">
+			<parameter name="rate" value="0.01"/>
+		</model>
+		<parameter name="distance" value="0.3"/>
+		<parameter name="maxTotal" value="3000"/>
+	</model>
+
+	<model name="survival" type="EcoTox::LogLogistic">
+		<parameter name="dose" variable="pollen[pollenDensity]"/>
+		<parameter name="upper" value="1"/>
+		<parameter name="lower" value="0"/>
+		<parameter name="slope" value="-1.63"/>
+		<parameter name="ED50" value="470"/>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value ="test_variable_parameter.txt"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Rate" value="pollen[pollenDepositionRate]"/>
+		<variable axis="y" label="Current" value="pollen[pollenDensity]"/>
+		<variable axis="y" label="Total" value="pollen[pollenDepositionTotal]"/>
+		<variable axis="y" label="Survival" value="survival[value]"/>
+		<read-parameter axis="y" label="Dose" value="survival[dose]"/>
+	</output>
+
+	
+</simulation>

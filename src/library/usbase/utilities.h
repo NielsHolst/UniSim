@@ -91,7 +91,6 @@ QObject* simulationObject();
 
 //! @name Mathematics
 //@{
-//template <class T> void swap(T &a, T &b);
 double interpolate(const QMap<int, double> xy, int x);
 double pow0(double x, double c);
 double negExp(double x);
@@ -427,16 +426,6 @@ template <class T> QList<T> filterByName(QString name, const QList<QObject*> &ca
         }
     }
     return result;
-}
-
-// Mathematics
-//
-
-template <class T>
-void swap(T &a, T &b) {
-    T c = a;
-    a = b;
-    b = c;
 }
 
 //

@@ -15,11 +15,11 @@ namespace UniSim{
 class InsectLifeCycle;
 class Stage;
 
-class Insect : public Model
+class Inachis : public Model
 {
 	Q_OBJECT
 public:
-    Insect(Identifier name, QObject *parent=0);
+    Inachis(Identifier name, QObject *parent=0);
     // standard methods
     void initialize();
     void reset();

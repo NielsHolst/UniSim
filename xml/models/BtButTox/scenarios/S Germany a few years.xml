@@ -2,26 +2,46 @@
 <simulation name="simulation" version="1.0">
 	<integrator type="TimeStepLimited">
 		<parameter name="maxSteps" value="365"/> 
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="10"/>
+		</model>
 	</integrator>
+	
+	<model name="random">
+		<model name="lossRate" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="0.2"/>
+		</model>
+		<model name="maxTotal" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="3000"/>
+		</model>
+		<model name="duration" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="10"/>
+			<parameter name="maxValue" value="50"/>
+		</model>
+	</model>
+
 	
 	<model name="calendar" type="Calendar"/>
 
 	<model name="weather" type="UniSim::Records">
-		<parameter name="fileName" value="Westerloge - Bad Hersfeld.txt"/>
+		<parameter name="fileName" value="rheinfelden 1995-2000.txt" value2="freudenstadt 1995-2000.txt"/>
+		<parameter name="randomizeInitialYear" value="yes"/>
 	</model>
 	
 	<model name="pollen" type="EcoTox::Pollen">
-		<model name="depositionRate" type="EcoTox::DepositionMonotonicWeibull">
-			<parameter name="dateMax" value="31/7/2011"/>
-			<parameter name="c" value="1"/>
+		<model name="depositionFlush" type="EcoTox::DepositionFlush">
+			<parameter name="onsetFileName" value="Bavaria shedding onset.txt"/>
+			<parameter name="duration" variable="random/duration[value]"/>
 		</model>
 		<model name="lossRate" type="EcoTox::PollenLossConstant">
-			<parameter name="rate" value="0.1"/>
+			<parameter name="rate" variable="random/lossRate[value]"/>
 		</model>
 		<parameter name="distance" value="0.3"/>
-		<parameter name="maxTotal" value="5200"/>
+		<parameter name="maxTotal" variable="random/maxTotal[value]"/>
 	</model>
-	
+
 	<model name="io" type="UniSim::Inachis">
 		<parameter name="sexRatio" value="0.5"/>
 		<parameter name="eggProduction" value="2"/>
@@ -30,7 +50,7 @@
 			<model name="time" type="UniSim::Days">
 				<model name="trigger" type="UniSim::TriggerByDate">
 					<parameter name="fromDate" value="1/3/1900" ref="Ebert and Rennwald 1991"/>
-					<parameter name="toDate" value="30/5/2200"/>
+					<parameter name="toDate" value="30/6/2200"/>
 					<parameter name="frequency" value="yearly"/>
 					<parameter name="triggerAtReset" value="No"/>
 				</model>
@@ -40,7 +60,7 @@
 			<parameter name="initialInflow" value="1"/>
 		</model>
 
-		<model name="generation" type="UniSim::InsectLifeCycle" instances="1">
+		<model name="generation" type="UniSim::InsectLifeCycle" instances="2">
 			<model name ="eggLayingDelay" type="UniSim::Stage" >
 				<model name="time" type="UniSim::Days"/>
 				<parameter name="duration" value="7"/>
@@ -96,14 +116,14 @@
 	*** Plots  ***
 	-->
 
-	<output name="A"  type="plot">
+	<output type="plot">
 		<parameter name="title" value="Environment"/>
 		<variable label="Day" axis="x" value="calendar[totalTime]"/>
 		<variable label="Tavg" axis="y" value="weather[Tavg]"/>
 	</output>
 
-	<output name="B" type="plot">
-		<parameter name="title" value ="One generation"/>
+	<output type="plot">
+		<parameter name="title" value ="Generation 1"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Egg" value="generation(1)/egg[value]"/>
 		<variable axis="y" label="Larva" value="generation(1)/larva[value]"/>
@@ -111,14 +131,36 @@
 		<variable axis="y" label="AdRep" value="generation(1)/adult[value]"/>
 	</output>
 
-	<output name="C" type="plot">
+	<output type="plot">
+		<parameter name="title" value ="Generation 2"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Egg" value="generation(2)/egg[value]"/>
+		<variable axis="y" label="Larva" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Pupa" value="generation(2)/pupa[value]"/>
+		<variable axis="y" label="AdRep" value="generation(2)/adult[value]"/>
+	</output>
+
+	<output type="plot">
 		<parameter name="title" value ="Population response"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Larva" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Survival" value="generation(1)/larva/survival[value]"/>
+		<variable axis="y" label="New pupae" value="generation(2)/pupa[inflowTotal]"/>
+		<variable axis="y" label="AdHib" value="hibernatingAdult[value]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value ="Population response.txt"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
+		<variable axis="y" label="Surv-1" value="generation(1)/larva/survival[value]"/>
+		<variable axis="y" label="Surv-2" value="generation(2)/larva/survival[value]"/>
 		<variable axis="y" label="AdHib" value="hibernatingAdult[value]"/>
 	</output>
 	
-	<output name="D" type="plot">
+	<output type="plot">
 		<parameter name="title" value ="Pollen deposition rate"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
 		<variable axis="y" label="Rate" value="pollen[pollenDepositionRate]"/>
@@ -126,15 +168,47 @@
 		<variable axis="y" label="Total" value="pollen[pollenDepositionTotal]"/>
 	</output>
 
-	<output name="E" type="plot">
+	<output type="plot">
 		<parameter name="title" value ="Bt exposure (log10)"/>
 		<parameter name="logy" value ="yes"/>
 		<parameter name="ymin" value ="-2"/>
 		<variable axis="x" label="Day" value="calendar[totalTime]"/>
-		<variable axis="y" label="Larva" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Larva-1" value="generation(1)/larva[value]"/>
+		<variable axis="y" label="Larva-2" value="generation(2)/larva[value]"/>
 		<variable axis="y" label="Pollen (per cm2)" value="pollen[pollenDensity]"/>
 	</output>
 
+	<!--
+	** Summaries ***
+	-->
+	
+	<output type="plot" summary="yes">
+		<parameter name="title" value ="Response Nmax"/>
+		<read-parameter axis="x" label="Nmax" value="pollen[maxTotal]"/>
+		<variable axis="y" label="AdHib" value="hibernatingAdult[value]" summary="Final"/>
+	</output>
+
+	<output type="plot" summary="yes">
+		<parameter name="title" value ="Response loss rate"/>
+		<read-parameter axis="x" label="Loss rate" value="pollen/lossRate[rate]"/>
+		<variable axis="y" label="AdHib" value="hibernatingAdult[value]" summary="Final"/>
+	</output>
+
+	<output type="plot" summary="yes">
+		<parameter name="title" value ="Pollen shed duration"/>
+		<read-parameter axis="x" label="Duration" value="depositionFlush[duration]"/>
+		<variable axis="y" label="AdHib" value="hibernatingAdult[value]" summary="Final"/>
+	</output>
+	
+	<output type="table" summary="yes">
+		<parameter name="fileName" value ="S Germany response.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<read-parameter axis="y" label="Eps" value="pollen/lossRate[rate]"/>
+		<read-parameter axis="y" label="Nmax" value="pollen[maxTotal]"/>
+		<read-parameter axis="y" label="Duration" value="depositionFlush[duration]"/>
+		<variable axis="y" label="AdHib" value="hibernatingAdult[value]" summary="Final"/>
+		<variable axis="y" label="Pupae" value="generation(2)/pupa[inflowTotal]" summary="Final"/>
+	</output>
 
 	
 </simulation>

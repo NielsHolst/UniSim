@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QMessageBox>
 #include <usbase/parameter.h>
 #include <usbase/pull_variable.h>
 #include <usbase/push_variable.h>
@@ -29,8 +30,8 @@ LogLogistic::LogLogistic(UniSim::Identifier name, QObject *parent)
 
     new PullVariable<double>("value", &value, this,
                              "Response at current dose");
-    new PushVariable<double>("dose", &dose, this,
-                             "Dose for which response will be calculated");
+//    new PushVariable<double>("dose", &dose, this,
+//                             "Dose for which response will be calculated");
 }
 
 void LogLogistic::initialize() {

@@ -1,5 +1,5 @@
-#ifndef TEST_MODEL_PARSER_H
-#define TEST_MODEL_PARSER_H
+#ifndef TEST_SIMULATION_MAKER_H
+#define TEST_SIMULATION_MAKER_H
 
 #include <usbase/test/autotest.h>
 
@@ -15,19 +15,9 @@ private slots:
     void testSimulation();
     void testModel();
     void testParameters();
-    void testCommonElement();
-    void testModelInstances();
-    void testModelsFromFileOneLevel();
-    void testModelsFromFileTwoLevels();
-    void testModelsFromFileCondensed();
-    void testModelsFromFileThreeLevels();
-    void testModelsAndParametersFromFile();
-    void testModelsAndParametersFromFileSame();
-    void testModelsAndParametersFromFileCondensed();
-    void testModelsFromCondensedFileParameterKey();
-    void testModelsFromCondensedFileParameter2Keys();
     void cleanupTestCase();
 private:
+    UniSim::Simulation* createSimulation(QString fileName);
     QString filePath(QString fileName) const;
     UniSim::Simulation *simulation;
 };

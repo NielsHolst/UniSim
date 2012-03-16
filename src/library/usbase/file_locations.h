@@ -13,7 +13,7 @@
 
 namespace UniSim {
 
-class FileLocations : public QObject
+class   FileLocations : public QObject
 {
     Q_OBJECT
 public:

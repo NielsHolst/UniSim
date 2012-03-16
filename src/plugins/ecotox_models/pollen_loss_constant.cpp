@@ -15,10 +15,10 @@ namespace ecotox {
 PollenLossConstant::PollenLossConstant(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("halfLife", &halfLife, 14., this,
-                          "Half-life of pollen (days). Set this to zero if pollen is not lost");
+    new Parameter<double>("rate", &rate, 0.01, this,
+                          "Fraction of pollen lost per day. Set this to zero if pollen is not lost");
     new PullVariable<double>("value", &value, this,
-                             "Pollen survival rate (per day)");
+                             "Fraction of pollen lost per day");
 }
 
 void PollenLossConstant::reset() {
@@ -26,8 +26,7 @@ void PollenLossConstant::reset() {
 }
 
 void PollenLossConstant::update() {
-    double survival = (halfLife > 0) ? pow(0.5, 1./halfLife) : 1.;
-    value = 1. - survival;
+    value = rate;
 }
 
 

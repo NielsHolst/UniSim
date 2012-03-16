@@ -21,7 +21,7 @@ public:
 
 private:
     // parameters
-    double halfLife;
+    double rate;
 
     // derived
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
@@ -8,7 +8,7 @@
 #include <QObject>
 #include <usbase/model.h>
 
-namespace beehive{
+namespace beehive {
 
 class Fecundity : public UniSim::Model
 {
@@ -16,22 +16,19 @@ class Fecundity : public UniSim::Model
 public: 
     Fecundity(UniSim::Identifier name, QObject *parent=0);
 	// standard methods
-	void initialize();
+    void initialize();
 	void reset();
 	void update();
 
 private:
-    // methods
-    double fecundity(double age) const;
+	// parameters
+    double rate, eggMass, sizeThreshold;
 
-    // parameters
-    double scale, root1, root2, sexRatio;
+	// pull variables
+    double number, mass;
 
-    // pull variables
-    double eggsLaid;
-
-    // links
-    Model *adult;
+    // models
+    UniSim::Model *adult, *numberOfAdults;
 
 };
 

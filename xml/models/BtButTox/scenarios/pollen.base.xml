@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation" version="1.0">
+
+	<model name="random">
+		<model name="lossRate" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="0.2"/>
+		</model>
+		<model name="Npeak" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="3000"/>
+		</model>
+	</model>
+
+</simulation>

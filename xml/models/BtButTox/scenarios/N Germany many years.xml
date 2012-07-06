@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation" version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="365"/> 
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="1000"/>
+		</model>
+	</integrator>
+	
+	<model name="random" select="doc('pollen.base.xml')/simulation/model[@name='random']"/>
+
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" select="doc('N Germany.base.xml')/simulation/model[@name='weather']">
+		<parameter name="randomizeInitialYear" value="yes"/>
+	</model>
+
+	<model name="pollen" select="doc('N Germany.base.xml')/simulation/model[@name='pollen']">
+		<model name="lossRate" type="EcoTox::PollenLossConstant">
+			<parameter name="rate" value="" variable="random/lossRate[value]"/>
+		</model>
+		<parameter name="Npeak" value="" variable="random/Npeak[value]"/>
+	</model>
+
+	<model name="io" select="doc('io.base.xml')/simulation/model[@name='io']"/>
+	
+	<!--
+	** Summaries ***
+	-->
+	
+	<output type="table" name ="summary" summary="yes">
+		<parameter name="fileName" value ="N Germany response.txt"/>
+		<variable axis="x" label="Year" value="calendar[year]"/>
+		<read-parameter axis="y" label="Npeak" value="pollen[Npeak]"/>
+		<read-parameter axis="y" label="LossRate" value="pollen/lossRate[rate]"/>
+		<variable axis="y" label="AdHib" value="hibernatingAdult[value]" summary="Final"/>
+		<variable axis="y" label="Pupae" value="generation(1)/pupa[inflowTotal]" summary="Final"/>
+	</output>
+
+	
+</simulation>

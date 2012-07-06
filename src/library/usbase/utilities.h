@@ -95,7 +95,7 @@ double interpolate(const QMap<int, double> xy, int x);
 double pow0(double x, double c);
 double negExp(double x);
 double divBounded(double x, double y, double bound = std::numeric_limits<double>::max());
-double GBFuncResp(double demand, double apparency);
+double GBFuncResp(double demand, double supply);
 int toDayOfYear(int day, int month);
 //@}
 

@@ -31,7 +31,7 @@ Identifier EcotoxModelMaker::pluginName() const {
 
 QStringList EcotoxModelMaker::authors() const
 {
-    return QStringList() << "Niels" << "Frieder";
+    return QStringList() << "Niels";
 }
 
 const QMap<Identifier, QString>& EcotoxModelMaker::supportedClasses()

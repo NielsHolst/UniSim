@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation" version="1.0">
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="rheinfelden 1995-2000.txt" value2="freudenstadt 1995-2000.txt"/>
+	</model>
+	
+	<model name="pollen" type="EcoTox::Pollen">
+		<model name="depositionFlush" type="EcoTox::DepositionFlush">
+			<parameter name="onsetFileName" value="Bavaria shedding onset.txt"/>
+			<parameter name="duration" value="14"/>
+		</model>
+		<model name="lossRate" type="EcoTox::PollenLossConstant">
+			<parameter name="rate" value="0.01"/>
+		</model>
+		<parameter name="distance" value="0"/>
+		<parameter name="Npeak" value="1750"/>
+	</model>
+
+</simulation>

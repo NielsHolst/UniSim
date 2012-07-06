@@ -6,6 +6,9 @@ CONFIG += dll
 DESTDIR = $${US_BASE}/..
 TARGET = $${US_BASE_LIB_NAME}
 
+# Libraries used
+include ($${US_GSL}/gsl.pri)
+
 # Source code
 HEADERS += \
         $${US_BASE}/authors.h \
@@ -20,13 +23,14 @@ HEADERS += \
         $${US_BASE}/identifier.h \
         $${US_BASE}/integrator.h \
         $${US_BASE}/integrator_maker_plug_in.h \
-        $${US_BASE}/object_pool.h \
-        $${US_BASE}/output.h \
-        $${US_BASE}/output_maker_plug_in.h \
+        $${US_BASE}/minimiser.h \
         $${US_BASE}/model.h \
         $${US_BASE}/model_maker_plug_in.h \
         $${US_BASE}/named_object.h \
         $${US_BASE}/name_list.h \
+        $${US_BASE}/object_pool.h \
+        $${US_BASE}/output.h \
+        $${US_BASE}/output_maker_plug_in.h \
         $${US_BASE}/parameter.h \
         $${US_BASE}/parameter_base.h \
         $${US_BASE}/pull_variable.h \
@@ -53,6 +57,7 @@ SOURCES += \
         $${US_BASE}/file_locations.cpp \
         $${US_BASE}/identifier.cpp \
         $${US_BASE}/integrator.cpp \
+        $${US_BASE}/minimiser.cpp \
         $${US_BASE}/model.cpp \
         $${US_BASE}/named_object.cpp \
         $${US_BASE}/name_list.cpp \

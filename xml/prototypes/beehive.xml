@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="beehive" type="model">
+    <class name="LifeStage">
+		<model name="egg"/>
+		<model name="larva"/>
+		<model name="pupa"/>
+		<model name="adult"/>
+	</class> 
+    <class name="Resource">
+		<model name="pollen"/>
+	</class>		
+</plugin>

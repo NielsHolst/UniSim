@@ -2,7 +2,7 @@
 # Configuration of make process (can be edited)
 #
 
-UNISIM_VERSION      = 1-35
+UNISIM_VERSION      = 1-37
 
 CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
 #CONFIG += unisim_deployment     # Or, this if targets will be used to produce an installation file
@@ -42,6 +42,7 @@ US_ENGINE = $${UNISIM_ROOT}/src/library/usengine
 US_APPLICATIONS = $${UNISIM_ROOT}/src/applications
 US_PLUGINS = $${UNISIM_ROOT}/src/plugins
 US_QWT = $${UNISIM_ROOT}/vendor/qwt
+US_GSL = $${UNISIM_ROOT}/vendor/gsl
 
 US_BASE_LIB_NAME = base_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 US_ENGINE_LIB_NAME = engine_$${UNISIM_VERSION}$${DEBUG_SUFFIX}

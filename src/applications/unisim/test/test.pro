@@ -15,12 +15,14 @@ RESOURCES = ../../../resources/unisim.qrc
 # Input
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
-include($${US_QWT}/qwt.pri)
+include ($${US_QWT}/qwt.pri)
+include ($${US_GSL}/gsl.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \
     $${US_BASE}/test/test_data_grid.h \
     $${US_BASE}/test/test_identifier.h \
+    $${US_BASE}/test/test_minimiser.h \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
     $${US_BASE}/test/test_push_variable.h \
@@ -64,6 +66,7 @@ SOURCES += \
     $${US_BASE}/test/test_component.cpp \
     $${US_BASE}/test/test_data_grid.cpp \
     $${US_BASE}/test/test_identifier.cpp \
+    $${US_BASE}/test/test_minimiser.cpp \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
     $${US_BASE}/test/test_push_variable.cpp \

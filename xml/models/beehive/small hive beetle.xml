@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="SHBmodel" version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="60"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="SHB" type="beehive::SmallHiveBeetle">
+		<model name="egg" type="beehive::LifeStage">
+			<model name="time" type="UniSim::Days"/>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="2"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="2"/>
+				<parameter name="k" value="30"/>
+			</model>
+		</model>
+
+		<model name="larva" type="beehive::LifeStage">
+			<model name="time" type="UniSim::Days"/>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="10"/>
+				<parameter name="k" value="30"/>
+				<parameter name="growthRate" value="2500"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="10"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="growth" type="beehive::Growth">
+				<parameter name="maxGrowthRate" value="2500"/>
+				<parameter name="resource" value="1000"/>
+				<parameter name="attackRate" value="1"/>
+				<parameter name="egestion" value="0.15"/>
+			</model>
+		</model>
+
+		<model name="pupa" type="beehive::LifeStage">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="0"/>
+			</model>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="30"/>
+				<parameter name="growthRate" value="0.8"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="30"/>
+			</model>
+		</model>
+
+		<model name="adult" type="beehive::LifeStage">
+			<model name="time" type="UniSim::Days"/>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="30"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="2000"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="30"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="100"/>
+			</model>
+			<model name="fecundity" type="beehive::Fecundity">
+				<parameter name="rate" value="10"/>
+				<parameter name="eggMass" value="0.01"/>
+			</model>
+		</model>
+	</model>
+	
+	<!-- Plots -->
+	<output type="plot">
+		<parameter name="title" value ="SHB Numbers"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="*" value="*/number[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="SHB Mass"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="*" value="*/mass[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="SHB Size"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="*" value="SHB/*[size]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Larva growth rate"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="*" value="larva/growth[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Eggs produced per day"/>
+		<variable axis="x" label="Day" value="calendar[totalTime]"/>
+		<variable axis="y" label="*" value="adult/fecundity[number]"/>
+	</output>
+
+</simulation>

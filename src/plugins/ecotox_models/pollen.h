@@ -22,23 +22,18 @@ public:
 
 private:
     // parameters
-    double distance, minDist, halfDist, maxTotal,
-        pollenMass, stdPollenMass, toxinConc, stdToxinConc;
-
-    // derived
-    double PdistRate;
+    double distance, distanceExp, distanceMin, halfDist, maxTotal;
 
     // pull variables
     double
     pollenDepositionRate, pollenDepositionTotal,
-    pollenDensity, toxinDensity,
-    stdPollenDensity;
+    pollenDensity;
 
     // links
     const double *depositionRate, *lossRate;
 
     // methods
-    double Pdist(double distance);
+    double distanceEffect();
 };
 
 } //namespace

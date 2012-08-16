@@ -91,6 +91,7 @@ QObject* simulationObject();
 
 //! @name Mathematics
 //@{
+double accum(const QVector<double> &x);
 double interpolate(const QMap<int, double> xy, int x);
 double pow0(double x, double c);
 double negExp(double x);

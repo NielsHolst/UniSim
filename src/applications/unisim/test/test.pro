@@ -26,6 +26,7 @@ HEADERS += \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
     $${US_BASE}/test/test_push_variable.h \
+    $${US_BASE}/test/test_root_solver.h \
     $${US_BASE}/test/test_strata.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
@@ -41,11 +42,11 @@ HEADERS += \
     $${US_PLUGINS}/intercom_models/test/test_plant.h \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
     $${US_PLUGINS}/unisim_models/anonymous_model.h \
+    $${US_PLUGINS}/unisim_models/distributed_delay.h \
     $${US_PLUGINS}/unisim_models/stage.h \
     $${US_PLUGINS}/unisim_models/test/test_calendar.h \
+    $${US_PLUGINS}/unisim_models/test/test_distributed_delay.h \
     $${US_PLUGINS}/unisim_models/test/test_fixed.h \
-    $${US_PLUGINS}/unisim_models/test/test_life_stage.h \
-    $${US_PLUGINS}/unisim_models/test/test_life_cycle.h \
     $${US_PLUGINS}/unisim_models/test/test_random.h \
     $${US_PLUGINS}/unisim_models/test/test_records.h \
     $${US_PLUGINS}/unisim_models/test/test_scheduled.h \
@@ -57,9 +58,9 @@ HEADERS += \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.h \
     $${US_PLUGINS}/unisim_outputs/test/test_table.h \
     ../graph_generator.h \
-    frequency_distribution.h \
+    moments.h \
     main_window_stub.h \
-    test_frequency_distribution.h \
+    test_moments.h \
     test_numeric_limits.h
 
 SOURCES += \
@@ -70,6 +71,7 @@ SOURCES += \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
     $${US_BASE}/test/test_push_variable.cpp \
+    $${US_BASE}/test/test_root_solver.cpp \
     $${US_BASE}/test/test_strata.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
@@ -85,11 +87,11 @@ SOURCES += \
     $${US_PLUGINS}/intercom_models/test/test_plant.cpp \
     $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
     $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
+    $${US_PLUGINS}/unisim_models/distributed_delay.cpp \
     $${US_PLUGINS}/unisim_models/stage.cpp \
     $${US_PLUGINS}/unisim_models/test/test_calendar.cpp \
+    $${US_PLUGINS}/unisim_models/test/test_distributed_delay.cpp \
     $${US_PLUGINS}/unisim_models/test/test_fixed.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_life_stage.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_life_cycle.cpp \
     $${US_PLUGINS}/unisim_models/test/test_random.cpp \
     $${US_PLUGINS}/unisim_models/test/test_records.cpp \
     $${US_PLUGINS}/unisim_models/test/test_scheduled.cpp \
@@ -101,7 +103,7 @@ SOURCES += \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.cpp \
     $${US_PLUGINS}/unisim_outputs/test/test_table.cpp \
     ../graph_generator.cpp \
-    frequency_distribution.cpp \
-    test_frequency_distribution.cpp \
+    moments.cpp \
+    test_moments.cpp \
     test_numeric_limits.cpp \
     main.cpp

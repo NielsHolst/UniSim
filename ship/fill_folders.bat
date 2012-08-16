@@ -2,7 +2,9 @@ set UNISIM_SHIP=C:\data\QDev\UniSim\ship
 set GV_NAME=Graphviz2.28
 set SOURCE_GV="C:\Program Files\%GV_NAME%"
 if not exist bin md bin
+if not exist output md output
 if not exist plugins md plugins
+if not exist temp md temp
 
 rem Copy Graphviz
 set UNISIM_GV=%UNISIM_SHIP%\%GV_NAME%

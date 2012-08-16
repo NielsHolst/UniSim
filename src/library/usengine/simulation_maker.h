@@ -13,6 +13,7 @@
 #include <QStack>
 #include <QStringList>
 #include <usbase/attributes.h>
+#include <usbase/file_location_info.h>
 #include <usbase/identifier.h>
 
 class QXmlStreamReader;
@@ -33,7 +34,8 @@ class SimulationMaker : public QObject
 public:
 	SimulationMaker();
 	~SimulationMaker();
-    Simulation* parse(QString fileName);
+    Simulation* parse(QString filePath);
+    Simulation* parse(FileLocationInfo::FileType fileType, QString subFolder, QString fileName);
 
 signals: 
     //! Signals when the parser begins expanding the original UniSim file

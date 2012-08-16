@@ -27,7 +27,7 @@ Identifier BeehiveModelMaker::pluginName() const {
 
 QStringList BeehiveModelMaker::authors() const
 {
-    return QStringList() << "William" << "Niels.";
+    return QStringList() << "William" << "Niels";
 }
 
 const QMap<Identifier, QString>& BeehiveModelMaker::supportedClasses()

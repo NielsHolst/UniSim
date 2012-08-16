@@ -99,6 +99,16 @@ QFileInfo findNearestFile(QDir home, QString subFolder, QString fileName) {
 // Mathematics
 //
 
+double accum(const QVector<double> &x) {
+    double sum = 0.;
+    const double *p = x.data();
+    int n = x.size();
+    for (int i = 0; i < n; ++i, ++p)
+        sum += *p;
+    return sum;
+}
+
+
 //! Interpolate from (x,y) table
 /*! Interpolates a y-value from the given x-value. For x-values less than the first x-value in the table,
 the first y-value is returned. For x-values greater then the last x-value in the table, the last y-value

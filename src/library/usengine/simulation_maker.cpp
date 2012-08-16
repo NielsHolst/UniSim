@@ -98,7 +98,13 @@ void SimulationMaker::ignoreElement() {
     }
 }
 
-Simulation* SimulationMaker::parse(QString fileName_)
+Simulation* SimulationMaker::parse(FileLocationInfo::FileType fileType, QString subFolder, QString fileName) {
+    QDir dir = FileLocations::location(fileType);
+    QString filePath = dir.absolutePath() + "/" + subFolder + "/" + fileName;
+    return parse(filePath);
+}
+
+Simulation* SimulationMaker::parse(QString filePath)
 {
     QString simName;
 
@@ -108,7 +114,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
     clearTables();
 
     emit beginExpansion();
-    fileName = compileToFile(fileName_);
+    fileName = compileToFile(filePath);
     emit endExpansion();
 
     QFile file(fileName);
@@ -127,7 +133,7 @@ Simulation* SimulationMaker::parse(QString fileName_)
 	
     Simulation *sim = new Simulation(simName);
     UniSim::setSimulationObject(sim);
-    sim->setFilePath(fileName_);
+    sim->setFilePath(filePath);
 
     nextElementDelim();
     int numIntegrators(0);

@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QVector>
 #include <usbase/model.h>
+#include "distributed_delay.h"
 
 namespace UniSim {
 
@@ -17,42 +18,39 @@ class Stage : public UniSim::Model
 	Q_OBJECT
 public:
     Stage(Identifier name, QObject *parent=0);
+    ~Stage();
     // standard methods
-    void amend();
 	void initialize();
 	void reset();
 	void update();
 
     // special methods
-    QVector<double>* getBuffer();
+    const double *data();
+    double growthDemand();
 
 private:
 	// parameters
-    double _L, initialInflow;
+    bool isDemandDriven;
+    double L, fgr, initialInflow;
     int k;
 
     // pull variables
-    QObject *ageClassesPtr;
-    double _dt;
-    mutable bool _dirtySum, firstUpdate;
-    mutable double _sum, _input, _output, _inputTotal, _outputTotal, _prevInflow;
+    double dt;
+    bool firstUpdate;
+    double sum, inflowSaved, inflowTotal, outflow, outflowTotal, growth;
 
     // push variables
-    double _inflow, _instantMortality;
-
-    // push-pull variables
-    double _fgr;
+    double inflow, sdRatio, instantMortality;
 
     // links
     Model *time;
 
 	// methods
-	double sum() const;
     void applyInstantMortality();
 
     // data
-    QVector<double> buffer;
-    double *x;
+    double inflowPending;
+    DistributedDelay *dd;
 };
 
 }

@@ -38,6 +38,7 @@ HEADERS += \
         $${US_BASE}/push_variable.h \
         $${US_BASE}/push_variable_base.h \
         $${US_BASE}/random.h \
+        $${US_BASE}/root_solver.h \
         $${US_BASE}/strata.h \
         $${US_BASE}/strata_base.h \
         $${US_BASE}/test_num.h \
@@ -67,6 +68,7 @@ SOURCES += \
         $${US_BASE}/pull_variable_base.cpp \
         $${US_BASE}/push_variable_base.cpp \
         $${US_BASE}/random.cpp \
+        $${US_BASE}/root_solver.cpp \
         $${US_BASE}/time.cpp \
         $${US_BASE}/trace_base.cpp \
         $${US_BASE}/utilities.cpp \

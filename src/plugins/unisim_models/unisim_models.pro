@@ -8,6 +8,7 @@ CONFIG += plugin
 
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
+include ($${US_GSL}/gsl.pri)
 
 HEADERS += \
     stage.h \
@@ -15,6 +16,7 @@ HEADERS += \
     calendar.h \
     day_degrees.h \
     days.h \
+    distributed_delay.h \
     exponential.h \
     fixed.h \
     hydro_thermal_time.h \
@@ -41,6 +43,7 @@ SOURCES += \
     calendar.cpp \
     day_degrees.cpp \
     days.cpp \
+    distributed_delay.cpp \
     exponential.cpp \
     fixed.cpp \
     hydro_thermal_time.cpp \

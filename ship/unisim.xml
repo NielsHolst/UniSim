@@ -2,7 +2,7 @@
     <shortName>UniSim</shortName>
     <fullName>Universal Simulator</fullName>
     <version>1-37</version>
-	<outputDirectory>C:/data/QDev/UniSim/ship</outputDirectory>
+    <installerFilename></installerFilename>
     <readmeFile>C:/data/QDev/UniSim/readme.txt</readmeFile>
     <licenseFile>C:/data/QDev/UniSim/ship/gpl-3.0.txt</licenseFile>
     <leftImage>C:/data/QDev/UniSim/ship/pics/squirrel 163x314.png</leftImage>
@@ -47,11 +47,12 @@
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
             <name>Dot tool</name>
             <type>REG_SZ</type>
-            <value>${installdir}\Graphviz 2.28\bin</value>
+            <value>${installdir}\Graphviz2.28\bin</value>
         </registrySet>
     </postInstallationActionList>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
+    <outputDirectory>C:/data/QDev/UniSim/ship</outputDirectory>
     <startMenuGroupName>${product_fullname}-${product_version}</startMenuGroupName>
     <vendor>Aarhus University</vendor>
     <componentList>
@@ -102,7 +103,7 @@
                             <origin>C:/data/QDev/UniSim/ship/plugins</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/ship/Graphviz 2.28</origin>
+                            <origin>C:/data/QDev/UniSim/ship/Graphviz2.28</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -119,9 +120,6 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/datasets</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>C:/data/QDev/UniSim/xml/models</origin>
                         </distributionDirectory>
                         <distributionDirectory>
@@ -129,9 +127,6 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>C:/data/QDev/UniSim/ship/temp</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/weather</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

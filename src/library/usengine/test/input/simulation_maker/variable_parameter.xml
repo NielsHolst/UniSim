@@ -21,8 +21,6 @@
 		<model name="lossRate" type="EcoTox::PollenLossConstant">
 			<parameter name="rate" value="0.01"/>
 		</model>
-		<parameter name="distance" value="0.3"/>
-		<parameter name="maxTotal" value="3000"/>
 	</model>
 
 	<model name="survival" type="EcoTox::LogLogistic">

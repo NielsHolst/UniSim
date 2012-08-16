@@ -6,9 +6,12 @@
 
 using namespace UniSim;
 
-double fn1 (double x, void*) {
-    return cos(x) + 1.0;
+namespace {
+    double fn1 (double x, void*) {
+        return cos(x) + 1.0;
+    }
 }
+
 
 void TestMinimiser::testConvergence() {
     Minimiser::Problem problem;

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="150"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar"/>
+
+	<model name="stage" type="UniSim::Stage">
+		<model name="time" type="UniSim::Days"/>
+		<parameter name="duration" value="50"/>
+		<parameter name="k" value="30"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="growthRate" value="7"/>
+	</model>
+	
+	<output type="table">
+		<parameter name="filename" value="test_stage_with_growth.txt"/>
+		<variable label="Day" axis="x" value="calendar[totalDays]"/>
+		<variable label="Outflow" axis="y" value="stage[outflow]"/>
+		<variable label="Content" axis="y" value="stage[value]"/>
+		<variable label="Growth" axis="y" value="stage[growthIncrement]"/>
+	</output>
+
+</simulation>

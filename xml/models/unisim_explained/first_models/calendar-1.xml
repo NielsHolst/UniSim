@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="UniSim::TimeStepLimited">
+		<parameter name="maxSteps" value="365"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value="Calendar-1 example"/>
+		<variable label="Day" value="calendar[dayOfYear]"/>
+		<variable label="DayLength" value="calendar[dayLength]"/>
+	</output>
+</simulation>

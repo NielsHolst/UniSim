@@ -1,0 +1,14 @@
+Simulation example {
+	Integrator {
+		UniSim::TimeStepLimited;
+	}
+	Models {
+		UniSim::Calendar calendar (latitude=60.38, initialDate=1/3/2009); 
+	}
+	Outputs {
+		Plot (title="Calendar-1") {
+			X Day (value = calendar[dayOfYear];
+			Y DayLength	(value = calendar[dayLength]);
+		}
+	}
+}

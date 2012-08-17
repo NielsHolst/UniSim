@@ -23,6 +23,7 @@ HEADERS += \
         $${US_BASE}/identifier.h \
         $${US_BASE}/integrator.h \
         $${US_BASE}/integrator_maker_plug_in.h \
+        $${US_BASE}/main_window_interface.h \
         $${US_BASE}/minimiser.h \
         $${US_BASE}/model.h \
         $${US_BASE}/model_maker_plug_in.h \

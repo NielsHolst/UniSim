@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <iostream>
 #include <QApplication>
 #include <QDir>
 #include <QErrorMessage>
@@ -15,7 +16,9 @@
 #include <usengine/integrator_maker.h>
 #include <usengine/model_maker.h>
 #include <usengine/output_maker.h>
+#include "command_line.h"
 #include "file_locations_forgiving.h"
+#include "live_simulation.h"
 #include "main_window.h"
 
 using namespace UniSim;
@@ -35,30 +38,58 @@ void createSingletons(){
     objectPool()->attach(Random::id(), new Random);
 }
 
-int main(int arbc, char *argv[])
-{
+int runGui(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    mainWindow()->show();
+    return app.exec();
+}
+
+void runSimulation(QString filePath) {
+    LiveSimulation *sim = new LiveSimulation(0);
+    sim->open(filePath);
+    sim->run();
+    delete sim;
+}
+
+int runCommand(int argc, char *argv[]) {
+    QCoreApplication app(argc, argv);
+    CommandLine com(argc, argv);
+    QString fileName = com.input();
+    if (!fileName.isEmpty()) {
+        QString filePath = FileLocations::location(FileLocationInfo::Models).absolutePath();
+        if (QDir::isAbsolutePath(fileName))
+            filePath = fileName;
+        else
+            filePath += "/" + fileName;
+        runSimulation(filePath);
+    }
+    return 0;
+}
+
+int main(int argc, char *argv[]) {
+    bool hasArguments = argc > 1;
     qInstallMsgHandler(myMsgHandler);
-
-	QApplication app(arbc, argv);
-
 	QCoreApplication::setOrganizationName("Aarhus University");
 	QCoreApplication::setOrganizationDomain("www.agrsci.dk");
     QCoreApplication::setApplicationName("Universal Simulator");
 
-    int result = 0;
+    int result = -1;
     try {
         createSingletons();
-        mainWindow()->show();
-        result = app.exec();
+        result = hasArguments ? runCommand(argc,argv) : runGui(argc, argv);
     }
     catch (Exception &ex) {
-        QMessageBox::information(0, "Program Error", "Uncaught exception: " + ex.message());
+        if (hasArguments)
+            std::cout << qPrintable("Program Error. Uncaught exception: " + ex.message());
+        else
+            QMessageBox::information(0, "Program Error", "Uncaught exception: " + ex.message());
     }
     catch (...) {
-        QMessageBox::information(0, "Program Error", "Uncaught exception");
+        if (hasArguments)
+            std::cout << "Program Error. Uncaught exception.";
+        else
+            QMessageBox::information(0, "Program Error", "Uncaught exception.");
     }
-
     delete objectPool();
-
     return result;
 }

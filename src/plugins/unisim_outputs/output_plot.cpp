@@ -23,7 +23,7 @@
 #include <usbase/pull_variable_base.h>
 #include <usbase/trace_base.h>
 #include <usbase/utilities.h>
-#include <usengine/main_window_interface.h>
+#include <usbase/main_window_interface.h>
 #include <usengine/plot_widget.h>
 #include "plot.h"
 #include "output_plot.h"
@@ -104,8 +104,12 @@ void OutputPlot::amend() {
         _tableRecords << rec;
     }
 
-    mainWindow = objectPool()->find<MainWindowInterface*>("mainWindow");
-    Q_ASSERT(mainWindow);
+    try {
+        mainWindow = objectPool()->find<MainWindowInterface*>("mainWindow");
+    }
+    catch (Exception &) {
+        mainWindow = 0;
+    }
 }
 
 void OutputPlot::TableRecord::initX() {
@@ -147,7 +151,7 @@ void OutputPlot::TableRecord::initY() {
 }
 
 void OutputPlot::cleanup() {
-    if (!hasSummary()) {
+    if (mainWindow && !hasSummary()) {
         if (runNumber() == 1) createPlotWidget();
         showPlot();
         setZoomer();
@@ -155,7 +159,7 @@ void OutputPlot::cleanup() {
 }
 
 void OutputPlot::debrief() {
-    if (hasSummary()) {
+    if (mainWindow && hasSummary()) {
         createPlotWidget();
         showPlot();
         setZoomer();
@@ -180,6 +184,7 @@ void OutputPlot::setZoomer() {
 }
 
 void OutputPlot::createPlotWidget() {
+    Q_ASSERT(mainWindow);
     plotWidget = mainWindow->createPlotWidget(title);
     plotWidget->showLegend(true);
 }

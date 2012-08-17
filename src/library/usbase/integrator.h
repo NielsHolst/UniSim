@@ -8,6 +8,7 @@
 
 #include "model.h"
 
+class QMainWindow;
 class QProgressDialog;
 
 namespace UniSim{
@@ -21,6 +22,7 @@ public:
     Integrator(Identifier name, QObject *parent=0);
 	
     // standard methods
+    virtual void amend();
     virtual void initialize();
     virtual void reset();
 
@@ -40,6 +42,7 @@ private:
     Model *runIterator;
     int runNumber;
     bool reporting, cancelled;
+    QMainWindow *mainWindow;
     QProgressDialog *report;
     void reportProgress();
     void openReport();

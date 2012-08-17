@@ -43,6 +43,7 @@ US_APPLICATIONS = $${UNISIM_ROOT}/src/applications
 US_PLUGINS = $${UNISIM_ROOT}/src/plugins
 US_QWT = $${UNISIM_ROOT}/vendor/qwt
 US_GSL = $${UNISIM_ROOT}/vendor/gsl
+US_TCLAP = $${UNISIM_ROOT}/vendor/tclap
 
 US_BASE_LIB_NAME = base_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 US_ENGINE_LIB_NAME = engine_$${UNISIM_VERSION}$${DEBUG_SUFFIX}

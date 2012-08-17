@@ -21,7 +21,6 @@ HEADERS += 	\
     $${US_ENGINE}/instance_index_from_table.h \
     $${US_ENGINE}/instance_index_numbered.h \
     $${US_ENGINE}/instance_index_one.h \
-    $${US_ENGINE}/main_window_interface.h \
     $${US_ENGINE}/model_maker.h \
     $${US_ENGINE}/output_maker.h \
     $${US_ENGINE}/parameter_index.h \

@@ -1,6 +1,7 @@
 include(../../config.pri)
 
 TEMPLATE = app
+CONFIG += console
 DESTDIR = $${US_APPLICATIONS}
 TARGET = UniSim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 
@@ -14,9 +15,11 @@ RESOURCES = ../../resources/unisim.qrc
 include ($${US_QWT}/qwt.pri)
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
+include ($${US_TCLAP}/tclap.pri)
 
 # Source code
 HEADERS += \
+    command_line.h \
     file_location_combo.h \
     file_location_dialog.h \
     file_locations_forgiving.h \
@@ -30,6 +33,7 @@ HEADERS += \
     image_widget.h
 
 SOURCES += \
+    command_line.cpp \
     file_location_combo.cpp \
     file_location_dialog.cpp \
     file_locations_forgiving.cpp \

@@ -7,7 +7,7 @@
 #define UNISIM_MAIN_WINDOW_STUB
 
 #include <QObject>
-#include <usengine/main_window_interface.h>
+#include <usbase/main_window_interface.h>
 
 namespace UniSim {
 

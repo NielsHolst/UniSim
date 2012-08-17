@@ -8,7 +8,7 @@ CONFIG += plugin
 
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
-include($${US_QWT}/qwt.pri)
+include ($${US_QWT}/qwt.pri)
 
 HEADERS	+= 	\
 #    $${US_ENGINE}/main_window_interface.h \

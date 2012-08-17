@@ -4,17 +4,20 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QApplication>
+#include <QMainWindow>
 #include <QProgressDialog>
 #include <QString>
 #include "exception.h"
 #include "integrator.h"
+#include "main_window_interface.h"
 #include "model.h"
+#include "object_pool.h"
 #include "pull_variable.h"
 
 namespace UniSim{
 	
 Integrator::Integrator(Identifier name, QObject *parent)
-    : Model(name, parent), report(0)
+    : Model(name, parent), mainWindow(0), report(0)
 {
     new PullVariable<int>("stepNumber", &stepNumber, this, "Number of current time step in this iteration");
     new PullVariable<int>("runNumber", &runNumber, this, "Number of current iteration");
@@ -22,15 +25,17 @@ Integrator::Integrator(Identifier name, QObject *parent)
     //connect(QApplication::instance(), SIGNAL(lastWindowClosed()), this, SLOT(closeReport()));
 }
 
-void Integrator::initialize() {
-    Models models = seekChildren<Model*>("RunIterator");
-    if (models.size() == 0)
-        runIterator = 0;
-    else if (models.size() == 1)
-        runIterator = models[0];
-    else
-        throw Exception("Max. one child model named 'RunIterator' is allowed", this);
+void Integrator::amend() {
+    try {
+        mainWindow = objectPool()->find<QMainWindow*>("mainWindow");
+    }
+    catch (Exception &) {
+        mainWindow = 0;
+    }
+}
 
+void Integrator::initialize() {
+    runIterator = peekOneChild<Model*>("RunIterator");
     runNumber = 0;
     reporting = cancelled = false;
 }
@@ -40,7 +45,8 @@ void Integrator::reset() {
 }
 
 bool Integrator::nextRun() {
-    reportProgress();
+    if (mainWindow)
+        reportProgress();
     ++runNumber;
     bool nextOk;
     if (cancelled) {
@@ -80,7 +86,7 @@ void Integrator::createReport() {
     int numRuns = 1;
     if (runIterator)
         numRuns = runIterator->pullVariable<int>("numIterations");
-    report = new QProgressDialog("Computing...", "Cancel simulation", 0, numRuns);
+    report = new QProgressDialog("Computing...", "Cancel simulation", 0, numRuns, mainWindow);
     report->setWindowModality(Qt::WindowModal);
     report->setMinimumDuration(1000);
     connect(report, SIGNAL(canceled()), this, SLOT(doCancel()));

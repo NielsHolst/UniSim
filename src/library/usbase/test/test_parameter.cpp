@@ -26,7 +26,7 @@ void TestParameter::testDefaultInt() {
     int i;
     new Parameter<int>("i", &i, 123, model, "desc");
     QCOMPARE(i,123);
-    QCOMPARE(model->parameter<int>("i"), 123);
+    QCOMPARE(model->pullValue<int>("i"), 123);
 }
 
 void TestParameter::testChangeInt() {
@@ -34,7 +34,7 @@ void TestParameter::testChangeInt() {
     Parameter<int> *p = new Parameter<int>("i", &i, 123, model, "desc");
     p->setValue(456);
     QCOMPARE(i,456);
-    QCOMPARE(model->parameter<int>("i"), 456);
+    QCOMPARE(model->pullValue<int>("i"), 456);
 }
 
 void TestParameter::testSetIntWithStringValue() {
@@ -43,7 +43,7 @@ void TestParameter::testSetIntWithStringValue() {
     try {
         p->setValueFromString("123");
         QCOMPARE(i,123);
-        QCOMPARE(model->parameter<int>("i"), 123);
+        QCOMPARE(model->pullValue<int>("i"), 123);
     }
     catch (const Exception &ex) {
         QFAIL(qPrintable(ex.message()));
@@ -54,7 +54,7 @@ void TestParameter::testDefaultBool() {
     bool b;
     new Parameter<bool>("b", &b, false, model, "desc");
     QCOMPARE(b, false);
-    QCOMPARE(model->parameter<bool>("b"), false);
+    QCOMPARE(model->pullValue<bool>("b"), false);
 }
 
 void TestParameter::testChangeBool() {
@@ -62,7 +62,7 @@ void TestParameter::testChangeBool() {
     Parameter<bool> *p = new Parameter<bool>("b", &b, false, model, "desc");
     p->setValue(true);
     QCOMPARE(b, true);
-    QCOMPARE(model->parameter<bool>("b"), true);
+    QCOMPARE(model->pullValue<bool>("b"), true);
 }
 
 void TestParameter::testSetBoolWithStringValue() {
@@ -71,11 +71,11 @@ void TestParameter::testSetBoolWithStringValue() {
     try {
         p->setValueFromString("yes");
         QCOMPARE(b, true);
-        QCOMPARE(model->parameter<bool>("b"), true);
+        QCOMPARE(model->pullValue<bool>("b"), true);
 
         p->setValueFromString("NO");
         QCOMPARE(b, false);
-        QCOMPARE(model->parameter<bool>("b"), false);
+        QCOMPARE(model->pullValue<bool>("b"), false);
     }
     catch (const Exception &ex) {
         QFAIL(qPrintable(ex.message()));
@@ -86,7 +86,7 @@ void TestParameter::testDefaultString() {
     QString s;
     new Parameter<QString>("s", &s, QString("top"), model, "desc");
     QCOMPARE(s, QString("top"));
-    QCOMPARE(model->parameter<QString>("s"), QString("top"));
+    QCOMPARE(model->pullValue<QString>("s"), QString("top"));
 }
 
 void TestParameter::testChangeString() {
@@ -94,7 +94,7 @@ void TestParameter::testChangeString() {
     Parameter<QString> *p = new Parameter<QString>("s", &s, QString("top#"), model, "desc");
     p->setValue("bottom");
     QCOMPARE(s, QString("bottom"));
-    QCOMPARE(model->parameter<QString>("s"), QString("bottom"));
+    QCOMPARE(model->pullValue<QString>("s"), QString("bottom"));
 }
 
 void TestParameter::testSetStringWithStringValue() {
@@ -103,7 +103,7 @@ void TestParameter::testSetStringWithStringValue() {
     try {
         p->setValueFromString("top");
         QCOMPARE(s, QString("top"));
-        QCOMPARE(model->parameter<QString>("s"), QString("top"));
+        QCOMPARE(model->pullValue<QString>("s"), QString("top"));
     }
     catch (const Exception &ex) {
         QFAIL(qPrintable(ex.message()));
@@ -114,7 +114,7 @@ void TestParameter::testDefaultDate() {
     QDate date;
     new Parameter<QDate>("date", &date, QDate(2008, 12, 23), model, "desc");
     QCOMPARE(date, QDate(2008, 12, 23));
-    QCOMPARE(model->parameter<QDate>("date"), QDate(2008, 12, 23));
+    QCOMPARE(model->pullValue<QDate>("date"), QDate(2008, 12, 23));
 }
 
 void TestParameter::testChangeDate() {
@@ -122,7 +122,7 @@ void TestParameter::testChangeDate() {
     Parameter<QDate> *p = new Parameter<QDate>("date", &date, QDate(2008, 12, 23), model, "desc");
     p->setValue(QDate(1972, 6, 15));
     QCOMPARE(date, QDate(1972, 6, 15));
-    QCOMPARE(model->parameter<QDate>("date"), QDate(1972, 6, 15));
+    QCOMPARE(model->pullValue<QDate>("date"), QDate(1972, 6, 15));
 }
 
 void TestParameter::testSetDateWithStringValue() {
@@ -131,7 +131,7 @@ void TestParameter::testSetDateWithStringValue() {
     try {
         p->setValueFromString("23/12/2008");
         QCOMPARE(date, QDate(2008, 12, 23));
-        QCOMPARE(model->parameter<QDate>("date"), QDate(2008, 12, 23));
+        QCOMPARE(model->pullValue<QDate>("date"), QDate(2008, 12, 23));
     }
     catch (const Exception &ex) {
         QFAIL(qPrintable(ex.message()));
@@ -141,23 +141,27 @@ void TestParameter::testSetDateWithStringValue() {
 void TestParameter::testIntToDouble() {
     int i;
     new Parameter<int>("i", &i, 123, model, "desc");
+    bool excepted = false;
     try {
-        QCOMPARE(model->parameter<double>("i"), 123.);
+        model->pullValue<double>("i");
     }
     catch (const Exception &ex) {
-        QFAIL(qPrintable(ex.message()));
+            excepted = true;
     }
+    QVERIFY(excepted);
 }
 
 void TestParameter::testDoubleToInt() {
     double x;
     new Parameter<double>("x", &x, 17.4, model, "desc");
+    bool excepted = false;
     try {
-        QCOMPARE(model->parameter<int>("x"), 17);
+        model->pullValue<int>("x");
     }
     catch (const Exception &ex) {
-        QFAIL(qPrintable(ex.message()));
+            excepted = true;
     }
+    QVERIFY(excepted);
 }
 
 void TestParameter::testIntToDate() {
@@ -165,7 +169,7 @@ void TestParameter::testIntToDate() {
     new Parameter<int>("i", &i, 123, model, "desc");
     bool excepted = false;
     try {
-        QDate date = model->parameter<QDate>("i");
+        model->pullValue<QDate>("i");
     }
     catch (const Exception &ex) {
         excepted = true;
@@ -177,7 +181,7 @@ void TestParameter::testMissing() {
     QVERIFY(model);
     bool excepted = false;
     try {
-        QCOMPARE(model->parameter<int>("j"), 123);
+        QCOMPARE(model->pullValue<int>("j"), 123);
     }
     catch (const Exception &ex) {
         excepted = true;

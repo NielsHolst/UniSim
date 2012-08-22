@@ -3,25 +3,28 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_PUSH_VARIABLE_BASE_H
-#define UNISIM_PUSH_VARIABLE_BASE_H
+#ifndef UNISIM_VARIABLE_BASE_H
+#define UNISIM_VARIABLE_BASE_H
 
-#include <QObject>
 #include "identifier.h"
 
 namespace UniSim{
 
-class PushVariableBase : public QObject
+class VariableBase : public QObject
 {
     // no Q_OBJECT
 public:
-    PushVariableBase(Identifier id, QObject *parent, QString desc);
+    VariableBase(Identifier id, QObject *parent, QString desc);
     virtual QVariant toVariant() const = 0;
+    virtual QString toString() const = 0;
     virtual QString typeId() const = 0;
     Identifier id() const;
     QString description() const;
 
 private:
+    // methods
+    void assertUniqueness();
+    // data
     Identifier _id;
     QString _description;
 };

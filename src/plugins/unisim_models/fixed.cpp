@@ -1,5 +1,5 @@
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>          
 #include "fixed.h"
 
@@ -10,66 +10,40 @@ Fixed::Fixed(Identifier name, QObject *parent)
 {
     new Parameter<QString>("parameters", &parametersAsString, QString("()"), this,
     "Parameters as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}. ");
-    new Parameter<QString>("pullvariables", &pullVariablesAsString, QString("()"), this,
-    "Pull variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}.");
-    new Parameter<QString>("pushvariables", &pushVariablesAsString, QString("()"), this,
-    "Push variables as name value pairs. E.g., @F {((Tavg 22.5)(I 40))}.");
 }
 
 void Fixed::amend() {
-    ammendParameters();
-    ammendPullVariables();
-    ammendPushVariables();
-}
-
-void Fixed::ammendParameters() {
-    QMap<QString, double> pList = decodeList<QString, double>(parametersAsString, this);
-    int n = pList.size();
-    parameters.fill(0, n);
-
-    int i = -1;
-    QMapIterator<QString, double> pa(pList);
+    QMap<QString, QString> pList = decodeList<QString, QString>(parametersAsString, this);
+    QMapIterator<QString, QString> pa(pList);
     while(pa.hasNext()) {
-        ++i;
         pa.next();
         Identifier id = pa.key();
-        parameters[i] = pa.value();
-        double *valuePtr = &parameters[i];
-        new Parameter<double>(id, valuePtr, pa.value(), this, id.label() + " set to fixed value");
-    }
-}
-
-void Fixed::ammendPullVariables() {
-    QMap<QString, double> pvList = decodeList<QString, double>(pullVariablesAsString, this);
-    int n = pvList.size();
-    pullVariables.fill(0, n);
-
-    int i = -1;
-    QMapIterator<QString, double> pv(pvList);
-    while(pv.hasNext()) {
-        ++i;
-        pv.next();
-        Identifier id = pv.key();
-        pullVariables[i] = pv.value();
-        double *valuePtr = &pullVariables[i];
-        new PullVariable<double>(id, valuePtr, this, id.label() + " set to fixed value");
-    }
-}
-
-void Fixed::ammendPushVariables() {
-    QMap<QString, double> pvList = decodeList<QString, double>(pushVariablesAsString, this);
-    int n = pvList.size();
-    pushVariables.fill(0, n);
-
-    int i = -1;
-    QMapIterator<QString, double> pv(pvList);
-    while(pv.hasNext()) {
-        ++i;
-        pv.next();
-        Identifier id = pv.key();
-        pushVariables[i] = pv.value();
-        double *valuePtr = &pushVariables[i];
-        new PushVariable<double>(id, valuePtr, this, id.label() + " set to fixed value");
+        QString s = pa.value();
+        QString desc = "Fixed value";
+        if (isType<QDate>(s)) {
+            dates << stringToValue<QDate>(s, this);
+            new Parameter<QDate>(id, &dates.last(), dates.last(), this, desc);
+        }
+        else if (isType<QTime>(s)) {
+            times << stringToValue<QTime>(s);
+            new Parameter<QTime>(id, &times.last(), times.last(), this, desc);
+        }
+        else if (isType<bool>(s)) {
+            bools << stringToValue<bool>(s);
+            new Parameter<bool>(id, &bools.last(), bools.last(), this, desc);
+        }
+        else if (isType<int>(s)) {
+            ints << stringToValue<int>(s);
+            new Parameter<int>(id, &ints.last(), ints.last(), this, desc);
+        }
+        else if (isType<double>(s)) {
+            doubles << stringToValue<double>(s);
+            new Parameter<double>(id, &doubles.last(), doubles.last(), this, desc);
+        }
+        else {
+            strings << s;
+            new Parameter<QString>(id, &strings.last(), strings.last(), this, desc);
+        }
     }
 }
 

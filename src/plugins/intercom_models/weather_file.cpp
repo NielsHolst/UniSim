@@ -6,7 +6,7 @@
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
 #include "weather_file.h"
@@ -20,7 +20,7 @@ WeatherFile::Column::Column(QString variableName_, int defaultColumn_, Model *pa
 {
     Q_ASSERT(parent);
     new Parameter<int>(variableName, &column, defaultColumn, parent, "Column number (counting from 1) of variable in weather file");
-    new PullVariable<double>(variableName, &value, parent, "Weather file variable");
+    new Variable<double>(variableName, &value, parent, "Weather file variable");
 }
 
 void WeatherFile::Column::parseLine(const QStringList &items) {

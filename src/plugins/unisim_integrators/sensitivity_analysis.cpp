@@ -11,7 +11,6 @@
 #include <usbase/model.h>
 #include <usbase/name_list.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
 #include <usbase/utilities.h>
 #include "sensitivity_analysis.h"
 
@@ -82,8 +81,8 @@ void SensitivityAnalysis::findParameters() {
 }
 
 void SensitivityAnalysis::stratifyParameters() {
-    Model *iterator = seekOneChild<Model*>("RunIterator");
-    int iterations = iterator->pullVariable<int>("numIterations");
+//    Model *iterator = seekOneChild<Model*>("RunIterator");
+//    int iterations = iterator->pullValue<int>("numIterations");
     for (int i = 0; i < parameters.size(); ++i) {
         double useDeviance = deviance;
         ParameterBase *parameter = parameters[i];
@@ -97,7 +96,7 @@ void SensitivityAnalysis::stratifyParameters() {
                 throw Exception("You must specify 'seconds' parameter for sensitivity analysis", parameter);
             useDeviance = seconds;
         }
-        parameters[i]->createStrata(useDeviance, iterations, type);
+        //parameters[i]->createStrata(useDeviance, iterations, type);
     }
 }
 
@@ -114,7 +113,7 @@ bool SensitivityAnalysis::nextRun() {
     bool doNext = Integrator::nextRun();
     if (doNext) {
         for (int i = 0; i < parameters.size(); ++i) {
-            parameters[i]->setValueFromNextSample();
+            //parameters[i]->setValueFromNextSample();
         }
     }
     return doNext;

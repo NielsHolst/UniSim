@@ -38,8 +38,7 @@ private:
     void writeModels(ModelMakerPlugIn *plugin);
     void writeModel(ModelMakerPlugIn *plugin, Identifier modelId);
     void writeParameters(Model *model);
-    void writePushVariables(Model *model);
-    void writePullVariables(Model *model);
+    void writeVariables(Model *model);
     void writeTableTitle(QString title);
     void writeTableRow(QString format, QString a, QString b, QString c);
     void write(QString s);

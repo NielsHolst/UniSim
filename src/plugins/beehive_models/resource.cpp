@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "resource.h"
 
 using namespace UniSim;
@@ -18,7 +18,7 @@ Resource::Resource(UniSim::Identifier name, QObject *parent)
 	new Parameter<double>("Ninit", &Ninit, 1., this, "Description");
 	new Parameter<double>("K", &K, 1000., this, "Description");
 	new Parameter<double>("r", &r, 1.2, this, "Description");
-	new PullVariable<double>("N", &density, this, "Description");
+	new Variable<double>("N", &density, this, "Description");
 }
 
 void Resource::reset() {

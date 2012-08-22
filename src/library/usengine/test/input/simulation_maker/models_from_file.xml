@@ -11,7 +11,7 @@
 	<model name="landscape" type="UniSim::Fixed">
 		<model type="test::Farm" table="farms.txt">
 			<model name="stat" type="UniSim::Fixed">
-				<parameter name="pullVariables" value="((x 2)(y 3))"/>;
+				<parameter name="parameters" value="((x 2)(y 3))"/>;
 			</model>
 		</model>
 	</model>

@@ -4,8 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QString>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/stage.h"
 #include "plant_growth_stage.h"
@@ -20,20 +19,20 @@ PlantGrowthStage::PlantGrowthStage(UniSim::Identifier name, QObject *parent)
     setRecursionPolicy(Component::Reset,  Component::ChildrenLast);
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 
-    new PullVariable<double>("outflowAsDensity", &outflowAsDensity, this,
-                     "Number of plants that emerged from this growth stage during the last update "
-                     "(i.e. time step) (plants per m @Sup 2 per day)");
-    new PullVariable<double>("outflowAsDensityEqs", &outflowAsDensityEqs, this,
-                     "Number of density equivalents that emerged from this growth stage during the last update "
-                     "(i.e. time step) (density equivalents per m @Sup 2 per day)");
-    new PushVariable<double>("inflowAsDensity", &inflowAsDensity, this,
+    new Parameter<double>("inflowAsDensity", &inflowAsDensity, 0., this,
                      "Number of plants to enter this growth stage in the next update "
                      "(i.e. time step) (plants per m @Sup 2 per day)");
-    new PushVariable<double>("inflowAsDensityEqs", &inflowAsDensityEqs, this,
+    new Parameter<double>("inflowAsDensityEqs", &inflowAsDensityEqs, 0., this,
                      "Number of density equivalents to enter this growth stage in the next update "
                      "(i.e. time step) (density equivalents per m @Sup 2 per day)");
-    new PushVariable<double>("instantMortality", &instantMortality, this,
+    new Parameter<double>("instantMortality", &instantMortality, 0., this,
                      "Instant mortality (0-100%) to apply to this growth stage in the next update ");
+    new Variable<double>("outflowAsDensity", &outflowAsDensity, this,
+                     "Number of plants that emerged from this growth stage during the last update "
+                     "(i.e. time step) (plants per m @Sup 2 per day)");
+    new Variable<double>("outflowAsDensityEqs", &outflowAsDensityEqs, this,
+                     "Number of density equivalents that emerged from this growth stage during the last update "
+                     "(i.e. time step) (density equivalents per m @Sup 2 per day)");
 }
 
 void PlantGrowthStage::initialize() {
@@ -48,18 +47,18 @@ void PlantGrowthStage::reset() {
 }
 
 void PlantGrowthStage::update() {
-    density->pushVariable("inflow", inflowAsDensity);
-    densityEqs->pushVariable("inflow", inflowAsDensityEqs);
+    density->pushValue("inflow", inflowAsDensity);
+    densityEqs->pushValue("inflow", inflowAsDensityEqs);
 
-    density->pushVariable("instantMortality", instantMortality);
-    densityEqs->pushVariable("instantMortality", instantMortality);
+    density->pushValue("instantMortality", instantMortality);
+    densityEqs->pushValue("instantMortality", instantMortality);
     instantMortality = 0.;
 
     density->deepUpdate();
     densityEqs->deepUpdate();
 
-    outflowAsDensity = density->pullVariable<double>("outflow");
-    outflowAsDensityEqs = densityEqs->pullVariable<double>("outflow");
+    outflowAsDensity = density->pullValue<double>("outflow");
+    outflowAsDensityEqs = densityEqs->pullValue<double>("outflow");
 }
 
 }

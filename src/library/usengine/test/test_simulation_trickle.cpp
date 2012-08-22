@@ -46,11 +46,11 @@ void TestSimulationTrickle::testBox(int boxNumber, int contents) {
     QList<Model*> models = UniSim::seekDescendants<Model*>(name, 0);
     QCOMPARE(models.size(), 1);
 
-    QVERIFY(models[0]->pullVariablePtr<double>("contents") != 0);
-    QVERIFY(fabs(models[0]->pullVariable<double>("contents") - double(contents)) < 1e-6);
+    QVERIFY(models[0]->pullValuePtr<double>("contents") != 0);
+    QVERIFY(fabs(models[0]->pullValue<double>("contents") - double(contents)) < 1e-6);
 
-    QVERIFY(boxes[boxNumber]->pullVariablePtr<double>("contents") != 0);
-    QVERIFY(fabs(boxes[boxNumber]->pullVariable<double>("contents") - double(contents)) < 1e-6);
+    QVERIFY(boxes[boxNumber]->pullValuePtr<double>("contents") != 0);
+    QVERIFY(fabs(boxes[boxNumber]->pullValue<double>("contents") - double(contents)) < 1e-6);
     */
 }
 

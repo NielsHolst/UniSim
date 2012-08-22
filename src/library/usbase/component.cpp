@@ -8,7 +8,6 @@
 #include "component.h"
 #include "exception.h"
 #include "parameter_base.h"
-#include "pull_variable_base.h"
 #include "utilities.h"
 
 /*! \class UniSim::Component
@@ -163,10 +162,10 @@ Component::RecursionPolicy Component::recursionPolicy(Function function) const {
     return policy[function];
 }
 
-void Component::acceptPullVariableChanged(PullVariableBase *variable,
-                                          ParameterBase *parameter) {
-    parameter->setValueFromString(variable->toVariant().toString());
-}
+//void Component::acceptPullVariableChanged(PullVariableBase *variable,
+//                                          ParameterBase *parameter) {
+//    parameter->setValueFromString(variable->toVariant().toString());
+//}
 
 
 } //namespace

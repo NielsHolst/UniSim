@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "reproduction_demand_size_dependent.h"
 #include "life_stage.h"
 
@@ -25,13 +25,13 @@ void ReproductionDemandSizeDependent::initialize() {
     ReproductionDemand::initialize();
     Model *stage = seekNearestAscendant<LifeStage*>("*");
     Model *lifeTable = stage->seekOneDescendant<Model*>("lifetable");
-    individualMass = lifeTable->pullVariablePtr<double>("individualMass");
+    individualMass = lifeTable->pullValuePtr<double>("individualMass");
 }
 
 void ReproductionDemandSizeDependent::update() {
     double m = *individualMass - massThreshold;
     if (m < 0) m = 0.;
-    unlaidEggs->pushVariable<double>("inflow", m*sexRatio*eggProduction);
+    unlaidEggs->pushValue<double>("inflow", m*sexRatio*eggProduction);
     unlaidEggs->deepUpdate();
     value = *laidEggs*eggWeight;
 }

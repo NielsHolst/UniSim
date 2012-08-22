@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "deposition_monotonic_weibull.h"
 
 using namespace UniSim;
@@ -29,15 +29,15 @@ DepositionMonotonicWeibull::DepositionMonotonicWeibull(UniSim::Identifier name, 
                           "Shift @F dateMax by this number of days. Usefull for stochastic modelling.");
 
 
-    new PullVariable<double>("value", &value, this,
+    new Variable<double>("value", &value, this,
                            "Deposition rate (0..1)");
-    new PullVariable<double>("total", &total, this,
+    new Variable<double>("total", &total, this,
                           "Accumulated deposition total (0..1)");
 }
 
 void DepositionMonotonicWeibull::initialize() {
     Model *calendar = seekOne<Model*>("calendar");
-    dayOfYear = calendar->pullVariablePtr<int>("dayOfYear");
+    dayOfYear = calendar->pullValuePtr<int>("dayOfYear");
 }
 
 void DepositionMonotonicWeibull::reset() {

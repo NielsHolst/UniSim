@@ -36,13 +36,13 @@ void InstantMortality::initialize() {
 }
 
 void InstantMortality::update() {
-    int today = int(calendar->pullVariable<double>("dayOfYear"));
+    int today = calendar->pullValue<int>("dayOfYear");
     if (today == dayOfYear) {
         for (int i = 0; i < targetMortalities.size(); ++i) {
             TargetMortality mortality = targetMortalities[i];
             int n = mortality.targets.size();
             for (int j = 0; j < n; ++j)
-                mortality.targets[j]->pushVariable("instantMortality", mortality.value);
+                mortality.targets[j]->pushValue("instantMortality", mortality.value);
         }
     }
 }

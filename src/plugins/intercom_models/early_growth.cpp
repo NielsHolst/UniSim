@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "early_growth.h"
 
 using namespace UniSim;
@@ -17,7 +17,7 @@ EarlyGrowth::EarlyGrowth(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("initialArea", &initialArea, 0.05, this, "Area at time zero (cm @Sup 2 per plant)");
     new Parameter<double>("growthRate", &growthRate, 1.0, this, "Exponential growth rate (m @Sup 2 per m @Sup 2 per photothermal time unit");
 
-    new PullVariable<double>("area", &area, this, "Current area (cm @Sup 2 per plant)");
+    new Variable<double>("area", &area, this, "Current area (cm @Sup 2 per plant)");
 }
 
 void EarlyGrowth::initialize() {
@@ -29,7 +29,7 @@ void EarlyGrowth::reset() {
 }
 
 void EarlyGrowth::update() {
-    double pt = photoThermalTime->pullVariable<double>("total");
+    double pt = photoThermalTime->pullValue<double>("total");
     area = initialArea*exp(growthRate*pt);
 }
 

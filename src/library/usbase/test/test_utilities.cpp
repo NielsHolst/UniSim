@@ -8,7 +8,7 @@
 #include <usbase/component.h>
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "test_utilities.h"
 
@@ -178,10 +178,10 @@ void TestUtilities::initTestCase() {
     dogs = create<QObject>("dogs", mammals);
     femaleDogs = create<QObject>("female", dogs);
     maleDogs = create<QObject>("male", dogs);
-    new PullVariable<int>("size", &femaleDogsSize, femaleDogs, "desc");
-    new PullVariable<int>("size", &maleDogsSize, maleDogs, "desc");
-    new PullVariable<int>("weight", &femaleDogsWeight, femaleDogs, "desc");
-    new PullVariable<int>("weight", &maleDogsWeight, maleDogs, "desc");
+    new Variable<int>("size", &femaleDogsSize, femaleDogs, "desc");
+    new Variable<int>("size", &maleDogsSize, maleDogs, "desc");
+    new Variable<int>("weight", &femaleDogsWeight, femaleDogs, "desc");
+    new Variable<int>("weight", &maleDogsWeight, maleDogs, "desc");
 
     dogsModel = create<Model>("dogs", mammals);
     femaleDogsModel = create<Model>("female", dogsModel);
@@ -522,10 +522,10 @@ void TestUtilities::testMissingChildName() {
 }
 
 void TestUtilities::testSeekChildAndParentNone() {
-    PullVariable<int> *found;
+    Variable<int> *found;
     bool excepted = false;
     try {
-        found = seekOne<QObject*, PullVariable<int>*>("dogs[size]");
+        found = seekOne<QObject*, Variable<int>*>("dogs[size]");
     }
     catch (Exception &ex) {
         excepted = true;
@@ -534,9 +534,9 @@ void TestUtilities::testSeekChildAndParentNone() {
 }
 
 void TestUtilities::testSeekChildAndParentOne() {
-    PullVariable<int>* found;
+    Variable<int>* found;
     try  {
-        found = seekOne<QObject*, PullVariable<int>*>("dogs/female[size]");
+        found = seekOne<QObject*, Variable<int>*>("dogs/female[size]");
     }
     catch (Exception &ex) {
         QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
@@ -545,8 +545,8 @@ void TestUtilities::testSeekChildAndParentOne() {
 }
 
 void TestUtilities::testSeekChildrenAndParentsMany() {
-    QList<PullVariable<int>*> found;
-    found = seekMany<QObject*, PullVariable<int>*>("dogs/*[size]");
+    QList<Variable<int>*> found;
+    found = seekMany<QObject*, Variable<int>*>("dogs/*[size]");
     QCOMPARE(found.size(), 2);
     bool match1 = found[0]->valuePtr()==&femaleDogsSize && found[1]->valuePtr()==&maleDogsSize;
     bool match2 = found[1]->valuePtr()==&femaleDogsSize && found[0]->valuePtr()==&maleDogsSize;
@@ -554,9 +554,9 @@ void TestUtilities::testSeekChildrenAndParentsMany() {
 }
 
 void TestUtilities::testSeekChildrenAndParentsJoker() {
-    QList<PullVariable<int>*> found;
+    QList<Variable<int>*> found;
     try  {
-        found = seekMany<QObject*, PullVariable<int>*>("dogs/female[*]");
+        found = seekMany<QObject*, Variable<int>*>("dogs/female[*]");
     }
     catch (Exception &ex) {
         QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
@@ -663,6 +663,53 @@ void TestUtilities::testSeekParent() {
 }
 
 
+void TestUtilities::testStringToValueDouble() {
+    QCOMPARE(stringToValue<double>("6.023e23"), 6.023e23);
+    QCOMPARE(stringToValue<double>("6."), 6.);
+
+    bool excepted = false;
+    try {
+        double test = stringToValue<double>("a6z");
+        std::cout << test << "\n";
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    excepted = false;
+    try {
+        stringToValue<double>(QString());
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
+void TestUtilities::testStringToValueInt() {
+    QCOMPARE(stringToValue<int>("6023"), 6023);
+    QCOMPARE(stringToValue<int>("0"), 0);
+
+    try {
+        stringToValue<int>(QString("6z"));
+        QFAIL("No exception");
+        stringToValue<int>(QString("6.023e23"));
+        QFAIL("No exception");
+        stringToValue<int>(QString("6."));
+        QFAIL("No exception");
+    }
+    catch (Exception &ex) {
+    }
+
+    try {
+        stringToValue<int>(QString());
+        QFAIL("No exception");
+    }
+    catch (Exception &ex) {
+    }
+}
+
 void TestUtilities::testStringToValueChar() {
     char ch = 'x';
     QCOMPARE(stringToValue<char>(QString(ch)), ch);
@@ -684,7 +731,53 @@ void TestUtilities::testStringToValueChar() {
         excepted = true;
     }
     QVERIFY(excepted);
+}
 
+void TestUtilities::testStringToValueBool() {
+    QCOMPARE(stringToValue<bool>("yes"), true);
+    QCOMPARE(stringToValue<bool>("true"), true);
+    QCOMPARE(stringToValue<bool>("no"), false);
+    QCOMPARE(stringToValue<bool>("false"), false);
+
+    bool excepted = false;
+    try {
+        stringToValue<bool>(QString("T"));
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    excepted = false;
+    try {
+        stringToValue<bool>(QString());
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
+void TestUtilities::testStringToValueDate() {
+    QCOMPARE(stringToValue<QDate>(QString("24/12/2012")), QDate(2012, 12, 24));
+
+    bool excepted = false;
+    try {
+        stringToValue<QDate>("24");
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+
+    excepted = false;
+    try {
+        stringToValue<QDate>(QString());
+    }
+    catch (Exception &ex) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
 }
 
 void TestUtilities::testStringToValueTime() {

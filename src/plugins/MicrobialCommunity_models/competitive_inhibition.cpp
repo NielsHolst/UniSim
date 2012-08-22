@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/exception.h>
 #include "random.h"
 #include "competitive_inhibition.h"
@@ -43,8 +43,8 @@ namespace MicrobialCommunity {
         if(enableEffect) {
 
             for(int i = 0; i < affectedPopulationList.size(); i++) {
-                affectedPopulationList[i]->pushVariable<double>("MichaelisMentenConstant",
-                                                                affectedPopulationList[i]->parameter<double>("MichaelisMentenConstant") * (1 + inhibitorConc / inhibitionConst));
+                affectedPopulationList[i]->pushValue<double>("MichaelisMentenConstant",
+                                                                affectedPopulationList[i]->pullValue<double>("MichaelisMentenConstant") * (1 + inhibitorConc / inhibitionConst));
             } //for
 
         } //if(enableEffect)

@@ -5,7 +5,7 @@
 */
 #include <usbase/file_locations.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "operation.h"
 
 using namespace UniSim;
@@ -19,9 +19,9 @@ Operation::Operation(Identifier name, QObject *parent)
     new Parameter<int>("Cost", &cost, 0, this, "description");
     new Parameter<bool>("IsOrganic", &isOrganic, false, this, "description");
 
-    new PullVariable<int>("energy", &energy, this, "description");
-    new PullVariable<int>("labour", &labour, this, "description");
-    new PullVariable<int>("CO2", &CO2, this, "description");
+    new Variable<int>("energy", &energy, this, "description");
+    new Variable<int>("labour", &labour, this, "description");
+    new Variable<int>("CO2", &CO2, this, "description");
 }
 
 void Operation::reset() {

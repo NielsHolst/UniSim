@@ -88,13 +88,13 @@
 	<output type="plot">
 		<parameter name="title" value="Species 2"/>
 		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>
-		<variable label="A (PAR, S)" axis="y" value="sp2[A]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp2[Ar]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value="Species 1"/>
 		<variable label="Seconds" axis="x" value="calendar[totalTime]"/>
-		<variable label="A (PAR, S)" axis="y" value="sp2[A]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp2[Ar]"/>
 	</output>
 
 	<output type="table">
@@ -104,7 +104,7 @@
 		<variable label="S" axis="y" value="sp2[S]"/>		
 		<variable label="Seq(PAR, temp)" axis="y" value="sp2[Seq]"/>
 		<variable label="S60 (PAR, gSini)" axis="y" value="sp2[S60]"/>
-		<variable label="A (PAR, S)" axis="y" value="sp2[A]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp2[Ar]"/>
 	</output>
 	
 	<output type="table">
@@ -114,7 +114,7 @@
 		<variable label="S" axis="y" value="sp1[S]"/>		
 		<variable label="Seq(PAR, temp)" axis="y" value="sp1[Seq]"/>
 		<variable label="S60 (PAR, gSini)" axis="y" value="sp1[S60]"/>
-		<variable label="A (PAR, S)" axis="y" value="sp1[A]"/>
+		<variable label="A (PAR, S)" axis="y" value="sp1[Ar]"/>
 	</output>
 
 </simulation>

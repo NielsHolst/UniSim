@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "life_stage.h"
 
 using namespace UniSim;
@@ -16,7 +16,7 @@ LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     new Parameter<double>("rate", &rate, 100., this, "Number of eggs laid per individual per day");
-    new PullVariable<double>("size", &size, this, "Size of an individual (mg)");
+    new Variable<double>("size", &size, this, "Size of an individual (mg)");
 }
 
 void LifeStage::initialize() {
@@ -30,13 +30,13 @@ void LifeStage::reset() {
 }
 
 void LifeStage::update() {
-    double n = number->pullVariable<double>("value");
-    double m = mass->pullVariable<double>("value");
+    double n = number->pullValue<double>("value");
+    double m = mass->pullValue<double>("value");
     size = (n > 1e-12) ? m/n : 0.;
     if (growth) {
-        double g = growth->pullVariable<double>("value");
+        double g = growth->pullValue<double>("value");
         if (g > 0)
-            mass->pushVariable<double>("growthRate", g);
+            mass->pushValue<double>("growthRate", g);
     }
 }
 

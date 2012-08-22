@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "holometabola.h"
 #include "life_stage.h"
 

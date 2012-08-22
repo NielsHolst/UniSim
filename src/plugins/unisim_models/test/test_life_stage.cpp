@@ -40,7 +40,7 @@ void TestLifeStage::testUpdate()
 	}
 	
 	stage->reset();
-    stage->pushVariable("input", input);
+    stage->pushValue("input", input);
 
     QWARN("Use FrequencyDistribution here !");
     /*
@@ -81,26 +81,26 @@ void TestLifeStage::testState()
     stage->seekOneChild<Parameter<double>*>("duration") -> setValue(L);
 
 	stage->reset();
-    stage->pushVariable("input", input);
+    stage->pushValue("input", input);
 	
 	static double EPS = std::min(input*1000.*std::numeric_limits<double>::epsilon(), 1e-6);
 	
 	for (int i = 0; i < 1000; ++i) {
 		stage->update();
-        QVERIFY2(fabs( stage->pullVariable<double>("contents") +
-                       stage->pullVariable<double>("outputTotal") -
-                       stage->pullVariable<double>("inputTotal") ) < EPS,
+        QVERIFY2(fabs( stage->pullValue<double>("contents") +
+                       stage->pullValue<double>("outputTotal") -
+                       stage->pullValue<double>("inputTotal") ) < EPS,
 
                 qPrintable("stage->inputTotal: "
-                    + QString::number(stage->pullVariable<double>("inputTotal"))
+                    + QString::number(stage->pullValue<double>("inputTotal"))
                     + " Got (contents + outputTotal): "
-                    + QString::number(stage->pullVariable<double>("contents")) + " + "
-                    + QString::number(stage->pullVariable<double>("outputTotal")) + " = "
-                    + QString::number(stage->pullVariable<double>("contents") +
-                                      stage->pullVariable<double>("outputTotal"))
-                    + " Diff: " + QString::number(stage->pullVariable<double>("contents") +
-                                                  stage->pullVariable<double>("outputTotal") -
-                                                  stage->pullVariable<double>("inputTotal"))
+                    + QString::number(stage->pullValue<double>("contents")) + " + "
+                    + QString::number(stage->pullValue<double>("outputTotal")) + " = "
+                    + QString::number(stage->pullValue<double>("contents") +
+                                      stage->pullValue<double>("outputTotal"))
+                    + " Diff: " + QString::number(stage->pullValue<double>("contents") +
+                                                  stage->pullValue<double>("outputTotal") -
+                                                  stage->pullValue<double>("inputTotal"))
 				));
 	}
 	

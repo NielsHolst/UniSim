@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/stage.h"
@@ -50,8 +50,8 @@ void InstantMortality::initialize() {
 
 
 void InstantMortality::update() {
-    if (calendar->pullVariable<int>("day") == day &&
-        calendar->pullVariable<int>("month") == month) {
+    if (calendar->pullValue<int>("day") == day &&
+        calendar->pullValue<int>("month") == month) {
         for (int i = 0; i < victims.size(); ++i)
             victims[i].push();
     }
@@ -63,7 +63,7 @@ InstantMortality::Victim::Victim(UniSim::Model *model_, double mortality_)
 }
 
 void InstantMortality::Victim::push() {
-    model->pushVariable<double>("instantMortality", mortality);
+    model->pushValue<double>("instantMortality", mortality);
 }
 
 

@@ -6,7 +6,7 @@
 #include <cmath>
 #include <QMessageBox>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "maize.h"
 
@@ -41,15 +41,15 @@ Maize::Maize(Identifier name, QObject *parent)
                           "Max. pollen deposition rate at zero distance (pollen per cm @Sup2");
     new Parameter<double>("btQuantum", &btQuantum, 0.1, this,
                           "Quantum of Bt toxin per pollen (pg)");
-    new PullVariable<double>("pollenDepositionRate", &pollenDepositionRate, this, "Pollen deposition rate (per day per cm @Sup {2})");
-    new PullVariable<double>("pollenDepositionTotal", &pollenDepositionTotal, this, "Pollen deposition total (per cm @Sup {2})");
-    new PullVariable<double>("pollen", &pollen, this, "Current pollen density (per cm @Sup {2})");
-    new PullVariable<double>("toxin", &toxin, this, "Current toxin density (pg/cm @Sup {2})");
+    new Variable<double>("pollenDepositionRate", &pollenDepositionRate, this, "Pollen deposition rate (per day per cm @Sup {2})");
+    new Variable<double>("pollenDepositionTotal", &pollenDepositionTotal, this, "Pollen deposition total (per cm @Sup {2})");
+    new Variable<double>("pollen", &pollen, this, "Current pollen density (per cm @Sup {2})");
+    new Variable<double>("toxin", &toxin, this, "Current toxin density (pg/cm @Sup {2})");
 }
 
 void Maize::initialize() {
     Model *calendar = seekOne<Model*>("calendar");
-    dayOfYear = calendar->pullVariablePtr<int>("dayOfYear");
+    dayOfYear = calendar->pullValuePtr<int>("dayOfYear");
 }
 
 void Maize::reset() {

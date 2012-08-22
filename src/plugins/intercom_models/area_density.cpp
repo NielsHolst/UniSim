@@ -6,7 +6,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "area_density.h"
 #include "plant.h"
 
@@ -29,7 +29,7 @@ void AreaDensity::reset() {
 }
 
 void AreaDensity::update() {
-    plantHeight = plantHeightModel->pullVariable<double>("height");
+    plantHeight = plantHeightModel->pullValue<double>("height");
 }
 
 } //namespace

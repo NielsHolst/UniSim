@@ -51,7 +51,7 @@ void TestLifeCycle::testUpdate()
     QVERIFY(last);
 	
 	double myInput = 1000;
-    first->pushVariable("input", myInput);
+    first->pushValue("input", myInput);
 	
     static double EPS = std::min(myInput*1000*std::numeric_limits<double>::epsilon(),  1e-6);
 
@@ -59,47 +59,47 @@ void TestLifeCycle::testUpdate()
 		weed->update();
 	}
 
-    QVERIFY2((fabs(first->pullVariable<double>("inputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullValue<double>("inputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable<double>("inputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable<double>("inputTotal") - myInput))
+            + " Got: "+QString::number(first->pullValue<double>("inputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullValue<double>("inputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(first->pullVariable<double>("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullValue<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable<double>("outputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable<double>("outputTotal") - myInput))
+            + " Got: "+QString::number(first->pullValue<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullValue<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(last->pullVariable<double>("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(last->pullValue<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(last->pullVariable<double>("outputTotal"))
-            + " Diff: "+QString::number(fabs(last->pullVariable<double>("outputTotal") - myInput))
+            + " Got: "+QString::number(last->pullValue<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(last->pullValue<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
 
     weed->deepReset();
-    first->pushVariable("input", myInput);
+    first->pushValue("input", myInput);
 	for (int i = 0; i < 10000; ++i) {
         weed->deepUpdate();
 	}
 
-    QVERIFY2((fabs(first->pullVariable<double>("inputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullValue<double>("inputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable<double>("inputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable<double>("inputTotal") - myInput))
+            + " Got: "+QString::number(first->pullValue<double>("inputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullValue<double>("inputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(first->pullVariable<double>("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(first->pullValue<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(first->pullVariable<double>("outputTotal"))
-            + " Diff: "+QString::number(fabs(first->pullVariable<double>("outputTotal") - myInput))
+            + " Got: "+QString::number(first->pullValue<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(first->pullValue<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
-    QVERIFY2((fabs(last->pullVariable<double>("outputTotal") - myInput) < EPS),
+    QVERIFY2((fabs(last->pullValue<double>("outputTotal") - myInput) < EPS),
 			qPrintable("Expected: "+QString::number(myInput) 
-            + " Got: "+QString::number(last->pullVariable<double>("outputTotal"))
-            + " Diff: "+QString::number(fabs(last->pullVariable<double>("outputTotal") - myInput))
+            + " Got: "+QString::number(last->pullValue<double>("outputTotal"))
+            + " Diff: "+QString::number(fabs(last->pullValue<double>("outputTotal") - myInput))
 			+ " > "+QString::number(EPS) 
 			));
 

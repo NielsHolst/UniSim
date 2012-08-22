@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <QtAlgorithms>
 #include <QFile>
 #include <usbase/file_locations.h>
@@ -33,30 +33,30 @@ Farm::Farm(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("MinFodderProduction", &minFodderProduction, 20, this, "Description");
     new Parameter<double>("WinterMax", &winterMax, 65, this, "Description");
 
-    new PullVariable<QString>("FarmType", &farmType, this, "Description");
+    new Variable<QString>("FarmType", &farmType, this, "Description");
 
-    new PullVariable<double>("TotalArea", &totalArea, this, "Description");
-    new PullVariable<double>("TotalNanim", &totalNanim, this, "Description");
-    new PullVariable<double>("Nanim", &Nanim, this, "Description");
-    new PullVariable<double>("TotalFUdemand", &totalFUdemand, this, "Description");
-    new PullVariable<double>("TotalFUdemandBefore", &totalFUdemandBefore, this, "Description");
-    new PullVariable<double>("TotalFUt", &totalFUt, this, "Description");
-    new PullVariable<double>("FodderToProduce", &fodderToProduce, this, "Description");
-    new PullVariable<double>("FodderToProduceBefore", &fodderToProduceBefore, this, "Description");
-    new PullVariable<double>("TotalFUgrown", &totalFUgrown, this, "Description");
-    new PullVariable<double>("Assigned", &assigned, this, "Description");
+    new Variable<double>("TotalArea", &totalArea, this, "Description");
+    new Variable<double>("TotalNanim", &totalNanim, this, "Description");
+    new Variable<double>("Nanim", &Nanim, this, "Description");
+    new Variable<double>("TotalFUdemand", &totalFUdemand, this, "Description");
+    new Variable<double>("TotalFUdemandBefore", &totalFUdemandBefore, this, "Description");
+    new Variable<double>("TotalFUt", &totalFUt, this, "Description");
+    new Variable<double>("FodderToProduce", &fodderToProduce, this, "Description");
+    new Variable<double>("FodderToProduceBefore", &fodderToProduceBefore, this, "Description");
+    new Variable<double>("TotalFUgrown", &totalFUgrown, this, "Description");
+    new Variable<double>("Assigned", &assigned, this, "Description");
 
-    new PullVariable<double>("TotalN", &totalN, this, "Description");
-    new PullVariable<double>("TotalNt", &totalNt, this, "Description");
-    new PullVariable<double>("TotalBIHerb", &totalBIHerb, this, "Description");
-    new PullVariable<double>("TotalBIFi", &totalBIFi, this, "Description");
-    new PullVariable<double>("TotalBI", &totalBI, this, "Description");
-    new PullVariable<double>("TotalGrooming", &totalGrooming, this, "Description");
-    new PullVariable<double>("TotalHoeing", &totalHoeing, this, "Description");
-    new PullVariable<double>("TotalWeeding", &totalWeeding, this, "Description");
-    new PullVariable<double>("TotalCosts", &totalCosts, this, "Description");
-    new PullVariable<double>("TotalIncome", &totalIncome, this, "Description");
-    new PullVariable<double>("TotalProfit", &totalProfit, this, "Description");
+    new Variable<double>("TotalN", &totalN, this, "Description");
+    new Variable<double>("TotalNt", &totalNt, this, "Description");
+    new Variable<double>("TotalBIHerb", &totalBIHerb, this, "Description");
+    new Variable<double>("TotalBIFi", &totalBIFi, this, "Description");
+    new Variable<double>("TotalBI", &totalBI, this, "Description");
+    new Variable<double>("TotalGrooming", &totalGrooming, this, "Description");
+    new Variable<double>("TotalHoeing", &totalHoeing, this, "Description");
+    new Variable<double>("TotalWeeding", &totalWeeding, this, "Description");
+    new Variable<double>("TotalCosts", &totalCosts, this, "Description");
+    new Variable<double>("TotalIncome", &totalIncome, this, "Description");
+    new Variable<double>("TotalProfit", &totalProfit, this, "Description");
 
     fakeCrop = new Crop("FakeCrop", 0);
 
@@ -84,7 +84,7 @@ void Farm::createVariableCrops() {
 
     int n = crops.size();
     for (int i=0; i < n; ++i) {
-        if (crops[i]->pullVariable<bool>("Fixed")) { //if the crop is fixed, attach it to the list fixedCrops
+        if (crops[i]->pullValue<bool>("Fixed")) { //if the crop is fixed, attach it to the list fixedCrops
             fixedCrops.append(crops[i]);
         }
         else{
@@ -101,8 +101,8 @@ void Farm:: createFodderCrops(){
 
     int n = crops.size();
      for (int i=0; i < n; ++i) {
-        if(crops[i]->pullVariable<bool>("Fodder")){ //if the crop is a fodder crop, attach it to the list
-            if(!crops[i]->pullVariable<bool>("Fixed")){
+        if(crops[i]->pullValue<bool>("Fodder")){ //if the crop is a fodder crop, attach it to the list
+            if(!crops[i]->pullValue<bool>("Fixed")){
                 CropSort cs={0., crops[i]};
                 fodderCrops.append(cs);
             }
@@ -124,7 +124,7 @@ void Farm::findTotalArea(){ //find total area -> using crop initial areas
 
     totalArea=0.;
      for (int i=0; i<crops.size(); i++) {
-         totalArea+=crops[i]->pullVariable<double>("InitialArea");
+         totalArea+=crops[i]->pullValue<double>("InitialArea");
      }
  }
 
@@ -134,11 +134,11 @@ of livestock.*/
 
      totalNanim = 0;
      for (int i=0; i<animals.size(); i++){
-         double AUKey = animals[i]->pullVariable<double>("AUKey"); //Number of animal units (AU, DE-dyre enheder) per year
-         double Nusable = animals[i]->pullVariable<double>("Nusable"); // [%] Usable fertilizer from livestock
-         double number = animals[i]->pullVariable<double>("Number");
+         double AUKey = animals[i]->pullValue<double>("AUKey"); //Number of animal units (AU, DE-dyre enheder) per year
+         double Nusable = animals[i]->pullValue<double>("Nusable"); // [%] Usable fertilizer from livestock
+         double number = animals[i]->pullValue<double>("Number");
          double NanimUsable1 = number*AUKey*Nusable; // [kg] Usable fertilizer from livestock
-         animals[i]->pushVariable<double>("NanimUsable", NanimUsable1);
+         animals[i]->pushValue<double>("NanimUsable", NanimUsable1);
          totalNanim+=NanimUsable1;
      }
 }
@@ -153,11 +153,11 @@ the value of the total fodder demand to the variable #totalFUt (total fodder pur
 
     totalFUdemand=0;
     for(int i=0; i<animals.size(); i++){
-        double FUuKey=animals[i]->pullVariable<double>("FUuKey"); //number of fodder units needed per one animal per year
-        double number = animals[i]->pullVariable<double>("Number");
+        double FUuKey=animals[i]->pullValue<double>("FUuKey"); //number of fodder units needed per one animal per year
+        double number = animals[i]->pullValue<double>("Number");
         if(number>0){
             double FUdemand=FUuKey*number;
-            animals[i]->pushVariable<double>("FUdemand", FUdemand);
+            animals[i]->pushValue<double>("FUdemand", FUdemand);
             totalFUdemand+=FUdemand;
         }
     }
@@ -190,7 +190,7 @@ void Farm::update() {
     file.write("\n\n after sorting\n");
     for (int i=0; i<variableCrops.size(); i++){
         QString line=variableCrops[i].crop->id().label();
-        line+=" " + QString::number(variableCrops[i].crop->pullVariable<double>("GM"))+"\n";
+        line+=" " + QString::number(variableCrops[i].crop->pullValue<double>("GM"))+"\n";
         file.write(qPrintable(line));
     }
 
@@ -207,7 +207,7 @@ void Farm::update() {
         file.write("\n\n after sorting fodder crops\n");
         for (int i=0; i<fodderCrops.size(); i++){
             QString line=fodderCrops[i].crop->id().label();
-            line+=" " + QString::number(fodderCrops[i].crop->pullVariable<double>("Savings"))+"\n";
+            line+=" " + QString::number(fodderCrops[i].crop->pullValue<double>("Savings"))+"\n";
             file.write(qPrintable(line));
         }
 
@@ -289,27 +289,27 @@ void Farm::findYieldLossBefore(int i, QString cropID){ //find yield losses
 or applying BImax of herbicides and fung-and insecticides. Losses are expressed as percentages
 of yield (take values from 0 to 100).*/
 
-    double betaFi=crops[i]->pullVariable<double>("betaFi");
-    double betaHerb=crops[i]->pullVariable<double>("betaHerb");
+    double betaFi=crops[i]->pullValue<double>("betaFi");
+    double betaHerb=crops[i]->pullValue<double>("betaHerb");
 
     double lossHerbBIzero = betaHerb;
-    crops[i]->pushVariable<double>("LossHerbBIzero", lossHerbBIzero);
+    crops[i]->pushValue<double>("LossHerbBIzero", lossHerbBIzero);
     double lossHerbBImax = 0;
-    crops[i]->pushVariable<double>("LossHerbBImax", lossHerbBImax);
+    crops[i]->pushValue<double>("LossHerbBImax", lossHerbBImax);
 
     double lossFiBIzero = betaFi;
-    crops[i]->pushVariable<double>("LossFiBIzero", lossFiBIzero);
+    crops[i]->pushValue<double>("LossFiBIzero", lossFiBIzero);
     double lossFiBImax = 0;
-    crops[i]->pushVariable<double>("LossFiBImax", lossFiBImax);
+    crops[i]->pushValue<double>("LossFiBImax", lossFiBImax);
 
     double totalLossNOHerbNOFi = lossHerbBIzero + lossFiBIzero;// betaHerb+betaFi
-    crops[i]->pushVariable<double>("TotalLossNOHerbNOFi", totalLossNOHerbNOFi);
+    crops[i]->pushValue<double>("TotalLossNOHerbNOFi", totalLossNOHerbNOFi);
     double totalLossNOHerbYESFi = lossHerbBIzero + lossFiBImax;// betaHerb+0
-    crops[i]->pushVariable<double>("TotalLossNOHerbYESFi", totalLossNOHerbYESFi);
+    crops[i]->pushValue<double>("TotalLossNOHerbYESFi", totalLossNOHerbYESFi);
     double totalLossYESHerbNOFi = lossHerbBImax + lossFiBIzero;// 0+betaFi
-    crops[i]->pushVariable<double>("TotalLossYESHerbNOFi", totalLossYESHerbNOFi);
+    crops[i]->pushValue<double>("TotalLossYESHerbNOFi", totalLossYESHerbNOFi);
     double totalLossYESHerbYESFi = lossHerbBImax + lossFiBImax;// 0+0
-    crops[i]->pushVariable<double>("TotalLossYESHerbYESFi", totalLossYESHerbYESFi);
+    crops[i]->pushValue<double>("TotalLossYESHerbYESFi", totalLossYESHerbYESFi);
 }
 
 void Farm::findFertilizerAll(int i, QString cropID){
@@ -317,9 +317,9 @@ void Farm::findFertilizerAll(int i, QString cropID){
 /**Function determining the optimal amounts of: total fertilizer (Crop::n) and purchased
 fertilizer (Crop::nt) per ha of a crop at a farm. [kg/ha]*/
 
-    double beta1=crops[i]->pullVariable<double>("beta1");
-    double beta2=crops[i]->pullVariable<double>("beta2");
-    double nNorm =crops[i]->pullVariable<double>("Nnorm");
+    double beta1=crops[i]->pullValue<double>("beta1");
+    double beta2=crops[i]->pullValue<double>("beta2");
+    double nNorm =crops[i]->pullValue<double>("Nnorm");
 
     if(!beta2==0){ //if parameters are specified - beta2 is not 0.
         double n1=-(beta1/beta2)*0.5; //optimal fertilizer supposing it's for free
@@ -330,116 +330,116 @@ fertilizer (Crop::nt) per ha of a crop at a farm. [kg/ha]*/
             else {
                assignFertilizerToAllOptions(i, nNorm); //apply max allowed amount
             }
-            crops[i]->pushVariable<double>("Nt_NONO",0);//don't buy fertilizer
-            crops[i]->pushVariable<double>("Nt_NOYES",0);
-            crops[i]->pushVariable<double>("Nt_YESNO",0);
-            crops[i]->pushVariable<double>("Nt_YESYES",0);
+            crops[i]->pushValue<double>("Nt_NONO",0);//don't buy fertilizer
+            crops[i]->pushValue<double>("Nt_NOYES",0);
+            crops[i]->pushValue<double>("Nt_YESNO",0);
+            crops[i]->pushValue<double>("Nt_YESYES",0);
         }
 
         else { //the optimal amount is larger than Nanim
 
           //NO herb, NO fi
-          double totalloss1=crops[i]->pullVariable<double>("TotalLossNOHerbNOFi");
+          double totalloss1=crops[i]->pullValue<double>("TotalLossNOHerbNOFi");
           fertilizer(i, cropID, totalloss1, "N_NONO", "Nt_NONO");
 
           //NO herb, YES fi
-          double totalloss2=crops[i]->pullVariable<double>("TotalLossNOHerbYESFi");
+          double totalloss2=crops[i]->pullValue<double>("TotalLossNOHerbYESFi");
           fertilizer(i, cropID, totalloss2, "N_NOYES", "Nt_NOYES");
 
           //YES herb, NO fi
-          double totalloss3=crops[i]->pullVariable<double>("TotalLossYESHerbNOFi");
+          double totalloss3=crops[i]->pullValue<double>("TotalLossYESHerbNOFi");
           fertilizer(i, cropID, totalloss3, "N_YESNO", "Nt_YESNO");
 
           //YES herb, YES fi
-          double totalloss4=crops[i]->pullVariable<double>("TotalLossYESHerbYESFi");
+          double totalloss4=crops[i]->pullValue<double>("TotalLossYESHerbYESFi");
           fertilizer(i, cropID, totalloss4, "N_YESYES", "Nt_YESYES");
         }
     }
     else{ //beta2 is = 0
-        crops[i]->pushVariable<double>("Nt_NONO",0);//don't buy fertilizer
-        crops[i]->pushVariable<double>("Nt_NOYES",0);
-        crops[i]->pushVariable<double>("Nt_YESNO",0);
-        crops[i]->pushVariable<double>("Nt_YESYES",0);
+        crops[i]->pushValue<double>("Nt_NONO",0);//don't buy fertilizer
+        crops[i]->pushValue<double>("Nt_NOYES",0);
+        crops[i]->pushValue<double>("Nt_YESNO",0);
+        crops[i]->pushValue<double>("Nt_YESYES",0);
         assignFertilizerToAllOptions(i, Nanim); //apply fertilizer..but i should change it - it seems a waste of fertilizer...
     }
 }
 
 void Farm::assignFertilizerToAllOptions(int i, double N){
 
-    crops[i]->pushVariable<double>("N_NONO", N);
-    crops[i]->pushVariable<double>("N_NOYES",N);
-    crops[i]->pushVariable<double>("N_YESNO",N);
-    crops[i]->pushVariable<double>("N_YESYES",N);
+    crops[i]->pushValue<double>("N_NONO", N);
+    crops[i]->pushValue<double>("N_NOYES",N);
+    crops[i]->pushValue<double>("N_YESNO",N);
+    crops[i]->pushValue<double>("N_YESYES",N);
 }
 
 void Farm::fertilizer(int i, QString cropID, double totalLoss, QString N, QString Nt){
 /**Determines the amount of #n and #nt in case there is not enough animal fertlizer.
 Used by #findFertilizerAll function.*/
 
-    double beta1=crops[i]->pullVariable<double>("beta1");
-    double beta2=crops[i]->pullVariable<double>("beta2");
-    double nNorm = crops[i]->pullVariable<double>("Nnorm");
-    double sellingPrice = crops[i]->pullVariable<double>("sellingPrice");
+    double beta1=crops[i]->pullValue<double>("beta1");
+    double beta2=crops[i]->pullValue<double>("beta2");
+    double nNorm = crops[i]->pullValue<double>("Nnorm");
+    double sellingPrice = crops[i]->pullValue<double>("sellingPrice");
 
     double x = (100 - totalLoss)/100;
     double nt=(0.5*(priceNt/sellingPrice*beta2*x)-beta1/beta2) - Nanim; //optimal fertilizer Nt
     if (nt>0){
         double n2=nt+Nanim; //optimal total N
         if (n2<nNorm){
-          crops[i]->pushVariable<double>(Nt,nt);
-          crops[i]->pushVariable<double>(N, n2);
+          crops[i]->pushValue<double>(Nt,nt);
+          crops[i]->pushValue<double>(N, n2);
         }
         else {
           double nToSave=nNorm-Nanim;
-          crops[i]->pushVariable<double>(Nt,nToSave); //buy the diff between what you have (Nanim) and what is the max allowed
-          crops[i]->pushVariable<double>(N, nNorm); //total amount is the max allowed, Nanim+(nNorm-Nanim)=nNorm
+          crops[i]->pushValue<double>(Nt,nToSave); //buy the diff between what you have (Nanim) and what is the max allowed
+          crops[i]->pushValue<double>(N, nNorm); //total amount is the max allowed, Nanim+(nNorm-Nanim)=nNorm
         }
     }
     else { //it doesn't pay off to buy fertilizer, so just use Nanim
-        crops[i]->pushVariable<double>(N, Nanim);
-        crops[i]->pushVariable<double>(Nt, 0);
+        crops[i]->pushValue<double>(N, Nanim);
+        crops[i]->pushValue<double>(Nt, 0);
     }
 }
 
 void Farm::findAll(int i, QString cropID){ //change the name!
 
     //get all the parameters
-    double sellingPrice = crops[i]->pullVariable<double>("sellingPrice");
+    double sellingPrice = crops[i]->pullValue<double>("sellingPrice");
 
-    double alfa=crops[i]->pullVariable<double>("alfa");
-    double beta1=crops[i]->pullVariable<double>("beta1");
-    double beta2=crops[i]->pullVariable<double>("beta2");
+    double alfa=crops[i]->pullValue<double>("alfa");
+    double beta1=crops[i]->pullValue<double>("beta1");
+    double beta2=crops[i]->pullValue<double>("beta2");
 
-    double alfaFi =crops[i]->pullVariable<double>("alfaFi");
-    double alfaHerb =crops[i]->pullVariable<double>("alfaHerb");
-    double betaFi =crops[i]->pullVariable<double>("betaFi");
-    double betaHerb =crops[i]->pullVariable<double>("betaHerb");
+    double alfaFi =crops[i]->pullValue<double>("alfaFi");
+    double alfaHerb =crops[i]->pullValue<double>("alfaHerb");
+    double betaFi =crops[i]->pullValue<double>("betaFi");
+    double betaHerb =crops[i]->pullValue<double>("betaHerb");
 
-    double alfaG =crops[i]->pullVariable<double>("alfaG");
-    double alfaH =crops[i]->pullVariable<double>("alfaH");
-    double alfaW =crops[i]->pullVariable<double>("alfaW");
-    double betaG =crops[i]->pullVariable<double>("betaG");
-    double betaH =crops[i]->pullVariable<double>("betaH");
-    double betaW =crops[i]->pullVariable<double>("betaW");
+    double alfaG =crops[i]->pullValue<double>("alfaG");
+    double alfaH =crops[i]->pullValue<double>("alfaH");
+    double alfaW =crops[i]->pullValue<double>("alfaW");
+    double betaG =crops[i]->pullValue<double>("betaG");
+    double betaH =crops[i]->pullValue<double>("betaH");
+    double betaW =crops[i]->pullValue<double>("betaW");
 
-    double priceFi = crops[i]->pullVariable<double>("priceFi");
-    double priceHerb=crops[i]->pullVariable<double>("priceHerb");
-    double priceG=crops[i]->pullVariable<double>("priceG");
-    double priceH=crops[i]->pullVariable<double>("priceH");
-    double priceW=crops[i]->pullVariable<double>("priceW");
-    double priceLM=crops[i]->pullVariable<double>("priceLM");
-    double subsidy=crops[i]->pullVariable<double>( "subsidy");
+    double priceFi = crops[i]->pullValue<double>("priceFi");
+    double priceHerb=crops[i]->pullValue<double>("priceHerb");
+    double priceG=crops[i]->pullValue<double>("priceG");
+    double priceH=crops[i]->pullValue<double>("priceH");
+    double priceW=crops[i]->pullValue<double>("priceW");
+    double priceLM=crops[i]->pullValue<double>("priceLM");
+    double subsidy=crops[i]->pullValue<double>( "subsidy");
 
     //get the values of fertilizer - total and purchased
-    double n_NONO=crops[i]->pullVariable<double>("N_NONO"); //n total
-    double n_NOYES=crops[i]->pullVariable<double>("N_NOYES");
-    double n_YESNO=crops[i]->pullVariable<double>("N_YESNO");
-    double n_YESYES=crops[i]->pullVariable<double>("N_YESYES");
+    double n_NONO=crops[i]->pullValue<double>("N_NONO"); //n total
+    double n_NOYES=crops[i]->pullValue<double>("N_NOYES");
+    double n_YESNO=crops[i]->pullValue<double>("N_YESNO");
+    double n_YESYES=crops[i]->pullValue<double>("N_YESYES");
 
-    double nt_NONO=crops[i]->pullVariable<double>("Nt_NONO"); //n trade
-    double nt_NOYES=crops[i]->pullVariable<double>("Nt_NOYES");
-    double nt_YESNO=crops[i]->pullVariable<double>("Nt_YESNO");
-    double nt_YESYES=crops[i]->pullVariable<double>("Nt_YESYES");
+    double nt_NONO=crops[i]->pullValue<double>("Nt_NONO"); //n trade
+    double nt_NOYES=crops[i]->pullValue<double>("Nt_NOYES");
+    double nt_YESNO=crops[i]->pullValue<double>("Nt_YESNO");
+    double nt_YESYES=crops[i]->pullValue<double>("Nt_YESYES");
 
     //determine the responses
     double respNONO=alfa + beta1*n_NONO + beta2*pow(n_NONO,2);
@@ -447,16 +447,16 @@ void Farm::findAll(int i, QString cropID){ //change the name!
     double respYESNO=alfa + beta1*n_NONO + beta2*pow(n_YESNO,2);
     double respYESYES=alfa + beta1*n_NONO + beta2*pow(n_YESYES,2);
 
-    crops[i]->pushVariable<double>("Response_NONO",respNONO);
-    crops[i]->pushVariable<double>("Response_NOYES",respNOYES);
-    crops[i]->pushVariable<double>("Response_YESNO",respYESNO);
-    crops[i]->pushVariable<double>("Response_YESYES",respYESYES);
+    crops[i]->pushValue<double>("Response_NONO",respNONO);
+    crops[i]->pushValue<double>("Response_NOYES",respNOYES);
+    crops[i]->pushValue<double>("Response_YESNO",respYESNO);
+    crops[i]->pushValue<double>("Response_YESYES",respYESYES);
 
     //get the values of total losses
-    double totalLossNONO=crops[i]->pullVariable<double>("TotalLossNOHerbNOFi");
-    double totalLossNOYES=crops[i]->pullVariable<double>("TotalLossNOHerbYESFi");
-    double totalLossYESNO=crops[i]->pullVariable<double>("TotalLossYESHerbNOFi");
-    double totalLossYESYES=crops[i]->pullVariable<double>("TotalLossYESHerbYESFi");
+    double totalLossNONO=crops[i]->pullValue<double>("TotalLossNOHerbNOFi");
+    double totalLossNOYES=crops[i]->pullValue<double>("TotalLossNOHerbYESFi");
+    double totalLossYESNO=crops[i]->pullValue<double>("TotalLossYESHerbNOFi");
+    double totalLossYESYES=crops[i]->pullValue<double>("TotalLossYESHerbYESFi");
 
     //calculate BIMax
     double BIHerbMax=0;
@@ -572,20 +572,20 @@ void Farm::saveAllVariables(int i, double N, double Nt, double resp, double tota
                             double BIHerb, double BIFi, double g, double h,
                             double w, double income, double costs, double profit){
 
-    crops[i]->pushVariable<double>("N", N);
-    crops[i]->pushVariable<double>("Nt",Nt);
-    crops[i]->pushVariable<double>("Response", resp);
-    crops[i]->pushVariable<double>("TotalLoss", totalLoss);
-    crops[i]->pushVariable<double>("BIHerb", BIHerb);
-    crops[i]->pushVariable<double>("BIFi", BIFi);
+    crops[i]->pushValue<double>("N", N);
+    crops[i]->pushValue<double>("Nt",Nt);
+    crops[i]->pushValue<double>("Response", resp);
+    crops[i]->pushValue<double>("TotalLoss", totalLoss);
+    crops[i]->pushValue<double>("BIHerb", BIHerb);
+    crops[i]->pushValue<double>("BIFi", BIFi);
     double BIsum=BIFi+BIHerb;
-    crops[i]->pushVariable<double>("BI", BIsum);
-    crops[i]->pushVariable<double>("Grooming", g);
-    crops[i]->pushVariable<double>("Hoeing", h);
-    crops[i]->pushVariable<double>("Weeding", w);
-    crops[i]->pushVariable<double>("Income_ha", income);
-    crops[i]->pushVariable<double>("Costs_ha", costs);
-    crops[i]->pushVariable<double>("GM", profit); //=profitMax
+    crops[i]->pushValue<double>("BI", BIsum);
+    crops[i]->pushValue<double>("Grooming", g);
+    crops[i]->pushValue<double>("Hoeing", h);
+    crops[i]->pushValue<double>("Weeding", w);
+    crops[i]->pushValue<double>("Income_ha", income);
+    crops[i]->pushValue<double>("Costs_ha", costs);
+    crops[i]->pushValue<double>("GM", profit); //=profitMax
 }
 
 
@@ -598,46 +598,46 @@ void Farm::findFertilizer(int i, QString cropID){
 /**Function determining the optimal amounts of: total fertilizer (Crop::n) and purchased
 fertilizer (Crop::nt) per ha of a crop at a farm. [kg/ha]*/
 
-    double beta1=crops[i]->pullVariable<double>("beta1");
-    double beta2=crops[i]->pullVariable<double>("beta2");
-    double sellingPrice = crops[i]->pullVariable<double>("sellingPrice");
-    double nNorm = crops[i]->pullVariable<double>("Nnorm");
+    double beta1=crops[i]->pullValue<double>("beta1");
+    double beta2=crops[i]->pullValue<double>("beta2");
+    double sellingPrice = crops[i]->pullValue<double>("sellingPrice");
+    double nNorm = crops[i]->pullValue<double>("Nnorm");
 
     if(!beta2==0){ //beta2 is not 0
         double n1=-(beta1/beta2)*0.5; //optimal fertilizer supposing it's for free
 
         if(Nanim >= n1){ //there is more than you need, so check the norm:
             if (n1<nNorm){
-               crops[i]->pushVariable<double>("N", n1); //apply optimal amount
+               crops[i]->pushValue<double>("N", n1); //apply optimal amount
             }
             else {
-               crops[i]->pushVariable<double>("N", nNorm); //apply max allowed amount
+               crops[i]->pushValue<double>("N", nNorm); //apply max allowed amount
             }
-            crops[i]->pushVariable<double>("Nt",0);  //don't buy fertilizer
+            crops[i]->pushValue<double>("Nt",0);  //don't buy fertilizer
         }
         else { //the optimal amount is larger than Nanim
            double nt1=(0.5*(priceNt - (sellingPrice*beta1))/(sellingPrice*beta2)) - Nanim; //optimal fertilizer Nt
            if (nt1>0){
                double n2=nt1+Nanim; //optimal total N
                if (n2<nNorm){
-                 crops[i]->pushVariable<double>("Nt",nt1);
-                 crops[i]->pushVariable<double>("N", n2);
+                 crops[i]->pushValue<double>("Nt",nt1);
+                 crops[i]->pushValue<double>("N", n2);
                }
                else {
                  double nToSave=nNorm-Nanim;
-                 crops[i]->pushVariable<double>("Nt",nToSave); //buy the diff between what you have (Nanim) and what is the max allowed
-                 crops[i]->pushVariable<double>("N", nNorm); //total amount is the max allowed, Nanim+(nNorm-Nanim)=nNorm
+                 crops[i]->pushValue<double>("Nt",nToSave); //buy the diff between what you have (Nanim) and what is the max allowed
+                 crops[i]->pushValue<double>("N", nNorm); //total amount is the max allowed, Nanim+(nNorm-Nanim)=nNorm
                }
            }
            else { //it doesn't pay off to buy fertilizer, so just use Nanim
-               crops[i]->pushVariable<double>("N", Nanim);
-               crops[i]->pushVariable<double>("Nt",0);
+               crops[i]->pushValue<double>("N", Nanim);
+               crops[i]->pushValue<double>("Nt",0);
            }
         }
     }
     else{ //beta2=0, so don't apply fertilizer...but in this model - apply Nanim if there is any
-        crops[i]->pushVariable<double>("N", Nanim);
-        crops[i]->pushVariable<double>("Nt",0);
+        crops[i]->pushValue<double>("N", Nanim);
+        crops[i]->pushValue<double>("Nt",0);
     }
 }
 
@@ -646,13 +646,13 @@ void Farm::findResponse (int i, QString cropID){ //find response for a given N
 /**Function determining the response of a crop - yield per ha. It's a function of
  total fertilizer (n) applied for a crop at a farm. [hkg/ha]*/
 
-    double beta1=crops[i]->pullVariable<double>("beta1");
-    double beta2=crops[i]->pullVariable<double>("beta2");
-    double alfa=crops[i]->pullVariable<double>("alfa");
+    double beta1=crops[i]->pullValue<double>("beta1");
+    double beta2=crops[i]->pullValue<double>("beta2");
+    double alfa=crops[i]->pullValue<double>("alfa");
 
-    double ntotal=crops[i]->pullVariable<double>("N");
+    double ntotal=crops[i]->pullValue<double>("N");
     double resp1=alfa + beta1*ntotal + beta2*pow(ntotal,2);
-    crops[i]->pushVariable<double>("Response",resp1);
+    crops[i]->pushValue<double>("Response",resp1);
 }
 
 void Farm::findBIs(int i, QString cropID){ //find BIFi, BIHerb and BI (the sum)
@@ -660,43 +660,43 @@ void Farm::findBIs(int i, QString cropID){ //find BIFi, BIHerb and BI (the sum)
 /**Function determining the optimal 'behandling indeks' (treatment frequency index)
 for herbicides (BIHerb), fungicides and insecticides (BIFi) and a summary BI per ha.*/
 
-    double sellingPrice = crops[i]->pullVariable<double>("sellingPrice");
+    double sellingPrice = crops[i]->pullValue<double>("sellingPrice");
 
-    double alfaFi =crops[i]->pullVariable<double>("alfaFi");
-    double alfaHerb =crops[i]->pullVariable<double>("alfaHerb");
-    double alfaG =crops[i]->pullVariable<double>("alfaG");
-    double alfaH =crops[i]->pullVariable<double>("alfaH");
-    double alfaW =crops[i]->pullVariable<double>("alfaW");
-    double betaFi =crops[i]->pullVariable<double>("betaFi");
-    double betaHerb =crops[i]->pullVariable<double>("betaHerb");
+    double alfaFi =crops[i]->pullValue<double>("alfaFi");
+    double alfaHerb =crops[i]->pullValue<double>("alfaHerb");
+    double alfaG =crops[i]->pullValue<double>("alfaG");
+    double alfaH =crops[i]->pullValue<double>("alfaH");
+    double alfaW =crops[i]->pullValue<double>("alfaW");
+    double betaFi =crops[i]->pullValue<double>("betaFi");
+    double betaHerb =crops[i]->pullValue<double>("betaHerb");
 
-    double priceFi = crops[i]->pullVariable<double>("priceFi");
-    double priceHerb=crops[i]->pullVariable<double>("priceHerb");
-    double priceG=crops[i]->pullVariable<double>("priceG");
-    double priceH=crops[i]->pullVariable<double>("priceH");
-    double priceW=crops[i]->pullVariable<double>("priceW");
+    double priceFi = crops[i]->pullValue<double>("priceFi");
+    double priceHerb=crops[i]->pullValue<double>("priceHerb");
+    double priceG=crops[i]->pullValue<double>("priceG");
+    double priceH=crops[i]->pullValue<double>("priceH");
+    double priceW=crops[i]->pullValue<double>("priceW");
 
-    double resp1=crops[i]->pullVariable<double>("Response");
+    double resp1=crops[i]->pullValue<double>("Response");
 
     if(alfaHerb>0){//make sure it is not zero!it is for Fodder beet
 
         double BIHerbMax = betaHerb/alfaHerb;
         double gainHerb = sellingPrice*resp1*alfaHerb/100 + priceG*alfaG + priceH*alfaH + priceW*alfaW;
         double BIHerb1 = (gainHerb>priceHerb)? BIHerbMax : 0;
-        crops[i]->pushVariable<double>("BIHerb", BIHerb1);
+        crops[i]->pushValue<double>("BIHerb", BIHerb1);
     }
     else{
-        crops[i]->pushVariable<double>("BIHerb", 0); //BI for fodder beet in the original model - don't know where did they take this value from!
+        crops[i]->pushValue<double>("BIHerb", 0); //BI for fodder beet in the original model - don't know where did they take this value from!
     }
 
     if(alfaFi>0){
         double BIFiMax = betaFi/alfaFi;
         double gainFi = sellingPrice*resp1*alfaFi/100;
         double BIFi1 = (gainFi > priceFi) ? BIFiMax : 0;
-        crops[i]->pushVariable<double>("BIFi", BIFi1);
+        crops[i]->pushValue<double>("BIFi", BIFi1);
     }
     else{
-        crops[i]->pushVariable<double>("BIFi", 0);
+        crops[i]->pushValue<double>("BIFi", 0);
     }
 
     Crop *fodderBeet = seekOneChild<Crop*>("FodderBeet");
@@ -704,23 +704,23 @@ for herbicides (BIHerb), fungicides and insecticides (BIFi) and a summary BI per
     Crop *potato = seekOneChild<Crop*>("Potato");
     Crop *potatoFood = seekOneChild<Crop*>("PotatoFood");
 
-    fodderBeet->pushVariable<double>("BIHerb", 2.28); //seems it's constant - in the results,but paramters are =zero!
-    sugarBeet->pushVariable<double>("BIHerb", 2.28);
+    fodderBeet->pushValue<double>("BIHerb", 2.28); //seems it's constant - in the results,but paramters are =zero!
+    sugarBeet->pushValue<double>("BIHerb", 2.28);
 
     //potatoes - everything fixed
-    potato->pushVariable<double>("BIHerb", 1.41);
-    potatoFood->pushVariable<double>("BIHerb", 1.41);
-    potato->pushVariable<double>("BIFi", 9.28);
-    potatoFood->pushVariable<double>("BIFi", 9.28);
-    potato->pushVariable<double>("BI", 10.69);
-    potatoFood->pushVariable<double>("BI", 10.69);
+    potato->pushValue<double>("BIHerb", 1.41);
+    potatoFood->pushValue<double>("BIHerb", 1.41);
+    potato->pushValue<double>("BIFi", 9.28);
+    potatoFood->pushValue<double>("BIFi", 9.28);
+    potato->pushValue<double>("BI", 10.69);
+    potatoFood->pushValue<double>("BI", 10.69);
 
 
-    double BIFi1=crops[i]->pullVariable<double>("BIFi");
-    double BIHerb1=crops[i]->pullVariable<double>("BIHerb");
+    double BIFi1=crops[i]->pullValue<double>("BIFi");
+    double BIHerb1=crops[i]->pullValue<double>("BIHerb");
 
     double BI1 = BIFi1+BIHerb1;
-    crops[i]->pushVariable<double>("BI", BI1);
+    crops[i]->pushValue<double>("BI", BI1);
 }
 
 void Farm::findMWeedControl(int i, QString cropID){ //find grooming, hoeing, weeding
@@ -728,13 +728,13 @@ void Farm::findMWeedControl(int i, QString cropID){ //find grooming, hoeing, wee
 /**Function determining optimal values of mechanic weed control means: grooming, hoeing
 and weeding. All of them are functions of 'behandling indeks' for herbicides (BIHerb). */
 
-    double betaG =crops[i]->pullVariable<double>("betaG");
-    double betaH =crops[i]->pullVariable<double>("betaH");
-    double betaW =crops[i]->pullVariable<double>("betaW");
-    double alfaG =crops[i]->pullVariable<double>("alfaG");
-    double alfaH =crops[i]->pullVariable<double>("alfaH");
-    double alfaW =crops[i]->pullVariable<double>("alfaW");
-    double BIHerb1=crops[i]->pullVariable<double>("BIHerb");
+    double betaG =crops[i]->pullValue<double>("betaG");
+    double betaH =crops[i]->pullValue<double>("betaH");
+    double betaW =crops[i]->pullValue<double>("betaW");
+    double alfaG =crops[i]->pullValue<double>("alfaG");
+    double alfaH =crops[i]->pullValue<double>("alfaH");
+    double alfaW =crops[i]->pullValue<double>("alfaW");
+    double BIHerb1=crops[i]->pullValue<double>("BIHerb");
 
     double g = betaG - BIHerb1*alfaG;
     double grooming1 = (g <= 0) ? 0 : g;
@@ -743,9 +743,9 @@ and weeding. All of them are functions of 'behandling indeks' for herbicides (BI
     double w = betaW - BIHerb1*alfaW;
     double weeding1 = (w <= 0) ? 0 : w;
 
-    crops[i]->pushVariable<double>("Grooming", grooming1);
-    crops[i]->pushVariable<double>("Hoeing", hoeing1);
-    crops[i]->pushVariable<double>("Weeding", weeding1);
+    crops[i]->pushValue<double>("Grooming", grooming1);
+    crops[i]->pushValue<double>("Hoeing", hoeing1);
+    crops[i]->pushValue<double>("Weeding", weeding1);
 }
 
 void Farm::findYieldLoss(int i, QString cropID){ //find yield losses
@@ -755,53 +755,53 @@ herbicides (lossHerb), fungicides and insecticides (lossFi) and a total yield lo
 which is a sum of lossHerb and lossFi. Losses are expressed as percentages of yield
 (take values from 0 to 100).*/
 
-    double alfaFi =crops[i]->pullVariable<double>("alfaFi");
-    double alfaHerb =crops[i]->pullVariable<double>( "alfaHerb");
-    double betaFi =crops[i]->pullVariable<double>("betaFi");
-    double betaHerb =crops[i]->pullVariable<double>("betaHerb");
+    double alfaFi =crops[i]->pullValue<double>("alfaFi");
+    double alfaHerb =crops[i]->pullValue<double>( "alfaHerb");
+    double betaFi =crops[i]->pullValue<double>("betaFi");
+    double betaHerb =crops[i]->pullValue<double>("betaHerb");
 
-    double BIHerb1=crops[i]->pullVariable<double>("BIHerb");
-    double BIFi1=crops[i]->pullVariable<double>("BIFi");
+    double BIHerb1=crops[i]->pullValue<double>("BIHerb");
+    double BIFi1=crops[i]->pullValue<double>("BIFi");
 
     double lossHerb1 = betaHerb - alfaHerb*BIHerb1;
-    crops[i]->pushVariable<double>("LossHerb", lossHerb1);
+    crops[i]->pushValue<double>("LossHerb", lossHerb1);
 
     double lossFi1 = betaFi - alfaFi*BIFi1;
-    crops[i]->pushVariable<double>("LossFi", lossFi1);
+    crops[i]->pushValue<double>("LossFi", lossFi1);
 
     double totalLoss1 = lossHerb1 + lossFi1;// [%]
-    crops[i]->pushVariable<double>("TotalLoss", totalLoss1);
+    crops[i]->pushValue<double>("TotalLoss", totalLoss1);
 }
 
 void Farm::findGrossMargin(int i, QString cropID){
 
 /**Function determining gross margin (GM, profit per ha) of a crop. [DKK]*/
 
-    double sellingPrice = crops[i]->pullVariable<double>("sellingPrice");
+    double sellingPrice = crops[i]->pullValue<double>("sellingPrice");
 
-    double priceFi=crops[i]->pullVariable<double>("priceFi");
-    double priceHerb=crops[i]->pullVariable<double>("priceHerb");
-    double priceG=crops[i]->pullVariable<double>("priceG");
-    double priceH=crops[i]->pullVariable<double>("priceH");
-    double priceW=crops[i]->pullVariable<double>("priceW");
-    double priceLM=crops[i]->pullVariable<double>("priceLM");
-    double subsidy=crops[i]->pullVariable<double>("subsidy");
+    double priceFi=crops[i]->pullValue<double>("priceFi");
+    double priceHerb=crops[i]->pullValue<double>("priceHerb");
+    double priceG=crops[i]->pullValue<double>("priceG");
+    double priceH=crops[i]->pullValue<double>("priceH");
+    double priceW=crops[i]->pullValue<double>("priceW");
+    double priceLM=crops[i]->pullValue<double>("priceLM");
+    double subsidy=crops[i]->pullValue<double>("subsidy");
 
-    double resp=crops[i]->pullVariable<double>("Response");
-    double BIHerb=crops[i]->pullVariable<double>("BIHerb");
-    double BIFi=crops[i]->pullVariable<double>("BIFi");
-    double grooming=crops[i]->pullVariable<double>("Grooming");
-    double hoeing=crops[i]->pullVariable<double>("Hoeing");
-    double weeding=crops[i]->pullVariable<double>("Weeding");
-    double totalLoss=crops[i]->pullVariable<double>("TotalLoss");
-    double nt=crops[i]->pullVariable<double>("Nt");
+    double resp=crops[i]->pullValue<double>("Response");
+    double BIHerb=crops[i]->pullValue<double>("BIHerb");
+    double BIFi=crops[i]->pullValue<double>("BIFi");
+    double grooming=crops[i]->pullValue<double>("Grooming");
+    double hoeing=crops[i]->pullValue<double>("Hoeing");
+    double weeding=crops[i]->pullValue<double>("Weeding");
+    double totalLoss=crops[i]->pullValue<double>("TotalLoss");
+    double nt=crops[i]->pullValue<double>("Nt");
 
     double income_ha = sellingPrice*resp*(1-totalLoss/100)+subsidy;
     double costs_ha = BIHerb*priceHerb + BIFi*priceFi + grooming*priceG + hoeing*priceH + weeding*priceW + nt*priceNt + priceLM;
     double GM = income_ha - costs_ha;
-    crops[i]->pushVariable<double>("Income_ha", income_ha);
-    crops[i]->pushVariable<double>("Costs_ha", costs_ha);
-    crops[i]->pushVariable<double>("GM", GM);
+    crops[i]->pushValue<double>("Income_ha", income_ha);
+    crops[i]->pushValue<double>("Costs_ha", costs_ha);
+    crops[i]->pushValue<double>("GM", GM);
 }
 
 
@@ -817,9 +817,9 @@ and saves it in a variable #assigned.*/
 
     assigned = 0;
     for (int i=0; i<fixedCrops.size(); i++){//take only crops that are fixed
-        double area = fixedCrops[i]->pullVariable<double>("InitialArea");
+        double area = fixedCrops[i]->pullValue<double>("InitialArea");
         double areaPercent= area/totalArea*100;
-        fixedCrops[i]->pushVariable<double>("AreaPercent", areaPercent); //assign initial area in % for fixed crops
+        fixedCrops[i]->pushValue<double>("AreaPercent", areaPercent); //assign initial area in % for fixed crops
         assigned += areaPercent;//add areaPercent of a fixed crop to assigned
     }//now assigned is a number <0, 100> - excluded from optimisation
 }
@@ -831,8 +831,8 @@ as percentages of a farm's total area. The function also updates the variable #a
 holding a share of a farm excluded from the optimisation. */
 
     for(int i=0; i<variableCrops.size(); i++){
-        double rotationMin=variableCrops[i].crop->pullVariable<double>("RotationMin");
-        variableCrops[i].crop->pushVariable<double>("AreaMinPercent", rotationMin); //'save' the min area
+        double rotationMin=variableCrops[i].crop->pullValue<double>("RotationMin");
+        variableCrops[i].crop->pushValue<double>("AreaMinPercent", rotationMin); //'save' the min area
         assigned+=rotationMin; //the min area added to area already assigned
     }
 }
@@ -852,24 +852,24 @@ determineFodderAreas function.*/
 
     for(int i=0; i<variableCrops.size(); i++){
         double areaPercent=0;
-        double minArea=variableCrops[i].crop->pullVariable<double>("AreaMinPercent");
+        double minArea=variableCrops[i].crop->pullValue<double>("AreaMinPercent");
 
         //next two lines necessary for animal farms' function version
-        bool fodder=variableCrops[i].crop->pullVariable<double>("Fodder");
+        bool fodder=variableCrops[i].crop->pullValue<double>("Fodder");
         if (!fodder){ //this should be checked for animal farms, for other and plant - will always be false
             if (assigned<100){ //check if there is any area left at a farm
-                double rotationMax=variableCrops[i].crop->pullVariable<double>("RotationMax");
+                double rotationMax=variableCrops[i].crop->pullValue<double>("RotationMax");
                 areaPercent=(rotationMax-minArea <= 100-assigned)? rotationMax : (100 - assigned+minArea); //check if the remaining area (100-assigned) is enough to assign max allowed area for a crop (max-min, which was already assigned, if not - assign the remaining area+min area
                 assigned += areaPercent-minArea; //add the assigned area (final area percent minus minimum; minimum was assigned before) to the total assigned area
                 if(areaPercent>minArea){grownVariableCrops.append(variableCrops[i].crop);} //this might not be used for other than animal farms...but maybe - it would be nice to have such a list anyway
             }
             else {areaPercent = minArea;}
-            variableCrops[i].crop->pushVariable<double>("AreaPercent", areaPercent);
+            variableCrops[i].crop->pushValue<double>("AreaPercent", areaPercent);
             double areaVar=areaPercent-minArea;
-            variableCrops[i].crop->pushVariable<double>("AreaVariable", areaVar); //save the value of the area that can be changed! For farms other than animal this maybe could be used just in restrictions functions...
+            variableCrops[i].crop->pushValue<double>("AreaVariable", areaVar); //save the value of the area that can be changed! For farms other than animal this maybe could be used just in restrictions functions...
         }
         else{ //it is a fodder crop, so just save its min area under areaPercent
-            variableCrops[i].crop->pushVariable<double>("AreaPercent", minArea);
+            variableCrops[i].crop->pushValue<double>("AreaPercent", minArea);
         }
     }//after this loop - area assigned should be 100%; update 24.01.12 - but apparently in case
     //of cattle farms - it is not, as most of the crops are fodder crops and the sum of
@@ -900,11 +900,11 @@ determineFodderAreas function.*/
 //        CropSort fc={0.,fakeCrop};
 //        variableCrops.append(fc);
         double areaP=100-assigned;
-        fakeCrop->pushVariable<double>("GM", -1000000);
-        fakeCrop->pushVariable<double>("RotationMax", 100);       
-        fakeCrop->pushVariable<double>("AreaMinPercent", 0); //this is maybe not necessary...
-        fakeCrop->pushVariable<double>("AreaPercent", areaP);
-        fakeCrop->pushVariable<double>("AreaVariable", areaP);
+        fakeCrop->pushValue<double>("GM", -1000000);
+        fakeCrop->pushValue<double>("RotationMax", 100);       
+        fakeCrop->pushValue<double>("AreaMinPercent", 0); //this is maybe not necessary...
+        fakeCrop->pushValue<double>("AreaPercent", areaP);
+        fakeCrop->pushValue<double>("AreaVariable", areaP);
         assigned+=areaP;
     }
     file.write("\n\n assigned after fake crop\n");
@@ -973,11 +973,11 @@ Crop *sRape = seekOneChild<Crop*>("SRape");
 Crop *oats = seekOneChild<Crop*>("Oats");
 Crop *peas = seekOneChild<Crop*>("Peas"); //fixed
 
-double areaWWheat=wWheat->pullVariable<double>("AreaPercent");
-double areaWRape=wRape->pullVariable<double>("AreaPercent");
-double areaSRape=sRape->pullVariable<double>("AreaPercent");
-double areaOats=oats->pullVariable<double>("AreaPercent");
-double areaPeas=peas->pullVariable<double>("AreaPercent");
+double areaWWheat=wWheat->pullValue<double>("AreaPercent");
+double areaWRape=wRape->pullValue<double>("AreaPercent");
+double areaSRape=sRape->pullValue<double>("AreaPercent");
+double areaOats=oats->pullValue<double>("AreaPercent");
+double areaPeas=peas->pullValue<double>("AreaPercent");
 
 double diff = areaWWheat - (areaWRape + areaSRape + areaOats + areaPeas); //difference;
 if (diff > 0){ //restriction is not fulfilled
@@ -991,12 +991,12 @@ if (diff > 0){ //restriction is not fulfilled
 
     sortCrops(rotationCrops, "GM"); //sorting the rotation crops wrt GM
 
-    double areaMin=wWheat->pullVariable<double>("AreaMinPercent");
+    double areaMin=wWheat->pullValue<double>("AreaMinPercent");
 
     double available=0; //calculate available area for 'needed' crops - will be needed often:)
     for(int i=0; i<rotationCrops.size(); i++){
-        double area=rotationCrops[i].crop->pullVariable<double>("AreaPercent");
-        double rotationMax=rotationCrops[i].crop->pullVariable<double>("RotationMax");
+        double area=rotationCrops[i].crop->pullValue<double>("AreaPercent");
+        double rotationMax=rotationCrops[i].crop->pullValue<double>("RotationMax");
         available+=rotationMax-area;
     }
 
@@ -1067,7 +1067,7 @@ if (diff > 0){ //restriction is not fulfilled
                 //AND !!! throw an exception - violation
             }
         }
-    wWheat->pushVariable<double>("AreaPercent", areaWWheat);
+    wWheat->pushValue<double>("AreaPercent", areaWWheat);
     }
 
     else{ // N 1
@@ -1103,31 +1103,31 @@ Crop *sRape = seekOneChild<Crop*>("SRape");
 Crop *oats = seekOneChild<Crop*>("Oats"); //fodder crop for both cattle and pig farms
 Crop *peas = seekOneChild<Crop*>("Peas"); //fixed
 
-double areaWWheat=wWheat->pullVariable<double>("AreaPercent");
-double areaWRape=wRape->pullVariable<double>("AreaPercent");
-double areaSRape=sRape->pullVariable<double>("AreaPercent");
-double areaOats=oats->pullVariable<double>("AreaPercent");
-double areaPeas=peas->pullVariable<double>("AreaPercent");
+double areaWWheat=wWheat->pullValue<double>("AreaPercent");
+double areaWRape=wRape->pullValue<double>("AreaPercent");
+double areaSRape=sRape->pullValue<double>("AreaPercent");
+double areaOats=oats->pullValue<double>("AreaPercent");
+double areaPeas=peas->pullValue<double>("AreaPercent");
 
 double diff = areaWWheat - (areaWRape + areaSRape + areaOats + areaPeas); //difference; Peas is fixed
 if (diff > 0){ //restriction is not fulfilled
     //QList<CropSort>rotationCrops;
-    CropSort cs1 = {wRape->pullVariable<double>("GM"), wRape}; //an object with a key for sorting and a pointer to crop
-    CropSort cs2 = {sRape->pullVariable<double>("GM"), sRape};
-    CropSort cs3 = {oats->pullVariable<double>("Savings"), oats};
+    CropSort cs1 = {wRape->pullValue<double>("GM"), wRape}; //an object with a key for sorting and a pointer to crop
+    CropSort cs2 = {sRape->pullValue<double>("GM"), sRape};
+    CropSort cs3 = {oats->pullValue<double>("Savings"), oats};
     rotationCrops.append(cs1);
     rotationCrops.append(cs2);
     rotationCrops.append(cs3);
 
     qSort(rotationCrops); //sorting the rotation crops
 
-    double areaMin=wWheat->pullVariable<double>("AreaMinPercent");
+    double areaMin=wWheat->pullValue<double>("AreaMinPercent");
 
     //NEW VERSION - STARTED 19/12 11.39:)
     double available=0; //calculate available area for 'needed' crops - will be needed often:)
     for(int i=0; i<rotationCrops.size(); i++){
-        double area=rotationCrops[i].crop->pullVariable<double>("AreaPercent");
-        double rotationMax=rotationCrops[i].crop->pullVariable<double>("RotationMax");
+        double area=rotationCrops[i].crop->pullValue<double>("AreaPercent");
+        double rotationMax=rotationCrops[i].crop->pullValue<double>("RotationMax");
         available+=rotationMax-area;
     }
 
@@ -1198,7 +1198,7 @@ if (diff > 0){ //restriction is not fulfilled
                 //AND !!! throw an exception - violation
             }
         }
-    wWheat->pushVariable<double>("AreaPercent", areaWWheat);
+    wWheat->pushValue<double>("AreaPercent", areaWWheat);
     }
 
     else{ // N 1
@@ -1221,9 +1221,9 @@ if (diff > 0){ //restriction is not fulfilled
 void Farm::increaseCrops(QList<CropSort>cropsToIncrease, double &howMuchToIncrease){
 
     for(int i=0; howMuchToIncrease>0 && i<cropsToIncrease.size(); i++){
-        double area=cropsToIncrease[i].crop->pullVariable<double>("AreaPercent");
+        double area=cropsToIncrease[i].crop->pullValue<double>("AreaPercent");
         double areaBefore=area; //this wont be necessary for plant farm funciton
-        double rotationMax=cropsToIncrease[i].crop->pullVariable<double>("RotationMax");
+        double rotationMax=cropsToIncrease[i].crop->pullValue<double>("RotationMax");
         if(area+howMuchToIncrease<=rotationMax){
             area+=howMuchToIncrease; //finito
             howMuchToIncrease=0;
@@ -1232,15 +1232,15 @@ void Farm::increaseCrops(QList<CropSort>cropsToIncrease, double &howMuchToIncrea
             howMuchToIncrease-=rotationMax-area;
             area=rotationMax;
         }
-        cropsToIncrease[i].crop->pushVariable<double>("AreaPercent", area);
+        cropsToIncrease[i].crop->pushValue<double>("AreaPercent", area);
 
         //this just in an animal version, add if - checking if area has changed
         if(area>areaBefore){
-            bool fodder=cropsToIncrease[i].crop->pullVariable<bool>("Fodder");
+            bool fodder=cropsToIncrease[i].crop->pullValue<bool>("Fodder");
             if(fodder){ //this is a fodder crop - so you need to buy less fodder - totalFUt
-                double resp=cropsToIncrease[i].crop->pullVariable<double>("Response");
-                double loss=cropsToIncrease[i].crop->pullVariable<double>("TotalLoss");
-                double FUKey=cropsToIncrease[i].crop->pullVariable<bool>("FUKey");
+                double resp=cropsToIncrease[i].crop->pullValue<double>("Response");
+                double loss=cropsToIncrease[i].crop->pullValue<double>("TotalLoss");
+                double FUKey=cropsToIncrease[i].crop->pullValue<bool>("FUKey");
                 double FUha=resp*(1-loss/100)*FUKey; //[ha * hkg/ha * FU/hkg = FU]
                 double changeFU=(area-areaBefore)*totalArea/100*FUha; //positive
                 totalFUt-= changeFU;
@@ -1254,9 +1254,9 @@ void Farm::increaseCrops(QList<CropSort>cropsToIncrease, double &howMuchToIncrea
 void Farm::decreaseCrops(QList<CropSort>cropsToDecrease, double &howMuchToDecrease){
 
     for(int j=cropsToDecrease.size()-1; howMuchToDecrease>0 && j>=0; j--){ //start with the worst
-        double areaCrop=cropsToDecrease[j].crop->pullVariable<double>("AreaPercent");
+        double areaCrop=cropsToDecrease[j].crop->pullValue<double>("AreaPercent");
         double areaBefore=areaCrop; //this wont be necessary for plant farm funciton
-        double rotMinCrop=cropsToDecrease[j].crop->pullVariable<double>("RotationMin");
+        double rotMinCrop=cropsToDecrease[j].crop->pullValue<double>("RotationMin");
         if(areaCrop-howMuchToDecrease >= rotMinCrop){
             areaCrop-=howMuchToDecrease;
             howMuchToDecrease=0; //finito
@@ -1265,15 +1265,15 @@ void Farm::decreaseCrops(QList<CropSort>cropsToDecrease, double &howMuchToDecrea
             howMuchToDecrease-=areaCrop - rotMinCrop;
             areaCrop=rotMinCrop;
         }
-        cropsToDecrease[j].crop->pushVariable<double>("AreaPercent", areaCrop);
+        cropsToDecrease[j].crop->pushValue<double>("AreaPercent", areaCrop);
 
         //this just in an animal version, add if - checking if area has changed
         if(areaCrop<areaBefore){
-            bool fodder=cropsToDecrease[j].crop->pullVariable<bool>("Fodder");
+            bool fodder=cropsToDecrease[j].crop->pullValue<bool>("Fodder");
             if(fodder){ //this is a fodder crop - so you need to buy more fodder - totalFUt
-                double resp=cropsToDecrease[j].crop->pullVariable<double>("Response");
-                double loss=cropsToDecrease[j].crop->pullVariable<double>("TotalLoss");
-                double FUKey=cropsToDecrease[j].crop->pullVariable<double>("FUKey");
+                double resp=cropsToDecrease[j].crop->pullValue<double>("Response");
+                double loss=cropsToDecrease[j].crop->pullValue<double>("TotalLoss");
+                double FUKey=cropsToDecrease[j].crop->pullValue<double>("FUKey");
                 double FUha=resp*(1-loss/100)*FUKey; //[ha * hkg/ha * FU/hkg = FU]
                 double changeFU=(areaBefore-areaCrop)*totalArea/100*FUha; //positive number
                 totalFUt+= changeFU;
@@ -1286,19 +1286,19 @@ void Farm::decreaseCrops(QList<CropSort>cropsToDecrease, double &howMuchToDecrea
 void Farm::setRotationCropsAtMax(){
 
     for(int i=0; i<rotationCrops.size(); i++){ //just go through all of them
-        double area=rotationCrops[i].crop->pullVariable<double>("AreaPercent");
+        double area=rotationCrops[i].crop->pullValue<double>("AreaPercent");
         double areaBefore=area;
-        double rotationMax=rotationCrops[i].crop->pullVariable<double>("RotationMax");
+        double rotationMax=rotationCrops[i].crop->pullValue<double>("RotationMax");
         area=rotationMax; //set all at max (maybe put if here, but not necessary
-        rotationCrops[i].crop->pushVariable<double>("AreaPercent", area);
+        rotationCrops[i].crop->pushValue<double>("AreaPercent", area);
 
         //animal version only
         if(area>areaBefore){
-            bool fodder=rotationCrops[i].crop->pullVariable<bool>("Fodder");
+            bool fodder=rotationCrops[i].crop->pullValue<bool>("Fodder");
             if(fodder){ //that is oats
-                double resp=rotationCrops[i].crop->pullVariable<double>("Response");
-                double loss=rotationCrops[i].crop->pullVariable<double>("TotalLoss");
-                double FUKey=rotationCrops[i].crop->pullVariable<double>("FUKey");
+                double resp=rotationCrops[i].crop->pullValue<double>("Response");
+                double loss=rotationCrops[i].crop->pullValue<double>("TotalLoss");
+                double FUKey=rotationCrops[i].crop->pullValue<double>("FUKey");
                 double FUha=resp*(1-loss/100)*FUKey; //[ha * hkg/ha * FU/hkg = FU]
                 double changeFU=(area-areaBefore)*totalArea/100*FUha; //positive number
                 totalFUt-= changeFU; //so you buy less
@@ -1323,11 +1323,11 @@ Crop *wRye = seekOneChild<Crop*>("WRye");
 Crop *wRape = seekOneChild<Crop*>("WRape"); //should not be decreased - might cause violation of winterRotation restriction
 Crop *wCerealSil = seekOneChild<Crop*>("WCerealSil");
 
-double areaWBarley=wBarley->pullVariable<double>("AreaPercent");
-double areaWWheat=wWheat->pullVariable<double>("AreaPercent");
-double areaWRye=wRye->pullVariable<double>("AreaPercent");
-double areaWRape=wRape->pullVariable<double>("AreaPercent");
-double areaWCerealSil=wCerealSil->pullVariable<double>("AreaPercent");
+double areaWBarley=wBarley->pullValue<double>("AreaPercent");
+double areaWWheat=wWheat->pullValue<double>("AreaPercent");
+double areaWRye=wRye->pullValue<double>("AreaPercent");
+double areaWRape=wRape->pullValue<double>("AreaPercent");
+double areaWCerealSil=wCerealSil->pullValue<double>("AreaPercent");
 
 double sum=areaWBarley+areaWWheat+areaWRye+areaWRape+areaWCerealSil;
 
@@ -1389,11 +1389,11 @@ Crop *wRye = seekOneChild<Crop*>("WRye");
 Crop *wRape = seekOneChild<Crop*>("WRape"); //should not be decreased - might cause violation of winterRotation restriction
 Crop *wCerealSil = seekOneChild<Crop*>("WCerealSil"); //fodder
 
-double areaWBarley=wBarley->pullVariable<double>("AreaPercent");
-double areaWWheat=wWheat->pullVariable<double>("AreaPercent");
-double areaWRye=wRye->pullVariable<double>("AreaPercent");
-double areaWRape=wRape->pullVariable<double>("AreaPercent");
-double areaWCerealSil=wCerealSil->pullVariable<double>("AreaPercent");
+double areaWBarley=wBarley->pullValue<double>("AreaPercent");
+double areaWWheat=wWheat->pullValue<double>("AreaPercent");
+double areaWRye=wRye->pullValue<double>("AreaPercent");
+double areaWRape=wRape->pullValue<double>("AreaPercent");
+double areaWCerealSil=wCerealSil->pullValue<double>("AreaPercent");
 
 double sum=areaWBarley+areaWWheat+areaWRye+areaWRape+areaWCerealSil;
 
@@ -1412,11 +1412,11 @@ if(sum>winterMax){
 
     //QList<CropSort>winterCrops;
     //assign keys for sorting - for fodder crops these will be Savings!
-    CropSort cs1 = {wBarley->pullVariable<double>("Savings"), wBarley}; //an object with a key for sorting and a pointer to crop
-    CropSort cs2 = {wWheat->pullVariable<double>("GM"), wWheat};
-    CropSort cs3 = {wRye->pullVariable<double>("GM"), wRye};
-    //CropSort cs4 = {wRape->pullVariable<double>("GM"), wRape};
-    CropSort cs5 = {wCerealSil->pullVariable<double>("Savings"), wCerealSil};
+    CropSort cs1 = {wBarley->pullValue<double>("Savings"), wBarley}; //an object with a key for sorting and a pointer to crop
+    CropSort cs2 = {wWheat->pullValue<double>("GM"), wWheat};
+    CropSort cs3 = {wRye->pullValue<double>("GM"), wRye};
+    //CropSort cs4 = {wRape->pullValue<double>("GM"), wRape};
+    CropSort cs5 = {wCerealSil->pullValue<double>("Savings"), wCerealSil};
     winterCrops.append(cs1);
     winterCrops.append(cs2);
     winterCrops.append(cs3);
@@ -1443,19 +1443,19 @@ if(sum>winterMax){
 void Farm::setCattleCropsAtMin(){
 
     for(int i=0; i<cattleCrops.size(); i++){ //just go through all 2 of them:)
-        double area=cattleCrops[i].crop->pullVariable<double>("AreaPercent");
+        double area=cattleCrops[i].crop->pullValue<double>("AreaPercent");
         double areaBefore=area;
-        double rotationMin=cattleCrops[i].crop->pullVariable<double>("RotationMin");
+        double rotationMin=cattleCrops[i].crop->pullValue<double>("RotationMin");
         area=rotationMin; //set all at min (maybe put if here, but not necessary
-        cattleCrops[i].crop->pushVariable<double>("AreaPercent", area);
+        cattleCrops[i].crop->pushValue<double>("AreaPercent", area);
 
         //animal version only
     if(areaBefore>area){
-        bool fodder=cattleCrops[i].crop->pullVariable<bool>("Fodder");
+        bool fodder=cattleCrops[i].crop->pullValue<bool>("Fodder");
         if(fodder){
-            double resp=cattleCrops[i].crop->pullVariable<double>("Response");
-            double loss=cattleCrops[i].crop->pullVariable<double>("TotalLoss");
-            double FUKey=cattleCrops[i].crop->pullVariable<double>("FUKey");
+            double resp=cattleCrops[i].crop->pullValue<double>("Response");
+            double loss=cattleCrops[i].crop->pullValue<double>("TotalLoss");
+            double FUKey=cattleCrops[i].crop->pullValue<double>("FUKey");
             double FUha=resp*(1-loss/100)*FUKey; //[ha * hkg/ha * FU/hkg = FU]
             double changeFU=(areaBefore-area)*totalArea/100*FUha; //positive number
             totalFUt+= changeFU; //so you buy more
@@ -1482,29 +1482,29 @@ Crop *sBarley = seekOneChild<Crop*>("SBarley"); //fodder
 Crop *gClover = seekOneChild<Crop*>("GrassClover"); //fodder
 Crop *gSeed = seekOneChild<Crop*>("GrassSeed");
 
-double areaSBarley=sBarley->pullVariable<double>("AreaPercent");
-double areaGClover=gClover->pullVariable<double>("AreaPercent");
-double areaGSeed=gSeed->pullVariable<double>("AreaPercent");
+double areaSBarley=sBarley->pullValue<double>("AreaPercent");
+double areaGClover=gClover->pullValue<double>("AreaPercent");
+double areaGSeed=gSeed->pullValue<double>("AreaPercent");
 
 double diff= areaGClover+areaGSeed - areaSBarley;
 
 if(diff>0){ //restriction is not fulfilled
     QList<CropSort>cattleCrops;
-    CropSort cs1 = {gClover->pullVariable<double>("Savings"), gClover}; //an object with a key for sorting and a pointer to crop
-    CropSort cs2 = {gSeed->pullVariable<double>("GM"), gSeed};
+    CropSort cs1 = {gClover->pullValue<double>("Savings"), gClover}; //an object with a key for sorting and a pointer to crop
+    CropSort cs2 = {gSeed->pullValue<double>("GM"), gSeed};
     cattleCrops.append(cs1);
     cattleCrops.append(cs2);
 
     qSort(cattleCrops); //sorting the two crops
 
-    double areaSBarleyMax=sBarley->pullVariable<double>("RotationMax");
+    double areaSBarleyMax=sBarley->pullValue<double>("RotationMax");
     double SBarleyAvailableArea=areaSBarleyMax-areaSBarley;
     double areaSBarleyBefore=areaSBarley;
 
     double available=0; //available to cut from GClover and GSeed
     for(int i=0; i<cattleCrops.size(); i++){  //or simply: i<2
-        double areaMin=cattleCrops[i].crop->pullVariable<double>("AreaMinPercent");
-        double area=cattleCrops[i].crop->pullVariable<double>("AreaPercent");
+        double areaMin=cattleCrops[i].crop->pullValue<double>("AreaMinPercent");
+        double area=cattleCrops[i].crop->pullValue<double>("AreaPercent");
         available+=(area-areaMin);
     }
 
@@ -1528,11 +1528,11 @@ if(diff>0){ //restriction is not fulfilled
 
     file.write("\n\n before changes \n");
         QString line=this->id().label();
-        double areaSB=sBarley->pullVariable<double>("AreaPercent");
+        double areaSB=sBarley->pullValue<double>("AreaPercent");
         line+="  SBarley area " + QString::number(areaSB)+"\n";
-        double areaGC=gClover->pullVariable<double>("AreaPercent");
+        double areaGC=gClover->pullValue<double>("AreaPercent");
         line+="  grass Clover area " + QString::number(areaGC)+"\n";
-        double areaGS=gSeed->pullVariable<double>("AreaPercent");
+        double areaGS=gSeed->pullValue<double>("AreaPercent");
         line+="  grass Seed area " + QString::number(areaGS)+"\n";
         file.write(qPrintable(line));
 
@@ -1549,11 +1549,11 @@ if(diff>0){ //restriction is not fulfilled
 
             file.write("\n\n after changes? \n");
                 QString line2=this->id().label();
-                //double areaSB=sBarley->pullVariable<double>("AreaPercent");
+                //double areaSB=sBarley->pullValue<double>("AreaPercent");
                 line2+="  SBarley area " + QString::number(areaSBarley)+"\n";
-                double areaGC=gClover->pullVariable<double>("AreaPercent");
+                double areaGC=gClover->pullValue<double>("AreaPercent");
                 line2+="  grass Clover area " + QString::number(areaGC)+"\n";
-                double areaGS=gSeed->pullVariable<double>("AreaPercent");
+                double areaGS=gSeed->pullValue<double>("AreaPercent");
                 line2+="  grass Seed area " + QString::number(areaGS)+"\n";
                 file.write(qPrintable(line2));
             }
@@ -1612,11 +1612,11 @@ if(diff>0){ //restriction is not fulfilled
             }
         }
 
-    sBarley->pushVariable<double>("AreaPercent", areaSBarley);
+    sBarley->pushValue<double>("AreaPercent", areaSBarley);
     //this is a fodder crop - so you need to buy less fodder - totalFUt
-        double resp=sBarley->pullVariable<double>("Response");
-        double loss=sBarley->pullVariable<double>("TotalLoss");
-        double FUKey=sBarley->pullVariable<bool>("FUKey");
+        double resp=sBarley->pullValue<double>("Response");
+        double loss=sBarley->pullValue<double>("TotalLoss");
+        double FUKey=sBarley->pullValue<bool>("FUKey");
         double FUha=resp*(1-loss/100)*FUKey; //[ha * hkg/ha * FU/hkg = FU]
         double changeFU=(areaSBarley - areaSBarleyBefore)*totalArea/100*FUha; //positive
         totalFUt-= changeFU;
@@ -1650,12 +1650,12 @@ purchasing the corresponding amount of fodder). Includes only variable fodder cr
 
     for (int i=0; i<fodderCrops.size(); i++){
 
-        double FUKey=fodderCrops[i].crop->pullVariable<double>("FUKey"); //number of FU per hkg of a crop
-        double resp=fodderCrops[i].crop->pullVariable<double>("Response");
-        double loss=fodderCrops[i].crop->pullVariable<double>("TotalLoss");
-        double cost_ha=fodderCrops[i].crop->pullVariable<double>("Costs_ha");
+        double FUKey=fodderCrops[i].crop->pullValue<double>("FUKey"); //number of FU per hkg of a crop
+        double resp=fodderCrops[i].crop->pullValue<double>("Response");
+        double loss=fodderCrops[i].crop->pullValue<double>("TotalLoss");
+        double cost_ha=fodderCrops[i].crop->pullValue<double>("Costs_ha");
         double savings=priceFU*resp*(1-loss/100)*FUKey - cost_ha;
-        fodderCrops[i].crop->pushVariable<double>("Savings", savings);
+        fodderCrops[i].crop->pushValue<double>("Savings", savings);
     }
 }
 
@@ -1670,22 +1670,22 @@ production.*/
 
     double fodderFromFixed=0;
     for (int i=0; i<fixedCrops.size(); i++){
-        double area_percent=fixedCrops[i]->pullVariable<double>("AreaPercent");
+        double area_percent=fixedCrops[i]->pullValue<double>("AreaPercent");
         double area=area_percent/100* totalArea; //this and previous line-changed 09.01.12 & 23.01.12
-        double resp=fixedCrops[i]->pullVariable<double>("Response");
-        double loss=fixedCrops[i]->pullVariable<double>("TotalLoss");
-        double FUKey=fixedCrops[i]->pullVariable<double>("FUKey"); //if it is not a fodder crop, key=0
+        double resp=fixedCrops[i]->pullValue<double>("Response");
+        double loss=fixedCrops[i]->pullValue<double>("TotalLoss");
+        double FUKey=fixedCrops[i]->pullValue<double>("FUKey"); //if it is not a fodder crop, key=0
         double FU=area*resp*(1-loss/100)*FUKey; //[ha * hkg/ha * FU/hkg = FU]
         fodderFromFixed+=FU;//0 will be added in case of non-fodder crops
         totalFUgrown+=FU;
     }
     double fodderFromMinAreas=0;
     for (int i=0; i<variableCrops.size(); i++){
-        double areaMinPercent=variableCrops[i].crop->pullVariable<double>("AreaMinPercent");
+        double areaMinPercent=variableCrops[i].crop->pullValue<double>("AreaMinPercent");
         double area=areaMinPercent/100*totalArea; //min area in ha
-        double resp=variableCrops[i].crop->pullVariable<double>("Response");
-        double loss=variableCrops[i].crop->pullVariable<double>("TotalLoss");
-        double FUKey=variableCrops[i].crop->pullVariable<double>("FUKey");
+        double resp=variableCrops[i].crop->pullValue<double>("Response");
+        double loss=variableCrops[i].crop->pullValue<double>("TotalLoss");
+        double FUKey=variableCrops[i].crop->pullValue<double>("FUKey");
         double FU=area*resp*(1-loss/100)*FUKey; //[ha * hkg/ha * FU/hkg = FU]
         fodderFromMinAreas+=FU;
         totalFUgrown+=FU;
@@ -1764,10 +1764,10 @@ fodder demand (totalFUdemand).*/
 
 for(int p=0; totalFUdemand>0 && p<fodderCrops.size(); p++){ //outer for loop - fodder crops;
 
-    double rotationMax=fodderCrops[p].crop->pullVariable<double>("RotationMax");
-    double areaFodder=fodderCrops[p].crop->pullVariable<double>("AreaPercent");
+    double rotationMax=fodderCrops[p].crop->pullValue<double>("RotationMax");
+    double areaFodder=fodderCrops[p].crop->pullValue<double>("AreaPercent");
     if(areaFodder<rotationMax){ //if not -> go to the next fodder crop
-        double savings=fodderCrops[p].crop->pullVariable<double>("Savings");
+        double savings=fodderCrops[p].crop->pullValue<double>("Savings");
         bool assigningFinished=false; //changed to true when a fodder crop reaches rotationMax
 
         int count=0;
@@ -1780,12 +1780,12 @@ for(int p=0; totalFUdemand>0 && p<fodderCrops.size(); p++){ //outer for loop - f
         //inner for loop - normal crops; starts with the crop with the lowest GM; changed to do-while on 30.01
         int v=grownVariableCrops.size()-1; //added 30.01
         do{ //inner loop
-            double minGM=grownVariableCrops[v]->pullVariable<double>("GM");
+            double minGM=grownVariableCrops[v]->pullValue<double>("GM");
             if(savings>minGM){  //compare savings to GM of the worst 'available' normal crop - which is currently planted and have areaVariable>0
-               double areaVariable=grownVariableCrops[v]->pullVariable<double>("AreaVariable");
-               double FUKey=fodderCrops[p].crop->pullVariable<double>("FUKey"); //number of FU per hkg of a crop
-               double resp=fodderCrops[p].crop->pullVariable<double>("Response");
-               double loss=fodderCrops[p].crop->pullVariable<double>("TotalLoss");
+               double areaVariable=grownVariableCrops[v]->pullValue<double>("AreaVariable");
+               double FUKey=fodderCrops[p].crop->pullValue<double>("FUKey"); //number of FU per hkg of a crop
+               double resp=fodderCrops[p].crop->pullValue<double>("Response");
+               double loss=fodderCrops[p].crop->pullValue<double>("TotalLoss");
                double FUha=resp*(1-loss/100)*FUKey;
                double haNeeded=totalFUdemand/FUha;
                double percNeeded=haNeeded*100/totalArea;
@@ -1823,10 +1823,10 @@ for(int p=0; totalFUdemand>0 && p<fodderCrops.size(); p++){ //outer for loop - f
 
                    }
                }
-               double areaMin=grownVariableCrops[v]->pullVariable<double>("AreaMinPercent");
+               double areaMin=grownVariableCrops[v]->pullValue<double>("AreaMinPercent");
                double areaPer=areaMin+areaVariable;
-               grownVariableCrops[v]->pushVariable<double>("AreaPercent", areaPer);
-               grownVariableCrops[v]->pushVariable<double>("AreaVariable", areaVariable);
+               grownVariableCrops[v]->pushValue<double>("AreaPercent", areaPer);
+               grownVariableCrops[v]->pushValue<double>("AreaVariable", areaVariable);
 
                //writing to a file
                QFile file;
@@ -1866,7 +1866,7 @@ for(int p=0; totalFUdemand>0 && p<fodderCrops.size(); p++){ //outer for loop - f
             v--;    //added 30.01 - now use do-while loop
         }while (assigningFinished==false && v>=0);//inner for-loop (normal crops)/changed to do-while loop, 30.01
 
-        fodderCrops[p].crop->pushVariable<double>("AreaPercent", areaFodder);//update fodder crop - after the inner loop
+        fodderCrops[p].crop->pushValue<double>("AreaPercent", areaFodder);//update fodder crop - after the inner loop
 
         if(assigningFinished==false){ //loop was stopped by the condition->no more space on normal crops available
             //there's no more space on normal crops-have to buy the remaining totalFUdemand
@@ -1897,20 +1897,20 @@ if(fakeCropTest==true){ //only if it was used in determineAreas - check if it is
     file.write("\n\n fake crop\n");
         QString line=this->id().label();
         int s=grownVariableCrops.size()-1;
-        double areaF=grownVariableCrops[s]->pullVariable<double>("AreaPercent");
+        double areaF=grownVariableCrops[s]->pullValue<double>("AreaPercent");
         line+="  fake crop area " + QString::number(areaF)+"\n";
         file.write(qPrintable(line));
 
     //check if the fake crop is still there - if so, substitute it with fodder crops
 
-    double areaFakeCrop=grownVariableCrops[s]->pullVariable<double>("AreaPercent");
+    double areaFakeCrop=grownVariableCrops[s]->pullValue<double>("AreaPercent");
     if(areaFakeCrop>0){
         increaseCrops(fodderCrops, areaFakeCrop);
-        grownVariableCrops[s]->pushVariable<double>("AreaPercent", areaFakeCrop);
+        grownVariableCrops[s]->pushValue<double>("AreaPercent", areaFakeCrop);
     }
 
     file.write("\n\n fake crop after it is corrected\n");
-        areaF=grownVariableCrops[s]->pullVariable<double>("AreaPercent");
+        areaF=grownVariableCrops[s]->pullValue<double>("AreaPercent");
         line+="  fake crop area " + QString::number(areaF)+"\n";
         file.write(qPrintable(line));
 }
@@ -1931,7 +1931,7 @@ void Farm::determineMinFodder(){
 
         double available=0; //area of  normal crops available to substitute with fodder crops
         for(int i=0; i<grownVariableCrops.size(); i++){
-              double areaVariableCrop=grownVariableCrops[i]->pullVariable<double>("AreaVariable");
+              double areaVariableCrop=grownVariableCrops[i]->pullValue<double>("AreaVariable");
               available+=areaVariableCrop;
         }
 
@@ -1949,19 +1949,19 @@ void Farm::determineMinFodder(){
         file.write("\n\n grown var crops\n");
         for (int i=0; i<grownVariableCrops.size(); i++){
             QString line=grownVariableCrops[i]->id().label();
-            line+=" " + QString::number(grownVariableCrops[i]->pullVariable<double>("AreaVariable"))+"\n";
+            line+=" " + QString::number(grownVariableCrops[i]->pullValue<double>("AreaVariable"))+"\n";
             line+=" " + QString::number(available)+"\n";
             file.write(qPrintable(line));
         }
 
 
         for(int i=0; available>0 && i<fodderCrops.size() && fodderToProduce>0 ; i++){// if so, more has to be produced (than it is already-from min areas and fixed crops)
-            double rotationMax=fodderCrops[i].crop->pullVariable<double>("RotationMax");
-            double area=fodderCrops[i].crop->pullVariable<double>("AreaPercent"); //fodder crop's area
+            double rotationMax=fodderCrops[i].crop->pullValue<double>("RotationMax");
+            double area=fodderCrops[i].crop->pullValue<double>("AreaPercent"); //fodder crop's area
             double areaBefore=area; //could be positive - if areaMin>0, so save it
-            double FUKey=fodderCrops[i].crop->pullVariable<double>("FUKey"); //number of FU per hkg of a crop
-            double resp=fodderCrops[i].crop->pullVariable<double>("Response");
-            double loss=fodderCrops[i].crop->pullVariable<double>("TotalLoss");
+            double FUKey=fodderCrops[i].crop->pullValue<double>("FUKey"); //number of FU per hkg of a crop
+            double resp=fodderCrops[i].crop->pullValue<double>("Response");
+            double loss=fodderCrops[i].crop->pullValue<double>("TotalLoss");
             double FUha=resp*(1-loss/100)*FUKey;
             double haNeeded=fodderToProduce/FUha;
             double percNeeded=haNeeded*100/totalArea;
@@ -1986,7 +1986,7 @@ void Farm::determineMinFodder(){
                     area=rotationMax;
                 }
             }
-            fodderCrops[i].crop->pushVariable<double>("AreaPercent", area);
+            fodderCrops[i].crop->pushValue<double>("AreaPercent", area);
             double Funits=FUha*(area-areaBefore)*totalArea/100;
             fodderToProduce-=Funits; //update fodderToProduce; in 1st case - it's now = 0.
             totalFUdemand-=Funits; //update the total demand as well!
@@ -1996,7 +1996,7 @@ void Farm::determineMinFodder(){
             //writing to a file
             file.write("\n\n fodder crops-area\n");
             QString line=fodderCrops[i].crop->id().label();
-            line+=" " + QString::number(fodderCrops[i].crop->pullVariable<double>("AreaPercent"))+"\n";
+            line+=" " + QString::number(fodderCrops[i].crop->pullValue<double>("AreaPercent"))+"\n";
             line+=" " + QString::number(areaAssignedToFodder)+"\n";
             line+=" " + QString::number(fodderToProduce)+"\n";
             file.write(qPrintable(line));
@@ -2010,7 +2010,7 @@ void Farm::determineMinFodder(){
 
         int nrOfRemovedCrops=0; //will probbaly be useful in determining fodder crops afterwards-no:)
         for(int j=grownVariableCrops.size()-1; areaAssignedToFodder>0 && j>=0; j--){//need to cut some of the variable crops-start with the last one on the list - that's the one with the smallest GM
-            double areaVariableCrop=grownVariableCrops[j]->pullVariable<double>("AreaVariable");
+            double areaVariableCrop=grownVariableCrops[j]->pullValue<double>("AreaVariable");
             if(areaVariableCrop<areaAssignedToFodder){
                 areaAssignedToFodder-=areaVariableCrop;
                 areaVariableCrop=0;
@@ -2021,10 +2021,10 @@ void Farm::determineMinFodder(){
                 areaAssignedToFodder=0; //so this is the last run of the loop
             }
             //now save all the changes
-            grownVariableCrops[j]->pushVariable<double>("AreaVariable", areaVariableCrop);
-            double areaMin=grownVariableCrops[j]->pullVariable<double>("AreaMinPercent");
+            grownVariableCrops[j]->pushValue<double>("AreaVariable", areaVariableCrop);
+            double areaMin=grownVariableCrops[j]->pullValue<double>("AreaMinPercent");
             double areaPer=areaVariableCrop+areaMin;
-            grownVariableCrops[j]->pushVariable<double>("AreaPercent", areaPer);
+            grownVariableCrops[j]->pushValue<double>("AreaPercent", areaPer);
         }
 
         if(areaAssignedToFodder>0){
@@ -2043,9 +2043,9 @@ void Farm::determineMinFodder(){
 
 void Farm::determineAreas_ha(QList<Crop*>allCrops){ //area in ha
     for(int i=0; i<allCrops.size(); i++){
-        double areaPercent=allCrops[i]->pullVariable <double>("AreaPercent");
+        double areaPercent=allCrops[i]->pullValue <double>("AreaPercent");
         double area_ha = (areaPercent==0) ? 0 : (areaPercent/100 * totalArea);
-        crops[i]->pushVariable<double>("Area_ha", area_ha);
+        crops[i]->pushValue<double>("Area_ha", area_ha);
     }
 }
 
@@ -2053,9 +2053,9 @@ void Farm::determineAreas_ha(QList<Crop*>allCrops){ //area in ha
 double Farm::total(QString variable_name){
     double totalAmount =0;
     for (int i=0; i<crops.size(); i++){
-        double area_ha=crops[i]->pullVariable<double>("Area_ha");
+        double area_ha=crops[i]->pullValue<double>("Area_ha");
         if(!area_ha==0){ //otherwise don't change totalAmount
-           double value_per_ha=crops[i]->pullVariable<double>(variable_name);
+           double value_per_ha=crops[i]->pullValue<double>(variable_name);
            totalAmount+= value_per_ha * area_ha; //each crop's/(field's) optimal values per ha multiplied by acreage of a crop
         }
     }
@@ -2078,7 +2078,7 @@ to crop and a key.*/
     QString sortingKey=sortKey;
 
     for (int i=0; i<cropsToSort.size(); i++){//define the key to sorting
-        cropsToSort[i].key = cropsToSort[i].crop->pullVariable<double>(sortingKey);
+        cropsToSort[i].key = cropsToSort[i].crop->pullValue<double>(sortingKey);
     }
     qSort(cropsToSort);
 }

@@ -10,8 +10,7 @@
 #include <cmath>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "seed_bank.h"
 
@@ -38,34 +37,33 @@ SeedBank::SeedBank(UniSim::Identifier name, QObject *parent)
                  "Exponent @I a in the equation to calculate @F cropEffectOnEmergence, "
                  "@Math{ y = exp(-ax sup{5 over 2}) }, "
                  "where @I x is the leaf area index of the current @F {Crop}");
+    new Parameter<double>("dormantInflow", &dormantInflow, 0., this,
+                 "Use this to set the daily inflow of dormant seeds into the seed bank (seeds per m @Sup 2 per day). "
+                 "You cannot put non-dormant seeds into the seed bank");
+    new Parameter<double>("instantMortality", &instantMortality, 0., this,
+                 "The mortality (%) will be applied once in the next time step, before new seeds of @F dormantInflow "
+                 "are added. Dormant and non-dormant seeds will be affected alike");
 
-    new PullVariable<double>("number", &total, this,
+    new Variable<double>("number", &total, this,
                      "Total number of seeds (dormant + non-dormant) in the soil (seeds per m @Sup {2})");
-    new PullVariable<double>("dormant", &dormant, this,
+    new Variable<double>("dormant", &dormant, this,
                      "Number of dormant seeds in the soil (seeds per m @Sup {2})");
-    new PullVariable<double>("nonDormant", &density, this,
+    new Variable<double>("nonDormant", &density, this,
                      "Number of non-dormant seeds in the soil (seeds per m @Sup {2})");
-    new PullVariable<double>("dailyEmergenceRatio", &dailyEmergenceRatio, this,
+    new Variable<double>("dailyEmergenceRatio", &dailyEmergenceRatio, this,
                      "Ratio [0..1] of seedlings emerging in this time step (per day)");
-    new PullVariable<double>("totalEmergenceRatio", &totalEmergenceRatio, this,
+    new Variable<double>("totalEmergenceRatio", &totalEmergenceRatio, this,
                      "Accumulated ratio [0..1] of seedlings that have emerged since 1 January");
-    new PullVariable<double>("dailyEmergenceDensity", &dailyEmergenceDensity, this,
+    new Variable<double>("dailyEmergenceDensity", &dailyEmergenceDensity, this,
                      "Density of seedlings emerging in this time step (seedlings per m @Sup 2 per day)");
-    new PullVariable<double>("totalEmergenceDensity", &totalEmergenceDensity, this,
+    new Variable<double>("totalEmergenceDensity", &totalEmergenceDensity, this,
                      "Accumulated density of seedlings emerged since 1 January (seedlings per m @Sup {2})");
-    new PullVariable<double>("cropEffectOnEmergence", &cropEffectOnEmergence, this,
+    new Variable<double>("cropEffectOnEmergence", &cropEffectOnEmergence, this,
                      "The effect [0..1] is a scaling factor applied to the @F dailyEmergenceRatioPotential to "
                      "achieve the realised @F {dailyEmergenceRatio}");
-    new PullVariable<double>("dailyEmergenceRatioPotential", &dailyEmergenceRatioPotential, this,
+    new Variable<double>("dailyEmergenceRatioPotential", &dailyEmergenceRatioPotential, this,
                      "Potential ratio [0..1] of seedlings emerging in this time step (per day). "
                      "The realised ratio @F dailyEmergenceRatio depends on the shading effect of the crop");
-
-    new PushVariable<double>("dormantInflow", &dormantInflow, this,
-                     "Use this to set the daily inflow of dormant seeds into the seed bank (seeds per m @Sup 2 per day). "
-                     "You cannot put non-dormant seeds into the seed bank");
-    new PushVariable<double>("instantMortality", &instantMortality, this,
-                     "The mortality (%) will be applied once in the next time step, before new seeds of @F dormantInflow "
-                     "are added. Dormant and non-dormant seeds will be affected alike");
 }
 
 void SeedBank::initialize()
@@ -92,7 +90,7 @@ void SeedBank::update()
     //QMessageBox::information(0, "Test", QString::number(density));
     applyInstantMortality();
     addInflow();
-    int dayOfYear = calendar->pullVariable<int>("dayOfYear");
+    int dayOfYear = calendar->pullValue<int>("dayOfYear");
     dailyEmergenceRatioPotential = lookupEmergence(dayOfYear);
     cropEffectOnEmergence = calcCropEffectOnEmergence();
     dailyEmergenceRatio = dailyEmergenceRatioPotential*cropEffectOnEmergence;
@@ -125,7 +123,7 @@ void SeedBank::addInflow() {
     dormant += dormantInflow;
     dormantInflow = 0.;
 
-    int dayOfYear = calendar->pullVariable<int>("dayOfYear");
+    int dayOfYear = calendar->pullValue<int>("dayOfYear");
     if (dayOfYear == 1) {
         density += dormant;
         dormant = 0.;
@@ -133,7 +131,7 @@ void SeedBank::addInflow() {
 }
 
 double SeedBank::calcCropEffectOnEmergence() const {
-    return exp(-cropLaiExp*UniSim::pow0(rotation->pullVariable<double>("lai"),2.5));
+    return exp(-cropLaiExp*UniSim::pow0(rotation->pullValue<double>("lai"),2.5));
 }
 
 void SeedBank::decodeEmergence() {

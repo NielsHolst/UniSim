@@ -60,7 +60,7 @@ private:
     struct TraceParam : public Attributes {
         QObject *parent;
     };
-    QList<TraceParam> traceVariableParam, traceParameterParam;
+    QList<TraceParam> traceVariableParam;
 
     // methods
     void clearTables();

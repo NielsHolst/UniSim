@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "time.h"
 
@@ -20,10 +20,10 @@ Time::Time(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("T0", &T0, 0.9, this, "desc");
     new Parameter<double>("Tmax", &Tmax, 31.7, this, "desc");
 
-    new PullVariable<double>("dayLengthIndex", &dayLengthIndex, this, "desc");
-    new PullVariable<double>("temperatureIndex", &temperatureIndex, this, "desc");
-    new PullVariable<double>("step", &step, this, "desc");
-    new PullVariable<double>("total", &total, this, "desc");
+    new Variable<double>("dayLengthIndex", &dayLengthIndex, this, "desc");
+    new Variable<double>("temperatureIndex", &temperatureIndex, this, "desc");
+    new Variable<double>("step", &step, this, "desc");
+    new Variable<double>("total", &total, this, "desc");
 }
 
 void Time::initialize() {
@@ -36,8 +36,8 @@ void Time::reset() {
 }
 
 void Time::update() {
-    double L = calendar->pullVariable<double>("dayLength");
-    double T = weather->pullVariable<double>("Tavg");
+    double L = calendar->pullValue<double>("dayLength");
+    double T = weather->pullValue<double>("Tavg");
     dayLengthIndex = L < L0 ? 1. : exp((L - L0)*log(1. - alfa/100.));
     if (T < T0)
         temperatureIndex = 0.;

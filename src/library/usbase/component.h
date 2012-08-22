@@ -14,8 +14,6 @@
 namespace UniSim{
 
 class ParameterBase;
-class PullVariableBase;
-
 
 class Component : public NamedObject
 {
@@ -61,10 +59,10 @@ signals:
     \endverbatim
     */
     void event(QObject *sender, QString eventName);
-    void pullVariableChanged(PullVariableBase *var, ParameterBase *param);
+//    void pullValueChanged(PullVariableBase *var, ParameterBase *param);
 
-private slots:
-    void acceptPullVariableChanged(PullVariableBase *var, ParameterBase *param);
+//private slots:
+//    void acceptPullVariableChanged(PullVariableBase *var, ParameterBase *param);
 
 private:
     // data

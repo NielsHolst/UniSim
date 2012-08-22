@@ -1,7 +1,6 @@
 #include <cmath>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include <iostream>
 #include "trickle_box.h"
 
@@ -11,9 +10,9 @@ TrickleBox::TrickleBox(QString name, QObject *parent)
 	: UniSim::Model(name,parent) 
 { 
     new Parameter<int>("capacity", &_capacity, 5, this, "desc");
-    new PushVariable<double>("inflow", &_inflow, this, "desc");
-    new PullVariable<double>("contents", &_contents, this, "desc");
-    new PullVariable<double>("outflow", &_outflow, this, "desc");
+    new Parameter<double>("inflow", &_inflow, 0., this, "desc");
+    new Variable<double>("contents", &_contents, this, "desc");
+    new Variable<double>("outflow", &_outflow, this, "desc");
 }
 
 void TrickleBox::initialize()

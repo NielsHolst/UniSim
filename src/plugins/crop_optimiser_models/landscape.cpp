@@ -5,7 +5,7 @@
 */
 
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "farm.h"
 #include "landscape.h"
 #include "crop.h"
@@ -87,7 +87,7 @@ void Landscape::amend() { //called just once! after the xml is open
     for (int i = 0; i < n; ++i) {
         QString name = crops[i]->id().label();
         double *value = &cropTotals[i];
-        new PullVariable<double>(name, value, this, "desc");
+        new Variable<double>(name, value, this, "desc");
     }
 }
 
@@ -105,7 +105,7 @@ void Landscape::update() {
         Q_ASSERT(crops.size()==cropTotals.size()); //if this is false - programme will stop
 
         for(int j=0; j<crops.size(); j++){
-            double area=crops[j]->pullVariable<double>("Area_ha");
+            double area=crops[j]->pullValue<double>("Area_ha");
             cropTotals[j]+=area;
         }
     }

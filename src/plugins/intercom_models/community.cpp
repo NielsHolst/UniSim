@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/test_num.h>
 #include "area.h"
 #include "plant.h"
@@ -22,15 +22,15 @@ Community::Community(UniSim::Identifier name, QObject *parent)
     "In test mode, the plants stop growing after @F earlyGrowthThreshold has been reached. "
     "Daily photosynthesis is calculated but not allocated");
 
-    new PullVariable<bool>("isInEarlyGrowth", &isEarly, this,
+    new Variable<bool>("isInEarlyGrowth", &isEarly, this,
                            "Is the community it its early growth phase?");
-    new PullVariable<double>("LAI", &lai, this,
+    new Variable<double>("LAI", &lai, this,
                              "Leaf area index of whole community (m @Sup 2 plant area per m @Sup 2 ground)");
-    new PullVariable<double>("lightAbsorption", &lightAbsorption, this,
+    new Variable<double>("lightAbsorption", &lightAbsorption, this,
                              "Absorbed light (W per m @Sup 2 ground per day)");
-    new PullVariable<double>("CO2Assimilation", &CO2Assimilation, this,
+    new Variable<double>("CO2Assimilation", &CO2Assimilation, this,
                              "Assimilated kg CO @Sub 2 per ha ground per day");
-    new PullVariable<double>("grossProduction", &grossProduction, this,
+    new Variable<double>("grossProduction", &grossProduction, this,
                              "Produced kg CH @Sub {2}O per ha ground per day");
 
 }
@@ -48,7 +48,7 @@ void Community::reset() {
 void Community::updateLai() {
     lai = 0.;
     for (int i = 0; i < plants.size(); ++i)
-        lai += plants[i]->pullVariable<double>("lai");
+        lai += plants[i]->pullValue<double>("lai");
 }
 
 void Community::update() {
@@ -78,12 +78,12 @@ void Community::update() {
             isEarly = false;
             plant->updatePhotosynthesis();
         }
-        lightAbsorption += plant->pullVariable<double>("lightAbsorption");
-        CO2Assimilation += plant->pullVariable<double>("CO2Assimilation");
-        grossProduction += plant->pullVariable<double>("grossProduction");
-        maintenanceResp += plant->pullVariable<double>("maintenanceResp");
-        growthResp += plant->pullVariable<double>("growthResp");
-        netAllocation += plant->pullVariable<double>("netAllocation");
+        lightAbsorption += plant->pullValue<double>("lightAbsorption");
+        CO2Assimilation += plant->pullValue<double>("CO2Assimilation");
+        grossProduction += plant->pullValue<double>("grossProduction");
+        maintenanceResp += plant->pullValue<double>("maintenanceResp");
+        growthResp += plant->pullValue<double>("growthResp");
+        netAllocation += plant->pullValue<double>("netAllocation");
     }
 }
 

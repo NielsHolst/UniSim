@@ -6,8 +6,7 @@
 #include <iostream>
 #include <QString>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include "insect_life_cycle.h"
 #include "stage.h"
 
@@ -16,11 +15,11 @@ namespace UniSim{
 InsectLifeCycle::InsectLifeCycle(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new PullVariable<double>("eclosedReproductiveAdults", &eclosedReproductiveAdults, this,
+    new Variable<double>("eclosedReproductiveAdults", &eclosedReproductiveAdults, this,
                              "Number of individuals just eclosed and entering the reproductive adult stage");
-    new PullVariable<double>("adultsToHibernation", &adultsToHibernation, this,
+    new Variable<double>("adultsToHibernation", &adultsToHibernation, this,
                              "Number of individuals entering the hibernating adult stage");
-    new PullVariable<double>("deadAdults", &deadAdults, this,
+    new Variable<double>("deadAdults", &deadAdults, this,
                              "Number of individuals dead from senescence");
 }
 
@@ -49,11 +48,11 @@ void InsectLifeCycle::update() {
             }
             else {
                 eclosedReproductiveAdults = transfer;
-                stage->pushVariable<double>("inflow", transfer);
+                stage->pushValue<double>("inflow", transfer);
             }
         }
         else {
-            stage->pushVariable<double>("inflow", transfer);
+            stage->pushValue<double>("inflow", transfer);
         }
         transfer = updateStage(stage);
     }
@@ -64,10 +63,10 @@ double InsectLifeCycle::updateStage(Stage *stage) {
     Model *survival = stage->peekOneChild<Model*>("survival");
     if (survival) {
         survival->deepUpdate();
-        stage->pushVariable<double>("growthRate", survival->pullVariable<double>("value"));
+        stage->pushValue<double>("growthRate", survival->pullValue<double>("value"));
     }
     stage->deepUpdate();
-    return stage->pullVariable<double>("outflow");
+    return stage->pullValue<double>("outflow");
 }
 
 

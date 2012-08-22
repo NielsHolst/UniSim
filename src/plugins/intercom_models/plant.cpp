@@ -23,29 +23,27 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("density", &density, 100., this,
                           "Plants per m @Sup {2}");
 
-    new PullVariable<double>("density", &density, this,
-                             "Plants per m @Sup {2}");
-    new PullVariable<double>("mass", &mass, this,
+    new Variable<double>("mass", &mass, this,
                              "Mass of one plant (g per plant)");
-    new PullVariable<double>("LAI", &lai, this,
+    new Variable<double>("LAI", &lai, this,
                              "Leaf area index of whole plant (m @Sup 2 plant area per m @Sup 2 ground)");
-    new PullVariable<double>("lightAbsorption", &lightAbsorption, this,
+    new Variable<double>("lightAbsorption", &lightAbsorption, this,
                              "Absorbed light (W per m @Sup 2 ground per day)");
-    new PullVariable<double>("allocatedPerPlant", &allocatedPerPlant, this,
+    new Variable<double>("allocatedPerPlant", &allocatedPerPlant, this,
                              "Net allocation rate, the daily increment to plant @F mass (g per plant per day)");
 
-    new PullVariable<double>("CO2Assimilation", &CO2Assimilation, this,
+    new Variable<double>("CO2Assimilation", &CO2Assimilation, this,
                              "Assimilated CO @Sub 2 (kg CO @Sub 2 per ha ground per day");
-    new PullVariable<double>("grossProduction", &grossProduction, this,
+    new Variable<double>("grossProduction", &grossProduction, this,
                              "Produced kg CH @Sub {2}O per ha ground per day");
-    new PullVariable<double>("maintenanceResp", &maintenanceResp, this,
+    new Variable<double>("maintenanceResp", &maintenanceResp, this,
                              "Maintenance respiration (kg CH @Sub {2}O per ha ground per day)");
-    new PullVariable<double>("growthResp", &growthResp, this,
+    new Variable<double>("growthResp", &growthResp, this,
                              "Growth respiration (kg CH @Sub 2 O per ha ground per day)");
-    new PullVariable<double>("availableProduction", &availableProduction, this,
+    new Variable<double>("availableProduction", &availableProduction, this,
                              "The available production is gross production minus maintenance respiration "
                              "(kg CH @Sub {2}O per ha ground per day)");
-    new PullVariable<double>("netAllocation", &netAllocation, this,
+    new Variable<double>("netAllocation", &netAllocation, this,
                              "Net allocation rate, the daily increment to plant population @F mass "
                              "(kg CH @Sub {2}O per ha ground per day)");
 }
@@ -59,20 +57,20 @@ void Plant::initialize() {
         info.organ = organModels[i];
         info.mass = info.organ->seekOneChild<Mass*>("*");
         info.area = info.organ->peekOneChild<Area*>("*");
-        info.massValue = info.mass->pullVariablePtr<double>("value");
+        info.massValue = info.mass->pullValuePtr<double>("value");
 
         Model *partion = info.mass->seekOneChild<Model*>("partition");
-        info.idealPartitioning = partion->pullVariablePtr<double>("value");
+        info.idealPartitioning = partion->pullValuePtr<double>("value");
 
         if (info.area) {
             Model *sla = info.area->seekOneChild<Model*>("specificLeafArea");
-            info.sla = sla->pullVariablePtr<double>("value");
+            info.sla = sla->pullValuePtr<double>("value");
         }
         else {
             info.sla = 0;
         }
 
-        info.carbohydrateRequirements = info.organ->parameter<double>("CH2ORequirement");
+        info.carbohydrateRequirements = info.organ->pullValue<double>("CH2ORequirement");
 
         organs.append(info);
         solution.append(OptimizeAllocation::SolutionEntry());
@@ -97,7 +95,7 @@ void Plant::updatePullVariables() {
     lai = 0.;
     for (int i = 0; i < organs.size(); ++i)
         if (organs[i].area)
-            lai += organs[i].area->pullVariable<double>("lai");
+            lai += organs[i].area->pullValue<double>("lai");
 
     mass = 0;
     for (int i = 0; i < organs.size(); ++i)
@@ -118,7 +116,7 @@ void Plant::updateEarlyGrowth() {
         }
     }
 
-    double totalArea = earlyGrowth->pullVariable<double>("value");
+    double totalArea = earlyGrowth->pullValue<double>("value");
     double totalAreaMass = (idealWeightedSum == 0) ? 0. : totalArea/idealWeightedSum;
 
     double increment;
@@ -140,9 +138,9 @@ void Plant::updateEarlyGrowth() {
         double ideal = *organs[i].idealPartitioning;
         Organ *organ = organs[i].organ;
         organ->allocateNet(ideal, increment);
-        allocatedPerPlant += organ->pullVariable<double>("allocatedPerPlant");
-        netAllocation += organ->pullVariable<double>("netAllocation");
-        growthResp += organ->pullVariable<double>("growthResp");
+        allocatedPerPlant += organ->pullValue<double>("allocatedPerPlant");
+        netAllocation += organ->pullValue<double>("netAllocation");
+        growthResp += organ->pullValue<double>("growthResp");
     }
     updatePullVariables();
 }
@@ -156,10 +154,10 @@ void Plant::updatePhotosynthesis() {
     for (int i = 0; i < organs.size(); ++i) {
         Organ *organ = organs[i].organ;
         organ->updatePhotosynthesis();
-        lightAbsorption += organ->pullVariable<double>("lightAbsorption");
-        CO2Assimilation += organ->pullVariable<double>("CO2Assimilation");
-        grossProduction += organ->pullVariable<double>("grossProduction");
-        maintenanceResp += organ->pullVariable<double>("maintenanceResp");
+        lightAbsorption += organ->pullValue<double>("lightAbsorption");
+        CO2Assimilation += organ->pullValue<double>("CO2Assimilation");
+        grossProduction += organ->pullValue<double>("grossProduction");
+        maintenanceResp += organ->pullValue<double>("maintenanceResp");
     }
     allocate();
 }
@@ -178,9 +176,9 @@ void Plant::allocate() {
         Organ *organ = organs[solution[i].second].organ;
         double proportion = solution[i].first;
         organ->allocate(proportion, availableProduction);
-        allocatedPerPlant += organ->pullVariable<double>("allocatedPerPlant");
-        netAllocation += organ->pullVariable<double>("netAllocation");
-        growthResp += organ->pullVariable<double>("growthResp");
+        allocatedPerPlant += organ->pullValue<double>("allocatedPerPlant");
+        netAllocation += organ->pullValue<double>("netAllocation");
+        growthResp += organ->pullValue<double>("growthResp");
     }
     updatePullVariables();
 }

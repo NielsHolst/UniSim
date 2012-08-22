@@ -5,8 +5,6 @@
 */
 #ifndef ECOTOX_POLLEN_ONSET_DATE
 #define ECOTOX_POLLEN_ONSET_DATE
-#include <boost/random/uniform_01.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
 #include <usbase/data_grid.h>
 #include <QDate>
 #include <QMap>

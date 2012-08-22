@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "respiration_demand.h"
 #include "life_stage.h"
 
@@ -16,16 +16,16 @@ RespirationDemand::RespirationDemand(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     new Parameter<double>("resp20", &respRate, 0.1, this, "Respiration rate (g/g per time step) at 20 @Char ring C");
-    new PullVariable<double>("value", &value, this, "Respiration during this time step (g)");
+    new Variable<double>("value", &value, this, "Respiration during this time step (g)");
 }
 
 void RespirationDemand::initialize() {
     Model *stage = seekNearestAscendant<LifeStage*>("*");
     Model *massModel = stage->seekOneDescendant<Model*>("lifetable/mass");
-    mass = massModel->pullVariablePtr<double>("value");
+    mass = massModel->pullValuePtr<double>("value");
 
     Model *weather = seekOne<Model*>("weather");
-    temp = weather->pullVariablePtr<double>("Tavg");
+    temp = weather->pullValuePtr<double>("Tavg");
 }
 
 void RespirationDemand::reset() {

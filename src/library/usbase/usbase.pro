@@ -27,6 +27,7 @@ HEADERS += \
         $${US_BASE}/minimiser.h \
         $${US_BASE}/model.h \
         $${US_BASE}/model_maker_plug_in.h \
+        $${US_BASE}/moments.h \
         $${US_BASE}/named_object.h \
         $${US_BASE}/name_list.h \
         $${US_BASE}/object_pool.h \
@@ -34,10 +35,8 @@ HEADERS += \
         $${US_BASE}/output_maker_plug_in.h \
         $${US_BASE}/parameter.h \
         $${US_BASE}/parameter_base.h \
-        $${US_BASE}/pull_variable.h \
-        $${US_BASE}/pull_variable_base.h \
-        $${US_BASE}/push_variable.h \
-        $${US_BASE}/push_variable_base.h \
+        $${US_BASE}/variable.h \
+        $${US_BASE}/variable_base.h \
         $${US_BASE}/random.h \
         $${US_BASE}/root_solver.h \
         $${US_BASE}/strata.h \
@@ -61,13 +60,12 @@ SOURCES += \
         $${US_BASE}/integrator.cpp \
         $${US_BASE}/minimiser.cpp \
         $${US_BASE}/model.cpp \
+        $${US_BASE}/moments.cpp \
         $${US_BASE}/named_object.cpp \
         $${US_BASE}/name_list.cpp \
         $${US_BASE}/object_pool.cpp \
         $${US_BASE}/output.cpp \
-        $${US_BASE}/parameter_base.cpp \
-        $${US_BASE}/pull_variable_base.cpp \
-        $${US_BASE}/push_variable_base.cpp \
+        $${US_BASE}/variable_base.cpp \
         $${US_BASE}/random.cpp \
         $${US_BASE}/root_solver.cpp \
         $${US_BASE}/time.cpp \

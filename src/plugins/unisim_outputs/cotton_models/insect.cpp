@@ -5,7 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/stage.h"
 #include "insect.h"
@@ -19,7 +19,7 @@ Insect::Insect(UniSim::Identifier name, QObject *parent)
 {
     new Parameter<QDate>("initEgglayingDate", &initEgglayingDate, QDate(2009,3,1), this, "Initial egglaying date");
     new Parameter<double>("initEggs", &initEggs, 30., this, "Initial number of insect eggs");
-    new PullVariable<bool>("eggsLaid", &eggsLaid, this, "Have eggs been laid?");
+    new Variable<bool>("eggsLaid", &eggsLaid, this, "Have eggs been laid?");
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 }
 
@@ -44,19 +44,19 @@ void Insect::reset() {
 void Insect::update() {
     // Lay eggs
     if (isEgglayingDate())
-        egg->pushVariable("inflow", initEggs);
+        egg->pushValue("inflow", initEggs);
 
     // Development of life stages
     stages[0]->deepUpdate();
     for (int i = 1; i < stages.size(); ++i) {
-        stages[i]->pushVariable("inflow", stages[i-1]->pullVariable<double>("outflow"));
+        stages[i]->pushValue("inflow", stages[i-1]->pullValue<double>("outflow"));
         stages[i]->deepUpdate();
     }
 }
 
 bool Insect::isEgglayingDate() {
-    QDate today = calendar->pullVariable<QDate>("date");
-    int iteration = runIterator ? runIterator->pullVariable<int>("iteration") : 1;
+    QDate today = calendar->pullValue<QDate>("date");
+    int iteration = runIterator ? runIterator->pullValue<int>("iteration") : 1;
     QDate egglayingDate = initEgglayingDate.addDays(iteration - 1);
 
     eggsLaid = (today == egglayingDate);

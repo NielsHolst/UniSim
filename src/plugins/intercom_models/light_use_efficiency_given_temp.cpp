@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "light_use_efficiency_given_temp.h"
 
 using namespace UniSim;
@@ -17,7 +17,7 @@ LightUseEfficiencyGivenTemp::LightUseEfficiencyGivenTemp(UniSim::Identifier name
     new Parameter<double>("slope", &slope, -0.0095, this, "Slope of the line (kg CO @Sub 2 per ha leaf per hour per (W per m @Sup 2 leaf) per {@Degree}C)");
     new Parameter<double>("intercept", &intercept, 0.635, this, "Intercept of the line (kg CO @Sub 2 per ha leaf per hour per (W per m @Sup 2 leaf)')");
 
-    new PullVariable<double>("value", &value, this, "Light use efficiency, @Sym epsilon (kg CO @Sub 2 per ha leaf per hour per (W per m @Sup 2 leaf)')");
+    new Variable<double>("value", &value, this, "Light use efficiency, @Sym epsilon (kg CO @Sub 2 per ha leaf per hour per (W per m @Sup 2 leaf)')");
 }
 
 void LightUseEfficiencyGivenTemp::initialize()
@@ -31,7 +31,7 @@ void LightUseEfficiencyGivenTemp::reset() {
 
 void LightUseEfficiencyGivenTemp::update()
 {
-    double Tday = weather->pullVariable<double>("Tday");
+    double Tday = weather->pullValue<double>("Tday");
     value = slope*Tday + intercept;
 }
 

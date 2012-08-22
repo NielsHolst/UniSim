@@ -6,7 +6,7 @@
 #include <iostream>
 #include <QString>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "inachis.h"
 #include "insect_life_cycle.h"
 #include "stage.h"
@@ -34,25 +34,25 @@ void Inachis::reset() {
 
 void Inachis::update() {
     // Transfer hibernating adults from the reproductive stage of the last generation
-    double transfer = generations.last()->pullVariable<double>("adultsToHibernation");
-    hibernatingAdult->pushVariable<double>("inflow", transfer);
+    double transfer = generations.last()->pullValue<double>("adultsToHibernation");
+    hibernatingAdult->pushValue<double>("inflow", transfer);
     hibernatingAdult->deepUpdate();
 
     // Transfer woken hibernating adults to reproductive stage of first generation
-    double emergedReproductiveAdults = hibernatingAdult->pullVariable<double>("outflow");
-    generations.first()->stages().last()->pushVariable<double>("inflow", emergedReproductiveAdults);
+    double emergedReproductiveAdults = hibernatingAdult->pullValue<double>("outflow");
+    generations.first()->stages().last()->pushValue<double>("inflow", emergedReproductiveAdults);
 
     // And put eggs into the first stage of first generation
     double eggsToLay = reproduction(emergedReproductiveAdults);
-    generations.first()->stages().first()->pushVariable<double>("inflow", eggsToLay);
+    generations.first()->stages().first()->pushValue<double>("inflow", eggsToLay);
 
     int n = generations.size();
     for (int gen = 0; gen < n; ++gen ) {
         generations[gen]->update();
-        double reproAdults = generations[gen]->pullVariable<double>("eclosedReproductiveAdults");
+        double reproAdults = generations[gen]->pullValue<double>("eclosedReproductiveAdults");
         double eggsToLay = reproduction(reproAdults);
         if (gen < n-1)
-            generations[gen+1]->stages().first()->pushVariable<double>("inflow", eggsToLay);
+            generations[gen+1]->stages().first()->pushValue<double>("inflow", eggsToLay);
         else
             Q_ASSERT(eggsToLay==0);
     }

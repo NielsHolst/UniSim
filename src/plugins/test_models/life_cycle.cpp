@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <iostream>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "life_cycle.h"
 #include "life_stage.h"
 
@@ -16,7 +16,7 @@ LifeCycle::LifeCycle(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable<double>("contents", &sum, this, "description");
+    new Variable<double>("contents", &sum, this, "description");
 }
 
 void LifeCycle::initialize()
@@ -40,11 +40,11 @@ void LifeCycle::update()
     //cout << "LifeCycle::update() A\n";
     if (stages.size() > 0) {
         stages[0]->update();
-        sum = stages[0]->pullVariable<double>("contents");
+        sum = stages[0]->pullValue<double>("contents");
 		for (int i = 1; i < stages.size(); ++i) {
-            stages[i]->pushVariable("input", stages[i-1]->pullVariable<double>("output"));
+            stages[i]->pushValue("input", stages[i-1]->pullValue<double>("output"));
 			stages[i]->update();
-            sum += stages[i]->pullVariable<double>("contents");
+            sum += stages[i]->pullValue<double>("contents");
 		}
 	}
     //cout << "LifeCycle::update() Z\n";

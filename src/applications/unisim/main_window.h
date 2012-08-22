@@ -37,6 +37,7 @@ class MainWindow : public QMainWindow,
 public:
     void createMenus();
     UniSim::PlotWidget* createPlotWidget(QString title);
+    void tile();
 
 private slots:
 	void doFileOpen();
@@ -52,6 +53,7 @@ private slots:
     void doToolsGenerateDocs();
     void doHelpAbout();
     void doHelpHome();
+    void doWindowTile();
     void standardizeSubWindows();
     void doWindowsSaveGraphics();
 
@@ -97,7 +99,6 @@ private:
     void viewModel();
     QString versionText() const;
 
-    void tile();
     QList<SubWindow*> subWindowList(SubWindow::Type type);
     void closeSubWindows(SubWindow::Type type = SubWindow::All);
     void minimizeSubWindows(SubWindow::Type type = SubWindow::All);

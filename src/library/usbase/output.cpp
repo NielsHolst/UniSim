@@ -52,7 +52,7 @@ QList<Output::TraceRecord>& Output::yTraces() {
 }
 
 int Output::runNumber() const {
-    return integrator->pullVariable<int>("runNumber");
+    return integrator->pullValue<int>("runNumber");
 }
 
 bool Output::hasSummary() const {

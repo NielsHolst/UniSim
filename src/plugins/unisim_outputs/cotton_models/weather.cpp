@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "weather.h"
 
 using namespace UniSim;
@@ -13,7 +13,7 @@ namespace cotton{
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : WeatherFile(name, parent)
 {
-    new PullVariable<double>("Tavg", &Tavg, this,
+    new Variable<double>("Tavg", &Tavg, this,
         "Daily average temperature, calculated as average between daily minimum "
         "and maximum temperature");
 
@@ -24,7 +24,7 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
 
 void Weather::update() {
     WeatherFile::update();
-    Tavg = (pullVariable<double>("Tmin") + pullVariable<double>("Tmax"))/2.;
+    Tavg = (pullValue<double>("Tmin") + pullValue<double>("Tmax"))/2.;
 }
 
 } //namespace

@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "enzymatic_reaction.h"
 
 using namespace UniSim;
@@ -20,9 +20,9 @@ namespace MicrobialCommunity {
 
         for(int i = 0; i < populationList.size(); i++) {
 
-            double densityActivityCoef = populationList[i]->pullVariable<double>("DensityActivityCoefficient");
-            double Km = populationList[i]->parameter<double>("MichaelisMentenConstant");
-            double Vmax = populationList[i]->parameter<double>("MaximumVelocity");
+            double densityActivityCoef = populationList[i]->pullValue<double>("DensityActivityCoefficient");
+            double Km = populationList[i]->pullValue<double>("MichaelisMentenConstant");
+            double Vmax = populationList[i]->pullValue<double>("MaximumVelocity");
 
             velocity = Vmax * substrate / (Km + substrate);
             velocityPDD = densityActivityCoef * velocity;

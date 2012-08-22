@@ -239,7 +239,7 @@ void PrototypeMaker::writeClassSourceFile(ClassName className) const{
     text
         << copyrightNotice()
         << "#include <usbase/parameter.h>\n"
-        << "#include <usbase/pull_variable.h>\n"
+        << "#include <usbase/variable.h>\n"
         << "#include \"" << makeFileName(className) << ".h\"" << '\n'
         << "\nusing namespace UniSim;\n\n"
         << namespaceBegin()
@@ -248,7 +248,7 @@ void PrototypeMaker::writeClassSourceFile(ClassName className) const{
         << "\tnew Parameter<double>(\"Ninit\", &Ninit, 1., this, \"Description\");" << '\n'
         << "\tnew Parameter<double>(\"K\", &K, 1000., this, \"Description\");" << '\n'
         << "\tnew Parameter<double>(\"r\", &r, 1.2, this, \"Description\");" << '\n'
-        << "\tnew PullVariable<double>(\"N\", &density, this, \"Description\");" << '\n'
+        << "\tnew Variable<double>(\"N\", &density, this, \"Description\");" << '\n'
         << "}" << '\n'
         << '\n'
         << "void " << className << "::reset() {" << '\n'

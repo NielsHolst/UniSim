@@ -114,16 +114,21 @@ QStringList splitParentChildExpression(QString expression);
 template <class T> QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *concerning = 0);
 
 template<class T> T stringToValue(QString s, QObject *concerning = 0);
-template<> bool stringToValue<bool>(QString s, QObject *concerning);
+template<> QString stringToValue<QString>(QString s, QObject *concerning);
+template<> double stringToValue<double>(QString s, QObject *concerning);
+template<> int stringToValue<int>(QString s, QObject *concerning);
 template<> char stringToValue<char>(QString s, QObject *concerning);
+template<> bool stringToValue<bool>(QString s, QObject *concerning);
 template<> QDate stringToValue<QDate>(QString s, QObject *concerning);
 template<> QTime stringToValue<QTime>(QString s, QObject *concerning);
 
 template<class T> QString valueToString(T value);
-template<> QString valueToString<bool>(bool value);
 template<> QString valueToString<char>(char value);
+template<> QString valueToString<bool>(bool value);
 template<> QString valueToString<QDate>(QDate value);
 template<> QString valueToString<QTime>(QTime value);
+
+template <class T> bool isType(QString s);
 //@}
 
 //! @name PlugIn handling
@@ -142,17 +147,32 @@ void writeStandardTestFile(QString filePath);
 // Template implementations
 
 template<class T> T stringToValue(QString s, QObject *concerning) {
-    QVariant var(s.trimmed());
-    if (!var.canConvert<T>()) {
-        QString msg = "Cannot convert '" + s + "' to type " + QVariant(T()).typeName();
-        throw Exception(msg, concerning);
-    }
-    return var.value<T>();
+//    static_assert( false, "that was false" );
+    QString msg = "stringToValue does not support this type: '%1' of type '%2'";
+    throw Exception(msg.arg(s).arg(QVariant(T()).typeName()), concerning);
+//    QVariant var(s.trimmed());
+//    if (!var.canConvert<T>()) {
+//        QString msg = "Cannot convert '" + s + "' to type " + QVariant(T()).typeName();
+//        throw Exception(msg, concerning);
+//    }
+//    return var.value<T>();
 }
 
 template<class T> QString valueToString(T value) {
     return QVariant(value).toString();
 }
+
+template <class T> bool isType(QString s) {
+    bool ok = true;
+    try {
+        stringToValue<T>(s);
+    }
+    catch (Exception &) {
+        ok = false;
+    }
+    return ok;
+}
+
 
 
 //! Finds any number of objects

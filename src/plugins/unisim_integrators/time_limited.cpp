@@ -7,7 +7,7 @@
 #include <QString>
 #include <usbase/model.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "time_limited.h"
 
@@ -26,7 +26,7 @@ void TimeLimited::initialize() {
 
 bool TimeLimited::nextStep()
 {
-    return time->pullVariable<double>("total") >= maxTime;
+    return time->pullValue<double>("total") >= maxTime;
 }
 
 } //namespace

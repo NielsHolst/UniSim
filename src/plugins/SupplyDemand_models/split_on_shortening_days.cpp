@@ -5,7 +5,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "holometabola.h"
 #include "split_on_shortening_days.h"
 
@@ -20,14 +20,14 @@ SplitOnShorteningDays::SplitOnShorteningDays(UniSim::Identifier name, QObject *p
     new Parameter<double>("critDayLength", &critDayLength, 18., this,
     "The proportion first:second is 0:1 when day length is shorter than @F {critDayLength}. "
     "When it is longer and before summer solstice the proportion turns 1:0.");
-    new PullVariable<double>("first", &first, this, "First proportion");
-    new PullVariable<double>("second", &second, this, "Second proportion. The two adds up to 1.");
+    new Variable<double>("first", &first, this, "First proportion");
+    new Variable<double>("second", &second, this, "Second proportion. The two adds up to 1.");
 }
 
 void SplitOnShorteningDays::initialize() {
     Model *calendar = seekOne<Model*>("calendar");
-    dayOfYear = calendar->pullVariablePtr<int>("dayOfYear");
-    dayLength = calendar->pullVariablePtr<double>("daylength");
+    dayOfYear = calendar->pullValuePtr<int>("dayOfYear");
+    dayLength = calendar->pullValuePtr<double>("daylength");
 }
 
 void SplitOnShorteningDays::reset() {

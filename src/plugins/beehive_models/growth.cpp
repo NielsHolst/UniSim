@@ -5,7 +5,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "growth.h"
 
@@ -21,14 +21,14 @@ Growth::Growth(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("resource", &resource, 1000., this, "Grams of pollen");
     new Parameter<double>("attackRate", &attackRate, 1., this, "Per capita");
     new Parameter<double>("egestion", &egestion, 0.15, this, "Per capita");
-    new PullVariable<double>("value", &value, this, "Description");
+    new Variable<double>("value", &value, this, "Description");
 }
 
 void Growth::initialize() {
     Model *parent = seekParent<Model*>("*");
     consumerMass = parent->seekOneChild<Model*>("mass");
     consumerNumber = parent->seekOneChild<Model*>("number");
-    duration = consumerMass->parameter<double>("duration");
+    duration = consumerMass->pullValue<double>("duration");
 }
 
 void Growth::reset() {
@@ -40,7 +40,7 @@ void Growth::update() {
         throw Exception("maxGrowthrate and duration should both be larger than zero", this);
     double r = log(maxGrowthRate/duration);
     const double dt = 1.;
-    double demand = exp(r*dt)*consumerMass->pullVariable<double>("value")/(1.- egestion);
+    double demand = exp(r*dt)*consumerMass->pullValue<double>("value")/(1.- egestion);
     double supply = GBFuncResp(demand, attackRate*resource*1000); //convert g to mg
     double sdRatio = (demand > 0) ? supply/demand : 0.;
     value = sdRatio*maxGrowthRate;

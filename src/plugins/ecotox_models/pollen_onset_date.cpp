@@ -3,6 +3,9 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <boost/random/uniform_01.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/variate_generator.hpp>
 #include <QMessageBox>
 #include <usbase/data_grid.h>
 #include <usbase/model.h>
@@ -36,7 +39,7 @@ PollenOnsetDateFromFile::PollenOnsetDateFromFile(QString fileName)
 
 QDate PollenOnsetDateFromFile::calculate() {
     Model *calendar = seekOne<Model*>("calendar");
-    QDate date = calendar->pullVariable<QDate>("date");
+    QDate date = calendar->pullValue<QDate>("date");
     int year = date.year();
     if (date.month() == 12)
         ++year;
@@ -82,7 +85,7 @@ QDate PollenOnsetDateFromCurve::calculate() {
     weather->deepReset();
     model->deepReset();
 
-    const double *curveTotal = model->pullVariablePtr<double>("total");
+    const double *curveTotal = model->pullValuePtr<double>("total");
     int day = 0;
     while (*curveTotal < fractile && day < 365) {
         calendar->update();
@@ -97,7 +100,7 @@ QDate PollenOnsetDateFromCurve::calculate() {
     weather->deepReset();
     model->deepReset();
 
-    QDate firstDate = calendar->pullVariable<QDate>("initialDate");
+    QDate firstDate = calendar->pullValue<QDate>("initialDate");
     return firstDate.addDays(day);
 }
 

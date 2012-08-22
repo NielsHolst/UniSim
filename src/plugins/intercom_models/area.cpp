@@ -10,8 +10,7 @@
 #include <usbase/clock.h>
 #include <usbase/file_locations.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/calendar.h"
 #include "area.h"
@@ -35,23 +34,19 @@ Area::Area(UniSim::Identifier name, QObject *parent)
     new Parameter<bool>("writeTestOutput", &writeTestOutput, false, this,
                           "Write detailed output? The resulting file has a name that begins with"
                           "\"area_test\" followed by the full name of the @F Area object");
-
-    new PullVariable<double>("value", &value, this,
-                             "The area of this organ per plant (cm @Sup {2} per plant)");
-    new PullVariable<double>("LAI", &lai, this,
-                             "Leaf area index of this organ");
-    new PullVariable<double>("lightAbsorption", &photosynthesisPerDay[Absorption], this,
-                             "Light absorbed by this area (W per m @Sup 2 ground per day)");
-    new PullVariable<double>("CO2Assimilation", &photosynthesisPerDay[Assimilation], this,
-                             "CO @Sub 2 assimilated by this area (kg CO @Sub 2 per ha ground per day)");
-    new PullVariable<double>("grossProduction", &grossProduction, this,
-                             "Carbohydrates produced by this area (kg CH @Sub {2}O per ha ground per day)");
-    new PullVariable<double>("allocation", &allocation, this,
-                             "Allocated dry matter (g per plant per day) to be converted into area"
-                             "Same as @F allocation push variable.");
-
-    new PushVariable<double>("allocation", &allocation, this,
+    new Parameter<double>("allocation", &allocation, 0., this,
                              "Allocated dry matter (g per plant per day) to be converted into area");
+
+    new Variable<double>("value", &value, this,
+                             "The area of this organ per plant (cm @Sup {2} per plant)");
+    new Variable<double>("LAI", &lai, this,
+                             "Leaf area index of this organ");
+    new Variable<double>("lightAbsorption", &photosynthesisPerDay[Absorption], this,
+                             "Light absorbed by this area (W per m @Sup 2 ground per day)");
+    new Variable<double>("CO2Assimilation", &photosynthesisPerDay[Assimilation], this,
+                             "CO @Sub 2 assimilated by this area (kg CO @Sub 2 per ha ground per day)");
+    new Variable<double>("grossProduction", &grossProduction, this,
+                             "Carbohydrates produced by this area (kg CH @Sub {2}O per ha ground per day)");
 }
 
 void Area::initialize() {
@@ -86,21 +81,21 @@ void Area::reset() {
 }
 
 void Area::updateLai() {
-    double density = plant->pullVariable<double>("density");
-    value = area->pullVariable<double>("number");
+    double density = plant->pullValue<double>("density");
+    value = area->pullValue<double>("number");
     lai = density*value/10000.;
 }
 
 void Area::update() {
     // Fetch current values
-    dayLength = calendar->pullVariable<double>("dayLength");
-    plantHeight = plantHeightModel->pullVariable<double>("height");
-    double specificLA = specificLeafArea->pullVariable<double>("value");
+    dayLength = calendar->pullValue<double>("dayLength");
+    plantHeight = plantHeightModel->pullValue<double>("height");
+    double specificLA = specificLeafArea->pullValue<double>("value");
 
     // Add allocated carbohydrates as area
     double newArea = allocation*specificLA;
 	Q_ASSERT(newArea >= 0.);
-    area->pushVariable<double>("inflow", newArea);
+    area->pushValue<double>("inflow", newArea);
     updateLai();
     allocation = 0.;
 }
@@ -119,7 +114,7 @@ void Area::setPoint(int hourPoint_, int heightPoint_) {
 
     double hour = 12. + 0.5*dayLength*XGAUSS3[hourPoint];
     clock()->doTick(hour);
-    sinb = calendar->pullVariable<double>("sinb");
+    sinb = calendar->pullValue<double>("sinb");
 
     height = plantHeight*XGAUSS5[heightPoint];
 }
@@ -149,9 +144,9 @@ void Area::updatePhotosynthesis(const double *sumELAI) {
     updateReflection();
 
     double par[3];
-    par[Diffuse] = weather->pullVariable<double>("parDiffuse");
+    par[Diffuse] = weather->pullValue<double>("parDiffuse");
     par[DirectDirect] =
-    par[DirectTotal] = weather->pullVariable<double>("parDirect");
+    par[DirectTotal] = weather->pullValue<double>("parDirect");
 
     double absorbed[3];
     for (int i = 0; i < 3; ++i) {
@@ -187,7 +182,7 @@ void Area::updatePhotosynthesis(const double *sumELAI) {
     if (writeTestOutput) {
         QString s;
         QTextStream str(&s);
-        str << calendar->pullVariable<int>("dayOfYear") << '\t' << calendar->pullVariable<double>("daylength") << '\t'
+        str << calendar->pullValue<int>("dayOfYear") << '\t' << calendar->pullValue<double>("daylength") << '\t'
             << hourPoint << '\t' << heightPoint << '\t'
             << par[Diffuse] << '\t' << par[DirectDirect] << '\t'
             << shaded[Absorption] << '\t' << shaded[Assimilation] << '\t'
@@ -214,8 +209,8 @@ void Area::updateReflection() {
 }
 
 double Area::assimilation(double absorption) const {
-    double efficiency = lightUseEfficiency->pullVariable<double>("value");
-    double amax = assimilationMax->pullVariable<double>("value");
+    double efficiency = lightUseEfficiency->pullValue<double>("value");
+    double amax = assimilationMax->pullValue<double>("value");
     return amax == 0. ? 0. : amax*(1. - exp(-absorption*efficiency/amax));
 }
 

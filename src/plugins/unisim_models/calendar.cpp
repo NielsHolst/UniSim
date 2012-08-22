@@ -13,7 +13,7 @@
 #include <cmath>
 #include <usbase/clock.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/test_num.h>
 #include "calendar.h"
 
@@ -27,10 +27,14 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("latitude", &latitude, 52., this, "Latitude of simulated system");
 
     new Parameter<QDate>("initialDate", &initialDate, QDate(2000,1,1), this,
-    "Initial date of simulation");
+    "Initial date of simulation. "
+    "You should perform a @F deepReset on your @F Calendar object after pushing a new "
+    "value to @F {initialDate}.");
 
     new Parameter<QTime>("initialTimeOfDay", &initialTimeOfDay, QTime(0,0,0), this,
-    "Initial time of day of simulation. Default is midnight");
+    "Initial time of day of simulation. Default is midnight. "
+    "You should perform a @F deepReset on your @F Calendar object after pushing a new "
+    "value to @F {initialDate}.");
 
     new Parameter<int>("timeStep", &timeStep, 1, this,
     "Duration of one integration time step in units determined by @F {timeUnit}");
@@ -45,40 +49,29 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     "Often this is what is intuitively expected. With a @F timeStepOffset value of zero "
     "the first output will occur one time step after time zero.");
 
-    new PullVariable<QDate>("date", &date, this, "Current date");
-    new PullVariable<QTime>("timeOfDay", &timeOfDay, this, "Current time of day");
-    new PullVariable<QDateTime>("dateTime", &dateTime, this, "Current date and time");
-    new PullVariable<int>("totalTimeSteps", &totalTimeSteps, this,
+    new Variable<QDate>("date", &date, this, "Current date");
+    new Variable<QTime>("timeOfDay", &timeOfDay, this, "Current time of day");
+    new Variable<QDateTime>("dateTime", &dateTime, this, "Current date and time");
+    new Variable<int>("totalTimeSteps", &totalTimeSteps, this,
     "Total number of time steps performed since beginning of simulation");
-    new PullVariable<int>("totalTime", &totalTime, this,
+    new Variable<int>("totalTime", &totalTime, this,
     "Total time, in units determined by @F {timeUnit}. passed since beginning of simulation");
-    new PullVariable<double>("totalDays", &totalDays, this,
+    new Variable<double>("totalDays", &totalDays, this,
     "Total days passed since beginning of simulation");
-    new PullVariable<int>("dayOfYear", &dayOfYear, this, "Day number in year, also known as Julian day");
-    new PullVariable<int>("day", &day, this, "Current day in month (1..31)");
-    new PullVariable<int>("month", &month, this, "Current month (1..12)");
-    new PullVariable<int>("year", &year, this, "Current year");
-    new PullVariable<int>("hour", &hour, this, "Current hour of the day (0..23)");
-    new PullVariable<int>("minute", &minute, this, "Current minute of the hour (0..59)");
-    new PullVariable<int>("second", &second, this, "Current second of the minute (0..59)");
+    new Variable<int>("dayOfYear", &dayOfYear, this, "Day number in year, also known as Julian day");
+    new Variable<int>("day", &day, this, "Current day in month (1..31)");
+    new Variable<int>("month", &month, this, "Current month (1..12)");
+    new Variable<int>("year", &year, this, "Current year");
+    new Variable<int>("hour", &hour, this, "Current hour of the day (0..23)");
+    new Variable<int>("minute", &minute, this, "Current minute of the hour (0..59)");
+    new Variable<int>("second", &second, this, "Current second of the minute (0..59)");
 
 
-    new PullVariable<double>("dateAsReal", &dateAsReal, this, "Date as a real number measured in years");
-    new PullVariable<double>("dayLength", &dayLength, this, "Current day length (hours)");
-    new PullVariable<double>("sinb", &sinb, this, "Sine of sun elevation, updated by the @F tick event of the @F clock object");
-    new PullVariable<double>("sinLD", &sinLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
-    new PullVariable<double>("cosLD", &cosLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
-    new PullVariable<QDate>("initialDate", &initialDate, this, "Initial date of simulation");
-    new PullVariable<QTime>("initialTimeOfDay", &initialTimeOfDay, this, "Initial time of day of simulation");
-
-    new PushVariable<QDate>("initialDate", &initialDate, this,
-    "Even though @F initialDate is a parameter, you may want to change it from outside, "
-    " for example to synchronize the calendar with the initial date of a weather log. "
-    "You should perform a @F deepReset on your @F Calendar object after pushing a new "
-    "value to @F {initialDate}.");
-
-    new PushVariable<QTime>("initialTimeOfDay", &initialTimeOfDay, this,
-    "See comments for @F initialDate push variable.");
+    new Variable<double>("dateAsReal", &dateAsReal, this, "Date as a real number measured in years");
+    new Variable<double>("dayLength", &dayLength, this, "Current day length (hours)");
+    new Variable<double>("sinb", &sinb, this, "Sine of sun elevation, updated by the @F tick event of the @F clock object");
+    new Variable<double>("sinLD", &sinLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
+    new Variable<double>("cosLD", &cosLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
 }
 
 void Calendar::initialize() {

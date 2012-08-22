@@ -14,7 +14,7 @@
 
 	<model name="fixedModels">
 		<model name="fixed" type="UniSim::Fixed">
-			<parameter name="pullVariables" value="((Tavg 22.5)(I 32))"/>
+			<parameter name="parameters" value="((Tavg 22.5)(I 32))"/>
 			<parameter name="parameters" value="((A 6.023e23)(p 3.1214 ))"/>
 			<parameter name="pushVariables" value="((m 0.9)(f 2.5))"/>
 		</model>
@@ -22,7 +22,7 @@
 		<model name="empty" type="UniSim::Fixed"/>
 		
 		<model name="justPullVariables" type="UniSim::Fixed">
-			<parameter name="pullVariables" value = "((Tmin 20)(Tmax 20)(irradiationMJ 20))"/>
+			<parameter name="parameters" value = "((Tmin 20)(Tmax 20)(irradiationMJ 20))"/>
 		</model>
 	</model>
 	

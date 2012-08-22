@@ -33,18 +33,13 @@ void TestFixed::testPullVariables() {
         Model *model = seekOneDescendant<Model*>("fixed", sim);
         QVERIFY(model);
 
-        double Tavg = model->pullVariable<double>("Tavg");
-        double I = model->pullVariable<double>("I");
+        double Tavg = model->pullValue<double>("Tavg");
+        int I = model->pullValue<int>("I");
         QCOMPARE(Tavg, 22.5);
-        QCOMPARE(I, 32.);
+        QCOMPARE(I, 32);
 
-        model->pushVariable<double>("m", 45.);
-        model->pushVariable<double>("f", 67.);
-
-        double A = model->parameter<double>("A");
-        double p = model->parameter<double>("p");
-        QCOMPARE(A, 6.023e23);
-        QCOMPARE(p, 3.1214);
+        model->pushValue<double>("p", 45.);
+        QCOMPARE(model->pullValue<double>("p"), 45.);
     }
     catch (Exception &ex) {
         QString msg = "Unexpected exception: " + ex.message();

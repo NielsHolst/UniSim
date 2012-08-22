@@ -15,7 +15,7 @@
 			<model name="ovary" type="UniSim::Fixed" instances="2"/>
 		</model>
 		<model name="pupa" type="UniSim::Fixed">
-			<parameter name="pullVariables" value="((x 2)(y 3))"/>;
+			<parameter name="parameters" value="((x 2)(y 3))"/>;
 		</model>
 	</model>
 

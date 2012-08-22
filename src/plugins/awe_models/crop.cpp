@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "crop.h"
 #include "weather.h"
@@ -33,8 +33,8 @@ Crop::Crop(UniSim::Identifier name, QObject *parent)
                  "Calendar for leaf area index (LAI) running on temperature sum since sowing (day-degrees above @Char {ring}C). "
                  "Defined as a list of (@I {temperature-sum LAI}) pairs");
 
-    new PullVariable<double>("lai", &lai, this, "Leaf area index (m @Sup {2}/m @Sup {2}).");
-    new PullVariable<double>("Tsum", &Tsum, this, "Temperature sum since sowing (day-degrees above @Char {ring}C).");
+    new Variable<double>("lai", &lai, this, "Leaf area index (m @Sup {2}/m @Sup {2}).");
+    new Variable<double>("Tsum", &Tsum, this, "Temperature sum since sowing (day-degrees above @Char {ring}C).");
 }
 
 
@@ -55,10 +55,10 @@ void Crop::reset() {
 }
 
 void Crop::update() {
-    int dayOfYear = int(calendar->pullVariable<double>("dayOfYear"));
+    int dayOfYear = calendar->pullValue<int>("dayOfYear");
 
     if (isGrowing) {
-        Tsum += weather->pullVariable<double>("T");
+        Tsum += weather->pullValue<double>("T");
         lai = lookupLai();
         if (dayOfYear == harvestDayOfYear) {
             isGrowing = false;

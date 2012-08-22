@@ -5,7 +5,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "trigger_by_date.h"
 
 namespace UniSim{
@@ -28,7 +28,7 @@ TriggerByDate::TriggerByDate(UniSim::Identifier name, QObject *parent)
     new Parameter<bool>("triggerAtReset", &triggerAtReset, true, this,
     "Always trigger when model is @F{reset}?");
 
-    new PullVariable<bool>("value", &value, this,
+    new Variable<bool>("value", &value, this,
     "Triggered? Updated for every time step according to the rules set by the parameters");
 }
 
@@ -54,7 +54,7 @@ void TriggerByDate::reset() {
 }
 
 void TriggerByDate::update() {
-    QDate today = calendar->pullVariable<QDate>("date");
+    QDate today = calendar->pullValue<QDate>("date");
 //    DateInterval interval(fromDate.addDays((int) dateShift), toDate, frequency);
     DateInterval interval(fromDate, toDate, frequency);
     value = interval.includes(today);

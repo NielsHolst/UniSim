@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/exception.h>
 #include <QtAlgorithms>
 #include <QRegExp>
@@ -20,13 +20,13 @@ namespace MicrobialCommunity {
         new Parameter<int>("MaxPopulations", &maxPopulations, 1, this, "Maximum number of populations entered in the stochastic community");
         new Parameter<QString>("AlwaysIncludedPopulations", &alwaysIncluded, "", this, "A list of populations that will always be entered in the stochastic community");
 
-        new PullVariable<double>("Density", &density, this, "Total density of the community");
+        new Variable<double>("Density", &density, this, "Total density of the community");
 
-        new PullVariable<int>("Richness", &richness, this, "Community richness");
-        new PullVariable<double>("SimpsonIndex", &simpsonIndex, this, "Simpson's Index");
-        new PullVariable<double>("ShannonIndex", &shannonIndex, this, "Shannon-Wiener Index");
-        new PullVariable<double>("Evenness", &evenness, this, "Community evenness");
-        new PullVariable<double>("GiniCoefficient", &giniCoeff, this, "Gini coefficient");
+        new Variable<int>("Richness", &richness, this, "Community richness");
+        new Variable<double>("SimpsonIndex", &simpsonIndex, this, "Simpson's Index");
+        new Variable<double>("ShannonIndex", &shannonIndex, this, "Shannon-Wiener Index");
+        new Variable<double>("Evenness", &evenness, this, "Community evenness");
+        new Variable<double>("GiniCoefficient", &giniCoeff, this, "Gini coefficient");
     }
 
     void Community::initialize() {
@@ -87,7 +87,7 @@ namespace MicrobialCommunity {
 
             for(int i = 0; i < populationList.size(); i++) {
                 // Deactivate all Population models to allow selective enabling.
-                populationList[i]->pushVariable<bool>("IsActive", false);
+                populationList[i]->pushValue<bool>("IsActive", false);
             }
 
             if(desiredNum >= requiredPopulationList_.size()) {
@@ -95,7 +95,7 @@ namespace MicrobialCommunity {
                 if(requiredPopulationList_.size() > 0) {
                     // First include all required populations.
                     for(int i = 0; i < requiredPopulationList_.size(); i++) {
-                        requiredPopulationList_[i]->pushVariable<bool>("IsActive", true);
+                        requiredPopulationList_[i]->pushValue<bool>("IsActive", true);
                         activeNum++;
                     }
                 }
@@ -106,7 +106,7 @@ namespace MicrobialCommunity {
                     int i = random.getInt(0, optionalPopulationList_.size() - 1);
 
                     // Add the i-th population to the optional list.
-                    optionalPopulationList_[i]->pushVariable<bool>("IsActive", true);
+                    optionalPopulationList_[i]->pushValue<bool>("IsActive", true);
                     // Remove the added population to ensure each population will only be added once.
                     optionalPopulationList_.removeAt(i);
 
@@ -121,7 +121,7 @@ namespace MicrobialCommunity {
                 while(desiredNum > activeNum) {
 
                     int i = random.getInt(0, requiredPopulationList_.size() - 1);
-                    requiredPopulationList_[i]->pushVariable<bool>("IsActive", true);
+                    requiredPopulationList_[i]->pushValue<bool>("IsActive", true);
                     requiredPopulationList_.removeAt(i);
                     activeNum++;
 
@@ -148,12 +148,12 @@ namespace MicrobialCommunity {
 
         for(int i = 0; i < populationList.size(); i++) {
             // Calculate total density of the community.
-            density += populationList[i]->pullVariable<double>("Density"); // This gives total density.
+            density += populationList[i]->pullValue<double>("Density"); // This gives total density.
         }
 
         for(int i = 0; i < populationList.size(); i++) {
 
-            double populationDensity = populationList[i]->pullVariable<double>("Density");
+            double populationDensity = populationList[i]->pullValue<double>("Density");
 
             popDensity.append(populationDensity);
 

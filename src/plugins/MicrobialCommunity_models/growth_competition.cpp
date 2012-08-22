@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "growth_competition.h"
 
 using namespace UniSim;
@@ -14,8 +14,8 @@ namespace MicrobialCommunity {
         : Model(name, parent) {
         new Parameter<double>("CarryingCapacity", &carryingCapacity, 100., this, "Carrying capacity of the community");
         new Parameter<double>("InitialResource", &initialResource, 1., this, "Initial resource");
-        new PullVariable<double>("AvailableResource", &availableResource, this, "Description");
-        new PullVariable<double>("TotalDensity", &totalDensity, this, "Description");
+        new Variable<double>("AvailableResource", &availableResource, this, "Description");
+        new Variable<double>("TotalDensity", &totalDensity, this, "Description");
     }
 
     void GrowthCompetition::initialize() {
@@ -42,7 +42,7 @@ namespace MicrobialCommunity {
         for(int i = 0; i < Populations.size(); i++){
             // This loop calculates individual demand, comsumption rate & total consumption rate.
 
-            double density = Populations[i] -> pullVariable<double>("Density");
+            double density = Populations[i] -> pullValue<double>("Density");
             double demandRate = Populations[i] -> parameter<double>("DemandRate");
             double searchRate = Populations[i] -> parameter<double>("SearchRate");
 
@@ -69,7 +69,7 @@ namespace MicrobialCommunity {
 
             double sdRatio = (demand[i] == 0 ? 0 : consumption[i] / demand[i]);
 
-            Populations[i] ->pushVariable("SupplyDemandRatio", sdRatio); // Population growth rate is ratio-dependent.
+            Populations[i] ->pushValue("SupplyDemandRatio", sdRatio); // Population growth rate is ratio-dependent.
         }
 
        updateDensity();
@@ -82,7 +82,7 @@ namespace MicrobialCommunity {
         totalDensity = 0;
 
         for(int i = 0; i < Populations.size(); i++){
-            double density = Populations[i] -> pullVariable<double>("Density");
+            double density = Populations[i] -> pullValue<double>("Density");
             totalDensity += density;
         }
 

@@ -340,15 +340,27 @@ QStringList splitParentChildExpression(QString expression) {
     return result;
 }
 
-template<> bool stringToValue<bool>(QString s_, QObject *concerning) {
-    QString s = s_.trimmed().toLower();
-    bool value;
-    if (s=="y" || s=="yes" || s=="t" || s=="true")
-        value = true;
-    else if (s=="n" || s=="no" || s=="f" || s=="false")
-        value = false;
-    else {
-        QString msg = "Cannot convert '" + s + "' to bool";
+template<> QString stringToValue<QString>(QString s_, QObject *concerning) {
+    return s_;
+}
+
+template<> double stringToValue<double>(QString s_, QObject *concerning) {
+    QString s = s_.trimmed();
+    bool ok;
+    double value = s.toDouble(&ok);
+    if (!ok) {
+        QString msg = "Cannot convert '" + s + "' to double";
+        throw Exception(msg, concerning);
+    }
+    return value;
+}
+
+template<> int stringToValue<int>(QString s_, QObject *concerning) {
+    QString s = s_.trimmed();
+    bool ok;
+    int value = s.toInt(&ok);
+    if (!ok) {
+        QString msg = "Cannot convert '" + s + "' to int";
         throw Exception(msg, concerning);
     }
     return value;
@@ -361,6 +373,20 @@ template<> char stringToValue<char>(QString s_, QObject *concerning) {
         throw Exception(msg, concerning);
     }
     return s[0].toAscii();
+}
+
+template<> bool stringToValue<bool>(QString s_, QObject *concerning) {
+    QString s = s_.trimmed().toLower();
+    bool value;
+    if (s=="yes" || s=="true")
+        value = true;
+    else if (s=="no" || s=="false")
+        value = false;
+    else {
+        QString msg = "Cannot convert '" + s + "' to bool";
+        throw Exception(msg, concerning);
+    }
+    return value;
 }
 
 template<> QDate stringToValue<QDate>(QString s, QObject *concerning) {
@@ -386,12 +412,12 @@ template<> QTime stringToValue<QTime>(QString s_, QObject *concerning) {
     return time;
 }
 
-template<> QString valueToString<bool>(bool value) {
-    return value ? "yes" : "no";
-}
-
 template<> QString valueToString<char>(char value) {
     return QString(value);
+}
+
+template<> QString valueToString<bool>(bool value) {
+    return value ? "yes" : "no";
 }
 
 template<> QString valueToString<QDate>(QDate value) {
@@ -401,7 +427,6 @@ template<> QString valueToString<QDate>(QDate value) {
 template<> QString valueToString<QTime>(QTime value) {
     return value.toString("0:0:0");
 }
-
 
 //! Write object tree to std::cout
 /*!

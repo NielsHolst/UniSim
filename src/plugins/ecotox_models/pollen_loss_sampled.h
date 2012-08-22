@@ -6,16 +6,12 @@
 #ifndef ECOTOX_POLLEN_LOSS_SAMPLED
 #define ECOTOX_POLLEN_LOSS_SAMPLED
 #include <boost/random/uniform_int.hpp>
+#include <boost/random/variate_generator.hpp>
 #include <QObject>
 #include <usbase/model.h>
-
-namespace UniSim {
-    class Random;
-    class Generator;
-}
+#include <usbase/random.h>
 
 namespace ecotox {
-
 
 class PollenLossSampled : public UniSim::Model
 {

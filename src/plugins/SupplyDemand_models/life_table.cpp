@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
 #include "holometabola.h"
@@ -25,7 +25,7 @@ LifeTable::LifeTable(UniSim::Identifier name, QObject *parent)
 
     new Parameter<QString>("preceding", &strPreceding, QString("()"), this,
     "Corresponding @F LifeTable in preceding @F {LifeStage}. Defined as a list of strings to allow convergence of more than one life stage.");
-    new PullVariable<double>("individualMass", &individualMass, this, "Average mass of one individual (g)");
+    new Variable<double>("individualMass", &individualMass, this, "Average mass of one individual (g)");
 }
 
 void LifeTable::initialize() {
@@ -39,8 +39,8 @@ void LifeTable::initialize() {
 
     massModel = seekOneChild<Model*>("mass");
     numberModel = seekOneChild<Model*>("number");
-    mass = massModel->pullVariablePtr<double>("value");
-    number = numberModel->pullVariablePtr<double>("value");
+    mass = massModel->pullValuePtr<double>("value");
+    number = numberModel->pullValuePtr<double>("value");
     seekSplitModel();
 }
 
@@ -50,8 +50,8 @@ void LifeTable::seekSplitModel() {
     Model *splitModel = stage->peekOneSibling<Model*>("split");
     if (splitModel) {
         doSplit = true;
-        split[0] = splitModel->pullVariablePtr<double>("first");
-        split[1] = splitModel->pullVariablePtr<double>("second");
+        split[0] = splitModel->pullValuePtr<double>("first");
+        split[1] = splitModel->pullValuePtr<double>("second");
         myPosition = stage->seekSiblingPosition<LifeStage*>("*");
         if (myPosition > 1)
             throw Exception("There can be at most two sibling LifeStage models together with a split model", this);
@@ -63,17 +63,21 @@ void LifeTable::reset() {
 }
 
 void LifeTable::update() {
-    massModel->pushVariable<double>("inflow")->addValue(inflow(precedingMass));
-    numberModel->pushVariable<double>("inflow")->addValue(inflow(precedingNumber));
+    double massInflow = massModel->pullValue<double>("inflow") + inflow(precedingMass);
+    massModel->pushValue<double>("inflow", massInflow);
     massModel->deepUpdate();
+
+    double numberInflow = numberModel->pullValue<double>("inflow") + inflow(precedingNumber);
+    numberModel->pushValue<double>("inflow", numberInflow);
     numberModel->deepUpdate();
+
     individualMass = TestNum::eqZero(*number) ? 0 : divBounded(*mass,*number,1e3);
 }
 
 double LifeTable::inflow(Models preceding) {
     double sum = 0.;
     for (int i = 0; i < preceding.size(); ++i) {
-        sum += preceding[i]->pullVariable<double>("outflow");
+        sum += preceding[i]->pullValue<double>("outflow");
     }
     if (doSplit)
         sum *= *split[myPosition];

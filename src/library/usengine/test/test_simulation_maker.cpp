@@ -87,8 +87,8 @@ void TestSimulationMaker::testParameters()
     QVERIFY(larva);
 
     try {
-		QCOMPARE(larva->parameter<int>("k"), 10);	
-		QCOMPARE(larva->parameter<double>("duration"), 2.3);	
+        QCOMPARE(larva->pullValue<int>("k"), 10);
+        QCOMPARE(larva->pullValue<double>("duration"), 2.3);
 	}
 	catch (const Exception &ex) {
 		QWARN(qPrintable(ex.message()));

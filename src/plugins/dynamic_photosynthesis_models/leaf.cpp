@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "leaf.h"
 
 using namespace UniSim;
@@ -30,10 +30,10 @@ Leaf::Leaf(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("A0", &A0, 12, this, "Max assimilation rate, Mmol m @Sup 2 s @Sup{-1}");
     new Parameter<double>("theta", &theta, 0.0035, this, "Regression coefficient for photosynthesis, Mmol m @Sup 2 s @Sup{-1}");
 
-    new PullVariable<double>("S", &S, this, "Induction state, Mmol m @Sup 2 s @Sup{-1}");
-    new PullVariable<double>("Seq", &Seq, this, "Equilibrium state of induction, Mmol m @Sup 2 s @Sup{-1}");
-    new PullVariable<double>("S60", &S60, this, "Induction state after 60 seconds, Mmol m @Sup 2 s @Sup{-1}");
-    new PullVariable<double>("A", &A, this, "Photosynthesis rate, Mmol m @Sup 2 s @Sup{-1}");
+    new Variable<double>("S", &S, this, "Induction state, Mmol m @Sup 2 s @Sup{-1}");
+    new Variable<double>("Seq", &Seq, this, "Equilibrium state of induction, Mmol m @Sup 2 s @Sup{-1}");
+    new Variable<double>("S60", &S60, this, "Induction state after 60 seconds, Mmol m @Sup 2 s @Sup{-1}");
+    new Variable<double>("Ar", &A, this, "Photosynthesis rate, Mmol m @Sup 2 s @Sup{-1}");
 }
 
 void Leaf::initialize() {
@@ -45,8 +45,8 @@ void Leaf::reset() {
 }
 
 void Leaf::update() {
-    double PAR = weather ->pullVariable<double>("PAR");
-    double temp = weather ->pullVariable<double>("temp");
+    double PAR = weather ->pullValue<double>("PAR");
+    double temp = weather ->pullValue<double>("temp");
     if (PAR==0.) PAR = PARmin;
 
 

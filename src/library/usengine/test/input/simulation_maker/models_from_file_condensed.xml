@@ -9,7 +9,7 @@
 		<model type="test::Farm" table="farms.txt">
 			<model type="test::Crop" crosstab="crops_area_on_farms_condensed.txt" parameter="Area"/>
 			<model name="stat" type="UniSim::Fixed">
-				<parameter name="pullVariables" value="((x 2)(y 3))"/>;
+				<parameter name="parameters" value="((x 2)(y 3))"/>;
 			</model>
 		</model>
 	</model>

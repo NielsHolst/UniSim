@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "run_iterator_fixed.h"
 
 namespace UniSim{
@@ -13,9 +13,8 @@ RunIteratorFixed::RunIteratorFixed(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new Parameter<int>("numIterations", &numIterations, 10, this, "Number of iterations to count");
-    new PullVariable<bool>("value", &value, this, "Is current iteration within the set number of iterations?");
-    new PullVariable<int>("iteration", &iteration, this, "Number of current iteration");
-    new PullVariable<int>("numIterations", &numIterations, this, "Number of iterations to count");
+    new Variable<bool>("value", &value, this, "Is current iteration within the set number of iterations?");
+    new Variable<int>("iteration", &iteration, this, "Number of current iteration");
 }
 
 void RunIteratorFixed::initialize() {

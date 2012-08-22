@@ -5,7 +5,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "scheduled.h"
 
 namespace UniSim{
@@ -16,8 +16,8 @@ Scheduled::Scheduled(Identifier name, QObject *parent)
     new Parameter<QString>("schedule", &scheduleAsString, QString(), this,
     "Schedule as (time value) pairs. For example, @F {((0 10)(20.5 30)(65 48.6))}.");
 
-    new PullVariable<double>("value", &value, this, "Current value");
-    new PullVariable<double>("increment", &increment, this, "Increment in value during the latest time step");
+    new Variable<double>("value", &value, this, "Current value");
+    new Variable<double>("increment", &increment, this, "Increment in value during the latest time step");
 }
 
 void Scheduled::initialize() {
@@ -35,7 +35,7 @@ void Scheduled::reset() {
 }
 
 void Scheduled::update() {
-    double t = time->pullVariable<double>("total");
+    double t = time->pullValue<double>("total");
     double valueBefore = value;
     value = interpolateValue(t);
     increment = value - valueBefore;

@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "assimilation_max_given_temp_sla.h"
 #include "plant.h"
 
@@ -16,7 +16,7 @@ AssimilationMaxGivenTempSla::AssimilationMaxGivenTempSla(UniSim::Identifier name
 	: Model(name, parent)
 {
     new Parameter<double>("pctN", &pctN, 0.040, this, "description");
-    new PullVariable<double>("amax", &amax, this, "description");
+    new Variable<double>("amax", &amax, this, "description");
 }
 
 void AssimilationMaxGivenTempSla::initialize()
@@ -32,8 +32,8 @@ void AssimilationMaxGivenTempSla::reset() {
 
 void AssimilationMaxGivenTempSla::update()
 {
-    double sla = specificLeafArea->pullVariable<double>("sla");
-    double Tday = weather->pullVariable<double>("Tday");
+    double sla = specificLeafArea->pullValue<double>("sla");
+    double Tday = weather->pullValue<double>("Tday");
     amax=(16.92-16.92*pow(0.88, Tday))*pctN/sla/10.;
     if (amax < 0.)
         amax = 0.;

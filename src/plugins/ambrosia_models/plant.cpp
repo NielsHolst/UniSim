@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "plant.h"
 
@@ -22,8 +22,8 @@ Plant::Plant(UniSim::Identifier name, QObject *parent)
     for (int i = 0; i < NumStages; ++i)
         new Parameter<double>(bd + ('A' + i) , &bioDays[i], 0., this, "desc");
 
-    new PullVariable<double>("stage", &stage, this, "desc");
-    new PullVariable<double>("total", &total, this, "desc");
+    new Variable<double>("stage", &stage, this, "desc");
+    new Variable<double>("total", &total, this, "desc");
 }
 
 void Plant::initialize() {
@@ -38,13 +38,13 @@ void Plant::reset() {
 
 void Plant::update() {
     int firstDay = toDayOfYear(beginDay, beginMonth);
-    double today = calendar->pullVariable<double>("dayOfYear");
+    int today = calendar->pullValue<int>("dayOfYear");
     if (today < firstDay)
         return;
 
     double step = (fabs(stage-3.) < 1e-9) ?
-        timeC->pullVariable<double>("step") :
-        timeABDE->pullVariable<double>("step");
+        timeC->pullValue<double>("step") :
+        timeABDE->pullValue<double>("step");
     total += step;
 
     double sum = 0;

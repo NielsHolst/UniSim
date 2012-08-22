@@ -5,8 +5,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include "growth_demand.h"
 #include "life_stage.h"
 
@@ -18,19 +17,17 @@ GrowthDemand::GrowthDemand(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     new Parameter<double>("maxGrowthRate", &maxGrowthRate, 30., this, "Maximum finite growth rate through the whole stage (-)");
-    new PushVariable<double>("maxGrowthRate", &maxGrowthRate, this, "Same as the parameter");
-    new PullVariable<double>("maxGrowthRate", &maxGrowthRate, this, "Same as the parameter");
-    new PullVariable<double>("value", &value, this, "Demand to reach optimal growth this time step (g)");
+    new Variable<double>("value", &value, this, "Demand to reach optimal growth this time step (g)");
 }
 
 void GrowthDemand::initialize() {
     Model *stage = seekNearestAscendant<LifeStage*>("*");
     Model *massModel = stage->seekOneDescendant<Model*>("lifetable/mass");
-    mass = massModel->pullVariablePtr<double>("value");
-    duration = massModel->pullVariablePtr<double>("duration");
+    mass = massModel->pullValuePtr<double>("value");
+    duration = massModel->pullValuePtr<double>("duration");
 
     Model *time = seekOneNearest<Model*>("time");
-    timeStep = time->pullVariablePtr<double>("step");
+    timeStep = time->pullValuePtr<double>("step");
 }
 
 void GrowthDemand::reset() {

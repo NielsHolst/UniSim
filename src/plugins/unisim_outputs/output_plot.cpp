@@ -20,7 +20,6 @@
 #include <usbase/named_object.h>
 #include <usbase/object_pool.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable_base.h>
 #include <usbase/trace_base.h>
 #include <usbase/utilities.h>
 #include <usbase/main_window_interface.h>
@@ -118,7 +117,7 @@ void OutputPlot::TableRecord::initX() {
     try {
         stringToValue<QDate>(xString);
         Model *calendar = seekOne<Model*>("calendar");
-        QDate initialDate = calendar->pullVariable<QDate>("initialDate");
+        QDate initialDate = calendar->pullValue<QDate>("initialDate");
         QVector<QDate> xDate = data->column<QDate>(0);
         for (int i = 0; i < nRows; ++i) {
             x << initialDate.daysTo(xDate[i]);
@@ -128,7 +127,7 @@ void OutputPlot::TableRecord::initX() {
         try {
             stringToValue<QTime>(xString);
             Model *calendar = seekOne<Model*>("calendar");
-            QTime initialTime = calendar->pullVariable<QTime>("initialTimeOfDay");
+            QTime initialTime = calendar->pullValue<QTime>("initialTimeOfDay");
             QVector<QTime> xTime = data->column<QTime>(0);
             for (int i = 0; i < nRows; ++i) {
                 x << initialTime.secsTo(xTime[i]);
@@ -169,7 +168,7 @@ void OutputPlot::debrief() {
 void OutputPlot::showPlot() {
     fillPlotWidget();
     showPlotWidget();
-//    mainWindow->tile();
+    mainWindow->tile();
 }
 
 void OutputPlot::setZoomer() {

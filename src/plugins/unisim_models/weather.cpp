@@ -5,7 +5,7 @@
 */
 #include <cfloat>
 #include <usbase/clock.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/calendar.h"
 #include "weather.h"
@@ -15,7 +15,7 @@ namespace UniSim{
 Weather::Weather(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable<double>("Tavg", &Tavg, this,
+    new Variable<double>("Tavg", &Tavg, this,
     "Daily average temperature, either read from records file, "
     "or calculated as the daily average of minimum and maximum temperature. "
     "Must have a child model called @F {records}.");
@@ -23,9 +23,9 @@ Weather::Weather(Identifier name, QObject *parent)
 
 void Weather::initialize() {
     Model *records = seekOneChild<Model*>("records");
-    PullVariable<double> *pullAvg = records->peekOneChild<PullVariable<double>*>("Tavg");
-    PullVariable<double> *pullMin = records->peekOneChild<PullVariable<double>*>("Tmin");
-    PullVariable<double> *pullMax = records->peekOneChild<PullVariable<double>*>("Tmax");
+    Variable<double> *pullAvg = records->peekOneChild<Variable<double>*>("Tavg");
+    Variable<double> *pullMin = records->peekOneChild<Variable<double>*>("Tmin");
+    Variable<double> *pullMax = records->peekOneChild<Variable<double>*>("Tmax");
 
     avgIsPresent = pullAvg;
     minMaxIsPresent = pullMin && pullMax;

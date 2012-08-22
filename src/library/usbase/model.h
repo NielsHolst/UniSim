@@ -10,12 +10,14 @@
 #include "component.h"
 #include "exception.h"
 #include "identifier.h"
-#include "parameter.h"
-#include "pull_variable.h"
-#include "push_variable.h"
 #include "utilities.h"
+#include "parameter.h"
+#include "variable.h"
 
 namespace UniSim{
+
+//template<class T> class Parameter;
+//template<class T> class Variable;
 
 class Model : public UniSim::Component
 {
@@ -23,11 +25,9 @@ class Model : public UniSim::Component
 public:
     Model(Identifier name, QObject *parent=0);
 
-    template <class T> T parameter(Identifier name);
-    template <class T> PushVariable<T>* pushVariable(Identifier name);
-    template <class T> void pushVariable(Identifier name, T value);
-    template <class T> T pullVariable(Identifier name);
-    template <class T> const T* pullVariablePtr(Identifier name);
+    template <class T> T pullValue(Identifier name);
+    template <class T> const T* pullValuePtr(Identifier name);
+    template <class T> void pushValue(Identifier name, T value);
 
     Identifier classId();
     QString peekKeyValue(Identifier key);
@@ -47,40 +47,21 @@ private:
 typedef QList<Model*> Models;
 
 template <class T>
-T Model::parameter(Identifier name)
+T Model::pullValue(Identifier name)
 {
-    ParameterBase* basePar = seekOneChild<ParameterBase*>(name.key());
-    QVariant variant = basePar->toVariant();
-    if (!variant.canConvert<T>())
-        throw Exception("Cannot convert parameter '" + name.label() +
-                        "' to desired type", this);
-    return variant.value<T>();
+    return seekOneChild<Variable<T>*>(name.key())->value();
 }
 
 template <class T>
-PushVariable<T>* Model::pushVariable(Identifier name)
+const T* Model::pullValuePtr(Identifier name)
 {
-    return seekOneChild<PushVariable<T>*>(name.key());
+    return seekOneChild<Variable<T>*>(name.key())->valuePtr();
 }
 
 template <class T>
-void Model::pushVariable(Identifier name, T value)
+void Model::pushValue(Identifier name, T value)
 {
-    seekOneChild<PushVariable<T>*>(name.key())->setValue(value);
-}
-
-template <class T>
-T Model::pullVariable(Identifier name)
-{
-    PullVariableBase* baseVar = seekOneChild<PullVariableBase*>(name.key());
-    QVariant variant = baseVar->toVariant();
-    return variant.value<T>();
-}
-
-template <class T>
-const T* Model::pullVariablePtr(Identifier name)
-{
-    return seekOneChild<PullVariable<T>*>(name.key())->valuePtr();
+    seekOneChild<Parameter<T>*>(name.key())->setValue(value);
 }
 
 } //namespace

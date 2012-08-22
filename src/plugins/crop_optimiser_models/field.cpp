@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "field.h"
 
 using namespace UniSim;
@@ -18,7 +18,7 @@ Field::Field(UniSim::Identifier name, QObject *parent)
         new Parameter<double>("Area", &area, 1., this, "Description");
         new Parameter<QString>("CropIdentifier", &cropIdentifier, "WWheat", this, "Description");
     //crops = new CropParameters("cropParameters", "crop parameters_0711", this, "Description...");
-        //new PullVariable<double>("N", &density, this, "Description");
+        //new Variable<double>("N", &density, this, "Description");
 }
 
 void Field::reset() {

@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cfloat>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "weather.h"
 
@@ -23,9 +23,9 @@ Weather::Weather(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("b", &b, 17.20, this,
                  "Parameter @I b of yearly sine curve for temperature (@Char{ring}C)");
 
-    new PullVariable<double>("T", &T, this, "Daily average temperature (@Char{ring} C)");
-    new PullVariable<double>("Tavg", &T, this, "Same as @F {T}");
-    new PullVariable<double>("Tsum", &Tsum, this,
+    new Variable<double>("T", &T, this, "Daily average temperature (@Char{ring} C)");
+    new Variable<double>("Tavg", &T, this, "Same as @F {T}");
+    new Variable<double>("Tsum", &Tsum, this,
                      "Temperature sum since 1 January "
                      "Day-degrees above 0 @Char{ring}C");
 }
@@ -42,7 +42,7 @@ void Weather::reset()
 
 void Weather::update()
 {
-    int dayOfYear = calendar->pullVariable<int>("dayOfYear");
+    int dayOfYear = calendar->pullValue<int>("dayOfYear");
     T = temperature(dayOfYear);
     Tsum = (dayOfYear == 1) ? T : Tsum + T;
 }

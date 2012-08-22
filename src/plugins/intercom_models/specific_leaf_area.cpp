@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "specific_leaf_area.h"
 
@@ -17,7 +17,7 @@ SpecificLeafArea::SpecificLeafArea(UniSim::Identifier name, QObject *parent)
 {
     new Parameter<double>("initial", &initial, 240., this, "Initial specific leaf area at time zero (cm @Sup {2}/g)");
     new Parameter<double>("slope", &slope, -0.075, this, "Slope on photothermal time ((cm @Sup {2}/g/{@Degree}D))");
-    new PullVariable<double>("value", &sla, this, "Specific leaf area (cm @Sup {2}/g)");
+    new Variable<double>("value", &sla, this, "Specific leaf area (cm @Sup {2}/g)");
 }
 
 void SpecificLeafArea::initialize()
@@ -27,7 +27,7 @@ void SpecificLeafArea::initialize()
 
 void SpecificLeafArea::update()
 {
-    double pt = photoThermalTime->pullVariable<double>("total");
+    double pt = photoThermalTime->pullValue<double>("total");
     sla = initial + slope*pt;
 }
 

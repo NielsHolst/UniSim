@@ -1,6 +1,8 @@
 #ifndef UNISIM_FIXED_H
 #define UNISIM_FIXED_H
 
+#include <QDate>
+#include <QTime>
 #include <QVector>
 #include <usbase/model.h>
 #
@@ -14,16 +16,16 @@ public:
     // standard methods
     void amend();
 private:
-    //methods
-    void ammendParameters();
-    void ammendPullVariables();
-    void ammendPushVariables();
-
     // parameters
-    QString parametersAsString, pullVariablesAsString, pushVariablesAsString;
+    QString parametersAsString;
 
-    // pull variables
-    QVector<double> parameters, pullVariables, pushVariables;
+    // value buffers
+    QVector<QDate> dates;
+    QVector<QTime> times;
+    QVector<bool> bools;
+    QVector<int> ints;
+    QVector<double> doubles;
+    QVector<QString> strings;
 };
 
 }

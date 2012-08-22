@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/test_num.h>
 #include "phenology.h"
 
@@ -15,7 +15,7 @@ Phenology::Phenology(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
-    new PullVariable<double>("alive", &alive, this,
+    new Variable<double>("alive", &alive, this,
                              "Proportion of plant population still alive [0;1], "
                              "i.e. the proportion that has not yet developed past the last stage "
                              "defined as child of @F {Phenology}.");
@@ -31,7 +31,7 @@ void Phenology::amend() {
     for (int i = 0; i < n; ++i) {
         Identifier id = stages[i]->id();
         double *valuePtr = &proportions[i];
-        new PullVariable<double>(id, valuePtr, this,
+        new Variable<double>(id, valuePtr, this,
         "Proportion of plant population in " + id.label() + " stage. "
         "Note: The number and names of these pull variables are defined by the stages "
         "included as children of @F Phenology in the XML model file.");
@@ -39,7 +39,7 @@ void Phenology::amend() {
 }
 
 void Phenology::reset() {
-    stages[0]->pushVariable<double>("inflow", 1.);
+    stages[0]->pushValue<double>("inflow", 1.);
     alive = proportions[0] = 1.;
 }
 
@@ -47,13 +47,13 @@ void Phenology::reset() {
 void Phenology::update() {
     // Development through stages
     stages[0]->deepUpdate();
-    alive = proportions[0] = stages[0]->pullVariable<double>("number");
+    alive = proportions[0] = stages[0]->pullValue<double>("number");
     int n = stages.size();
     for (int i = 1; i < n; ++i) {
         Model *stage = stages[i];
-        stage->pushVariable("inflow", stages[i-1]->pullVariable<double>("outflow"));
+        stage->pushValue("inflow", stages[i-1]->pullValue<double>("outflow"));
         stage->deepUpdate();
-        alive += proportions[i] = stage->pullVariable<double>("number");
+        alive += proportions[i] = stage->pullValue<double>("number");
     }
 
     TestNum::assureLe(alive, 1., "Fraction alive (sum of stages)", this);

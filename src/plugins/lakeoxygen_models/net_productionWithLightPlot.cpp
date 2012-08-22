@@ -24,17 +24,17 @@ NetProduction::NetProduction(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("Ksys", &Ksys, 0.22, this, "Reaeration Constant for lemming system [m/d]");
     new Parameter<double>("Kd", &Kd, 1.75, this, "Light Attenuation coefficient [-]");
     new Parameter<double>("Unit", &Unit, 0.375, this, "Converts between Oxygen and Carbon as Net production unit");
-    new PullVariable<double>("DO_OBS_SAT_PCT", &DO_OBS_SAT_PCT, this, "observed dissolved oxygen concentration as percentage of saturation");
-    new PullVariable<double>("Kwind", &Kwind, this, "Reaeration coefficent estimated from wind speed [m/day]");
-    new PullVariable<double>("Net_Prod", &Net_Prod, this, "Net community production (from stochastic sampling [O2(or C)/m2/day])");
-    new PullVariable<double>("Net_Prod_wind", &Net_Prod_wind, this, "Net community production (from wind speed [O2(or C)/m2/day]) ");
+    new Variable<double>("DO_OBS_SAT_PCT", &DO_OBS_SAT_PCT, this, "observed dissolved oxygen concentration as percentage of saturation");
+    new Variable<double>("Kwind", &Kwind, this, "Reaeration coefficent estimated from wind speed [m/day]");
+    new Variable<double>("Net_Prod", &Net_Prod, this, "Net community production (from stochastic sampling [O2(or C)/m2/day])");
+    new Variable<double>("Net_Prod_wind", &Net_Prod_wind, this, "Net community production (from wind speed [O2(or C)/m2/day]) ");
 
     new Parameter<int>("Layers", &Layers, 3, this, "Number of layers to subdivide the water column vertically [-]");
     new Parameter<double>("MaxDepth", &MaxDepth, 15., this, "Description");
-    new PullVariable<double>("Layerheight", &Layerheight, this, "Layerheight [m]");
-    new PullVariable<double>("Sum_stochastic", &Sum_stochastic, this, "Calculated light at a cirtain depth [µmol/m2/day]");
-     new PullVariable<double>("Sum_wind", &Sum_wind, this, "Calculated light at a cirtain depth [µmol/m2/day]");
-      new PullVariable<double>("Light", &Light, this, "Calculated light at a cirtain depth [µmol/m2/day]");
+    new Variable<double>("Layerheight", &Layerheight, this, "Layerheight [m]");
+    new Variable<double>("Sum_stochastic", &Sum_stochastic, this, "Calculated light at a cirtain depth [µmol/m2/day]");
+     new Variable<double>("Sum_wind", &Sum_wind, this, "Calculated light at a cirtain depth [µmol/m2/day]");
+      new Variable<double>("Light", &Light, this, "Calculated light at a cirtain depth [µmol/m2/day]");
 
 }
 void NetProduction::initialize() {
@@ -57,11 +57,11 @@ void NetProduction::reset() {
 
 void NetProduction::update() {
     /*Pulls the variables from the models the do calculations*/
-    double DOsatConc = OxygenConcentration->pullVariable<double>("DOsatConc");
-    double OBS_DO1 = weather->pullVariable<double>("OBS_DO");
-    double DLI = weather->pullVariable<double>("OBS_DLI");
-    double OBS_Wind = weather->pullVariable<double>("OBS_Wind");
-    double Daylength = weather->pullVariable<double>("Daylength");
+    double DOsatConc = OxygenConcentration->pullValue<double>("DOsatConc");
+    double OBS_DO1 = weather->pullValue<double>("OBS_DO");
+    double DLI = weather->pullValue<double>("OBS_DLI");
+    double OBS_Wind = weather->pullValue<double>("OBS_Wind");
+    double Daylength = weather->pullValue<double>("Daylength");
 
 
 
@@ -89,7 +89,7 @@ void NetProduction::update() {
 
 
 
-    QDate today = calendar->pullVariable<QDate>("date");
+    QDate today = calendar->pullValue<QDate>("date");
     if (today.day() == 1 && today.month()==1) {
             Sum_stochastic =0;
             Sum_wind =0;
@@ -101,7 +101,7 @@ void NetProduction::update() {
 
 
     for (int i = 0; i < lakeEnvironments.size(); ++i) {
-        double Light = lakeEnvironments[i]->pullVariable<double>("Light");
+        double Light = lakeEnvironments[i]->pullValue<double>("Light");
 
 
     }

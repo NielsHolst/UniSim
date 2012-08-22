@@ -5,7 +5,7 @@
 */
 #include <usbase/file_locations.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "crop.h"
 
 using namespace UniSim;
@@ -18,7 +18,7 @@ Crop::Crop(Identifier name, QObject *parent)
     new Parameter<int>("numFields", &numFields, 1, this, "description");
     new Parameter<int>("Area", &initArea, 100, this, "description");
     new Parameter<double>("nitrogenNorm", &nitrogenNorm, 0., this, "description");
-    new PullVariable<int>("CurrentArea", &currentArea, this, "description");
+    new Variable<int>("CurrentArea", &currentArea, this, "description");
 }
 
 void Crop::reset() {

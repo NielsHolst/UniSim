@@ -138,11 +138,11 @@ void TestSimulation::testExecute()
     QList<Model*> search;
     search = seekDescendants<Model*>("/butterfly/egg", 0);
     QCOMPARE(search.size(), 1);
-    search[0]->pushVariable("input", 15.);
+    search[0]->pushValue("inflow", 15.);
 
     search = seekDescendants<Model*>("/wasp/egg", 0);
     QCOMPARE(search.size(), 1);
-    search[0]->pushVariable("input", 80.);
+    search[0]->pushValue("inflow", 80.);
 
 	try {
 		_simulation->execute();

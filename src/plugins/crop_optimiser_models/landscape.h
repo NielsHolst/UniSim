@@ -6,10 +6,8 @@
 #ifndef CROP_OPTIMISER_LANDSCAPE
 #define CROP_OPTIMISER_LANDSCAPE
 #include <QObject>
+#include <QVector>
 #include <usbase/model.h>
-
-
-
 
 namespace crop_optimiser {
 

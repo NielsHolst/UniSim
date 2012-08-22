@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "first_order_reaction.h"
 
 using namespace UniSim;
@@ -19,8 +19,8 @@ namespace MicrobialCommunity {
 
         for(int i = 0; i < populationList.size(); i++) {
 
-            double densityActivityCoef = populationList[i]->pullVariable<double>("DensityActivityCoefficient");
-            double rateConstant = populationList[i]->parameter<double>("FirstOrderRateConstant");
+            double densityActivityCoef = populationList[i]->pullValue<double>("DensityActivityCoefficient");
+            double rateConstant = populationList[i]->pullValue<double>("FirstOrderRateConstant");
 
             velocity = substrate * rateConstant;
             velocityPDD = substrate * rateConstant * densityActivityCoef;

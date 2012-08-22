@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/exception.h>
 #include "competition.h"
 
@@ -17,7 +17,7 @@ namespace MicrobialCommunity {
         new Parameter<double>("InitialResource", &initialResource, 1., this, "Initial resource");
         new Parameter<QString>("CompetitionModel", &competitionModel, "default", this, "Define the competition model used in the simulation");
 
-        new PullVariable<double>("AvailableResource", &availableResource, this, "Description");
+        new Variable<double>("AvailableResource", &availableResource, this, "Description");
 
     }
 
@@ -31,7 +31,7 @@ namespace MicrobialCommunity {
 
         for(int i = 0; i < populationList.size(); i++) {
             // For Competition model, CarryingCapacity is not required and should be set to 0.
-            populationList[i] -> pushVariable<double>("CarryingCapacity", 0);
+            populationList[i] -> pushValue<double>("CarryingCapacity", 0);
         }
 
         // Call reset function to set parameter values.
@@ -69,9 +69,9 @@ namespace MicrobialCommunity {
         for(int i = 0; i < populationList.size(); i++){
             // This loop calculates individual demand, comsumption rate & total consumption rate.
 
-            double density = populationList[i]->pullVariable<double>("Density");
-            double demandRate = populationList[i]->parameter<double>("DemandRate");
-            double searchRate = populationList[i]->parameter<double>("SearchRate");
+            double density = populationList[i]->pullValue<double>("Density");
+            double demandRate = populationList[i]->pullValue<double>("DemandRate");
+            double searchRate = populationList[i]->pullValue<double>("SearchRate");
 
             demand.append(density * demandRate);
 
@@ -96,7 +96,7 @@ namespace MicrobialCommunity {
 
             double sdRatio = (demand[i] == 0 ? 0 : consumption[i] / demand[i]);
 
-            populationList[i] ->pushVariable<double>("SupplyDemandRatio", sdRatio); // Population growth rate is ratio-dependent.
+            populationList[i] ->pushValue<double>("SupplyDemandRatio", sdRatio); // Population growth rate is ratio-dependent.
         }
 
     }

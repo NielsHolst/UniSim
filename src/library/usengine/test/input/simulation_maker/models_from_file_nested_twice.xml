@@ -17,7 +17,7 @@
 				<model type="test::Operation" table="operations_on_crops_on_farms.txt"/>
 			</model>
 			<model name="stat" type="UniSim::Fixed">
-				<parameter name="pullVariables" value="((x 2)(y 3))"/>;
+				<parameter name="parameters" value="((x 2)(y 3))"/>;
 			</model>
 		</model>
 	</model>

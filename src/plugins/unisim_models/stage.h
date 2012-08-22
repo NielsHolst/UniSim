@@ -37,7 +37,7 @@ private:
     // pull variables
     double dt;
     bool firstUpdate;
-    double sum, inflowSaved, inflowTotal, outflow, outflowTotal, growth;
+    double sum, latestInflow, inflowTotal, outflow, outflowTotal, growth;
 
     // push variables
     double inflow, sdRatio, instantMortality;

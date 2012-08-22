@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/parameter.h>
 #include "mass.h"
 
 using namespace UniSim;
@@ -14,15 +14,15 @@ Mass::Mass(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     setRecursionPolicy(Update, ChildrenLast);
-    new PullVariable<double>("value", &value, this,
+    new Parameter<double>("allocation", &allocation, 0., this,
+                             "Allocated dry matter (g per plant per day) to be added to mass");
+    new Variable<double>("value", &value, this,
                              "The mass of this organ per plant (g per plant)");
-    new PullVariable<double>("allocationRate", &allocationRate, this,
+    new Variable<double>("allocationRate", &allocationRate, this,
                              "The mass just allocated to this organ per plant (g per plant per day)");
 
-    new PullVariable<double>("currentPartition", &currentPartition, this,
+    new Variable<double>("currentPartition", &currentPartition, this,
                              "The proportion [0;1] that this mass consistutes out of the plant total");
-    new PushVariable<double>("allocation", &allocation, this,
-                             "Allocated dry matter (g per plant per day) to be added to mass");
 }
 
 void Mass::initialize() {
@@ -31,16 +31,16 @@ void Mass::initialize() {
 
 void Mass::reset() {
     allocation = 0.;
-    value = mass->pullVariable<double>("number");
+    value = mass->pullValue<double>("number");
 }
 
 
 void Mass::update() {
     Q_ASSERT(allocation >= 0.);
-    mass->pushVariable<double>("inflow", allocation);
+    mass->pushValue<double>("inflow", allocation);
     allocationRate = allocation;
     allocation = 0.;
-    value = mass->pullVariable<double>("number");
+    value = mass->pullValue<double>("number");
 }
 
 void Mass::updateCurrentPartition(double total) {

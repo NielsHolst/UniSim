@@ -88,7 +88,7 @@
 						<parameter name="duration" value="300"/>
 					</model>
 					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0.5)(flowering 0)(senescent 0))"/>
+						<parameter name="values" value="((vegetative 0.5)(flowering 0)(senescent 0))"/>
 					</model>
 				</model>
 			</model>
@@ -118,7 +118,7 @@
 						<parameter name="duration" value="600"/>
 					</model>
 					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0.2)(flowering 0)(senescent 0))"/>
+						<parameter name="values" value="((vegetative 0.2)(flowering 0)(senescent 0))"/>
 					</model>
 				</model>
 			</model>
@@ -148,7 +148,7 @@
 						<parameter name="duration" value="200"/>
 					</model>
 					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0)(flowering 0.2)(senescent 0))"/>
+						<parameter name="values" value="((vegetative 0)(flowering 0.2)(senescent 0))"/>
 					</model>
 				</model>
 			</model>
@@ -160,7 +160,7 @@
 						<parameter name="duration" value="600"/>
 					</model>
 					<model name="partition" type="intercom::PartitioningFixedByStage">
-						<parameter name="value" value="((vegetative 0.3)(flowering 0.8)(senescent 1))"/>
+						<parameter name="values" value="((vegetative 0.3)(flowering 0.8)(senescent 1))"/>
 					</model>
 				</model>
 			</model>

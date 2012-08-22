@@ -5,7 +5,7 @@
 */
 #include <cfloat>
 #include <usbase/clock.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "../unisim_models/calendar.h"
 #include "weather.h"
@@ -18,19 +18,19 @@ namespace intercom{
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new PullVariable<double>("Tavg", &Tavg, this,
+    new Variable<double>("Tavg", &Tavg, this,
     "Daily average temperature calculated as the average of @F Tmin and @F Tmax ({@Degree}C)");
-    new PullVariable<double>("Tday", &Tday, this,
+    new Variable<double>("Tday", &Tday, this,
     "Daily day temperature calculated as @F Tmax minus one quarter of the span "
     "between @F Tmax and @F Tmin ({@Degree}C)");
-    new PullVariable<double>("irradiation", &irradiation, this,
+    new Variable<double>("irradiation", &irradiation, this,
     "Daily total irradiation. Same as @F irradiationMJ read from weather records "
     "but with adjusted units (W/m @Sup{2})");
-    new PullVariable<double>("parTotal", &par.total, this,
+    new Variable<double>("parTotal", &par.total, this,
     "Total PAR irradiation rate at current time of day (W/m @Sup{2})");
-    new PullVariable<double>("parDiffuse", &par.diffuse, this,
+    new Variable<double>("parDiffuse", &par.diffuse, this,
     "Diffuse component of total PAR irradiation at current time of day (W/m @Sup{2})");
-    new PullVariable<double>("parDirect", &par.direct, this,
+    new Variable<double>("parDirect", &par.direct, this,
     "Direct componente of total PAR irradiation at current time of day (W/m @Sup{2})");
 }
 
@@ -46,11 +46,11 @@ void Weather::reset() {
 }
 
 void Weather::update() {
-    double Tmin = records->pullVariable<double>("Tmin");
-    double Tmax = records->pullVariable<double>("Tmax");
+    double Tmin = records->pullValue<double>("Tmin");
+    double Tmax = records->pullValue<double>("Tmax");
     Tavg = (Tmin + Tmax)/2.;
     Tday = Tmax - 0.25*(Tmax - Tmin);
-    irradiation = records->pullVariable<double>("irradiationMJ")*1e6;
+    irradiation = records->pullValue<double>("irradiationMJ")*1e6;
 }
 
 void Weather::handleClockTick(double hour) {
@@ -59,10 +59,10 @@ void Weather::handleClockTick(double hour) {
 
 void Weather::updatePar() {
     double
-        sinld = calendar->pullVariable<double>("sinLD"),
-        cosld = calendar->pullVariable<double>("cosLD"),
-        day = calendar->pullVariable<double>("dayOfYear"),
-        dayLength = calendar->pullVariable<double>("dayLength");
+        sinld = calendar->pullValue<double>("sinLD"),
+        cosld = calendar->pullValue<double>("cosLD"),
+        day = calendar->pullValue<int>("dayOfYear"),
+        dayLength = calendar->pullValue<double>("dayLength");
 
     double aob = sinld/cosld;
     double dsinb = 3600.*(dayLength*sinld + 24.*cosld*sqrt(1. - aob*aob)/PI);
@@ -82,7 +82,7 @@ void Weather::updatePar() {
     else
         frdiff = 1.;
 
-    double sinbh = calendar->pullVariable<double>("sinb");
+    double sinbh = calendar->pullValue<double>("sinb");
 
     par.total = 0.5*irradiation*sinbh*(1. + 0.4*sinbh)/dsinbe;
     par.diffuse = sinbh*frdiff*atmtr*0.5*sc;

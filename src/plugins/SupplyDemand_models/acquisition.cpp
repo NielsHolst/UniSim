@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/test_num.h>
 #include "acquisition.h"
 #include "holometabola.h"
@@ -23,19 +23,19 @@ Acquisition::Acquisition(UniSim::Identifier name, QObject *parent)
     new Parameter<QString>("resource", &resourceStr, QString("resource"), this, "Name of resource model");
     new Parameter<double>("attackRate", &attackRate, 1., this, "Attack rate (per capita)");
 
-    new PullVariable<double>("egestion", &a.egestion, this, "Egestion (mass) in this time step");
-    new PullVariable<double>("respiration", &a.respiration, this, "Allocation to respiration (mass) in this time step");
-    new PullVariable<double>("reproduction", &a.reproduction, this, "Allocation to reproduction (mass) in this time step");
-    new PullVariable<double>("growth", &a.growth, this, "Allocation to growth (mass) in this time step");
-    new PullVariable<double>("sdReproduction", &a.sdReproduction, this, "Supply/Demand ratio for reproduction this time step");
-    new PullVariable<double>("sdGrowth", &a.sdGrowth, this, "Supply/Demand ratio for growth this time step");
-    new PullVariable<double>("deficit", &a.deficit, this, "Energy budget deficit (positive, mass) in this time step. "
+    new Variable<double>("egestion", &a.egestion, this, "Egestion (mass) in this time step");
+    new Variable<double>("respiration", &a.respiration, this, "Allocation to respiration (mass) in this time step");
+    new Variable<double>("reproduction", &a.reproduction, this, "Allocation to reproduction (mass) in this time step");
+    new Variable<double>("growth", &a.growth, this, "Allocation to growth (mass) in this time step");
+    new Variable<double>("sdReproduction", &a.sdReproduction, this, "Supply/Demand ratio for reproduction this time step");
+    new Variable<double>("sdGrowth", &a.sdGrowth, this, "Supply/Demand ratio for growth this time step");
+    new Variable<double>("deficit", &a.deficit, this, "Energy budget deficit (positive, mass) in this time step. "
                              "Arises if respiration demand exceeds the acquired supply");
 }
 
 void Acquisition::initialize() {
     Model *resourceModel = seekOne<Model*>(resourceStr);
-    resource = resourceModel->pullVariablePtr<double>("value");
+    resource = resourceModel->pullValuePtr<double>("value");
 
     d.pEgestion = lookupDemand("egestion");
     d.pRespiration = lookupDemand("respiration");
@@ -43,15 +43,15 @@ void Acquisition::initialize() {
     d.pGrowth = lookupDemand("growth");
 
     Model *reproduction = peekOneSibling<Model*>("reproduction");
-    eggWeight = reproduction ? reproduction->parameter<double>("eggWeight") : 0.;
+    eggWeight = reproduction ? reproduction->pullValue<double>("eggWeight") : 0.;
 
     Model *growth = peekOneSibling<Model*>("growth");
-    maxGrowthRate = growth ? growth->pullVariablePtr<double>("maxGrowthRate") : 0;
+    maxGrowthRate = growth ? growth->pullValuePtr<double>("maxGrowthRate") : 0;
 
     LifeStage *stage = seekNearestAscendant<LifeStage*>("*");
     myMassModel = stage->peekOneDescendant<Model*>("lifetable/mass");
-    myMass = myMassModel->pullVariablePtr<double>("value");
-    myDuration = myMassModel->pullVariablePtr<double>("duration");
+    myMass = myMassModel->pullValuePtr<double>("value");
+    myDuration = myMassModel->pullValuePtr<double>("duration");
 
     Holometabola *insect = seekOneAscendant<Holometabola*>("*");
     eggMass = insect->peekOneDescendant<Model*>("egg/lifetable/mass");
@@ -60,7 +60,7 @@ void Acquisition::initialize() {
 
 const double* Acquisition::lookupDemand(QString demandName) {
     Model *demandModel = peekOneSibling<Model*>(demandName);
-    return demandModel ? demandModel->pullVariablePtr<double>("value") : 0;
+    return demandModel ? demandModel->pullValuePtr<double>("value") : 0;
 }
 
 void Acquisition::reset() {
@@ -85,12 +85,12 @@ void Acquisition::update() {
     Q_ASSERT(TestNum::eqZero(available));
 
     if (eggMass)
-        eggMass->pushVariable<double>("inflow", a.reproduction);
+        eggMass->pushValue<double>("inflow", a.reproduction);
     if (eggNumber && eggWeight > 0.)
-        eggNumber->pushVariable<double>("inflow", a.reproduction/eggWeight);
+        eggNumber->pushValue<double>("inflow", a.reproduction/eggWeight);
     if (myMassModel && maxGrowthRate) {
         Q_ASSERT(*maxGrowthRate > 0.);
-        myMassModel->pushVariable<double>("growthRate", pow(*maxGrowthRate, a.sdGrowth));
+        myMassModel->pushValue<double>("growthRate", pow(*maxGrowthRate, a.sdGrowth));
     }
 }
 

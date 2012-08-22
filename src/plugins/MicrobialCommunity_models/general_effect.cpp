@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/exception.h>
 #include "general_effect.h"
 #include "random.h"
@@ -142,7 +142,7 @@ namespace MicrobialCommunity {
                     ratio = random.getDouble(minRatio, maxRatio);
                 } //if "Range"
 
-                affectedPopulationList[i]->pushVariable<double>(targetParameter, affectedPopulationList[i]->parameter<double>(targetParameter) * ratio);
+                affectedPopulationList[i]->pushValue<double>(targetParameter, affectedPopulationList[i]->pullValue<double>(targetParameter) * ratio);
 
             } //for
 

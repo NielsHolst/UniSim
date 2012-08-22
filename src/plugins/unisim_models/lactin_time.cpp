@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "lactin_time.h"
 
@@ -26,7 +26,7 @@ void LactinTime::initialize()
 
 double LactinTime::calcDailyTimeStep()
 {
-    double T = weather->pullVariable<double>("Tavg");
+    double T = weather->pullValue<double>("Tavg");
     double step = exp(a*T) - exp(a*b - (b - T)/c) + d;
     if (step < 0.)
         step = 0.;

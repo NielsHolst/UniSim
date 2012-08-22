@@ -5,7 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "pollen.h"
 
 using namespace UniSim;
@@ -27,25 +27,25 @@ Pollen::Pollen(UniSim::Identifier name, QObject *parent)
                           "Peak average density of pollen deposited on food plant (pollen per cm @Sup {2}) at field edge, i.e. "
                           "at @F {distance <= distanceMin}");
 
-    new PullVariable<double>("pollenDepositionRate", &pollenDepositionRate, this,
+    new Variable<double>("pollenDepositionRate", &pollenDepositionRate, this,
                              "Current pollen deposition rate (per day per cm @Sup {2})");
-    new PullVariable<double>("pollenDepositionTotal", &pollenDepositionTotal, this,
+    new Variable<double>("pollenDepositionTotal", &pollenDepositionTotal, this,
                              "Total pollen deposition (per cm @Sup {2})");
-    new PullVariable<double>("pollenDensity", &pollenDensity, this,
+    new Variable<double>("pollenDensity", &pollenDensity, this,
                              "Current pollen density (per cm @Sup {2})");
 }
 
 void Pollen::initialize() {
     Model *flush = peekOneChild<Model*>("depositionFlush");
     if (flush) {
-        depositionRate = flush->pullVariablePtr<double>("value");
+        depositionRate = flush->pullValuePtr<double>("value");
     }
     else {
         Model *deposition = seekOneChild<Model*>("depositionRate");
-        depositionRate = deposition->pullVariablePtr<double>("value");
+        depositionRate = deposition->pullValuePtr<double>("value");
     }
     Model *loss = seekOneChild<Model*>("lossRate");
-    lossRate = loss->pullVariablePtr<double>("value");
+    lossRate = loss->pullValuePtr<double>("value");
 }
 
 void Pollen::reset() {

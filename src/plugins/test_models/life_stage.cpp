@@ -5,8 +5,7 @@
 */
 #include <cmath>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include <iostream>
 #include "life_stage.h"
 
@@ -27,15 +26,15 @@ LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
     new Parameter<int>("k", &_k, 30, this, "description");
     new Parameter<double>("duration", &_L, 100., this, "description");
     new Parameter<double>("initial_input", &_initialInput, 0., this, "description");
+    new Parameter<double>("inflow", &_inflow, 0., this, "description");
+    new Parameter<double>("input", &_input, 0., this, "description");
 
-    new PullVariable<double>("contents", &_sum, this, "description");
-    new PullVariable<double>("fgr", &_fgr, this, "description");
-    new PullVariable<double>("input", &_input, this, "description");
-    new PullVariable<double>("output", &_output, this, "description");
-    new PullVariable<double>("inputTotal", &_inputTotal, this, "description");
-    new PullVariable<double>("outputTotal", &_outputTotal, this, "description");
+    new Variable<double>("contents", &_sum, this, "description");
+    new Variable<double>("fgr", &_fgr, this, "description");
+    new Variable<double>("output", &_output, this, "description");
+    new Variable<double>("inputTotal", &_inputTotal, this, "description");
+    new Variable<double>("outputTotal", &_outputTotal, this, "description");
 
-    new PushVariable<double>("input", &_inflow, this, "description");
 }
 
 LifeStage::~LifeStage()

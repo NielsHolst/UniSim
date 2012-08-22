@@ -6,7 +6,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "area_density_topheavy.h"
 #include "plant.h"
 

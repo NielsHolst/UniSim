@@ -6,7 +6,7 @@
 #include <QMapIterator>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
 #include "partitioning_fixed_by_stage.h"
@@ -19,7 +19,7 @@ namespace intercom{
 PartitioningFixedByStage::PartitioningFixedByStage(UniSim::Identifier name, QObject *parent)
     : Partitioning(name, parent)
 {
-    new Parameter<QString>("value", &valueAsString, QString(), this,
+    new Parameter<QString>("values", &valueAsString, QString(), this,
     "Fixed partitioning coefficient for each plant growth stage, for example, "
     "(vegetative 0.5)(flowering 0.2)");
 }
@@ -37,7 +37,7 @@ void PartitioningFixedByStage::update() {
         pa.next();
         QString name = pa.key();
         double partition = pa.value();
-        double stageProportion = phenology->pullVariable<double>(name);
+        double stageProportion = phenology->pullValue<double>(name);
         value += stageProportion*partition;
     }
     if (TestNum::gt(value, 1.))

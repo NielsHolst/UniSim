@@ -8,7 +8,7 @@
 #include <QList>
 #include <QObject>
 #include <usbase/model.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <math.h>
 
 namespace lakeoxygen {
@@ -44,7 +44,7 @@ private:
 
     // for Layers
     void CreateLayers();
-    void addOutput(int layer, UniSim::PullVariable<double> *light);
+    void addOutput(int layer, UniSim::Variable<double> *light);
 };
 
 } //namespace

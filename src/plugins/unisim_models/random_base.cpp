@@ -7,7 +7,7 @@
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "random_base.h"
 
 namespace UniSim{
@@ -22,7 +22,7 @@ RandomBase::RandomBase(Identifier name, QObject *parent)
     new Parameter<int>("maxTries", &maxTries, 100, this,
                        "Maximum number of tries to find a number inside the interval "
                        "@F minValue to @F {maxValue}. An exception is cast if exceeded");
-    new PullVariable<double>("value", &value, this,
+    new Variable<double>("value", &value, this,
                              "Random value");
 }
 
@@ -46,7 +46,7 @@ bool RandomBase::triggered() {
     int i = 0;
     bool doTrigger = false;
     while (i < triggers.size() && !doTrigger)
-        doTrigger = triggers[i++]->pullVariable<bool>("triggered");
+        doTrigger = triggers[i++]->pullValue<bool>("triggered");
     return doTrigger;
 }
 

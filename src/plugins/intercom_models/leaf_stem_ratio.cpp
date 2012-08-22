@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "leaf_stem_ratio.h"
 
 using namespace UniSim;
@@ -16,7 +16,7 @@ LeafStemRatio::LeafStemRatio(UniSim::Identifier name, QObject *parent)
 {
     new Parameter<double>("initial", &initial, 0.73, this, "description");
     new Parameter<double>("slope", &slope, 5.7e-4, this, "description");
-    new PullVariable<double>("ratio", &ratio, this, "description");
+    new Variable<double>("ratio", &ratio, this, "description");
 }
 
 void LeafStemRatio::initialize()
@@ -26,7 +26,7 @@ void LeafStemRatio::initialize()
 
 void LeafStemRatio::update()
 {
-    double pt = photoThermalTime->pullVariable<double>("total");
+    double pt = photoThermalTime->pullValue<double>("total");
     ratio = initial - slope*pt;
     if (ratio < 0.)
         ratio = 0.;

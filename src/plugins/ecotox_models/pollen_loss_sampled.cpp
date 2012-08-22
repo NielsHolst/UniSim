@@ -4,8 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/random.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "pollen_loss_sampled.h"
 
@@ -21,7 +20,7 @@ PollenLossSampled::PollenLossSampled(UniSim::Identifier name, QObject *parent)
         "List of daily loss rates from which one is drawn at random every day. "
         "A value of @F{(0 0.5 0.9)}, for example, results in a daily loss rate of either 0, 50% "
         "or 90% with equal probability");
-    new PullVariable<double>("value", &value, this,
+    new Variable<double>("value", &value, this,
                              "Pollen survival rate (per day)");
 }
 

@@ -17,7 +17,7 @@
 #include <usbase/trace.h>
 #include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/pull_variable_base.h>
 #include <usbase/utilities.h>
 #include "instance_index_from_condensed_table.h"
@@ -575,7 +575,7 @@ namespace {
             parameterT->redirectValuePtr(redirectTo);
             Component *sender = seekNearestAscendant<Component*>("*", parameter);
             Component *receiver = seekNearestAscendant<Component*>("*", variable);
-            QObject::connect(sender, SIGNAL(pullVariableChanged(PullVariableBase*,ParameterBase*)),
+            QObject::connect(sender, SIGNAL(pullValueChanged(PullVariableBase*,ParameterBase*)),
                              receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
         }
         return matchedT;

@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "assimilation_max_given_temp.h"
 
 using namespace UniSim;
@@ -19,7 +19,7 @@ AssimilationMaxGivenTemp::AssimilationMaxGivenTemp(UniSim::Identifier name, QObj
     new Parameter<double>("maxAmax", &maxAmax, 50, this,
     "Asymptotic max CO @Sub 2 assimilation rate at high temperature [kg CO @Sub 2 per ha leaf per hour]");
 
-    new PullVariable<double>("value", &value, this,
+    new Variable<double>("value", &value, this,
     "Max CO @Sub 2 assimilation rate [kg CO @Sub 2 per ha leaf per hour]");
 }
 
@@ -34,7 +34,7 @@ void AssimilationMaxGivenTemp::reset() {
 
 void AssimilationMaxGivenTemp::update()
 {
-    double Tday = weather->pullVariable<double>("Tday");
+    double Tday = weather->pullValue<double>("Tday");
     value = (Tday < 0.) ? 0. : maxAmax*(1. - pow(radix, Tday));
 }
 

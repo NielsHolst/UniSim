@@ -3,7 +3,9 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/parameter.h>
 #include <usbase/utilities.h>
+#include <usbase/variable.h>
 #include "photo_thermal_time.h"
 
 namespace UniSim{
@@ -22,7 +24,7 @@ void PhotoThermalTime::initialize()
 double PhotoThermalTime::calcDailyTimeStep()
 {
     double step =  DayDegrees::calcDailyTimeStep();
-    step *= calendar->pullVariable<double>("dayLength")/24.;
+    step *= calendar->pullValue<double>("dayLength")/24.;
     return step;
 }
 

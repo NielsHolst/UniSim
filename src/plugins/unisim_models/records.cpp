@@ -5,8 +5,7 @@
 #include <QTime>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/pull_variable_base.h>
+#include <usbase/variable.h>
 #include <usbase/random.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
@@ -29,20 +28,20 @@ Records::Records(Identifier name, QObject *parent)
     new Parameter<bool>("randomizeInitialYear", &randomizeInitialYear, false, this,
     "Pick a random initial year from the years available in the records file");
 
-    new PullVariable<QDateTime>("currentDateTime", &currentDateTime, this,
+    new Variable<QDateTime>("currentDateTime", &currentDateTime, this,
     "The date and time of the current line in the input file. The @F calendar date and time will be at "
     "or past this");
-    new PullVariable<QDateTime>("nextDateTime", &nextDateTime, this,
+    new Variable<QDateTime>("nextDateTime", &nextDateTime, this,
     "The date and time of the next line in the input file. The @F calendar date and time will be at "
     "or before this");
-    new PullVariable<QDateTime>("firstDateTime", &firstDateTime, this,
+    new Variable<QDateTime>("firstDateTime", &firstDateTime, this,
     "The date and time of the first line in the input file");
-    new PullVariable<QDateTime>("lastDateTime", &lastDateTime, this,
+    new Variable<QDateTime>("lastDateTime", &lastDateTime, this,
     "The date and time of the last line in the input file");
-    new PullVariable<QDate>("currentDate", &currentDate, this, "The date part of @F {currentDateTime}");
-    new PullVariable<QDate>("nextDate", &nextDate, this, "The date part of @F {nextDateTime}");
-    new PullVariable<QTime>("currentTime", &currentTime, this, "The time part of @F {currentDateTime}");
-    new PullVariable<QTime>("nextTime", &nextTime, this, "The time part of @F {nextDateTime}");
+    new Variable<QDate>("currentDate", &currentDate, this, "The date part of @F {currentDateTime}");
+    new Variable<QDate>("nextDate", &nextDate, this, "The date part of @F {nextDateTime}");
+    new Variable<QTime>("currentTime", &currentTime, this, "The time part of @F {currentDateTime}");
+    new Variable<QTime>("nextTime", &nextTime, this, "The time part of @F {nextDateTime}");
 
     currentColumnValues = new QVector<double>;
     nextColumnValues = new QVector<double>;
@@ -123,7 +122,7 @@ void Records::createColumnPullVariables() {
         Identifier id = columnNames[i];
         double *valuePtr = &values[i];
         if (i != dateColumn && i != timeColumn)
-            new PullVariable<double>(id, valuePtr, this, id.label() + " from file records");
+            new Variable<double>(id, valuePtr, this, id.label() + " from file records");
     }
 }
 
@@ -143,8 +142,8 @@ void Records::reset() {
     if (randomizeInitialYear)
         readToInitialYear();
     if (imposeInitialDateTime) {
-        calendar->pushVariable<QDate>("initialDate", currentDate);
-        calendar->pushVariable<QTime>("initialTimeOfDay", currentTime);
+        calendar->pushValue<QDate>("initialDate", currentDate);
+        calendar->pushValue<QTime>("initialTimeOfDay", currentTime);
         calendar->deepReset();
     }
     update();
@@ -227,7 +226,7 @@ void Records::advanceLine() {
 }
 
 void Records::update() {
-    QDateTime calendarDateTime = calendar->pullVariable<QDateTime>("dateTime");
+    QDateTime calendarDateTime = calendar->pullValue<QDateTime>("dateTime");
     while (calendarDateTime > nextDateTime && !pastLastLine)
         advanceLine();
 

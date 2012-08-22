@@ -107,7 +107,7 @@ void MainWindow::createMenus() {
     connect( windowCascade, SIGNAL(triggered()), _mdiArea, SLOT(cascadeSubWindows()) );
 
     windowMenu->addAction( windowTile = new QAction("&Tile", this) );
-    connect( windowTile, SIGNAL(triggered()), _mdiArea, SLOT(tileSubWindows ()) );
+    connect( windowTile, SIGNAL(triggered()), this, SLOT(doWindowTile()) );
 
     windowMenu->addAction( windowsSaveGraphics = new QAction("Save &graphics", this) );
     connect( windowsSaveGraphics, SIGNAL(triggered()), this, SLOT(doWindowsSaveGraphics()) );
@@ -135,7 +135,6 @@ PlotWidget* MainWindow::createPlotWidget(QString title) {
 
     QwtPlot *plot = new QwtPlot(subWindow);
     subWindow->setWidget(plot);
-
     return new PlotWidget(plot, subWindow);
 }
 
@@ -467,6 +466,11 @@ void MainWindow::doHelpAbout() {
 
 void MainWindow::doHelpHome() {
     QDesktopServices::openUrl(QUrl("http://www.ecolmod.org"));
+}
+
+void MainWindow::doWindowTile()
+{
+    tile();
 }
 
 void MainWindow::liveSimulatorStateChanged(int iOldState, int iNewState) {

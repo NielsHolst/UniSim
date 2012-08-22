@@ -23,6 +23,7 @@ HEADERS += \
     $${US_BASE}/test/test_data_grid.h \
     $${US_BASE}/test/test_identifier.h \
     $${US_BASE}/test/test_minimiser.h \
+    $${US_BASE}/test/test_moments.h \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
     $${US_BASE}/test/test_push_variable.h \
@@ -58,9 +59,7 @@ HEADERS += \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.h \
     $${US_PLUGINS}/unisim_outputs/test/test_table.h \
     ../graph_generator.h \
-    moments.h \
     main_window_stub.h \
-    test_moments.h \
     test_numeric_limits.h
 
 SOURCES += \
@@ -68,6 +67,7 @@ SOURCES += \
     $${US_BASE}/test/test_data_grid.cpp \
     $${US_BASE}/test/test_identifier.cpp \
     $${US_BASE}/test/test_minimiser.cpp \
+    $${US_BASE}/test/test_moments.cpp \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
     $${US_BASE}/test/test_push_variable.cpp \
@@ -103,7 +103,5 @@ SOURCES += \
     $${US_PLUGINS}/unisim_outputs/test/test_plot.cpp \
     $${US_PLUGINS}/unisim_outputs/test/test_table.cpp \
     ../graph_generator.cpp \
-    moments.cpp \
-    test_moments.cpp \
     test_numeric_limits.cpp \
     main.cpp

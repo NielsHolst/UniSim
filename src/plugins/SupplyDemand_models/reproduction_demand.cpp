@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "reproduction_demand.h"
 #include "life_stage.h"
 
@@ -18,17 +18,17 @@ ReproductionDemand::ReproductionDemand(UniSim::Identifier name, QObject *parent)
     setRecursionPolicy(Update,ChildrenNot);
     new Parameter<double>("sexRatio", &sexRatio, 0.5, this, "Fixed sex ratio");
     new Parameter<double>("eggWeight", &eggWeight, 0.01, this, "Weight of one egg");
-    new PullVariable<double>("value", &value, this, "Demand for reproduction during this time step (g)");
+    new Variable<double>("value", &value, this, "Demand for reproduction during this time step (g)");
 }
 
 void ReproductionDemand::initialize() {
     unlaidEggs = seekOneChild<Model*>("unlaidEggs");
-    laidEggs = unlaidEggs->pullVariablePtr<double>("outflow");
+    laidEggs = unlaidEggs->pullValuePtr<double>("outflow");
 
     Model *stage = seekNearestAscendant<LifeStage*>("*");
     Model *numberModel = stage->seekOneDescendant<Model*>("lifetable/number");
-    numAdults = numberModel->pullVariablePtr<double>("value");
-    newAdults = numberModel->pullVariablePtr<double>("inflow");
+    numAdults = numberModel->pullValuePtr<double>("value");
+    newAdults = numberModel->pullValuePtr<double>("inflow");
 }
 
 void ReproductionDemand::reset() {

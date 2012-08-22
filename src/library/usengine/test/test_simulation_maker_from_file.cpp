@@ -42,9 +42,9 @@ void TestSimulationMakerFromFile::testModelsFromFileOneLevel() {
     QCOMPARE(all.size(), 2*4+1+1);
     QVERIFY(sim->peekOneDescendant<Model*>("A"));
     QVERIFY(sim->peekOneDescendant<Model*>("D/stat"));
-    QCOMPARE(sim->seekOneDescendant<Model*>("A")->parameter<int>("farmRealId"),
+    QCOMPARE(sim->seekOneDescendant<Model*>("A")->pullValue<int>("farmRealId"),
              474840);
-    QCOMPARE(sim->seekOneDescendant<Model*>("D")->parameter<QString>("soilType"),
+    QCOMPARE(sim->seekOneDescendant<Model*>("D")->pullValue<QString>("soilType"),
              QString("Clay"));
     delete sim;
 }
@@ -61,7 +61,7 @@ void TestSimulationMakerFromFile::testModelsFromFileTwoLevels() {
 
     try {
         Model *crop = sim->seekOneDescendant<Model*>("landscape/B/WBarley");
-        QCOMPARE(crop->parameter<int>("Area"), 40);
+        QCOMPARE(crop->pullValue<int>("Area"), 40);
     }
     catch (Exception &ex) {
         QString msg = "Unexpected exception. " + ex.message();
@@ -82,9 +82,9 @@ void TestSimulationMakerFromFile::testModelsFromFileCondensed() {
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/C/stat"));
 
     Model *crop = sim->peekOneDescendant<Model*>("landscape/B/WBarley");
-    QCOMPARE(crop->parameter<int>("Area"), 40);
+    QCOMPARE(crop->pullValue<int>("Area"), 40);
     crop = sim->peekOneDescendant<Model*>("landscape/D/SBarley");
-    QCOMPARE(crop->parameter<int>("Area"), 15);
+    QCOMPARE(crop->pullValue<int>("Area"), 15);
 
     delete sim;
 }
@@ -104,7 +104,7 @@ void TestSimulationMakerFromFile::testModelsFromFileThreeLevels()
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/C/stat"));
 
     Model *harvest = sim->peekOneDescendant<Model*>("landscape/A/Oats/Harvest");
-    QCOMPARE(harvest->parameter<QDate>("Date"), QDate(2010,8,15));
+    QCOMPARE(harvest->pullValue<QDate>("Date"), QDate(2010,8,15));
 
     delete sim;
 //    std::cout << "\n";
@@ -116,17 +116,17 @@ void TestSimulationMakerFromFile::testModelsFromFileThreeLevels()
 void TestSimulationMakerFromFile::testModelsAndParametersFromFile() {
     createSimulation("models_and_parameters_from_files.xml");
     Model *harvest = sim->peekOneDescendant<Model*>("landscape/A/Oats/Harvest");
-    QCOMPARE(harvest->parameter<QDate>("Date"), QDate(2010,8,15));
-    QCOMPARE(harvest->parameter<int>("Cost"), 350);
-    QCOMPARE(harvest->parameter<bool>("IsOrganic"), true);
+    QCOMPARE(harvest->pullValue<QDate>("Date"), QDate(2010,8,15));
+    QCOMPARE(harvest->pullValue<int>("Cost"), 350);
+    QCOMPARE(harvest->pullValue<bool>("IsOrganic"), true);
 }
 
 void TestSimulationMakerFromFile::testModelsAndParametersFromFileSame() {
     createSimulation("models_and_parameters_from_files_same.xml");
     Model *farmA = sim->peekOneDescendant<Model*>("landscape/A");
     Model *farmD = sim->peekOneDescendant<Model*>("landscape/D");
-    QCOMPARE(farmA->parameter<int>("leakageRate"), 120);
-    QCOMPARE(farmD->parameter<int>("leakageRate"), 30);
+    QCOMPARE(farmA->pullValue<int>("leakageRate"), 120);
+    QCOMPARE(farmD->pullValue<int>("leakageRate"), 30);
 }
 
 void TestSimulationMakerFromFile::testModelsAndParametersFromFileCondensed() {
@@ -140,11 +140,11 @@ void TestSimulationMakerFromFile::testModelsAndParametersFromFileCondensed() {
     QVERIFY(sim->peekOneDescendant<Model*>("landscape/C/stat"));
 
     Model *crop = sim->seekOneDescendant<Model*>("landscape/B/WBarley");
-    QCOMPARE(crop->parameter<int>("Area"), 40);
-    QCOMPARE(crop->parameter<int>("numFields"), 4);
+    QCOMPARE(crop->pullValue<int>("Area"), 40);
+    QCOMPARE(crop->pullValue<int>("numFields"), 4);
     crop = sim->seekOneDescendant<Model*>("landscape/D/SBarley");
-    QCOMPARE(crop->parameter<int>("Area"), 15);
-    QCOMPARE(crop->parameter<int>("numFields"), 5);
+    QCOMPARE(crop->pullValue<int>("Area"), 15);
+    QCOMPARE(crop->pullValue<int>("numFields"), 5);
 
     delete sim;
 }
@@ -156,10 +156,10 @@ void TestSimulationMakerFromFile::testModelsFromCondensedFileParameterKey() {
     QCOMPARE(all.size(), 1+1+4*5);
 
     Model *crop = sim->seekOneDescendant<Model*>("landscape/C/WBarley");
-    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 130);
+    QCOMPARE(crop->pullValue<double>("nitrogenNorm"), 130.);
 
     crop = sim->seekOneDescendant<Model*>("landscape/D/SBarley");
-    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 90);
+    QCOMPARE(crop->pullValue<double>("nitrogenNorm"), 90.);
 
     delete sim;
 }
@@ -171,13 +171,13 @@ void TestSimulationMakerFromFile::testModelsFromCondensedFileParameter2Keys() {
     QCOMPARE(all.size(), 1+1+4*5);
 
     Model *crop = sim->seekOneDescendant<Model*>("landscape/C/WBarley");
-    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 130);
+    QCOMPARE(crop->pullValue<double>("nitrogenNorm"), 130.);
 
     crop = sim->seekOneDescendant<Model*>("landscape/D/SBarley");
-    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 90);
+    QCOMPARE(crop->pullValue<double>("nitrogenNorm"), 90.);
 
     crop = sim->seekOneDescendant<Model*>("landscape/B/Oats");
-    QCOMPARE(crop->parameter<int>("nitrogenNorm"), 125);
+    QCOMPARE(crop->pullValue<double>("nitrogenNorm"), 125.);
 
     delete sim;
 }

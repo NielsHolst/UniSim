@@ -13,8 +13,6 @@ namespace intercom{
 PartitioningFixed::PartitioningFixed(UniSim::Identifier name, QObject *parent)
     : Partitioning(name, parent)
 {
-    new Parameter<double>("value", &value, 1., this,
-    "Fixed partitioning coefficient. They must sum up to one for a @F Plant object.");
 }
 
 } //namespace

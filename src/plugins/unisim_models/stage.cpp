@@ -11,8 +11,7 @@
 #include <usbase/test_num.h>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "stage.h"
 	
@@ -34,26 +33,29 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
         "@F growthRate is also a pull/push variable");
     new Parameter<double>("initialInflow", &initialInflow, 0., this,
         "The @F initialInflow is entered as inflow at time 0");
+    new Parameter<double>("inflow", &inflow, 0., this,
+        "Number of units to be put into the stage in the next time step");
+    new Parameter<double>("sdRatio", &sdRatio, 1., this,
+        "Supply/Demand ratio");
+    new Parameter<double>("instantMortality", &instantMortality, 0., this,
+        "Mortality [0..100] will be applied in the next time step, before @F inflow is added");
 
-
-    new PullVariable<double>("value", &sum, this, "Number of units (e.g. individuals) in stage");
-    new PullVariable<double>("number", &sum, this, "Synonymous with @F {value}");
-    new PullVariable<double>("inflow", &inflowSaved, this, "Inflow into the stage in latest time step");
-    new PullVariable<double>("outflow", &outflow, this, "Outflow from the stage in latest time step");
-    new PullVariable<double>("inflowTotal", &inflowTotal, this, "Total inflow into the stage since beginning of the simulation");
-    new PullVariable<double>("outflowTotal", &outflowTotal, this, "Total outflow from the stage since beginning of the simulation");
-    new PullVariable<double>("timeStep", &dt, this, "The latest time step applied to the stage");
-    new PullVariable<double>("growthRate", &fgr, this, "Same as the @F growthRate parameter.");
-    new PullVariable<double>("growthIncrement", &growth, this, "Increment realised in this integration step");
-
-    new PushVariable<double>("growthRate", &fgr, this, "Same as the @F growthRate parameter.");
-    new PushVariable<double>("inflow", &inflow, this, "Number of units to be put into the stage in the next time step");
-    new PushVariable<double>("instantMortality", &instantMortality, this,
-    "Mortality [0..100] will be applied in the next time step, before @F inflow is added");
-
-    new Parameter<double>("sdRatio", &sdRatio, 1., this, "...");
-    new PushVariable<double>("sdRatio", &sdRatio, this, "Supply/Demand ratio");
-
+    new Variable<double>("value", &sum, this,
+        "Number of units (e.g. individuals) in stage");
+    new Variable<double>("number", &sum, this,
+        "Synonymous with @F {value}");
+    new Variable<double>("latestInflow", &latestInflow, this,
+        "Inflow into the stage in latest time step");
+    new Variable<double>("outflow", &outflow, this,
+        "Outflow from the stage in latest time step");
+    new Variable<double>("inflowTotal", &inflowTotal, this,
+        "Total inflow into the stage since beginning of the simulation");
+    new Variable<double>("outflowTotal", &outflowTotal, this,
+        "Total outflow from the stage since beginning of the simulation");
+    new Variable<double>("timeStep", &dt, this,
+        "The latest time step applied to the stage");
+    new Variable<double>("growthIncrement", &growth, this,
+        "Increment realised in this integration step");
 }
 
 Stage::~Stage() {
@@ -81,7 +83,7 @@ void Stage::initialize()
 void Stage::reset()
 {
     dd->scale(0);
-    sum = inflow = inflowPending = outflow = inflowTotal = outflowTotal = inflowSaved = growth = 0;
+    sum = inflow = inflowPending = outflow = inflowTotal = outflowTotal = latestInflow = growth = 0;
     instantMortality = 0.;
     firstUpdate = true;
 }
@@ -95,10 +97,10 @@ void Stage::update()
 
     inflowPending += inflow;
     inflowTotal += inflow;
-    inflowSaved = inflow;
+    latestInflow = inflow;
     inflow = 0;
 
-    dt = time->pullVariable<double>("step");
+    dt = time->pullValue<double>("step");
     if (dt == 0) {
         sum = dd->state().content + inflowPending;
         outflow = growth = 0.;

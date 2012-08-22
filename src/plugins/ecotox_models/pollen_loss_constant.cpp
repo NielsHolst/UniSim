@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "pollen_loss_constant.h"
 
 using namespace UniSim;
@@ -17,7 +17,7 @@ PollenLossConstant::PollenLossConstant(UniSim::Identifier name, QObject *parent)
 {
     new Parameter<double>("rate", &rate, 0.01, this,
                           "Fraction of pollen lost per day. Set this to zero if pollen is not lost");
-    new PullVariable<double>("value", &value, this,
+    new Variable<double>("value", &value, this,
                              "Fraction of pollen lost per day");
 }
 

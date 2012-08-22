@@ -12,15 +12,15 @@
 #include "main_window_interface.h"
 #include "model.h"
 #include "object_pool.h"
-#include "pull_variable.h"
+#include "variable.h"
 
 namespace UniSim{
 	
 Integrator::Integrator(Identifier name, QObject *parent)
     : Model(name, parent), mainWindow(0), report(0)
 {
-    new PullVariable<int>("stepNumber", &stepNumber, this, "Number of current time step in this iteration");
-    new PullVariable<int>("runNumber", &runNumber, this, "Number of current iteration");
+    new Variable<int>("stepNumber", &stepNumber, this, "Number of current time step in this iteration");
+    new Variable<int>("runNumber", &runNumber, this, "Number of current iteration");
     // This make the application task hang in memory
     //connect(QApplication::instance(), SIGNAL(lastWindowClosed()), this, SLOT(closeReport()));
 }
@@ -53,7 +53,7 @@ bool Integrator::nextRun() {
         nextOk = false;
     }
     else if (runIterator)
-        nextOk = runIterator->pullVariable<bool>("value");
+        nextOk = runIterator->pullValue<bool>("value");
     else
         nextOk = runNumber == 1;
     if (!nextOk)
@@ -85,7 +85,7 @@ void Integrator::updateReport() {
 void Integrator::createReport() {
     int numRuns = 1;
     if (runIterator)
-        numRuns = runIterator->pullVariable<int>("numIterations");
+        numRuns = runIterator->pullValue<int>("numIterations");
     report = new QProgressDialog("Computing...", "Cancel simulation", 0, numRuns, mainWindow);
     report->setWindowModality(Qt::WindowModal);
     report->setMinimumDuration(1000);

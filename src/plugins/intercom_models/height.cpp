@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "height.h"
 
 using namespace UniSim;
@@ -19,7 +19,7 @@ Height::Height(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("slope", &slope, 0.0085, this, "Growth rate (per photothermal time unit)");
     new Parameter<double>("tm", &tm, 624., this, "Time when @Math {height = h0 + (hmax - h0) slash 2 }");
 
-    new PullVariable<double>("height", &height, this, "Current height (m)");
+    new Variable<double>("height", &height, this, "Current height (m)");
 }
 
 void Height::initialize() {
@@ -31,7 +31,7 @@ void Height::reset() {
 }
 
 void Height::update() {
-    double pt = photoThermalTime->pullVariable<double>("total");
+    double pt = photoThermalTime->pullValue<double>("total");
     updateHeight(pt);
 }
 

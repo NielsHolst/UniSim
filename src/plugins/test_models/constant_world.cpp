@@ -5,7 +5,7 @@
 */
 #include <usbase/file_locations.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "constant_world.h"
 
 using namespace UniSim;
@@ -16,8 +16,7 @@ ConstantWorld::ConstantWorld(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
     new Parameter<double>("temperature", &setTemperature, 30., this, "description");
-    new PullVariable<double>("temperature", &temperature, this, "description");
-    new PullVariable<double>("day", &day, this, "description");
+    new Variable<double>("day", &day, this, "description");
     QDir dir = FileLocations::location(FileLocationInfo::Plugins);
     Q_ASSERT(dir.absolutePath().contains("plugins"));
 }

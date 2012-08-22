@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "crop.h"
 #include "rotation.h"
@@ -22,7 +22,7 @@ Rotation::Rotation(UniSim::Identifier name, QObject *parent)
                  "Sequence of crops in rotation. For example, @F {(maize wheat wheat)}, "
                  "in which maize is followed by two crops of wheat. The crop names must "
                  "refer to names of @F Crop models that are children of @F {Rotation}.");
-    new PullVariable<double>("lai", &lai, this,
+    new Variable<double>("lai", &lai, this,
                      "Leaf area index (m @Sup {2}/m @Sup {2}) of the current crop");
     setRecursionPolicy(Component::Update, Component::ChildrenNot);
 }
@@ -57,7 +57,7 @@ void Rotation::reset() {
 
 void Rotation::update() {
     currentCrop()->deepUpdate();
-    lai = currentCrop()->pullVariable<double>("lai");
+    lai = currentCrop()->pullValue<double>("lai");
 }
 
 Model* Rotation::currentCrop() {

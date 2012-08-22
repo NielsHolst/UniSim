@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "day_degrees.h"
 
@@ -29,7 +29,7 @@ void DayDegrees::initialize()
 
 double DayDegrees::calcDailyTimeStep()
 {
-    double T = weather->pullVariable<double>("Tavg");
+    double T = weather->pullValue<double>("Tavg");
     double step;
     if (T < T0)
         step = 0.;

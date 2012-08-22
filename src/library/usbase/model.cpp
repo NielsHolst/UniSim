@@ -5,8 +5,6 @@
 */
 
 #include "model.h"
-#include "pull_variable.h"
-#include "push_variable.h"
 
 using namespace std;
 

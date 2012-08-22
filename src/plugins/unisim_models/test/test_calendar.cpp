@@ -153,13 +153,13 @@ void TestCalendar::testSolarElevation() {
         calendar->seekOneChild<Parameter<QDate>*>("initialDate") -> setValue(QDate(2010, 1, 1));
         calendar->deepReset();
         for (int da = 0; da < dates.size(); ++da) {
-            while (calendar->pullVariable<QDate>("date") < dates[da]) {
+            while (calendar->pullValue<QDate>("date") < dates[da]) {
                 calendar->update();
             }
             for (int ho = 0; ho < hours.size(); ++ho) {
                 double astroHour = hours[ho] - solarNoonDiff[lo][da];
                 clock()->doTick(astroHour);
-                double sinb = calendar->pullVariable<double>("sinb");
+                double sinb = calendar->pullValue<double>("sinb");
                 double estSolarElev = asin(sinb)/PI*180.;
                 QVERIFY(fabs(estSolarElev - solarElev[lo][da][ho]) < 1.);
             }
@@ -174,11 +174,11 @@ void TestCalendar::testDayLength() {
         calendar->seekOneChild<Parameter<QDate>*>("initialDate") -> setValue(QDate(2010, 1, 1));
         calendar->deepReset();
         for (int da = 0; da < dates.size(); ++da) {
-            while (calendar->pullVariable<QDate>("date") < dates[da]) {
+            while (calendar->pullValue<QDate>("date") < dates[da]) {
                 calendar->update();
             }
         double trueDayLength = QTime(0,0,0).secsTo(dayLength[lo][da])/60./60.;
-        double estDayLength = calendar->pullVariable<double>("dayLength");
+        double estDayLength = calendar->pullValue<double>("dayLength");
         cout << "Day length deviation (h)" << lo << ": " << (estDayLength - trueDayLength) << "\n";
         QVERIFY(fabs(estDayLength - trueDayLength) < 0.5);
         }
@@ -188,15 +188,15 @@ void TestCalendar::testDayLength() {
 
 void TestCalendar::testDaySteps() {
     calendar->deepReset();
-    QDate initialDate = calendar->parameter<QDate>("initialDate");
-    QDate date = calendar->pullVariable<QDate>("date");
+    QDate initialDate = calendar->pullValue<QDate>("initialDate");
+    QDate date = calendar->pullValue<QDate>("date");
     QCOMPARE(initialDate.addDays(-1), date);
 
     const int n = 7;
     for (int i = 0; i < n; ++i){
         calendar->deepUpdate();
     }
-    QCOMPARE(initialDate.addDays(n-1), calendar->pullVariable<QDate>("date"));
+    QCOMPARE(initialDate.addDays(n-1), calendar->pullValue<QDate>("date"));
 }
 
 void TestCalendar::testHourSteps() {
@@ -205,9 +205,9 @@ void TestCalendar::testHourSteps() {
     calendar->seekOneChild<Parameter<int>*>("timeStep") -> setValue(4);
     calendar->deepReset();
 
-    QDate initialDate = calendar->parameter<QDate>("initialDate");
-    QDate date = calendar->pullVariable<QDate>("date");
-    QTime time = calendar->pullVariable<QTime>("timeOfDay");
+    QDate initialDate = calendar->pullValue<QDate>("initialDate");
+    QDate date = calendar->pullValue<QDate>("date");
+    QTime time = calendar->pullValue<QTime>("timeOfDay");
     QCOMPARE(initialDate, date);
     QCOMPARE(time, QTime(8,0));
 
@@ -216,7 +216,7 @@ void TestCalendar::testHourSteps() {
         calendar->deepUpdate();
     }
 
-    QCOMPARE(calendar->pullVariable<QDate>("date"), initialDate.addDays(1));
-    QCOMPARE(calendar->pullVariable<QTime>("timeOfDay"), QTime(16,0));
+    QCOMPARE(calendar->pullValue<QDate>("date"), initialDate.addDays(1));
+    QCOMPARE(calendar->pullValue<QTime>("timeOfDay"), QTime(16,0));
 }
 

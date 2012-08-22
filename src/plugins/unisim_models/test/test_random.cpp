@@ -110,7 +110,7 @@ void TestRandom::generateObs(UniSim::Model *model) {
     obs.resize(N);
     for (int i = 0; i < N; ++i) {
         model->deepReset();
-        obs[i].first = model->pullVariable<double>("value");
+        obs[i].first = model->pullValue<double>("value");
         obs[i].second = false;
     }
 }

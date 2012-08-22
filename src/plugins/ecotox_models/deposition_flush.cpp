@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "deposition_flush.h"
 #include "pollen_onset_date.h"
 
@@ -24,9 +24,9 @@ DepositionFlush::DepositionFlush(UniSim::Identifier name, QObject *parent)
                            "Optional file with dates of pollen onset. "
                            "Date will be picked at random within calendar year");
 
-    new PullVariable<double>("value", &value, this,
+    new Variable<double>("value", &value, this,
                            "Deposition rate (0..1)");
-    new PullVariable<double>("total", &total, this,
+    new Variable<double>("total", &total, this,
                           "Accumulated deposition total (0..1)");
 }
 
@@ -73,14 +73,14 @@ void DepositionFlush::calcScaling() {
     }
     double scaling1 = sum;
 
-    double eps = loss->parameter<double>("rate");
+    double eps = loss->pullValue<double>("rate");
     double scaling2 = -50.0700*eps*eps*eps + 28.0483*eps*eps - 6.95117*eps + 1;
 
     scaling = 1/scaling1/scaling2;
 }
 
 void DepositionFlush::update() {
-    bool passedOnset = calendar->pullVariable<QDate>("date") >= onsetDate;
+    bool passedOnset = calendar->pullValue<QDate>("date") >= onsetDate;
     if (phase == Before && passedOnset) {
         phase = Inside;
         phaseTime = 0;

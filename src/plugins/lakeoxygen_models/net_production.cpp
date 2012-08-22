@@ -34,28 +34,28 @@ NetProduction::NetProduction(UniSim::Identifier name, QObject *parent)
     "Maximum depth of lake (m)");
 
 
-    new PullVariable<double>("DOObsSatPct", &doObsSatPct, this,
+    new Variable<double>("DOObsSatPct", &doObsSatPct, this,
     "Observed dissolved oxygen concentration as percentage of saturation");
 
-    new PullVariable<double>("Kwind", &Kwind, this,
+    new Variable<double>("Kwind", &Kwind, this,
     "Reaeration coefficent estimated from wind speed (m/day)");
 
-    new PullVariable<double>("netProd", &netProd, this,
+    new Variable<double>("netProd", &netProd, this,
     "Net community production from stochastic sampling (O{@Sub 2} (or C)/m @Sup 2 /d)");
 
-    new PullVariable<double>("netProdWind", &netProdWind, this,
+    new Variable<double>("netProdWind", &netProdWind, this,
     "Net community production from wind speed (O{@Sub 2} (or C)/m @Sup 2 /d) ");
 
-    new PullVariable<double>("layerHeight", &layerHeight, this,
+    new Variable<double>("layerHeight", &layerHeight, this,
     "Height of water layer (m)");
 
-    new PullVariable<double>("sumStochastic", &sumStochastic, this,
+    new Variable<double>("sumStochastic", &sumStochastic, this,
     "Calculated light at a certain depth ({@Sym mu}mol/m @Sup 2/d)");
 
-    new PullVariable<double>("sumWind", &sumWind, this,
+    new Variable<double>("sumWind", &sumWind, this,
     "Calculated light at a certain depth ({@Sym mu}mol/m @Sup 2/d)");
 
-    new PullVariable<double>("light", &light, this,
+    new Variable<double>("light", &light, this,
     "Calculated light at a certain depth ({@Sym mu}mol/m @Sup 2/d)");
 
 }
@@ -80,11 +80,11 @@ void NetProduction::reset() {
 
 void NetProduction::update() {
     // Pull the variables from the models then do calculations
-    double dayLength = calendar->pullVariable<double>("Daylength");
-    double obsDO = weather->pullVariable<double>("obsDO");
-    double DLI = weather->pullVariable<double>("obsDLI");
-    double wind = weather->pullVariable<double>("wind");
-    double doSatConc = oxygenConcentration->pullVariable<double>("DOsatConc");
+    double dayLength = calendar->pullValue<double>("Daylength");
+    double obsDO = weather->pullValue<double>("obsDO");
+    double DLI = weather->pullValue<double>("obsDLI");
+    double wind = weather->pullValue<double>("wind");
+    double doSatConc = oxygenConcentration->pullValue<double>("DOsatConc");
 
 
     // Ensure that division is not by zero
@@ -114,7 +114,7 @@ void NetProduction::update() {
     netProd = (-0.787 + 0.014*doObsSatPct + 0.022*DLI - 0.081*dayLength)*Ku10*unit;
     netProdWind = (-0.787 + 0.014*doObsSatPct + 0.022*DLI -0.081*dayLength)*Kwind/Ksys*unit;
 
-    QDate today = calendar->pullVariable<QDate>("date");
+    QDate today = calendar->pullValue<QDate>("date");
     if (today.day() == 1 && today.month() == 1) {
         sumStochastic = 0;
         sumWind = 0;

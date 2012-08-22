@@ -11,7 +11,7 @@
 	</model>
 
 	<model name="statics" type="UniSim::Fixed">
-		<parameter name="pullVariables" value="((x 2)(y 3))"/>
+		<parameter name="parameters" value="((x 2)(y 3))"/>
 	</model>
 
 	<output type="plot">

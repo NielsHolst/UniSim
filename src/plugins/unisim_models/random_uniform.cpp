@@ -19,7 +19,7 @@ RandomUniform::~RandomUniform() {
 
 void RandomUniform::initialize() {
     RandomBase::initialize();
-    distribution = new Distribution(parameter<double>("minValue"), parameter<double>("maxValue"));
+    distribution = new Distribution(pullValue<double>("minValue"), pullValue<double>("maxValue"));
     variate = new Variate(*randomGenerator(), *distribution);
 }
 

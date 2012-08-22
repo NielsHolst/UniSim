@@ -16,10 +16,8 @@
 #include <usbase/exception.h>
 #include <usbase/output.h>
 #include <usbase/trace.h>
-#include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
-#include <usbase/pull_variable.h>
-#include <usbase/pull_variable_base.h>
+#include <usbase/variable_base.h>
 #include <usbase/utilities.h>
 #include "instance_index_from_condensed_table.h"
 #include "instance_index_from_table.h"
@@ -110,7 +108,6 @@ Simulation* SimulationMaker::parse(QString filePath)
 
     redirectedParameters.clear();
     traceVariableParam.clear();
-    traceParameterParam.clear();
     clearTables();
 
     emit beginExpansion();
@@ -471,7 +468,7 @@ void SimulationMaker::readOutputElement(QObject* parent)
             readParameterElement(asList(output));
         }
         else if (elementNameEquals("read-parameter")) {
-            readOutputSubElement(&traceParameterParam, output);
+            readOutputSubElement(&traceVariableParam, output);
         }
         else if (elementNameEquals("variable")) {
             readOutputSubElement(&traceVariableParam, output);
@@ -534,8 +531,7 @@ void SimulationMaker::readOutputTableElement(QObject* parent) {
  }
 
 void SimulationMaker::createTraces() {
-    createTracesKindOf<PullVariableBase, Trace<PullVariableBase> >(traceVariableParam);
-    createTracesKindOf<ParameterBase, Trace<ParameterBase> >(traceParameterParam);
+    createTracesKindOf<VariableBase, Trace<VariableBase> >(traceVariableParam);
 }
 
 bool SimulationMaker::elementNameEquals(QString s) const {
@@ -578,17 +574,17 @@ QString SimulationMaker::message(QString text) const {
 
 namespace {
     template <class T>
-    bool couple(ParameterBase *parameter, PullVariableBase *variable) {
+    bool couple(ParameterBase *parameter, const VariableBase *variable) {
         Parameter<T>* parameterT = dynamic_cast<Parameter<T>*>(parameter);
-        PullVariable<T> *variableT = dynamic_cast<PullVariable<T>*>(variable);
+        const Variable<T> *variableT = dynamic_cast<const Variable<T>*>(variable);
         bool matchedT = parameterT && variableT;
         if (matchedT) {
-            T *redirectTo = const_cast<T*>(variableT->valuePtr());
+            const T *redirectTo = variableT->valuePtr();
             parameterT->redirectValuePtr(redirectTo);
-            Component *sender = seekNearestAscendant<Component*>("*", parameter);
-            Component *receiver = seekNearestAscendant<Component*>("*", variable);
-            QObject::connect(sender, SIGNAL(pullVariableChanged(PullVariableBase*,ParameterBase*)),
-                             receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
+//            Component *sender = seekNearestAscendant<Component*>("*", parameter);
+//            Component *receiver = seekNearestAscendant<Component*>("*", variable);
+//            QObject::connect(sender, SIGNAL(pullValueChanged(PullVariableBase*,ParameterBase*)),
+//                             receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
         }
         return matchedT;
     }
@@ -597,8 +593,8 @@ namespace {
 void SimulationMaker::redirectParameters() {
     for (int i = 0; i < redirectedParameters.size(); ++i) {
         ParameterBase *parameter = redirectedParameters[i].first;
-        QString variableName = redirectedParameters[i].second;
-        PullVariableBase *variable = seekOne<QObject*, PullVariableBase*>(variableName);
+        QString variableFullName = redirectedParameters[i].second;
+        const VariableBase *variable = seekOne<QObject*, VariableBase*>(variableFullName);
         bool coupled =
             couple<bool>(parameter, variable) ||
             couple<int>(parameter, variable) ||
@@ -610,7 +606,7 @@ void SimulationMaker::redirectParameters() {
             couple<QString>(parameter, variable);
         if (!coupled) {
             QString msg("The type of variable '%1' does not match that of the parameter");
-            throw Exception(message(msg.arg(variableName)), parameter);
+            throw Exception(message(msg.arg(variableFullName)), parameter);
         }
     }
 }

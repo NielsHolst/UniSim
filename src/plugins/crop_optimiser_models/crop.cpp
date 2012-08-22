@@ -5,7 +5,7 @@
 */
 
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include "crop.h"
 
 using namespace UniSim;
@@ -55,131 +55,62 @@ Crop::Crop(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("RotationMin", &rotationMin, 0, this, "Description");
 
 
-    //pull parameters....added 12.01.2012
-    new PullVariable<double>("InitialArea", &initialArea, this, "Description");
-    new PullVariable<double>("Subsidy", &subsidy, this, "Description");
-    new PullVariable<double>("PriceLM", &priceLM, this, "Description");
-    new PullVariable<double>("PriceHerb", &priceHerb, this, "Description");
-    new PullVariable<double>("PriceFi", &priceFi, this, "Description");
-    new PullVariable<double>("PriceG", &priceG, this, "Description");
-    new PullVariable<double>("PriceH", &priceH, this, "Description");
-    new PullVariable<double>("PriceW", &priceW, this, "Description");
-    new PullVariable<double>("AlfaHerb", &alfaHerb, this, "Description");
-    new PullVariable<double>("BetaHerb", &betaHerb, this, "Description");
-    new PullVariable<double>("AlfaFi", &alfaFi, this, "Description");
-    new PullVariable<double>("BetaFi", &betaFi, this, "Description");
-    new PullVariable<double>("AlfaG", &alfaG, this, "Description");
-    new PullVariable<double>("BetaG", &betaG, this, "Description");
-    new PullVariable<double>("AlfaH", &alfaH, this, "Description");
-    new PullVariable<double>("BetaH", &betaH, this, "Description");
-    new PullVariable<double>("AlfaW", &alfaW, this, "Description");
-    new PullVariable<double>("BetaW", &betaW, this, "Description");
-    new PullVariable<double>("Alfa", &alfa,  this, "Description");
-    new PullVariable<double>("Beta1", &beta1, this, "Description");
-    new PullVariable<double>("Beta2", &beta2, this, "Description");
-    new PullVariable<double>("Nnorm", &Nnorm, this, "Description");
-    new PullVariable<double>("FUKey", &FUKey, this, "Description");
-    new PullVariable<double>("SellingPrice", &sellingPrice, this, "Description");
-    new PullVariable<double>("RotationMax", &rotationMax, this, "Description");
-    new PullVariable<double>("RotationMin", &rotationMin, this, "Description");
-    new PullVariable<bool>("Fixed", &fixed, this, "Description");
-    new PullVariable<bool>("Fodder", &fodder, this, "Description");
+    new Variable<double>("BetaW", &betaW, this, "Description");
+    new Variable<double>("Alfa", &alfa,  this, "Description");
+    new Variable<double>("Beta1", &beta1, this, "Description");
+    new Variable<double>("Beta2", &beta2, this, "Description");
+
+    new Variable<double>("SellingPrice", &sellingPrice, this, "Description");
 
     //SIMPLIFIED METHOD
-    new PushVariable<double>("N", &n, this, "Description");
-    new PushVariable<double>("Nt", &nt, this, "Description");
-    new PushVariable<double>("Response", &resp, this, "Description");
-    new PushVariable<double>("BIHerb", &BIHerb, this, "Description");
-    new PushVariable<double>("BIFi", &BIFi, this, "Description");
-    new PushVariable<double>("BI", &BI, this, "Description");
-    new PushVariable<double>("Grooming", &grooming, this, "Description");
-    new PushVariable<double>("Hoeing", &hoeing, this, "Description");
-    new PushVariable<double>("Weeding", &weeding, this, "Description");
-    new PushVariable<double>("LossHerb", &lossHerb, this, "Description");
-    new PushVariable<double>("LossFi", &lossFi, this, "Description");
-    new PushVariable<double>("TotalLoss", &totalLoss, this, "Description");
-    new PushVariable<double>("Costs_ha", &costs_ha, this, "Description");
-    new PushVariable<double>("Income_ha", &income_ha, this, "Description");
-    new PushVariable<double>("GM", &GM, this, "Description");
-    new PushVariable<double>("CostFU", &costFU, this, "Description");
-    new PushVariable<double>("Savings", &savings, this, "Description");
-    new PushVariable<double>("AreaPercent", &areaPercent, this, "Description");
-    new PushVariable<double>("AreaMinPercent", &areaMinPercent, this, "Description");
-    new PushVariable<double>("Area_ha", &area_ha, this, "Description");
-    new PushVariable<double>("AreaVariable", &areaVariable, this, "Description");
-    new PushVariable<double>("RotationMax", &rotationMax, this, "Description");
+    new Parameter<double>("N", &n, 0., this, "Description");
+    new Parameter<double>("Nt", &nt, 0., this, "Description");
+    new Parameter<double>("Response", &resp, 0., this, "Description");
+    new Parameter<double>("BIHerb", &BIHerb, 0., this, "Description");
+    new Parameter<double>("BIFi", &BIFi, 0., this, "Description");
+    new Parameter<double>("BI", &BI, 0., this, "Description");
+    new Parameter<double>("Grooming", &grooming, 0., this, "Description");
+    new Parameter<double>("Hoeing", &hoeing, 0., this, "Description");
+    new Parameter<double>("Weeding", &weeding, 0., this, "Description");
+    new Parameter<double>("LossHerb", &lossHerb, 0., this, "Description");
+    new Parameter<double>("LossFi", &lossFi, 0., this, "Description");
+    new Parameter<double>("TotalLoss", &totalLoss, 0., this, "Description");
+    new Parameter<double>("Costs_ha", &costs_ha, 0., this, "Description");
+    new Parameter<double>("Income_ha", &income_ha, 0., this, "Description");
+    new Parameter<double>("GM", &GM, 0., this, "Description");
+    new Parameter<double>("CostFU", &costFU, 0., this, "Description");
+    new Parameter<double>("Savings", &savings, 0., this, "Description");
+    new Parameter<double>("AreaPercent", &areaPercent, 0., this, "Description");
+    new Parameter<double>("AreaMinPercent", &areaMinPercent, 0., this, "Description");
+    new Parameter<double>("Area_ha", &area_ha, 0., this, "Description");
+    new Parameter<double>("AreaVariable", &areaVariable, 0., this, "Description");
+    new Parameter<double>("RotationMax", &rotationMax, 0., this, "Description");
 
     //FULL METHOD
-    new PushVariable<double>("LossHerbBIzero", &lossHerbBIzero, this, "Description");
-    new PushVariable<double>("LossHerbBImax", &lossHerbBImax, this, "Description");
-    new PushVariable<double>("LossFiBIzero", &lossFiBIzero, this, "Description");
-    new PushVariable<double>("LossFiBImax", &lossFiBImax, this, "Description");
+    new Parameter<double>("LossHerbBIzero", &lossHerbBIzero, 0., this, "Description");
+    new Parameter<double>("LossHerbBImax", &lossHerbBImax, 0., this, "Description");
+    new Parameter<double>("LossFiBIzero", &lossFiBIzero, 0., this, "Description");
+    new Parameter<double>("LossFiBImax", &lossFiBImax, 0., this, "Description");
 
-    new PushVariable<double>("TotalLossNOHerbNOFi", &totalLossNOHerbNOFi, this, "Description");
-    new PushVariable<double>("TotalLossNOHerbYESFi", &totalLossNOHerbYESFi, this, "Description");
-    new PushVariable<double>("TotalLossYESHerbNOFi", &totalLossYESHerbNOFi, this, "Description");
-    new PushVariable<double>("TotalLossYESHerbYESFi", &totalLossYESHerbYESFi, this, "Description");
+    new Parameter<double>("TotalLossNOHerbNOFi", &totalLossNOHerbNOFi, 0., this, "Description");
+    new Parameter<double>("TotalLossNOHerbYESFi", &totalLossNOHerbYESFi, 0., this, "Description");
+    new Parameter<double>("TotalLossYESHerbNOFi", &totalLossYESHerbNOFi, 0., this, "Description");
+    new Parameter<double>("TotalLossYESHerbYESFi", &totalLossYESHerbYESFi, 0., this, "Description");
 
-    new PushVariable<double>("N_NONO", &n_NONO, this, "Description");
-    new PushVariable<double>("N_NOYES", &n_NOYES, this, "Description");
-    new PushVariable<double>("N_YESNO", &n_YESNO, this, "Description");
-    new PushVariable<double>("N_YESYES", &n_YESYES, this, "Description");
+    new Parameter<double>("N_NONO", &n_NONO, 0., this, "Description");
+    new Parameter<double>("N_NOYES", &n_NOYES, 0., this, "Description");
+    new Parameter<double>("N_YESNO", &n_YESNO, 0., this, "Description");
+    new Parameter<double>("N_YESYES", &n_YESYES, 0., this, "Description");
 
-    new PushVariable<double>("Nt_NONO", &nt_NONO, this, "Description");
-    new PushVariable<double>("Nt_NOYES", &nt_NOYES, this, "Description");
-    new PushVariable<double>("Nt_YESNO", &nt_YESNO, this, "Description");
-    new PushVariable<double>("Nt_YESYES", &nt_YESYES, this, "Description");
+    new Parameter<double>("Nt_NONO", &nt_NONO, 0., this, "Description");
+    new Parameter<double>("Nt_NOYES", &nt_NOYES, 0., this, "Description");
+    new Parameter<double>("Nt_YESNO", &nt_YESNO, 0., this, "Description");
+    new Parameter<double>("Nt_YESYES", &nt_YESYES, 0., this, "Description");
 
-    new PushVariable<double>("Response_NONO", &resp_NONO, this, "Description");
-    new PushVariable<double>("Response_NOYES", &resp_NOYES, this, "Description");
-    new PushVariable<double>("Response_YESNO", &resp_YESNO, this, "Description");
-    new PushVariable<double>("Response_YESYES", &resp_YESYES, this, "Description");
-
-
-
-    //SIMPLIFIED METHOD
-    new PullVariable<double>("N", &n, this, "Description");
-    new PullVariable<double>("Nt", &nt, this, "Description");
-    new PullVariable<double>("Response", &resp, this, "Description");
-    new PullVariable<double>("BI", &BI, this, "Description");
-    new PullVariable<double>("BIHerb", &BIHerb, this, "Description");
-    new PullVariable<double>("BIFi", &BIFi, this, "Description");
-    new PullVariable<double>("Grooming", &grooming, this, "Description");
-    new PullVariable<double>("Hoeing", &hoeing, this, "Description");
-    new PullVariable<double>("Weeding", &weeding, this, "Description");
-    new PullVariable<double>("TotalLoss", &totalLoss, this, "Description");
-    new PullVariable<double>("Costs_ha", &costs_ha, this, "Description");
-    new PullVariable<double>("Income_ha", &income_ha, this, "Description");
-    new PullVariable<double>("GM", &GM, this, "Description");
-    new PullVariable<double>("CostFU", &costFU, this, "Description");
-    new PullVariable<double>("Savings", &savings, this, "Description");
-    new PullVariable<double>("AreaPercent", &areaPercent, this, "Description");
-    new PullVariable<double>("AreaMinPercent", &areaMinPercent, this, "Description");
-    new PullVariable<double>("Area_ha", &area_ha, this, "Description");
-    new PullVariable<double>("AreaVariable", &areaVariable, this, "Description");
-
-    //FULL METHOD
-    new PullVariable<double>("TotalLossNOHerbNOFi", &totalLossNOHerbNOFi, this, "Description");
-    new PullVariable<double>("TotalLossNOHerbYESFi", &totalLossNOHerbYESFi, this, "Description");
-    new PullVariable<double>("TotalLossYESHerbNOFi", &totalLossYESHerbNOFi, this, "Description");
-    new PullVariable<double>("TotalLossYESHerbYESFi", &totalLossYESHerbYESFi, this, "Description");
-
-    new PullVariable<double>("Response_NONO", &resp_NONO, this, "Description");
-    new PullVariable<double>("Response_NOYES", &resp_NOYES, this, "Description");
-    new PullVariable<double>("Response_YESNO", &resp_YESNO, this, "Description");
-    new PullVariable<double>("Response_YESYES", &resp_YESYES, this, "Description");
-
-    new PullVariable<double>("N_NONO", &n_NONO, this, "Description");
-    new PullVariable<double>("N_NOYES", &n_NOYES, this, "Description");
-    new PullVariable<double>("N_YESNO", &n_YESNO, this, "Description");
-    new PullVariable<double>("N_YESYES", &n_YESYES, this, "Description");
-
-    new PullVariable<double>("Nt_NONO", &nt_NONO, this, "Description");
-    new PullVariable<double>("Nt_NOYES", &nt_NOYES, this, "Description");
-    new PullVariable<double>("Nt_YESNO", &nt_YESNO, this, "Description");
-    new PullVariable<double>("Nt_YESYES", &nt_YESYES, this, "Description");
-
-
+    new Parameter<double>("Response_NONO", &resp_NONO, 0., this, "Description");
+    new Parameter<double>("Response_NOYES", &resp_NOYES, 0., this, "Description");
+    new Parameter<double>("Response_YESNO", &resp_YESNO, 0., this, "Description");
+    new Parameter<double>("Response_YESYES", &resp_YESYES, 0., this, "Description");
 }
 
 void Crop::initialize(){

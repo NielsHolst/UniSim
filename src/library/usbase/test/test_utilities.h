@@ -67,7 +67,11 @@ private slots:
     void testPeekParent();
     void testSeekParent();
 
+    void testStringToValueDouble();
+    void testStringToValueInt();
     void testStringToValueChar();
+    void testStringToValueBool();
+    void testStringToValueDate();
     void testStringToValueTime();
 
     void testDecodeListFaulty();

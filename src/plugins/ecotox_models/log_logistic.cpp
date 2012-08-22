@@ -5,8 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/parameter.h>
-#include <usbase/pull_variable.h>
-#include <usbase/push_variable.h>
+#include <usbase/variable.h>
 #include "log_logistic.h"
 
 using namespace UniSim;
@@ -28,10 +27,8 @@ LogLogistic::LogLogistic(UniSim::Identifier name, QObject *parent)
                           "Slope of sigmoid curve. The curve is rising from @F lower to @F upper, if @F slope is positive."
                           "And, the curve is falling from @F upper to @F lower, if @F slope is negative");
 
-    new PullVariable<double>("value", &value, this,
-                             "Response at current dose");
-//    new PushVariable<double>("dose", &dose, this,
-//                             "Dose for which response will be calculated");
+    new Variable<double>("value", &value, this,
+                         "Response at current dose");
 }
 
 void LogLogistic::initialize() {

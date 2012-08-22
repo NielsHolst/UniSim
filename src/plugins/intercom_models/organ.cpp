@@ -5,7 +5,7 @@
 */
 #include <QMessageBox>
 #include <usbase/exception.h>
-#include <usbase/pull_variable.h>
+#include <usbase/variable.h>
 #include <usbase/parameter.h>
 #include <usbase/test_num.h>
 #include "area.h"
@@ -25,21 +25,21 @@ Organ::Organ(UniSim::Identifier name, QObject *parent)
     new Parameter<double>("CH2ORequirement", &CH2ORequirement, 1.5, this,
                           "Carbohydrate requirement g CH @Sub 2 O per g biomass");
 
-    new PullVariable<double>("lightAbsorption", &lightAbsorption, this,
+    new Variable<double>("lightAbsorption", &lightAbsorption, this,
                              "Absorbed light (W per m @Sup 2 ground per day)");
-    new PullVariable<double>("CO2Assimilation", &CO2Assimilation, this,
+    new Variable<double>("CO2Assimilation", &CO2Assimilation, this,
                              "Assimilated kg CO @Sub 2 per ha ground per day");
-    new PullVariable<double>("grossProduction", &grossProduction, this,
+    new Variable<double>("grossProduction", &grossProduction, this,
                              "Produced kg CH @Sub {2}O per ha ground per day");
-    new PullVariable<double>("maintenanceResp", &maintenanceResp, this,
+    new Variable<double>("maintenanceResp", &maintenanceResp, this,
                              "Maintenance respiration (kg CH @Sub 2 O per ha ground per day)");
-    new PullVariable<double>("growthResp", &growthResp, this,
+    new Variable<double>("growthResp", &growthResp, this,
                              "Growth respiration (kg CH @Sub 2 O per ha ground per day)");
-    new PullVariable<double>("netAllocation", &netAllocation, this,
+    new Variable<double>("netAllocation", &netAllocation, this,
                              "Net allocation rate, the daily increment to organbiomass (kg CH @Sub 2 O per ha ground per day)");
-    new PullVariable<double>("allocatedPerPlant", &allocatedPerPlant, this,
+    new Variable<double>("allocatedPerPlant", &allocatedPerPlant, this,
                              "Net biomass allocated to this organ per plant (g per plant per day)");
-    new PullVariable<double>("propAllocatedPerPlant", &propAllocatedPerPlant, this,
+    new Variable<double>("propAllocatedPerPlant", &propAllocatedPerPlant, this,
                              "Proportion biomass allocated to this organ among all the plant's organs [0;1]");
 }
 
@@ -59,21 +59,21 @@ void Organ::reset() {
     maintenanceResp =
     grossProduction =
     growthResp = 0.;
-    isTestMode = community->parameter<bool>("testMode");
+    isTestMode = community->pullValue<bool>("testMode");
 }
 
 void Organ::updatePhotosynthesis() {
     if (area) {
-        lightAbsorption = area->pullVariable<double>("lightAbsorption");
-        CO2Assimilation = area->pullVariable<double>("CO2Assimilation");;
-        grossProduction = area->pullVariable<double>("grossProduction");;
+        lightAbsorption = area->pullValue<double>("lightAbsorption");
+        CO2Assimilation = area->pullValue<double>("CO2Assimilation");;
+        grossProduction = area->pullValue<double>("grossProduction");;
     }
     updateMaintenanceRespiration();
 }
 
 void Organ::updateMaintenanceRespiration() {
-    double temp = weather->pullVariable<double>("Tavg");
-    double resp20 = maintenanceCoeff*mass->pullVariable<double>("value");
+    double temp = weather->pullValue<double>("Tavg");
+    double resp20 = maintenanceCoeff*mass->pullValue<double>("value");
     resp20 = plant->gPerPlant_to_kgPerHa(resp20);
     maintenanceResp = resp20*pow(2., (temp - 20.)/10.);
 }
@@ -100,12 +100,12 @@ void Organ::doAllocate(double totalCarbohydrates, double netCarbohydrates) {
     netAllocation = netCarbohydrates;
     allocatedPerPlant = plant->kgPerHa_to_gPerPlant(netCarbohydrates);
 
-    bool isEarly = community->pullVariable<bool>("isInEarlyGrowth");
+    bool isEarly = community->pullValue<bool>("isInEarlyGrowth");
     bool skipAllocation = isTestMode && !isEarly;
     if (!skipAllocation) {
-        mass->pushVariable<double>("allocation", allocatedPerPlant);
+        mass->pushValue<double>("allocation", allocatedPerPlant);
         if (area)
-            area->pushVariable<double>("allocation", allocatedPerPlant);
+            area->pushValue<double>("allocation", allocatedPerPlant);
     }
 }
 

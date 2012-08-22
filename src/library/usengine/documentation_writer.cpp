@@ -12,9 +12,8 @@
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/model_maker_plug_in.h>
-#include <usbase/parameter.h>
-#include <usbase/pull_variable_base.h>
-#include <usbase/push_variable_base.h>
+#include <usbase/parameter_base.h>
+#include <usbase/variable_base.h>
 #include <usbase/utilities.h>
 #include <usbase/version.h>
 #include "documentation_writer.h"
@@ -173,8 +172,7 @@ void DocumentationWriter::writeModel(ModelMakerPlugIn *plugin, Identifier modelI
     write(plugin->supportedClasses().value(modelId) + "\n");
     write(TABLE_BEGIN);
     writeParameters(model);
-    writePushVariables(model);
-    writePullVariables(model);
+    writeVariables(model);
     write(TABLE_END);
     write("@End @SubSubAppendix\n");
     delete model;
@@ -215,8 +213,12 @@ void DocumentationWriter::writeParameters(Model *model) {
     }
 }
 
-void DocumentationWriter::writePushVariables(Model *model) {
-    QList<PushVariableBase*> var = model->seekChildren<PushVariableBase*>("*");
+void DocumentationWriter::writeVariables(Model *model) {
+    QList<VariableBase*> var, all = model->seekChildren<VariableBase*>("*");
+    for (int i = 0; i < all.size(); ++i) {
+        if (!dynamic_cast<ParameterBase*>(all[i]))
+            var << all[i];
+    }
     int n = var.size();
     if (n == 0) return;
 
@@ -233,28 +235,6 @@ void DocumentationWriter::writePushVariables(Model *model) {
             format = FORMAT_FIRST_ROW;
         else if (i == n-1)
             format = FORMAT_LAST_ROW;
-        writeTableRow(format, var[i]->id().label() + index(var[i]->id()), var[i]->typeId(), desc(var[i]->description()));
-    }
-}
-
-void DocumentationWriter::writePullVariables(Model *model) {
-    QList<PullVariableBase*> var = model->seekChildren<PullVariableBase*>("*");
-    int n = var.size();
-    if (n == 0) return;
-
-    writeTableTitle("Pull variables");
-    /* If an empty section is wanted
-    if (n == 0)  {
-        QString format = QString(FORMAT_FIRST_ROW) + FORMAT_VERY_LAST_ROW;
-        writeTableRow(format, "", "", "@I None");
-    }
-    */
-    for (int i = 0; i < n; ++i) {
-        QString format;
-        if (i == 0)
-            format = FORMAT_FIRST_ROW;
-        else if (i == n-1)
-            format = FORMAT_VERY_LAST_ROW;
         writeTableRow(format, var[i]->id().label() + index(var[i]->id()), var[i]->typeId(), desc(var[i]->description()));
     }
 }

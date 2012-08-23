@@ -467,11 +467,10 @@ void SimulationMaker::readOutputElement(QObject* parent)
         if (elementNameEquals("parameter")) {
             readParameterElement(asList(output));
         }
-        else if (elementNameEquals("read-parameter")) {
-            readOutputSubElement(&traceVariableParam, output);
-        }
-        else if (elementNameEquals("variable")) {
-            readOutputSubElement(&traceVariableParam, output);
+        else if (elementNameEquals("read-parameter")
+                 || elementNameEquals("variable")
+                 || elementNameEquals("trace")) {
+            readOutputSubElement(output);
         }
         else if (elementNameEquals("table")) {
             readOutputTableElement(output);
@@ -484,7 +483,7 @@ void SimulationMaker::readOutputElement(QObject* parent)
 	nextElementDelim();
 }	
 
-void SimulationMaker::readOutputSubElement(QList<TraceParam> *parameters, QObject* parent)
+void SimulationMaker::readOutputSubElement(QObject* parent)
 {
     Q_ASSERT(reader->isStartElement() && parent);
 
@@ -497,29 +496,11 @@ void SimulationMaker::readOutputSubElement(QList<TraceParam> *parameters, QObjec
     param.setAttribute( "columns", attributeValue("columns", "") );
     param.setAttribute( "rows", attributeValue("rows", "") );
     param.parent = parent;
-    parameters->append(param);
+    traceVariableParam.append(param);
 
     nextElementDelim();
     Q_ASSERT(reader->isEndElement());
     nextElementDelim();
-}
-
-template <class T, class U>
-void SimulationMaker::createTracesKindOf(const QList<TraceParam> &traceParam) {
-    for (int i = 0; i < traceParam.size(); ++i) {
-        const TraceParam &param( traceParam.value(i) );
-        QString label = param.attribute("label").toString();
-        QString value = param.attribute("value").toString();
-        QList<T*> bases = seekMany<QObject*, T*>(value);
-        // If several bases are found they will all get the same label.
-        // This must be fixed, as needed, by Output
-        for (int i = 0; i < bases.size(); ++i) {
-            T *base = bases[i];
-            QString useLabel = (label == "*") ? base->id().label() : label;
-            U *trace = new U(useLabel, base, param.parent);
-            trace->appendAttributes(param);
-        }
-    }
 }
 
 void SimulationMaker::readOutputTableElement(QObject* parent) {
@@ -531,7 +512,21 @@ void SimulationMaker::readOutputTableElement(QObject* parent) {
  }
 
 void SimulationMaker::createTraces() {
-    createTracesKindOf<VariableBase, Trace<VariableBase> >(traceVariableParam);
+    for (int i = 0; i < traceVariableParam.size(); ++i) {
+        const TraceParam &param( traceVariableParam.value(i) );
+        QString label = param.attribute("label").toString();
+        QString value = param.attribute("value").toString();
+        QList<VariableBase*> bases = seekMany<QObject*, VariableBase*>(value);
+        // If several bases are found they will all get the same label.
+        // This must be fixed, as needed, by Output
+        for (int i = 0; i < bases.size(); ++i) {
+            VariableBase *base = bases[i];
+            QString useLabel = (label == "*") ? base->id().label() : label;
+            Trace *trace = new Trace(useLabel, base, param.parent);
+            trace->appendAttributes(param);
+        }
+    }
+
 }
 
 bool SimulationMaker::elementNameEquals(QString s) const {
@@ -581,10 +576,6 @@ namespace {
         if (matchedT) {
             const T *redirectTo = variableT->valuePtr();
             parameterT->redirectValuePtr(redirectTo);
-//            Component *sender = seekNearestAscendant<Component*>("*", parameter);
-//            Component *receiver = seekNearestAscendant<Component*>("*", variable);
-//            QObject::connect(sender, SIGNAL(pullValueChanged(PullVariableBase*,ParameterBase*)),
-//                             receiver, SLOT(acceptPullVariableChanged(PullVariableBase*,ParameterBase*)));
         }
         return matchedT;
     }

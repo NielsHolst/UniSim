@@ -15,7 +15,7 @@ namespace UniSim{
 
 Plot::Plot()
     : x(0), y(0), logy(false), ymin(-DBL_MAX), ymax(DBL_MAX),
-      showLegend(true), plotWidget(0), type(TraceBase::Line), symbol(0)
+      showLegend(true), plotWidget(0), type(Trace::Line), symbol(0)
 {
 }
 
@@ -27,14 +27,14 @@ void Plot::add() {
         curve->setItemAttribute(QwtPlotItem::Legend, showLegend && i==0);
         plotWidget->addCurve(curve);
 
-        if (type == TraceBase::Symbols) {
+        if (type == Trace::Symbols) {
             curve->setStyle(QwtPlotCurve::NoCurve);
         }
-        if (type == TraceBase::Symbols || type == TraceBase::Both) {
+        if (type == Trace::Symbols || type == Trace::Both) {
             Q_ASSERT(symbol);
             curve->setSymbol(symbol);
         }
-        if (type == TraceBase::Line || type == TraceBase::Both) {
+        if (type == Trace::Line || type == Trace::Both) {
             curve->setPen(pen);
         }
         Interval iv = intervals[i];

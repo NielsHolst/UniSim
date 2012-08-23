@@ -20,7 +20,7 @@
 #include <usbase/named_object.h>
 #include <usbase/object_pool.h>
 #include <usbase/parameter.h>
-#include <usbase/trace_base.h>
+#include <usbase/trace.h>
 #include <usbase/utilities.h>
 #include <usbase/main_window_interface.h>
 #include <usengine/plot_widget.h>
@@ -189,7 +189,7 @@ void OutputPlot::createPlotWidget() {
 }
 
 void OutputPlot::fillPlotWidget() {
-    TraceBase *x = xTraces()[0].trace;
+    Trace *x = xTraces()[0].trace;
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
     for (int i = 0; i < yTraces().size(); ++i) {
@@ -205,7 +205,7 @@ void OutputPlot::fillPlotWidget() {
 
 }
 
-void OutputPlot::add(TraceBase &x, TraceRecord  &y) {
+void OutputPlot::add(Trace &x, TraceRecord  &y) {
     Plot p;
     p.x = x.history();
     p.y = y.trace->history();
@@ -243,7 +243,7 @@ void OutputPlot::add(QVector<double> *x, YRecord &y) {
     pen.setWidth(penWidth);
     p.pen = pen;
     p.symbol = new QwtSymbol(QwtSymbol::Ellipse, QBrush(), pen, QSize(symbolSize,symbolSize));
-    p.type = TraceBase::Symbols;
+    p.type = Trace::Symbols;
     p.add();
 }
 

@@ -13,7 +13,7 @@ namespace UniSim{
 
 class DataGrid;
 class Integrator;
-class TraceBase;
+class Trace;
 
 class Output : public Component
 {
@@ -24,12 +24,12 @@ public:
     void amend();
     // special methods
     struct TraceRecord {
-        TraceBase *trace;
+        Trace *trace;
         QString label;
         int index;
     };
 
-    const QList<TraceBase*>& traces() const;
+    const QList<Trace*>& traces() const;
     QList<TraceRecord>& xTraces();
     QList<TraceRecord>& yTraces();
     bool hasSummary() const;
@@ -41,7 +41,7 @@ private:
     // data
     bool _hasSummary;
     // links
-    QList<TraceBase *> _traces;
+    QList<Trace*> _traces;
     QList<TraceRecord> _xTraces, _yTraces;
     Integrator *integrator;
     // methods

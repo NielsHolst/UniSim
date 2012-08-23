@@ -11,6 +11,7 @@
 #include <usbase/parameter_base.h>
 #include <usbase/utilities.h>
 #include "output_table_base.h"
+#include <usbase/trace.h>
 
 using std::max;
 

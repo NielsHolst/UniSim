@@ -12,7 +12,7 @@
 #include <QPen>
 #include <QString>
 #include <QVector>
-#include <usbase/trace_base.h>
+#include <usbase/trace.h>
 
 class QwtSymbol;
 
@@ -28,7 +28,7 @@ struct Plot
     QString yLegend;
     bool showLegend;
     PlotWidget *plotWidget;
-    TraceBase::Type type;
+    Trace::Type type;
     QPen pen;
     const QwtSymbol *symbol;
 

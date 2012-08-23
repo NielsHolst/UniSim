@@ -4,26 +4,29 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "identifier.h"
+#include "model.h"
 #include "output.h"
-#include "trace_base.h"
+#include "trace.h"
 #include "utilities.h"
+#include "variable_base.h"
 
 namespace UniSim{
 	
-TraceBase::TraceBase(QString name, QObject *parent)
+Trace::Trace(QString name, VariableBase *variable_, QObject *parent)
     : Component(name, parent),
+      variable(variable_),
       historyCleared(false)
 {
     output = dynamic_cast<Output*>(parent);
 }
 
-void UniSim::TraceBase::amend() {
+void Trace::amend() {
     setSummary();
     setAxis();
     setType();
 }
 
-void TraceBase::setSummary() {
+void Trace::setSummary() {
     Summary defaultSummary =None;
     QVariant v = attribute("summary");
     if (!v.isValid()) {
@@ -55,7 +58,7 @@ void TraceBase::setSummary() {
         throw Exception("Unknown summary '" + v.toString() + "'", this);
 }
 
-void TraceBase::setThreshold(QString summaryCode) {
+void Trace::setThreshold(QString summaryCode) {
     QList<QString> list = decodeList<QString>(summaryCode, this);
     bool ok = (list.size() == 2) && (list[0] == "xatthreshold");
     if (ok)
@@ -66,7 +69,7 @@ void TraceBase::setThreshold(QString summaryCode) {
     }
 }
 
-void TraceBase::setAxis() {
+void Trace::setAxis() {
     QVariant v = attribute("axis");
     if (!v.isValid())
         throw Exception("Missing 'axis' attribute", this);
@@ -84,7 +87,7 @@ void TraceBase::setAxis() {
     }
 }
 
-void TraceBase::setType() {
+void Trace::setType() {
     Type defaultType = (_summary == None) ? Line : Symbols;
     QVariant v = attribute("type");
     if (!v.isValid()) {
@@ -102,14 +105,14 @@ void TraceBase::setType() {
     _type = types[s];
 }
 
-void TraceBase::reset() {
+void Trace::reset() {
     resetSummary();
     if (!historyCleared || !isSummary())
         _history.clear();
     historyCleared = true;
 }
 
-void TraceBase::resetSummary() {
+void Trace::resetSummary() {
     s.n = 0;
     s.value = s.sum = 0.;
     switch (summary()) {
@@ -128,13 +131,13 @@ void TraceBase::resetSummary() {
     }
 }
 
-void TraceBase::update() {
+void Trace::update() {
     updateSummary();
     if (!isSummary())
         _history.append(summary() == None ? currentValue() : s.value);
 }
 
-void TraceBase::updateSummary() {
+void Trace::updateSummary() {
     double value = currentValue();
     ++s.n;
     switch (summary()) {
@@ -189,41 +192,52 @@ void TraceBase::updateSummary() {
     }
 }
 
-void TraceBase::cleanup() {
+void Trace::cleanup() {
     if (isSummary())
         _history.append(s.value);
 }
 
-void TraceBase::debrief() {
+void Trace::debrief() {
     historyCleared = false;
 }
 
-
-TraceBase::Axis TraceBase::axis() const {
+Trace::Axis Trace::axis() const {
     return _axis;
 }
 
-TraceBase::Summary TraceBase::summary() const {
+Trace::Summary Trace::summary() const {
     return _summary;
 }
 
-TraceBase::Type TraceBase::type() const {
+Trace::Type Trace::type() const {
     return _type;
 }
 
-bool TraceBase::hasWildCard() const {
+bool Trace::hasWildCard() const {
     QString value = attribute("value").toString();
     return value.contains("*");
 }
 
-QVector<double>* TraceBase:: history() {
-    return &_history;
-}
-
-bool TraceBase::isSummary() const {
+bool Trace::isSummary() const {
     return output && output->hasSummary();
 }
 
+Output* Trace::traceParent() {
+    return dynamic_cast<Output*>(parent());
+}
+
+Model* Trace::variableParent() {
+    return dynamic_cast<Model*>(variable->parent());
+}
+
+double Trace::currentValue() {
+    QVariant v = variable->toVariant();
+    return v.value<double>();
+}
+
+QVector<double>* Trace::history() {
+    return &_history;
+}
 
 } //namespace
 

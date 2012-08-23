@@ -9,6 +9,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
+#include <usbase/trace.h>
 #include <usbase/utilities.h>
 #include "output_table.h"
 

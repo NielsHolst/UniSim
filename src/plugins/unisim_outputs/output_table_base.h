@@ -10,7 +10,6 @@
 #include <QList>
 #include <usbase/file_location_info.h>
 #include <usbase/output.h>
-#include <usbase/trace_base.h>
 
 namespace UniSim{
 

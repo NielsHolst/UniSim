@@ -9,7 +9,7 @@
 #include "name_list.h"
 #include "output.h"
 #include "parameter.h"
-#include "trace_base.h"
+#include "trace.h"
 
 namespace UniSim{
 	
@@ -19,7 +19,7 @@ Output::Output(Identifier name, QObject *parent)
 }
 
 void Output::amend() {
-    _traces = seekChildren<TraceBase*>("*");
+    _traces = seekChildren<Trace*>("*");
     _hasSummary = false;
     int yIndex = 0;
     for (int i = 0; i < _traces.size(); ++i) {
@@ -27,19 +27,19 @@ void Output::amend() {
         rec.trace = _traces[i];
         rec.label = rec.trace->id().label();
         rec.index = 0;
-        if (rec.trace->axis() == TraceBase::XAxis)
+        if (rec.trace->axis() == Trace::XAxis)
             _xTraces << rec;
         else {
             rec.index = yIndex++;
             _yTraces << rec;
         }
-        _hasSummary = _hasSummary || rec.trace->summary() != TraceBase::None;
+        _hasSummary = _hasSummary || rec.trace->summary() != Trace::None;
     }
     setYLabels();
     integrator = seekOne<Integrator*>("*");
 }
 
-const QList<TraceBase*>& Output::traces() const {
+const QList<Trace *> &Output::traces() const {
     return _traces;
 }
 

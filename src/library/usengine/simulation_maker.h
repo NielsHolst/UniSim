@@ -83,9 +83,7 @@ private:
 
     void readOutputElement(QObject *parent);
     void readOutputTableElement(QObject* parent);
-    void readOutputSubElement(QList<TraceParam> *param, QObject* parent);
-    template <class T, class U>
-        void createTracesKindOf(const QList<TraceParam> &traceParam);
+    void readOutputSubElement(QObject *parent);
 
     bool elementNameEquals(QString s) const;
     bool elementNameNotEquals(QString s) const;

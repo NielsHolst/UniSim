@@ -13,7 +13,7 @@
 namespace UniSim{
 
 class Model;
-class TraceBase;
+class Trace;
 
 class OutputCrosstab : public OutputTableBase
 {
@@ -27,13 +27,13 @@ public:
 private:
     QString rowClass, columnClass;
     typedef QPair<QString, QString> TraceKey;
-    QMap< TraceKey, TraceBase*> traceMatrix;
+    QMap< TraceKey, Trace*> traceMatrix;
     QStringList rowNames, columnNames;
 
     void checkTraces();
-    void checkAttribute(TraceBase *trace, QString attr);
-    void checkAttribute(TraceBase *trace, QString attr, QString value);
-    Model* seekParent(TraceBase *trace, QString parentClass);
+    void checkAttribute(Trace *trace, QString attr);
+    void checkAttribute(Trace *trace, QString attr, QString value);
+    Model* seekParent(Trace *trace, QString parentClass);
     void writeFiles();
     void writeColumnLabels();
     void writeHistoryToFile(int ixHistory);

@@ -6,6 +6,7 @@
 #include <qfileinfo.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
+#include <usbase/trace.h>
 #include <usbase/utilities.h>
 #include "output_crosstab.h"
 
@@ -22,7 +23,7 @@ void OutputCrosstab::amend() {
     OutputTableBase::amend();
     checkTraces();
     for (int i = 0; i < yTraces().size(); ++i) {
-        TraceBase *trace = yTraces()[i].trace;
+        Trace *trace = yTraces()[i].trace;
         Model *rowParent = seekParent(trace, rowClass);
         Model *columnParent = seekParent(trace, columnClass);
         QString rowName = rowParent->id().label();
@@ -45,14 +46,14 @@ void OutputCrosstab::checkTraces() {
         QString msg("Crosstab output must have at least one 'y' variable");
         throw Exception(msg, this);
     }
-    TraceBase *y = yTraces()[0].trace;
+    Trace *y = yTraces()[0].trace;
     checkAttribute(y, "rows");
     checkAttribute(y, "columns");
     rowClass = y->attribute("rows").toString();
     columnClass = y->attribute("columns").toString();
 
     for (int i = 1; i < yTraces().size(); ++i) {
-        TraceBase *y = yTraces()[i].trace;
+        Trace *y = yTraces()[i].trace;
         checkAttribute(y, "rows");
         checkAttribute(y, "columns");
         checkAttribute(y, "rows", rowClass);
@@ -60,14 +61,14 @@ void OutputCrosstab::checkTraces() {
     }
 }
 
-void OutputCrosstab::checkAttribute(TraceBase *trace, QString attr) {
+void OutputCrosstab::checkAttribute(Trace *trace, QString attr) {
     if (!trace->hasAttribute(attr) || trace->attribute(attr).toString().isEmpty()) {
         QString msg("Variable on 'y' axis must have a '%1' attribute in Crosstab output");
         throw Exception(msg.arg(attr), trace);
     }
 }
 
-void OutputCrosstab::checkAttribute(TraceBase *trace, QString attr, QString value) {
+void OutputCrosstab::checkAttribute(Trace *trace, QString attr, QString value) {
     QString value2 = trace->attribute(attr).toString();
     if (value2 != value) {
         QString msg("Variables on 'y' axis must have matching values for '%1' attribute in Crosstab output."
@@ -76,7 +77,7 @@ void OutputCrosstab::checkAttribute(TraceBase *trace, QString attr, QString valu
     }
 }
 
-Model* OutputCrosstab::seekParent(TraceBase *trace, QString parentClass) {
+Model* OutputCrosstab::seekParent(Trace *trace, QString parentClass) {
     Model *parent = trace->variableParent();
     while (parent) {
         if (parent->classId().equals(parentClass))
@@ -125,7 +126,7 @@ void OutputCrosstab::writeHistoryToFile(int ixHistory) {
             TraceKey key = qMakePair(rowName, columnName);
             QString value;
             if (traceMatrix.contains(key)) {
-                TraceBase *trace = traceMatrix.value(key);
+                Trace *trace = traceMatrix.value(key);
                 value = QString::number(trace->history()->at(ixHistory));
             }
             else

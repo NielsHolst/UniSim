@@ -9,7 +9,6 @@
 #include <QFile>
 #include <QList>
 #include <usbase/file_location_info.h>
-#include <usbase/trace_base.h>
 #include "output_table_base.h"
 
 namespace UniSim{

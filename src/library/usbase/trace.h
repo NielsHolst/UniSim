@@ -8,50 +8,74 @@
 
 #include <QList>
 #include <QVector>
+#include "attributes.h"
 #include "component.h"
-#include "model.h"
-#include "trace_base.h"
 
 namespace UniSim{	
 
-template <class T>
-class Trace : public TraceBase
+class Model;
+class Output;
+class VariableBase;
+
+class Trace : public Component, public Attributes
 {
+	Q_OBJECT
 public:
-    Trace(QString name, T *variable, QObject *parent = 0);
+    Trace(QString name, VariableBase *variable, QObject *parent = 0);
+	
+    // standard methods
+    void amend();
+    void reset();
+    void update();
+    void cleanup();
+    void debrief();
+
+    // special methods
+    enum Axis {XAxis, YAxis, ZAxis};
+    Axis axis() const;
+    enum Summary {None, Max, Min, Average, Sum, Final, XAtThreshold, XAtMax, XAtMin};
+    Summary summary() const;
+    enum Type {Line, Symbols, Both} ;
+    Type type() const;
+    bool hasWildCard() const;
+
     Output* traceParent();
     Model* variableParent();
     double currentValue();
+    QVector<double>* history();
+
 private:
-    const T *variable;
+    // methods
+    void setAxis();
+    void setSummary();
+    void setType();
+    void setThreshold(QString summaryCode);
+    bool isSummary() const;
+
+    void resetSummary();
+    void updateSummary();
+
+    // data
+    VariableBase *variable;
+    Axis _axis;
+    Summary _summary;
+    Type _type;
+    struct {
+        int n;
+        double value, sum, prevValue, minValue, maxValue, threshold, x;
+        bool pastThreshold, hasPrevValue;
+    } s;
+
+    QVector<double> _history;	//!< Series of collected values
+    bool historyCleared;
+
+    // links
+    const Output *output;   //!< Pointer to parent or null
+
 };
 
-template <class T>
-Trace<T>::Trace(QString name, T *variable_, QObject *parent)
-    : TraceBase(name, parent),
-      variable(variable_)
-{
-    Q_ASSERT(variable);
-}
-
-template <class T>
-Output* Trace<T>::traceParent() {
-    Output *output = dynamic_cast<Output*>(parent());
-    return output;
-}
-
-template <class T>
-Model* Trace<T>::variableParent() {
-    Model *model = dynamic_cast<Model*>(variable->parent());
-    return model;
-}
-
-template <class T>
-double Trace<T>::currentValue() {
-    QVariant v = variable->toVariant();
-    return v.value<double>();
-}
 
 } //namespace
+
 
 #endif

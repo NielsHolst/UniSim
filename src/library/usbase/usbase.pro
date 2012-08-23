@@ -44,7 +44,6 @@ HEADERS += \
         $${US_BASE}/test_num.h \
         $${US_BASE}/time.h \
         $${US_BASE}/trace.h \
-        $${US_BASE}/trace_base.h \
         $${US_BASE}/utilities.h \
         $${US_BASE}/version.h
 SOURCES += \
@@ -69,6 +68,6 @@ SOURCES += \
         $${US_BASE}/random.cpp \
         $${US_BASE}/root_solver.cpp \
         $${US_BASE}/time.cpp \
-        $${US_BASE}/trace_base.cpp \
+        $${US_BASE}/trace.cpp \
         $${US_BASE}/utilities.cpp \
         $${US_BASE}/version.cpp

@@ -17,6 +17,7 @@ namespace UniSim{
 class DataGrid;
 class MainWindowInterface;
 class PlotWidget;
+class Trace;
 
 class OutputPlot : public Output
 {
@@ -65,7 +66,7 @@ private:
     void showPlot();
     void createPlotWidget();
     void fillPlotWidget();
-    void add(TraceBase &x, TraceRecord  &y);
+    void add(Trace &x, TraceRecord  &y);
     void add(QVector<double> *x, YRecord &y);
     void showPlotWidget();
     void setZoomer();

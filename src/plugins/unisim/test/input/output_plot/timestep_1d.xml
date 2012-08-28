@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-	<integrator type="TimeStepLimited">
+	<integrator type="Steps">
 		<parameter name="maxSteps" value="30"/>
 	</integrator>
 

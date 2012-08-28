@@ -1,4 +1,4 @@
-/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
@@ -13,6 +13,10 @@ namespace UniSim{
 Range::Range(Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    new Parameter<double>("progress", &progress, 0., this,
+    "The @F progress parameter is a number in the range [0,1]. "
+    "Set this as a variable in the XML file to achieve dynamic behaviour.");
+
     new Parameter<double>("min", &minValue, 0., this, "Minimum value in range");
     new Parameter<double>("max", &maxValue, 100., this, "Maximum value in range");
     new Parameter<QString>("scale", &scaleAsString, QString("linear"), this,
@@ -22,8 +26,6 @@ Range::Range(Identifier name, QObject *parent)
 
 }
 void Range::initialize() {
-	Integrator *integrator = seekOne<Integrator*>("*");
-	progress = integrator->pullValuePtr<double>("progress");
 	decodeScale();
 }
 
@@ -44,7 +46,7 @@ void Range::reset() {
 }
 
 void Range::update() {
-    value = minValue + (*progress)*(maxValue-minValue);
+    value = minValue + progress*(maxValue-minValue);
 	if (scale == Log10)
 		value = pow(10, value);
 }

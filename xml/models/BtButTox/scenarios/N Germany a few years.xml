@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation select="doc('N Germany many years.xml')/simulation">
 
-	<integrator type="TimeStepLimited">
+	<integrator type="Steps">
 		<parameter name="maxSteps" value="365"/> 
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="10"/>

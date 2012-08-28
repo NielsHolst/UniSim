@@ -1,4 +1,4 @@
-/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
@@ -434,7 +434,7 @@ namespace {
 void MainWindow::doHelpAbout() {
     QString text =
         "Universal Simulator (UniSim) " + versionExtended() + "\n\n"
-        "Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors. Copyrights reserved.\n\n"
+        "Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors. Copyrights reserved.\n\n"
         "Released under the terms of the GNU General Public License version 3.0 or later. "
         "See www.gnu.org/copyleft/gpl.html.\n\n"
         "The plots drawn by UniSim are based on the Qwt library. See qwt.sourceforge.net.\n\n"

@@ -1,4 +1,4 @@
-/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
@@ -30,7 +30,7 @@
 #include "sensitivity_analysis.h"
 #include "stage.h"
 #include "time_limited.h"
-#include "time_step_limited.h"
+#include "steps.h"
 #include "trigger_by_date.h"
 #include "unisim_factory.h"
 #include "weather.h"
@@ -155,11 +155,11 @@ void UniSim::UniSimFactory::defineProducts() {
     "@Math{@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
     "determined by the nearest model called @F {time}.");
 
+    addProduct<Steps>("Steps", this, "Integrator class. Description pending");
+
     addProduct<OutputTable>("Table", this, "Output class. Description pending");
 
     addProduct<TimeLimited>("TimeLimited", this, "Integrator class. Description pending");
-
-    addProduct<TimeStepLimited>("TimeStepLimited", this, "Integrator class. Description pending");
 
     addProduct<TriggerByDate>("TriggerByDate", this,
     "The  @F TriggerByDate model can be used by other models to trigger changes in their behaviour.");

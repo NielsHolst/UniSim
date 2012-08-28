@@ -41,15 +41,15 @@ HEADERS += \
     $${US_ENGINE}/test/test_xml_node.h \
     $${US_PLUGINS}/intercom/optimize_allocation.h \
     $${US_PLUGINS}/intercom/test/test_plant.h \
-    $${US_PLUGINS}/unisim/time_step_limited.h \
     $${US_PLUGINS}/unisim/anonymous_model.h \
     $${US_PLUGINS}/unisim/distributed_delay.h \
-    $${US_PLUGINS}/unisim/fixed.h \
     $${US_PLUGINS}/unisim/stage.h \
+    $${US_PLUGINS}/unisim/steps.h \
     $${US_PLUGINS}/unisim/test/test_calendar.h \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.h \
     $${US_PLUGINS}/unisim/test/test_fixed.h \
     $${US_PLUGINS}/unisim/test/test_random.h \
+    $${US_PLUGINS}/unisim/test/test_range.h \
     $${US_PLUGINS}/unisim/test/test_records.h \
     $${US_PLUGINS}/unisim/test/test_scheduled.h \
     $${US_PLUGINS}/unisim/test/test_stage.h \
@@ -86,15 +86,15 @@ SOURCES += \
     $${US_ENGINE}/test/test_xml_node.cpp \
     $${US_PLUGINS}/intercom/optimize_allocation.cpp \
     $${US_PLUGINS}/intercom/test/test_plant.cpp \
-    $${US_PLUGINS}/unisim/time_step_limited.cpp \
     $${US_PLUGINS}/unisim/anonymous_model.cpp \
     $${US_PLUGINS}/unisim/distributed_delay.cpp \
-    $${US_PLUGINS}/unisim/fixed.cpp \
     $${US_PLUGINS}/unisim/stage.cpp \
+    $${US_PLUGINS}/unisim/steps.cpp \
     $${US_PLUGINS}/unisim/test/test_calendar.cpp \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.cpp \
     $${US_PLUGINS}/unisim/test/test_fixed.cpp \
     $${US_PLUGINS}/unisim/test/test_random.cpp \
+    $${US_PLUGINS}/unisim/test/test_range.cpp \
     $${US_PLUGINS}/unisim/test/test_records.cpp \
     $${US_PLUGINS}/unisim/test/test_scheduled.cpp \
     $${US_PLUGINS}/unisim/test/test_stage.cpp \

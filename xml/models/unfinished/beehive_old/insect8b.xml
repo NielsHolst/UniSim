@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-	<integrator type="UniSim::TimeStepLimited">
+	<integrator type="UniSim::Steps">
 		<parameter name="maxSteps" value="90"/>
 		<model name="RunIterator" type="UniSim::RunIteratorFixed">
 			<parameter name="numIterations" value="30"/>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="range" type="UniSim::Range">
+		<parameter name="progress" variable="steps[progress]"/>
+		<parameter name="scale" value="log10"/>
+		<parameter name="min" value="-4"/>
+		<parameter name="max" value="2"/>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value="test_range_log10.txt"/>
+		<trace label="x" value="steps[stepNumber]"/>
+		<trace label="y" value="range[value]"/>
+	</output>
+</simulation>

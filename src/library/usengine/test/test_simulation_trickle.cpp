@@ -3,7 +3,7 @@
 #include <usbase/parameter.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
-#include <unisim/time_step_limited.h>
+#include <unisim/steps.h>
 #include "test_simulation_trickle.h"
 #include "trickle_box.h"
 #include "trickle_sequence.h"
@@ -13,7 +13,7 @@ using namespace UniSim;
 void TestSimulationTrickle::initTestCase() {
     simulation = new Simulation("trickles");
     setSimulationObject(simulation);
-    integrator = new TimeStepLimited("integrator", simulation);
+    integrator = new Steps("integrator", simulation);
 }
 
 void TestSimulationTrickle::cleanupTestCase() {

@@ -41,8 +41,8 @@ HEADERS += \
     scheduled.h \
     sensitivity_analysis.h \
     stage.h \
+    steps.h \
     time_limited.h \
-    time_step_limited.h \
     trigger_by_date.h \
     unisim_factory.h \
     weather.h
@@ -77,8 +77,8 @@ SOURCES += \
     scheduled.cpp \
     sensitivity_analysis.cpp \
     stage.cpp \
+    steps.cpp \
     time_limited.cpp \
-    time_step_limited.cpp \
     trigger_by_date.cpp \
     unisim_factory.cpp \
     weather.cpp

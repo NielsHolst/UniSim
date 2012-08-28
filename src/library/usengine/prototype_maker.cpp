@@ -1,4 +1,4 @@
-/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
@@ -470,7 +470,7 @@ void PrototypeMaker::WriteXmlModelFile() const {
     text
         << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << '\n'
         << "<simulation version=\"1.0\">" << '\n'
-        << "\t<integrator type=\"TimeStepLimited\">" << '\n'
+        << "\t<integrator type=\"Steps\">" << '\n'
         << "\t\t<parameter name=\"maxSteps\" value=\"60\"/>" << '\n'
         << "\t\t<sequence>" << '\n'
         << xmlModelNames()

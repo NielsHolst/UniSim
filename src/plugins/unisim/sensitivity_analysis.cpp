@@ -1,4 +1,4 @@
-/* Copyright (C) 2009-2011 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
@@ -17,7 +17,7 @@
 namespace UniSim {
 	
 SensitivityAnalysis::SensitivityAnalysis(Identifier name, QObject *parent)
-    : TimeStepLimited(name, parent)
+    : Steps(name, parent)
 {
     new Parameter<double>("factor", &factor, -1., this, "description");
     new Parameter<double>("relative", &relative, -1., this, "description");
@@ -27,7 +27,7 @@ SensitivityAnalysis::SensitivityAnalysis(Identifier name, QObject *parent)
 }
 
 void SensitivityAnalysis::initialize() {
-    TimeStepLimited::initialize();
+    Steps::initialize();
     checkParameters();
     findParameters();
     stratifyParameters();

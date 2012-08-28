@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
 	
-    <integrator name="integrator" type="TimeStepLimited">
+    <integrator name="integrator" type="Steps">
         <parameter name="maxSteps" value="10"/>
         <sequence>
             <model name="generations"/>

@@ -65,6 +65,17 @@ PASS   : TestRecords::testImposeDate()
 PASS   : TestRecords::cleanupTestCase()
 Totals: 5 passed, 0 failed, 0 skipped
 ********* Finished testing of TestRecords *********
+********* Start testing of TestRange *********
+Config: Using QTest library 4.8.0, Qt 4.8.0
+PASS   : TestRange::initTestCase()
+PASS   : TestRange::testLinear()
+FAIL!  : TestRange::testLog10() Compared doubles are not the same (fuzzy compare)
+   Actual (data.value(0,1)): 0.000398107
+   Expected (pow(10,-3.4)): 0.000398107
+..\..\..\plugins\unisim\test\test_range.cpp(49) : failure location
+PASS   : TestRange::cleanupTestCase()
+Totals: 3 passed, 1 failed, 0 skipped
+********* Finished testing of TestRange *********
 ********* Start testing of TestRandom *********
 Config: Using QTest library 4.8.0, Qt 4.8.0
 PASS   : TestRandom::initTestCase()
@@ -82,12 +93,6 @@ Totals: 10 passed, 0 failed, 0 skipped
 ********* Start testing of TestFixed *********
 Config: Using QTest library 4.8.0, Qt 4.8.0
 PASS   : TestFixed::initTestCase()
-Fixed
-6.023e+023
-3.1214
-22.5
-var value = 22.5
-Tavg = 22.5
 PASS   : TestFixed::testPullVariables()
 PASS   : TestFixed::cleanupTestCase()
 Totals: 3 passed, 0 failed, 0 skipped
@@ -419,4 +424,4 @@ Totals: 16 passed, 0 failed, 0 skipped
 ********* Finished testing of TestComponent *********
 
 
-All tests passed
+One or more tests failed

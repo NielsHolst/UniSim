@@ -2,7 +2,7 @@
 <!-- This file is also used to test UniSim::Output -->
 <simulation version="1.0">
 	
-    <integrator name="integrator" type="TimeStepLimited">
+    <integrator name="integrator" type="Steps">
         <parameter name="maxSteps" value="10"/>
         <sequence>
             <model name="landscape"/>

@@ -18,7 +18,7 @@
 		</common>
     </common>
 	
-    <integrator name="integrator" type="TimeStepLimited">
+    <integrator name="integrator" type="Steps">
 		<common> <a/> </common>
         <parameter name="maxSteps" value="365"/>
         <sequence>

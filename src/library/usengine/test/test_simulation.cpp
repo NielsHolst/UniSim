@@ -7,7 +7,7 @@
 #include <usbase/utilities.h>
 #include <usengine/simulation_maker.h>
 #include <unisim/anonymous_model.h>
-#include <unisim/time_step_limited.h>
+#include <unisim/steps.h>
 #include "../simulation.h"
 #include "trickle_box.h"
 #include "trickle_sequence.h"
@@ -56,7 +56,7 @@ void TestSimulation::testFindModels()
 {
     Simulation *sim = new Simulation("apple-tree");
     setSimulationObject(sim);
-    new TimeStepLimited("integrator", sim);
+    new Steps("integrator", sim);
 	
 	AnonymousModel *butterfly, *mite;
 	

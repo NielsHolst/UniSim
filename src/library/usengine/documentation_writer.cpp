@@ -11,13 +11,14 @@
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
-#include <usbase/model_maker_plug_in.h>
+#include <usbase/factory_plug_in.h>
 #include <usbase/parameter_base.h>
+#include <usbase/product_base.h>
 #include <usbase/variable_base.h>
 #include <usbase/utilities.h>
 #include <usbase/version.h>
 #include "documentation_writer.h"
-#include "model_maker.h"
+#include "mega_factory.h"
 
 namespace {
     QString desc(QString s) {
@@ -101,36 +102,36 @@ void DocumentationWriter::writeVersion() {
 }
 
 namespace {
-    bool pluginLessThan(const ModelMakerPlugIn* p1,
-                        const ModelMakerPlugIn* p2) {
-        return p1->pluginName().key() < p2->pluginName().key();
+    bool pluginLessThan(const FactoryPlugIn* p1,
+                        const FactoryPlugIn* p2) {
+        return p1->id().key() < p2->id().key();
     }
 }
 
 void DocumentationWriter::writePlugins() {
-    QList<ModelMakerPlugIn*> plugins = ModelMaker::plugins();
+    QList<FactoryPlugIn*> plugins = MegaFactory::factories();
     qSort(plugins.begin(), plugins.end(), pluginLessThan);
     for (int i = 0; i < plugins.size(); ++i) {
-        QString beginning = plugins[i]->pluginDesc().left(8);
+        QString beginning = plugins[i]->description().left(8);
         if (beginning.toLower() == "!exclude") continue;
         write(plugins[i]);
     }
 }
 
-void DocumentationWriter::write(ModelMakerPlugIn *plugin) {
-    Identifier id = plugin->pluginName();
+void DocumentationWriter::write(FactoryPlugIn *plugin) {
+    Identifier id = plugin->id();
     write("@SubAppendix\n");
     write("@Title {" + id.label() + " plugin}\n");
     write("@Tag {" + id.key() + ".plugin}\n");
     write("@Begin @LP\n");
     write(index(id));
-    write(desc(plugin->pluginDesc()));
+    write(desc(plugin->description()));
     writeAuthors(plugin);
     writeModels(plugin);
     write("@NP @End @SubAppendix\n");
 }
 
-void DocumentationWriter::writeAuthors(ModelMakerPlugIn *plugin) {
+void DocumentationWriter::writeAuthors(FactoryPlugIn *plugin) {
     QStringList ids = plugin->authors();
     int n = ids.size();
     write("@LP Author");
@@ -150,9 +151,9 @@ void DocumentationWriter::writeAuthor(QString id) {
     write(author.name + ", " + author.address + ".");
 }
 
-void DocumentationWriter::writeModels(ModelMakerPlugIn *plugin) {
+void DocumentationWriter::writeModels(FactoryPlugIn *plugin) {
     write("@BeginSubSubAppendices\n");
-    Identifiers ids = plugin->supportedClasses().keys();
+    Identifiers ids = UniSim::products(plugin).keys();
     qSort(ids);
     for (int i = 0; i < ids.size(); ++i) {
         writeModel (plugin, ids[i]);
@@ -161,15 +162,16 @@ void DocumentationWriter::writeModels(ModelMakerPlugIn *plugin) {
     write("@EndSubSubAppendices\n");
 }
 
-void DocumentationWriter::writeModel(ModelMakerPlugIn *plugin, Identifier modelId) {
-    QString modelName = plugin->pluginName().label() + "::" + modelId.label();
-    Model *model = createModel(plugin, modelId);
+void DocumentationWriter::writeModel(FactoryPlugIn *plugin, Identifier modelId) {
+    QString modelName = plugin->id().label() + "::" + modelId.label();
+    QObject *model = createModel(plugin, modelId);
     write("@SubSubAppendix\n");
     write("@Title {" + modelName + "}\n");
     write("@Tag {" + modelName + "}\n");
     write("@Begin @LP\n");
     write(index(modelId));
-    write(plugin->supportedClasses().value(modelId) + "\n");
+    const ProductBase *product = UniSim::products(plugin).value(modelId);
+    write(product->description() + "\n");
     write(TABLE_BEGIN);
     writeParameters(model);
     writeVariables(model);
@@ -178,18 +180,18 @@ void DocumentationWriter::writeModel(ModelMakerPlugIn *plugin, Identifier modelI
     delete model;
 }
 
-Model* DocumentationWriter::createModel(ModelMakerPlugIn *plugin, Identifier modelId) {
-    Model *model = plugin->create(modelId, "anonymous");
+QObject* DocumentationWriter::createModel(FactoryPlugIn *plugin, Identifier modelId) {
+    QObject *model = create(plugin, modelId, "anonymous", 0);
     Q_ASSERT_X(model,
                "DocumentationWriter::createModel",
-               qPrintable(plugin->pluginName().label() +
+               qPrintable(plugin->id().label() +
                " cannot create " + modelId.label()));
     return model;
 }
 
 // Refactor the three methods below when they have been given a common base class
 // Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
-void DocumentationWriter::writeParameters(Model *model) {
+void DocumentationWriter::writeParameters(QObject *model) {
     QList<ParameterBase*> params = seekChildren<ParameterBase*>("*", model);
     int n = params.size();
     if (n == 0) return;
@@ -213,8 +215,8 @@ void DocumentationWriter::writeParameters(Model *model) {
     }
 }
 
-void DocumentationWriter::writeVariables(Model *model) {
-    QList<VariableBase*> var, all = model->seekChildren<VariableBase*>("*");
+void DocumentationWriter::writeVariables(QObject *model) {
+    QList<VariableBase*> var, all = seekChildren<VariableBase*>("*", model);
     for (int i = 0; i < all.size(); ++i) {
         if (!dynamic_cast<ParameterBase*>(all[i]))
             var << all[i];

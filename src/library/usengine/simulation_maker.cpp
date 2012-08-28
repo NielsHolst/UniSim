@@ -23,9 +23,7 @@
 #include "instance_index_from_table.h"
 #include "instance_index_numbered.h"
 #include "instance_index_one.h"
-#include "integrator_maker.h"
-#include "model_maker.h"
-#include "output_maker.h"
+#include "mega_factory.h"
 #include "parameter_index_from_condensed_table.h"
 #include "parameter_index_from_table.h"
 #include "simulation.h"
@@ -199,14 +197,8 @@ void SimulationMaker::readIntegratorElement(QObject* parent) {
     QString type = attributeValue("type", parent);
     QString name = attributeValue("name", "anonymous");
 
-    Integrator *integrator;
-    try {
-        integrator = IntegratorMaker::create(type, name, parent);
-    }
-    catch (Exception &ex) {
-        throw Exception(message(ex.message()));
-    }
-	
+    Integrator *integrator = MegaFactory::create<Integrator>(type, name, parent);
+
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {
         if (elementNameEquals("sequence")) {
@@ -338,7 +330,8 @@ QList<QObject*> SimulationMaker::createModelElement(InstanceIndex *table, QObjec
     try {
         while (table->hasNext()) {
             InstanceIndex::Record rec = table->next();
-            Model *model = ModelMaker::create(modelType, rec.modelName, parent);
+            Model *model = MegaFactory::create<Model>(modelType, rec.modelName, parent);
+
             models << model;
             instances << model;
             int numParam = rec.paramNameValue.size();
@@ -454,13 +447,7 @@ void SimulationMaker::readOutputElement(QObject* parent)
     QString objectName = attributeValue("name", "anonymous");
     QString type = attributeValue("type", parent);
 
-    Output *output;
-    try {
-        output = OutputMaker::create(type, objectName, parent);
-    }
-    catch (Exception &ex) {
-        throw Exception(message(ex.message()));
-    }
+    Output *output = MegaFactory::create<Output>(type, objectName, parent);
 
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {

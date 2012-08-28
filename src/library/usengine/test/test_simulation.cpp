@@ -5,9 +5,9 @@
 #include <usbase/file_locations.h>
 #include <usbase/output.h>
 #include <usbase/utilities.h>
-#include <unisim_integrators/time_step_limited.h>
-#include <unisim_models/anonymous_model.h>
 #include <usengine/simulation_maker.h>
+#include <unisim/anonymous_model.h>
+#include <unisim/time_step_limited.h>
 #include "../simulation.h"
 #include "trickle_box.h"
 #include "trickle_sequence.h"

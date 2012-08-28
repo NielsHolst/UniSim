@@ -13,7 +13,7 @@
 namespace UniSim{
 
 class Model;
-class ModelMakerPlugIn;
+class FactoryPlugIn;
 	
 class DocumentationWriter
 {
@@ -28,17 +28,17 @@ private:
 
     // methods
     void openFile();
-    Model* createModel(ModelMakerPlugIn *plugin, Identifier modelId);
+    QObject *createModel(FactoryPlugIn *plugin, Identifier modelId);
     void writePlugins();
     void writeTimeStamp();
     void writeVersion();
-    void write(ModelMakerPlugIn *plugin);
-    void writeAuthors(ModelMakerPlugIn *plugin);
+    void write(FactoryPlugIn *plugin);
+    void writeAuthors(FactoryPlugIn *plugin);
     void writeAuthor(QString id);
-    void writeModels(ModelMakerPlugIn *plugin);
-    void writeModel(ModelMakerPlugIn *plugin, Identifier modelId);
-    void writeParameters(Model *model);
-    void writeVariables(Model *model);
+    void writeModels(FactoryPlugIn *plugin);
+    void writeModel(FactoryPlugIn *plugin, Identifier modelId);
+    void writeParameters(QObject *model);
+    void writeVariables(QObject *model);
     void writeTableTitle(QString title);
     void writeTableRow(QString format, QString a, QString b, QString c);
     void write(QString s);

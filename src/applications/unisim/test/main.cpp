@@ -4,27 +4,25 @@
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
 #include <usbase/random.h>
-#include <usengine/integrator_maker.h>
 #include <usengine/file_locations_strict.h>
-#include <usengine/model_maker.h>
-#include <usengine/output_maker.h>
+#include <usengine/mega_factory.h>
 #include "main_window_stub.h"
 
 using namespace UniSim;
 
-void myMsgHandler(QtMsgType type, const char *msg)
-{
-    std::cout << "Message handler called: " << msg << "\n";
-}
+namespace {
+    void myMsgHandler(QtMsgType type, const char *msg)
+    {
+        std::cout << "Message handler called: " << msg << "\n";
+    }
 
-void createSingletons(){
-    objectPool()->attach(FileLocations::id(), new FileLocationsStrict);
-    objectPool()->attach(IntegratorMaker::id(), new IntegratorMaker);
-    objectPool()->attach(ModelMaker::id(), new ModelMaker);
-    objectPool()->attach(OutputMaker::id(), new OutputMaker);
-    objectPool()->attach(Random::id(), new Random);
-    objectPool()->attach(Clock::id(), new Clock);
-    objectPool()->attach("mainWindow", new MainWindowStub);
+    void createSingletons(){
+        objectPool()->attach(FileLocations::id(), new FileLocationsStrict);
+        objectPool()->attach(MegaFactory::id(), new MegaFactory);
+        objectPool()->attach(Random::id(), new Random);
+        objectPool()->attach(Clock::id(), new Clock);
+        objectPool()->attach("mainWindow", new MainWindowStub);
+    }
 }
 
 int main(int arbc, char *argv[])

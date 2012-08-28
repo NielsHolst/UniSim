@@ -31,7 +31,7 @@ HEADERS += \
     $${US_BASE}/test/test_strata.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
-    $${US_ENGINE}/test/test_model_maker.h \
+    $${US_ENGINE}/test/test_mega_factory.h \
     $${US_ENGINE}/test/test_simulation.h \
     $${US_ENGINE}/test/test_simulation_maker.h \
     $${US_ENGINE}/test/test_simulation_maker_from_file.h \
@@ -39,25 +39,26 @@ HEADERS += \
     $${US_ENGINE}/test/trickle_box.h \
     $${US_ENGINE}/test/trickle_sequence.h \
     $${US_ENGINE}/test/test_xml_node.h \
-    $${US_PLUGINS}/intercom_models/optimize_allocation.h \
-    $${US_PLUGINS}/intercom_models/test/test_plant.h \
-    $${US_PLUGINS}/unisim_integrators/time_step_limited.h \
-    $${US_PLUGINS}/unisim_models/anonymous_model.h \
-    $${US_PLUGINS}/unisim_models/distributed_delay.h \
-    $${US_PLUGINS}/unisim_models/stage.h \
-    $${US_PLUGINS}/unisim_models/test/test_calendar.h \
-    $${US_PLUGINS}/unisim_models/test/test_distributed_delay.h \
-    $${US_PLUGINS}/unisim_models/test/test_fixed.h \
-    $${US_PLUGINS}/unisim_models/test/test_random.h \
-    $${US_PLUGINS}/unisim_models/test/test_records.h \
-    $${US_PLUGINS}/unisim_models/test/test_scheduled.h \
-    $${US_PLUGINS}/unisim_models/test/test_stage.h \
-    $${US_PLUGINS}/unisim_outputs/output_plot.h \
-    $${US_PLUGINS}/unisim_outputs/plot.h \
-    $${US_PLUGINS}/unisim_outputs/test/test_crosstab.h \
-    $${US_PLUGINS}/unisim_outputs/test/test_output_plot.h \
-    $${US_PLUGINS}/unisim_outputs/test/test_plot.h \
-    $${US_PLUGINS}/unisim_outputs/test/test_table.h \
+    $${US_PLUGINS}/intercom/optimize_allocation.h \
+    $${US_PLUGINS}/intercom/test/test_plant.h \
+    $${US_PLUGINS}/unisim/time_step_limited.h \
+    $${US_PLUGINS}/unisim/anonymous_model.h \
+    $${US_PLUGINS}/unisim/distributed_delay.h \
+    $${US_PLUGINS}/unisim/fixed.h \
+    $${US_PLUGINS}/unisim/stage.h \
+    $${US_PLUGINS}/unisim/test/test_calendar.h \
+    $${US_PLUGINS}/unisim/test/test_distributed_delay.h \
+    $${US_PLUGINS}/unisim/test/test_fixed.h \
+    $${US_PLUGINS}/unisim/test/test_random.h \
+    $${US_PLUGINS}/unisim/test/test_records.h \
+    $${US_PLUGINS}/unisim/test/test_scheduled.h \
+    $${US_PLUGINS}/unisim/test/test_stage.h \
+    $${US_PLUGINS}/unisim/output_plot.h \
+    $${US_PLUGINS}/unisim/plot.h \
+    $${US_PLUGINS}/unisim/test/test_crosstab.h \
+    $${US_PLUGINS}/unisim/test/test_output_plot.h \
+    $${US_PLUGINS}/unisim/test/test_plot.h \
+    $${US_PLUGINS}/unisim/test/test_table.h \
     ../graph_generator.h \
     main_window_stub.h \
     test_numeric_limits.h
@@ -75,7 +76,7 @@ SOURCES += \
     $${US_BASE}/test/test_strata.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
-    $${US_ENGINE}/test/test_model_maker.cpp \
+    $${US_ENGINE}/test/test_mega_factory.cpp \
     $${US_ENGINE}/test/test_simulation.cpp \
     $${US_ENGINE}/test/test_simulation_maker.cpp \
     $${US_ENGINE}/test/test_simulation_maker_from_file.cpp \
@@ -83,25 +84,26 @@ SOURCES += \
     $${US_ENGINE}/test/trickle_box.cpp \
     $${US_ENGINE}/test/trickle_sequence.cpp \
     $${US_ENGINE}/test/test_xml_node.cpp \
-    $${US_PLUGINS}/intercom_models/optimize_allocation.cpp \
-    $${US_PLUGINS}/intercom_models/test/test_plant.cpp \
-    $${US_PLUGINS}/unisim_integrators/time_step_limited.cpp \
-    $${US_PLUGINS}/unisim_models/anonymous_model.cpp \
-    $${US_PLUGINS}/unisim_models/distributed_delay.cpp \
-    $${US_PLUGINS}/unisim_models/stage.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_calendar.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_distributed_delay.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_fixed.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_random.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_records.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_scheduled.cpp \
-    $${US_PLUGINS}/unisim_models/test/test_stage.cpp \
-    $${US_PLUGINS}/unisim_outputs/output_plot.cpp \
-    $${US_PLUGINS}/unisim_outputs/plot.cpp \
-    $${US_PLUGINS}/unisim_outputs/test/test_crosstab.cpp \
-    $${US_PLUGINS}/unisim_outputs/test/test_output_plot.cpp \
-    $${US_PLUGINS}/unisim_outputs/test/test_plot.cpp \
-    $${US_PLUGINS}/unisim_outputs/test/test_table.cpp \
+    $${US_PLUGINS}/intercom/optimize_allocation.cpp \
+    $${US_PLUGINS}/intercom/test/test_plant.cpp \
+    $${US_PLUGINS}/unisim/time_step_limited.cpp \
+    $${US_PLUGINS}/unisim/anonymous_model.cpp \
+    $${US_PLUGINS}/unisim/distributed_delay.cpp \
+    $${US_PLUGINS}/unisim/fixed.cpp \
+    $${US_PLUGINS}/unisim/stage.cpp \
+    $${US_PLUGINS}/unisim/test/test_calendar.cpp \
+    $${US_PLUGINS}/unisim/test/test_distributed_delay.cpp \
+    $${US_PLUGINS}/unisim/test/test_fixed.cpp \
+    $${US_PLUGINS}/unisim/test/test_random.cpp \
+    $${US_PLUGINS}/unisim/test/test_records.cpp \
+    $${US_PLUGINS}/unisim/test/test_scheduled.cpp \
+    $${US_PLUGINS}/unisim/test/test_stage.cpp \
+    $${US_PLUGINS}/unisim/output_plot.cpp \
+    $${US_PLUGINS}/unisim/plot.cpp \
+    $${US_PLUGINS}/unisim/test/test_crosstab.cpp \
+    $${US_PLUGINS}/unisim/test/test_output_plot.cpp \
+    $${US_PLUGINS}/unisim/test/test_plot.cpp \
+    $${US_PLUGINS}/unisim/test/test_table.cpp \
     ../graph_generator.cpp \
     test_numeric_limits.cpp \
     main.cpp

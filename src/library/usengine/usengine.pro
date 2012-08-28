@@ -14,15 +14,13 @@ include ($${US_BASE}/base.pri)
 HEADERS += 	\
     $${US_ENGINE}/confirmation.h \
     $${US_ENGINE}/documentation_writer.h \
-    $${US_ENGINE}/integrator_maker.h \
     $${US_ENGINE}/file_locations_strict.h \
     $${US_ENGINE}/instance_index.h \
     $${US_ENGINE}/instance_index_from_condensed_table.h \
     $${US_ENGINE}/instance_index_from_table.h \
     $${US_ENGINE}/instance_index_numbered.h \
     $${US_ENGINE}/instance_index_one.h \
-    $${US_ENGINE}/model_maker.h \
-    $${US_ENGINE}/output_maker.h \
+    $${US_ENGINE}/mega_factory.h \
     $${US_ENGINE}/parameter_index.h \
     $${US_ENGINE}/parameter_index_from_condensed_table.h \
     $${US_ENGINE}/parameter_index_from_table.h \
@@ -37,15 +35,13 @@ HEADERS += 	\
 SOURCES += 	\
     $${US_ENGINE}/confirmation.cpp \
     $${US_ENGINE}/documentation_writer.cpp \
-    $${US_ENGINE}/integrator_maker.cpp \
     $${US_ENGINE}/file_locations_strict.cpp \
     $${US_ENGINE}/instance_index.cpp \
     $${US_ENGINE}/instance_index_from_condensed_table.cpp \
     $${US_ENGINE}/instance_index_from_table.cpp \
     $${US_ENGINE}/instance_index_numbered.cpp \
     $${US_ENGINE}/instance_index_one.cpp \
-    $${US_ENGINE}/model_maker.cpp \
-    $${US_ENGINE}/output_maker.cpp \
+    $${US_ENGINE}/mega_factory.cpp \
     $${US_ENGINE}/parameter_index.cpp \
     $${US_ENGINE}/parameter_index_from_condensed_table.cpp \
     $${US_ENGINE}/parameter_index_from_table.cpp \

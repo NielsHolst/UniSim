@@ -32,18 +32,24 @@ public:
     void acceptException(Exception *e);
 	
 protected:
+	// variables
     int stepNumber;
+	double progress;
 
 private slots:
     void doCancel();
     void closeReport();
 
 private:
-    Model *runIterator;
+	// variables
     int runNumber;
-    bool reporting, cancelled;
+	// links
+    Model *runIterator;
     QMainWindow *mainWindow;
     QProgressDialog *report;
+	// state
+    bool reporting, cancelled;
+	// methods
     void reportProgress();
     void openReport();
     void updateReport();

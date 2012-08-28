@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="TimeStepLimited">
+		<parameter name="maxSteps" value="30"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="fixedModels"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+		<parameter name="initialDate" value="1/1/2010"/>
+	</model>	
+
+	<model name="fixedModels">
+		<model name="fixed" type="UniSim::Fixed">
+			<parameter name="parameters" value="((A 6.023e23)(p 3.1214 ) (Tavg 22.5)(I 32)) "/>
+		</model>
+		
+		<model name="empty" type="UniSim::Fixed"/>
+	</model>
+	
+	<output type="table">
+		<parameter name="filename" value="test_fixed.prn"/>
+		<variable label="Day" axis="x" value="calendar[dayOfYear]"/>
+		<variable label="A" value="fixed[A]"/>
+		<variable label="Tavg" value="fixed[Tavg]"/>
+	</output>
+
+</simulation>

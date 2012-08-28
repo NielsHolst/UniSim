@@ -13,9 +13,7 @@
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
 #include <usbase/random.h>
-#include <usengine/integrator_maker.h>
-#include <usengine/model_maker.h>
-#include <usengine/output_maker.h>
+#include <usengine/mega_factory.h>
 #include "command_line.h"
 #include "file_locations_forgiving.h"
 #include "live_simulation.h"
@@ -32,9 +30,7 @@ void createSingletons(){
     objectPool()->attach(Authors::id(), new Authors);
     objectPool()->attach(Clock::id(), new Clock);
     objectPool()->attach(FileLocations::id(), new FileLocationsForgiving);
-    objectPool()->attach(IntegratorMaker::id(), new IntegratorMaker);
-    objectPool()->attach(ModelMaker::id(), new ModelMaker);
-    objectPool()->attach(OutputMaker::id(), new OutputMaker);
+    objectPool()->attach(MegaFactory::id(), new MegaFactory);
     objectPool()->attach(Random::id(), new Random);
 }
 

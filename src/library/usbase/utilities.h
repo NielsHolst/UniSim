@@ -131,12 +131,6 @@ template<> QString valueToString<QTime>(QTime value);
 template <class T> bool isType(QString s);
 //@}
 
-//! @name PlugIn handling
-//@{
-template <class TPlugin>
-void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers);
-//@}
-
 //! @name Testing
 //@{
 void writeObjectTree(QObject *root, int level = 0);
@@ -517,40 +511,6 @@ QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *c
             throw UniSim::Exception("Name-value list must contain (name value) pairs: " + s, concerning);
     }
     return result;
-}
-
-
-template <class TPlugin>
-void lookupPlugIns(QString makerId, QMap<Identifier, TPlugin*> *makers) {
-    bool keepLooking = true;
-    do {
-        QDir dir = FileLocations::location(FileLocationInfo::Plugins);
-        foreach (QString filename, dir.entryList(QDir::Files)) {
-
-            QPluginLoader loader(dir.absoluteFilePath(filename));
-
-            TPlugin *plugin = qobject_cast<TPlugin*>(loader.instance());
-            if (plugin) {
-				QList<Identifier> classes = plugin->supportedClasses().keys();
-                foreach (Identifier id, classes) {
-                    (*makers)[id] = plugin;
-                    Identifier idWithNamespace = plugin->pluginName().label() + "::" + id.label();
-                    (*makers)[idWithNamespace] = plugin;
-
-                }
-            }
-        }
-
-        if (makers->size() > 0) {
-            keepLooking = false;
-        }
-        else {
-            QString msg = "Found no plugins for: " + makerId + " in: " + dir.absolutePath();
-            if (!dir.exists())
-                msg += ".\nThe folder does not exist.";
-            keepLooking = FileLocations::lookup(FileLocationInfo::Plugins, msg);
-        }
-    } while (keepLooking);
 }
 
 } //namespace

@@ -18,23 +18,23 @@ HEADERS += \
         $${US_BASE}/data_grid.h \
         $${US_BASE}/date_interval.h \
         $${US_BASE}/exception.h \
+		$${US_BASE}/factory_plug_in.h \
         $${US_BASE}/file_location_info.h \
         $${US_BASE}/file_locations.h \
         $${US_BASE}/identifier.h \
         $${US_BASE}/integrator.h \
-        $${US_BASE}/integrator_maker_plug_in.h \
         $${US_BASE}/main_window_interface.h \
         $${US_BASE}/minimiser.h \
         $${US_BASE}/model.h \
-        $${US_BASE}/model_maker_plug_in.h \
         $${US_BASE}/moments.h \
         $${US_BASE}/named_object.h \
         $${US_BASE}/name_list.h \
         $${US_BASE}/object_pool.h \
         $${US_BASE}/output.h \
-        $${US_BASE}/output_maker_plug_in.h \
         $${US_BASE}/parameter.h \
         $${US_BASE}/parameter_base.h \
+		$${US_BASE}/product_base.h \
+		$${US_BASE}/product.h \
         $${US_BASE}/variable.h \
         $${US_BASE}/variable_base.h \
         $${US_BASE}/random.h \
@@ -64,6 +64,7 @@ SOURCES += \
         $${US_BASE}/name_list.cpp \
         $${US_BASE}/object_pool.cpp \
         $${US_BASE}/output.cpp \
+		$${US_BASE}/product_base.cpp \
         $${US_BASE}/variable_base.cpp \
         $${US_BASE}/random.cpp \
         $${US_BASE}/root_solver.cpp \

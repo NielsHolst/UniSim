@@ -82,6 +82,12 @@ Totals: 10 passed, 0 failed, 0 skipped
 ********* Start testing of TestFixed *********
 Config: Using QTest library 4.8.0, Qt 4.8.0
 PASS   : TestFixed::initTestCase()
+Fixed
+6.023e+023
+3.1214
+22.5
+var value = 22.5
+Tavg = 22.5
 PASS   : TestFixed::testPullVariables()
 PASS   : TestFixed::cleanupTestCase()
 Totals: 3 passed, 0 failed, 0 skipped
@@ -201,13 +207,15 @@ PASS   : TestSimulation::testExecute()
 PASS   : TestSimulation::cleanupTestCase()
 Totals: 6 passed, 0 failed, 0 skipped
 ********* Finished testing of TestSimulation *********
-********* Start testing of TestModelMaker *********
+********* Start testing of TestMegaFactory *********
 Config: Using QTest library 4.8.0, Qt 4.8.0
-PASS   : TestModelMaker::initTestCase()
-PASS   : TestModelMaker::testCreation()
-PASS   : TestModelMaker::cleanupTestCase()
-Totals: 3 passed, 0 failed, 0 skipped
-********* Finished testing of TestModelMaker *********
+PASS   : TestMegaFactory::initTestCase()
+PASS   : TestMegaFactory::testCreateModelExists()
+No model of class: unisim::notaclassPASS   : TestMegaFactory::testCreateModelNoClass()
+No model of class: unisim::stageclassPASS   : TestMegaFactory::testCreateModelWrongClass()
+PASS   : TestMegaFactory::cleanupTestCase()
+Totals: 5 passed, 0 failed, 0 skipped
+********* Finished testing of TestMegaFactory *********
 ********* Start testing of TestUtilities *********
 Config: Using QTest library 4.8.0, Qt 4.8.0
 PASS   : TestUtilities::initTestCase()

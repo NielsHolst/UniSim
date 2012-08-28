@@ -20,6 +20,7 @@ Integrator::Integrator(Identifier name, QObject *parent)
     : Model(name, parent), mainWindow(0), report(0)
 {
     new Variable<int>("stepNumber", &stepNumber, this, "Number of current time step in this iteration");
+    new Variable<double>("progress", &progress, this, "Progress of current iteration [0,1]");
     new Variable<int>("runNumber", &runNumber, this, "Number of current iteration");
     // This make the application task hang in memory
     //connect(QApplication::instance(), SIGNAL(lastWindowClosed()), this, SLOT(closeReport()));
@@ -42,6 +43,7 @@ void Integrator::initialize() {
 
 void Integrator::reset() {
     stepNumber = 0;
+	progress = 0.;
 }
 
 bool Integrator::nextRun() {

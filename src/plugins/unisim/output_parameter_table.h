@@ -16,7 +16,7 @@ class OutputVariable;
 
 class OutputParameterTable : public Output
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     OutputParameterTable(Identifier name, QObject *parent=0);
     // standard methods

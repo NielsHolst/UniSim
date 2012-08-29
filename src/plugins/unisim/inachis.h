@@ -17,7 +17,7 @@ class Stage;
 
 class Inachis : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Inachis(Identifier name, QObject *parent=0);
     // standard methods

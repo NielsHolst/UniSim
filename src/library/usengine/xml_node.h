@@ -17,7 +17,7 @@ namespace UniSim{
 
 class XmlNode : public NamedObject
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     typedef QMap<Identifier, QString> Attributes;
 

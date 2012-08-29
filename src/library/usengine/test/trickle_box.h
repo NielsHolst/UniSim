@@ -6,7 +6,7 @@
 
 class TrickleBox : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
 	TrickleBox(QString name, QObject *parent=0);
 	void initialize();

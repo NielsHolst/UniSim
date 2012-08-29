@@ -10,7 +10,7 @@ namespace UniSim {
 
 class Fixed : public Model
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     Fixed(UniSim::Identifier name, QObject *parent=0);
     // standard methods

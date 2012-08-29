@@ -16,7 +16,7 @@ class Plant;
 
 class Organ : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Organ(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

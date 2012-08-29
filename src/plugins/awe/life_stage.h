@@ -11,7 +11,7 @@
 
 class LifeStage : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
 	LifeStage(QString name, QObject *parent=0);
 	~LifeStage();

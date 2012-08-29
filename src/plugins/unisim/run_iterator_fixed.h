@@ -13,7 +13,7 @@ namespace UniSim{
 
 class RunIteratorFixed : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     RunIteratorFixed(UniSim::Identifier name, QObject *parent=0);
 

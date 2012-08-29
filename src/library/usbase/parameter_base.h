@@ -15,7 +15,7 @@ namespace UniSim{
 
 class ParameterBase : public virtual VariableBase
 {
-    // no Q_OBJECT
+    //Q_OBJECT
 public:
     ParameterBase(Identifier id, QObject *parent, QString desc) :
         VariableBase(id, parent, desc) { }

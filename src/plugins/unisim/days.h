@@ -14,7 +14,7 @@ namespace UniSim{
 
 class Days : public PhysiologicalTime
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Days(UniSim::Identifier name, QObject *parent=0);
     // special methods

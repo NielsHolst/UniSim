@@ -22,7 +22,6 @@ Trace::Trace(QString name, VariableBase *variable_, QObject *parent)
 
 void Trace::amend() {
     setSummary();
-    setAxis();
     setType();
 }
 
@@ -66,24 +65,6 @@ void Trace::setThreshold(QString summaryCode) {
     if (!ok) {
         QString msg("Wrong value for 'summary' attribute. Use the format '(xAtThreshold 3.12)', not '%1'");
         throw Exception(msg.arg(summaryCode), this);
-    }
-}
-
-void Trace::setAxis() {
-    QVariant v = attribute("axis");
-    if (!v.isValid())
-        throw Exception("Missing 'axis' attribute", this);
-
-    Identifier id(v.toString());
-    if (id.equals("x"))
-        _axis = XAxis;
-    else if (id.equals("y"))
-        _axis = YAxis;
-    else if (id.equals("z"))
-        _axis = ZAxis;
-    else {
-        QString msg("Axis must be either 'x', 'y' or 'z', not '%1'");
-        throw Exception(msg.arg(id.label()), this);
     }
 }
 
@@ -199,10 +180,6 @@ void Trace::cleanup() {
 
 void Trace::debrief() {
     historyCleared = false;
-}
-
-Trace::Axis Trace::axis() const {
-    return _axis;
 }
 
 Trace::Summary Trace::summary() const {

@@ -74,12 +74,12 @@ void OutputTableBase::closeFile() {
     file.close();
 }
 
-int OutputTableBase::traceSize() const {
-    if (traces().isEmpty())
+int OutputTableBase::traceSize() {
+    if (traceRecords().isEmpty())
         return 0;
     int theSize = -1;
-    for (int i = 0; i < traces().size(); ++i) {
-        int nextSize = traces()[i]->history()->size();
+    for (int i = 0; i < traceRecords().size(); ++i) {
+        int nextSize = traceRecords().at(i).trace->history()->size();
         if (theSize == -1)
             theSize = nextSize;
         else if (nextSize != theSize) {

@@ -16,7 +16,7 @@ class Stage;
 
 class InsectLifeCycle : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     InsectLifeCycle(Identifier name, QObject *parent=0);
     // standard methods

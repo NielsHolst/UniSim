@@ -15,7 +15,7 @@ namespace UniSim{
 
 class OutputTable : public OutputTableBase
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     OutputTable(Identifier name, QObject *parent=0);
     // standard methods
@@ -24,7 +24,6 @@ public:
 private:
     // methods
     void writeLabels();
-    void writeLabels(const QList<TraceRecord> &traces);
     void writeTraces();
     void writeTraces(const QList<TraceRecord> &traces, int dataIx);
 };

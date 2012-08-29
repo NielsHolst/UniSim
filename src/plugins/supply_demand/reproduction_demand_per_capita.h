@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class ReproductionDemandPerCapita : public ReproductionDemand
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     ReproductionDemandPerCapita(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

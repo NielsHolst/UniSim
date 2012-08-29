@@ -15,7 +15,7 @@ class ParameterBase;
 
 class SensitivityAnalysis : public Steps
 {
-	Q_OBJECT
+	//Q_OBJECT
 
 public:
     SensitivityAnalysis(Identifier name, QObject *parent=0);

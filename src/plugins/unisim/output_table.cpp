@@ -42,29 +42,21 @@ void OutputTable::debrief() {
 }
 
 void OutputTable::writeLabels() {
-    writeLabels(xTraces());
-    writeString("\t");
-    writeLabels(yTraces());
-    writeString("\n");
-}
-
-void OutputTable::writeLabels(const QList<TraceRecord> &traces) {
-    if (traces.isEmpty())
+    if (traceRecords().isEmpty())
         return;
     QString s;
     QTextStream text(&s);
-    text << traces[0].label;
-    for (int i = 1; i < traces.size(); ++i)
-        text << "\t" << traces[i].label;
+    text << traceRecords()[0].label;
+    for (int i = 1; i < traceRecords().size(); ++i)
+        text << "\t" << traceRecords()[i].label;
     writeString(s);
+    writeString("\n");
 }
 
 void OutputTable::writeTraces() {
     int n = traceSize();
     for (int i = 0; i < n; ++i) {
-        writeTraces(xTraces(), i);
-        writeString("\t");
-        writeTraces(yTraces(), i);
+        writeTraces(traceRecords(), i);
         writeString("\n");
     }
 }

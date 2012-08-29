@@ -16,7 +16,7 @@ namespace UniSim{
 	
 class ObjectPool : public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     ObjectPool(QObject *parent=0);
     void attach(Identifier id, QObject *object);

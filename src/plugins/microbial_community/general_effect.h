@@ -14,7 +14,7 @@
 namespace MicrobialCommunity {
 
     class GeneralEffect : public Effect {
-        Q_OBJECT
+        //Q_OBJECT
 
         public:
             GeneralEffect(UniSim::Identifier name, QObject *parent=0);

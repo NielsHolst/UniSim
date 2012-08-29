@@ -12,7 +12,7 @@ namespace intercom{
 
 class Mass : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     enum KindsOfLight {Diffuse, DirectDirect, DirectTotal};
     enum Rates {Absorption, Assimilation};

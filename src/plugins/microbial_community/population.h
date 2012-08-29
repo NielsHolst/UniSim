@@ -11,7 +11,7 @@
 namespace MicrobialCommunity {
 
     class Population : public UniSim::Model {
-        Q_OBJECT
+        //Q_OBJECT
 
     public:
         Population(UniSim::Identifier name, QObject *parent=0);

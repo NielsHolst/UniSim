@@ -12,7 +12,7 @@ namespace UniSim{
 
 class VariableBase : public QObject
 {
-    // no Q_OBJECT
+    //Q_OBJECT
 public:
     VariableBase(Identifier id, QObject *parent, QString desc);
     virtual QVariant toVariant() const = 0;

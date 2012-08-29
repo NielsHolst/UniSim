@@ -13,7 +13,7 @@ namespace conductance {
 
 class Plant : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
 	Plant(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

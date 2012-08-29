@@ -12,7 +12,7 @@ namespace intercom{
 
 class Height : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Height(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

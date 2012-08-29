@@ -12,7 +12,7 @@ namespace intercom{
 
 class EarlyGrowth : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     EarlyGrowth(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

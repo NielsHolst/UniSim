@@ -17,7 +17,7 @@ class LakeEnvironment;
 
 class NetProduction : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     NetProduction(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

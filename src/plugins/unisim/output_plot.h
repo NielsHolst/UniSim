@@ -21,7 +21,7 @@ class Trace;
 
 class OutputPlot : public Output
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     OutputPlot(Identifier name, QObject *parent=0);
     ~OutputPlot();
@@ -66,8 +66,8 @@ private:
     void showPlot();
     void createPlotWidget();
     void fillPlotWidget();
-    void add(Trace &x, TraceRecord  &y);
-    void add(QVector<double> *x, YRecord &y);
+    void add(Trace &x, TraceRecord  &y, int index);
+    void add(QVector<double> *x, YRecord &y, int index);
     void showPlotWidget();
     void setZoomer();
 };

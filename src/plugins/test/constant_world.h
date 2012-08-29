@@ -12,7 +12,7 @@ namespace test{
 
 class ConstantWorld : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
 	ConstantWorld(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

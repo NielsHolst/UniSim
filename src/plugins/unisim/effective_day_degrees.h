@@ -12,7 +12,7 @@ namespace UniSim{
 
 class EffectiveDayDegrees : public DayDegrees
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     EffectiveDayDegrees(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

@@ -12,7 +12,7 @@ namespace intercom {
 
 class WeatherInterface : public UniSim::WeatherFile
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     WeatherInterface(UniSim::Identifier name, QObject *parent=0);
     struct Par {

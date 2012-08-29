@@ -17,7 +17,7 @@ namespace UniSim{
 //! An %AnonymousModel simply acts as a container (parent) of other models
 class AnonymousModel : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
 //! Constructor
     /*!

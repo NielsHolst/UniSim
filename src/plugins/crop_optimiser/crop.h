@@ -14,7 +14,7 @@ namespace crop_optimiser {
 
 class Crop : public UniSim::Model
 {
-        Q_OBJECT
+        //Q_OBJECT
 public:
         Crop(UniSim::Identifier name, QObject *parent=0);
         // standard methods

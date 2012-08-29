@@ -13,7 +13,7 @@
 namespace MicrobialCommunity {
 
     class EnzymaticReaction : public Reaction {
-            Q_OBJECT
+            //Q_OBJECT
 
     public:
             EnzymaticReaction(UniSim::Identifier name, QObject *parent=0);

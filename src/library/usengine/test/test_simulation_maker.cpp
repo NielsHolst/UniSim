@@ -72,9 +72,6 @@ void TestSimulationMaker::testModel()
     Model *butterfly = models[0];
     QVERIFY(butterfly);
     QVERIFY(butterfly->parent() == simulation);
-    QCOMPARE(butterfly->metaObject()->className(), "test::LifeCycle");
-	QCOMPARE(butterfly->metaObject()->superClass()->className(), "UniSim::Model");
-	QCOMPARE(butterfly->parent()->metaObject()->className(), "UniSim::Simulation");
     QCOMPARE(butterfly->seekChildren<Model*>("*").size(), 4);
 }
 

@@ -12,7 +12,7 @@ namespace intercom{
 
 class SpecificLeafArea : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     SpecificLeafArea(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

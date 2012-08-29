@@ -15,14 +15,14 @@ namespace UniSim{
 
 class OutputTableBase : public Output
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     OutputTableBase(Identifier name, QObject *parent=0);
 protected:
     void openFile(QString appendix = QString());
     void writeString(QString s);
     void closeFile();
-    int traceSize() const;
+    int traceSize();
 private:
     // parameters
     QString fileName;

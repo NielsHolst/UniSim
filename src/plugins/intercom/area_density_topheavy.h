@@ -15,7 +15,7 @@ namespace intercom{
 
 class AreaDensityTopheavy : public AreaDensity
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     AreaDensityTopheavy(UniSim::Identifier name, QObject *parent=0);
     // special methods

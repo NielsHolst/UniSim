@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class ReproductionDemandSizeDependent : public ReproductionDemand
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     ReproductionDemandSizeDependent(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

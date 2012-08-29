@@ -79,18 +79,8 @@ OutputPlot::~OutputPlot() {
 
 void OutputPlot::amend() {
     Output::amend();
-    if (yTraces().size() == 0) {
-        QString msg = QString("Output plot '%1'' has no y-results").arg(id().label());
-        throw Exception(msg, this);
-    }
-    if (xTraces().size() == 0) {
-        QString msg = QString("Output plot '%1'' has no x-results").arg(id().label());
-        throw Exception(msg, this);
-    }
-    else if (xTraces().size() > 1) {
-        QString msg = QString("Output plot '%1'' has more than one x-result:").arg(id().label());
-        for (int i = 0; i < xTraces().size(); ++ i)
-            msg += "\n" + xTraces().at(i).label;
+    if (traceRecords().size() < 2) {
+        QString msg("Crosstab output must have at least two traces");
         throw Exception(msg, this);
     }
 
@@ -189,23 +179,23 @@ void OutputPlot::createPlotWidget() {
 }
 
 void OutputPlot::fillPlotWidget() {
-    Trace *x = xTraces()[0].trace;
+    Trace *x = traceRecords()[0].trace;
     QString yAxisTitle(" ");
     plotWidget->setXYtitles(x->id().label(), yAxisTitle);
-    for (int i = 0; i < yTraces().size(); ++i) {
-        add(*x, yTraces()[i]);
+    for (int i = 1; i < traceRecords().size(); ++i) {
+        add(*x, traceRecords()[i], i-1);
     }
 
     for (int i = 0; i < _tableRecords.size(); ++i) {
         TableRecord &rec(_tableRecords[i]);
         for (int j = 0; j < rec.yList.size(); ++j) {
-            add(&(rec.x), rec.yList[i]);
+            add(&(rec.x), rec.yList[i], i);
         }
     }
 
 }
 
-void OutputPlot::add(Trace &x, TraceRecord  &y) {
+void OutputPlot::add(Trace &x, TraceRecord  &y, int index) {
     Plot p;
     p.x = x.history();
     p.y = y.trace->history();
@@ -217,7 +207,7 @@ void OutputPlot::add(Trace &x, TraceRecord  &y) {
     p.ymin = ymin;
     p.ymax = ymax;
 
-    QColor color = colors[y.index % colors.size()];
+    QColor color = colors[index % colors.size()];
     QPen pen = QPen(color);
     pen.setWidth(penWidth);
     p.pen = pen;
@@ -226,7 +216,7 @@ void OutputPlot::add(Trace &x, TraceRecord  &y) {
     p.add();
 }
 
-void OutputPlot::add(QVector<double> *x, YRecord &y) {
+void OutputPlot::add(QVector<double> *x, YRecord &y, int index) {
     Plot p;
     p.x = x;
     p.y = &(y.data);
@@ -238,7 +228,7 @@ void OutputPlot::add(QVector<double> *x, YRecord &y) {
     p.ymin = ymin;
     p.ymax = ymax;
 
-    QColor color = colors[y.index % colors.size()];
+    QColor color = colors[index % colors.size()];
     QPen pen = QPen(color);
     pen.setWidth(penWidth);
     p.pen = pen;

@@ -69,12 +69,9 @@ Totals: 5 passed, 0 failed, 0 skipped
 Config: Using QTest library 4.8.0, Qt 4.8.0
 PASS   : TestRange::initTestCase()
 PASS   : TestRange::testLinear()
-FAIL!  : TestRange::testLog10() Compared doubles are not the same (fuzzy compare)
-   Actual (data.value(0,1)): 0.000398107
-   Expected (pow(10,-3.4)): 0.000398107
-..\..\..\plugins\unisim\test\test_range.cpp(49) : failure location
+PASS   : TestRange::testLog10()
 PASS   : TestRange::cleanupTestCase()
-Totals: 3 passed, 1 failed, 0 skipped
+Totals: 4 passed, 0 failed, 0 skipped
 ********* Finished testing of TestRange *********
 ********* Start testing of TestRandom *********
 Config: Using QTest library 4.8.0, Qt 4.8.0
@@ -197,10 +194,13 @@ Totals: 14 passed, 0 failed, 0 skipped
 Config: Using QTest library 4.8.0, Qt 4.8.0
 PASS   : TestSimulationMaker::initTestCase()
 PASS   : TestSimulationMaker::testSimulation()
-PASS   : TestSimulationMaker::testModel()
+FAIL!  : TestSimulationMaker::testModel() Compared strings are not the same
+   Actual (butterfly->metaObject()->className()): UniSim::Component
+   Expected ("test::LifeCycle"): test::LifeCycle
+..\..\..\library\usengine\test\test_simulation_maker.cpp(75) : failure location
 PASS   : TestSimulationMaker::testParameters()
 PASS   : TestSimulationMaker::cleanupTestCase()
-Totals: 5 passed, 0 failed, 0 skipped
+Totals: 4 passed, 1 failed, 0 skipped
 ********* Finished testing of TestSimulationMaker *********
 ********* Start testing of TestSimulation *********
 Config: Using QTest library 4.8.0, Qt 4.8.0

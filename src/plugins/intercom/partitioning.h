@@ -12,7 +12,7 @@ namespace intercom{
 
 class Partitioning : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Partitioning(UniSim::Identifier name, QObject *parent=0);
 

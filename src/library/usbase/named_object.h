@@ -15,7 +15,7 @@ namespace UniSim{
 
 class NamedObject : public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     NamedObject(Identifier name, QObject *parent=0);
     Identifier id() const;

@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class EnergyBudget : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     EnergyBudget(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

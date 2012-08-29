@@ -15,7 +15,7 @@ namespace awe {
 
 class PlantGrowthStage : public Model
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     PlantGrowthStage(UniSim::Identifier name, QObject *parent=0);
 	void initialize();

@@ -17,7 +17,7 @@ class Trace;
 
 class OutputCrosstab : public OutputTableBase
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     OutputCrosstab(Identifier name, QObject *parent=0);
     // standard methods

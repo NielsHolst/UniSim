@@ -15,7 +15,7 @@ namespace UniSim {
 
 class   FileLocations : public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     FileLocations();
     static QString id();

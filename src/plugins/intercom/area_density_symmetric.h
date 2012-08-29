@@ -15,7 +15,7 @@ namespace intercom{
 
 class AreaDensitySymmetric : public AreaDensity
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     AreaDensitySymmetric(UniSim::Identifier name, QObject *parent=0);
     // special methods

@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class Maize : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Maize(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

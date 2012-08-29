@@ -15,7 +15,7 @@ class Plant;
 
 class Community : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Community(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

@@ -15,7 +15,7 @@ namespace UniSim{
 
 class RandomUniform : public RandomBase
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     RandomUniform(UniSim::Identifier name, QObject *parent=0);
     ~RandomUniform();

@@ -16,7 +16,7 @@ class Farm; //AM after NH:) better than including the header files (see also far
 
 class Landscape : public UniSim::Model
 {
-        Q_OBJECT
+        //Q_OBJECT
 public:
         Landscape(UniSim::Identifier name, QObject *parent=0);
         // standard methods

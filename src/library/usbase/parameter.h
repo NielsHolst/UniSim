@@ -15,7 +15,7 @@ namespace UniSim{
 template <class T>
 class Parameter : public Variable<T>, public ParameterBase
 {
-    // no Q_OBJECT
+    //Q_OBJECT
 public:
     Parameter(Identifier name, T *valuePtr, T defaultvalue, QObject *parent, QString desc);
     // generic

@@ -21,7 +21,7 @@ namespace UniSim{
 
 class Model : public UniSim::Component
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Model(Identifier name, QObject *parent=0);
 

@@ -14,7 +14,7 @@ namespace UniSim{
 
 class LactinTime : public PhysiologicalTime
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     LactinTime(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

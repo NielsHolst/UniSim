@@ -12,7 +12,7 @@
 namespace MicrobialCommunity {
 
     class Reaction : public UniSim::Model {
-        Q_OBJECT
+        //Q_OBJECT
 
         public:
             Reaction(UniSim::Identifier name, QObject *parent=0);

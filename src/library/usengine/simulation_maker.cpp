@@ -477,7 +477,6 @@ void SimulationMaker::readOutputSubElement(QObject* parent)
     TraceParam param;
     param.setAttribute( "label", attributeValue("label", parent) );
     param.setAttribute( "value", attributeValue("value", parent) );
-    param.setAttribute( "axis", attributeValue("axis", "y") );
     param.setAttribute( "summary", attributeValue("summary", "") );
     param.setAttribute( "type", attributeValue("type", "") );
     param.setAttribute( "columns", attributeValue("columns", "") );

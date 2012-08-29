@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class Exposure : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Exposure(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

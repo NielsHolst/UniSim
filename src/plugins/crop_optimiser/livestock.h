@@ -13,7 +13,7 @@ namespace crop_optimiser {
 
 class Livestock : public UniSim::Model
 {
-        Q_OBJECT
+        //Q_OBJECT
 public:
         Livestock(UniSim::Identifier name, QObject *parent=0);
         // standard methods

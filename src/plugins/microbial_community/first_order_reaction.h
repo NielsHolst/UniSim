@@ -13,7 +13,7 @@
 namespace MicrobialCommunity {
 
     class FirstOrderReaction : public Reaction {
-        Q_OBJECT
+        //Q_OBJECT
 
         public:
             FirstOrderReaction(UniSim::Identifier name, QObject *parent=0);

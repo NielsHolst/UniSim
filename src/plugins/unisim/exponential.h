@@ -12,7 +12,7 @@ namespace UniSim{
 
 class Exponential : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Exponential(Identifier name, QObject *parent=0);
     //standard methods

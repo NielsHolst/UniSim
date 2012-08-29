@@ -13,7 +13,7 @@ namespace test{
 
 class Operation : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Operation(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

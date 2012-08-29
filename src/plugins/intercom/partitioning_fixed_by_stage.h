@@ -13,7 +13,7 @@ namespace intercom{
 
 class PartitioningFixedByStage : public Partitioning
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     PartitioningFixedByStage(UniSim::Identifier name, QObject *parent=0);
 

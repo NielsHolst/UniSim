@@ -15,7 +15,7 @@ class PlantGrowthStage;
 
 class InstantMortality : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     InstantMortality(UniSim::Identifier name, QObject *parent=0);
     void initialize();

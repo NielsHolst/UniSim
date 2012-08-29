@@ -23,7 +23,7 @@ class Livestock;   //NH
 
 class Farm : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
 	Farm(UniSim::Identifier name, QObject *parent=0);
 

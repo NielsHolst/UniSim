@@ -18,7 +18,7 @@ class XmlElementsReader;
 
 class PrototypeMaker : public QObject
 {
-	Q_OBJECT
+	//Q_OBJECT
 	
 public:
     PrototypeMaker();

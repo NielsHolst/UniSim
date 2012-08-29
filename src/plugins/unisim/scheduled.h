@@ -12,7 +12,7 @@ namespace UniSim{
 
 class Scheduled : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Scheduled(Identifier name, QObject *parent=0);
     //standard methods

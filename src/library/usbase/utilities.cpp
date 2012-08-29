@@ -43,14 +43,13 @@ void setSimulationObject(QObject *simulation) {
     Or else the simulation object is set to null.
 */
 void setSimulationObjectFromDescendent(QObject *descendent) {
-    QObject *p = descendent;
-    SimulationObject::simulation = 0;
-    while (p && !SimulationObject::simulation) {
-        QString className = p->metaObject()->className();
-        if (className.contains("Simulation"))
-            SimulationObject::simulation = p;
-        p = p->parent();
+    QObject *child = descendent;
+    QObject *parent = child ? child->parent() : 0;
+    while (parent) {
+        child = parent;
+        parent = child->parent();
     }
+    SimulationObject::simulation = child;
 }
 
 //! Returns Simulation object

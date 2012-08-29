@@ -19,7 +19,7 @@ class VariableBase;
 
 class Trace : public Component, public Attributes
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Trace(QString name, VariableBase *variable, QObject *parent = 0);
 	
@@ -31,8 +31,6 @@ public:
     void debrief();
 
     // special methods
-    enum Axis {XAxis, YAxis, ZAxis};
-    Axis axis() const;
     enum Summary {None, Max, Min, Average, Sum, Final, XAtThreshold, XAtMax, XAtMin};
     Summary summary() const;
     enum Type {Line, Symbols, Both} ;
@@ -46,7 +44,6 @@ public:
 
 private:
     // methods
-    void setAxis();
     void setSummary();
     void setType();
     void setThreshold(QString summaryCode);
@@ -57,7 +54,6 @@ private:
 
     // data
     VariableBase *variable;
-    Axis _axis;
     Summary _summary;
     Type _type;
     struct {

@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class Holometabola : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
 	Holometabola(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

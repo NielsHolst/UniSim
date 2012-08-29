@@ -14,7 +14,7 @@ class LifeStage;
 
 class LifeCycle : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     LifeCycle(UniSim::Identifier name, QObject *parent=0);
 	void initialize();

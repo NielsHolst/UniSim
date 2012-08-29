@@ -15,7 +15,7 @@ namespace UniSim{
 
 class Calendar : public UniSim::Model
 {
-	Q_OBJECT
+    Q_OBJECT
 public: 
 	Calendar(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

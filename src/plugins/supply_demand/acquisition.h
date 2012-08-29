@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class Acquisition : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Acquisition(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

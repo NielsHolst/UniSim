@@ -13,7 +13,7 @@ namespace UniSim{
 
 class Random : public QObject
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     typedef boost::mt19937 Generator;
     Random();

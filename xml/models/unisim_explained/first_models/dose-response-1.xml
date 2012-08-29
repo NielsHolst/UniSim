@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation version="1.0">
-	<integrator type="UniSim::Steps">
+	<integrator name="steps" type="UniSim::Steps">
 		<parameter name="maxSteps" value="50"/>
 	</integrator>
 
 	<model name="dose" type="UniSim::Range">
+		<parameter name="progress" variable="steps[progress]"/>
 		<parameter name="scale" value="log10"/>
 		<parameter name="min" value="-4"/>
 		<parameter name="max" value="2"/>
@@ -20,7 +21,6 @@
 
 	<output type="plot">
 		<parameter name="title" value="Dose-response curve"/>
-		<parameter name="log" value="y"/>
 		<trace label="Dose" value="dose[value]"/>
 		<trace label="Mortality" value="response[value]"/>
 	</output>

@@ -12,7 +12,7 @@ namespace UniSim{
 
 class PhotoThermalTime : public DayDegrees
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     PhotoThermalTime(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

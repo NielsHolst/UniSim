@@ -13,7 +13,7 @@ namespace MicrobialCommunity {
 
     class Competition : public UniSim::Model
     {
-        Q_OBJECT
+        //Q_OBJECT
 
     public:
         Competition(UniSim::Identifier name, QObject *parent=0);

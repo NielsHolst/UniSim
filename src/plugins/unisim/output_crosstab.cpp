@@ -22,8 +22,8 @@ OutputCrosstab::OutputCrosstab(Identifier name, QObject *parent)
 void OutputCrosstab::amend() {
     OutputTableBase::amend();
     checkTraces();
-    for (int i = 0; i < yTraces().size(); ++i) {
-        Trace *trace = yTraces()[i].trace;
+    for (int i = 1; i < traceRecords().size(); ++i) {
+        Trace *trace = traceRecords()[i].trace;
         Model *rowParent = seekParent(trace, rowClass);
         Model *columnParent = seekParent(trace, columnClass);
         QString rowName = rowParent->id().label();
@@ -42,18 +42,18 @@ void OutputCrosstab::amend() {
 }
 
 void OutputCrosstab::checkTraces() {
-    if (yTraces().isEmpty()) {
-        QString msg("Crosstab output must have at least one 'y' variable");
+    if (traceRecords().size() < 2) {
+        QString msg("Crosstab output must have at least two traces");
         throw Exception(msg, this);
     }
-    Trace *y = yTraces()[0].trace;
+    Trace *y = traceRecords()[1].trace;
     checkAttribute(y, "rows");
     checkAttribute(y, "columns");
     rowClass = y->attribute("rows").toString();
     columnClass = y->attribute("columns").toString();
 
-    for (int i = 1; i < yTraces().size(); ++i) {
-        Trace *y = yTraces()[i].trace;
+    for (int i = 2; i < traceRecords().size(); ++i) {
+        Trace *y = traceRecords()[i].trace;
         checkAttribute(y, "rows");
         checkAttribute(y, "columns");
         checkAttribute(y, "rows", rowClass);

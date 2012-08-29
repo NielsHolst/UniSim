@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class GrowthDemand : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     GrowthDemand(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

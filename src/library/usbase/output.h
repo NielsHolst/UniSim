@@ -17,7 +17,7 @@ class Trace;
 
 class Output : public Component
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Output(Identifier name, QObject *parent=0);
     // standard methods
@@ -26,12 +26,10 @@ public:
     struct TraceRecord {
         Trace *trace;
         QString label;
-        int index;
+        //int index;
     };
 
-    const QList<Trace*>& traces() const;
-    QList<TraceRecord>& xTraces();
-    QList<TraceRecord>& yTraces();
+    QList<TraceRecord>& traceRecords();
     bool hasSummary() const;
 protected:
     // methods
@@ -41,8 +39,7 @@ private:
     // data
     bool _hasSummary;
     // links
-    QList<Trace*> _traces;
-    QList<TraceRecord> _xTraces, _yTraces;
+    QList<TraceRecord> _traceRecords;
     Integrator *integrator;
     // methods
     void setYLabels();

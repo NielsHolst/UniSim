@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class LifeStage : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     LifeStage(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

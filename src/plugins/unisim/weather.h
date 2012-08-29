@@ -11,7 +11,7 @@ namespace UniSim {
 
     class Weather : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Weather(Identifier name, QObject *parent=0);
     // standard methods

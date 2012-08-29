@@ -12,7 +12,7 @@ namespace UniSim{
 
 class RandomBase : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     RandomBase(Identifier name, QObject *parent=0);
     // standard methods

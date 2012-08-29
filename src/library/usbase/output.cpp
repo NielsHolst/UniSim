@@ -19,36 +19,21 @@ Output::Output(Identifier name, QObject *parent)
 }
 
 void Output::amend() {
-    _traces = seekChildren<Trace*>("*");
+    QList<Trace*> traces = seekChildren<Trace*>("*");
     _hasSummary = false;
-    int yIndex = 0;
-    for (int i = 0; i < _traces.size(); ++i) {
+    for (int i = 0; i < traces.size(); ++i) {
         TraceRecord rec;
-        rec.trace = _traces[i];
+        rec.trace = traces[i];
         rec.label = rec.trace->id().label();
-        rec.index = 0;
-        if (rec.trace->axis() == Trace::XAxis)
-            _xTraces << rec;
-        else {
-            rec.index = yIndex++;
-            _yTraces << rec;
-        }
-        _hasSummary = _hasSummary || rec.trace->summary() != Trace::None;
+        _traceRecords << rec;
+        _hasSummary = (_hasSummary || rec.trace->summary() != Trace::None);
     }
     setYLabels();
     integrator = seekOne<Integrator*>("*");
 }
 
-const QList<Trace *> &Output::traces() const {
-    return _traces;
-}
-
-QList<Output::TraceRecord>& Output::xTraces() {
-    return _xTraces;
-}
-
-QList<Output::TraceRecord>& Output::yTraces() {
-    return _yTraces;
+QList<Output::TraceRecord>& Output::traceRecords() {
+    return _traceRecords;
 }
 
 int Output::runNumber() const {
@@ -61,8 +46,8 @@ bool Output::hasSummary() const {
 
 void Output::setYLabels() {
     QStringList sl;
-    for (int i = 0; i < _yTraces.size(); ++i) {
-        TraceRecord &rec( _yTraces[i] );
+    for (int i = 1; i < _traceRecords.size(); ++i) {
+        TraceRecord &rec( _traceRecords[i] );
         NamedObject *parent = rec.trace->variableParent();
         QString name;
         if (parent)
@@ -72,9 +57,9 @@ void Output::setYLabels() {
     }
     NameList nl(sl);
     QStringList yLabels = nl.simplified();
-    for (int i = 0; i < _yTraces.size(); ++i) {
-        TraceRecord &rec( _yTraces[i] );
-        rec.label = yLabels[i];
+    for (int i = 1; i < _traceRecords.size(); ++i) {
+        TraceRecord &rec( _traceRecords[i] );
+        rec.label = yLabels[i-1];
     }
 }
 

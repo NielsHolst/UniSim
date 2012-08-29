@@ -16,7 +16,7 @@ namespace UniSim{
 template <class T>
 class Variable : public virtual VariableBase
 {
-    // no Q_OBJECT
+    //Q_OBJECT
 public:
     Variable(Identifier name, const T *valuePtr, QObject *parent, QString desc);
     // generic

@@ -12,7 +12,7 @@ namespace SupplyDemand {
 
 class SplitOnShorteningDays : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     SplitOnShorteningDays(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

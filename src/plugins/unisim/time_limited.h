@@ -14,7 +14,7 @@ class Model;
 
 class TimeLimited : public Integrator
 {
-	Q_OBJECT
+	//Q_OBJECT
 
 public:
     TimeLimited(Identifier name, QObject *parent=0);

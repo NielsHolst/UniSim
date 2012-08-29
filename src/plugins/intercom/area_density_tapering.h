@@ -15,7 +15,7 @@ namespace intercom{
 
 class AreaDensityTapering : public AreaDensity
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     AreaDensityTapering(UniSim::Identifier name, QObject *parent=0);
     // special methods

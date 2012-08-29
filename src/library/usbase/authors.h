@@ -15,7 +15,7 @@ namespace UniSim{
 
 class Authors : public QObject
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Authors();
     ~Authors();

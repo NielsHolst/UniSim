@@ -12,7 +12,7 @@ namespace UniSim{
 
 class HydroThermalTime : public DayDegrees
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     HydroThermalTime(UniSim::Identifier name, QObject *parent=0);
     // special methods

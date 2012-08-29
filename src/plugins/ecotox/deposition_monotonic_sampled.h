@@ -12,7 +12,7 @@ namespace ecotox {
 
 class DepositionMonotonicSampled : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     DepositionMonotonicSampled(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

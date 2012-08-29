@@ -12,7 +12,7 @@ namespace UniSim{
 
 class PhysiologicalTime : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     PhysiologicalTime(UniSim::Identifier name, QObject *parent=0);
     // standard methods

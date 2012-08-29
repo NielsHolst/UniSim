@@ -15,7 +15,7 @@ namespace UniSim {
 
 class Stage : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Stage(Identifier name, QObject *parent=0);
     ~Stage();

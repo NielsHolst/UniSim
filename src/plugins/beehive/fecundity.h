@@ -12,7 +12,7 @@ namespace beehive {
 
 class Fecundity : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Fecundity(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

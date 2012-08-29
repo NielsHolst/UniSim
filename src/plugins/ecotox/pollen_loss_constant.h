@@ -12,7 +12,7 @@ namespace ecotox {
 
 class PollenLossConstant : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     PollenLossConstant(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

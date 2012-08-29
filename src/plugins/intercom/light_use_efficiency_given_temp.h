@@ -12,7 +12,7 @@ namespace intercom{
 
 class LightUseEfficiencyGivenTemp : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     LightUseEfficiencyGivenTemp(UniSim::Identifier name, QObject *parent=0);
 	//standard methods

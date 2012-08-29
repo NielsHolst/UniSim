@@ -12,7 +12,7 @@ namespace awe {
 
 class AweFactory : public QObject, public UniSim::FactoryPlugIn
 {
-	Q_OBJECT
+    Q_OBJECT
 	Q_INTERFACES(UniSim::FactoryPlugIn)
 public:
     void defineProducts();

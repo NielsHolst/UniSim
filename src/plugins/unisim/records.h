@@ -16,7 +16,7 @@ class PullVariableBase;
 
 class Records : public Model
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     Records(UniSim::Identifier name, QObject *parent=0);
     ~Records();

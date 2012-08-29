@@ -16,7 +16,7 @@ namespace UniSim{
 
 class Simulation : public NamedObject
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     enum State {Uninitialized, Initialized, Faulty};
 

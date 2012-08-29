@@ -14,7 +14,7 @@ class PollenOnsetDate;
 
 class DepositionFlush : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     DepositionFlush(UniSim::Identifier name, QObject *parent=0);
     ~DepositionFlush();

@@ -18,7 +18,7 @@ class FactoryPlugIn;
 
 class MegaFactory : public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     MegaFactory();
     static QString id();

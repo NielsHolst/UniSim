@@ -14,7 +14,7 @@ namespace UniSim{
 
 class WeatherFile : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     WeatherFile(UniSim::Identifier name, QObject *parent=0);
     ~WeatherFile();

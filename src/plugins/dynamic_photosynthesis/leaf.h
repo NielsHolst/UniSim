@@ -12,7 +12,7 @@ namespace dynamic_photosynthesis {
 
 class Leaf : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     Leaf(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

@@ -14,7 +14,7 @@ class Model;
 
 class Range : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Range(Identifier name, QObject *parent=0);
 

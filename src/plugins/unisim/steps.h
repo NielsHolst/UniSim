@@ -14,7 +14,7 @@ class Model;
 
 class Steps : public Integrator
 {
-	Q_OBJECT
+	//Q_OBJECT
 public:
     Steps(Identifier name, QObject *parent=0);
 

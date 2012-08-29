@@ -13,7 +13,7 @@ namespace crop_optimiser {
 
 class Field : public UniSim::Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
 	Field(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

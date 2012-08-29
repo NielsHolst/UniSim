@@ -14,7 +14,7 @@
 namespace MicrobialCommunity {
 
     class CompetitiveInhibition : public Effect {
-        Q_OBJECT
+        //Q_OBJECT
 
         public:
             CompetitiveInhibition(UniSim::Identifier name, QObject *parent=0);

@@ -14,7 +14,7 @@ namespace UniSim{
 
 class TriggerByDate : public Model
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     TriggerByDate(Identifier name, QObject *parent=0);
     // standard methods

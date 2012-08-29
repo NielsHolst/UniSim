@@ -15,7 +15,7 @@ namespace UniSim{
 
 class RandomLognormal : public RandomBase
 {
-	Q_OBJECT
+	//Q_OBJECT
 public: 
     RandomLognormal(UniSim::Identifier name, QObject *parent=0);
     ~RandomLognormal();

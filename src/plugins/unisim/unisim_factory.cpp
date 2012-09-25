@@ -11,6 +11,7 @@
 #include "days.h"
 #include "exponential.h"
 #include "fixed.h"
+#include "functional_response_G_B.h"
 #include "hydro_thermal_time.h"
 #include "inachis.h"
 #include "insect_life_cycle.h"
@@ -29,6 +30,7 @@
 #include "scheduled.h"
 #include "sensitivity_analysis.h"
 #include "stage.h"
+#include "stage_demand.h"
 #include "time_limited.h"
 #include "steps.h"
 #include "trigger_by_date.h"
@@ -76,6 +78,10 @@ void UniSim::UniSimFactory::defineProducts() {
     "of values currently supported is @F {double}. Note that these 'artifical' parameters "
     "and variables are not created until @F initialize() of @F {Fixed} is called. "
     "This is unlike their real counterparts which are always created in the model's constructor");
+
+    addProduct<FunctionalResponseGB>("FunctionalResponseGB", this,
+    "The Gutierrez-Baumgärtner functional response model, "
+    "including the energy budget for egestion and respiration");
 
     addProduct<HydroThermalTime>("HydroThermalTime", this,
     "Hydrothermal time accounts for temperature and soil water potential at the same time. "
@@ -154,6 +160,10 @@ void UniSim::UniSimFactory::defineProducts() {
     "duration and @F k determine the average and variance of stage duration with variance equal to "
     "@Math{@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
     "determined by the nearest model called @F {time}.");
+
+    addProduct<StageDemand>("StageDemand", this,
+    "This model calculates the growth demand of the stage, identified by @F {stage}, which must be of type @F {UniSim::Stage}."
+    "The stage's @growthDemand method is used for the calculation.");
 
     addProduct<Steps>("Steps", this, "Integrator class. Description pending");
 

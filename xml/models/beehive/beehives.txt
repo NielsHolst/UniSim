@@ -1,0 +1,4 @@
+*Beehive::Hive	X	Y
+A	10	20
+B	30	50
+C	100	120

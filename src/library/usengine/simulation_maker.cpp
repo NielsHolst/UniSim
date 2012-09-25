@@ -374,15 +374,24 @@ void SimulationMaker::readParameterElement(QList<QObject*> parents)
 void SimulationMaker::setParameterElement(QObject *parent) {
     QString name = attributeValue("name", "");
     QString value = attributeValue("value", "");
-    QString variableName = attributeValue("variable", "");
+    QString reference = attributeValue("ref", "");
     QString table = attributeValue("table", "");
     QString crosstab = attributeValue("crosstab", "");
 
     bool hasName = !name.isEmpty();
     bool hasValue = !value.isEmpty();
-    bool hasVariable = !variableName.isEmpty();
+    bool hasReference = !reference.isEmpty();
     bool hasTable = !table.isEmpty();
     bool hasCrosstab = !crosstab.isEmpty();
+
+    // Replace variable with reference
+    if (!hasReference) {
+        QString variable = attributeValue("variable", "");
+        if (!variable.isEmpty()) {
+            reference = variable;
+            hasReference = true;
+        }
+    }
 
     if (hasCrosstab && !hasName) {
         QString msg("If you set the 'crosstab' attribute (to '%1') you must also set the 'name' attribute");
@@ -398,7 +407,7 @@ void SimulationMaker::setParameterElement(QObject *parent) {
             QString msg("Parameter in table '%1' cannot also gave a 'value'attribute");
             throw Exception(message(msg.arg(fileName)), parent);
         }
-        if (hasVariable) {
+        if (hasReference) {
             QString msg("Parameter in table '%1' cannot also gave a 'variable' attribute");
             throw Exception(message(msg.arg(fileName)), parent);
         }
@@ -419,10 +428,10 @@ void SimulationMaker::setParameterElement(QObject *parent) {
         ParameterBase *parameter = seekOneChild<ParameterBase*>(name, parent);
         if (hasValue)
             parameter->setValueFromString(value.trimmed());
-        else if (hasVariable)
-            redirectedParameters.append(RedirectedParameter(parameter, variableName));
+        else if (hasReference)
+            redirectedParameters.append(RedirectedParameter(parameter, reference));
         else {
-            QString msg("Parameter '%1' must have either a 'value' or 'variable' attribute");
+            QString msg("Parameter '%1' must have either a 'value' or a 'reference' attribute");
             throw Exception(message(msg.arg(name)), parent);
         }
     }

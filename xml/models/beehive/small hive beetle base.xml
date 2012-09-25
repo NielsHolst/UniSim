@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="SHBmodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="resource" type="beehive::Resource">
+		<parameter name="initial" value="1e6"/>
+		<parameter name="decrement" ref="larva/funcresp[totalSupply]"/>
+	</model>
+
+	<model name="SHB">
+		<model name="egg" type="beehive::LifeStage">
+			<model name="time" type="UniSim::Days"/>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="2"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="adult/fecundity[mass]"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" ref="egg/mass[duration]"/>
+				<parameter name="k" ref="egg/mass[k]"/>
+				<parameter name="inflow" ref="adult/fecundity[number]"/>
+			</model>
+		</model>
+
+		<model name="larva" type="beehive::LifeStage">
+			<model name="time" type="UniSim::Days"/>
+			<model name="demand" type="UniSim::StageDemand">
+				<parameter name="stage" value="mass"/>		
+			</model>
+			<model name="funcResp" type="FunctionalResponseGB">
+				<parameter name="apparancy" value="1"/>
+				<parameter name="resourceDensity" ref="resource[value]"/>
+				<parameter name="demand" ref="demand[value]"/>
+				<parameter name="egestionRatio" value="0"/>
+			</model>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="10"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="egg/mass[outflow]"/>
+				<parameter name="growthRate" value="2500"/>
+				<parameter name="sdRatio" ref="funcResp[sdRatio]"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" ref="larva/mass[duration]"/>
+				<parameter name="k" ref="larva/mass[k]"/>
+				<parameter name="inflow" ref="egg/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="pupa" type="beehive::LifeStage">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="0"/>
+			</model>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="larva/mass[outflow]"/>
+				<parameter name="growthRate" value="0.8"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" ref="pupa/mass[duration]"/>
+				<parameter name="k" ref="pupa/mass[k]"/>
+				<parameter name="inflow" ref="larva/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="adult" type="beehive::LifeStage">
+			<model name="time" type="UniSim::Days"/>
+			<model name="mass" type="UniSim::Stage">
+				<parameter name="duration" value="30"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="pupa/mass[outflow]"/>
+				<parameter name="initialInflow" value="2000"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" ref="adult/mass[duration]"/>
+				<parameter name="k" ref="adult/mass[k]"/>
+				<parameter name="inflow" ref="pupa/number[outflow]"/>
+				<parameter name="initialInflow" value="100"/>
+			</model>
+			<model name="fecundity" type="beehive::Fecundity">
+				<parameter name="rate" value="10"/>
+				<parameter name="eggMass" value="0.01"/>
+			</model>
+		</model>
+	</model>
+	
+	<!-- Plots -->
+
+	<output type="plot">
+		<parameter name="title" value ="SHB Numbers"/>
+		<!--
+		<parameter name="logy" value ="true"/>
+		<parameter name="ymin" value ="0.01"/>
+		<parameter name="ymax" value ="1e7"/>
+		-->
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="*" value="*/number[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="SHB Mass"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="*" value="*/mass[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="SHB Size"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="*" value="SHB/*[size]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Resource"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Amount" value="resource[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Larva S/D-ratio"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="sdRatio" value="larva/mass[sdRatio]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Larva growth"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="demand" value="larva/mass[demand]"/>
+		<trace label="supply" value="larva/mass[growthIncrement]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Eggs produced per day"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="*" value="adult/fecundity[number]"/>
+	</output>
+
+	<!-- Tables -->
+	
+	<output type="table">
+		<parameter name="fileName" value ="shb.txt"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="larvaTotalMass" value="larva/mass[outflowTotal]"/>
+		<trace label="larvaTotalSupply" value="larva/funcResp[totalSupply]"/>
+		<trace label="resource" value="funcresp[resourceDensity]"/>
+		<trace label="demandBG" value="funcresp[demand]"/>
+		<trace label="demandL" value="larva/mass[demand]"/>
+		<trace label="supply" value="funcresp[supply]"/>
+		<trace label="sdratio" value="funcresp[sdratio]"/>
+		<trace label="growth" value="larva/mass[growthIncrement]"/>
+		<trace label="latestInflow" value="larva/mass[latestInflow]"/>
+		<trace label="appliedGrowthRate" value="larva/mass[appliedGrowthRate]"/>
+	</output>
+	
+</simulation>

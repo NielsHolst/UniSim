@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/exception.h>
 #include <usbase/root_solver.h>
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
@@ -47,7 +48,11 @@ void DistributedDelay::update(double inflow, double dt, double fgr) {
 
     // Calculate flow coefficient
     double a = p.k/del*dt/idt;
-    Q_ASSERT(a > 0. && a <= 1.);
+    if (!(0.<a && a<=1.)) {
+        QString msg = "Illegal value for flow coefficient in DistributedDelay (a==%1). "
+                "Should be within ]0;1]. Other parameters: k=%2, del=%3, dt=%4, idt=%5, fgr=%6, L=%7";
+        throw Exception(msg.arg(a).arg(p.k).arg(del).arg(dt).arg(idt).arg(fgr).arg(p.L));
+    }
 
     // Integrate
     s.outflowRate = 0;

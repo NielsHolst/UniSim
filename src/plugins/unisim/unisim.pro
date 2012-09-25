@@ -19,6 +19,7 @@ HEADERS += \
     distributed_delay.h \
     exponential.h \
     fixed.h \
+    functional_response_g_b.h \
     hydro_thermal_time.h \
     inachis.h \
     insect_life_cycle.h \
@@ -41,6 +42,7 @@ HEADERS += \
     scheduled.h \
     sensitivity_analysis.h \
     stage.h \
+    stage_demand.h \
     steps.h \
     time_limited.h \
     trigger_by_date.h \
@@ -55,6 +57,7 @@ SOURCES += \
     distributed_delay.cpp \
     exponential.cpp \
     fixed.cpp \
+    functional_response_g_b.cpp \
     hydro_thermal_time.cpp \
     inachis.cpp \
     insect_life_cycle.cpp \
@@ -77,6 +80,7 @@ SOURCES += \
     scheduled.cpp \
     sensitivity_analysis.cpp \
     stage.cpp \
+    stage_demand.cpp \
     steps.cpp \
     time_limited.cpp \
     trigger_by_date.cpp \

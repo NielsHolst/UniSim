@@ -3,29 +3,23 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef BEEHIVE_RESOURCE
-#define BEEHIVE_RESOURCE
+#ifndef BEEHIVE_HIVE
+#define BEEHIVE_HIVE
 #include <QObject>
 #include <usbase/model.h>
 
 namespace beehive {
 
-class Resource : public UniSim::Model
+class Hive : public UniSim::Model
 {
 	//Q_OBJECT
 public: 
-	Resource(UniSim::Identifier name, QObject *parent=0);
+    Hive(UniSim::Identifier name, QObject *parent=0);
 	// standard methods
-	void reset();
-	void update();
 
 private:
 	// parameters
-    double initial, decrement, zeroTolerance;
-
-	// pull variables
-    double value;
-
+    double x, y;
 };
 
 } //namespace

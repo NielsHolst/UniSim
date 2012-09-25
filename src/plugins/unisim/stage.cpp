@@ -12,6 +12,7 @@
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
+#include <usbase/test_num.h>
 #include <usbase/utilities.h>
 #include "stage.h"
 	
@@ -101,7 +102,7 @@ void Stage::update()
     inflow = 0;
 
     dt = time->pullValue<double>("step");
-    if (dt == 0) {
+    if (TestNum::eqZero(dt)) {
         sum = dd->state().content + inflowPending;
         outflow = growth = 0.;
         return;

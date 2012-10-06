@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+
+
+    <integrator type="Steps">
+         <parameter name="maxSteps" value="4000"/>
+         <sequence>
+             <model name="calendar"/>
+             <model name="weather"/>
+             <model name="plants"/>
+         </sequence>
+     </integrator>
+	
+	<!--
+	=== Models ==
+	-->
+
+	<model name="calendar" type="UniSim::Calendar">
+			<parameter name="timeUnit" value="s"/>
+			<parameter name="timeStep" value="10"/>
+
+	</model>
+	
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="spinachunisim.txt"/>
+	</model>
+	
+	<model name="plants">
+		<model name ="sp1" type="dynamic_photosynthesis::Leaf">
+			<parameter name="Sini" value="0.2"/>
+			<parameter name="S0" value="1"/>
+			<parameter name="alpha" value="0.001"/>
+			<parameter name="a" value="0.3"/>
+			<parameter name="b" value="0.005"/>
+			<parameter name="c" value="0.007"/>			
+			<parameter name="tm" value="29"/>
+			<parameter name="ts" value="25"/>
+			<parameter name="gSini" value="80"/>
+			<parameter name="useTemperature" value="no"/>
+		</model>
+
+		<model name ="sp2" type="dynamic_photosynthesis::Leaf">
+			<parameter name="Sini" value="0.2"/>
+			<parameter name="S0" value="1"/>
+			<parameter name="alpha" value="0.007"/>
+			<parameter name="a" value="0.27"/>
+			<parameter name="b" value="0.017"/>
+			<parameter name="c" value="0.007"/>
+			<parameter name="tm" value="30"/>
+			<parameter name="ts" value="25"/>
+			<parameter name="gSini" value="250"/>
+			<parameter name="useTemperature" value="no"/>
+		</model>
+	</model>
+	<!--
+	=== Output ==
+	-->
+	
+	<output type="plot">
+		<parameter name="title" value="Irradiance"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>		
+		<trace label="PAR"  value="weather[PAR]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>		
+		<trace label="Temperature"  value="weather[temp]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Species 1"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>		
+		<trace label="S"  value="sp1[S]"/>
+		<trace label="Seq(temp)"  value="sp1[Seq]"/>
+		<trace label="Seq(PAR)"  value="sp1[Seq]"/>		
+		<trace label="S60"  value="sp1[S60]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Species 2"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>		
+		<trace label="S"  value="sp2[S]"/>		
+		<trace label="Seq(PAR, temp)"  value="sp2[Seq]"/>
+		<trace label="S60 (PAR, gSini)"  value="sp2[S60]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Species 2"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>
+		<trace label="A (PAR, S)"  value="sp2[Ar]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Species 1"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>
+		<trace label="A (PAR, S)"  value="sp2[Ar]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value="A Species 2.txt"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>
+		<trace label="PAR"  value="weather[PAR]"/>
+		<trace label="S"  value="sp2[S]"/>		
+		<trace label="Seq(PAR, temp)"  value="sp2[Seq]"/>
+		<trace label="S60 (PAR, gSini)"  value="sp2[S60]"/>
+		<trace label="A (PAR, S)"  value="sp2[Ar]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value="A Species 1.txt"/>
+		<trace label="Seconds"  value="calendar[totalTime]"/>
+		<trace label="PAR"  value="weather[PAR]"/>
+		<trace label="S"  value="sp1[S]"/>		
+		<trace label="Seq(PAR, temp)"  value="sp1[Seq]"/>
+		<trace label="S60 (PAR, gSini)"  value="sp1[S60]"/>
+		<trace label="A (PAR, S)"  value="sp1[Ar]"/>
+	</output>
+
+</simulation>

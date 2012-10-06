@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+    <integrator type="Steps">
+        <parameter name="maxSteps" value="100"/>
+        <sequence>
+            <model name="calendar"/>
+            <model name="generators"/>
+            <model name="weather"/>
+        </sequence>
+    </integrator>
+	
+	<model name="calendar" type="ErrCalendar">
+		<parameter name="initialDate" value="1/1/2010"/>
+	</model>
+	
+	<model name="weather" type="Conductance::Weather">
+		<!--
+		<parameter name="irradiation" value="20"/>
+		-->
+		<parameter name="irradiation" variable="normal[value]"/>
+	</model>
+	
+	<model name="generators">
+		<model name="uniform" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="20"/>
+			<parameter name="maxValue" value="40"/>
+		</model>
+		<model name="Poisson" type="UniSim::RandomPoisson">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="100"/>
+			<parameter name="mean" value="10"/>
+		</model>
+		<model name="normal" type="UniSim::RandomNormal">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="100"/>
+			<parameter name="mean" value="50"/>
+			<parameter name="sd" value="10"/>
+			<model name="trigger" type="UniSim::TriggerByDate">
+				<parameter name="byDate" value="1/3/2010"/>
+				<parameter name="frequency" value="monthly"/>
+			</model>
+		</model>
+		<model name="lognormal" type="UniSim::RandomLognormal">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="100"/>
+			<parameter name="mean" value="50"/>
+			<parameter name="sd" value="10"/>
+		</model>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value ="random_output.prn"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="uniform" value="uniform[value]"/>
+		<trace  label="poisson" value="poisson[value]"/>
+		<trace  label="normal" value="normal[value]"/>
+		<trace  label="lognormal" value="lognormal[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Different distributions"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="uniform" value="uniform[value]"/>
+		<trace  label="poisson" value="poisson[value]"/>
+		<trace  label="normal" value="normal[value]"/>
+		<!--variable  label="lognormal" value="lognormal[value]"/-->
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Irradiation"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="normal" value="weather[irradiation]"/>
+	</output>
+</simulation>

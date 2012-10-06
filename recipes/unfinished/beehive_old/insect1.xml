@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="UniSim::Steps">
+		<parameter name="maxSteps" value="30"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="insect"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="1/5/2010"/>
+	</model>
+
+	<model name="insect" type="Beehive::Insect1">
+		<parameter name="initEggs" value="100"/>
+		<model name="egg" type="UniSim::Stage">
+			<parameter name="duration" value="7"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="larva" type="UniSim::Stage">
+			<parameter name="duration" value="21"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="pupa" type="UniSim::Stage">
+			<parameter name="duration" value="7"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="adult" type="UniSim::Stage">
+			<parameter name="duration" value="28"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Insect stages"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Egg"  value="insect/egg[number]"/>
+		<trace label="Larva"  value="insect/larva[number]"/>
+		<trace label="Pupa"  value="insect/pupa[number]"/>
+		<trace label="Adult"  value="insect/adult[number]"/>
+	</output>
+</simulation>

@@ -90,8 +90,8 @@ void MainWindow::createMenus() {
     if (isDeveloperVersion()) {
         toolsMenu = menuBar()->addMenu("&Tools");
 
-        toolsMenu->addAction( toolsPrototyping = new QAction("&Create plugin...", this) );
-        connect( toolsPrototyping, SIGNAL(triggered()), this, SLOT(doToolsPrototyping()) );
+//        toolsMenu->addAction( toolsPrototyping = new QAction("&Create plugin...", this) );
+//        connect( toolsPrototyping, SIGNAL(triggered()), this, SLOT(doToolsPrototyping()) );
 
         toolsMenu->addAction( toolsGenerateDocs = new QAction("&Generate documentation...", this) );
         connect( toolsGenerateDocs, SIGNAL(triggered()), this, SLOT(doToolsGenerateDocs()) );

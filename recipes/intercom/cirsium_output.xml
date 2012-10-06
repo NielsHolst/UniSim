@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation>
+    <!-- Plots of environment -->
+
+	<output name="1" type="plot">
+		<parameter name="title" value="Day length (hours)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="hours"  value="calendar[dayLength]"/>
+	</output>
+    
+	<output name="2" type="plot">
+		<parameter name="title" value="Time scales"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Time"  value="time[total]"/>
+	</output>
+
+	<output name="3" type="plot">
+		<parameter name="title" value="Temperature (oC) and irradiation (MJ/m2/d)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Tday"  value="weather[Tday]"/>
+		<trace label="Itotal"  value="weather/records[irradiationMJ]"/>
+    </output>
+
+    <!-- Plots of plant -->
+    <output name="4" type="plot">
+		<parameter name="title" value="Plant growth stage"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="GS"  value="cirsium/phenology/*[number]"/>
+    </output>
+
+    <output name="5" type="plot">
+		<parameter name="title" value="Plant density (plants/m2)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="density"  value="cirsium[density]"/>
+    </output>
+
+    <output name="6" type="plot">
+		<parameter name="title" value="Plant height (m)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="height"  value="cirsium/height[height]"/>
+		<!--
+		<data  label="Day" value="obs_height[day_in_year]"/>
+		<data  label="Obs" value="obs_height[height]"/>
+		-->
+    </output>
+
+    <output name="7" type="plot">
+		<parameter name="title" value="Plant LAI"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="LAI"  value="cirsium[lai]"/>
+		<trace label="early"  value="field[isInEarlyGrowth]"/>
+	</output>
+
+    <output name="8" type="plot">
+		<parameter name="title" value="Plant energy budget (kg/ha/day)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="CO2 assim."  value="cirsium[CO2assimilation]"/>
+		<trace label="gross prod."  value="cirsium[grossProduction]"/>
+		<trace label="maint. resp."  value="cirsium[maintenanceResp]"/>
+		<trace label="avail. prod."  value="cirsium[availableProduction]"/>
+    </output>
+
+    <output name="9" type="plot">
+		<parameter name="title" value="Plant allocation (g/day)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Leaves"  value="cirsium/leaves[allocatedPerPlant]"/>
+		<trace label="Stem"  value="cirsium/stem[allocatedPerPlant]"/>
+		<trace label="Flowers"  value="cirsium/flowers[allocatedPerPlant]"/>
+		<trace label="Root"  value="cirsium/root[allocatedPerPlant]"/>
+		<trace label="Total"  value="cirsium[allocatedPerPlant]"/>
+    </output>
+
+    <!-- Plots of organs -->
+	
+	<output name="10" type="plot">
+		<parameter name="title" value="Amax (kg CO2/ha leaf/hour)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Organ"  value="amax[value]"/>
+	</output>
+
+	<output name="11" type="plot">
+		<parameter name="title" value="Light use efficiency (kg CO2/ha leaf/hour)/(W/m2 leaf)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Organ"  value="lightUseEfficiency[value]"/>
+	</output>
+
+    <output name="12" type="plot">
+		<parameter name="title" value="Mass of organs (g/plant)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Organ"  value="mass/mass[number]"/>
+		<!--
+		<data  label="Day" value="obs_mass[day_in_year]"/>
+		<data  label="obs le" value="obs_mass[leaves]"/>
+		<data  label="obs st" value="obs_mass[stem]"/>
+		<data  label="obs fl" value="obs_mass[flowers]"/>
+		-->
+    </output>
+	
+	<output name="13" type="plot">
+		<parameter name="title" value="Area of organs (cm2/plant)"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Organ"  value="area/area[number]"/>
+    </output>
+
+	<output name="14" type="plot">
+		<parameter name="title" value="Ideal organ partition"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Organ"  value="partition[value]"/>
+    </output>
+
+	<output name="15" type="plot">
+		<parameter name="title" value="Actual organ partition"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Organ"  value="mass[currentPartition]"/>
+    </output>
+
+	<output name="16" type="plot">
+		<parameter name="title" value="Relative allocation rates"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Organ"  value="cirsium/*[propAllocatedPerPlant]"/>
+    </output>
+
+	<!-- Outputs on file -->
+
+	<output name="17" type="table">
+		<parameter name="filename" value="intercom.prn"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Day length"  value="calendar[dayLength]"/>
+		<trace label="Pt-time"  value="time[total]"/>
+		<trace label="areaLAI"  value="leaves/area[lai]"/>
+
+		<trace label="Plant CO2 assim"  value="cirsium[CO2assimilation]"/>
+
+		<trace label="Organ"  value="mass/partition[value]"/>
+		
+		<trace label="AllocTotal"  value="cirsium[netAllocation]"/>
+		<trace label="AllocOrgan"  value="cirsium/*[allocatedPerPlant]"/>
+		
+		<trace label="leaves-mass"  value="cirsium/leaves/mass/mass[number]"/>
+		<trace label="leaves-area"  value="cirsium/leaves/area[area]"/>
+		<trace label="SLA"  value="specificLeafArea[value]"/>
+		
+	</output>
+</simulation>

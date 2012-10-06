@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="BtButTox">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="365"/> 
+	</integrator>
+	
+	<model name="calendar" type="Calendar"/>
+	<model name="random" select="doc('base_pollen.xml')/simulation/model[@name='random']"/>
+	<model name="weather" select="doc('base_S_records.xml')/simulation/model[@name='weather']"/>
+	<model name="pollen" select="doc('base_S_records.xml')/simulation/model[@name='pollen']"/>
+
+	<model name="io" select="doc('base_io.xml')/simulation/model[@name='io']">
+		<model name="generation" instances="2"/>
+	</model>
+
+	<!-- 
+	*** Plots  ***
+	-->
+
+	<output select="doc('base_output.xml')/outputs/output[@name='Environment']"/>
+	<output select="doc('base_output.xml')/outputs/output[@name='Pollen']"/>
+	<output select="doc('base_output.xml')/outputs/output[@name='Response']"/>
+	<output select="doc('base_S_output.xml')/outputs/output[@name='Io1']"/>
+	<output select="doc('base_S_output.xml')/outputs/output[@name='Io2']"/>
+	<output select="doc('base_S_output.xml')/outputs/output[@name='Exposure']"/>
+
+</simulation>

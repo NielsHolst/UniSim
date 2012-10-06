@@ -22,7 +22,7 @@ public:
 
 private:
 	// parameters
-    double rate, eggMass, sizeThreshold;
+    double rate, eggMass, sizeThreshold, sexRatio;
 
 	// pull variables
     double number, mass;

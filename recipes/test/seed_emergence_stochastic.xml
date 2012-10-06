@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="StratifiedHypercubeSampling">
+		<parameter name="maxSteps" value="3600"/>
+		<parameter name="numSamples" value="10"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="seedbank"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+		<parameter name="initialDate" value="1/3/2008"/>
+		<parameter name="stepsPerDay" value="24"/>
+		<parameter name="followers" value="weather"/>
+	</model>
+
+	<model name="weather" type="seed_emergence::Weather">
+		<parameter name="initialDate" value="1/1/2008"/>
+		<parameter name="filename" value="Lg08Frunoff100%.csv"/>
+	</model>
+
+	<model name="seedbank">
+		<dataset name="observations">
+			<parameter name="filename" value ="emergence data.txt"/>
+			<parameter name="headerLines" value ="1"/>
+			<parameter name="columns" value="((day_in_year 2) (large_crabgrass 3) (goosegrass 4) (green_foxtail 5) (yellow_foxtail 6))"/>
+		</dataset>
+
+		<model name="large_crabgrass">
+			<model name="time" type = "UniSim::HydroThermalTime">
+				<parameter name="T0" variable="T0_rnd[value]"/>
+				<model name="T0_rnd" type="UniSim::RandomNormal">
+					<parameter name="mean" value="8.4"/>
+					<parameter name="sd" value="2"/>
+					<model name="trigger" type="UniSim::TriggerByDate">
+						<parameter name="frequency" value="daily"/>
+					</model>
+				</model>
+				
+				<parameter name="SWPTopt" variable="SWPTopt_rnd[value]"/>
+				<model name="SWPTopt_rnd" type="UniSim::RandomNormal">
+					<parameter name="mean" value="26"/>
+					<parameter name="sd" value="3"/>
+					<model name="trigger" type="UniSim::TriggerByDate">
+						<parameter name="frequency" value="daily"/>
+					</model>
+				</model>
+
+				<parameter name="Kt" value="0.50"/>
+				<parameter name="SWP0" value="-0.830"/>
+			</model>
+
+			<model name="emergence" type="seed_emergence::CumulativeEmergence">
+				<parameter name="a" value="10.1"/>
+				<parameter name="b" value="0.08"/>
+			</model>
+		</model>
+
+		<model name="green_foxtail">
+			<model name="time" type = "UniSim::HydroThermalTime">
+				<parameter name="T0" value="6.1"/>
+				<parameter name="SWPTopt" value="26"/>
+				<parameter name="Kt" value="0.30"/>
+				<parameter name="SWP0" value="-0.70"/>
+			</model>
+			<model name="emergence" type="seed_emergence::CumulativeEmergence">
+				<parameter name="a" value="6.9"/>
+				<parameter name="b" value="0.06"/>
+			</model>
+		</model>
+		<model name="goosegrass">
+			<model name="time" type = "UniSim::HydroThermalTime">
+				<parameter name="T0" value="12.6"/>
+				<parameter name="SWPTopt" value="26"/>
+				<parameter name="Kt" value="0.60"/>
+				<parameter name="SWP0" value="-1.21"/>
+			</model>
+			<model name="emergence" type="seed_emergence::CumulativeEmergence">
+				<parameter name="a" value="6.2"/>
+				<parameter name="b" value="0.08"/>
+			</model>
+		</model>
+		<model name="yellow_foxtail">
+			<model name="time" type = "UniSim::HydroThermalTime">
+				<parameter name="T0" value="8.3"/>
+				<parameter name="SWPTopt" value="25"/>
+				<parameter name="Kt" value="0.13"/>
+				<parameter name="SWP0" value="-0.69"/>
+			</model>
+			<model name="emergence" type="seed_emergence::CumulativeEmergence">
+				<parameter name="a" value="4.3"/>
+				<parameter name="b" value="0.08"/>
+			</model>
+		</model>
+	</model>
+
+	<!-- Output -->
+	
+	<output type="table">
+		<parameter name="filename" value ="test.prn"/>
+		<trace  label="totalTime" value="calendar[totalTime]"/>
+		<trace  label="dayOfYear" value="calendar[dayOfYear]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Soil temperature at 2cm"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="Temp" value="weather[Tavg]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Soil water potential at 2cm"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="SWP" value="weather[SWP]"/>
+		<trace  label="Y.f. threshold" value="yellow_foxtail/time[swpThreshold]"/>
+	</output>
+	<output  type="plot">
+		<parameter name="title" value ="Hydrothermal time at 2cm"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="Large crabgrass" value="large_crabgrass/time[total]"/>
+		<trace  label="Green foxtail" value="green_foxtail/time[total]"/>
+		<trace  label="Goosegrass" value="goosegrass/time[total]"/>
+		<trace  label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
+	</output>
+	<output  type="plot">
+		<parameter name="title" value ="Cumulative emergence"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="Large crabgrass" value="large_crabgrass/emergence[accumulated]"/>
+		<trace  label="Green foxtail" value="green_foxtail/emergence[accumulated]"/>
+		<trace  label="Goosegrass" value="goosegrass/emergence[accumulated]"/>
+		<trace  label="Yellow foxtail" value="yellow_foxtail/emergence[accumulated]"/>
+
+		<data  label="Day" value="observations[day_in_year]"/>
+		<data  label="Large crabgrass obs" value="observations[large_crabgrass]"/>
+		<data  label="Green foxtail obs" value="observations[green_foxtail]"/>
+		<data  label="Goosegrass obs" value="observations[goosegrass]"/>
+		<data  label="Yellow foxtail obs" value="observations[yellow_foxtail]"/>
+	</output>
+</simulation>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation select="doc('N_one_yr.xml')/simulation">
+
+	<integrator type="Steps">
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="10"/>
+		</model>
+	</integrator>
+
+</simulation>

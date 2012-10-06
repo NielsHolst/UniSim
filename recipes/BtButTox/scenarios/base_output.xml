@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<outputs>
+	<output type="plot" name="Environment">
+		<parameter name="title" value="Environment"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Tavg" ref="weather[Tavg]"/>
+	</output>
+
+	<output type="plot" name="Pollen">
+		<parameter name="title" value="Pollen"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Rate" ref="pollen[pollenDepositionRate]"/>
+		<trace label="Density" ref="pollen[pollenDensity]"/>
+		<trace label="Production" ref="pollen[pollenDepositionTotal]"/>
+	</output>
+
+	<output type="plot" name="Response">
+		<parameter name="title" value="Population response"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="AdHib" ref="hibernatingAdult[value]"/>
+	</output>
+		
+</outputs>

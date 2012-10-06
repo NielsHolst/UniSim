@@ -15,6 +15,7 @@ namespace beehive {
 Fecundity::Fecundity(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("sexRatio", &sexRatio, 0.5, this, "Proportion of females");
     new Parameter<double>("rate", &rate, 100., this, "Number of eggs laid per individual per day");
     new Parameter<double>("eggMass", &eggMass, 0.01, this, "Mass of one egg (mg)");
     new Parameter<double>("sizeThreshold", &sizeThreshold, 12., this, "Minimum size of an adult to reproduce (mg)");
@@ -35,7 +36,7 @@ void Fecundity::update() {
     number = numberOfAdults->pullValue<double>("value") * rate;
     if (adult->pullValue<double>("size") < sizeThreshold)
         number = 0;
-    mass = number*eggMass;
+    mass = sexRatio*number*eggMass;
 }
 
 } //namespace

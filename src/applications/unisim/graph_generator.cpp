@@ -14,6 +14,7 @@
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
+#include <usbase/named_object.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
 #include "graph_generator.h"
@@ -43,7 +44,7 @@ QString GraphGenerator::dotCommand() {
                 "The program was not found here: '" + command + "'\n\n"
                 "Set the correct path through the File|Locations menu. The correct path should be something like:\n\n'C:/Program Files/Graphviz2.26.3/bin'"
                 "\n\nor\n\n"
-                "'C:/Program Files/UniSim-1-29/Graphviz2.26.3/bin'\n\n"
+                "'C:/Program Files/UniSim-1-29/Graphviz2.26.3'\n\n"
                 "Alternatively, you may have to download Graphviz from www.graphviz.org.";
         throw Exception(msg);
     }
@@ -97,23 +98,23 @@ namespace {
         return nodeId.remove("(").remove(")");
     }
 
-    void writeNode(QTextStream *sink, QObject *node, int number)
+    void writeNode(QTextStream *sink, NamedObject *node, int number)
 	{
-        QString className = node->metaObject()->className();
+        QString className = dynamic_cast<Simulation*>(node) ? "Simulation" : node->metaObject()->className();
         if (className.contains("Anonymous"))
             className.clear();
         *sink << nodeId(node) << number << "[label=\"" << className;
         if (nodeId(node) != "anonymous") {
             if (!className.isEmpty())
                 *sink << "\\n";
-            *sink << node->objectName();
+            *sink << node->id().label();
         }
 		*sink << "\"];";
 	}
 	
 }	
 
-void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int parentNumber)
+void GraphGenerator::writeModel(QFile *f, NamedObject *parent, NamedObject *child, int parentNumber)
 {
     int myNumber = ++nodeNumber;
     if (myNumber > 50)
@@ -131,7 +132,7 @@ void GraphGenerator::writeModel(QFile *f, QObject *parent, QObject *child, int p
 	for (QList<QObject*>::const_iterator ch = child->children().begin(); ch != child->children().end(); ++ch) {
 		Model *model = dynamic_cast<Model*>(*ch);
         if (model && ! model->hide())
-            writeModel(f, child, *ch, myNumber);
+            writeModel(f, child, model, myNumber);
 	}
 }
 

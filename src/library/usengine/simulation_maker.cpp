@@ -374,7 +374,7 @@ void SimulationMaker::readParameterElement(QList<QObject*> parents)
 void SimulationMaker::setParameterElement(QObject *parent) {
     QString name = attributeValue("name", "");
     QString value = attributeValue("value", "");
-    QString reference = attributeValue("ref", "");
+    QString reference = attributeValue(QStringList() << "ref" << "variable", "");
     QString table = attributeValue("table", "");
     QString crosstab = attributeValue("crosstab", "");
 
@@ -383,15 +383,6 @@ void SimulationMaker::setParameterElement(QObject *parent) {
     bool hasReference = !reference.isEmpty();
     bool hasTable = !table.isEmpty();
     bool hasCrosstab = !crosstab.isEmpty();
-
-    // Replace variable with reference
-    if (!hasReference) {
-        QString variable = attributeValue("variable", "");
-        if (!variable.isEmpty()) {
-            reference = variable;
-            hasReference = true;
-        }
-    }
 
     if (hasCrosstab && !hasName) {
         QString msg("If you set the 'crosstab' attribute (to '%1') you must also set the 'name' attribute");
@@ -485,7 +476,7 @@ void SimulationMaker::readOutputSubElement(QObject* parent)
 
     TraceParam param;
     param.setAttribute( "label", attributeValue("label", parent) );
-    param.setAttribute( "value", attributeValue("value", parent) );
+    param.setAttribute( "ref", attributeValue(QStringList() << "ref" << "value", parent) );
     param.setAttribute( "summary", attributeValue("summary", "") );
     param.setAttribute( "type", attributeValue("type", "") );
     param.setAttribute( "columns", attributeValue("columns", "") );
@@ -510,8 +501,8 @@ void SimulationMaker::createTraces() {
     for (int i = 0; i < traceVariableParam.size(); ++i) {
         const TraceParam &param( traceVariableParam.value(i) );
         QString label = param.attribute("label").toString();
-        QString value = param.attribute("value").toString();
-        QList<VariableBase*> bases = seekMany<QObject*, VariableBase*>(value);
+        QString ref = param.attribute("ref").toString();
+        QList<VariableBase*> bases = seekMany<QObject*, VariableBase*>(ref);
         // If several bases are found they will all get the same label.
         // This must be fixed, as needed, by Output
         for (int i = 0; i < bases.size(); ++i) {
@@ -546,6 +537,31 @@ QString SimulationMaker::attributeValue(QString name, QObject *parent) const {
     if (result.isEmpty()) {
         QString msg("Missing attribute: '%1'");
         throw Exception(message(msg.arg(name)), parent);
+    }
+    return result;
+}
+
+QString SimulationMaker::attributeValue(QStringList synonyms, QString defaultValue) const {
+    QString result;
+    for (int i = 0; i < synonyms.size(); ++i) {
+        QString value = attributeValue(synonyms[i], "");
+        if (!value.isEmpty()) {
+            if (result.isEmpty())
+                result = value;
+            else {
+                QString msg("Only one of these synonymous attributes can be specified: %1");
+                throw Exception(message(msg.arg(synonyms.join(", "))));
+            }
+        }
+    }
+    return result.isEmpty() ? defaultValue : result;
+}
+
+QString SimulationMaker::attributeValue(QStringList synonyms, QObject *parent) const {
+    QString result = attributeValue(synonyms, "");
+    if (result.isEmpty()) {
+        QString msg("Missing attribute: '%1'");
+        throw Exception(message(msg.arg(synonyms[0])), parent);
     }
     return result;
 }

@@ -11,7 +11,9 @@
 #include <QProcess>
 
 class QFile;
+
 namespace UniSim {
+    class NamedObject;
     class Simulation;
 }
 
@@ -35,7 +37,7 @@ private:
     QString dotCommand();
     void writeDotFile();
     void writeOutputFile(OutputFormat format);
-    void writeModel(QFile *f, QObject *parent, QObject *child, int parentNumber);
+    void writeModel(QFile *f, UniSim::NamedObject *parent, UniSim::NamedObject *child, int parentNumber);
 	
 	// Data
     UniSim::Simulation *simulation;

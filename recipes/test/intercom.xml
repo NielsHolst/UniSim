@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<controller type="Simple">
+		<parameter name="maxSteps" value="200"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="field"/>
+		</sequence>
+	</controller>
+	
+	<model name="calendar" type="unisim::Calendar">
+		<parameter name="latitude" value="52"/>
+		<parameter name="initialDate" value="1/1/2007"/>
+		<parameter name="followers" value="weather"/>
+	</model>
+	
+	<model name="weather" type="intercom::Weather">
+		<parameter name="fileName" value="rothamsted-2006.prn"/>
+		<parameter name="fileDate" value="1/9/2006"/>
+		<parameter name="colTmax" value="3"/>
+		<parameter name="colTmin" value="4"/>
+		<parameter name="colIrradiation" value="7"/>
+	</model>
+
+	<model name="field" type="Community">
+		<model name="cirsium" type="intercom::Plant">
+		
+			<model name="photoThermalTime" type="UniSim::PhotoThermalTime"/>
+			
+			<model name="height" type="intercom::Height"/>
+			
+			<model name="leafStemRatio" type="intercom::LeafStemRatio"/>
+
+			<model name="leaves" type="intercom::Organ">
+				<model name="area" type="intercom::Area">
+					<model name="specificLeafArea" type="SpecificLeafArea"/>
+					<model name="amax" type="AssimilationMaxGivenTempSla"/>
+					<parameter name="kDiffuse" value="0.7" comment="Same as klv"/>
+				</model>
+			</model>
+			
+			<model name="stem" type="intercom::Organ">
+				<model name="area" type="intercom::Area">
+					<model name="amax" type="AssimilationMaxGivenTemp"/>
+					<parameter name="kDiffuse" value="0.3"/>
+				</model>
+			</model>
+			<model name="flowers" type="intercom::Organ">
+				<model name="area" type="intercom::Area">
+					<model name="amax" type="AssimilationMaxGivenTemp"/>
+					<parameter name="kDiffuse" value="0.4"/>
+				</model>
+			</model>
+		</model>
+	</model>
+
+
+	<output type="table">
+		<parameter name="filename" value="test_plugins.prn"/>
+		<trace label="Day"  value="calendar[totalTime]"/>
+		<trace label="Day length"  value="calendar[dayLength]"/>
+	</output>
+    
+</simulation>

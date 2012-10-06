@@ -90,6 +90,8 @@ private:
     QString elementName() const;
     QString attributeValue(QString name, QString defaultValue) const;
     QString attributeValue(QString name, QObject *parent) const;
+    QString attributeValue(QStringList synonyms, QString defaultValue) const;
+    QString attributeValue(QStringList synonyms, QObject *parent) const;
 
     QString message(QString text) const;
     void redirectParameters();

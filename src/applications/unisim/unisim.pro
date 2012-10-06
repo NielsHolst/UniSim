@@ -1,7 +1,7 @@
 include(../../config.pri)
 
 TEMPLATE = app
-CONFIG += console
+# CONFIG += console - Tested how a console app would work
 DESTDIR = $${US_APPLICATIONS}
 TARGET = UniSim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 

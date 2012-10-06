@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="UniSim::Steps">
+		<parameter name="maxSteps" value="90"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="insect"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar"/>
+
+	<model name="weather" type="Beehive::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="AZ_96.txt"/>
+		</model>
+	</model>
+
+	<model name="insect" type="Beehive::Insect6">
+		<parameter name="initEggs" value="100"/>
+		<model name="egg" type="UniSim::Stage">
+			<parameter name="duration" value="20"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="12.5"/>
+				<parameter name="Topt" value="40"/>
+				<parameter name="Tmax" value="40"/>
+			</model>
+			<model name="survival" type="beehive::EggSurvival">
+				<parameter name="a" value="-0.00706"/>
+				<parameter name="b" value="0.370"/>
+				<parameter name="c" value="-4.12"/>
+				<parameter name="Tlow" value="21"/>
+			</model>
+		</model>
+		<model name="larva" type="UniSim::Stage">
+			<parameter name="duration" value="150"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="12.5"/>
+				<parameter name="Topt" value="40"/>
+				<parameter name="Tmax" value="40"/>
+			</model>
+		</model>
+		<model name="pupa" type="UniSim::Stage">
+			<parameter name="duration" value="7"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+		<model name="adult" type="UniSim::Stage">
+			<model name="fecundity" type="Beehive::Fecundity">
+				<parameter name="root1" value="0"/>				
+				<parameter name="root2" value="10"/>				
+				<parameter name="scale" value="0.05"/>				
+				<parameter name="sexRatio" value="0.5"/>				
+			</model>
+			<parameter name="duration" value="28"/>
+			<parameter name="k" value="30"/>
+			<model name="time" type="UniSim::Days"/>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Insect stages"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Egg"  value="insect/egg[number]"/>
+		<trace label="Larva"  value="insect/larva[number]"/>
+		<trace label="Pupa"  value="insect/pupa[number]"/>
+		<trace label="Adult"  value="insect/adult[number]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Number of eggs laid"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Egg"  value="fecundity[eggsLaid]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Egg survival"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Egg survival"  value="egg/survival[survival]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="Tmax"  value="weather[Tmax]"/>
+		<trace label="Tavg"  value="weather[Tavg]"/>
+		<trace label="Tmin"  value="weather[Tmin]"/>
+	</output>
+</simulation>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="732"/>
+		<sequence>
+			<model name="random"/>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="netproduction"/>
+			<model name="OxygenConcentration"/>
+		</sequence>
+		
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="30"/>
+		</model>
+			</integrator>
+	
+	<!-- In the model we have implemented a stochastic module to generate random numbers in a range for the Reaeration coefficient-->
+	<model name="random"> 
+		<model name="Kl" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0.2" comment="Lowest value of the interval for stochastic number generating"/>
+			<parameter name="maxValue" value="2" comment="Highest value of the interval for stochastic number generating"/> 
+		</model>
+	</model>
+	
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="55.3" comment="Gundsømagle Sø"/> 
+	</model>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="filename" value="LakedataOBS2004-2005.txt"/>
+	</model>
+	
+	<model name="netproduction" type="lakeoxygen::Netproduction">
+		<parameter name="Unit" value="0"/> <!--Converts between Oxygen and Carbon as output if 0 then Oxygen if 1 then carbon-->
+		<parameter name="K" variable="random/Kl[value]" old_value="0.2"/>
+	</model>
+			
+	<model name="OxygenConcentration" type="lakeoxygen::OxygenConcentration">
+	</model>
+
+	<!--Generating plots based on calculations -->
+	<output type="plot">
+		<parameter name="title" value ="Lake environment"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="Wind [m/s]" value="weather[Wind]"/>
+		<trace  label="Daylength" value="Calendar[dayLength]"/>
+		<trace  label="DLI" value="weather[DLI]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Net community production [unit/m2/day]"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="NCP (Kl estimated from wind)" value="Netproduction[NetProdwind]" />
+		<trace  label="NCP (KL stochastic)" value="Netproduction[NetProd]"/>
+	</output>
+
+	<output type="plot" name="plot">
+		<parameter name="title" value ="Accumulated Net Community Production"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="Sum (wind)" value="Netproduction[SumWind]"/>
+		<trace  label="Sum (stochastic)" value="Netproduction[SumStochastic]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Av estimated reaeration coefficent (from wind)"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="Kl" value="Netproduction[Kwind]" summary = "average" />
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Observations"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="DO[mg/l]" value="weather[obsDO]"/>
+		<trace  label="Water temp[oC]" value="weather[tempW]"/>
+	</output>
+	
+	<output type="plot" summary ="yes">
+		<parameter name="title" value ="Parameter"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="Kl" value="random/Kl[value]"/>
+	</output>
+
+	<!--Generating table output to text file-->
+	<output type="Table">
+		<parameter name="Filename" value ="Prediction.txt"/>
+		<trace  label="Day" value="calendar[totalTime]"/>
+		<trace  label="Daylength [hr]" value="Calendar[dayLength]"/>
+		<trace  label="DO[mg/l]" value="weather[oxygen]"/>
+		<trace  label="Water temp[oC]" value="weather[tempW]"/>
+		<trace  label="DO observed saturation percentage" value="Netproduction[DOObsSatPct]"/>
+		<trace  label="DLI" value="weather[DLI]"/>
+		<trace  label="Netto Production (Stochastic)" value="Netproduction[NetProd]"/>
+		<trace  label="Netto Production (Kl_wind)" value="Netproduction[Net_ProdWind]"/>
+		<trace  label="Random Kl value" value="random/Kl[value]"/>
+		<trace  label="Kl estimated from wind" value="Netproduction[Kwind]"/>
+	</output>
+</simulation>

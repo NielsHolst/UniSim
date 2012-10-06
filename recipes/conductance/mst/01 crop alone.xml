@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+    <integrator type="Steps">
+        <parameter name="maxSteps" value="180"/>
+        <sequence>
+            <model name="calendar"/>
+            <model name="weather"/>
+            <model name="fields"/>
+        </sequence>
+    </integrator>
+	
+	<model name="calendar" type="Calendar">
+		<parameter name="initialDate" value="1/1/2010"/>
+	</model>
+	
+	<model name="weather" type="intercom::Weather">
+		<parameter name="fileName" value="flakkebjerg 2005-06.txt"/>
+		<parameter name="initialDate" value="1/1/2005"/>
+		<parameter name="Tmin" value="3"/>
+		<parameter name="Tmax" value="4"/>
+		<parameter name="IrradiationMJ" value="6"/>
+	</model>
+
+	<model name="fields">
+		<model name="CarrotField" type="conductance::Community">
+			<model name="carrot" type="conductance::Plant">
+				<parameter name="n" value="200" />
+				<parameter name="initWeight" value="0.00001" />
+				<parameter name="initDay" value="10" />
+				<parameter name="initMonth" value="5" />
+				<parameter name="F" value="0.0097"/>
+				<parameter name="theta" value="0.796"/>
+				<parameter name="A" value="0.025"/>
+				<parameter name="phi" value="0.588"/>
+				<parameter name="k" value="0.65"/>
+				<parameter name="eps" value="1.23"/>
+			</model>
+		</model>
+		<model name="BarleyField" type="conductance::Community">
+			<model name="barley" type="conductance::Plant">
+				<parameter name="n" value="300" />
+				<parameter name="initWeight" value="0.00001" />
+				<parameter name="initDay" value="1" />
+				<parameter name="initMonth" value="4" />
+				<parameter name="F" value="0.0555"/>
+				<parameter name="theta" value="0.416"/>
+				<parameter name="A" value="0.0104"/>
+				<parameter name="phi" value="0.756"/>
+				<parameter name="k" value="0.65"/>
+				<parameter name="eps" value="1.25"/>
+			</model>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Weather"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="Irradiation" value="weather[irradiationMJ]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Phase"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="Carrot" value="carrot[phase]"/>
+		<trace  label="Barley" value="barley[phase]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Total crown zone area"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="Carrot field" value="CarrotField[sum_sz]"/>
+		<trace  label="Barley field" value="BarleyField[sum_sz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Weight (g/plant)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="Carrot" value="carrot[weight]"/>
+		<trace  label="Barley" value="barley[weight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Leaf area (m2/plant)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="carrot" value="carrot[LA_per_plant]"/>
+		<trace  label="barley" value="barley[LA_per_plant]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Weight (g/m2 ground avail.)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="carrot" value="carrot[totalWeight]"/>
+		<trace  label="barley" value="barley[totalWeight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Growth rate (g/plant/day)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="carrot" value="carrot[dweight]"/>
+		<trace  label="barley" value="barley[dweight]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Crown zone area (sz)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="carrot" value="carrot[sz]"/>
+		<trace  label="barley" value="barley[sz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="LAI within sz (Lz)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="carrot" value="carrot[Lz]"/>
+		<trace  label="barley" value="barley[Lz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Light intercepted (fz)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="carrot" value="carrot[fz]"/>
+		<trace  label="barley" value="barley[fz]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Leaf area index (LAI)"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="carrot" value="carrot[lai]"/>
+		<trace  label="barley" value="barley[lai]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value ="01 barley.txt"/>
+		<trace  label="Day" value="calendar[dayOfYear]"/>
+		<trace  label="weight" value="barley[weight]"/>
+		<trace  label="LA" value="barley[LA_per_plant]"/>
+		<trace  label="sz" value="barley[sz]"/>
+		<trace  label="Lz" value="barley[Lz]"/>
+		<trace  label="Lai" value="barley[lai]"/>
+	</output>
+	
+</simulation>

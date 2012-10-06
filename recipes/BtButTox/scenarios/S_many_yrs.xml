@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="BtButTox">
+	
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="365"/> 
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="1000"/>
+		</model>
+	</integrator>
+		
+	<model name="calendar" type="Calendar"/>
+	<model name="random" select="doc('base_pollen.xml')/simulation/model[@name='random']"/>
+	<model name="weather" select="doc('base_S_records.xml')/simulation/model[@name='weather']"/>
+	<model name="pollen" select="doc('base_S_records.xml')/simulation/model[@name='pollen']"/>
+
+	<model name="io" select="doc('base_io.xml')/simulation/model[@name='io']">
+		<model name="generation" instances="2"/>
+	</model>
+
+	<!-- 
+	*** Plots  ***
+	-->
+	
+	<output type="plot">
+		<parameter name="title" value ="Effect of year"/>
+		<trace label="Year" ref="calendar[year]"/>
+		<trace label="I.io pop. growth" ref="generation(2)/pupa[inflowTotal]" summary="Final"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Effect of pollen peak density"/>
+		<trace label="Pollen peak density" ref="pollen[Npeak]"/>
+		<trace label="I.io pop. growth" ref="generation(2)/pupa[inflowTotal]" summary="Final"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Effect of pollen loss rate"/>
+		<trace label="Pollen loss rate" ref="pollen/lossRate[rate]"/>
+		<trace label="I.io pop. growth" ref="generation(2)/pupa[inflowTotal]" summary="Final"/>
+	</output>
+	
+	<!--
+	*** File output ***
+	-->
+	
+	<output type="table">
+		<parameter name="fileName" value ="S Germany response summary.txt"/>
+		<trace label="Year" ref="calendar[year]"/>
+		<trace label="Npeak" ref="pollen[Npeak]"/>
+		<trace label="LossRate" ref="pollen/lossRate[rate]"/>
+		<trace label="Pupae" ref="generation(2)/pupa[inflowTotal]" summary="Final"/>
+		<trace label="AdHib" ref="hibernatingAdult[value]" summary="Final"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value ="S Germany response.txt"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Pollen" ref="pollen[pollenDensity]"/>
+		<trace label="Larva1" ref="generation(1)/larva[value]"/>
+		<trace label="Adult1" ref="generation(1)/adult[value]"/>
+		<trace label="AdultHib" ref="io/hibernatingAdult[value]"/>
+		<trace label="Larva2" ref="generation(2)/larva[value]"/>
+		<trace label="Adult2" ref="generation(2)/adult[value]"/>
+	</output>
+
+</simulation>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="SHBmodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="100"/>
+		<model name="runIterator" type="RunIteratorFixed">
+			<parameter name="numIterations" value="100"/>
+		</model>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="random">
+		<model name="eggT0" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="8"/>
+		</model>
+		<model name="larvaT0" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="8"/>
+		</model>
+		<model name="pupaT0" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="8"/>
+		</model>
+	</model>
+
+	<model name="insect">
+		<model name="egg">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" ref="random/eggT0[value]"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="41"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="100"/>
+			</model>
+		</model>
+
+		<model name="larva">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" ref="random/larvaT0[value]"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="205"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="egg/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="pupa">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" ref="random/pupaT0[value]"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="98"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="larva/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="adult">
+			<model name="time" type="UniSim::Days"/>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="30"/>
+				<parameter name="k" value="10"/>
+				<parameter name="inflow" ref="pupa/number[outflow]"/>
+			</model>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Harlingen weather log"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Insect numbers"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Eggs" value="egg/number[value]"/>
+		<trace label="Larvae" value="larva/number[value]"/>
+		<trace label="Pupae" value="pupa/number[value]"/>
+		<trace label="Adults" value="adult/number[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Sensitivity to egg temperature threshold"/>
+		<trace label="Egg T0" value="random/eggT0[value]"/>
+		<trace label="Peak adults day" value="adult/number[value]" summary="xAtMax"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Sensitivity to larva temperature threshold"/>
+		<trace label="Larva T0" value="random/larvaT0[value]"/>
+		<trace label="Peak adults day" value="adult/number[value]" summary="xAtMax"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Sensitivity to pupa temperature threshold"/>
+		<trace label="Pupa T0" value="random/pupaT0[value]"/>
+		<trace label="Peak adults day" value="adult/number[value]" summary="xAtMax"/>
+	</output>
+
+</simulation>

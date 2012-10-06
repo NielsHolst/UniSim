@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+    <integrator type="Steps">
+        <parameter name="maxSteps" value="185"/>
+		<sequence>
+			<model name="calendar"/>
+			<model name="weather"/>
+			<model name="plants"/>
+		</sequence>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="52.2" comment="Braunschweig"/>
+	</model>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="braunschweig 2009.txt"/>
+	</model>
+
+	<model name="plants">
+		<model name="plant" type="ambrosia::Plant">
+			<model name="timeC" type="ambrosia::Time">
+				<parameter name="alfa" value="60"/>
+			</model>
+			<model name="timeABDE" type="ambrosia::Time">
+				<parameter name="alfa" value="50"/>
+			</model>
+
+			<parameter name="bioDaysA" value="7"/>
+			<parameter name="bioDaysB" value="4.5"/>
+			<parameter name="bioDaysC" value="4.5"/>
+			<parameter name="bioDaysD" value="4.5"/>
+			<parameter name="bioDaysE" value="14.5"/>
+
+			<parameter name="beginDay" value="1"/>
+			<parameter name="beginMonth" value="4"/>
+		</model>
+	</model>
+		
+	<output type="table">
+		<parameter name="fileName" value="ambrosia D.prn"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="Temp" ref="weather[Tavg]"/>
+		<trace label="Daylength" ref="calendar[daylength]"/>
+		<trace label="DaylengthC"  ref="plant/timeC[dayLengthIndex]"/>
+		<trace label="TempC"  ref="plant/timeC[temperatureIndex]"/>
+		<trace label="DaylengthABDE"  ref="plant/timeABDE[dayLengthIndex]"/>
+		<trace label="TempABDE"  ref="plant/timeABDE[temperatureIndex]"/>
+		<trace label="stage"  ref="plant[stage]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Environment"/>
+		<trace label="Day"  ref="calendar[dayOfYear]"/>		
+		<trace label="Temperature"  ref="weather[Tavg]"/>
+		<trace label="Daylength"  ref="calendar[daylength]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Daily index"/>
+		<trace label="Day"  ref="calendar[dayOfYear]"/>		
+		<trace label="Temperature"  ref="plant/timeABDE[temperatureIndex]"/>
+		<trace label="Daylength ABDE"  ref="plant/timeABDE[dayLengthIndex]"/>
+		<trace label="Daylength C"  ref="plant/timeC[dayLengthIndex]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Growth stage"/>
+		<trace label="Day"  ref="calendar[dayOfYear]"/>		
+		<trace label="Stage"  ref="plant[stage]"/>		
+	</output>
+</simulation>

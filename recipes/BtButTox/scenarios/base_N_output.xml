@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<outputs>
+
+	<output type="plot" name="Io">
+		<parameter name="title" value="Inachis io"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Egg" ref="generation(1)/egg[value]"/>
+		<trace label="Larva" ref="generation(1)/larva[value]"/>
+		<trace label="Pupa" ref="generation(1)/pupa[value]"/>
+		<trace label="AdRep" ref="generation(1)/adult[value]"/>
+	</output>
+	
+	<output type="plot" name="Exposure">
+		<parameter name="title" value="Bt exposure (log10)"/>
+		<parameter name="logy" value="yes"/>
+		<parameter name="ymin" value="-2"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Larva" ref="generation(1)/larva[value]"/>
+		<trace label="Pollen density" ref="pollen[pollenDensity]"/>
+	</output>
+		
+</outputs>

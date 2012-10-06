@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="UniSim::Steps">
+		<parameter name="maxSteps" value="1"/>
+	</integrator>
+	
+	<model name="calendar" type="UniSim::Calendar">
+	  <parameter name="initialDate" value="1/1/2005"/>
+	  <parameter name="timeUnit" value="y"/>
+	 </model>
+	 
+	<model name="landscape" type="crop_optimiser::Landscape">
+		<model type="crop_optimiser::Farm" table="farms_data_1-11.txt">
+			<parameter name="Method_fert" value="YES"/>
+			<parameter name="PriceFU" value="1.157"/>		
+			<parameter name="PriceNt" value="1.93"/>
+			<parameter table="minFodderProduction.txt"/>
+			<parameter table="winterMax.txt"/>
+				<model type="crop_optimiser::Crop" parameter="InitialArea" crosstab="crop_areas.txt">
+					<parameter table="crop_parameters_same.txt"/>
+					<parameter name="Alfa" crosstab="alfa.txt"/>
+					<parameter name="Beta1" crosstab="beta1.txt"/>
+					<parameter name="Beta2" crosstab="beta2.txt"/>
+					<parameter name="Nnorm" crosstab="Nnorm.txt"/>				
+					<parameter name="Fixed" crosstab="fixed.txt"/>
+					<parameter name="Fodder" crosstab="fodder.txt"/>
+					<parameter name="FUKey" crosstab="FUKey.txt"/>
+					<parameter name="SellingPrice" crosstab="sellingPrice.txt"/>	
+					<parameter name="RotationMax" crosstab="rotationMax.txt"/>
+					<parameter name="RotationMin" crosstab="rotationMin.txt"/>								
+				</model>
+				<model type="crop_optimiser::Livestock" parameter="Number" crosstab="livestock_numbers.txt">
+					<parameter table="livestock_parameters.txt"/>				
+				</model>	
+		</model>
+	</model>
+	
+	
+	<output type="table">
+		<parameter name="filename" value ="total areas - landscape.txt"/>
+		<trace  label="Year" value="calendar[year]"/>
+		<trace  label="*" value="Landscape[*]"/>
+	</output>
+	
+	
+</simulation>

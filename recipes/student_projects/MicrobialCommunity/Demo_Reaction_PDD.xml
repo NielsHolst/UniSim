@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulation version="1.0">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="500"/>
+	</integrator>
+
+	<model name="Calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="1/1/2011" />		
+	</model>
+
+	<model name="Community" type="MicrobialCommunity::Community">
+	
+		<model name="Competition" type="MicrobialCommunity::Competition">
+			<parameter name="EnableCompetition" value="true"/>
+			<parameter name="InitialResource" value="10000000"/>
+			<parameter name="CompetitionModel" value="default"/>
+		</model>
+		
+		<model name="PMO_ZeroOrder" type="MicrobialCommunity::ZeroOrderReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+		
+		<model name="PMO_FirstOrder" type="MicrobialCommunity::FirstOrderReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+		
+		<model name="PMO_Enzymatic" type="MicrobialCommunity::EnzymaticReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+	
+		<model name="MOB_1" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 1"/>
+			<parameter name="InitialDensity" value="1000"/>
+			<parameter name="GrowthRate" value="0.3"/>
+			<parameter name="MortalityRate" value="0.1"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.02"/>
+			<parameter name="ZeroOrderRateConstant" value="25"/>
+			<parameter name="FirstOrderRateConstant" value="0.004"/>
+			<parameter name="MichaelisMentenConstant" value="800"/>
+			<parameter name="MaximumVelocity" value="30"/>
+		</model>
+
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Methane Concentration"/>
+		<trace  label="Time" value="Calendar[totalTime]"/>
+		<trace  label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
+		<trace  label="Enzymatic (PDD)" value="PMO_Enzymatic[SubstratePDD]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Methane Concentration"/>
+		<trace  label="Time" value="Calendar[totalTime]"/>
+		<trace  label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
+		<trace  label="Zero Order (PDD)" value="PMO_ZeroOrder[SubstratePDD]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Methane Concentration"/>
+		<trace  label="Time" value="Calendar[totalTime]"/>
+		<trace  label="First Order" value="PMO_FirstOrder[Substrate]"/>
+		<trace  label="First Order (PDD)" value="PMO_FirstOrder[SubstratePDD]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Population Density"/>
+		<trace  label="Time" value="Calendar[totalTime]"/>
+		<trace  label="MOB 1" value="MOB_1[Density]"/>
+	</output>
+	
+</simulation>

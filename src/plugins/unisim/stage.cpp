@@ -93,8 +93,10 @@ void Stage::update()
 {
     applyInstantMortality();
 
-    if (firstUpdate)
+    if (firstUpdate) {
         inflow += initialInflow;
+        firstUpdate = false;
+    }
 
     inflowPending += inflow;
     inflowTotal += inflow;
@@ -117,7 +119,6 @@ void Stage::update()
     double realFgr = dd->findFgr(inflowPending, dt, fgr, sdRatio);
     dd->update(inflowPending, dt, realFgr);
     inflowPending = 0;
-    firstUpdate = false;
 
     sum = dd->state().content;
     outflow = dd->state().outflowRate;
@@ -140,6 +141,8 @@ const double* Stage::data() {
 }
 
 double Stage::growthDemand() {
+    if (TestNum::eqZero(dt))
+        return 0.;
     DistributedDelay dd2(*dd);
     dd2.update(inflowPending, dt, fgr);
     return dd2.state().growthRate;

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+    <integrator type="Steps">
+        <parameter name="maxSteps" value="730"/>
+        <sequence>
+            <model name="calendar"/>
+            <model name="weather"/>
+            <model name="rotation"/>
+            <model name="weed"/>
+        </sequence>
+    </integrator>
+
+    <model name="calendar" type="Calendar">
+		<parameter name="initialDate" value="1/1/2010"/>
+	</model>
+    
+    <model name="weather" type="awe::Weather"/>
+
+    <model name="rotation" type="awe::Rotation">
+        <parameter name="crops" value="(maize wheat)"/>
+
+        <model name="maize" type="awe::Crop">
+            <parameter name="sowingDay" value="1"/>
+            <parameter name="sowingMonth" value="5"/>
+            <parameter name="harvestDay" value="20"/>
+            <parameter name="harvestMonth" value="9"/>
+            <parameter name="maxYield" value="800"/>
+            <parameter name="maxYieldLossPct" value="80"/>
+            <parameter name="slopeYieldLossPct" value="0.5"/>
+            <parameter name="laiCalendar" value="((0 0)(200 0)(620 0.5)(700 0.9)(800 1.8)(940 5)(1200 5)(1808 5)(2572 3))"/>
+        </model>
+
+        <model name="wheat" type="awe::Crop">
+            <parameter name="sowingDay" value="15"/>
+            <parameter name="sowingMonth" value="4"/>
+            <parameter name="harvestDay" value="15"/>
+            <parameter name="harvestMonth" value="8"/>
+            <parameter name="maxYield" value="700"/>
+            <parameter name="maxYieldLossPct" value="40"/>
+            <parameter name="slopeYieldLossPct" value="0.1"/>
+            <parameter name="laiCalendar" value="((0 0)(110 0)(210 0.3)(310 0.8)(410 1.6)(510 2.9)(610 5)(1000 5)(1200 5)(1650 2))"/>
+        </model>
+    </model>
+    
+    <model name="weed" type="awe::Weed">
+        <parameter name="seedProdSlope" value="0" note="number of seeds produced per g final weed biomass"/>
+
+        <model name="seedBank" type="awe::SeedBank">
+			<parameter name="initialDensity" value="1000"/>
+			<parameter name="yearlyMortalityRate" value="0.1"/>
+			<parameter name="yearlyEmergenceRate" value="0.2"/>
+	        <parameter name="emergenceCalendar" value ="(0 5 30 60 70 50 10 0 0 0 0 0)"/>
+	    </model>
+		<model name="seedling" type="awe::PlantGrowthStage">
+			<model name="density" type="UniSim::Stage">
+				<model name="time" type="DayDegrees"/>
+				<parameter name="duration" value="40"/>
+			</model>
+			<model name="densityEqs" type="UniSim::Stage">
+				<model name="time" type="DayDegrees"/>
+				<parameter name="duration" value="40"/>
+			</model>
+        </model>
+
+		<model name="juvenile" type="awe::PlantGrowthStage">
+			<model name="density" type="UniSim::Stage">
+				<model name="time" type="DayDegrees"/>
+                <parameter name="duration" value="600"/>
+			</model>
+			<model name="densityEqs" type="UniSim::Stage">
+				<model name="time" type="DayDegrees"/>
+                <parameter name="duration" value="600"/>
+			</model>
+        </model>
+
+		<model name="mature" type="awe::PlantGrowthStage">
+			<model name="density" type="UniSim::Stage">
+				<model name="time" type="DayDegrees"/>
+				<parameter name="duration" value="300"/>
+			</model>
+			<model name="densityEqs" type="UniSim::Stage">
+				<model name="time" type="DayDegrees"/>
+				<parameter name="duration" value="300"/>
+			</model>
+		</model>
+
+		<model name="seedsOnPlant" type="UniSim::Stage">
+			<model name="time" type="DayDegrees"/>
+			<parameter name="duration" value="150"/>
+		</model>
+
+    </model>
+
+	<!-- Outputs on screen -->
+
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Temperature"  value="weather[T]"/>
+    </output>
+
+    <output type="plot">
+		<parameter name="title" value="Crop LAI"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Crop LAI"  value="rotation[lai]"/>
+    </output>
+		
+    <output type="plot">
+    	<parameter name="title" value="Seed bank"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Seed bank"  value="seedBank[number]"/>
+    </output>
+
+    <output type="plot">
+    	<parameter name="title" value="Total emergence within year"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Total emergence"  value="seedBank[totalEmergenceDensity]"/>
+    </output>
+
+    <output type="plot">
+    	<parameter name="title" value="Daily emergence"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Daily emergence"  value="seedBank[dailyEmergenceDensity]"/>
+    </output>
+
+    <output type="plot">
+    	<parameter name="title" value="Daily emergence ratio"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Potential"  value="seedBank[dailyEmergenceRatioPotential]"/>
+		<trace label="Realised"  value="seedBank[dailyEmergenceRatio]"/>
+    </output>
+        
+	<output type="plot">
+    	<parameter name="title" value="Weed stage density equivalents"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Seedlings"  value="seedling/densityEqs[number]"/>
+		<trace label="Juveniles"  value="juvenile/densityEqs[number]"/>
+		<trace label="Mature"  value="mature/densityEqs[number]"/>
+    </output>
+
+	<output type="plot">
+    	<parameter name="title" value="Weed stage densities"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Seedlings"  value="seedling/density[number]"/>
+		<trace label="Juveniles"  value="juvenile/density[number]"/>
+		<trace label="Mature"  value="mature/density[number]"/>
+    </output>
+
+    <output type="plot">
+    	<parameter name="title" value="Weed seedlings"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Density"  value="seedling/density[number]"/>
+		<trace label="Density eqs."  value="seedling/densityEqs[number]"/>
+    </output>
+</simulation>

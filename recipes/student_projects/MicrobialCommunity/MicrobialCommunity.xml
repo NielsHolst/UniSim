@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulation version="1.0">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="400"/>		
+
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="20" />
+		</model>
+
+	</integrator>
+
+	<model name="Random">
+		
+		<model name="initDensity1" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity2" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity3" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity4" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity5" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity6" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity7" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity8" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity9" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+		<model name="initDensity10" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0."/>
+			<parameter name="maxValue" value="100"/>
+		</model>
+		
+	</model>
+
+	<model name="Calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="1/1/2010" />		
+	</model>
+
+	<model name="Community" type="MicrobialCommunity::Community">
+		<parameter name="EnableStochasticCommunity" value="true"/>
+		<parameter name="MinPopulations" value="1"/>
+		<parameter name="MaxPopulations" value="10"/>
+		<parameter name="AlwaysIncludedPopulations" value="MOB_1, MOB_2, MOB_3"/>
+		
+		<model name="Competition" type="MicrobialCommunity::Competition">
+			<parameter name="EnableCompetition" value="true"/>
+			<parameter name="InitialResource" value="1000"/>
+			<parameter name="CompetitionModel" value="default"/>
+		</model>
+		
+		<model name="PMO_ZeroOrder" type="MicrobialCommunity::ZeroOrderReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+		
+		<model name="PMO_FirstOrder" type="MicrobialCommunity::FirstOrderReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+		
+		<model name="PMO_Enzymatic" type="MicrobialCommunity::EnzymaticReaction">
+			<parameter name="InitialSubstrate" value="10000"/>
+		</model>
+			
+		<model name="GeneralEffect" type="MicrobialCommunity::GeneralEffect">
+			<parameter name="EnableEffect" value="true"/>
+			<parameter name="TargetPopulations" value="Random:{*}"/>
+			<parameter name="TargetParameter" value="GrowthRate"/>
+			<parameter name="EffectRatio" value="Range:{0.2, 0.3}"/>
+		</model>
+	
+		<model name="MOB_1" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 1"/>
+			<parameter name="InitialDensity" variable="Random/initDensity1[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.02"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="1000"/>
+			<parameter name="MaximumVelocity" value="100"/>
+		</model>
+	
+		<model name="MOB_2" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 2"/>
+			<parameter name="InitialDensity" variable="random/initDensity2[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.03"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+	
+		<model name="MOB_3" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 3"/>
+			<parameter name="InitialDensity" variable="random/initDensity3[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+		
+		<model name="MOB_4" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 4"/>
+			<parameter name="InitialDensity" variable="random/initDensity4[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+		
+		<model name="MOB_5" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 5"/>
+			<parameter name="InitialDensity" variable="random/initDensity5[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+		
+		<model name="MOB_6" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 6"/>
+			<parameter name="InitialDensity" variable="random/initDensity6[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+		
+		<model name="MOB_7" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 7"/>
+			<parameter name="InitialDensity" variable="random/initDensity7[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+		
+		<model name="MOB_8" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 8"/>
+			<parameter name="InitialDensity" variable="random/initDensity8[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+		
+		<model name="MOB_9" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 9"/>
+			<parameter name="InitialDensity" variable="random/initDensity9[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+		
+		<model name="MOB_10" type="MicrobialCommunity::Population">
+			<parameter name="SpeciesName" value="MOB 10"/>
+			<parameter name="InitialDensity" variable="random/initDensity10[value]"/>
+			<parameter name="LagPhase" value="0"/>
+			<parameter name="GrowthRate" value="0.03"/>
+			<parameter name="MortalityRate" value="0.01"/>
+			<parameter name="CarryingCapacity" value="0"/>
+			<parameter name="SearchRate" value="0.01"/>
+			<parameter name="DemandRate" value="0.01"/>
+			<parameter name="ZeroOrderRateConstant" value="10"/>
+			<parameter name="FirstOrderRateConstant" value="0.01"/>
+			<parameter name="MichaelisMentenConstant" value="50"/>
+			<parameter name="MaximumVelocity" value="1"/>
+		</model>
+
+	</model>
+<!--		
+	<output type="plot">
+		<parameter name="title" value ="Population Richness"/>
+		<trace  label="Hour" value="Calendar[totalTime]"/>
+		<trace  label="Richness" value="Community[Richness]"/>
+	</output>
+-->
+
+	<output type="plot">
+		<parameter name="title" value ="Test"/>
+		<trace  label="Hour" value="Calendar[totalTime]"/>
+		<trace  label="MOB 1" value="random/initDensity1[value]"/>
+		<trace  label="MOB 2" value="random/initDensity2[value]"/>
+		<trace  label="MOB 3" value="random/initDensity3[value]"/>
+	</output>
+		
+	<output type="plot">
+		<parameter name="title" value ="Population Density"/>
+		<trace  label="Hour" value="Calendar[totalTime]"/>
+		<trace  label="MOB 1" value="MOB_1[Density]"/>
+		<trace  label="MOB 2" value="MOB_2[Density]"/>
+		<trace  label="MOB 3" value="MOB_3[Density]"/>
+		<!--<trace  label="MOB 4" value="MOB_4[Density]"/>
+		<trace  label="MOB 5" value="MOB_5[Density]"/>
+		<trace  label="MOB 6" value="MOB_6[Density]"/>
+		<trace  label="MOB 7" value="MOB_7[Density]"/>
+		<trace  label="MOB 8" value="MOB_8[Density]"/>
+		<trace  label="MOB 9" value="MOB_9[Density]"/>
+		<trace  label="MOB 10" value="MOB_10[Density]"/>-->
+	</output>
+<!--	
+	<output type="plot">
+		<parameter name="title" value ="Density Activity Coefficient"/>
+		<trace  label="Hour" value="Calendar[totalTime]"/>
+		<trace  label="MOB 1" value="MOB_1[DensityActivityCoefficient]"/>
+		<trace  label="MOB 2" value="MOB_2[DensityActivityCoefficient]"/>
+		<trace  label="MOB 3" value="MOB_3[DensityActivityCoefficient]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Methane Concentration"/>
+		<trace  label="Hour" value="Calendar[totalTime]"/>
+		<trace  label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
+		<trace  label="First Order" value="PMO_FirstOrder[Substrate]"/>
+		<trace  label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Zero Order Methane Oxidation"/>
+		<trace  label="Substrate" value="PMO_ZeroOrder[Substrate]"/>
+		<trace  label="Velocity" value="PMO_ZeroOrder[Velocity]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="First Order Methane Oxidation"/>
+		<trace  label="Substrate" value="PMO_FirstOrder[Substrate]"/>
+		<trace  label="Velocity" value="PMO_FirstOrder[Velocity]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Enzymatic Methane Oxidation"/>
+		<trace  label="Substrate" value="PMO_Enzymatic[Substrate]"/>
+		<trace  label="Velocity" value="PMO_Enzymatic[Velocity]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Available Resource"/>
+		<trace  label="Hour" value="Calendar[totalTime]"/>
+		<trace  label="Available Resource" value="Growth[AvailableResource]"/>
+	</output>
+-->
+<!--	
+	<output type="table">
+		<parameter name="filename" value ="test.txt"/>
+		<trace  label="Hour" value="Calendar[totalTime]"/>
+		<trace  label="SpeciesName" value="Population[SpeciesName]"/>
+		<trace  label="Available_Resource" value="Growth[AvailableResource]"/>
+	</output>
+-->
+</simulation>

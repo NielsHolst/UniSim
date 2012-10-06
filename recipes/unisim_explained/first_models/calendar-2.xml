@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="UniSim::Steps">
+		<parameter name="maxSteps" value="365"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="60.38" comment="Bergen, Norway"/>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value="Calendar-2 example"/>
+		<trace label="Day"  value="calendar[dayOfYear]"/>
+		<trace label="DayLength"  value="calendar[dayLength]"/>
+	</output>
+</simulation>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+    <integrator type="Steps">
+        <parameter name="maxSteps" value="730"/>
+        <sequence>
+            <model name="calendar"/>
+            <model name="weather"/>
+        </sequence>
+    </integrator>
+
+    <model name="calendar" type="Calendar">
+		<parameter name="initialDate" value="1/1/2010"/>
+	</model>
+	
+    <model name="weather" type="awe::Weather"/>
+
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<trace label="Year"  value="calendar[dateAsReal]"/>
+		<trace label="Temperature"  value="weather[T]"/>
+    </output>
+
+</simulation>

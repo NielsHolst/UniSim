@@ -17,7 +17,6 @@
 #include <usbase/file_locations.h>
 #include <usbase/version.h>
 #include <usengine/documentation_writer.h>
-#include <usengine/prototype_maker.h>
 #include <usengine/plot_widget.h>  // test
 #include "file_locations_sub_window.h"
 #include "image_widget.h"
@@ -89,9 +88,6 @@ void MainWindow::createMenus() {
     // Tools menu
     if (isDeveloperVersion()) {
         toolsMenu = menuBar()->addMenu("&Tools");
-
-//        toolsMenu->addAction( toolsPrototyping = new QAction("&Create plugin...", this) );
-//        connect( toolsPrototyping, SIGNAL(triggered()), this, SLOT(doToolsPrototyping()) );
 
         toolsMenu->addAction( toolsGenerateDocs = new QAction("&Generate documentation...", this) );
         connect( toolsGenerateDocs, SIGNAL(triggered()), this, SLOT(doToolsGenerateDocs()) );
@@ -385,28 +381,6 @@ void MainWindow::doSimulationRun()
         showErrorMessage(ex);
     }
     tile();
-}
-
-void MainWindow::doToolsPrototyping() {
-    QString folder = FileLocations::possibleLocation(FileLocationInfo::Prototypes).absolutePath();
-    QString filePath = QFileDialog::getOpenFileName(this,
-                                                    "Open prototype file",
-                                                    folder,
-                                                    "Prototype files (*.xml)");
-    if (filePath.isEmpty()) return;
-    FileLocationInfo::setLocation(FileLocationInfo::Prototypes, filePath);
-
-    bool ok = true;
-    UniSim::PrototypeMaker maker;
-    try {
-        maker.parse(filePath);
-    }
-    catch (UniSim::Exception &ex) {
-        ok = false;
-        showErrorMessage(ex);
-    }
-    if (ok)
-        showMessage("Prototype successfully written to " + maker.destinationFolder());
 }
 
 void MainWindow::doToolsGenerateDocs() {

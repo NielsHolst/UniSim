@@ -1,7 +1,7 @@
 <project>
     <shortName>UniSim</shortName>
     <fullName>Universal Simulator</fullName>
-    <version>1-37</version>
+    <version>1-39</version>
     <installerFilename></installerFilename>
     <readmeFile>C:/data/QDev/UniSim/readme.txt</readmeFile>
     <licenseFile>C:/data/QDev/UniSim/ship/gpl-3.0.txt</licenseFile>
@@ -9,15 +9,9 @@
     <postInstallationActionList>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
-            <name>Dataset files</name>
-            <type>REG_SZ</type>
-            <value>${windows_folder_personal}/${product_shortname}-${product_version}/datasets</value>
-        </registrySet>
-        <registrySet>
-            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
             <name>Model files</name>
             <type>REG_SZ</type>
-            <value>${windows_folder_personal}/${product_shortname}-${product_version}/models</value>
+            <value>${windows_folder_personal}/${product_shortname}-${product_version}/recipes</value>
         </registrySet>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
@@ -39,12 +33,12 @@
         </registrySet>
         <registrySet>
             <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
-            <name>Weather files</name>
+            <name>Dot tool</name>
             <type>REG_SZ</type>
-            <value>${windows_folder_personal}/${product_shortname}-${product_version}/weather</value>
+            <value>${installdir}\Graphviz2.28\bin</value>
         </registrySet>
         <registrySet>
-            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\File locations</key>
+            <key>HKEY_CURRENT_USER\Software\Aarhus University\Universal Simulator\Development file locations</key>
             <name>Dot tool</name>
             <type>REG_SZ</type>
             <value>${installdir}\Graphviz2.28\bin</value>
@@ -120,7 +114,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>C:/data/QDev/UniSim/xml/models</origin>
+                            <origin>C:/data/QDev/UniSim/recipes</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>C:/data/QDev/UniSim/ship/output</origin>

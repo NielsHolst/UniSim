@@ -24,6 +24,12 @@ int main(int argc, char *argv[])
     writeTimeStamp("@rem ");
     write("@echo off\n");
 
+    write(cleanCmd(getSourceDir(), "build/own_tools/update_settings"));
+    write(cleanCmd(getSourceDir(), "build/own_tools/write_clean_ephemerals"));
+    write(cleanCmd(getSourceDir(), "build/own_tools/write_plugins_project"));
+    write(cleanCmd(getSourceDir(), "build/own_tools/write_unisim_root"));
+
+
     write(cleanCmd(getSourceDir(), "applications/unisim"));
     write(cleanCmd(getSourceDir(), "applications/unisim/test"));
 

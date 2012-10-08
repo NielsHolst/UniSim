@@ -44,7 +44,6 @@ QString FileLocationInfo::label(FileType fileType) {
 void FileLocationInfo::setLabels() {
     labels[Plugins] = "Plugin files";
     labels[Models] = "Model files";
-    labels[Prototypes] = "Prototype files";
     labels[Output] = "Output files";
     labels[DotTool] = "Dot tool";
     labels[Temporary] = "Temporary files";
@@ -64,7 +63,6 @@ void FileLocationInfo::setHints() {
                     "They are located in a folder called 'plugins'."
                     + ending;
     hints[Models] = "Could not find model folder from your previous session";
-    hints[Prototypes] = "Could not find prototype folder from your previous session";
     hints[Output] = beginning +
                     "Universal Simulator needs to know where to put the output files.\n\n"
                     "For this purpose create or select any folder."

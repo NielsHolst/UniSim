@@ -25,7 +25,6 @@ HEADERS += 	\
     $${US_ENGINE}/parameter_index_from_condensed_table.h \
     $${US_ENGINE}/parameter_index_from_table.h \
     $${US_ENGINE}/plot_widget.h \
-    $${US_ENGINE}/prototype_maker.h \
     $${US_ENGINE}/simulation.h \
     $${US_ENGINE}/simulation_maker.h \
     $${US_ENGINE}/test_dataset.h \
@@ -46,7 +45,6 @@ SOURCES += 	\
     $${US_ENGINE}/parameter_index_from_condensed_table.cpp \
     $${US_ENGINE}/parameter_index_from_table.cpp \
     $${US_ENGINE}/plot_widget.cpp \
-    $${US_ENGINE}/prototype_maker.cpp \
     $${US_ENGINE}/simulation.cpp \
     $${US_ENGINE}/simulation_maker.cpp \
     $${US_ENGINE}/test_dataset.cpp \

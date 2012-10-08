@@ -15,7 +15,7 @@ class FileLocationInfo
 {
 
 public:
-    enum FileType {Plugins, DotTool, Models, Output, Prototypes, Temporary, NumLocations};
+    enum FileType {Plugins, DotTool, Models, Output, Temporary, NumLocations};
     static void initialize();
     static QString label(FileType fileType);
     static QString hint(FileType fileType);

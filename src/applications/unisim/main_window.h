@@ -49,7 +49,6 @@ private slots:
     void doEditModel();
     void doEditHelp();
     void doSimulationRun();
-    void doToolsPrototyping();
     void doToolsGenerateDocs();
     void doHelpAbout();
     void doHelpHome();
@@ -72,7 +71,7 @@ private:
         *fileOpen, *fileReopen, *fileReopenRun, *fileEdit, *fileClose, *fileLocations, *fileExit,
         *editModel, *editHelp,
 		*simulationRun,
-        *toolsPrototyping, *toolsGenerateDocs,
+        *toolsGenerateDocs,
         *viewComponents,
         *windowCloseAll, *windowCascade, *windowTile, *windowStandardize, *windowsSaveGraphics,
         *helpAbout, *helpHome;

@@ -6,10 +6,10 @@
 using namespace UniSim;
 using namespace std;
 
-QDir getXmlDir() {
+QDir getModelsDir() {
     QDir dir = getSourceDir();
     dir.cdUp();
-    dir.cd("xml");
+    dir.cd("recipes");
     return dir;
 }
 
@@ -36,13 +36,8 @@ int main(int argc, char *argv[])
     dir = getPluginsDir();
     FileLocationInfo::setLocation(FileLocationInfo::Plugins, dir);
 
-    dir = getXmlDir();
-    dir.cd("models");
+    dir = getModelsDir();
     FileLocationInfo::setLocation(FileLocationInfo::Models, dir);
-
-    dir = getXmlDir();
-    dir.cd("prototypes");
-    FileLocationInfo::setLocation(FileLocationInfo::Prototypes, dir);
 
     dir = getApplicationsDir();
     cdmk(dir, "output");

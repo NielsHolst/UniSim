@@ -34,6 +34,7 @@ namespace UniSim{
 Simulation::Simulation(Identifier name)
     : NamedObject(name, 0)
 {
+    setProperty("classLabel", "Simulation");
 }
 
 //! Executes one or more runs of the simulation as determined by the integrator

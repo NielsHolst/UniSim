@@ -100,7 +100,11 @@ namespace {
 
     void writeNode(QTextStream *sink, NamedObject *node, int number)
 	{
-        QString className = dynamic_cast<Simulation*>(node) ? "Simulation" : node->metaObject()->className();
+        QVariant label = node->property("classLabel");
+        if (!label.isValid()) {
+            throw Exception("Missing 'classLabel'' property", node);
+        }
+        QString className = label.toString();
         if (className.contains("Anonymous"))
             className.clear();
         *sink << nodeId(node) << number << "[label=\"" << className;

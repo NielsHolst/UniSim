@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Example">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="365"/>
+	</integrator>
+
+	<!-- Models -->
+
+	<model name="calendar" type="UniSim::Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Flakkebjerg 2005-06.txt"/>
+		</model>
+	</model>
+	
+	<model name="time" type="UniSim::DayDegrees">
+		<parameter name="T0" value="4.5"/>
+	</model>
+
+	<!-- Outputs -->
+
+	<output type="plot">
+		<parameter name="title" value ="Temperature"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="Temp Avg" ref="weather[Tavg]"/>
+		<trace label="T0" ref="time[T0]"/>
+		<trace label="DD increment" ref="time[step]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Temperature sum"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="DD total" ref="time[total]"/>
+	</output>
+
+	
+</simulation>

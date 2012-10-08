@@ -246,7 +246,7 @@ void SimulationMaker::readModelElement(QList<QObject*> parents) {
     Q_ASSERT(!parents.isEmpty());
     Q_ASSERT(reader->isStartElement());
 
-    QString modelType = attributeValue("type", "anonymous");
+    QString modelType = attributeValue("type", "Anonymous");
     QString parameterName = attributeValue("parameter", "");
     QString context = !parameterName.isEmpty() ? parameterName : modelType;
 
@@ -322,7 +322,7 @@ InstanceIndex* SimulationMaker::createIndexTable() {
 }
 
 QList<QObject*> SimulationMaker::createModelElement(InstanceIndex *table, QObject *parent) {
-    QString modelType = attributeValue("type", "anonymous");
+    QString modelType = attributeValue("type", "Anonymous");
     QString hide = attributeValue("hide", "");
     QList<QObject*> models;
     Models instances;

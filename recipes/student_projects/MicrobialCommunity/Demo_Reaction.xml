@@ -36,28 +36,28 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Methane Concentration"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
-		<trace  label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
-		<trace  label="First Order" value="PMO_FirstOrder[Substrate]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
+		<trace label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
+		<trace label="First Order" value="PMO_FirstOrder[Substrate]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Zero Order Methane Oxidation"/>
-		<trace  label="Substrate" value="PMO_ZeroOrder[Substrate]"/>
-		<trace  label="Velocity" value="PMO_ZeroOrder[Velocity]"/>
+		<trace label="Substrate" value="PMO_ZeroOrder[Substrate]"/>
+		<trace label="Velocity" value="PMO_ZeroOrder[Velocity]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="First Order Methane Oxidation"/>
-		<trace  label="Substrate" value="PMO_FirstOrder[Substrate]"/>
-		<trace  label="Velocity" value="PMO_FirstOrder[Velocity]"/>
+		<trace label="Substrate" value="PMO_FirstOrder[Substrate]"/>
+		<trace label="Velocity" value="PMO_FirstOrder[Velocity]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Enzymatic Methane Oxidation"/>
-		<trace  label="Substrate" value="PMO_Enzymatic[Substrate]"/>
-		<trace  label="Velocity" value="PMO_Enzymatic[Velocity]"/>
+		<trace label="Substrate" value="PMO_Enzymatic[Substrate]"/>
+		<trace label="Velocity" value="PMO_Enzymatic[Velocity]"/>
 	</output>
 
 </simulation>

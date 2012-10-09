@@ -71,40 +71,40 @@
 	<!-- Output -->
 		
 	<output type="table">
-		<trace  label="dayOfYear" value="calendar[dayOfYear]"/>
-		<trace  label="totalTime" value="calendar[totalTime]"/>
-		<trace  label="totalTimeSteps" value="calendar[totalTimeSteps]"/>
-		<trace  label="totalDays" value="calendar[totalDays]"/>
-		<trace  label="dateAsReal" value="calendar[dateAsReal]"/>
-		<trace  label="Temp" value="weather/records[Tavg]"/>
-		<trace  label="SWP" value="weather[SWP]"/>
+		<trace label="dayOfYear" value="calendar[dayOfYear]"/>
+		<trace label="totalTime" value="calendar[totalTime]"/>
+		<trace label="totalTimeSteps" value="calendar[totalTimeSteps]"/>
+		<trace label="totalDays" value="calendar[totalDays]"/>
+		<trace label="dateAsReal" value="calendar[dateAsReal]"/>
+		<trace label="Temp" value="weather/records[Tavg]"/>
+		<trace label="SWP" value="weather[SWP]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Soil temperature at 2cm"/>
-		<trace  label="Julian day" value="calendar[dayOfYear]"/>
-		<trace  label="Temp" value="weather/records[Tavg]"/>
+		<trace label="Julian day" value="calendar[dayOfYear]"/>
+		<trace label="Temp" value="weather/records[Tavg]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Soil water potential at 2cm"/>
-		<trace  label="Julian day" value="calendar[dayOfYear]"/>
-		<trace  label="SWP" value="weather[SWP]"/>
-		<trace  label="Y.f. threshold" value="yellow_foxtail/time[swpThreshold]"/>
+		<trace label="Julian day" value="calendar[dayOfYear]"/>
+		<trace label="SWP" value="weather[SWP]"/>
+		<trace label="Y.f. threshold" value="yellow_foxtail/time[swpThreshold]"/>
 	</output>
 	<output  type="plot">
 		<parameter name="title" value ="Hydrothermal time at 2cm"/>
-		<trace  label="Julian day" value="calendar[dayOfYear]"/>
-		<trace  label="Large crabgrass" value="large_crabgrass/time[total]"/>
-		<trace  label="Green foxtail" value="green_foxtail/time[total]"/>
-		<trace  label="Goosegrass" value="goosegrass/time[total]"/>
-		<trace  label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
+		<trace label="Julian day" value="calendar[dayOfYear]"/>
+		<trace label="Large crabgrass" value="large_crabgrass/time[total]"/>
+		<trace label="Green foxtail" value="green_foxtail/time[total]"/>
+		<trace label="Goosegrass" value="goosegrass/time[total]"/>
+		<trace label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
 	</output>
 	<output  type="plot">
 		<parameter name="title" value ="Cumulative emergence"/>
-		<trace  label="Julian day" value="calendar[dayOfYear]"/>
-		<trace  label="Large crabgrass" value="large_crabgrass/emergence[accumulated]"/>
-		<trace  label="Green foxtail" value="green_foxtail/emergence[accumulated]"/>
-		<trace  label="Goosegrass" value="goosegrass/emergence[accumulated]"/>
-		<trace  label="Yellow foxtail" value="yellow_foxtail/emergence[accumulated]"/>
+		<trace label="Julian day" value="calendar[dayOfYear]"/>
+		<trace label="Large crabgrass" value="large_crabgrass/emergence[accumulated]"/>
+		<trace label="Green foxtail" value="green_foxtail/emergence[accumulated]"/>
+		<trace label="Goosegrass" value="goosegrass/emergence[accumulated]"/>
+		<trace label="Yellow foxtail" value="yellow_foxtail/emergence[accumulated]"/>
 		<trace table="emergence data.txt"/>
 	</output>
 

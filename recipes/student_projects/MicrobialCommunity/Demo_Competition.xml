@@ -39,16 +39,16 @@
 
 	<output type="plot">
 		<parameter name="title" value ="Available Resource"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="Available Resource" value="Competition[AvailableResource]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="Available Resource" value="Competition[AvailableResource]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="MOB 1" value="MOB_1[Density]"/>
-		<trace  label="MOB 2" value="MOB_2[Density]"/>
-		<trace  label="Total" value="Community[Density]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="MOB 1" value="MOB_1[Density]"/>
+		<trace label="MOB 2" value="MOB_2[Density]"/>
+		<trace label="Total" value="Community[Density]"/>
 	</output>
 	
 </simulation>

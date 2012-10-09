@@ -37,80 +37,80 @@
 
 	<output type="table">
 		<parameter name="filename" value ="cabbage_nightshade_output.prn"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage_phase" value="cabbage[phase]"/>
-		<trace  label="nightshade_phase" value="nightshade[phase]"/>
-		<trace  label="cabbage_sz" value="cabbage[sz]"/>
-		<trace  label="nightshade_sz" value="nightshade[sz]"/>
-		<trace  label="cabbage_Lz" value="cabbage[Lz]"/>
-		<trace  label="nightshade_Lz" value="nightshade[Lz]"/>
-		<trace  label="cabbage_fz" value="cabbage[fz]"/>
-		<trace  label="nightshade_fz" value="nightshade[fz]"/>
-		<trace  label="community_sz" value="community[sum_sz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage_phase" ref="cabbage[phase]"/>
+		<trace label="nightshade_phase" ref="nightshade[phase]"/>
+		<trace label="cabbage_sz" ref="cabbage[sz]"/>
+		<trace label="nightshade_sz" ref="nightshade[sz]"/>
+		<trace label="cabbage_Lz" ref="cabbage[Lz]"/>
+		<trace label="nightshade_Lz" ref="nightshade[Lz]"/>
+		<trace label="cabbage_fz" ref="cabbage[fz]"/>
+		<trace label="nightshade_fz" ref="nightshade[fz]"/>
+		<trace label="community_sz" ref="community[sum_sz]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Weather"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="irradiation" value="weather[irradiation]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="irradiation" ref="weather[irradiation]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Phase"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[phase]"/>
-		<trace  label="nightshade" value="nightshade[phase]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[phase]"/>
+		<trace label="nightshade" ref="nightshade[phase]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Total crown zone area"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="community" value="community[sum_sz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="community" ref="community[sum_sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/plant)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[weight]"/>
-		<trace  label="nightshade" value="nightshade[weight]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[weight]"/>
+		<trace label="nightshade" ref="nightshade[weight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area (m2/plant)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[LA_per_plant]"/>
-		<trace  label="nightshade" value="nightshade[LA_per_plant]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[LA_per_plant]"/>
+		<trace label="nightshade" ref="nightshade[LA_per_plant]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/m2 ground avail.)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[totalWeight]"/>
-		<trace  label="nightshade" value="nightshade[totalWeight]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[totalWeight]"/>
+		<trace label="nightshade" ref="nightshade[totalWeight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Growth rate (g/plant/day)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[dweight]"/>
-		<trace  label="nightshade" value="nightshade[dweight]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[dweight]"/>
+		<trace label="nightshade" ref="nightshade[dweight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Crown zone area (sz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[sz]"/>
-		<trace  label="nightshade" value="nightshade[sz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[sz]"/>
+		<trace label="nightshade" ref="nightshade[sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="LAI within sz (Lz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[Lz]"/>
-		<trace  label="nightshade" value="nightshade[Lz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[Lz]"/>
+		<trace label="nightshade" ref="nightshade[Lz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Light intercepted (fz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[fz]"/>
-		<trace  label="nightshade" value="nightshade[fz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[fz]"/>
+		<trace label="nightshade" ref="nightshade[fz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area index (LAI)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="cabbage" value="cabbage[lai]"/>
-		<trace  label="nightshade" value="nightshade[lai]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="cabbage" ref="cabbage[lai]"/>
+		<trace label="nightshade" ref="nightshade[lai]"/>
 	</output>
 </simulation>

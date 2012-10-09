@@ -38,8 +38,8 @@
 	
 	<output type="table">
 		<parameter name="filename" value ="total areas - landscape.txt"/>
-		<trace  label="Year" value="calendar[year]"/>
-		<trace  label="*" value="Landscape[*]"/>
+		<trace label="Year" value="calendar[year]"/>
+		<trace label="*" value="Landscape[*]"/>
 	</output>
 	
 	

@@ -120,35 +120,35 @@
 
 	<output type="plot">
 		<parameter name="title" value ="One generation"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Egg" value="generation(1)/egg[value]"/>
-		<trace  label="Larva" value="generation(1)/larva[value]"/>
-		<trace  label="Pupa" value="generation(1)/pupa[value]"/>
-		<trace  label="AdRep" value="generation(1)/adult[value]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Egg" value="generation(1)/egg[value]"/>
+		<trace label="Larva" value="generation(1)/larva[value]"/>
+		<trace label="Pupa" value="generation(1)/pupa[value]"/>
+		<trace label="AdRep" value="generation(1)/adult[value]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Population response"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Larva" value="generation(1)/larva[value]"/>
-		<trace  label="AdHib" value="hibernatingAdult[value]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Larva" value="generation(1)/larva[value]"/>
+		<trace label="AdHib" value="hibernatingAdult[value]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Pollen deposition rate"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Rate" value="pollen[pollenDepositionRate]"/>
-		<trace  label="Current" value="pollen[pollenDensity]"/>
-		<trace  label="Total" value="pollen[pollenDepositionTotal]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Rate" value="pollen[pollenDepositionRate]"/>
+		<trace label="Current" value="pollen[pollenDensity]"/>
+		<trace label="Total" value="pollen[pollenDepositionTotal]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Bt exposure (log10)"/>
 		<parameter name="logy" value ="yes"/>
 		<parameter name="ymin" value ="-2"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Larva" value="generation(1)/larva[value]"/>
-		<trace  label="Pollen (per cm2)" value="pollen[pollenDensity]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Larva" value="generation(1)/larva[value]"/>
+		<trace label="Pollen (per cm2)" value="pollen[pollenDensity]"/>
 	</output>
 
 

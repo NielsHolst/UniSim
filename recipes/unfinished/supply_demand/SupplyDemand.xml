@@ -224,13 +224,13 @@
 
 	<output type="plot" name="lifeStages">
 		<parameter name="title" value ="Life stage numbers"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="AdHib" value="insect/adult/hibernating/lifeTable/number[value]"/>
-		<trace  label="AdRep" value="insect/adult/reproductive/lifeTable/number[value]"/>
-		<trace  label="Egg" value="insect/egg/lifeTable/number[value]"/>
-		<trace  label="Larva" value="insect/larva/lifeTable/number[value]"/>
-		<trace  label="PupaHib" value="insect/pupa/forHibernation/lifeTable/number[value]"/>
-		<trace  label="PupaRep" value="insect/pupa/forReproduction/lifeTable/number[value]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="AdHib" value="insect/adult/hibernating/lifeTable/number[value]"/>
+		<trace label="AdRep" value="insect/adult/reproductive/lifeTable/number[value]"/>
+		<trace label="Egg" value="insect/egg/lifeTable/number[value]"/>
+		<trace label="Larva" value="insect/larva/lifeTable/number[value]"/>
+		<trace label="PupaHib" value="insect/pupa/forHibernation/lifeTable/number[value]"/>
+		<trace label="PupaRep" value="insect/pupa/forReproduction/lifeTable/number[value]"/>
 	</output>
 
 	<output type="plot" select="../output[@name='lifeStages']">
@@ -241,10 +241,10 @@
 
 	<output type="plot">
 		<parameter name="title" value ="Maize pollen"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Veg. maize" value="maize/vegetative[value]"/>
-		<trace  label="Pollen release" value="maize/pollenRelease[value]"/>
-		<trace  label="Pollen deposited" value="maize/pollenDeposited[value]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Veg. maize" value="maize/vegetative[value]"/>
+		<trace label="Pollen release" value="maize/pollenRelease[value]"/>
+		<trace label="Pollen deposited" value="maize/pollenDeposited[value]"/>
 	</output>
 	
 
@@ -253,14 +253,14 @@
 	-->
 	<output type="table">
 		<parameter name="filename" value ="odum.txt"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Julian" value="calendar[dayOfYear]"/>
-		<trace  label="Tavg" value="weather[Tavg]"/>
-		<trace  label="AdHib" value="insect/adult/hibernating/lifeTable/number[value]"/>
-		<trace  label="AdRep" value="insect/adult/reproductive/lifeTable/number[value]"/>
-		<trace  label="Egg" value="insect/egg/lifeTable/number[value]"/>
-		<trace  label="Larva" value="insect/larva/lifeTable/number[value]"/>
-		<trace  label="PupaHib" value="insect/pupa/forHibernation/lifeTable/number[value]"/>
-		<trace  label="PupaRep" value="insect/pupa/forReproduction/lifeTable/number[value]"/>	</output>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Julian" value="calendar[dayOfYear]"/>
+		<trace label="Tavg" value="weather[Tavg]"/>
+		<trace label="AdHib" value="insect/adult/hibernating/lifeTable/number[value]"/>
+		<trace label="AdRep" value="insect/adult/reproductive/lifeTable/number[value]"/>
+		<trace label="Egg" value="insect/egg/lifeTable/number[value]"/>
+		<trace label="Larva" value="insect/larva/lifeTable/number[value]"/>
+		<trace label="PupaHib" value="insect/pupa/forHibernation/lifeTable/number[value]"/>
+		<trace label="PupaRep" value="insect/pupa/forReproduction/lifeTable/number[value]"/>	</output>
 
 </simulation>

@@ -30,14 +30,14 @@
 		
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="MOB 1" value="MOB_1[Density]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="MOB 1" value="MOB_1[Density]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="MOB 2" value="MOB_2[Density]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="MOB 2" value="MOB_2[Density]"/>
 	</output>
 	
 </simulation>

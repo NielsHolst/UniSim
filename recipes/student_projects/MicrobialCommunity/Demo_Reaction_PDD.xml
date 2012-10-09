@@ -46,29 +46,29 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Methane Concentration"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
-		<trace  label="Enzymatic (PDD)" value="PMO_Enzymatic[SubstratePDD]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
+		<trace label="Enzymatic (PDD)" value="PMO_Enzymatic[SubstratePDD]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Methane Concentration"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
-		<trace  label="Zero Order (PDD)" value="PMO_ZeroOrder[SubstratePDD]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
+		<trace label="Zero Order (PDD)" value="PMO_ZeroOrder[SubstratePDD]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Methane Concentration"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="First Order" value="PMO_FirstOrder[Substrate]"/>
-		<trace  label="First Order (PDD)" value="PMO_FirstOrder[SubstratePDD]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="First Order" value="PMO_FirstOrder[Substrate]"/>
+		<trace label="First Order (PDD)" value="PMO_FirstOrder[SubstratePDD]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
-		<trace  label="Time" value="Calendar[totalTime]"/>
-		<trace  label="MOB 1" value="MOB_1[Density]"/>
+		<trace label="Time" value="Calendar[totalTime]"/>
+		<trace label="MOB 1" value="MOB_1[Density]"/>
 	</output>
 	
 </simulation>

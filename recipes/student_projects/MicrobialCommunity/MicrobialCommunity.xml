@@ -253,80 +253,80 @@
 <!--		
 	<output type="plot">
 		<parameter name="title" value ="Population Richness"/>
-		<trace  label="Hour" value="Calendar[totalTime]"/>
-		<trace  label="Richness" value="Community[Richness]"/>
+		<trace label="Hour" value="Calendar[totalTime]"/>
+		<trace label="Richness" value="Community[Richness]"/>
 	</output>
 -->
 
 	<output type="plot">
 		<parameter name="title" value ="Test"/>
-		<trace  label="Hour" value="Calendar[totalTime]"/>
-		<trace  label="MOB 1" value="random/initDensity1[value]"/>
-		<trace  label="MOB 2" value="random/initDensity2[value]"/>
-		<trace  label="MOB 3" value="random/initDensity3[value]"/>
+		<trace label="Hour" value="Calendar[totalTime]"/>
+		<trace label="MOB 1" value="random/initDensity1[value]"/>
+		<trace label="MOB 2" value="random/initDensity2[value]"/>
+		<trace label="MOB 3" value="random/initDensity3[value]"/>
 	</output>
 		
 	<output type="plot">
 		<parameter name="title" value ="Population Density"/>
-		<trace  label="Hour" value="Calendar[totalTime]"/>
-		<trace  label="MOB 1" value="MOB_1[Density]"/>
-		<trace  label="MOB 2" value="MOB_2[Density]"/>
-		<trace  label="MOB 3" value="MOB_3[Density]"/>
-		<!--<trace  label="MOB 4" value="MOB_4[Density]"/>
-		<trace  label="MOB 5" value="MOB_5[Density]"/>
-		<trace  label="MOB 6" value="MOB_6[Density]"/>
-		<trace  label="MOB 7" value="MOB_7[Density]"/>
-		<trace  label="MOB 8" value="MOB_8[Density]"/>
-		<trace  label="MOB 9" value="MOB_9[Density]"/>
-		<trace  label="MOB 10" value="MOB_10[Density]"/>-->
+		<trace label="Hour" value="Calendar[totalTime]"/>
+		<trace label="MOB 1" value="MOB_1[Density]"/>
+		<trace label="MOB 2" value="MOB_2[Density]"/>
+		<trace label="MOB 3" value="MOB_3[Density]"/>
+		<!--<trace label="MOB 4" value="MOB_4[Density]"/>
+		<trace label="MOB 5" value="MOB_5[Density]"/>
+		<trace label="MOB 6" value="MOB_6[Density]"/>
+		<trace label="MOB 7" value="MOB_7[Density]"/>
+		<trace label="MOB 8" value="MOB_8[Density]"/>
+		<trace label="MOB 9" value="MOB_9[Density]"/>
+		<trace label="MOB 10" value="MOB_10[Density]"/>-->
 	</output>
 <!--	
 	<output type="plot">
 		<parameter name="title" value ="Density Activity Coefficient"/>
-		<trace  label="Hour" value="Calendar[totalTime]"/>
-		<trace  label="MOB 1" value="MOB_1[DensityActivityCoefficient]"/>
-		<trace  label="MOB 2" value="MOB_2[DensityActivityCoefficient]"/>
-		<trace  label="MOB 3" value="MOB_3[DensityActivityCoefficient]"/>
+		<trace label="Hour" value="Calendar[totalTime]"/>
+		<trace label="MOB 1" value="MOB_1[DensityActivityCoefficient]"/>
+		<trace label="MOB 2" value="MOB_2[DensityActivityCoefficient]"/>
+		<trace label="MOB 3" value="MOB_3[DensityActivityCoefficient]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Methane Concentration"/>
-		<trace  label="Hour" value="Calendar[totalTime]"/>
-		<trace  label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
-		<trace  label="First Order" value="PMO_FirstOrder[Substrate]"/>
-		<trace  label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
+		<trace label="Hour" value="Calendar[totalTime]"/>
+		<trace label="Zero Order" value="PMO_ZeroOrder[Substrate]"/>
+		<trace label="First Order" value="PMO_FirstOrder[Substrate]"/>
+		<trace label="Enzymatic" value="PMO_Enzymatic[Substrate]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Zero Order Methane Oxidation"/>
-		<trace  label="Substrate" value="PMO_ZeroOrder[Substrate]"/>
-		<trace  label="Velocity" value="PMO_ZeroOrder[Velocity]"/>
+		<trace label="Substrate" value="PMO_ZeroOrder[Substrate]"/>
+		<trace label="Velocity" value="PMO_ZeroOrder[Velocity]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="First Order Methane Oxidation"/>
-		<trace  label="Substrate" value="PMO_FirstOrder[Substrate]"/>
-		<trace  label="Velocity" value="PMO_FirstOrder[Velocity]"/>
+		<trace label="Substrate" value="PMO_FirstOrder[Substrate]"/>
+		<trace label="Velocity" value="PMO_FirstOrder[Velocity]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Enzymatic Methane Oxidation"/>
-		<trace  label="Substrate" value="PMO_Enzymatic[Substrate]"/>
-		<trace  label="Velocity" value="PMO_Enzymatic[Velocity]"/>
+		<trace label="Substrate" value="PMO_Enzymatic[Substrate]"/>
+		<trace label="Velocity" value="PMO_Enzymatic[Velocity]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Available Resource"/>
-		<trace  label="Hour" value="Calendar[totalTime]"/>
-		<trace  label="Available Resource" value="Growth[AvailableResource]"/>
+		<trace label="Hour" value="Calendar[totalTime]"/>
+		<trace label="Available Resource" value="Growth[AvailableResource]"/>
 	</output>
 -->
 <!--	
 	<output type="table">
 		<parameter name="filename" value ="test.txt"/>
-		<trace  label="Hour" value="Calendar[totalTime]"/>
-		<trace  label="SpeciesName" value="Population[SpeciesName]"/>
-		<trace  label="Available_Resource" value="Growth[AvailableResource]"/>
+		<trace label="Hour" value="Calendar[totalTime]"/>
+		<trace label="SpeciesName" value="Population[SpeciesName]"/>
+		<trace label="Available_Resource" value="Growth[AvailableResource]"/>
 	</output>
 -->
 </simulation>

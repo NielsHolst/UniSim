@@ -42,57 +42,57 @@
 	<!--Generating plots based on calculations -->
 	<output type="plot">
 		<parameter name="title" value ="Lake environment"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Wind [m/s]" value="weather[Wind]"/>
-		<trace  label="Daylength" value="Calendar[dayLength]"/>
-		<trace  label="DLI" value="weather[DLI]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Wind [m/s]" value="weather[Wind]"/>
+		<trace label="Daylength" value="Calendar[dayLength]"/>
+		<trace label="DLI" value="weather[DLI]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Net community production [unit/m2/day]"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="NCP (Kl estimated from wind)" value="Netproduction[NetProdwind]" />
-		<trace  label="NCP (KL stochastic)" value="Netproduction[NetProd]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="NCP (Kl estimated from wind)" value="Netproduction[NetProdwind]" />
+		<trace label="NCP (KL stochastic)" value="Netproduction[NetProd]"/>
 	</output>
 
 	<output type="plot" name="plot">
 		<parameter name="title" value ="Accumulated Net Community Production"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Sum (wind)" value="Netproduction[SumWind]"/>
-		<trace  label="Sum (stochastic)" value="Netproduction[SumStochastic]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Sum (wind)" value="Netproduction[SumWind]"/>
+		<trace label="Sum (stochastic)" value="Netproduction[SumStochastic]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Av estimated reaeration coefficent (from wind)"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Kl" value="Netproduction[Kwind]" summary = "average" />
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Kl" value="Netproduction[Kwind]" summary = "average" />
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Observations"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="DO[mg/l]" value="weather[obsDO]"/>
-		<trace  label="Water temp[oC]" value="weather[tempW]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="DO[mg/l]" value="weather[obsDO]"/>
+		<trace label="Water temp[oC]" value="weather[tempW]"/>
 	</output>
 	
 	<output type="plot" summary ="yes">
 		<parameter name="title" value ="Parameter"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Kl" value="random/Kl[value]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Kl" value="random/Kl[value]"/>
 	</output>
 
 	<!--Generating table output to text file-->
 	<output type="Table">
 		<parameter name="Filename" value ="Prediction.txt"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="Daylength [hr]" value="Calendar[dayLength]"/>
-		<trace  label="DO[mg/l]" value="weather[oxygen]"/>
-		<trace  label="Water temp[oC]" value="weather[tempW]"/>
-		<trace  label="DO observed saturation percentage" value="Netproduction[DOObsSatPct]"/>
-		<trace  label="DLI" value="weather[DLI]"/>
-		<trace  label="Netto Production (Stochastic)" value="Netproduction[NetProd]"/>
-		<trace  label="Netto Production (Kl_wind)" value="Netproduction[Net_ProdWind]"/>
-		<trace  label="Random Kl value" value="random/Kl[value]"/>
-		<trace  label="Kl estimated from wind" value="Netproduction[Kwind]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Daylength [hr]" value="Calendar[dayLength]"/>
+		<trace label="DO[mg/l]" value="weather[oxygen]"/>
+		<trace label="Water temp[oC]" value="weather[tempW]"/>
+		<trace label="DO observed saturation percentage" value="Netproduction[DOObsSatPct]"/>
+		<trace label="DLI" value="weather[DLI]"/>
+		<trace label="Netto Production (Stochastic)" value="Netproduction[NetProd]"/>
+		<trace label="Netto Production (Kl_wind)" value="Netproduction[Net_ProdWind]"/>
+		<trace label="Random Kl value" value="random/Kl[value]"/>
+		<trace label="Kl estimated from wind" value="Netproduction[Kwind]"/>
 	</output>
 </simulation>

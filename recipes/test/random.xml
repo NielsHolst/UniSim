@@ -53,23 +53,23 @@
 
 	<output type="table">
 		<parameter name="filename" value ="random_output.prn"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="uniform" value="uniform[value]"/>
-		<trace  label="poisson" value="poisson[value]"/>
-		<trace  label="normal" value="normal[value]"/>
-		<trace  label="lognormal" value="lognormal[value]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="uniform" value="uniform[value]"/>
+		<trace label="poisson" value="poisson[value]"/>
+		<trace label="normal" value="normal[value]"/>
+		<trace label="lognormal" value="lognormal[value]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Different distributions"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="uniform" value="uniform[value]"/>
-		<trace  label="poisson" value="poisson[value]"/>
-		<trace  label="normal" value="normal[value]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="uniform" value="uniform[value]"/>
+		<trace label="poisson" value="poisson[value]"/>
+		<trace label="normal" value="normal[value]"/>
 		<!--variable  label="lognormal" value="lognormal[value]"/-->
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Irradiation"/>
-		<trace  label="Day" value="calendar[totalTime]"/>
-		<trace  label="normal" value="weather[irradiation]"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="normal" value="weather[irradiation]"/>
 	</output>
 </simulation>

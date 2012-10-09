@@ -37,80 +37,80 @@
 
 	<output type="table">
 		<parameter name="filename" value ="carrot_stellaria_output.prn"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot_phase" value="carrot[phase]"/>
-		<trace  label="stellaria_phase" value="stellaria[phase]"/>
-		<trace  label="carrot_sz" value="carrot[sz]"/>
-		<trace  label="stellaria_sz" value="stellaria[sz]"/>
-		<trace  label="carrot_Lz" value="carrot[Lz]"/>
-		<trace  label="stellaria_Lz" value="stellaria[Lz]"/>
-		<trace  label="carrot_fz" value="carrot[fz]"/>
-		<trace  label="stellaria_fz" value="stellaria[fz]"/>
-		<trace  label="community_sz" value="community[sum_sz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot_phase" ref="carrot[phase]"/>
+		<trace label="stellaria_phase" ref="stellaria[phase]"/>
+		<trace label="carrot_sz" ref="carrot[sz]"/>
+		<trace label="stellaria_sz" ref="stellaria[sz]"/>
+		<trace label="carrot_Lz" ref="carrot[Lz]"/>
+		<trace label="stellaria_Lz" ref="stellaria[Lz]"/>
+		<trace label="carrot_fz" ref="carrot[fz]"/>
+		<trace label="stellaria_fz" ref="stellaria[fz]"/>
+		<trace label="community_sz" ref="community[sum_sz]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Weather"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="irradiation" value="weather[irradiation]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="irradiation" ref="weather[irradiation]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Phase"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[phase]"/>
-		<trace  label="stellaria" value="stellaria[phase]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[phase]"/>
+		<trace label="stellaria" ref="stellaria[phase]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Total crown zone area"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="community" value="community[sum_sz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="community" ref="community[sum_sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/plant)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[weight]"/>
-		<trace  label="stellaria" value="stellaria[weight]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[weight]"/>
+		<trace label="stellaria" ref="stellaria[weight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area (m2/plant)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[LA_per_plant]"/>
-		<trace  label="stellaria" value="stellaria[LA_per_plant]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[LA_per_plant]"/>
+		<trace label="stellaria" ref="stellaria[LA_per_plant]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/m2 ground avail.)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[totalWeight]"/>
-		<trace  label="stellaria" value="stellaria[totalWeight]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[totalWeight]"/>
+		<trace label="stellaria" ref="stellaria[totalWeight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Growth rate (g/plant/day)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[dweight]"/>
-		<trace  label="stellaria" value="stellaria[dweight]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[dweight]"/>
+		<trace label="stellaria" ref="stellaria[dweight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Crown zone area (sz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[sz]"/>
-		<trace  label="stellaria" value="stellaria[sz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[sz]"/>
+		<trace label="stellaria" ref="stellaria[sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="LAI within sz (Lz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[Lz]"/>
-		<trace  label="stellaria" value="stellaria[Lz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[Lz]"/>
+		<trace label="stellaria" ref="stellaria[Lz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Light intercepted (fz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[fz]"/>
-		<trace  label="stellaria" value="stellaria[fz]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[fz]"/>
+		<trace label="stellaria" ref="stellaria[fz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area index (LAI)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[lai]"/>
-		<trace  label="stellaria" value="stellaria[lai]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
+		<trace label="carrot" ref="carrot[lai]"/>
+		<trace label="stellaria" ref="stellaria[lai]"/>
 	</output>
 </simulation>

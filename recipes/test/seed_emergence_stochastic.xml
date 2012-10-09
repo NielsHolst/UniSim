@@ -100,36 +100,36 @@
 	
 	<output type="table">
 		<parameter name="filename" value ="test.prn"/>
-		<trace  label="totalTime" value="calendar[totalTime]"/>
-		<trace  label="dayOfYear" value="calendar[dayOfYear]"/>
+		<trace label="totalTime" value="calendar[totalTime]"/>
+		<trace label="dayOfYear" value="calendar[dayOfYear]"/>
 	</output>
 	
 	<output type="plot">
 		<parameter name="title" value ="Soil temperature at 2cm"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="Temp" value="weather[Tavg]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="Temp" value="weather[Tavg]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Soil water potential at 2cm"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="SWP" value="weather[SWP]"/>
-		<trace  label="Y.f. threshold" value="yellow_foxtail/time[swpThreshold]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="SWP" value="weather[SWP]"/>
+		<trace label="Y.f. threshold" value="yellow_foxtail/time[swpThreshold]"/>
 	</output>
 	<output  type="plot">
 		<parameter name="title" value ="Hydrothermal time at 2cm"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="Large crabgrass" value="large_crabgrass/time[total]"/>
-		<trace  label="Green foxtail" value="green_foxtail/time[total]"/>
-		<trace  label="Goosegrass" value="goosegrass/time[total]"/>
-		<trace  label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="Large crabgrass" value="large_crabgrass/time[total]"/>
+		<trace label="Green foxtail" value="green_foxtail/time[total]"/>
+		<trace label="Goosegrass" value="goosegrass/time[total]"/>
+		<trace label="Yellow foxtail" value="yellow_foxtail/time[total]"/>
 	</output>
 	<output  type="plot">
 		<parameter name="title" value ="Cumulative emergence"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="Large crabgrass" value="large_crabgrass/emergence[accumulated]"/>
-		<trace  label="Green foxtail" value="green_foxtail/emergence[accumulated]"/>
-		<trace  label="Goosegrass" value="goosegrass/emergence[accumulated]"/>
-		<trace  label="Yellow foxtail" value="yellow_foxtail/emergence[accumulated]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="Large crabgrass" value="large_crabgrass/emergence[accumulated]"/>
+		<trace label="Green foxtail" value="green_foxtail/emergence[accumulated]"/>
+		<trace label="Goosegrass" value="goosegrass/emergence[accumulated]"/>
+		<trace label="Yellow foxtail" value="yellow_foxtail/emergence[accumulated]"/>
 
 		<data  label="Day" value="observations[day_in_year]"/>
 		<data  label="Large crabgrass obs" value="observations[large_crabgrass]"/>

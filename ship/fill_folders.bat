@@ -35,6 +35,8 @@ copy qtxmlpatterns4.dll %UNISIM_BIN%
 goto :end_copy_lib
 popd
 
+pause
+
 :newer_qt_versions
 pushd %QT_ROOT%\mingw\bin
 copy mingwm10.dll %UNISIM_BIN%

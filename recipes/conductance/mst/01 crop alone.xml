@@ -54,78 +54,78 @@
 	
 	<output type="plot">
 		<parameter name="title" value ="Weather"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="Irradiation" value="weather[irradiationMJ]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="Irradiation" value="weather[irradiationMJ]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Phase"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="Carrot" value="carrot[phase]"/>
-		<trace  label="Barley" value="barley[phase]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="Carrot" value="carrot[phase]"/>
+		<trace label="Barley" value="barley[phase]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Total crown zone area"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="Carrot field" value="CarrotField[sum_sz]"/>
-		<trace  label="Barley field" value="BarleyField[sum_sz]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="Carrot field" value="CarrotField[sum_sz]"/>
+		<trace label="Barley field" value="BarleyField[sum_sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/plant)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="Carrot" value="carrot[weight]"/>
-		<trace  label="Barley" value="barley[weight]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="Carrot" value="carrot[weight]"/>
+		<trace label="Barley" value="barley[weight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area (m2/plant)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[LA_per_plant]"/>
-		<trace  label="barley" value="barley[LA_per_plant]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="carrot" value="carrot[LA_per_plant]"/>
+		<trace label="barley" value="barley[LA_per_plant]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weight (g/m2 ground avail.)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[totalWeight]"/>
-		<trace  label="barley" value="barley[totalWeight]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="carrot" value="carrot[totalWeight]"/>
+		<trace label="barley" value="barley[totalWeight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Growth rate (g/plant/day)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[dweight]"/>
-		<trace  label="barley" value="barley[dweight]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="carrot" value="carrot[dweight]"/>
+		<trace label="barley" value="barley[dweight]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Crown zone area (sz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[sz]"/>
-		<trace  label="barley" value="barley[sz]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="carrot" value="carrot[sz]"/>
+		<trace label="barley" value="barley[sz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="LAI within sz (Lz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[Lz]"/>
-		<trace  label="barley" value="barley[Lz]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="carrot" value="carrot[Lz]"/>
+		<trace label="barley" value="barley[Lz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Light intercepted (fz)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[fz]"/>
-		<trace  label="barley" value="barley[fz]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="carrot" value="carrot[fz]"/>
+		<trace label="barley" value="barley[fz]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Leaf area index (LAI)"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="carrot" value="carrot[lai]"/>
-		<trace  label="barley" value="barley[lai]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="carrot" value="carrot[lai]"/>
+		<trace label="barley" value="barley[lai]"/>
 	</output>
 
 	<output type="table">
 		<parameter name="filename" value ="01 barley.txt"/>
-		<trace  label="Day" value="calendar[dayOfYear]"/>
-		<trace  label="weight" value="barley[weight]"/>
-		<trace  label="LA" value="barley[LA_per_plant]"/>
-		<trace  label="sz" value="barley[sz]"/>
-		<trace  label="Lz" value="barley[Lz]"/>
-		<trace  label="Lai" value="barley[lai]"/>
+		<trace label="Day" value="calendar[dayOfYear]"/>
+		<trace label="weight" value="barley[weight]"/>
+		<trace label="LA" value="barley[LA_per_plant]"/>
+		<trace label="sz" value="barley[sz]"/>
+		<trace label="Lz" value="barley[Lz]"/>
+		<trace label="Lai" value="barley[lai]"/>
 	</output>
 	
 </simulation>

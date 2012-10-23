@@ -67,7 +67,9 @@ call clean_folder ..\..\library\usengine
 @echo *** Finished build ***
 @echo .
 
-copy ..\..\library\*.dll ..\..\applications
+pushd ..\..\applications
+call get_libraries
+popd
 @echo .
 @echo *** Copied UniSim library files ***
 @echo .

@@ -18,8 +18,8 @@ del /Q bin\*.*del /Q bin\*.*
 copy ..\src\applications\unisim*.exe bin
 copy ..\src\applications\base*.dll bin
 copy ..\src\applications\engine*.dll bin
+copy ..\vendor\gsl\bin\libgsl*.dll bin
 copy ..\vendor\qwt\lib\qwt.dll bin
-copy ..\vendor\gsl\bin\l*.dll bin
 
 rem Copy MinGW and Qt lib files
 set UNISIM_BIN=%UNISIM_SHIP%\bin

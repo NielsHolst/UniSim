@@ -17,6 +17,7 @@
 #include "insect_life_cycle.h"
 #include "lactin_time.h"
 #include "output_crosstab.h"
+#include "output_map.h"
 #include "output_plot.h"
 #include "output_table.h"
 #include "photo_thermal_time.h"
@@ -102,6 +103,9 @@ void UniSim::UniSimFactory::defineProducts() {
     "DayDegrees model. The equation used to calculate the daily increment in physiological "
     "time is @Math{exp(ax) - exp(ab-(b-x) fraction c) + d}, where @I x is daily average "
     "temperature.");
+
+    addProduct<OutputMap>("Map", this,
+    "Creates output as an animated map. The @F output element must hold exactly one @F Trace element.");
 
     addProduct<PhotoThermalTime>("PhotoThermalTime", this,
      "Photothermal time accounts for temperature and day length at the same time. "

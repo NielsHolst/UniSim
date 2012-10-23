@@ -3,8 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_OUTPUT_OUTPUT_PLOT
-#define UNISIM_OUTPUT_OUTPUT_PLOT
+#ifndef UNISIM_OUTPUT_PLOT
+#define UNISIM_OUTPUT_PLOT
 
 #include <QColor>
 #include <QList>

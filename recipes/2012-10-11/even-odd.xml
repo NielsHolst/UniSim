@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Example">
+	<integrator name="steps" type="Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+
+	<model name="oddCreature" type="ocean::EvenOdd">
+		<parameter name="initialValue" value="50"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Even-odd dynamics"/>
+		<trace label="Day" ref="steps[stepNumber]"/>
+		<trace label="Value" ref="oddCreature[value]"/>
+	</output>
+	
+</simulation>

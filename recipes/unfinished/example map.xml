@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Example">
+	<integrator name="steps" type="Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="container">
+		<model table="universe.txt" type="ocean::EvenOdd"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Even-odd dynamics in the ocean"/>
+		<trace label="Day" ref="steps[stepNumber]"/>
+		<trace label="Value" ref="container/*[value]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value ="even_odd.txt"/>
+		<trace label="Day" ref="steps[stepNumber]"/>
+		<trace label="Value" ref="container/*[value]"/>
+	</output>
+
+	
+	<output type="map">
+		<parameter name="filename" value ="even_odd.svg"/>
+		<trace label="Value" ref="container/*[value]"/>
+	</output>	
+	
+</simulation>

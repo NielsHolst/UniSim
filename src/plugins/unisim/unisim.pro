@@ -25,6 +25,7 @@ HEADERS += \
     insect_life_cycle.h \
     lactin_time.h \
     output_crosstab.h \
+    output_map.cpp \
     output_plot.h \
     output_table.h \
     output_table_base.h \
@@ -63,6 +64,7 @@ SOURCES += \
     insect_life_cycle.cpp \
     lactin_time.cpp \
     output_crosstab.cpp \
+    output_map.cpp \
     output_plot.cpp \
     output_table.cpp \
     output_table_base.cpp \

@@ -121,6 +121,14 @@ void TestSimulationMakerFromFile::testModelsAndParametersFromFile() {
     QCOMPARE(harvest->pullValue<bool>("IsOrganic"), true);
 }
 
+void TestSimulationMakerFromFile::testModelsAndParametersFromFileNoParent() {
+    createSimulation("models_and_parameters_from_files_no_parent.xml");
+    Model *harvest = sim->peekOneDescendant<Model*>("A/Oats/Harvest");
+    QCOMPARE(harvest->pullValue<QDate>("Date"), QDate(2010,8,15));
+    QCOMPARE(harvest->pullValue<int>("Cost"), 350);
+    QCOMPARE(harvest->pullValue<bool>("IsOrganic"), true);
+}
+
 void TestSimulationMakerFromFile::testModelsAndParametersFromFileSame() {
     createSimulation("models_and_parameters_from_files_same.xml");
     Model *farmA = sim->peekOneDescendant<Model*>("landscape/A");

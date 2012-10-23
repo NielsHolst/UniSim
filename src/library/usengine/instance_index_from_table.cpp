@@ -22,14 +22,13 @@ InstanceIndexFromTable::InstanceIndexFromTable(QString filePath)
 }
 
 void InstanceIndexFromTable::reset(QString modelType, Model *parent) {
-    Q_ASSERT(parent);
-
     if (table->numKeys() == 1) {
         useAllRows();
         columnIndexOfModelType = 0;
         return;
     }
 
+    Q_ASSERT(parent);
     DataGrid::KeySubset keys;
     setColumnIndexOfModelType(modelType);
     int excludeKey = columnIndexOfModelType;

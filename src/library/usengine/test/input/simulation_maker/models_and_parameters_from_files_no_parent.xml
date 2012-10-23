@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	
+    <integrator name="integrator" type="Steps">
+        <parameter name="maxSteps" value="10"/>
+    </integrator>
+
+	<model type="test::Farm" table="farms.txt">
+		<model type="test::Crop" table="crops_on_farms.txt">
+			<model type="test::Operation" table="operations_on_crops_on_farms.txt">
+				<parameter table="operations.txt"/>
+			</model>
+		</model>
+		<model name="stat" type="UniSim::Fixed">
+			<parameter name="parameters" value="((x 2)(y 3))"/>
+		</model>
+	</model>
+
+    <output name="out" type="Table">
+		<parameter name="fileName" value="test.txt"/>
+		<variable label="larva" axis="x" value="A/stat[x]"/>
+		<variable label="larva" axis="y" value="B/stat[y]"/>
+    </output>
+</simulation>

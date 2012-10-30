@@ -7,7 +7,7 @@
 		<trace label="Egg" ref="generation(1)/egg[value]"/>
 		<trace label="Larva" ref="generation(1)/larva[value]"/>
 		<trace label="Pupa" ref="generation(1)/pupa[value]"/>
-		<trace label="AdRep" ref="generation(1)/adult[value]"/>
+		<trace label="Adult" ref="generation(1)/adult[value]"/>
 	</output>
 	
 	<output type="plot" name="Exposure">
@@ -19,4 +19,12 @@
 		<trace label="Pollen density" ref="pollen[pollenDensity]"/>
 	</output>
 		
+	<output type="plot" name="Response">
+		<parameter name="title" value="Population response"/>
+		<parameter name="ymax" value="1"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Hibernating" ref="hibernatingAdult[value]"/>
+		<trace label="Completed larvae" ref="generation(1)/pupa[inflowTotal]"/>
+	</output>
+
 </outputs>

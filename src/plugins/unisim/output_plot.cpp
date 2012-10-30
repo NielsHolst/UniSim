@@ -80,7 +80,7 @@ OutputPlot::~OutputPlot() {
 void OutputPlot::amend() {
     Output::amend();
     if (traceRecords().size() < 2) {
-        QString msg("Crosstab output must have at least two traces");
+        QString msg("Output plot must have at least two traces");
         throw Exception(msg, this);
     }
 

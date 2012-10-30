@@ -147,10 +147,12 @@ double DistributedDelay::findFgr(double inflow, double dt, double fgr, double sd
 void DistributedDelay::scale(double factor) {
     if (factor == 0.) {
         x.fill(0.);
+        s.content = 0.;
     }
     else if (factor != 1.) {
         double *v = x.data();
         for (int i = 0; i < p.k; ++i, ++v) *v *= factor;
+        s.content *= factor;
     }
 }
 

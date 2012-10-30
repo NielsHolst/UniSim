@@ -14,7 +14,7 @@ del /Q /S %UNISIM_GV%\lib\debug
 del /Q /S %UNISIM_GV%\lib\release
 
 rem Copy exe and DLL files
-del /Q bin\*.*del /Q bin\*.*
+del /Q bin\*.*
 copy ..\src\applications\unisim*.exe bin
 copy ..\src\applications\base*.dll bin
 copy ..\src\applications\engine*.dll bin
@@ -35,12 +35,12 @@ copy qtxmlpatterns4.dll %UNISIM_BIN%
 goto :end_copy_lib
 popd
 
-pause
-
 :newer_qt_versions
-pushd %QT_ROOT%\mingw\bin
+pushd C:\QtSDK\mingw\bin
 copy mingwm10.dll %UNISIM_BIN%
 copy libgcc_s_dw2-1.dll %UNISIM_BIN%
+popd
+pushd %QT_ROOT%\mingw\bin
 copy qtcore4.dll %UNISIM_BIN%
 copy qtgui4.dll %UNISIM_BIN%
 copy QtNetwork4.dll %UNISIM_BIN%

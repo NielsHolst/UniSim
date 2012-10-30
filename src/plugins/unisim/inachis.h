@@ -22,7 +22,6 @@ public:
     Inachis(Identifier name, QObject *parent=0);
     // standard methods
     void initialize();
-    void reset();
     void update();
 private:
     // parameters

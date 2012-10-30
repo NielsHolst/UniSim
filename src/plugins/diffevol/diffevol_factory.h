@@ -4,15 +4,15 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#ifndef RVF_FACTORY_H
-#define RVF_FACTORY_H
+#ifndef DIFF_EVOL_FACTORY_H
+#define DIFF_EVOL_FACTORY_H
 
 #include <QObject>
 #include <usbase/factory_plug_in.h>
 
-namespace rvf {
+namespace diffevol {
 
-class RvfFactory : public QObject, public UniSim::FactoryPlugIn
+class DiffEvolFactory : public QObject, public UniSim::FactoryPlugIn
 {
     Q_OBJECT
     Q_INTERFACES(UniSim::FactoryPlugIn)

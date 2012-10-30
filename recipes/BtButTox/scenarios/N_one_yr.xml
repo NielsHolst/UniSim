@@ -17,8 +17,8 @@
 
 	<output select="doc('base_output.xml')/outputs/output[@name='Environment']"/>
 	<output select="doc('base_output.xml')/outputs/output[@name='Pollen']"/>
-	<output select="doc('base_output.xml')/outputs/output[@name='Response']"/>
 	<output select="doc('base_N_output.xml')/outputs/output[@name='Io']"/>
 	<output select="doc('base_N_output.xml')/outputs/output[@name='Exposure']"/>
+	<output select="doc('base_N_output.xml')/outputs/output[@name='Response']"/>
 
 </simulation>

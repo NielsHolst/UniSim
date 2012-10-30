@@ -7,4 +7,17 @@
 		</model>
 	</integrator>
 
+	<!-- Test -->
+	<output type="table" name="Test">
+		<parameter name="filename" value="test-io.txt"/>
+		<trace label="Year" ref="calendar[year]"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Egg" ref="generation(2)/egg[value]"/>
+		<trace label="Larva" ref="generation(2)/larva[value]"/>
+		<trace label="Pupa" ref="generation(2)/pupa[value]"/>
+		<trace label="Adult" ref="generation(2)/adult[value]"/>
+		<trace label="Hibernating" ref="hibernatingAdult[value]"/>
+	</output>
+
+
 </simulation>

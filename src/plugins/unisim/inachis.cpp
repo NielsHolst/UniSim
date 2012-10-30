@@ -28,10 +28,6 @@ void Inachis::initialize() {
     generations = seekChildren<InsectLifeCycle*>("*");
 }
 
-void Inachis::reset() {
-    QList<Stage*> test = generations[0]->stages();
-}
-
 void Inachis::update() {
     // Transfer hibernating adults from the reproductive stage of the last generation
     double transfer = generations.last()->pullValue<double>("adultsToHibernation");

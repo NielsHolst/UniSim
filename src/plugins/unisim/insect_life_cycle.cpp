@@ -48,7 +48,8 @@ void InsectLifeCycle::update() {
             }
             else {
                 eclosedReproductiveAdults = transfer;
-                stage->pushValue<double>("inflow", transfer);
+                double emergedReproductiveAdults = stage->pullValue<double>("inflow");
+                stage->pushValue<double>("inflow", transfer + emergedReproductiveAdults);
             }
         }
         else {

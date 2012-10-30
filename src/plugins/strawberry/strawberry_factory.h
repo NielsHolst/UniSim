@@ -4,8 +4,8 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#ifndef UNISIM_OCEAN_FACTORY_H
-#define UNISIM_OCEAN_FACTORY_H
+#ifndef STRAWBERRY_FACTORY_H
+#define STRAWBERRY_FACTORY_H
 
 #include <QObject>
 #include <usbase/factory_plug_in.h>

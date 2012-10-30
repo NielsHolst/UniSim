@@ -95,7 +95,11 @@ namespace {
 
     QString nodeId(QObject *node) {
         QString nodeId = node->objectName();
-        return nodeId.remove("(").remove(")");
+        return QString("x") +
+                nodeId
+                .replace("(","_")
+                .replace(")","_")
+                .replace("-","_");
     }
 
     void writeNode(QTextStream *sink, NamedObject *node, int number)

@@ -448,7 +448,7 @@ template <class T> QList<T> filterByName(QString name, const QList<QObject*> &ca
 //
 
 template<class T>
-QList<T> decodeList(QString s, QObject *context = 0) {
+QList<T> decodeList(QString s, QObject *context) {
     QList<T> result;
     QStringList strings = decodeList(s, context);
     for (int i = 0; i < strings.size(); ++i) {
@@ -459,7 +459,7 @@ QList<T> decodeList(QString s, QObject *context = 0) {
 }
 
 template<class T, class U>
-QMap<T,U> decodeList(QString s, QObject *context = 0) {
+QMap<T,U> decodeList(QString s, QObject *context) {
     QMap<T,U> result;
     QStringList pairs = decodeList(s, context);
     for (int i = 0; i < pairs.size(); ++i) {

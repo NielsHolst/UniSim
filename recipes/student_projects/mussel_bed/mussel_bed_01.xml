@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Mussel bed">
+	<integrator name="steps" type="Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+
+	<model name="mussel" type="mussel_bed::Mussel"/>
+	
+	<output type="plot">
+		<parameter name="title" value ="Mussel density"/>
+		<trace label="Day" ref="steps[stepNumber]"/>
+		<trace label="Density" ref="mussel[density]"/>
+	</output>
+	
+</simulation>

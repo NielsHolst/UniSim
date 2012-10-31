@@ -37,10 +37,12 @@ void createSingletons(){
 int runGui(int argc, char *argv[]) {
     QApplication app(argc, argv);
     mainWindow()->show();
+    createSingletons();
     return app.exec();
 }
 
 void runSimulation(QString filePath) {
+    createSingletons();
     LiveSimulation *sim = new LiveSimulation(0);
     sim->open(filePath);
     sim->run();
@@ -71,8 +73,9 @@ int main(int argc, char *argv[]) {
 
     int result = -1;
     try {
-        createSingletons();
-        result = hasArguments ? runCommand(argc,argv) : runGui(argc, argv);
+        result = hasArguments ?
+                    runCommand(argc,argv) :
+                    runGui(argc, argv);
     }
     catch (Exception &ex) {
         if (hasArguments)

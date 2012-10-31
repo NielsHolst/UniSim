@@ -46,7 +46,7 @@ MegaFactory::MegaFactory() {
             keepLooking = false;
         }
         else {
-            QString msg = "Found no plugins in: " + dir.absolutePath();
+            QString msg = "Found no valid plugins in: " + dir.absolutePath();
             if (!dir.exists())
                 msg += ".\nThe folder does not exist.";
             keepLooking = FileLocations::lookup(FileLocationInfo::Plugins, msg);

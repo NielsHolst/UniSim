@@ -30,7 +30,7 @@ private:
     // pull variables
     double value;
     // links
-    Models triggers;
+    Model *trigger;
 };
 
 } //namespace

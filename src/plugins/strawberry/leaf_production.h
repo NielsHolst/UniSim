@@ -3,26 +3,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef EVEN_ODD_H
-#define EVEN_ODD_H
+#ifndef STRAWBERRY_PRODUCTION_H
+#define STRAWBERRY_PRODUCTION_H
 
 #include <usbase/model.h>
 
 namespace strawberry {
 
-class EvenOdd : public UniSim::Model
+class LeafProduction : public UniSim::Model
 {
 public:
-    EvenOdd(UniSim::Identifier name, QObject *parent);
+    LeafProduction(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
 private:
     // Parameters
-    int initialValue;
+    double productionRate;
 
     // Variables
-    int value;
+    double value;
 };
 
 } //namespace

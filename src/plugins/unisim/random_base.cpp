@@ -27,7 +27,7 @@ RandomBase::RandomBase(Identifier name, QObject *parent)
 }
 
 void RandomBase::initialize() {
-    triggers = seekChildren<Model*>("trigger");
+    trigger = peekOneNearest<Model*>("trigger");
 }
 
 void RandomBase::reset() {
@@ -43,11 +43,7 @@ void RandomBase::update() {
 }
 
 bool RandomBase::triggered() {
-    int i = 0;
-    bool doTrigger = false;
-    while (i < triggers.size() && !doTrigger)
-        doTrigger = triggers[i++]->pullValue<bool>("triggered");
-    return doTrigger;
+    return trigger && trigger->pullValue<bool>("value");
 }
 
 void RandomBase::nextValue() {

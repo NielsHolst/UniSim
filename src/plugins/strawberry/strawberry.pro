@@ -8,9 +8,11 @@ CONFIG += plugin
 include ($${US_BASE}/base.pri)
 
 HEADERS += \
-    even_odd.h \
+    infection.h \
+    leaf_production.h \
     strawberry_factory.h
 
 SOURCES += \
-    even_odd.cpp \
+    infection.cpp \
+    leaf_production.cpp \
     strawberry_factory.cpp

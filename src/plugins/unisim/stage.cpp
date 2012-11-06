@@ -40,6 +40,8 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
         "Supply/Demand ratio");
     new Parameter<double>("instantMortality", &instantMortality, 0., this,
         "Mortality [0..100] will be applied in the next time step, before @F inflow is added");
+    new Parameter<double>("instantLossRate", &instantLossRate, 0., this,
+        "Works just like @F mortality except the scale is a ratio [0..1]");
 
     new Variable<double>("value", &sum, this,
         "Number of units (e.g. individuals) in stage");
@@ -84,8 +86,7 @@ void Stage::initialize()
 void Stage::reset()
 {
     dd->scale(0);
-    sum = inflow = inflowPending = outflow = inflowTotal = outflowTotal = latestInflow = growth = 0;
-    instantMortality = 0.;
+    sum = /*inflow =*/ inflowPending = outflow = inflowTotal = outflowTotal = latestInflow = growth = 0;
     firstUpdate = true;
 }
 
@@ -93,15 +94,18 @@ void Stage::update()
 {
     applyInstantMortality();
 
+    latestInflow = 0.;
     if (firstUpdate) {
-        inflow += initialInflow;
+        inflowPending += initialInflow;
+        inflowTotal += initialInflow;
+        latestInflow += initialInflow;
         firstUpdate = false;
     }
 
     inflowPending += inflow;
     inflowTotal += inflow;
-    latestInflow = inflow;
-    inflow = 0;
+    latestInflow += inflow;
+    //inflow = 0;
 
     dt = time->pullValue<double>("step");
     if (TestNum::eqZero(dt)) {
@@ -126,14 +130,18 @@ void Stage::update()
 }
 
 void Stage::applyInstantMortality() {
-    double survival = 1. - instantMortality/100.;
+    if (instantMortality > 0. && instantLossRate > 0.) {
+        QString msg = "Parameters instantMortality and instantLossRate cannot both be > 0 (the are %1 and %2)";
+        throw Exception(msg.arg(instantMortality).arg(instantLossRate));
+    }
+    double survival = 1. - instantMortality/100. - instantLossRate;
     TestNum::snapToZero(survival);
     TestNum::snapTo(survival, 1.);
     if (survival < 0 || survival > 1.)
        throw Exception(QString("Survival (%1) must be in the range [0;1]").arg(survival), this);
     dd->scale(survival);
     inflowPending *= survival;
-    instantMortality = 0;
+    instantMortality = instantLossRate = 0;
 }
 
 const double* Stage::data() {

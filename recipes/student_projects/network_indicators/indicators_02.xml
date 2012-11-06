@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Network indicators">
+	<integrator name="steps" type="Steps">
+		<parameter name="maxSteps" value="2"/>
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="100"/>
+		</model>
+	</integrator>
+
+	<model name="random">
+		<model name="animalIntake" type="UniSim::RandomNormal">
+			<parameter name="mean" value="700"/>
+			<parameter name="sd" value="100"/>
+		</model>
+		<model name="uptakeCrops" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="50"/>
+			<parameter name="maxValue" value="200"/>
+		</model>
+	</model>
+
+	<model name="farms">
+		<model name="dairy_farm" type="network_indicators::Farm">
+			<parameter name="animalIntake" ref="random/animalIntake[value]"/>
+			<parameter name="respiration" value="75"/>
+			<parameter name="soilLosses" value="10"/>
+			<parameter name="uptakeCrops" ref="random/uptakeCrops[value]"/>
+		</model>
+
+		<model name="pig_farm" type="network_indicators::Farm">
+			<parameter name="animalIntake" ref="random/animalIntake[value]"/>
+			<parameter name="respiration" value="130"/>
+			<parameter name="soilLosses" value="14"/>
+			<parameter name="uptakeCrops" ref="random/uptakeCrops[value]"/>
+		</model>
+	</model>
+
+	<model name="indicators">
+		<model name="import" type="network_indicators::ImportIndicator"/>
+	</model>	
+	
+	<output type="plot">
+		<parameter name="title" value ="Import indicator"/>
+		<trace label="Step" ref="steps[stepNumber]"/>
+		<trace label="Dairy farm" ref="import[dairy_farm]"/>
+		<trace label="Pig farm" ref="import[pig_farm]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Import indicator: effect of animal intake"/>
+		<trace label="Animal intake" ref="random/animalIntake[value]"/>
+		<trace label="Dairy farm" ref="import[dairy_farm]" summary="Final"/>
+		<trace label="Pig farm" ref="import[pig_farm]" summary="Final"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Import indicator: effect of crop uptake"/>
+		<trace label="Crop uptake" ref="random/uptakeCrops[value]"/>
+		<trace label="Dairy farm" ref="import[dairy_farm]" summary="Final"/>
+		<trace label="Pig farm" ref="import[pig_farm]" summary="Final"/>
+	</output>
+	
+</simulation>

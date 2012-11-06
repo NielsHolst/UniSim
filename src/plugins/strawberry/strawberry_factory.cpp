@@ -3,16 +3,17 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include "infection.h"
+#include "leaf_production.h"
 #include "strawberry_factory.h"
-#include "even_odd.h"
 
 using namespace UniSim;
 
 namespace strawberry{
 
 void StrawberryFactory::defineProducts() {
-    // Add you own models here...
-    addProduct<EvenOdd>("EvenOdd", this, "Even-and-odd dynamics model");
+    addProduct<Infection>("Infection", this, "Computes daily infection rate of leaves");
+    addProduct<LeafProduction>("LeafProduction", this, "Computes daily production of new leaves");
 }
 
 UniSim::Identifier StrawberryFactory::id() const {
@@ -21,12 +22,13 @@ UniSim::Identifier StrawberryFactory::id() const {
 
 QString StrawberryFactory::description() const {
     return
-    "The strawberry plugin includes models for creatures of the strawberry";
+    "The strawberry plugin models powdery mildew in strawberries";
 }
 
 QStringList StrawberryFactory::authors() const {
     return QStringList()
         << "Niels";
+    // Add Belachew here
 }
 
 QObject* StrawberryFactory::asQObject() {

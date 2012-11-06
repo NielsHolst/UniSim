@@ -40,7 +40,7 @@ private:
     double sum, latestInflow, inflowTotal, outflow, outflowTotal, growth;
 
     // push variables
-    double inflow, sdRatio, instantMortality;
+    double inflow, sdRatio, instantMortality, instantLossRate;
 
     // links
     Model *time;

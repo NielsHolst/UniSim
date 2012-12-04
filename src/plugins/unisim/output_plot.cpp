@@ -175,6 +175,7 @@ void OutputPlot::setZoomer() {
 void OutputPlot::createPlotWidget() {
     Q_ASSERT(mainWindow);
     plotWidget = mainWindow->createPlotWidget(title);
+    Q_ASSERT(plotWidget);
     plotWidget->showLegend(true);
 }
 

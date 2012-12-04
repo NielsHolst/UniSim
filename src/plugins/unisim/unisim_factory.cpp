@@ -32,8 +32,10 @@
 #include "sensitivity_analysis.h"
 #include "stage.h"
 #include "stage_demand.h"
+#include "stage_and_phase.h"
 #include "time_limited.h"
 #include "steps.h"
+#include "sum.h"
 #include "trigger_by_date.h"
 #include "unisim_factory.h"
 #include "weather.h"
@@ -165,11 +167,21 @@ void UniSim::UniSimFactory::defineProducts() {
     "@Math{@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
     "determined by the nearest model called @F {time}.");
 
+    addProduct<StageAndPhase>("StageAndPhase", this,
+    "The @F StageAndPhase model simulates a population undergoing two processes at the same, for instance"
+    "physiological development (ageing) and incubation (after being infected). "
+    "The discern the two, the first is called a stage and the second, a phase. Phase change is characterised"
+    "by the parameters @F phaseL and @F phaseK with the same meaning as @F L and @F k in the @F Stage class.");
+
     addProduct<StageDemand>("StageDemand", this,
     "This model calculates the growth demand of the stage, identified by @F {stage}, which must be of type @F {UniSim::Stage}."
     "The stage's @growthDemand method is used for the calculation.");
 
     addProduct<Steps>("Steps", this, "Integrator class. Description pending");
+
+    addProduct<Sum>("Sum", this,
+        "Calculates sum of variables supplied as a list of references. The variables "
+        "must all be of type double.");
 
     addProduct<OutputTable>("Table", this, "Output class. Description pending");
 

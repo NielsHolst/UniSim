@@ -12,9 +12,9 @@ namespace mussel_bed {
 MusselGrowthRate::MusselGrowthRate(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("intrinsicRate", &intrinsicRate, 0.05, this, "Intrinsic rate of increase (per day)");
-    new Parameter<double>("carryingCapacity", &carryingCapacity, 20., this, "Carrying capacity (kg/m2)");
-    new Parameter<double>("density", &density, 0., this, "Mussel density (kg/m2)");
+    new Parameter<double>("intrinsicRate", &intrinsicRate, 0.02, this, "Intrinsic rate of increase (per day)");
+    new Parameter<double>("carryingCapacity", &carryingCapacity, 15., this, "Carrying capacity (kg/m2)");
+    new Parameter<double>("density", &density, 5., this, "Mussel density (kg/m2)");
     new Variable<double>("value", &value, this, "desc");
 }
 

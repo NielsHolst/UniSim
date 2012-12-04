@@ -19,7 +19,7 @@ public:
 
 private:
     // Parameters
-    double optimum, temperature;
+    double temperature;
 
     // Variables
     double value;

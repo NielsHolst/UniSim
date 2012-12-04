@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Network indicators">
+	<integrator name="steps" type="Steps">
+		<parameter name="maxSteps" value="2"/>
+	</integrator>
+
+	<model name="farms">
+		<model type="network_indicators::Farm" table="MyFarms.txt">
+		</model>
+	</model>
+
+	<model name="indicators">
+		<model name="import" type="network_indicators::ImportIndicator"/>
+		<model name="compThrough" type="network_indicators::CompartmentalThroughflow"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Import indicator"/>
+		<trace label="Step" ref="steps[stepNumber]"/>
+		<trace label="Nieuw Bromo" ref="import[Nieuw Bromo]"/>
+		<trace label="Arc en Ciel" ref="import[Arc en Ciel]"/>
+		<trace label="ter Linde" ref="import[ter Linde]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Compartmental throughflow indicator"/>
+		<trace label="Step" ref="steps[stepNumber]"/>
+		<trace label="Nieuw Bromo" ref="compThrough[Nieuw Bromo]"/>
+		<trace label="Arc en Ciel" ref="compThrough[Arc en Ciel]"/>
+		<trace label="ter Linde" ref="compThrough[ter Linde]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="fileName" value ="network_indicators.txt"/>
+		<trace label="import" ref="import[*]"/>
+		<trace label="compThrough" ref="compThrough[*]"/>
+	</output>
+</simulation>

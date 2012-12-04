@@ -10,9 +10,15 @@ include ($${US_BASE}/base.pri)
 HEADERS += \
     mosquito_fecundity.h \
     rvf_factory.h \
-    water_level.h
+    water_level.h \
+    inactiveegg.h \
+    adult.h \
+    egg.h
 
 SOURCES += \
     mosquito_fecundity.cpp \
     rvf_factory.cpp \
-    water_level.cpp
+    water_level.cpp \
+    inactiveegg.cpp \
+    adult.cpp \
+    egg.cpp

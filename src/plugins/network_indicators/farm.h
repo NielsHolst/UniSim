@@ -17,7 +17,7 @@ public:
 
 private:
     // Parameters
-    double animalIntake, respiration, soilLosses, uptakeCrops;
+    double deposition, fixation, importCrops, importManure, nonSymbFixation, uptakeCrops, toAnimals, toManure, greenManure, totalManure;
 };
 
 } //namespace

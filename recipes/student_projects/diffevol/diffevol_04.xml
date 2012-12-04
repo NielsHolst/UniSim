@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Differential Evolution">
+	<integrator name="de" type="diffevol::DifferentialEvolution">
+		<parameter name="maxSteps" value="200"/>
+		<parameter name="precision" value="0.1"/>
+	</integrator>
+
+	<model name="plots">
+		<model type="diffevol::Plot" table="plots_5.txt" hide="true">
+			<model type="diffevol::Year" table="plot_years_5.txt"/>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Deviation"/>
+		<trace label="Step" ref="de[stepNumber]"/>
+		<trace label="Deviation" ref="de[Deviation]"/>
+	</output>
+	
+</simulation>

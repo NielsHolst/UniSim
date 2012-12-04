@@ -6,6 +6,9 @@
 #include "mosquito_fecundity.h"
 #include "rvf_factory.h"
 #include "water_level.h"
+#include "inactiveegg.h"
+#include "adult.h"
+#include "egg.h"
 
 using namespace UniSim;
 
@@ -15,6 +18,9 @@ void RvfFactory::defineProducts() {
     // Add you own models here...
     addProduct<MosquitoFecundity>("MosquitoFecundity", this, "Daily egg-laying rate of adult mosquitoes. Depends on water level");
     addProduct<WaterLevel>("WaterLevel", this, "Water level in the environment.");
+    addProduct<InactiveEgg>("InactiveEgg", this, "Inactive eggs laid on the ground.");
+    addProduct<Adult>("Adult", this, "Adult mosquitoes laying eggs.");
+    addProduct<Egg>("Egg", this, "Mosquitoes eggs in water");
 }
 
 UniSim::Identifier RvfFactory::id() const {
@@ -28,7 +34,7 @@ QString RvfFactory::description() const {
 
 QStringList RvfFactory::authors() const {
     return QStringList()
-        << "Niels";
+        << "Clement";
     // Add Clement here. But first add to src/resources/authors.xml
 }
 

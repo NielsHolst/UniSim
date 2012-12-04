@@ -1,0 +1,5 @@
+*My::farm	deposition	fixation	importCrops	importManure	nonSymbFixation	uptakeCrops	toAnimals	toManure	greenManure	totalManure
+Nieuw Bromo	15	66	50	5	5	195	150	119	7	97
+Arc en Ciel	15	66	77	5	5	195	150	119	7	97
+ter Linde	15	66	99	5	5	195	150	119	7	97
+

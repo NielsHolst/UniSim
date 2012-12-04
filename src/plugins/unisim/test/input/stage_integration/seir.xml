@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="SEIR">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="365"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="flakkebjerg 2009.txt"/>
+		</model>
+	</model>
+
+	<model name="host">
+		<model name="time" type="UniSim::Days"/>
+
+		<model name="S">
+			<model name="juvenile" type="UniSim::Stage">
+				<parameter name="initialInflow" value="80"/>
+				<parameter name="inflow" ref="host/S/toBeBorn[outflow]"/>
+				<parameter name="duration" value="1095"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="initialInflow" value="50"/>
+				<parameter name="inflow" ref="host/S/juvenile[outflow]"/>
+				<parameter name="duration" value="3650"/>
+				<parameter name="k" value="30"/>
+				
+				<parameter name="phaseOutflowProportion" value="0.01"/>
+			</model>
+			<model name="toBeBorn" type="UniSim::Stage">
+				<parameter name="inflow" ref="host/S/juvenile[outflow]"/>
+				<parameter name="duration" value="730"/>
+				<parameter name="k" value="30"/>
+				<parameter name="growthRate" value="2.5"/> <!-- Life time fecundity corrected for sex ratio -->
+			</model>
+		</model>
+
+		<model name="E">
+			<model name="adult" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="host/S/adult[duration]"/>
+				<parameter name="k" ref="host/S/adult[k]"/>
+				<parameter name="timeStep" ref="host/time[step]"/>
+
+				<parameter name="phaseInflow" ref="host/S/adult[phaseOutflow]"/>
+				<parameter name="phaseDuration" value="10"/>
+				<parameter name="phaseK" value="15"/>
+				<parameter name="phaseTimeStep" ref="host/time[step]"/>
+			</model>
+		</model>
+
+		<model name="I">
+			<model name="adult" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="host/S/adult[duration]"/>
+				<parameter name="k" ref="host/S/adult[k]"/>
+				
+				<parameter name="phaseInflow" ref="host/E/adult[phaseOutflow]"/>
+				<parameter name="phaseDuration" value="20"/>
+				<parameter name="phaseK" value="15"/>
+			</model>
+		</model>
+
+		<model name="R">
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="duration" ref="host/S/adult[duration]"/>
+				<parameter name="k" ref="host/S/adult[k]"/>
+				
+				<parameter name="phaseInflow" ref="host/I/adult[phaseOutflow]"/>
+			</model>
+		</model>
+	</model>
+
+	<model name="vector">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="8"/>
+		</model>
+
+		<model name="S">
+			<model name="egg" type="UniSim::Stage">
+				<model name="inflows" type="UniSim::Sum">
+					<parameter name="toAdd" value="(vector/S/toBeBorn[outflow] vector/E/toBeBorn[outflow])"/> 
+				</model>
+				<parameter name="initialInflow" value="100"/>
+<!--				<parameter name="inflow" ref="S/egg/inflows[value]"/>-->
+				<parameter name="duration" value="50"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="larva" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/S/egg[outflow]"/>
+				<parameter name="duration" value="250"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="pupa" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/S/larva[outflow]"/>
+				<parameter name="duration" value="80"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/S/pupa[outflow]"/>
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="30"/>
+				<parameter name="phaseOutflowProportion" value="0.04"/>
+			</model>
+			<model name="toBeBorn" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/S/pupa[outflow]"/>
+				<parameter name="duration" ref="vector/S/adult[duration]"/>
+				<parameter name="k" ref="vector/S/adult[k]"/>
+				<parameter name="growthRate" value="50"/> <!-- Life time fecundity corrected for sex ratio -->
+				<parameter name="phaseOutflowProportion" ref="vector/S/adult[phaseOutflowProportion]"/>
+			</model>
+		</model>
+
+		<model name="E">
+			<model name="adult" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="vector/S/adult[duration]"/>
+				<parameter name="k" ref="vector/S/adult[k]"/>
+				<parameter name="timeStep" ref="vector/time[step]"/>
+
+				<parameter name="phaseInflow" ref="vector/S/adult[phaseOutflow]"/>
+				<parameter name="phaseDuration" value="20"/>
+				<parameter name="phaseK" value="15"/>
+				<parameter name="phaseTimeStep" ref="vector/time[step]"/>
+			</model>
+			<model name="toBeBorn" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="vector/S/toBeBorn[duration]"/>
+				<parameter name="k" ref="vector/S/toBeBorn[k]"/>
+				<parameter name="growthRate" ref="vector/S/toBeBorn[growthRate]"/>
+				<parameter name="timeStep" ref="vector/time[step]"/>
+			
+				<parameter name="phaseInflow" ref="vector/S/toBeBorn[phaseOutflow]"/>
+				<parameter name="phaseDuration" ref="vector/E/adult[phaseDuration]"/>
+				<parameter name="phaseK" ref="vector/E/adult[phaseK]"/>
+				<parameter name="phaseTimeStep" ref="vector/time[step]"/>
+			</model>
+		</model>
+
+		<model name="I">
+			<model name="egg" type="UniSim::Stage">
+<!--				<parameter name="inflow" ref="vector/I/toBeBorn[outflow]"/>-->
+				<parameter name="duration" ref="vector/S/egg[duration]"/>
+				<parameter name="k" ref="vector/S/egg[k]"/>
+			</model>
+			<model name="larva" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/I/egg[outflow]"/>
+				<parameter name="duration" ref="vector/S/larva[duration]"/>
+				<parameter name="k" ref="vector/S/larva[k]"/>
+			</model>
+			<model name="pupa" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/I/larva[outflow]"/>
+				<parameter name="duration" ref="vector/S/pupa[duration]"/>
+				<parameter name="k" ref="vector/S/pupa[k]"/>
+			</model>
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/I/pupa[outflow]"/>
+				<parameter name="duration" ref="vector/S/adult[duration]"/>
+				<parameter name="k" ref="vector/S/adult[k]"/>
+				<parameter name="phaseInflow" ref="vector/E/adult[phaseOutflow]"/>
+			</model>
+			<model name="toBeBorn" type="UniSim::Stage">
+				<parameter name="inflow" ref="vector/I/pupa[outflow]"/>
+				<parameter name="duration" ref="vector/S/toBeBorn[duration]"/>
+				<parameter name="k" ref="vector/S/toBeBorn[k]"/>
+				<parameter name="growthRate" ref="vector/S/toBeBorn[growthRate]"/>
+				<parameter name="phaseInflow" ref="vector/E/toBeBorn[phaseOutflow]"/>
+			</model>
+		</model>
+
+	</model>
+
+	<output type="table">
+		<parameter name="fileName" value ="test_stage_integration_seir.txt"/>
+		<trace label="SAout" value="vector/S/adult[outflowTotal]"/>
+		<trace label="SAphout" value="vector/S/adult[phaseOutflowTotal]"/>
+
+		<trace label="EAout" value="vector/E/adult[outflowTotal]"/>
+		<trace label="EAphout" value="vector/E/adult[phaseOutflowTotal]"/>
+
+		<trace label="IAout" value="vector/I/adult[outflowTotal]"/>
+		</output>
+<!--
+	<output type="table">
+		<parameter name="fileName" value ="test_stage_integration_seir.txt"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="VectDt" value="vector/time[step]"/>
+
+		<trace label="HostSJ" value="host/S/juvenile[value]"/>
+		<trace label="HostSA" value="host/S/adult[value]"/>
+		<trace label="HostEA" value="host/E/adult[value]"/>
+		<trace label="HostIA" value="host/I/adult[value]"/>
+		<trace label="HostRA" value="host/R/adult[value]"/>
+
+		<trace label="VectSE" value="vector/S/egg[value]"/>
+		<trace label="VectSL" value="vector/S/larva[value]"/>
+		<trace label="VectSP" value="vector/S/pupa[value]"/>
+		<trace label="VectSA" value="vector/S/adult[value]"/>
+		<trace label="VectST" value="vector/S/toBeBorn[value]"/>
+
+		<trace label="VectEA" value="vector/E/adult[value]"/>
+		<trace label="VectET" value="vector/E/toBeBorn[value]"/>
+
+		<trace label="VectIE" value="vector/I/egg[value]"/>
+		<trace label="VectIL" value="vector/I/larva[value]"/>
+		<trace label="VectIP" value="vector/I/pupa[value]"/>
+		<trace label="VectIA" value="vector/I/adult[value]"/>
+		<trace label="VectIT" value="vector/I/toBeBorn[value]"/>
+
+		<trace label="VectSAOut" value="vector/S/adult[OutflowTotal]"/>
+		<trace label="VectEAOut" value="vector/E/adult[OutflowTotal]"/>
+		<trace label="VectIAOut" value="vector/I/adult[OutflowTotal]"/>
+		
+		<trace label="SEggsInflow" value="S/egg/inflows[value]"/>
+	</output>
+	-->
+</simulation>

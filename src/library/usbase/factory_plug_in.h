@@ -9,6 +9,7 @@
 
 #include <QMap>
 #include <QtPlugin>
+#include <usbase/exception.h>
 #include <usbase/identifier.h>
 #include <usbase/utilities.h>
 #include "product.h"
@@ -44,7 +45,10 @@ inline const FactoryPlugIn::Products& products(FactoryPlugIn *factory) {
 template <class T>
 inline void addProduct(Identifier id, FactoryPlugIn *parent, QString desc) {
     ProductBase *product = new Product<T>(id, parent, desc);
-    Q_ASSERT(!parent->_products.contains(id));
+    if (parent->_products.contains(id)) {
+        QString msg = "Factory '%1' already contains a product called '%2'";
+        throw Exception(msg.arg(parent->id().label().arg(id.label())));
+    }
     parent->_products[id] = product;
 }
 

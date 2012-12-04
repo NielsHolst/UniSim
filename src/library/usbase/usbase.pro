@@ -18,7 +18,7 @@ HEADERS += \
         $${US_BASE}/data_grid.h \
         $${US_BASE}/date_interval.h \
         $${US_BASE}/exception.h \
-		$${US_BASE}/factory_plug_in.h \
+        $${US_BASE}/factory_plug_in.h \
         $${US_BASE}/file_location_info.h \
         $${US_BASE}/file_locations.h \
         $${US_BASE}/identifier.h \
@@ -33,8 +33,9 @@ HEADERS += \
         $${US_BASE}/output.h \
         $${US_BASE}/parameter.h \
         $${US_BASE}/parameter_base.h \
-		$${US_BASE}/product_base.h \
-		$${US_BASE}/product.h \
+        $${US_BASE}/parameter_vector.h \
+        $${US_BASE}/product_base.h \
+        $${US_BASE}/product.h \
         $${US_BASE}/variable.h \
         $${US_BASE}/variable_base.h \
         $${US_BASE}/random.h \
@@ -45,6 +46,9 @@ HEADERS += \
         $${US_BASE}/time.h \
         $${US_BASE}/trace.h \
         $${US_BASE}/utilities.h \
+        $${US_BASE}/variable.h \
+        $${US_BASE}/variable_base.h \
+        $${US_BASE}/variable_vector.h \
         $${US_BASE}/version.h
 SOURCES += \
         $${US_BASE}/authors.cpp \
@@ -64,7 +68,7 @@ SOURCES += \
         $${US_BASE}/name_list.cpp \
         $${US_BASE}/object_pool.cpp \
         $${US_BASE}/output.cpp \
-		$${US_BASE}/product_base.cpp \
+        $${US_BASE}/product_base.cpp \
         $${US_BASE}/variable_base.cpp \
         $${US_BASE}/random.cpp \
         $${US_BASE}/root_solver.cpp \

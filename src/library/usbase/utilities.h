@@ -92,6 +92,11 @@ QObject* simulationObject();
 //! @name Mathematics
 //@{
 double accum(const QVector<double> &x);
+void increment(QVector<double> &x, const QVector<double> &toAdd);
+void increment(double *x, const double *toAdd, int n);
+QVector<double> add(const QVector<double> &x, const QVector<double> &y);
+void scale(QVector<double> &x, double factor);
+
 double interpolate(const QMap<int, double> xy, int x);
 double pow0(double x, double c);
 double negExp(double x);

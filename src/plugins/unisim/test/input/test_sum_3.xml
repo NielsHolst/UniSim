@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="test">
+	<model name="a" type="UniSim::Range">
+		<parameter name="progress" variable="steps[progress]"/>
+		<parameter name="scale" value="linear"/>
+		<parameter name="min" value="0"/>
+		<parameter name="max" value="10"/>
+	</model>
+	<model name="b" type="UniSim::Range">
+		<parameter name="progress" variable="steps[progress]"/>
+		<parameter name="scale" value="linear"/>
+		<parameter name="min" value="0"/>
+		<parameter name="max" value="100"/>
+	</model>
+	<model name="c" type="UniSim::Range">
+		<parameter name="progress" variable="steps[progress]"/>
+		<parameter name="scale" value="linear"/>
+		<parameter name="min" value="0"/>
+		<parameter name="max" value="1000"/>
+	</model>
+	</model>
+	
+	<model name="sum" type="UniSim::Sum">
+		<parameter name="toAdd" value="(a[value] b[value] c[value])"/>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value="test_sum_3.txt"/>
+		<trace label="x" value="steps[stepNumber]"/>
+		<trace label="a" value="a[value]"/>
+		<trace label="b" value="b[value]"/>
+		<trace label="c" value="c[value]"/>
+		<trace label="sum" value="sum[value]"/>
+	</output>
+</simulation>

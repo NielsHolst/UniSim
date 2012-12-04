@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="150"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar"/>
+
+	<model name="time" type="UniSim::Days"/>
+
+	<!-- Egg -->
+
+	<model name="susceptibleE" type="UniSim::Stage">
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="30"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="phaseOutflowProportion" value="0.1"/>
+	</model>
+
+	<model name="exposedE" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="susceptibleE[duration]"/>
+		<parameter name="k" ref="susceptibleE[k]"/>
+
+		<parameter name="phaseDuration" value="8"/>
+		<parameter name="phaseK" value="12"/>
+		<parameter name="phaseInflow" ref="susceptibleE[phaseOutflow]"/>
+	</model>
+
+	<model name="infectiousE" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="susceptibleE[duration]"/>
+		<parameter name="k" ref="susceptibleE[k]"/>
+
+		<parameter name="phaseDuration" value="5"/>
+		<parameter name="phaseK" value="15"/>
+		<parameter name="phaseInflow" ref="exposedE[phaseOutflow]"/>
+	</model>
+
+	<!-- Larva -->
+
+	<model name="susceptibleL" type="UniSim::Stage">
+		<parameter name="duration" value="300"/>
+		<parameter name="k" value="25"/>
+		<parameter name="inflow" ref="susceptibleE[outflow]"/>
+		<parameter name="phaseOutflowProportion" value="0.1"/>
+	</model>
+
+	<model name="exposedL" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="susceptibleL[duration]"/>
+		<parameter name="k" ref="susceptibleL[k]"/>
+		<parameter name="inflow" ref="exposedE[outflow]"/>
+
+		<parameter name="phaseDuration" ref="exposedE[phaseDuration]"/>
+		<parameter name="phaseK" ref="exposedE[phaseK]"/>
+		<parameter name="phaseInflow" ref="susceptibleL[phaseOutflow]"/>
+	</model>
+
+	<model name="infectiousL" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="susceptibleL[duration]"/>
+		<parameter name="k" ref="susceptibleL[k]"/>
+		<parameter name="inflow" ref="infectiousE[outflow]"/>
+
+		<parameter name="phaseDuration" ref="exposedE[phaseDuration]"/>
+		<parameter name="phaseK" ref="infectiousE[phaseK]"/>
+		<parameter name="phaseInflow" ref="exposedL[phaseOutflow]"/>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value="test_stage_k-k_2D_2D.txt"/>
+		<trace label="Day" ref="calendar[totalDays]"/>
+		<trace label="susceptibleE" ref="susceptibleE[value]"/>
+		<trace label="exposedE" ref="exposedE[value]"/>
+		<trace label="infectiousE" ref="infectiousE[value]"/>
+
+		<trace label="susceptibleL" ref="susceptibleL[value]"/>
+		<trace label="exposedL" ref="exposedL[value]"/>
+		<trace label="infectiousL" ref="infectiousL[value]"/>
+	</output>
+
+</simulation>

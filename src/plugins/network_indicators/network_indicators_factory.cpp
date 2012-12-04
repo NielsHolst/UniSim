@@ -6,6 +6,7 @@
 #include "network_indicators_factory.h"
 #include "farm.h"
 #include "import_indicator.h"
+#include "compartmental_throughflow.h"
 
 using namespace UniSim;
 
@@ -14,6 +15,7 @@ namespace network_indicators{
 void NetworkIndicatorsFactory::defineProducts() {
     addProduct<Farm>("Farm", this, "Model with paramers for farm nitrogen flows");
     addProduct<ImportIndicator>("ImportIndicator", this, "Computes import indicator");
+    addProduct<CompartmentalThroughflow>("CompartmentalThroughflow", this, "Computes compartmental throughflow indicator");
 }
 
 UniSim::Identifier NetworkIndicatorsFactory::id() const {

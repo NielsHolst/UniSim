@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="500"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar"/>
+
+	<model name="time" type="UniSim::Days"/>
+
+	<model name="egg" type="UniSim::Stage">
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="30"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="phaseOutflowProportion" value="0.1"/>
+	</model>
+
+	<model name="infectedEgg" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="egg[duration]"/>
+		<parameter name="phaseDuration" value="5"/>
+		<parameter name="k" ref="egg[k]"/>
+		<parameter name="phaseK" value="10"/>
+		<parameter name="phaseInflow" ref="egg[phaseOutflow]"/>
+	</model>
+
+	<model name="resistantEgg" type="UniSim::Stage">
+		<parameter name="duration" ref="egg[duration]"/>
+		<parameter name="k" ref="egg[k]"/>
+		<parameter name="phaseInflow" ref="infectedEgg[phaseOutflow]"/>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value="test_stage_k-1_2D_1D.txt"/>
+		<variable label="Day" axis="x" value="calendar[totalDays]"/>
+		<variable label="Egg" axis="y" value="egg[value]"/>
+		<variable label="InfectedEgg" axis="y" value="infectedEgg[value]"/>
+		<variable label="ResistentEgg" axis="y" value="resistentEgg[value]"/>
+	</output>
+
+</simulation>

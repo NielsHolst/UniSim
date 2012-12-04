@@ -17,6 +17,8 @@ HEADERS += \
     day_degrees.h \
     days.h \
     distributed_delay.h \
+    distributed_delay_2d.h \
+    distributed_delay_base.h \
     exponential.h \
     fixed.h \
     functional_response_g_b.h \
@@ -43,8 +45,11 @@ HEADERS += \
     scheduled.h \
     sensitivity_analysis.h \
     stage.h \
+    stage_base.h \
     stage_demand.h \
+    stage_and_phase.h \
     steps.h \
+    sum.h \
     time_limited.h \
     trigger_by_date.h \
     unisim_factory.h \
@@ -56,6 +61,8 @@ SOURCES += \
     day_degrees.cpp \
     days.cpp \
     distributed_delay.cpp \
+    distributed_delay_2d.cpp \
+    distributed_delay_base.cpp \
     exponential.cpp \
     fixed.cpp \
     functional_response_g_b.cpp \
@@ -82,8 +89,11 @@ SOURCES += \
     scheduled.cpp \
     sensitivity_analysis.cpp \
     stage.cpp \
+    stage_base.cpp \
     stage_demand.cpp \
+    stage_and_phase.cpp \
     steps.cpp \
+    sum.cpp \
     time_limited.cpp \
     trigger_by_date.cpp \
     unisim_factory.cpp \

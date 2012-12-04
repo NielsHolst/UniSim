@@ -24,6 +24,9 @@ QString VariableBase::description() const {
 }
 
 void VariableBase::assertUniqueness() {
+    if (!parent())
+        return;
+
     QList<VariableBase*> found = seekChildren<VariableBase*>(id().key(), parent());
     bool isUnique = true;
     for (int i=0; isUnique && (i < found.size()); ++i) {

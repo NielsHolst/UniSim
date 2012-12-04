@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="RVFModel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="water" type="rvf::WaterLevel">
+	</model>
+	
+
+	<model name="Aedes">
+		
+		
+		<model name="InactiveEgg" type="rvf::InactiveEgg">
+			<parameter name="initialDensity" value="50"/>
+			<parameter name="lossRate" value="0.002"/>
+			<parameter name="activationRate" value="0.1"/>
+			<parameter name="inflow" ref="Aedes/adult[eggsLaidOnGround]"/>
+		</model>
+		
+		<model name="egg" type="rvf::Egg">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="4.5"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="41"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="Aedes/egg[totalEggsInflow]"/>
+			</model>
+		</model>
+
+		<model name="larva">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="6.7"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="205"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="Aedes/egg/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="pupa">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="5.2"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="98"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="Aedes/larva/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="adult" type="rvf::Adult">
+			<parameter name="density" ref="Aedes/adult/number[value]"/>
+			<parameter name="fecundity" value="150"/>
+			<parameter name="proportionEggsInWater" value="0.9"/>
+
+			<model name="time" type="UniSim::Days"/>
+
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="30"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="Aedes/pupa/number[outflow]"/>
+			</model>
+		</model>
+	</model>
+	
+	<model name="Culex">
+		<model name="fecundity" type="rvf::MosquitoFecundity">
+			<parameter name="waterLevel" ref="water[value]"/>
+		</model>
+
+		<model name="egg">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="4.0"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="38"/>
+				<parameter name="k" value="32"/>
+				<parameter name="inflow" ref="Culex/fecundity[value]"/>
+			</model>
+		</model>
+
+		<model name="larva">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="6.5"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="200"/>
+				<parameter name="k" value="32"/>
+				<parameter name="inflow" ref="Culex/egg/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="pupa">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="5.0"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="90"/>
+				<parameter name="k" value="32"/>
+				<parameter name="inflow" ref="Culex/larva/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="adult">
+			<model name="time" type="UniSim::Days"/>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="32"/>
+				<parameter name="k" value="10"/>
+				<parameter name="inflow" ref="Culex/pupa/number[outflow]"/>
+			</model>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Harlingen weather log"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Water level"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Water" value="water[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Egg-laying rate"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Water" value="Aedes/InactiveEgg[value]"/>
+		<trace label="Water" value="Culex/fecundity[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Aedes numbers"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Inactive eggs" value="InactiveEgg[density]"/>
+		<trace label="Eggs" value="Aedes/egg/number[value]"/>
+		<trace label="Larvae" value="Aedes/larva/number[value]"/>
+		<trace label="Pupae" value="Aedes/pupa/number[value]"/>
+		<trace label="Adults" value="Aedes/adult/number[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Culex numbers"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Eggs" value="Culex/egg/number[value]"/>
+		<trace label="Larvae" value="Culex/larva/number[value]"/>
+		<trace label="Pupae" value="Culex/pupa/number[value]"/>
+		<trace label="Adults" value="Culex/adult/number[value]"/>
+	</output>
+</simulation>

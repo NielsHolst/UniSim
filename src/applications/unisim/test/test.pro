@@ -26,6 +26,7 @@ HEADERS += \
     $${US_BASE}/test/test_moments.h \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
+    $${US_BASE}/test/test_parameter_vector.h \
     $${US_BASE}/test/test_push_variable.h \
     $${US_BASE}/test/test_root_solver.h \
     $${US_BASE}/test/test_strata.h \
@@ -43,16 +44,22 @@ HEADERS += \
     $${US_PLUGINS}/intercom/test/test_plant.h \
     $${US_PLUGINS}/unisim/anonymous_model.h \
     $${US_PLUGINS}/unisim/distributed_delay.h \
+    $${US_PLUGINS}/unisim/distributed_delay_2d.h \
+    $${US_PLUGINS}/unisim/distributed_delay_base.h \
     $${US_PLUGINS}/unisim/stage.h \
+    $${US_PLUGINS}/unisim/stage_base.h \
+    $${US_PLUGINS}/unisim/stage_and_phase.h \
     $${US_PLUGINS}/unisim/steps.h \
     $${US_PLUGINS}/unisim/test/test_calendar.h \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.h \
+    $${US_PLUGINS}/unisim/test/test_distributed_delay_2d.h \
     $${US_PLUGINS}/unisim/test/test_fixed.h \
     $${US_PLUGINS}/unisim/test/test_random.h \
     $${US_PLUGINS}/unisim/test/test_range.h \
     $${US_PLUGINS}/unisim/test/test_records.h \
     $${US_PLUGINS}/unisim/test/test_scheduled.h \
     $${US_PLUGINS}/unisim/test/test_stage.h \
+    $${US_PLUGINS}/unisim/test/test_sum.h \
     $${US_PLUGINS}/unisim/output_plot.h \
     $${US_PLUGINS}/unisim/plot.h \
     $${US_PLUGINS}/unisim/test/test_crosstab.h \
@@ -71,6 +78,7 @@ SOURCES += \
     $${US_BASE}/test/test_moments.cpp \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
+    $${US_BASE}/test/test_parameter_vector.cpp \
     $${US_BASE}/test/test_push_variable.cpp \
     $${US_BASE}/test/test_root_solver.cpp \
     $${US_BASE}/test/test_strata.cpp \
@@ -88,16 +96,22 @@ SOURCES += \
     $${US_PLUGINS}/intercom/test/test_plant.cpp \
     $${US_PLUGINS}/unisim/anonymous_model.cpp \
     $${US_PLUGINS}/unisim/distributed_delay.cpp \
+    $${US_PLUGINS}/unisim/distributed_delay_2d.cpp \
+    $${US_PLUGINS}/unisim/distributed_delay_base.cpp \
     $${US_PLUGINS}/unisim/stage.cpp \
+    $${US_PLUGINS}/unisim/stage_base.cpp \
+    $${US_PLUGINS}/unisim/stage_and_phase.cpp \
     $${US_PLUGINS}/unisim/steps.cpp \
     $${US_PLUGINS}/unisim/test/test_calendar.cpp \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.cpp \
+    $${US_PLUGINS}/unisim/test/test_distributed_delay_2d.cpp \
     $${US_PLUGINS}/unisim/test/test_fixed.cpp \
     $${US_PLUGINS}/unisim/test/test_random.cpp \
     $${US_PLUGINS}/unisim/test/test_range.cpp \
     $${US_PLUGINS}/unisim/test/test_records.cpp \
     $${US_PLUGINS}/unisim/test/test_scheduled.cpp \
     $${US_PLUGINS}/unisim/test/test_stage.cpp \
+    $${US_PLUGINS}/unisim/test/test_sum.cpp \
     $${US_PLUGINS}/unisim/output_plot.cpp \
     $${US_PLUGINS}/unisim/plot.cpp \
     $${US_PLUGINS}/unisim/test/test_crosstab.cpp \

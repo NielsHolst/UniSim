@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="150"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar"/>
+
+	<model name="time" type="UniSim::Days"/>
+
+	<model name="susceptible" type="UniSim::Stage">
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="30"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="phaseOutflowProportion" value="0.1"/>
+	</model>
+
+	<model name="exposed" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="susceptible[duration]"/>
+		<parameter name="k" ref="susceptible[k]"/>
+		<parameter name="phaseDuration" value="5"/>
+		<parameter name="phaseK" value="10"/>
+		<parameter name="phaseInflow" ref="susceptible[phaseOutflow]"/>
+	</model>
+
+	<model name="infectious" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="susceptible[duration]"/>
+		<parameter name="k" ref="susceptible[k]"/>
+		<parameter name="phaseDuration" value="10"/>
+		<parameter name="phaseK" value="15"/>
+		<parameter name="phaseInflow" ref="exposed[phaseOutflow]"/>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value="test_stage_k-k_2D_2D.txt"/>
+		<variable label="Day" axis="x" value="calendar[totalDays]"/>
+		<variable label="Egg" axis="y" value="egg[value]"/>
+		<variable label="susceptible" axis="y" value="susceptible[value]"/>
+		<variable label="exposed" axis="y" value="exposed[value]"/>
+		<variable label="infectious" axis="y" value="infectious[value]"/>
+	</output>
+
+</simulation>

@@ -14,7 +14,7 @@ Mussel::Mussel(Identifier name, QObject *parent)
 {
     new Parameter<double>("initialDensity", &initialDensity, 1., this, "desc");
     new Parameter<double>("lossRate", &lossRate, 0., this, "desc");
-    new Parameter<double>("growthRate", &growthRate, 0.1, this, "desc");
+    new Parameter<double>("growthRate", &growthRate, 0.02, this, "desc");
     new Variable<double>("density", &density, this, "desc");
 }
 

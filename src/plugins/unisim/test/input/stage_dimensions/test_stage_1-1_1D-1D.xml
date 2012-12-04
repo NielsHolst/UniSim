@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="200"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar"/>
+
+	<model name="time" type="UniSim::Days"/>
+
+	<model name="egg" type="UniSim::Stage">
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="30"/>
+		<parameter name="initialInflow" value="100"/>
+	</model>
+
+	<model name="chicken" type="UniSim::Stage">
+		<parameter name="duration" value="50"/>
+		<parameter name="k" value="15"/>
+		<parameter name="inflow" ref="egg[outflow]"/>
+	</model>
+	
+	<output type="table">
+		<parameter name="filename" value="test_stage_1-1_1D-1D.txt"/>
+		<trace label="Day" ref="calendar[totalDays]"/>
+		<trace label="Egg" ref="egg[value]"/>
+		<trace label="Chicken" ref="chicken[value]"/>
+		<trace label="TotalOutflow" ref="chicken[outflowTotal]"/>
+	</output>
+
+</simulation>

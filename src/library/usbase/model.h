@@ -12,7 +12,9 @@
 #include "identifier.h"
 #include "utilities.h"
 #include "parameter.h"
+#include "parameter_vector.h"
 #include "variable.h"
+#include "variable_vector.h"
 
 namespace UniSim{
 
@@ -28,6 +30,10 @@ public:
     template <class T> T pullValue(Identifier name);
     template <class T> const T* pullValuePtr(Identifier name);
     template <class T> void pushValue(Identifier name, T value);
+
+    template <class T> const QVector<T>& pullValueVector(Identifier name);
+    template <class T> const QVector<T>* pullValueVectorPtr(Identifier name);
+    template <class T> void pushValueVector(Identifier name, const QVector<T> &value);
 
     Identifier classId();
     QString peekKeyValue(Identifier key);
@@ -62,6 +68,21 @@ template <class T>
 void Model::pushValue(Identifier name, T value)
 {
     seekOneChild<Parameter<T>*>(name.key())->setValue(value);
+}
+
+template <class T>
+const QVector<T>& Model::pullValueVector(Identifier name) {
+    return seekOneChild<VariableVector<T>*>(name.key())->value();
+}
+
+template <class T>
+const QVector<T>* Model::pullValueVectorPtr(Identifier name) {
+    return seekOneChild<VariableVector<T>*>(name.key())->valuePtr();
+}
+
+template <class T>
+void Model::pushValueVector(Identifier name, const QVector<T> &value) {
+    seekOneChild<ParameterVector<T>*>(name.key())->setValue(value);
 }
 
 } //namespace

@@ -7,12 +7,19 @@
 #include "mussel.h"
 #include "mussel_growth_rate.h"
 #include "temperature_scale.h"
+#include "salinity_scale.h"
+#include "starfish.h"
+#include "starfish_feeding_rate.h"
+#include "starfish_growth_rate.h"
+#include "temperature_stscale.h"
+#include "mussel_loss_rate.h"
 
 using namespace UniSim;
 
 namespace mussel_bed{
 
 void Mussel_bedFactory::defineProducts() {
+
     addProduct<Mussel>("Mussel", this,
     "Mussel population model");
 
@@ -21,6 +28,24 @@ void Mussel_bedFactory::defineProducts() {
 
     addProduct<TemperatureScale>("TemperatureScale", this,
     "Scaling of growth rate by temperature. Yields a number [0;1]");
+
+    addProduct<SalinityScale>("SalinityScale", this,
+    "Scaling of growth rate by Salinity. Yields a number [0;1]");
+
+    addProduct<Starfish>("Starfish", this,
+    "starfish population model");
+
+    addProduct<StarfishFeedingRate>("StarfishFeedingRate", this,
+    "Scaled Feeding rate of starfish");
+
+    addProduct<StarfishGrowthRate>("StarfishGrowthRate", this,
+    "transform feeding rate into new starfish biomass");
+
+    addProduct<TemperatureStScale>("TemperatureStScale", this,
+    "Scaling of feeding rate of starfish by Temperature. Yields a number [0;1]");
+
+    addProduct<MusselLossRate>("MusselLossRate", this,
+    "Mussel biomass reduction rate");
 }
 
 UniSim::Identifier Mussel_bedFactory::id() const {
@@ -34,8 +59,8 @@ QString Mussel_bedFactory::description() const {
 
 QStringList Mussel_bedFactory::authors() const {
     return QStringList()
-        << "Niels";
-    // Add Antonio
+        << "Niels & Antonio";
+
 }
 
 QObject* Mussel_bedFactory::asQObject() {
@@ -44,4 +69,6 @@ QObject* Mussel_bedFactory::asQObject() {
 
 Q_EXPORT_PLUGIN2(mussel_bed_factory, Mussel_bedFactory)
 
-} //namespace
+}
+ //namespace
+

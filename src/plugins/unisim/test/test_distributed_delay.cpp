@@ -18,7 +18,7 @@ void TestDistributedDelay::testBracket() {
 }
 
 void TestDistributedDelay::verifyGrowth(double sdRatio) {
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     DistributedDelay::Brackets b;
     b = dd.bracket(inflow, dt, fgr, sdRatio);
     QVERIFY( TestNum::eq(growth(b.fgr1), demand) );
@@ -27,43 +27,43 @@ void TestDistributedDelay::verifyGrowth(double sdRatio) {
 }
 
 double TestDistributedDelay::growth(double fgr) {
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     dd.update(inflow, dt, fgr);
     return dd.state().growthRate;
 }
 
 double TestDistributedDelay::growthZeroInflow(double fgr) {
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     dd.update(0, dt, fgr);
     return dd.state().growthRate;
 }
 
 void TestDistributedDelay::testFindFgrBig() {
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     double fit = dd.findFgr(inflow, dt, fgr, 0.999);
     QVERIFY( TestNum::eq(growth(fit), 0.999*demand) );
 }
 
 void TestDistributedDelay::testFindFgrSmall() {
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     double fit = dd.findFgr(inflow, dt, fgr, 0.001);
     QVERIFY( TestNum::eq(growth(fit), 0.001*demand) );
 }
 
 void TestDistributedDelay::testFindFgrAtDemand() {
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     double fit = dd.findFgr(inflow, dt, fgr, 1);
     QCOMPARE(fit, fgr);
 }
 
 void TestDistributedDelay::testFindFgrZeroSupply(){
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     double fit = dd.findFgr(inflow, dt, fgr, 0);
     QCOMPARE(fit, 1.);
 }
 
 void TestDistributedDelay::testFindFgrZeroInflow() {
-    DistributedDelay dd(p);
+    DistributedDelay dd(p, 0);
     double fit = dd.findFgr(0., dt, fgr, 1);
     QVERIFY( TestNum::eqZero(growthZeroInflow(fit)) );
 }

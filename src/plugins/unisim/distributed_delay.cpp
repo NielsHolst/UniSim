@@ -11,18 +11,20 @@
 	
 namespace UniSim {
 
-DistributedDelay::DistributedDelay(const Parameters &p_)
-    : p(p_)
+DistributedDelay::DistributedDelay(const Parameters &p_, QObject *parent)
+    : DistributedDelayBase(parent), p(p_)
 //! Create distributed delay from parameters
 {
     x.resize(p.k);
-    s.data = x.data();
+//    s.data = x.data();
 }
 
 DistributedDelay::DistributedDelay(const DistributedDelay &dd)
-    : p(dd.p), s(dd.s), x(dd.x)
+    : DistributedDelayBase(dd.parent), p(dd.p), s(dd.s)
 //! Create distributed delay as a copy of existing distributed delay
 {
+    x = dd.x;
+    xSum = dd.xSum;
 }
 
 void DistributedDelay::update(double inflow, double dt, double fgr) {
@@ -30,7 +32,7 @@ void DistributedDelay::update(double inflow, double dt, double fgr) {
 /*! Add inflow and update by time step (dt). Apply finite growth rate () by 'attrition' mechanism.
 */
     // To compute net change
-    double totalBefore = s.content + inflow;
+    double totalBefore = xSum + inflow;
 
     // Set del and attrition according to Vansickle
     double 	del = p.L*pow(fgr, -1./p.k),
@@ -65,9 +67,9 @@ void DistributedDelay::update(double inflow, double dt, double fgr) {
         // Finish with first age class; enter inflow into that
         x[0] += dividedInflow - a*b*x.at(0);
     }
-    s.data = x.data();
-    s.content = accum(x);
-    s.growthRate = s.content + s.outflowRate - totalBefore;
+    //s.data = x.data();
+    xSum = accum(x);
+    s.growthRate = xSum + s.outflowRate - totalBefore;
 }
 
 DistributedDelay::Brackets DistributedDelay::bracket(double inflow, double dt, double fgr, double sdRatio) {
@@ -113,7 +115,7 @@ double DistributedDelay::findFgr(double inflow, double dt, double fgr, double sd
 /*!
 */
     Q_ASSERT(sdRatio>=0 && sdRatio<=1);
-    bool isEmpty = s.content + inflow == 0.;
+    bool isEmpty = xSum + inflow == 0.;
     if (sdRatio == 0)
         return 1;
     else if (sdRatio == 1 || isEmpty)
@@ -142,18 +144,6 @@ double DistributedDelay::findFgr(double inflow, double dt, double fgr, double sd
     if (!sol.converged)
         throw Exception("DistributedDelay could not estimate growth rate to match supply");
     return sol.root;
-}
-
-void DistributedDelay::scale(double factor) {
-    if (factor == 0.) {
-        x.fill(0.);
-        s.content = 0.;
-    }
-    else if (factor != 1.) {
-        double *v = x.data();
-        for (int i = 0; i < p.k; ++i, ++v) *v *= factor;
-        s.content *= factor;
-    }
 }
 
 DistributedDelay::State DistributedDelay::state() const {

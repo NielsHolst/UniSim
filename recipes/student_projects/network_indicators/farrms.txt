@@ -1,3 +1,0 @@
-name	animalIntake	respiration	soilLossesuptakeCrops
-dairy_farm	500	75	10	120
-pig_farm	950	130	14	150

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="150"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar"/>
+
+	<model name="time" type="UniSim::Days"/>
+
+	<model name="egg" type="UniSim::Stage">
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="30"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="phaseOutflowProportion" value="0.1"/>
+	</model>
+
+	<model name="infectedEgg" type="UniSim::StageAndPhase">
+		<parameter name="duration" ref="egg[duration]"/>
+		<parameter name="k" ref="egg[k]"/>
+		<parameter name="phaseDuration" value="10"/>
+		<parameter name="phaseK" value="15"/>
+		<parameter name="phaseInflow" ref="egg[phaseOutflow]"/>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value="test_stage_k-k_1D-2D.txt"/>
+		<trace label="Day" ref="calendar[totalDays]"/>
+		<trace label="Egg" ref="egg[value]"/>
+		<trace label="phaseOutflow" ref="egg[phaseOutflow]"/>		
+		<trace label="phaseInflow" ref="infectedEgg[phaseInflow]"/>		
+		<trace label="InfectedEgg" ref="infectedEgg[value]"/>
+		<trace label="Outflow" ref="infectedEgg[outflow]"/>
+		<trace label="TotalOutflow" ref="infectedEgg[outflowTotal]"/>
+		<trace label="TotalPhaseOutflow" ref="infectedEgg[phaseOutflowTotal]"/>
+	</output>
+
+</simulation>

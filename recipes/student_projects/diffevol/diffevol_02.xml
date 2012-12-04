@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Differential Evolution">
+	<integrator name="de" type="diffevol::DifferentialEvolution">
+		<parameter name="maxSteps" value="100"/>
+		<parameter name="precision" value="0.1"/>
+	</integrator>
+
+	<model name="plots">
+		<model type="diffevol::Plot" table="plots_5.txt">
+			<model type="diffevol::Year" table="plot_years_5.txt"/>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Parameter values"/>
+		<trace label="Step" ref="de[stepNumber]"/>
+		<trace label="fert" ref="de[fert]"/>
+		<trace label="fung" ref="de[fung]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Deviation"/>
+		<trace label="Step" ref="de[stepNumber]"/>
+		<trace label="Deviation" ref="de[Deviation]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Fertiliser slope"/>
+		<trace label="fert" ref="de[fert]"/>
+		<trace label="Deviation" ref="de[Deviation]" type="symbols"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Fungicide slope"/>
+		<trace label="fung" ref="de[fung]"/>
+		<trace label="Deviation" ref="de[Deviation]" type="symbols"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Intercept"/>
+		<trace label="intercept" ref="de[intercept]"/>
+		<trace label="Deviation" ref="de[Deviation]" type="symbols"/>
+	</output>
+
+</simulation>

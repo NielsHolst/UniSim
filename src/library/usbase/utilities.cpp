@@ -107,6 +107,37 @@ double accum(const QVector<double> &x) {
     return sum;
 }
 
+void increment(QVector<double> &x, const QVector<double> &toAdd) {
+    int n = x.size();
+    Q_ASSERT(n == toAdd.size());
+    increment(const_cast<double*>(x.data()), toAdd.data(), n);
+}
+
+void increment(double *x, const double *toAdd, int n) {
+    for (int i = 0; i < n; ++i, ++x, ++toAdd)
+        *x += *toAdd;
+    }
+
+QVector<double> add(const QVector<double> &x, const QVector<double> &y) {
+    QVector<double> v;
+    int n = x.size();
+    Q_ASSERT(n == y.size());
+    v.resize(n);
+    double *destination = const_cast<double*>( v.data() );
+    const double *source1 = x.data();
+    const double *source2 = y.data();
+    for (int i = 0; i < n; ++i, ++destination, ++source1, ++source2)
+        *destination = *source1 + *source2;
+    return v;
+}
+
+void scale(QVector<double> &x, double factor) {
+    double *p = const_cast<double*>(x.data());
+    int n = x.size();
+    for (int i = 0; i < n; ++i, ++p)
+        *p *= factor;
+}
+
 
 //! Interpolate from (x,y) table
 /*! Interpolates a y-value from the given x-value. For x-values less than the first x-value in the table,

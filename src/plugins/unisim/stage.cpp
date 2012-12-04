@@ -11,87 +11,50 @@
 #include <usbase/test_num.h>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
+#include <usbase/parameter_vector.h>
 #include <usbase/variable.h>
+#include <usbase/variable_vector.h>
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
+#include "distributed_delay.h"
 #include "stage.h"
 	
 namespace UniSim {
 
 Stage::Stage(UniSim::Identifier name, QObject *parent)
-    : UniSim::Model(name, parent), dd(0)
+    : StageBase(name, parent), dd(0)
 {
-    new Parameter<int>("k", &k, 30, this,
-        "The number of age classes in the stage. The fewer age classes, the larger the variance on @F {duration}");
-    new Parameter<double>("duration", &L, 100., this,
-        "The average duration of the stage: an inflow will emerge as an outflow dispersed "
-        "over time, with a delay of @F duration on average and a variance of @Math {@F duration sup 2 slash @F k sup 2} "
-        "@Cite{$label{(Manetsch 1976)}manetsch}");
-    new Parameter<double>("growthRate", &fgr, 1., this,
-        "For every quantity @I x that enters as inflow, @I growthRate*x will emerge as outflow. "
-        "@F growthRate can be changed during the simulation but must be larger than zero. "
-        "Use small values (e.g., @Math {10 sup {-6}}) instead of zero. "
-        "@F growthRate is also a pull/push variable");
-    new Parameter<double>("initialInflow", &initialInflow, 0., this,
-        "The @F initialInflow is entered as inflow at time 0");
     new Parameter<double>("inflow", &inflow, 0., this,
         "Number of units to be put into the stage in the next time step");
-    new Parameter<double>("sdRatio", &sdRatio, 1., this,
-        "Supply/Demand ratio");
-    new Parameter<double>("instantMortality", &instantMortality, 0., this,
-        "Mortality [0..100] will be applied in the next time step, before @F inflow is added");
-    new Parameter<double>("instantLossRate", &instantLossRate, 0., this,
-        "Works just like @F mortality except the scale is a ratio [0..1]");
+    new Parameter<double>("initialInflow", &initialInflow, 0., this,
+        "The @F initialInflow is entered as inflow at time 0");
+    new Parameter<double>("phaseOutflowProportion", &phaseOutflowProportion, 0., this,
+        "Proportion that will change phase in next time step");
 
-    new Variable<double>("value", &sum, this,
-        "Number of units (e.g. individuals) in stage");
-    new Variable<double>("number", &sum, this,
-        "Synonymous with @F {value}");
     new Variable<double>("latestInflow", &latestInflow, this,
         "Inflow into the stage in latest time step");
     new Variable<double>("outflow", &outflow, this,
         "Outflow from the stage in latest time step");
-    new Variable<double>("inflowTotal", &inflowTotal, this,
-        "Total inflow into the stage since beginning of the simulation");
-    new Variable<double>("outflowTotal", &outflowTotal, this,
-        "Total outflow from the stage since beginning of the simulation");
     new Variable<double>("timeStep", &dt, this,
         "The latest time step applied to the stage");
-    new Variable<double>("growthIncrement", &growth, this,
-        "Increment realised in this integration step");
 }
 
-Stage::~Stage() {
-    delete dd;
-}
-
-void Stage::initialize()
-{
-    if (k <= 0)
-        throw Exception(QString("k (%1) must be > 0").arg(k), this);
-    if (L <= 0)
-        throw Exception(QString("Duration (%1) must be > 0").arg(L), this);
-
-    time = seekOneNearest<Model*>("time");
-
+DistributedDelayBase* Stage::createDistributedDelay() {
     DistributedDelay::Parameters p;
     p.L = L;
     p.k = k;
     p.minIter = 1;
     delete dd;
-    dd = new DistributedDelay(p);
+    return dd = new DistributedDelay(p, this);
 }
 
-
-void Stage::reset()
-{
-    dd->scale(0);
-    sum = /*inflow =*/ inflowPending = outflow = inflowTotal = outflowTotal = latestInflow = growth = 0;
+void Stage::reset() {
+    StageBase::reset();
+    inflowPending = dt = latestInflow = outflow = 0.;
     firstUpdate = true;
 }
 
-void Stage::update()
-{
+void Stage::update() {
     applyInstantMortality();
 
     latestInflow = 0.;
@@ -105,11 +68,20 @@ void Stage::update()
     inflowPending += inflow;
     inflowTotal += inflow;
     latestInflow += inflow;
-    //inflow = 0;
+
+    if (!phaseInflow.isEmpty()) {
+        if (phaseInflow.size() != k) {
+            QString msg("phaseInflow's size (k=%1) does not match the size of the recipient (k=%2)");
+            throw Exception(msg.arg(phaseInflow.size()).arg(k), this);
+        }
+        double *contents = const_cast<double*>(data());
+        increment(contents, phaseInflow.data(), k);
+        phaseInflowTotal += accum(phaseInflow);
+    }
 
     dt = time->pullValue<double>("step");
     if (TestNum::eqZero(dt)) {
-        sum = dd->state().content + inflowPending;
+        sum = dd->content() + inflowPending;
         outflow = growth = 0.;
         return;
     }
@@ -124,28 +96,13 @@ void Stage::update()
     dd->update(inflowPending, dt, realFgr);
     inflowPending = 0;
 
-    sum = dd->state().content;
-    outflow = dd->state().outflowRate;
-    growth = dd->state().growthRate;
-}
-
-void Stage::applyInstantMortality() {
-    if (instantMortality > 0. && instantLossRate > 0.) {
-        QString msg = "Parameters instantMortality and instantLossRate cannot both be > 0 (the are %1 and %2)";
-        throw Exception(msg.arg(instantMortality).arg(instantLossRate));
+    if (phaseOutflowProportion > 0.) {
+        phaseOutflow = dd->take(phaseOutflowProportion);
+        phaseOutflowTotal += accum(phaseOutflow);
     }
-    double survival = 1. - instantMortality/100. - instantLossRate;
-    TestNum::snapToZero(survival);
-    TestNum::snapTo(survival, 1.);
-    if (survival < 0 || survival > 1.)
-       throw Exception(QString("Survival (%1) must be in the range [0;1]").arg(survival), this);
-    dd->scale(survival);
-    inflowPending *= survival;
-    instantMortality = instantLossRate = 0;
-}
-
-const double* Stage::data() {
-    return dd->state().data;
+    sum = dd->content();
+    outflowTotal += outflow = dd->state().outflowRate;
+    growth = dd->state().growthRate;
 }
 
 double Stage::growthDemand() {

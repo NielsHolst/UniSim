@@ -12,6 +12,8 @@ HEADERS += \
     fecundity.h \
     growth.h \
     life_stage.h \
+    queen_fecundity.h \
+    queen_fecundity2.h \
     resource.h \
     small_hive_beetle.h
 
@@ -20,6 +22,8 @@ SOURCES += \
     fecundity.cpp \
     growth.cpp \
     life_stage.cpp \
+    queen_fecundity.cpp \
+    queen_fecundity2.cpp \
     resource.cpp \
     small_hive_beetle.cpp
 

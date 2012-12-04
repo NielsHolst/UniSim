@@ -1,0 +1,14 @@
+ParameterBase
+- void setPendingRedirection(Reference)
+- Reference pendingRedirection();
+- setValueFromString cancels any pending redirection
+
+Parameter<T>
+- setValueFromString cancels any pending redirection
+- redirectValuePtr cancels any pending redirection
+
+Reference
+- contains a string and a cancelled flag
+
+SimulationMaker
+- loops through all parameters and carries out pending redirections found

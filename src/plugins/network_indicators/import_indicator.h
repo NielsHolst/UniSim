@@ -6,24 +6,15 @@
 #ifndef NETWORK_INDICATORS_IMPORT_INDICATOR_H
 #define NETWORK_INDICATORS_IMPORT_INDICATOR_H
 
-#include <QList>
-#include <QVector>
-#include <usbase/model.h>
+#include "indicator_base.h"
 
 namespace network_indicators {
 
-class ImportIndicator : public UniSim::Model
+class ImportIndicator : public IndicatorBase
 {
 public:
     ImportIndicator(UniSim::Identifier name, QObject *parent);
-    void amend();
-    void reset();
-    void update();
 private:
-    // links
-    QList<Model*> farms;
-    QVector<double> farmIndicators;
-
     // methods
     double computeIndicator(UniSim::Model *farm);
 };

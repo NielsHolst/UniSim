@@ -16,8 +16,12 @@
 #include <usbase/exception.h>
 #include <usbase/output.h>
 #include <usbase/trace.h>
+#include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
+#include <usbase/parameter_vector.h>
+#include <usbase/variable.h>
 #include <usbase/variable_base.h>
+#include <usbase/variable_vector.h>
 #include <usbase/utilities.h>
 #include "instance_index_from_condensed_table.h"
 #include "instance_index_from_table.h"
@@ -579,17 +583,40 @@ QString SimulationMaker::message(QString text) const {
 }
 
 namespace {
-    template <class T>
-    bool couple(ParameterBase *parameter, const VariableBase *variable) {
-        Parameter<T>* parameterT = dynamic_cast<Parameter<T>*>(parameter);
-        const Variable<T> *variableT = dynamic_cast<const Variable<T>*>(variable);
-        bool matchedT = parameterT && variableT;
-        if (matchedT) {
-            const T *redirectTo = variableT->valuePtr();
-            parameterT->redirectValuePtr(redirectTo);
-        }
+
+
+    template <class ParameterT, class VariableT, class ValuePtrT>
+    bool baseCouple(ParameterBase *parameter, const VariableBase *variable)
+    {
+        ParameterT* parameterTyped = dynamic_cast<ParameterT*>(parameter);
+        const VariableT *variableTyped = dynamic_cast<const VariableT*>(variable);
+        bool matchedT = parameterTyped && variableTyped;
+            if (matchedT) {
+                const ValuePtrT *redirectTo = variableTyped->valuePtr();
+                parameterTyped->redirectValuePtr(redirectTo);
+            }
         return matchedT;
     }
+
+
+    template <class T>
+    bool couple(ParameterBase *parameter, const VariableBase *variable)
+    {
+        return baseCouple<Parameter<T>, Variable<T>, T >(parameter, variable) ||
+               baseCouple<ParameterVector<T>, VariableVector<T>, QVector<T> >(parameter, variable);
+    }
+
+//    template <class T>
+//    bool couple(ParameterBase *parameter, const VariableBase *variable) {
+//        Parameter<T>* parameterT = dynamic_cast<Parameter<T>*>(parameter);
+//        const Variable<T> *variableT = dynamic_cast<const Variable<T>*>(variable);
+//        bool matchedT = parameterT && variableT;
+//        if (matchedT) {
+//            const T *redirectTo = variableT->valuePtr();
+//            parameterT->redirectValuePtr(redirectTo);
+//        }
+//        return matchedT;
+//    }
 }
 
 void SimulationMaker::redirectParameters() {

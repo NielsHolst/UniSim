@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "temperature_scale.h"
-
+#include <math.h>
 using namespace UniSim;
 
 namespace mussel_bed {
@@ -12,7 +12,6 @@ namespace mussel_bed {
 TemperatureScale::TemperatureScale(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("optimum", &optimum, 20., this, "desc");
     new Parameter<double>("temperature", &temperature, 12., this, "desc");
     new Variable<double>("value", &value, this, "desc");
 }
@@ -22,11 +21,15 @@ void TemperatureScale::reset() {
 }
 
 void TemperatureScale::update() {
-    value = 1. - fabs(temperature - optimum)/optimum;
-    if (value < 0.)
+    if (temperature>0){
+        if (temperature > 12)
+            value = 170 * pow(temperature,-2.048);
+        else
+            value = 0.0015 * pow(temperature, 2.625);
+    }
+    else
         value = 0.;
-}
-
+    }
 
 } //namespace
 

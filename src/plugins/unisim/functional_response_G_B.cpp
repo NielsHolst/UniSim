@@ -26,7 +26,7 @@ FunctionalResponseGB::FunctionalResponseGB(Identifier name, QObject *parent)
         "Demand to cover respiration costs");
 
     new Variable<double>("supply", &supply, this,
-        "The net supply obtained (predators killed, parasitoids infected [0; @F{demand}]");
+        "The net supply obtained (net resource consumption, parasitoids infected [0; @F{demand}]");
     new Variable<double>("sdRatio", &sdRatio, this,
         "The supply/demand ratio [0;1]");
     new Variable<double>("totalDemand", &totalDemand, this,

@@ -6,7 +6,9 @@
 #ifndef DIFFEVOL_DIFFERENTIAL_EVOLUTION_H
 #define DIFFEVOL_DIFFERENTIAL_EVOLUTION_H
 
+#include <QFile>
 #include <QList>
+#include <QVector>
 #include <boost/random/uniform_real_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <usbase/integrator.h>
@@ -26,13 +28,29 @@ public:
     bool nextStep();
 
 private:
-    // parameters
+    // optimization parameters
     int maxSteps;
-    double precision, a, b;
+    double precision;
+    QString outputFileName;
+
+    // regression coefficient parameters
+    struct Coefficients {
+        double fert, fung, intercept;
+    };
+    Coefficients coeff;
 
     // variables
     double deviation;
-    bool found, passedMaxSteps;
+    bool found, passedMaxSteps, stopInNextStep;
+
+    // DE population data
+    struct Allele {
+        QString name;
+        double area, slope, fertiliser, fungicide, yield;
+    };
+    typedef QVector<Allele> Genome;
+    Genome genome;              // Only one genome present; it drifts randomly
+    QList<Genome> population;   // Not yet used
 
     // random number generation
     typedef boost::random::uniform_real_distribution<double> Distribution;
@@ -40,16 +58,13 @@ private:
     Distribution *distribution;
     Variate *variate;
 
-    // data
-    bool stopInNextStep;
-    struct Sample {
-        const double *area, *slope, *fertiliser, *fungicide, *yield;
-    };
-    QList<Sample> samples;
-
     // methods
-    void collectSamples();
+    void collectPlots();
     void computeDeviation();
+    void drift();
+    void drift(Allele &a);
+    void openFile();
+    void writeOutput();
 };
 
 

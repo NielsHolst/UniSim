@@ -5,7 +5,7 @@
 */
 #include <QFile>
 #include <QTextStream>
-#include <QtXml/QXmlStreamReader>
+#include <QXmlStreamReader>
 #include "authors.h"
 #include "exception.h"
 

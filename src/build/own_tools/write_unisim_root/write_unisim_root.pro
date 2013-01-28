@@ -1,5 +1,5 @@
 DESTDIR = ..
-TARGET = write_unisim_root
+TARGET = write_unisim_root_app
 TEMPLATE = app
 QT -= gui
 CONFIG -= app_bundle

@@ -2,6 +2,9 @@
 # Configuration of make process (can be edited)
 #
 
+BOOST_ROOT = /home/nho/dev/boost_1_52_0
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 UNISIM_VERSION      = 1-42
 
 CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
@@ -11,7 +14,10 @@ CONFIG += unisim_development     # Activate this if targets are under developmen
 # Ensuing configuration (should not be edited)
 #
 
-QMAKE_LFLAGS +=  -enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
+win32 {
+    # Check if this will be needed for Qt5.0
+    QMAKE_LFLAGS +=  -enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
+}
 
 DEFINES += UNISIM_VERSION
 
@@ -49,4 +55,4 @@ US_BASE_LIB_NAME = base_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 US_ENGINE_LIB_NAME = engine_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 US_UNISIM_PLUGIN_LIB_NAME = unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 
-INCLUDEPATH += "$$(BOOST_ROOT)" "$${UNISIM_ROOT}/src/library" "$${US_PLUGINS}"
+INCLUDEPATH += "$${BOOST_ROOT}" "$${UNISIM_ROOT}/src/library" "$${US_PLUGINS}"

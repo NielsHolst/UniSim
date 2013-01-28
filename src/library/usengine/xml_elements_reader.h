@@ -5,7 +5,7 @@
 */
 #ifndef UNISIM_XML_ELEMENTS_READER_H
 #define UNISIM_XML_ELEMENTS_READER_H
-#include <QtXml/QXmlStreamReader>
+#include <QXmlStreamReader>
 
 class QFile;
 

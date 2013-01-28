@@ -9,7 +9,7 @@
 #include <QHashIterator>
 #include <QMessageBox>
 #include <QTextStream>
-#include <QtXml/QXmlStreamReader>
+#include <QXmlStreamReader>
 #include <usbase/data_grid.h>
 #include <usbase/model.h>
 #include <usbase/integrator.h>
@@ -66,13 +66,11 @@ SimulationMaker::~SimulationMaker()
 bool SimulationMaker::nextElementDelim()
 {
     QString myTest = elementName();
-    QXmlStreamReader::TokenType myType;
     bool unusedElement;
     if (moreToRead()) {
 		do {
 			reader->readNext();
             myTest = elementName();
-            myType = reader->tokenType();
             bool commonElement = reader->isStartElement() && elementNameEquals("common");
 
             unusedElement = commonElement || !(reader->isStartElement() || reader->isEndElement());

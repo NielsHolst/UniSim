@@ -99,7 +99,7 @@ void Integrator::closeReport() {
     reporting = false;
 }
 
-void Integrator::acceptException(Exception *e) {
+void Integrator::acceptException(Exception *) {
     closeReport();
 }
 

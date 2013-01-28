@@ -7,7 +7,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
-#include <QtXml/QXmlStreamReader>
+#include <QXmlStreamReader>
 #include <usbase/exception.h>
 #include "xml_elements_reader.h"
 

@@ -370,7 +370,7 @@ QStringList splitParentChildExpression(QString expression) {
     return result;
 }
 
-template<> QString stringToValue<QString>(QString s_, QObject *concerning) {
+template<> QString stringToValue<QString>(QString s_, QObject *) {
     return s_;
 }
 

@@ -39,7 +39,7 @@ void SensitivityAnalysis::initialize() {
     file.open(QIODevice::Text | QIODevice::WriteOnly);
     for (int i = 0; i < names.size(); ++i) {
         QString s = names[i] + "\n";
-        file.write(s.toAscii());
+        file.write(s.toLatin1());
     }
 }
 

@@ -155,6 +155,10 @@ void OutputPlot::debrief() {
     }
 }
 
+int OutputPlot::numXTraces() const {
+    return 1;
+}
+
 void OutputPlot::showPlot() {
     fillPlotWidget();
     showPlotWidget();

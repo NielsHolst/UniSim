@@ -23,6 +23,7 @@ HEADERS += \
     $${US_BASE}/test/test_data_grid.h \
     $${US_BASE}/test/test_identifier.h \
     $${US_BASE}/test/test_minimiser.h \
+    $${US_BASE}/test/test_matrix.h \
     $${US_BASE}/test/test_moments.h \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
@@ -46,6 +47,7 @@ HEADERS += \
     $${US_PLUGINS}/unisim/distributed_delay.h \
     $${US_PLUGINS}/unisim/distributed_delay_2d.h \
     $${US_PLUGINS}/unisim/distributed_delay_base.h \
+    $${US_PLUGINS}/unisim/forage.h \
     $${US_PLUGINS}/unisim/stage.h \
     $${US_PLUGINS}/unisim/stage_base.h \
     $${US_PLUGINS}/unisim/stage_and_phase.h \
@@ -53,7 +55,10 @@ HEADERS += \
     $${US_PLUGINS}/unisim/test/test_calendar.h \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.h \
     $${US_PLUGINS}/unisim/test/test_distributed_delay_2d.h \
+    $${US_PLUGINS}/unisim/test/test_functional_response_g_b.h \
     $${US_PLUGINS}/unisim/test/test_fixed.h \
+    $${US_PLUGINS}/unisim/test/test_forage.h \
+    $${US_PLUGINS}/unisim/test/test_predation.h \
     $${US_PLUGINS}/unisim/test/test_random.h \
     $${US_PLUGINS}/unisim/test/test_range.h \
     $${US_PLUGINS}/unisim/test/test_records.h \
@@ -74,6 +79,7 @@ SOURCES += \
     $${US_BASE}/test/test_component.cpp \
     $${US_BASE}/test/test_data_grid.cpp \
     $${US_BASE}/test/test_identifier.cpp \
+    $${US_BASE}/test/test_matrix.cpp \
     $${US_BASE}/test/test_minimiser.cpp \
     $${US_BASE}/test/test_moments.cpp \
     $${US_BASE}/test/test_name_list.cpp \
@@ -98,6 +104,7 @@ SOURCES += \
     $${US_PLUGINS}/unisim/distributed_delay.cpp \
     $${US_PLUGINS}/unisim/distributed_delay_2d.cpp \
     $${US_PLUGINS}/unisim/distributed_delay_base.cpp \
+    $${US_PLUGINS}/unisim/forage.cpp \
     $${US_PLUGINS}/unisim/stage.cpp \
     $${US_PLUGINS}/unisim/stage_base.cpp \
     $${US_PLUGINS}/unisim/stage_and_phase.cpp \
@@ -105,7 +112,10 @@ SOURCES += \
     $${US_PLUGINS}/unisim/test/test_calendar.cpp \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.cpp \
     $${US_PLUGINS}/unisim/test/test_distributed_delay_2d.cpp \
+    $${US_PLUGINS}/unisim/test/test_functional_response_g_b.cpp \
     $${US_PLUGINS}/unisim/test/test_fixed.cpp \
+    $${US_PLUGINS}/unisim/test/test_forage.cpp \
+    $${US_PLUGINS}/unisim/test/test_predation.cpp \
     $${US_PLUGINS}/unisim/test/test_random.cpp \
     $${US_PLUGINS}/unisim/test/test_range.cpp \
     $${US_PLUGINS}/unisim/test/test_records.cpp \

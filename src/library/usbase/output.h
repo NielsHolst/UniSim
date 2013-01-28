@@ -31,6 +31,7 @@ public:
 
     QList<TraceRecord>& traceRecords();
     bool hasSummary() const;
+    virtual int numXTraces() const = 0;
 protected:
     // methods
     int runNumber() const;

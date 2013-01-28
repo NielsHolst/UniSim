@@ -35,6 +35,12 @@ FunctionalResponseGB::FunctionalResponseGB(Identifier name, QObject *parent)
         "Total supply obtained to cover net supply, egestion and respiration");
     new Variable<double>("egestion", &egestion, this,
         "Amount of @F totalSupply lost to egestion");
+    new Variable<double>("attacksPerHost", &attacksPerHost, this,
+        "Amount of @F totalSupply lost to egestion");
+    new Variable<double>("numHostsAttacked", &numHostsAttacked, this,
+        "Amount of @F totalSupply lost to egestion");
+    new Variable<double>("propHostsAttacked", &propHostsAttacked, this,
+        "Amount of @F totalSupply lost to egestion");
 }
 
 void FunctionalResponseGB::reset() {
@@ -60,6 +66,10 @@ void FunctionalResponseGB::update() {
         sdRatio = divBounded(supply, demand, 1.);
         TestNum::snapToZero(sdRatio);
     }
+    // Update host-parasitoid variables
+    attacksPerHost = resourceDensity > 0. ? supply/resourceDensity : 0.;
+    propHostsAttacked = 1. - exp(-attacksPerHost);
+    numHostsAttacked = resourceDensity*propHostsAttacked;
 }
 
 } //namespace

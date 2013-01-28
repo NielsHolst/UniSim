@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<simulation version="1.0">
-    <integrator type="Steps">
+<simulation name = "Carrot-Stellaria" version="1.0">
+    <integrator name= "timeSteps" type="Steps">
         <parameter name="maxSteps" value="100"/>
     </integrator>
 	

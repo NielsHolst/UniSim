@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Beemodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="180"/>
+	</integrator>
+	
+	<model name="calendar" type="Calendar">
+	</model>
+	
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+			
+	<model name="Honey bees">
+		<model name="time" type="UniSim::Days"/>
+			<model name="Susceptible">
+				<model name="egg" type="UniSim::Stage">
+					<parameter name="duration" value="3"/>
+					<parameter name="k" value="30"/>
+					<parameter name="initialInflow" value="100"/>
+					</model>
+				</model>
+			
+				<model name="larva" type="UniSim::Stage">
+					<parameter name="duration" value="10"/>
+					<parameter name="k" value="30"/>
+					<parameter name="inflow" ref="Susceptible/egg[outflow]"/>
+					<parameter name="phaseOutflowProportion" value="0.03"/>
+				</model>
+			
+				<model name="pupa" type="UniSim::Stage">
+					<parameter name="duration" value="8"/>
+					<parameter name="k" value="30"/>
+					<parameter name="inflow" ref="Susceptible/egg[outflow]"/>
+					
+				</model>
+			
+				<model name="hive bees" type="UniSim::Stage">					
+					<parameter name="duration" value="24"/>
+					<parameter name="k" value="30"/>
+					<parameter name="inflow" ref="Susceptible/pupa[outflow]"/>
+					<parameter name="phaseOutflowProportion" value="0.03"/>
+				</model>
+			
+
+				<model name="foragers" type="UniSim::Stage">
+					<model name="time" type="UniSim::DayDegrees">
+						<parameter name="T0" value="10"/>
+					</model>
+					<parameter name="duration" value="300"/>
+					<parameter name="k" value="10"/>
+					<parameter name="inflow" ref="Susceptible/hive bees[outflow]"/>
+					<parameter name="phaseOutflowProportion" value="0.03"/>	
+				</model>
+				
+			</model>
+		
+			<model name="Exposed">
+							
+				<model name="larva" type="UniSim::StageAndPhase">
+					<parameter name="duration" ref="Susceptible/Larva[duration]"/>
+					<parameter name="k" ref="Susceptible/larva[k]"/>
+					<parameter name="timeStep" ref="Honey bees/time[step]"/>
+					<parameter name="phaseInflow" ref="Susceptible/larva[phaseOutflow]"/>
+					<parameter name="phaseDuration" value="4"/>
+					<parameter name="phaseK" value="15"/>
+					<parameter name="phaseTimeStep" ref="Honey bees/time[step]"/>
+					
+				</model>
+			
+				<model name="pupa" type="UniSim::StageAndPhase">
+					<parameter name="duration" ref="Susceptible/pupa[duration]"/>
+					<parameter name="k" ref="Susceptible/pupa[k]"/>
+					<parameter name="timeStep" ref="Honey bees/time[step]"/>
+					<parameter name="phaseInflow" ref="Susceptible/pupa[phaseOutflow]"/>
+					<parameter name="phaseDuration" value="7"/>
+					<parameter name="phaseK" value="15"/>
+					<parameter name="phaseTimeStep" ref="Honey bees/time[step]"/>
+					
+					
+				</model>
+			
+				<model name="hive bees" type="UniSim::StageAndPhase">
+					<parameter name="duration" ref="Susceptible/hive bees[duration]"/>
+					<parameter name="k" ref="Susceptible/hive bees[k]"/>
+					<parameter name="timeStep" ref="Honey bees/time[step]"/>
+					<parameter name="phaseInflow" ref="Susceptible/hive bees[phaseOutflow]"/>
+					<parameter name="phaseDuration" value="10"/>
+					<parameter name="phaseK" value="15"/>
+					<parameter name="phaseTimeStep" ref="Honey bees/time[step]"/>
+					
+				</model>
+
+				<model name="foragers" type="UniSim::StageAndPhase">
+					<model name="time" type="UniSim::DayDegrees">
+						<parameter name="T0" ref="10"/>
+					</model>
+				
+					<parameter name="duration" value="300"/>
+					<parameter name="k" ref="Susceptible/foragers[k]"/>
+					<parameter name="phaseInflow" ref="Susceptible/hive bees[phaseOutflow]"/>
+					<parameter name="phaseDuration" value="12"/>
+					<parameter name="phaseK" value="15"/>
+					<parameter name="phaseTimeStep" ref="Honey bees/time[step]"/>
+				</model>
+			</model>
+		
+		<model name="Infectious">
+			<model name="larva" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="Susceptible/Larva[duration]"/>
+				<parameter name="k" ref="Susceptible/larva[k]"/>
+				<parameter name="phaseInflow" ref="Exposed/larva[phaseOutflow]"/>
+					
+			</model>
+			<model name="pupa" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="Susceptible/pupa[duration]"/>
+				<parameter name="k" ref="Susceptible/pupa[k]"/>
+				<parameter name="inflow" ref="Infectious/larva[outflow]"/>
+				<parameter name="phaseInflow" ref="Exposed/[phaseOutflow]"/>
+					
+			</model>
+			<model name="hive bees" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="Susceptible/hive bees[duration]"/>
+				<parameter name="k" ref="Susceptible/hive bees[k]"/>
+				<parameter name="inflow" ref="Infectious/pupa[outflow]"/>
+				<parameter name="phaseInflow" ref="Exposed/hive bees[phaseOutflow]"/>
+					
+			</model>
+			<model name="foragers" type="UniSim::StageAndPhase">
+				<model name="time" type="UniSim::DayDegrees">
+					<parameter name="T0" value="10"/>
+				</model>
+				<parameter name="duration" value="300"/>
+				<parameter name="k" value="10"/>
+				<parameter name="inflow" ref="Infectious/hive bees[outflow]"/>
+				<parameter name="phaseInflow" ref="Exposed/foragers[phaseOutflow]"/>
+			</model>
+
+	</model>	
+
+	<output type="plot">
+		<parameter name="title" value ="Weather log"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Bee numbers(Susceptible)"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Larva" ref="Susceptible/egg[value]"/>
+		<trace label="Larva" ref="Susceptible/larva[value]"/>
+		<trace label="Pupa" ref="Susceptible/pupa[value]"/>
+		<trace label="Hive bees" ref="Susceptible/hive bees[value]"/>
+		<trace label="Foragers" ref="Susceptible/foragers[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Bee numbers(Exposed)"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Larva" ref="Exposed/larva[value]"/>
+		<trace label="Pupa" ref="Exposed/pupa[value]"/>
+		<trace label="Hive bees" ref="Exposed/hive bees[value]"/>
+		<trace label="Foragers" ref="Exposed/foragers[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Bee numbers(Infectious)"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Larva" ref="Infectious/larva[value]"/>
+		<trace label="Pupa" ref="Infectious/pupa[value]"/>
+		<trace label="Hive bees" ref="Infectious/hive bees[value]"/>
+		<trace label="Foragers" ref="Infectious/foragers[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Bee numbers (adults)"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="S" value="Susceptible/adult[value]"/>
+		<trace label="E" value="Exposed/adult[value]"/>
+		<trace label="I" value="Infectious/adult[value]"/>
+	</output>
+	
+	
+</simulation>

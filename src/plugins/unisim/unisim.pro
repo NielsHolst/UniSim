@@ -21,6 +21,7 @@ HEADERS += \
     distributed_delay_base.h \
     exponential.h \
     fixed.h \
+    forage.h \
     functional_response_g_b.h \
     hydro_thermal_time.h \
     inachis.h \
@@ -34,6 +35,7 @@ HEADERS += \
     photo_thermal_time.h \
     physiological_time.h \
     plot.h \
+    predation.h \
     random_base.h \
     random_lognormal.h \
     random_normal.h \
@@ -65,6 +67,7 @@ SOURCES += \
     distributed_delay_base.cpp \
     exponential.cpp \
     fixed.cpp \
+    forage.cpp \
     functional_response_g_b.cpp \
     hydro_thermal_time.cpp \
     inachis.cpp \
@@ -78,6 +81,7 @@ SOURCES += \
     photo_thermal_time.cpp \
     physiological_time.cpp \
     plot.cpp \
+    predation.cpp \
     random_base.cpp \
     random_lognormal.cpp \
     random_normal.cpp \

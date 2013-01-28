@@ -18,6 +18,8 @@ class OutputTableBase : public Output
 	//Q_OBJECT
 public:
     OutputTableBase(Identifier name, QObject *parent=0);
+    // special methods
+    int numXTraces() const;
 protected:
     void openFile(QString appendix = QString());
     void writeString(QString s);

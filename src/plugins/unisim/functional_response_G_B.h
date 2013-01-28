@@ -26,7 +26,8 @@ private:
 
 
     // variables
-    double supply, sdRatio, totalDemand, totalSupply, egestion;
+    double supply, sdRatio, totalDemand, totalSupply, egestion,
+        attacksPerHost, numHostsAttacked, propHostsAttacked;
 };
 
 } //namespace

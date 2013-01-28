@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation name="Network indicators">
 	<integrator name="steps" type="Steps">
-		<parameter name="maxSteps" value="2"/>
+		<parameter name="maxSteps" value="100"/>
 	</integrator>
 
 	<model name="farms">
@@ -10,30 +10,34 @@
 	</model>
 
 	<model name="indicators">
-		<model name="import" type="network_indicators::ImportIndicator"/>
-		<model name="compThrough" type="network_indicators::CompartmentalThroughflow"/>
+		<model name="import" type="network_indicators::ImportIndicator">
+			<parameter name="cv" value="0.5"/>
+		</model>
+		<model name="compThrough" type="network_indicators::CompartmentalThroughflow">
+			<parameter name="cv" ref="import[cv]"/>
+		</model>
 	</model>
-	
+
 	<output type="plot">
 		<parameter name="title" value ="Import indicator"/>
 		<trace label="Step" ref="steps[stepNumber]"/>
-		<trace label="Nieuw Bromo" ref="import[Nieuw Bromo]"/>
-		<trace label="Arc en Ciel" ref="import[Arc en Ciel]"/>
-		<trace label="ter Linde" ref="import[ter Linde]"/>
+		<trace label="Nieuw_Bromo" ref="import[Nieuw_Bromo]"/>
+		<trace label="Arc_en_Ciel" ref="import[Arc_en_Ciel]"/>
+		<trace label="ter_Linde" ref="import[ter_Linde]"/>
 	</output>
 
 	<output type="plot">
 		<parameter name="title" value ="Compartmental throughflow indicator"/>
 		<trace label="Step" ref="steps[stepNumber]"/>
-		<trace label="Nieuw Bromo" ref="compThrough[Nieuw Bromo]"/>
-		<trace label="Arc en Ciel" ref="compThrough[Arc en Ciel]"/>
-		<trace label="ter Linde" ref="compThrough[ter Linde]"/>
+		<trace label="Nieuw_Bromo" ref="compThrough[Nieuw_Bromo]"/>
+		<trace label="Arc_en_Ciel" ref="compThrough[Arc_en_Ciel]"/>
+		<trace label="ter_Linde" ref="compThrough[ter_Linde]"/>
 	</output>
 
 	<output type="table">
 		<parameter name="fileName" value ="network_indicators.txt"/>
-		<trace label="*" ref="indicators/*[Nieuw Bromo]"/>
-		<trace label="*" ref="indicators/*[Arc en Ciel]"/>
-		<trace label="*" ref="indicators/*[ter Linde]"/>
+		<trace label="*" ref="indicators/*[Nieuw_Bromo]"/>
+		<trace label="*" ref="indicators/*[Arc_en_Ciel]"/>
+		<trace label="*" ref="indicators/*[ter_Linde]"/>
 	</output>
 </simulation>

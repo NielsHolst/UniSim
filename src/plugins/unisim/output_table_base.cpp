@@ -23,6 +23,10 @@ OutputTableBase::OutputTableBase(Identifier name, QObject *parent)
     new Parameter<QString>("fileName", &fileName, QString("output.txt"), this, "Name of output file");
 }
 
+int OutputTableBase::numXTraces() const {
+    return 0;
+}
+
 void OutputTableBase::openFile(QString appendix) {
     QString fileNameApp = insertAppendix(fileName, appendix);
     QString useFileName = (runNumber() == 1 || hasSummary()) ?

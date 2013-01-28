@@ -25,6 +25,7 @@
 			
 			<model name="phenology" type="intercom::Phenology">
 				<model name="vegetative" type="UniSim::Stage">
+					<parameter name="initialInflow" value="1"/>
 					<parameter name="duration" value="600"/>
 				</model>
 				<model name="flowering" type="UniSim::Stage">

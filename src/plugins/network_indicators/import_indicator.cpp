@@ -15,11 +15,13 @@ ImportIndicator::ImportIndicator(Identifier name, QObject *parent)
 }
 
 double ImportIndicator::computeIndicator(UniSim::Model *farm) {
-    return  farm->pullValue<double>("deposition") +
-            farm->pullValue<double>("nonSymbFixation") +
-            farm->pullValue<double>("importCrops") +
-            farm->pullValue<double>("fixation") +
-            farm->pullValue<double>("importManure")
+    double dep = rnd(farm->pullValue<double>("deposition"));
+
+    return  dep +
+            rnd(farm->pullValue<double>("nonSymbFixation")) +
+            rnd(farm->pullValue<double>("importCrops")) +
+            rnd(farm->pullValue<double>("fixation")) +
+            rnd(farm->pullValue<double>("importManure"))
             ;
 }
 

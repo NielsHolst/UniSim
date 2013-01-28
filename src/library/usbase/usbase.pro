@@ -24,6 +24,7 @@ HEADERS += \
         $${US_BASE}/identifier.h \
         $${US_BASE}/integrator.h \
         $${US_BASE}/main_window_interface.h \
+        $${US_BASE}/matrix.h \
         $${US_BASE}/minimiser.h \
         $${US_BASE}/model.h \
         $${US_BASE}/moments.h \
@@ -43,7 +44,7 @@ HEADERS += \
         $${US_BASE}/strata.h \
         $${US_BASE}/strata_base.h \
         $${US_BASE}/test_num.h \
-        $${US_BASE}/time.h \
+        $${US_BASE}/ustime.h \
         $${US_BASE}/trace.h \
         $${US_BASE}/utilities.h \
         $${US_BASE}/variable.h \
@@ -72,7 +73,7 @@ SOURCES += \
         $${US_BASE}/variable_base.cpp \
         $${US_BASE}/random.cpp \
         $${US_BASE}/root_solver.cpp \
-        $${US_BASE}/time.cpp \
+        $${US_BASE}/ustime.cpp \
         $${US_BASE}/trace.cpp \
         $${US_BASE}/utilities.cpp \
         $${US_BASE}/version.cpp

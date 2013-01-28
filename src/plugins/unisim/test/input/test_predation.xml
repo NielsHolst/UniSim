@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+	</model>	
+
+	<model name="Gazella" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 100)) "/>
+	</model>
+	<model name="Gnu" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 200)) "/>
+	</model>
+	<model name="Zebra" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 150)) "/>
+	</model>
+	<model name="Leopard" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 5) (Demand 12)) "/>
+	</model>
+	<model name="Lion" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Demand 18)) "/>
+	</model>
+
+	<model name="Predation" type="UniSim::Predation">
+		<parameter name="apparencyMatrix" value="predation.txt"/>
+	</model>
+	
+	<output type="table">
+		<parameter name="fileName" value="test_predation.prn"/>
+		<variable label="totalTimeSteps" ref="calendar[totalTimeSteps]"/>
+		<variable label="lionSupply" ref="predation[Lion-Supply]"/>
+	</output>
+</simulation>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Strawberry-Powdery mildew">
+	<integrator name="steps" type="Steps">
+		<parameter name="maxSteps" value="240"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="60"/>
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="weather all 2010 and 2011.txt"/>
+			
+		</model>
+	</model>
+	
+	<model name="plant">
+		<model name="time" type="UniSim::PhotoThermalTime">
+			<parameter name="T0" value="0"/>
+		</model>
+		<model name="growthStage">
+			<model name="vegetative" type="UniSim::Stage">
+				<parameter name="initialInflow" value="1"/>
+				<parameter name="duration" value="800"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="flowering" type="UniSim::Stage">
+				<parameter name="inflow" ref="vegetative[outflow]"/>
+				<parameter name="duration" value="80"/>
+				<parameter name="k" value="10"/>
+			</model>
+			<model name="fruiting" type="UniSim::Stage">
+				<parameter name="inflow" ref="flowering[outflow]"/>
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="10"/>
+			</model>
+		</model>
+
+		<model name="leaves">
+			<model name="production" type="strawberry::LeafProduction">
+				<parameter name="productionRate" value="0.15"/>
+			</model>
+			<model name="healthy">
+				<model name="young" type="UniSim::Stage">
+					<parameter name="inflow" ref="leaves/production[value]"/>
+					<parameter name="duration" value="60"/>
+					<parameter name="k" value="30"/>
+				</model>
+				<model name="old" type="UniSim::Stage">
+					<parameter name="inflow" ref="healthy/young[outflow]"/> 
+					<parameter name="duration" value="1000"/>
+					<parameter name="k" value="10"/>
+				</model>				
+			</model>
+			<model name="unhealthy">
+				<model name="latent" type="UniSim::Stage">
+					<parameter name="inflow" ref="infection[leavesInfected]"/>
+					<parameter name="duration" value="30"/>
+					<parameter name="k" value="30"/>
+				</model>
+				<model name="infectious" type="UniSim::Stage">
+					<parameter name="inflow" ref="latent[outflow]"/>
+					<parameter name="duration" value="60"/>
+					<parameter name="k" value="30"/>
+					<parameter name="inflow" ref="weather[recordsRainavg]"/>
+					<parameter name="inflow" ref="weather[recordsTavg]"/>
+				</model>
+				<model name="infected" type="UniSim::Stage">
+					<parameter name="inflow" ref="infectious[outflow]"/>
+					<parameter name="duration" value="500"/>
+					<parameter name="k" value="30"/>
+				</model>
+			</model>
+		</model>
+		
+		<model name="infection" type="strawberry::Infection">
+			<parameter name="inoculumDensity" value="1"/>  <!-- Should be made dynamic with reference to Inoculum model-->
+			<parameter name="sourceModel" value="leaves/healthy/young"/>
+			<parameter name="targetModel" value="leaves/unhealthy/latent"/>
+			<parameter name="infectionRate" value="0.05"/>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Strawberry growth stage"/>
+		<trace label="Julian day" ref="calendar[dayOfYear]"/>
+		<trace label="Vegetative" ref="vegetative[value]"/>
+		<trace label="Flowering" ref="flowering[value]"/>
+		<trace label="Fruiting" ref="fruiting[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Strawberry leaves"/>
+		<trace label="Julian day" ref="calendar[dayOfYear]"/>
+		<trace label="Healthy young" ref="healthy/young[value]"/>
+		<trace label="Healthy old" ref="healthy/old[value]"/>
+		<trace label="Latent inf" ref="latent[value]"/>
+		<trace label="Infectious" ref="infectious[value]"/>
+		<trace label="Infected" ref="infected[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Infection"/>
+		<trace label="Julian day" ref="calendar[dayOfYear]"/>
+		<trace label="Infected leaves" ref="infection[leavesInfected]"/>
+	</output>	
+</simulation>

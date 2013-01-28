@@ -1,5 +1,5 @@
 #include <usbase/exception.h>
-#include <usbase/time.h>
+#include <usbase/ustime.h>
 #include "test_time.h"
 
 using namespace UniSim;

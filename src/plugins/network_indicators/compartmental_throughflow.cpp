@@ -17,14 +17,14 @@ CompartmentalThroughflow::CompartmentalThroughflow(Identifier name, QObject *par
 }
 
 double CompartmentalThroughflow::computeIndicator(UniSim::Model *farm) {
-    return  farm->pullValue<double>("uptakeCrops") +
-            farm->pullValue<double>("toAnimals") +
-            farm->pullValue<double>("toManure") +
-            farm->pullValue<double>("fixation") +
-            farm->pullValue<double>("deposition") +
-            farm->pullValue<double>("nonSymbFixation") +
-            farm->pullValue<double>("greenManure") +
-            farm->pullValue<double>("totalManure")
+    return  rnd(farm->pullValue<double>("uptakeCrops")) +
+            rnd(farm->pullValue<double>("toAnimals")) +
+            rnd(farm->pullValue<double>("toManure")) +
+            rnd(farm->pullValue<double>("fixation")) +
+            rnd(farm->pullValue<double>("deposition")) +
+            rnd(farm->pullValue<double>("nonSymbFixation")) +
+            rnd(farm->pullValue<double>("greenManure")) +
+            rnd(farm->pullValue<double>("totalManure"))
             ;
 }
 

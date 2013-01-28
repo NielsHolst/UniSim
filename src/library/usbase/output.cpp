@@ -46,7 +46,8 @@ bool Output::hasSummary() const {
 
 void Output::setYLabels() {
     QStringList sl;
-    for (int i = 1; i < _traceRecords.size(); ++i) {
+    int numX = numXTraces();
+    for (int i = numX; i < _traceRecords.size(); ++i) {
         TraceRecord &rec( _traceRecords[i] );
         NamedObject *parent = rec.trace->variableParent();
         QString name;
@@ -57,9 +58,9 @@ void Output::setYLabels() {
     }
     NameList nl(sl);
     QStringList yLabels = nl.simplified();
-    for (int i = 1; i < _traceRecords.size(); ++i) {
+    for (int i = numX; i < _traceRecords.size(); ++i) {
         TraceRecord &rec( _traceRecords[i] );
-        rec.label = yLabels[i-1];
+        rec.label = yLabels[i-numX];
     }
 }
 

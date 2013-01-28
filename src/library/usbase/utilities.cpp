@@ -402,7 +402,7 @@ template<> char stringToValue<char>(QString s_, QObject *concerning) {
         QString msg = "Cannot convert '" + s + "' to char";
         throw Exception(msg, concerning);
     }
-    return s[0].toAscii();
+    return s[0].toLatin1();
 }
 
 template<> bool stringToValue<bool>(QString s_, QObject *concerning) {

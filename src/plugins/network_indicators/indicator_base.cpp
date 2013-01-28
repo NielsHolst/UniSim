@@ -12,6 +12,22 @@ namespace network_indicators {
 IndicatorBase::IndicatorBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    new Parameter<double>("cv", &cv, 0., this, "Coefficient of variation");
+
+    // Create objects for random number generation
+    const double mean = 0, sd = 1;
+    distribution = new Distribution(mean, sd);
+    variate = new Variate(*randomGenerator(), *distribution);
+}
+
+IndicatorBase::~IndicatorBase() {
+    // Delete objects for random number generation
+    delete distribution;
+    delete variate;
+}
+
+double IndicatorBase::rnd(double mean) {
+    return mean*(1. + cv*(*variate)());
 }
 
 void IndicatorBase::amend() {

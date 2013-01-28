@@ -218,21 +218,20 @@
 		<parameter name="title" value ="Flow control"/>
 		<trace label="Day" value="calendar[totalTime]"/>
 		<trace label="a" value="vector/S/egg[initialInflow]"/>
-		<trace label="b" value="vector/S/adult[phaseOutflowTotal]"/>
-		<trace label="c" value="vector/S/adult[outflowTotal]"/>
-		<trace label="d" value="vector/E/adult[phaseOutflowTotal]"/>
-		<trace label="e" value="vector/E/adult[outflowTotal]"/>
+		<trace label="b" value="vector/S/adult[outflowTotal]"/>
+		<trace label="c" value="vector/S/adult[phaseOutflowTotal]"/>
+		<trace label="d" value="vector/E/adult[outflowTotal]"/>
+		<trace label="e" value="vector/E/adult[phaseOutflowTotal]"/>
 		<trace label="f" value="vector/I/adult[outflowTotal]"/>
 	</output>
 
 	<output type="table">
 		<parameter name="fileName" value ="seir_flow_control.txt"/>
-		<trace label="Day" value="calendar[totalTime]"/>
 		<trace label="a" value="vector/S/egg[initialInflow]"/>
-		<trace label="b" value="vector/S/adult[phaseOutflowTotal]"/>
-		<trace label="c" value="vector/S/adult[outflowTotal]"/>
-		<trace label="d" value="vector/E/adult[phaseOutflowTotal]"/>
-		<trace label="e" value="vector/E/adult[outflowTotal]"/>
+		<trace label="b" value="vector/S/adult[outflowTotal]"/>
+		<trace label="c" value="vector/S/adult[phaseOutflowTotal]"/>
+		<trace label="d" value="vector/E/adult[outflowTotal]"/>
+		<trace label="e" value="vector/E/adult[phaseOutflowTotal]"/>
 		<trace label="f" value="vector/I/adult[outflowTotal]"/>
 	</output>
 

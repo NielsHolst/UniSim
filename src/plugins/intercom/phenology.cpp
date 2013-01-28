@@ -39,7 +39,6 @@ void Phenology::amend() {
 }
 
 void Phenology::reset() {
-    stages[0]->pushValue<double>("inflow", 1.);
     alive = proportions[0] = 1.;
 }
 

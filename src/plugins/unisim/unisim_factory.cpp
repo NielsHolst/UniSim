@@ -21,6 +21,7 @@
 #include "output_plot.h"
 #include "output_table.h"
 #include "photo_thermal_time.h"
+#include "predation.h"
 #include "random_lognormal.h"
 #include "random_normal.h"
 #include "random_poisson.h"
@@ -116,6 +117,9 @@ void UniSim::UniSimFactory::defineProducts() {
      "divided by 24 hours.");
 
     addProduct<OutputPlot>("Plot", this, "Output class. Description pending");
+
+    addProduct<Predation>("Predation", this,
+    "Multi-way predation based upon @F FunctionalResponseGB model.");
 
     addProduct<RandomLognormal>("RandomLognormal", this,
     "The model maintains a random variable with a log-normal distribution.");

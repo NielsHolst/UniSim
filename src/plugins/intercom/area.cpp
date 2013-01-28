@@ -196,7 +196,7 @@ void Area::updatePhotosynthesis(const double *sumELAI) {
             str << '\t' << available;
         }
         str << '\n';
-        test.write(str.string()->toAscii());
+        test.write(str.string()->toLatin1());
     }
 }
 

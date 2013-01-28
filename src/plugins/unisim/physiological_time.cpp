@@ -4,7 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
-#include <usbase/time.h>
+#include <usbase/ustime.h>
 #include "physiological_time.h"
 
 namespace UniSim{

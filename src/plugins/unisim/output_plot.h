@@ -29,6 +29,8 @@ public:
     void amend();
     void cleanup();
     void debrief();
+    // special methods
+    int numXTraces() const;
 
     struct YRecord {
         QVector<double> data;

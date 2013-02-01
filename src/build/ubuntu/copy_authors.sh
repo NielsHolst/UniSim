@@ -1,0 +1,2 @@
+
+cp ../../resources/authors.xml ../../..

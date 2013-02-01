@@ -81,6 +81,8 @@ QObject* EcotoxFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(ecotox_factory, EcotoxFactory)
+#endif
 
 } //namespace

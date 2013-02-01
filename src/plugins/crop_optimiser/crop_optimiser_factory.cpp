@@ -41,6 +41,8 @@ QObject* CropOptimiserFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(crop_optimiser_factory, CropOptimiserFactory)
+#endif
 
 } //namespace

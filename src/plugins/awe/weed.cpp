@@ -158,7 +158,7 @@ double Weed::proportionDeqsEnteringMaturity() const {
 	return prop;
 }
 
-void Weed::handleEvent(QObject *sender, QString event) {
+void Weed::handleEvent(QObject *, QString event) {
     if (event == "sowing" || event == "harvest") {
         kill(seedling, 100);
         kill(juvenile, 100);

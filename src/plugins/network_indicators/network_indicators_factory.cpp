@@ -37,6 +37,8 @@ QObject* NetworkIndicatorsFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(network_indicators_factory, NetworkIndicatorsFactory)
+#endif
 
 } //namespace

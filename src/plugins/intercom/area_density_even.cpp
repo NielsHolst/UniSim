@@ -19,7 +19,7 @@ AreaDensityEven::AreaDensityEven(UniSim::Identifier name, QObject *parent)
 {
 }
 
-double AreaDensityEven::at(double height) const {
+double AreaDensityEven::at(double /*height*/) const {
     return 1./plantHeight;
 }
 

@@ -15,7 +15,7 @@ class PlotWidget;
 
 class MainWindowStub : public QObject, public MainWindowInterface {
 public:
-    PlotWidget* createPlotWidget(QString title) { return 0; }
+    PlotWidget* createPlotWidget(QString /*title*/) { return 0; }
     void tile() { }
 };
 

@@ -40,7 +40,7 @@ void TestSimulationTrickle::executeAndTest(int steps, int check0, int check1, in
     testBox(2, check2);
 }
 
-void TestSimulationTrickle::testBox(int boxNumber, int contents) {
+void TestSimulationTrickle::testBox(int, int) {
     /*
     QString name = "box"+QString::number(boxNumber);
     QList<Model*> models = UniSim::seekDescendants<Model*>(name, 0);

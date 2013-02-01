@@ -8,5 +8,5 @@ unix {
     # On Unix find it in general library folder
     # The developer must have installed it there
     INCLUDEPATH += /usr/include
-    LIBS += -L/usr/lib -lgsl -lm
+    LIBS += -L/usr/lib -lgsl -lgslcblas -lm
 }

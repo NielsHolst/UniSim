@@ -5,7 +5,7 @@
 */
 #ifndef UNISIM_TRIGGER_BY_DATE
 #define UNISIM_TRIGGER_BY_DATE
-#include <Qdate>
+#include <QDate>
 #include <QObject>
 #include <usbase/date_interval.h>
 #include <usbase/model.h>

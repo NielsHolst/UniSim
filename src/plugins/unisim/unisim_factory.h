@@ -14,7 +14,10 @@ namespace UniSim{
 class UniSimFactory : public QObject, public FactoryPlugIn
 {
 	Q_OBJECT
+    #if QT_VERSION >= 0x50000
     Q_INTERFACES(UniSim::FactoryPlugIn)
+    #endif
+    Q_PLUGIN_METADATA(IID "org.ecolmod.UniSim")
 public:
     void defineProducts();
     UniSim::Identifier id() const;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <QtGlobal>
 #include <usbase/test/autotest.h>
 #include <usbase/clock.h>
 #include <usbase/exception.h>
@@ -11,9 +12,11 @@
 using namespace UniSim;
 
 namespace {
-    void myMsgHandler(QtMsgType type, const char *msg)
+    void myMsgHandler(QtMsgType, const QMessageLogContext &context, const QString &msg)
     {
-        std::cout << "Message handler called: " << msg << "\n";
+        std::cout << "Message handler called: " << qPrintable(msg)
+                  << "From " << context.file << " line " << context.line << " in " << context.function
+                  << "\n";
     }
 
     void createSingletons(){
@@ -27,7 +30,7 @@ namespace {
 
 int main(int arbc, char *argv[])
 {
-    qInstallMsgHandler(myMsgHandler);
+    qInstallMessageHandler(myMsgHandler);
 
     QApplication app(arbc, argv);
 

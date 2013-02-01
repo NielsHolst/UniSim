@@ -16,7 +16,7 @@ RESOURCES = ../../../resources/unisim.qrc
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
 include ($${US_QWT}/qwt.pri)
-include ($${US_GSL}/gsl.pri)
+#include ($${US_GSL}/gsl.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \
@@ -48,6 +48,7 @@ HEADERS += \
     $${US_PLUGINS}/unisim/distributed_delay_2d.h \
     $${US_PLUGINS}/unisim/distributed_delay_base.h \
     $${US_PLUGINS}/unisim/forage.h \
+    $${US_PLUGINS}/unisim/functional_response_g_b.h \
     $${US_PLUGINS}/unisim/stage.h \
     $${US_PLUGINS}/unisim/stage_base.h \
     $${US_PLUGINS}/unisim/stage_and_phase.h \
@@ -105,6 +106,7 @@ SOURCES += \
     $${US_PLUGINS}/unisim/distributed_delay_2d.cpp \
     $${US_PLUGINS}/unisim/distributed_delay_base.cpp \
     $${US_PLUGINS}/unisim/forage.cpp \
+    $${US_PLUGINS}/unisim/functional_response_g_b.cpp \
     $${US_PLUGINS}/unisim/stage.cpp \
     $${US_PLUGINS}/unisim/stage_base.cpp \
     $${US_PLUGINS}/unisim/stage_and_phase.cpp \

@@ -133,10 +133,9 @@ void TestXmlNode::testParseFromFile() {
 }
 
 void TestXmlNode::testParseMissingFile() {
-    XmlNode *rootFile;
     bool excepted = false;
     try {
-        rootFile = XmlNode::createFromFile(filePath("non_exising_file.xml"));
+        XmlNode::createFromFile(filePath("non_exising_file.xml"));
     }
     catch (Exception &ex) {
         excepted = true;

@@ -68,6 +68,6 @@ inline QObject* create(FactoryPlugIn *factory, Identifier className, Identifier 
 
 } //namespace
 
-Q_DECLARE_INTERFACE(UniSim::FactoryPlugIn, "org.ecolmod.UniSim.FactoryPlugIn/0.x")
+Q_DECLARE_INTERFACE(UniSim::FactoryPlugIn, "org.ecolmod.UniSim.FactoryPlugIn")
 
 #endif

@@ -84,17 +84,17 @@ void SensitivityAnalysis::stratifyParameters() {
 //    Model *iterator = seekOneChild<Model*>("RunIterator");
 //    int iterations = iterator->pullValue<int>("numIterations");
     for (int i = 0; i < parameters.size(); ++i) {
-        double useDeviance = deviance;
+        //double useDeviance = deviance;
         ParameterBase *parameter = parameters[i];
         if (dynamic_cast<Parameter<QDate>*>(parameter)) {
             if (days == -1)
                 throw Exception("You must specify 'days' parameter for sensitivity analysis", parameter);
-            useDeviance = days;
+            //useDeviance = days;
         }
         else if (dynamic_cast<Parameter<QTime>*>(parameter)) {
             if (seconds == -1)
                 throw Exception("You must specify 'seconds' parameter for sensitivity analysis", parameter);
-            useDeviance = seconds;
+            //useDeviance = seconds;
         }
         //parameters[i]->createStrata(useDeviance, iterations, type);
     }

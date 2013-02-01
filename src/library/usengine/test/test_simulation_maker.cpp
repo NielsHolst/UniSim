@@ -34,11 +34,9 @@ void TestSimulationMaker::initTestCase()
 
     simulation = 0;
 	SimulationMaker maker;
-	bool modelOk = false;
 	try {
         simulation = maker.parse(local::testFilePath());
         UniSim::setSimulationObject(simulation);
-        modelOk = true;
 	}
 	catch (const Exception &ex) {
         delete simulation;

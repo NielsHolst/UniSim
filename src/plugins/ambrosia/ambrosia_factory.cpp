@@ -5,7 +5,7 @@
 */
 #include "ambrosia_factory.h"
 #include "plant.h"
-#include "time.h"
+#include "ambrosia_time.h"
 
 using namespace UniSim;
 
@@ -13,7 +13,7 @@ namespace ambrosia{
 
 void AmbrosiaFactory::defineProducts() {
     addProduct<Plant>("Plant", this, "Description pending");
-    addProduct<Time>("Time", this, "Description pending");
+    addProduct<AmbrosiaTime>("AmbrosiaTime", this, "Description pending");
 }
 
 UniSim::Identifier AmbrosiaFactory::id() const {
@@ -36,6 +36,8 @@ QObject* AmbrosiaFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(ambrosia_factory, AmbrosiaFactory)
+#endif
 
 } //namespace

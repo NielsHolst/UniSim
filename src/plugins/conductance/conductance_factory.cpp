@@ -47,6 +47,7 @@ QObject* ConductanceFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(conductance_factory, ConductanceFactory)
-
+#endif
 } //namespace

@@ -11,7 +11,7 @@
 #include "days.h"
 #include "exponential.h"
 #include "fixed.h"
-#include "functional_response_G_B.h"
+#include "functional_response_g_b.h"
 #include "hydro_thermal_time.h"
 #include "inachis.h"
 #include "insect_life_cycle.h"
@@ -84,7 +84,7 @@ void UniSim::UniSimFactory::defineProducts() {
     "This is unlike their real counterparts which are always created in the model's constructor");
 
     addProduct<FunctionalResponseGB>("FunctionalResponseGB", this,
-    "The Gutierrez-Baumgärtner functional response model, "
+    "The Gutierrez-Baumgaertner functional response model, "
     "including the energy budget for egestion and respiration");
 
     addProduct<HydroThermalTime>("HydroThermalTime", this,
@@ -216,7 +216,8 @@ QObject *UniSimFactory::asQObject() {
     return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(unisim_factory, UniSimFactory)
-
+#endif
 
 } //namespace

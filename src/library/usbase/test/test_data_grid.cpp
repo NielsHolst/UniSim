@@ -44,9 +44,8 @@ void TestDataGrid::testOneLineFile() {
 }
 void TestDataGrid::testMissingFile() {
     bool excepted = false;
-    DataGrid *data;
     try {
-        data = new DataGrid("missing_file.txt");
+        new DataGrid("missing_file.txt");
     }
     catch (Exception &) {
         excepted = true;
@@ -56,9 +55,8 @@ void TestDataGrid::testMissingFile() {
 
 void TestDataGrid::testEmptyFile() {
     bool excepted = false;
-    DataGrid *data;
     try {
-        data = new DataGrid("data_grid_empty.txt");
+        new DataGrid("data_grid_empty.txt");
     }
     catch (Exception &) {
         excepted = true;
@@ -68,9 +66,8 @@ void TestDataGrid::testEmptyFile() {
 
 void TestDataGrid::testIllFormedFile() {
     bool excepted = false;
-    DataGrid *data;
     try {
-        data = new DataGrid("data_grid_ill_formed.txt");
+        new DataGrid("data_grid_ill_formed.txt");
     }
     catch (Exception &) {
         excepted = true;
@@ -85,9 +82,8 @@ void TestDataGrid::testOnlyColumnHeadings() {
 
 void TestDataGrid::testWrongKeys() {
     bool excepted = false;
-    DataGrid *data;
     try {
-        data = new DataGrid("data_grid_wrong_keys.txt");
+        new DataGrid("data_grid_wrong_keys.txt");
     }
     catch (Exception &) {
         excepted = true;

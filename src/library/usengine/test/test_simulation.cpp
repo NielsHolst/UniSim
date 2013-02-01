@@ -24,10 +24,8 @@ void TestSimulation::initTestCase()
 
 	_simulation = 0;
 	SimulationMaker maker;
-	bool modelOk = false;
 	try {
         _simulation = maker.parse(filePath);
-		modelOk = true;
 	}
 	catch (const UniSim::Exception &ex) {
 		delete _simulation;

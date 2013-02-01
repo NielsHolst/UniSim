@@ -32,6 +32,8 @@ QObject* DynamicPhotosynthesisFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(dynamic_photosynthesis_factory, DynamicPhotosynthesisFactory)
+#endif
 
 } //namespace

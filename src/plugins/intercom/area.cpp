@@ -113,7 +113,7 @@ void Area::setPoint(int hourPoint_, int heightPoint_) {
     }
 
     double hour = 12. + 0.5*dayLength*XGAUSS3[hourPoint];
-    clock()->doTick(hour);
+    UniSim::clock()->doTick(hour);
     sinb = calendar->pullValue<double>("sinb");
 
     height = plantHeight*XGAUSS5[heightPoint];

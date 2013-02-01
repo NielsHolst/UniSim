@@ -41,6 +41,8 @@ QObject* SeedEmergenceFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(seed_emergence_factory, SeedEmergenceFactory)
+#endif
 
 } //namespace

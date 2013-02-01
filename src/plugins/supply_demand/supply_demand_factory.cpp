@@ -55,6 +55,8 @@ QObject* SupplyDemandFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(supply_demand_factory, SupplyDemandFactory)
+#endif
 
 } //namespace

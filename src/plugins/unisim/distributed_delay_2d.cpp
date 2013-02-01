@@ -20,7 +20,7 @@ void show(QString s, const QVector<double> &v) {
 }
 
 DistributedDelay2D::DistributedDelay2D(const FixedParameters &p_, QObject *parent_, Policy policy_)
-    : DistributedDelayBase(parent), p(p_), policy(policy_)
+    : DistributedDelayBase(parent_), p(p_), policy(policy_)
 //! Create distributed delay from parameters
 {
     x.resize(p.k1*p.k2);

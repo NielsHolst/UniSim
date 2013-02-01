@@ -158,7 +158,7 @@ void TestCalendar::testSolarElevation() {
             }
             for (int ho = 0; ho < hours.size(); ++ho) {
                 double astroHour = hours[ho] - solarNoonDiff[lo][da];
-                clock()->doTick(astroHour);
+                UniSim::clock()->doTick(astroHour);
                 double sinb = calendar->pullValue<double>("sinb");
                 double estSolarElev = asin(sinb)/PI*180.;
                 QVERIFY(fabs(estSolarElev - solarElev[lo][da][ho]) < 1.);

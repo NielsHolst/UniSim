@@ -54,15 +54,15 @@ namespace {
     template <> QTime add<QTime,double>(QTime x, double a) { return x.addSecs(f(a)); }
 
     template <class T> double toDouble(T x) { return x; }
-    template <> double toDouble<QString>(QString x) { return 0; }
-    template <> double toDouble<QDate>(QDate x) { return 0; }
-    template <> double toDouble<QTime>(QTime x) { return 0; }
+    template <> double toDouble<QString>(QString) { return 0; }
+    template <> double toDouble<QDate>(QDate) { return 0; }
+    template <> double toDouble<QTime>(QTime) { return 0; }
 
     template <class T> T fromDouble(double x) { return x; }
     template <> int fromDouble(double x) { return f(x); }
-    template <> QString fromDouble<QString>(double x) { return QString(); }
-    template <> QDate fromDouble<QDate>(double x) { return QDate(); }
-    template <> QTime fromDouble<QTime>(double x) { return QTime(); }
+    template <> QString fromDouble<QString>(double) { return QString(); }
+    template <> QDate fromDouble<QDate>(double) { return QDate(); }
+    template <> QTime fromDouble<QTime>(double) { return QTime(); }
 }
 
 template <class T>

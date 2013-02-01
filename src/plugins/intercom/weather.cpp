@@ -38,7 +38,7 @@ void Weather::initialize() {
     calendar = seekOne<Calendar*>("calendar");
     records = seekOneChild<Model*>("records");
 
-    connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
+    connect(UniSim::clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
 }
 
 void Weather::reset() {
@@ -53,7 +53,7 @@ void Weather::update() {
     irradiation = records->pullValue<double>("irradiationMJ")*1e6;
 }
 
-void Weather::handleClockTick(double hour) {
+void Weather::handleClockTick(double) {
     updatePar();
 }
 

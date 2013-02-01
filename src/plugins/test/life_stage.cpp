@@ -142,7 +142,7 @@ void LifeStage::update()
 void LifeStage::fill(double value)
 {
 	for (int i = 0; i < _k; ++i) {
-		_x[i] = 0.;
+        _x[i] = value;
 	}
 }
 

@@ -48,6 +48,8 @@ QObject* MicrobialCommunityFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(microbial_community_factory, MicrobialCommunityFactory)
+#endif
 
 } //namespace

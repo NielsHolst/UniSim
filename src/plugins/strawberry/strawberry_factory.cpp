@@ -35,6 +35,8 @@ QObject* StrawberryFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(strawberry_factory, StrawberryFactory)
+#endif
 
 } //namespace

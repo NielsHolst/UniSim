@@ -84,6 +84,8 @@ QObject* AweFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(awe_factory, AweFactory)
+#endif
 
 } //namespace

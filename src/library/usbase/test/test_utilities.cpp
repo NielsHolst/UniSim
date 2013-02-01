@@ -522,10 +522,9 @@ void TestUtilities::testMissingChildName() {
 }
 
 void TestUtilities::testSeekChildAndParentNone() {
-    Variable<int> *found;
     bool excepted = false;
     try {
-        found = seekOne<QObject*, Variable<int>*>("dogs[size]");
+        seekOne<QObject*, Variable<int>*>("dogs[size]");
     }
     catch (Exception &ex) {
         excepted = true;

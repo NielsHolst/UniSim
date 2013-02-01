@@ -68,7 +68,7 @@ void Rotation::decodeCrops() {
     cropNames = decodeSimpleList(cropsString, this);
 }
 
-void Rotation::handleEvent(QObject *sender, QString event) {
+void Rotation::handleEvent(QObject *, QString event) {
     if (event == "sowing") {
         state = Growing;
     }

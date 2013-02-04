@@ -20,7 +20,7 @@ FileLocationCombo::FileLocationCombo(FileLocationInfo::FileType fType, QWidget *
     connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(doBrowse(int)));
 }
 
-void FileLocationCombo::doBrowse(int index) {
+void FileLocationCombo::doBrowse(int /*index*/) {
     if (isBrowsing) return;
     isBrowsing = true;
     setEnabled(false);

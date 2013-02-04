@@ -4,6 +4,9 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QtGui>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include <usbase/file_locations.h>
 #include "file_location_combo.h"
 #include "file_location_dialog.h"

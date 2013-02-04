@@ -33,6 +33,8 @@ QObject* OceanFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(ocean_factory, OceanFactory)
+#endif
 
 } //namespace

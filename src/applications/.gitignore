@@ -3,3 +3,6 @@
 *.exe
 output/*.*
 temporary/*.*
+test-unisim-*
+UniSim-*
+*~

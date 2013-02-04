@@ -7,6 +7,8 @@
 #include <QApplication>
 #include <QDir>
 #include <QErrorMessage>
+#include <QMessageBox>
+#include <QtGlobal>
 #include <QtGui>
 #include <usbase/authors.h>
 #include <usbase/clock.h>
@@ -21,7 +23,7 @@
 
 using namespace UniSim;
 
-void myMsgHandler(QtMsgType type, const char *msg)
+void myMsgHandler(QtMsgType, const QMessageLogContext &, const QString &msg)
 {
     throw Exception(QString(msg));
 }
@@ -66,8 +68,8 @@ int runCommand(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
     bool hasArguments = argc > 1;
-    qInstallMsgHandler(myMsgHandler);
-	QCoreApplication::setOrganizationName("Aarhus University");
+    qInstallMessageHandler(myMsgHandler);
+    QCoreApplication::setOrganizationName("Aarhus University");
 	QCoreApplication::setOrganizationDomain("www.agrsci.dk");
     QCoreApplication::setApplicationName("Universal Simulator");
 

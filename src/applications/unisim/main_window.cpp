@@ -5,10 +5,17 @@
 */
 #include <QDesktopServices>
 #include <QDir>
+#include <QFileDialog>
 #include <QFileInfo>
+#include <QMdiArea>
 #include <QPixmap>
 #include <QtGui>
+#include <QLabel>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QScrollArea>
 #include <QSettings>
+#include <QStatusBar>
 #include <QVector>
 #include <qwt_plot.h>
 #include <usbase/authors.h>
@@ -447,7 +454,7 @@ void MainWindow::doWindowTile()
     tile();
 }
 
-void MainWindow::liveSimulatorStateChanged(int iOldState, int iNewState) {
+void MainWindow::liveSimulatorStateChanged(int /*iOldState*/, int iNewState) {
     LiveSimulation::State newState = (LiveSimulation::State) iNewState;
 
     if (newState == LiveSimulation::EndViewBuilding)

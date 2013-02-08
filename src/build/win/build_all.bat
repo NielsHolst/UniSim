@@ -39,7 +39,7 @@ call make_tool write_plugins_project
 @rem Generate batch and project files
 ..\own_tools\write_clean_ephemerals
 ..\own_tools\write_plugins_project
-..\own_tools\write_unisim_root
+..\own_tools\write_unisim_root_app
 
 @rem Clean build folders
 call clean_ephemerals

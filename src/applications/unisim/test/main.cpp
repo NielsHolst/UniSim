@@ -12,12 +12,19 @@
 using namespace UniSim;
 
 namespace {
-    void myMsgHandler(QtMsgType, const QMessageLogContext &context, const QString &msg)
-    {
-        std::cout << "Message handler called: " << qPrintable(msg)
-                  << "From " << context.file << " line " << context.line << " in " << context.function
-                  << "\n";
-    }
+#if QT_VERSION >= 0x50000
+void myMsgHandler(QtMsgType, const QMessageLogContext &context, const QString &msg)
+{
+    std::cout << "Message handler called: " << qPrintable(msg)
+              << "From " << context.file << " line " << context.line << " in " << context.function
+              << "\n";
+}
+#else
+void myMsgHandler(QtMsgType, const char *msg)
+{
+    throw Exception(msg);
+}
+#endif
 
     void createSingletons(){
         objectPool()->attach(FileLocations::id(), new FileLocationsStrict);
@@ -30,7 +37,11 @@ namespace {
 
 int main(int arbc, char *argv[])
 {
+#if QT_VERSION >= 0x50000
     qInstallMessageHandler(myMsgHandler);
+#else
+    qInstallMsgHandler(myMsgHandler);
+#endif
 
     QApplication app(arbc, argv);
 

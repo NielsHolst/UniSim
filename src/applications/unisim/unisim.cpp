@@ -23,10 +23,17 @@
 
 using namespace UniSim;
 
+#if QT_VERSION >= 0x50000
 void myMsgHandler(QtMsgType, const QMessageLogContext &, const QString &msg)
 {
     throw Exception(QString(msg));
 }
+#else
+void myMsgHandler(QtMsgType, const char *msg)
+{
+    throw Exception(msg);
+}
+#endif
 
 void createSingletons(){
     objectPool()->attach(Authors::id(), new Authors);
@@ -68,7 +75,11 @@ int runCommand(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
     bool hasArguments = argc > 1;
+#if QT_VERSION >= 0x50000
     qInstallMessageHandler(myMsgHandler);
+#else
+    qInstallMsgHandler(myMsgHandler);
+#endif
     QCoreApplication::setOrganizationName("Aarhus University");
 	QCoreApplication::setOrganizationDomain("www.agrsci.dk");
     QCoreApplication::setApplicationName("Universal Simulator");

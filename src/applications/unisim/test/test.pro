@@ -16,7 +16,7 @@ RESOURCES = ../../../resources/unisim.qrc
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
 include ($${US_QWT}/qwt.pri)
-#include ($${US_GSL}/gsl.pri)
+include ($${US_GSL}/gsl.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \

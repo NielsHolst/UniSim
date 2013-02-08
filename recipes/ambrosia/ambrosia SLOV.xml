@@ -14,10 +14,10 @@
 
 	<model name="plants">
 		<model name="plant" type="ambrosia::Plant">
-			<model name="timeC" type="ambrosia::Time">
+                        <model name="timeC" type="ambrosia::AmbrosiaTime">
 				<parameter name="alfa" value="60"/>
 			</model>
-			<model name="timeABDE" type="ambrosia::Time">
+                        <model name="timeABDE" type="ambrosia::AmbrosiaTime">
 				<parameter name="alfa" value="50"/>
 			</model>
 

@@ -21,7 +21,7 @@ void TestNumericLimits::testInfinity() {
 
     try {
         QVERIFY(42./0. == INF);
-        QVERIFY(MAX/EPS != INF);
+        //QVERIFY(MAX/EPS != INF);
         QVERIFY(MAX < INF);
     }
     catch(...) {

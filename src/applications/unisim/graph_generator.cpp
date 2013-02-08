@@ -21,6 +21,7 @@
 
 using namespace UniSim;
 
+
 GraphGenerator::GraphGenerator(UniSim::Simulation *simulation_)
         : simulation(simulation_), dotFileOk(false)
 {	
@@ -34,6 +35,7 @@ GraphGenerator::GraphGenerator(UniSim::Simulation *simulation_)
 }
 
 QString GraphGenerator::dotCommand() {
+#ifdef Q_OS_WIN32
     QDir dir = FileLocations::location(FileLocationInfo::DotTool);
     QString command = dir.absolutePath() + "/dot.exe";
     if (!QFile::exists(command))
@@ -49,6 +51,9 @@ QString GraphGenerator::dotCommand() {
         throw Exception(msg);
     }
     return "\"" + command + "\"";
+#else
+    return "dot";
+#endif
 }
 
 QString GraphGenerator::outputFilePath(OutputFormat format) {

@@ -13,6 +13,7 @@
 #include <qwt_plot_panner.h>
 #include <qwt_plot_zoomer.h>
 #include <qwt_scale_engine.h>
+#include <qwt_symbol.h>
 #include <usbase/data_grid.h>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
@@ -30,7 +31,6 @@
 namespace UniSim{
 
 QList<QColor> OutputPlot::colors;
-QList<QwtSymbol> OutputPlot::symbols;
 
 OutputPlot::OutputPlot(Identifier name, QObject *parent)
     : Output(name, parent), plotWidget(0)
@@ -60,17 +60,6 @@ void OutputPlot::createDesignInfo() {
         << QColor("#F7FF41")
         << QColor("#A135D0")
         << QColor("#39DE52");
-		
-    if (symbols.isEmpty()) {
-        int penWidth = 2;
-        int symbolSize = 6;
-        for (int i = 0; i < colors.size(); ++i) {
-            QPen pen = QPen(colors[i]);
-            pen.setWidth(penWidth);
-            QColor fill = Qt::white;
-            symbols << QwtSymbol(QwtSymbol::Ellipse, QBrush(fill), pen, QSize(symbolSize,symbolSize));
-        }
-    }
 }
 
 OutputPlot::~OutputPlot() {
@@ -166,7 +155,8 @@ void OutputPlot::showPlot() {
 }
 
 void OutputPlot::setZoomer() {
-    QwtPlotCanvas *canvas = plotWidget->plot()->canvas();
+    QwtPlotCanvas *canvas = dynamic_cast<QwtPlotCanvas*>( plotWidget->plot()->canvas() );
+    Q_ASSERT(canvas);
     QwtPlotZoomer* zoomer = new QwtPlotZoomer( canvas );
     zoomer->setRubberBandPen( QColor( Qt::black ) );
     zoomer->setTrackerPen( QColor( Qt::black ) );

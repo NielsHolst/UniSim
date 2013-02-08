@@ -1,7 +1,7 @@
 include(../../../config.pri)
 
 DESTDIR = ..
-TARGET = update_settings
+TARGET = update_settings_app
 TEMPLATE = app
 QT -= gui
 CONFIG -= app_bundle

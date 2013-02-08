@@ -30,7 +30,7 @@ struct Plot
     PlotWidget *plotWidget;
     Trace::Type type;
     QPen pen;
-    const QwtSymbol *symbol;
+    QwtSymbol *symbol;
 
     Plot();
     void add();

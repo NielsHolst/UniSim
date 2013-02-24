@@ -23,18 +23,32 @@ public:
     void initialize();
     void cleanup();
 private:
+    // parameters
+    QString rangeAsString;
+    QPair<double,double> range;
+    int steps;
+    bool doLog10;
+
     // types
-    typedef QPair<int,int> Position;
+    struct PatchInfo {
+        int x, y, size;
+    };
+
+
     // methods
+    void setRange();
+    void setPatches();
+    int findValue(Trace *trace, QString name);
     void writeTraces();
     void writeTime(int time, bool atEnd);
     QString buildSet(int time, QString subId, bool atEnd = false);
-    void writeRect(Position pos, double value);
+    void writeRect(PatchInfo pi, double value);
     void writeRectGroupEnd(int time);
+    QString colour(double value);
 
     // data
     QVector<Trace*> traces;
-    QVector<Position> positions;
+    QVector<PatchInfo> patches;
 };
 
 } //namespace

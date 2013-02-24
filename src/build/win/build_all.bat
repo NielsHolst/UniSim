@@ -77,7 +77,7 @@ popd
 
 @rem Update registry settings
 call make_tool update_settings
-..\own_tools\update_settings
+..\own_tools\update_settings_app
 @echo .
 @echo *** Updated registry for UniSim ***
 @echo .

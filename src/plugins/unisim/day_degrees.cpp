@@ -13,23 +13,28 @@ namespace UniSim{
 DayDegrees::DayDegrees(UniSim::Identifier name, QObject *parent)
     : PhysiologicalTime(name, parent)
 {
-    new Parameter<double>("T0", &T0, 0., this,
+    new Parameter<double>("T0", &T0, missingValue<double>(), this,
         "Lower temperature threshold for development (@Char{ring}C)");
     new Parameter<double>("Topt", &Topt, 100., this,
         "Optimum temperature for development (@Char{ring}C)");
     new Parameter<double>("Tmax", &Tmax, 100., this,
         "Upper temperature threshold for development (@Char{ring}C)");
+    new Parameter<double>("T", &T, missingValue<double>(), this,
+        "Ambient temperature (@Char{ring}C). Default is a missing value (@F {NA}) "
+        "which creates an automatic reference to @F {weather[Tavg]}");
 }
 
 void DayDegrees::initialize()
 {
     PhysiologicalTime::initialize();
-    weather = seekOne<Model*>("weather");
+    if (isMissingValue(T))
+        weather = seekOne<Model*>("weather");
 }
 
 double DayDegrees::calcDailyTimeStep()
 {
-    double T = weather->pullValue<double>("Tavg");
+    double T = isMissingValue(DayDegrees::T) ? weather->pullValue<double>("Tavg")
+                                             : DayDegrees::T;
     double step;
     if (T < T0)
         step = 0.;

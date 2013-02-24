@@ -14,7 +14,7 @@
 	</model>
 
 	<model name="resource" type="beehive::Resource">
-		<parameter name="initial" value="20000"/>
+		<parameter name="initial" value="100000"/>
 		<parameter name="decrement" ref="larva/funcresp[totalSupply]"/>
 	</model>
 
@@ -60,6 +60,7 @@
 
 		<model name="pupa" type="beehive::LifeStage">
 			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T" ref="weather[Tavg]"/>
 				<parameter name="T0" value="0"/>
 			</model>
 			<model name="mass" type="UniSim::Stage">
@@ -90,6 +91,7 @@
 				<parameter name="initialInflow" value="20"/>
 			</model>
 			<model name="fecundity" type="beehive::Fecundity">
+				<parameter name="sizeThreshold" value="15"/>
 				<parameter name="rate" value="20"/>
 				<parameter name="eggMass" value="0.01"/>
 			</model>

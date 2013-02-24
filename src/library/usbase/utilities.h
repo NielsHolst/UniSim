@@ -118,6 +118,17 @@ void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
 QStringList splitParentChildExpression(QString expression);
 template <class T> QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *concerning = 0);
 
+template<class T> T missingValue();
+template<> QString missingValue();
+template<> double missingValue();
+template<> int missingValue();
+template<> char missingValue();
+template<> QDate missingValue();
+template<> QTime missingValue();
+
+template<class T> bool isMissingValue(T value);
+template<> bool isMissingValue(bool value);
+
 template<class T> T stringToValue(QString s, QObject *concerning = 0);
 template<> QString stringToValue<QString>(QString s, QObject *concerning);
 template<> double stringToValue<double>(QString s, QObject *concerning);
@@ -145,20 +156,24 @@ void writeStandardTestFile(QString filePath);
 // ========================
 // Template implementations
 
+template<class T> bool isMissingValue(T value) {
+    return value == missingValue<T>();
+}
+
+template<class T> T missingValue() {
+//    static_assert( false, "that was false" );
+    QString msg = "Missing value not supported for this type: '%1'";
+    throw Exception(msg.arg(QVariant(T()).typeName()));
+}
+
 template<class T> T stringToValue(QString s, QObject *concerning) {
 //    static_assert( false, "that was false" );
     QString msg = "stringToValue does not support this type: '%1' of type '%2'";
     throw Exception(msg.arg(s).arg(QVariant(T()).typeName()), concerning);
-//    QVariant var(s.trimmed());
-//    if (!var.canConvert<T>()) {
-//        QString msg = "Cannot convert '" + s + "' to type " + QVariant(T()).typeName();
-//        throw Exception(msg, concerning);
-//    }
-//    return var.value<T>();
 }
 
 template<class T> QString valueToString(T value) {
-    return QVariant(value).toString();
+    return isMissingValue(value) ? QString("NA") : QVariant(value).toString();
 }
 
 template <class T> bool isType(QString s) {
@@ -171,8 +186,6 @@ template <class T> bool isType(QString s) {
     }
     return ok;
 }
-
-
 
 //! Finds any number of objects
 /*!

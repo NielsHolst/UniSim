@@ -24,7 +24,7 @@ public:
 
 protected:
 	// parameters
-    double T0, Topt, Tmax;
+    double T0, Topt, Tmax, T;
 
     // models
     UniSim::Model *weather;

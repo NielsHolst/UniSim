@@ -32,6 +32,7 @@ HEADERS += \
     output_plot.h \
     output_table.h \
     output_table_base.h \
+    patch_square.h \
     photo_thermal_time.h \
     physiological_time.h \
     plot.h \
@@ -78,6 +79,7 @@ SOURCES += \
     output_plot.cpp \
     output_table.cpp \
     output_table_base.cpp \
+    patch_square.cpp \
     photo_thermal_time.cpp \
     physiological_time.cpp \
     plot.cpp \

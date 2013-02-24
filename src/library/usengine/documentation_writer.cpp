@@ -224,7 +224,7 @@ void DocumentationWriter::writeVariables(QObject *model) {
     int n = var.size();
     if (n == 0) return;
 
-    writeTableTitle("Push variables");
+    writeTableTitle("Variables");
     /* If an empty section is wanted
     if (n == 0)  {
         QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;

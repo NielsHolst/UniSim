@@ -74,6 +74,13 @@ private slots:
     void testStringToValueDate();
     void testStringToValueTime();
 
+    void testStringToMissingValueDouble();
+    void testStringToMissingValueInt();
+    void testStringToMissingValueChar();
+    void testStringToMissingValueBool();
+    void testStringToMissingValueDate();
+    void testStringToMissingValueTime();
+
     void testDecodeListFaulty();
     void testDecodeListEmpty();
     void testDecodeListEmptyItems();

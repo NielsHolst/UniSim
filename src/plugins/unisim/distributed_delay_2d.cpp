@@ -237,9 +237,6 @@ const DistributedDelay2D::State& DistributedDelay2D::state() const {
 }
 
 int DistributedDelay2D::ix(int i, int j) const {
-    bool ok = i<p.k1 && j<p.k2;
-    if (!ok)
-        throw Exception("ERROR");
     Q_ASSERT(i<p.k1 && j<p.k2);
     return j*p.k1 + i;
 }

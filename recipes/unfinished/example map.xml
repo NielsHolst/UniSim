@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation name="Example">
 	<integrator name="steps" type="Steps">
-		<parameter name="maxSteps" value="10"/>
+		<parameter name="maxSteps" value="200"/>
 	</integrator>
 
-	<model name="container">
-		<model table="universe.txt" type="ocean::EvenOdd"/>
+	<model name="calendar" type="UniSim::Calendar"/>
+	
+	<model name="time" type="UniSim::Days"/>
+	
+	<model name="meta-population">
+		<model name="patch1" type="UniSim::PatchSquare">
+			<parameter name="x" value ="10"/>
+			<parameter name="y" value ="10"/>
+			<parameter name="size" value ="10"/>
+			<model name="population" type="UniSim::Exponential">
+				<parameter name="initialValue" value ="1"/>
+				<parameter name="growthRate" value ="0.01"/>
+			</model>
+		</model>
+		<model name="patch2" type="UniSim::PatchSquare">
+			<parameter name="x" value ="20"/>
+			<parameter name="y" value ="20"/>
+			<parameter name="size" value ="5"/>
+			<model name="population" type="UniSim::Exponential">
+				<parameter name="initialValue" value ="1"/>
+				<parameter name="growthRate" value ="0.02"/>
+			</model>
+		</model>
+		<model name="patch3" type="UniSim::PatchSquare">
+			<parameter name="x" value ="40"/>
+			<parameter name="y" value ="50"/>
+			<parameter name="size" value ="30"/>
+			<model name="population" type="UniSim::Exponential">
+				<parameter name="initialValue" value ="1"/>
+				<parameter name="growthRate" value ="0.03"/>
+			</model>
+		</model>
 	</model>
 	
 	<output type="plot">
-		<parameter name="title" value ="Even-odd dynamics in the ocean"/>
+		<parameter name="title" value ="Population dynamics"/>
 		<trace label="Day" ref="steps[stepNumber]"/>
-		<trace label="Value" ref="container/*[value]"/>
-	</output>
-
-	<output type="table">
-		<parameter name="filename" value ="even_odd.txt"/>
-		<trace label="Day" ref="steps[stepNumber]"/>
-		<trace label="Value" ref="container/*[value]"/>
+		<trace label="Value" ref="meta-population/*/population[value]"/>
 	</output>
 
 	
 	<output type="map">
-		<parameter name="filename" value ="even_odd.svg"/>
-		<trace label="Value" ref="container/*[value]"/>
+		<parameter name="filename" value ="meta-population_dynamics.svg"/>
+		<parameter name="range" value ="(0 2)"/>
+		<parameter name="log10" value ="yes"/>
+		<trace label="Value" ref="meta-population/*/population[value]"/>
 	</output>	
 	
 </simulation>

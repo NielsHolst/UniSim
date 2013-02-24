@@ -798,6 +798,53 @@ void TestUtilities::testStringToValueTime() {
     QVERIFY(excepted);
 }
 
+namespace {
+    template<class T> void testStringToMissingValue() {
+        T value;
+        try {
+            value = stringToValue<T>("NA");
+            QVERIFY( isMissingValue(value) );
+        }
+        catch (Exception &ex) {
+            QString msg = "Unexpected exception: " + ex.message();
+            QFAIL(qPrintable(msg));
+
+        }
+
+    }
+}
+
+void TestUtilities::testStringToMissingValueDouble() {
+    testStringToMissingValue<double>();
+}
+
+void TestUtilities::testStringToMissingValueInt() {
+    testStringToMissingValue<int>();
+}
+
+void TestUtilities::testStringToMissingValueChar() {
+    testStringToMissingValue<char>();
+}
+
+void TestUtilities::testStringToMissingValueBool() {
+    bool excepted = false;
+    try {
+        QWARN ("missingValue<bool>() won't compile?");
+    }
+    catch (Exception &) {
+        excepted = true;
+    }
+    // QVERIFY(excepted);
+}
+
+void TestUtilities::testStringToMissingValueDate() {
+    testStringToMissingValue<QDate>();
+}
+
+void TestUtilities::testStringToMissingValueTime() {
+    testStringToMissingValue<QTime>();
+}
+
 void TestUtilities::testDecodeListFaulty() {
     bool excepted = false;
     try {

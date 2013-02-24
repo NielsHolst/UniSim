@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <ctype.h>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
@@ -296,6 +297,17 @@ void  MainWindow::viewModel() {
     viewModelSubWindow->showMaximized();
 }
 
+namespace {
+    QString rinse(QString s) {
+        QString t;
+        for (int i = 0; i <s.size(); ++i) {
+            char ch = s[i].toLatin1();
+            t += isalnum(ch) ? ch : '_';
+        }
+        return t;
+    }
+}
+
 void MainWindow::doWindowsSaveGraphics() {
     QString path = FileLocations::location(FileLocationInfo::Output).absolutePath();
     QList<QMdiSubWindow *> windows = _mdiArea->subWindowList();
@@ -310,7 +322,7 @@ void MainWindow::doWindowsSaveGraphics() {
                 QPixmap pixmap = QPixmap::grabWidget(windows[i]->widget());
                 if (pixmap.isNull())
                     throw Exception("Could not grab graphics for saving");
-                QString filePath = QString("%1/%2-graphics-%3.png").arg(path).arg(++fileNo).arg(windows[i]->windowTitle());
+                QString filePath = QString("%1/%2-graphics-%3.png").arg(path).arg(++fileNo).arg(rinse(windows[i]->windowTitle()));
                 bool ok = pixmap.save(filePath);
                 if (!ok)
                     throw Exception("Could not save graphics file to:\n" + filePath);

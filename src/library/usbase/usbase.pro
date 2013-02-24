@@ -14,6 +14,7 @@ HEADERS += \
         $${US_BASE}/authors.h \
         $${US_BASE}/attributes.h \
         $${US_BASE}/clock.h \
+        $${US_BASE}/colours.h \
         $${US_BASE}/component.h \
         $${US_BASE}/data_grid.h \
         $${US_BASE}/date_interval.h \
@@ -54,6 +55,7 @@ HEADERS += \
 SOURCES += \
         $${US_BASE}/authors.cpp \
         $${US_BASE}/clock.cpp \
+        $${US_BASE}/colours.cpp \
         $${US_BASE}/component.cpp \
         $${US_BASE}/data_grid.cpp \
         $${US_BASE}/date_interval.cpp \

@@ -5,6 +5,7 @@
 */
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <cmath>
 #include <QDate>
 #include <QFile>
@@ -370,12 +371,42 @@ QStringList splitParentChildExpression(QString expression) {
     return result;
 }
 
+template<> QString missingValue() {
+    return "NA";
+}
+
+template<> double missingValue() {
+    return numeric_limits<double>::max();
+}
+
+template<> int missingValue() {
+    return numeric_limits<int>::max();
+}
+
+template<> char missingValue() {
+    return char(0);
+}
+
+template<> QDate missingValue() {
+    return QDate(0,0,0);
+}
+
+template<> QTime missingValue() {
+    return QTime(-1,-1);
+}
+
+template<> bool isMissingValue(bool) {
+    return false;
+}
+
 template<> QString stringToValue<QString>(QString s_, QObject *) {
     return s_;
 }
 
 template<> double stringToValue<double>(QString s_, QObject *concerning) {
     QString s = s_.trimmed();
+    if (s == missingValue<QString>())
+        return missingValue<double>();
     bool ok;
     double value = s.toDouble(&ok);
     if (!ok) {
@@ -387,6 +418,8 @@ template<> double stringToValue<double>(QString s_, QObject *concerning) {
 
 template<> int stringToValue<int>(QString s_, QObject *concerning) {
     QString s = s_.trimmed();
+    if (s == missingValue<QString>())
+        return missingValue<int>();
     bool ok;
     int value = s.toInt(&ok);
     if (!ok) {
@@ -398,6 +431,8 @@ template<> int stringToValue<int>(QString s_, QObject *concerning) {
 
 template<> char stringToValue<char>(QString s_, QObject *concerning) {
     QString s = s_.trimmed();
+    if (s == missingValue<QString>())
+        return missingValue<char>();
     if (s.size() != 1) {
         QString msg = "Cannot convert '" + s + "' to char";
         throw Exception(msg, concerning);
@@ -419,10 +454,13 @@ template<> bool stringToValue<bool>(QString s_, QObject *concerning) {
     return value;
 }
 
-template<> QDate stringToValue<QDate>(QString s, QObject *concerning) {
-    QDate date = QDate::fromString(s.trimmed(), "d/M/yyyy");
+template<> QDate stringToValue<QDate>(QString s_, QObject *concerning) {
+    QString s = s_.trimmed();
+    if (s == missingValue<QString>())
+        return missingValue<QDate>();
+    QDate date = QDate::fromString(s, "d/M/yyyy");
     if (!date.isValid())
-        date = QDate::fromString(s.trimmed(), "d.M.yyyy");
+        date = QDate::fromString(s, "d.M.yyyy");
     if (!date.isValid()) {
         QString msg = "Cannot convert '" + s + "' to a date";
         throw Exception(msg, concerning);
@@ -432,6 +470,8 @@ template<> QDate stringToValue<QDate>(QString s, QObject *concerning) {
 
 template<> QTime stringToValue<QTime>(QString s_, QObject *concerning) {
     QString s = s_.trimmed();
+    if (s == missingValue<QString>())
+        return missingValue<QTime>();
     QTime time = QTime::fromString(s, "h:m:s");
     if (!time.isValid())
             time = QTime::fromString(s, "h:m");
@@ -443,7 +483,7 @@ template<> QTime stringToValue<QTime>(QString s_, QObject *concerning) {
 }
 
 template<> QString valueToString<char>(char value) {
-    return QString(value);
+    return isMissingValue(value) ? QString("NA") :QString(value);
 }
 
 template<> QString valueToString<bool>(bool value) {
@@ -451,11 +491,11 @@ template<> QString valueToString<bool>(bool value) {
 }
 
 template<> QString valueToString<QDate>(QDate value) {
-    return value.toString("d/M/yyyy");
+    return isMissingValue(value) ? QString("NA") :value.toString("d/M/yyyy");
 }
 
 template<> QString valueToString<QTime>(QTime value) {
-    return value.toString("0:0:0");
+    return isMissingValue(value) ? QString("NA") :value.toString("0:0:0");
 }
 
 //! Write object tree to std::cout

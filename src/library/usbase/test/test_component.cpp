@@ -29,7 +29,6 @@ namespace {
 
 void TestComponent::initTestCase() {
     animals = create<Component>("animals",0);
-    UniSim::setSimulationObject(animals);
 
     reptiles = create<Component>("reptiles", animals);
     snakes = create<Component>("snakes", reptiles);

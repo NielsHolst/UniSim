@@ -12,6 +12,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/factory_plug_in.h>
+#include <usbase/named_object.h>
 #include <usbase/parameter_base.h>
 #include <usbase/product_base.h>
 #include <usbase/variable_base.h>
@@ -164,7 +165,7 @@ void DocumentationWriter::writeModels(FactoryPlugIn *plugin) {
 
 void DocumentationWriter::writeModel(FactoryPlugIn *plugin, Identifier modelId) {
     QString modelName = plugin->id().label() + "::" + modelId.label();
-    QObject *model = createModel(plugin, modelId);
+    NamedObject *model = createModel(plugin, modelId);
     write("@SubSubAppendix\n");
     write("@Title {" + modelName + "}\n");
     write("@Tag {" + modelName + "}\n");
@@ -180,19 +181,21 @@ void DocumentationWriter::writeModel(FactoryPlugIn *plugin, Identifier modelId) 
     delete model;
 }
 
-QObject* DocumentationWriter::createModel(FactoryPlugIn *plugin, Identifier modelId) {
+NamedObject* DocumentationWriter::createModel(FactoryPlugIn *plugin, Identifier modelId) {
     QObject *model = create(plugin, modelId, "anonymous", 0);
     Q_ASSERT_X(model,
                "DocumentationWriter::createModel",
                qPrintable(plugin->id().label() +
                " cannot create " + modelId.label()));
-    return model;
+    NamedObject *result = dynamic_cast<NamedObject*>(model);
+    Q_ASSERT(result);
+    return result;
 }
 
 // Refactor the three methods below when they have been given a common base class
 // Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
-void DocumentationWriter::writeParameters(QObject *model) {
-    QList<ParameterBase*> params = seekChildren<ParameterBase*>("*", model);
+void DocumentationWriter::writeParameters(NamedObject *model) {
+    QList<ParameterBase*> params = model->seekChildren<ParameterBase*>("*");
     int n = params.size();
     if (n == 0) return;
 
@@ -215,8 +218,8 @@ void DocumentationWriter::writeParameters(QObject *model) {
     }
 }
 
-void DocumentationWriter::writeVariables(QObject *model) {
-    QList<VariableBase*> var, all = seekChildren<VariableBase*>("*", model);
+void DocumentationWriter::writeVariables(NamedObject *model) {
+    QList<VariableBase*> var, all = model->seekChildren<VariableBase*>("*");
     for (int i = 0; i < all.size(); ++i) {
         if (!dynamic_cast<ParameterBase*>(all[i]))
             var << all[i];

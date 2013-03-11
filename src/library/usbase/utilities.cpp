@@ -27,42 +27,6 @@ using namespace std;
 namespace UniSim {
 
 //
-// Navigation
-//
-
-//! \cond
-QObject *SimulationObject::simulation = 0;
-//! \endcond
-
-//! Sets simulation object directly
-void setSimulationObject(QObject *simulation) {
-    SimulationObject::simulation = simulation;
-}
-
-//! Sets simulation object from descendent
-/*! The parent line of the decendent is followed until an object of Simulation class is found.
-    Or else the simulation object is set to null.
-*/
-void setSimulationObjectFromDescendent(QObject *descendent) {
-    QObject *child = descendent;
-    QObject *parent = child ? child->parent() : 0;
-    while (parent) {
-        child = parent;
-        parent = child->parent();
-    }
-    SimulationObject::simulation = child;
-}
-
-//! Returns Simulation object
-/*! Throws Exception if the Simulation object has not been set.
-*/
-QObject* simulationObject() {
-    if (!SimulationObject::simulation)
-        throw Exception("Simulation object has not been set");
-    return SimulationObject::simulation;
-}
-
-//
 // File handling
 //
 

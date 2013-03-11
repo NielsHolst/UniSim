@@ -38,7 +38,7 @@ PollenOnsetDateFromFile::PollenOnsetDateFromFile(QString fileName)
 }
 
 QDate PollenOnsetDateFromFile::calculate() {
-    Model *calendar = seekOne<Model*>("calendar");
+    Model *calendar = simulation()->seekOne<Model*>("calendar");
     QDate date = calendar->pullValue<QDate>("date");
     int year = date.year();
     if (date.month() == 12)
@@ -77,8 +77,8 @@ QDate PollenOnsetDateFromCurve::calculate() {
     double fractile = variate();
     Q_ASSERT(fractile >= 0. && fractile < 1.);
 
-    Model *calendar = seekOne<Model*>("calendar");
-    Model *weather = seekOne<Model*>("weather");
+    Model *calendar = simulation()->seekOne<Model*>("calendar");
+    Model *weather = simulation()->seekOne<Model*>("weather");
 
     calendar->deepReset();
     weather->deepCleanup();

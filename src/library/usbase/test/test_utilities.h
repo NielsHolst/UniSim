@@ -14,58 +14,18 @@ class TestUtilities : public QObject
     Q_OBJECT
     
 private slots:
-    void initTestCase();
-    void cleanupTestCase();
-
     void testDecodeSimpleListEmpty();
     void testDecodeSimpleListOne();
     void testDecodeSimpleListMany();
     void testDecodeSimpleListFaulty();
 
-    void testSplitAtNamespace();
-
-    void testFindAtomicGloballyAll();
-    void testFindAtomicGloballySome();
-    void testFindAtomicGloballyNone();
-    void testFindAtomicDescendantsAll();
-    void testFindAtomicDescendantsSome();
-    void testFindAtomicDescendantsNone();
-
-    void testFindJokerFirst();
-    void testFindJokerInside();
-    void testFindJokerLast();
-
     void testQStringSplit();
-    void testFindSlashes();
-    void testFindExceptions();
-    void testFindEmpty();
-
-    void testFindChildrenFromRoot();
-    void testFindChildrenFromParent();
-    void testFindChildFromRoot();
-    void testFindChildFromParent();
-
+    void testSplitAtNamespace();
     void testSplitParentChildExpression();
     void testMissingLeftBracket();
     void testMissingRightBracket();
     void testMissplacedLeftBracket();
     void testMissingChildName();
-
-    void testSeekChildAndParentNone();
-    void testSeekChildAndParentOne();
-    void testSeekChildrenAndParentsMany();
-    void testSeekChildrenAndParentsJoker();
-
-    void testPeekOne();
-    void testPeekOneChild();
-    void testPeekOneDescendant();
-    void testPeekOneAscendant();
-
-    void testPeekOneNearest();
-    void testSeekOneNearest();
-
-    void testPeekParent();
-    void testSeekParent();
 
     void testStringToValueDouble();
     void testStringToValueInt();
@@ -95,14 +55,6 @@ private slots:
     void testDivBounded();
 
     void testFindNearestFile();
-private:
-    QObject
-        *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,
-        *mammals, *mice, *elephants, *femaleElephants, *dogs, *femaleDogs, *maleDogs;
-    UniSim::Model
-        *dogsModel, *femaleDogsModel, *maleDogsModel;
-    int femaleDogsSize, maleDogsSize;
-    int femaleDogsWeight, maleDogsWeight;
 };
 
 DECLARE_TEST(TestUtilities)

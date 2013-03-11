@@ -36,14 +36,13 @@ void TestSimulationMaker::initTestCase()
 	SimulationMaker maker;
 	try {
         simulation = maker.parse(local::testFilePath());
-        UniSim::setSimulationObject(simulation);
-	}
+    }
 	catch (const Exception &ex) {
         delete simulation;
         simulation = 0;
-		QWARN(qPrintable(ex.message()));
-		QVERIFY(false);
+        QFAIL(qPrintable(ex.message()));
 	}
+    QVERIFY(simulation==UniSim::simulation());
 }
 
 void TestSimulationMaker::cleanupTestCase()
@@ -59,13 +58,13 @@ void TestSimulationMaker::testSimulation()
     QCOMPARE(simulation->children().size(), 7);
     QVERIFY(simulation->parent()==0);
 	
-    Model *butterfly = seekOneDescendant<Model*>("butterfly", 0);
+    Model *butterfly = simulation->seekOneDescendant<Model*>("butterfly");
 	QVERIFY(butterfly);
 }
 
 void TestSimulationMaker::testModel()
 {
-    QList<Model*> models = seekDescendants<Model*>("butterfly", 0);
+    QList<Model*> models = simulation->seekDescendants<Model*>("butterfly");
     QCOMPARE(models.size(), 1);
     Model *butterfly = models[0];
     QVERIFY(butterfly);
@@ -75,10 +74,10 @@ void TestSimulationMaker::testModel()
 
 void TestSimulationMaker::testParameters()
 {
-    Model *butterfly = seekOneDescendant<Model*>("butterfly", 0);
+    Model *butterfly = simulation->seekOneDescendant<Model*>("butterfly");
     QVERIFY(butterfly);
 
-    Model *larva = UniSim::seekOneChild<Model*>("larva", butterfly);
+    Model *larva = butterfly->seekOneChild<Model*>("larva");
     QVERIFY(larva);
 
     try {

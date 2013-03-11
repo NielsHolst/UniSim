@@ -21,6 +21,7 @@ public:
     enum State {Uninitialized, Initialized, Faulty};
 
     Simulation(Identifier name);
+    ~Simulation();
     void execute();
     QString version() const;
     State state() const;
@@ -32,8 +33,10 @@ public:
 
     void setFilePath(QString filePath);
     QString inputFilePath(QString fileName);
+    friend Simulation* simulation();
 
 private:
+    static Simulation *theSimulation;
     State _state;
     QString _version;
     bool _stopCurrentRun, _stopAllRuns;

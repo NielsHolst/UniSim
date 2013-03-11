@@ -88,7 +88,7 @@ void GraphGenerator::writeDotFile()
     nodeNumber = 0;
     f.write("digraph G {size=\"16,24\";graph[rankdir=LR];\n");
 
-    Models models = seekChildren<Model*>("*", simulation);
+    Models models = simulation->seekChildren<Model*>("*");
     for (Models::const_iterator mo = models.begin(); mo != models.end(); ++mo) {
         if (!(*mo)->hide())
             writeModel(&f, simulation, *mo, 0);

@@ -61,7 +61,7 @@ inline void addProduct(Identifier id, FactoryPlugIn *parent, QString desc) {
 
 inline QObject* create(FactoryPlugIn *factory, Identifier className, Identifier objectName, QObject *parent)
 {
-    setSimulationObjectFromDescendent(parent);
+    //setSimulationObjectFromDescendent(parent);
     FactoryPlugIn::Products::const_iterator p = factory->_products.find(className);
     return (p==factory->_products.end()) ? 0 : p.value()->create(objectName, parent);
 }

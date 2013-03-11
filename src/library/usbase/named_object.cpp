@@ -8,6 +8,11 @@
 
 namespace UniSim{
 
+NamedObject:: NamedObject()
+    : QObject()
+{
+}
+
 NamedObject::NamedObject(Identifier name, QObject *parent)
     : QObject(parent), _id(name)
 {
@@ -28,10 +33,25 @@ QString NamedObject::fullName() const {
 
 QString NamedObject::fullLabel() const {
     QString heading;
-    if (parent())
-        heading = dynamic_cast<NamedObject*>(parent())->fullLabel();
+    NamedObject *p = const_cast<NamedObject*>(this);
+    NamedObject *parent = p->peekParent<NamedObject*>("*");
+    if (parent)
+        heading = parent->fullLabel();
     return heading + "/" + _id.label();
 }
+
+//! Finds the root of NamedObject's ancestry
+NamedObject* NamedObject::root() {
+    NamedObject *root = this;
+    NamedObject *parent = peekParent<NamedObject*>("*");
+    while (parent) {
+        root = parent;
+        parent = root->peekParent<NamedObject*>("*");
+    }
+    return root;
+
+}
+
 
 } //namespace
 

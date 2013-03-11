@@ -6,7 +6,7 @@
 #ifndef UNISIM_VARIABLE_BASE_H
 #define UNISIM_VARIABLE_BASE_H
 
-#include "identifier.h"
+#include <QObject>
 
 namespace UniSim{
 

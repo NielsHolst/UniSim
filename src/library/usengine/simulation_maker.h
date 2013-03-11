@@ -22,6 +22,7 @@ namespace UniSim{
 
 class InstanceIndex;
 class Model;
+class NamedObject;
 class ParameterBase;
 class ParameterIndex;
 class Parameters;
@@ -58,7 +59,7 @@ private:
     QList<RedirectedParameter> redirectedParameters;
 
     struct TraceParam : public Attributes {
-        QObject *parent;
+        NamedObject *parent;
     };
     QList<TraceParam> traceVariableParam;
 
@@ -70,28 +71,28 @@ private:
     bool moreToRead();
     void ignoreElement();
 
-    void readIntegratorElement(QObject* parent);
-    void readSequenceElement(QObject *parent);
+    void readIntegratorElement(NamedObject *parent);
+    void readSequenceElement(NamedObject *parent);
 
-    void readModelElement(QList<QObject*> parents);
-    QList<QObject*> createModelElement(InstanceIndex *table, QObject *parent);
+    void readModelElement(QList<NamedObject*> parents);
+    QList<NamedObject*> createModelElement(InstanceIndex *table, NamedObject *parent);
     UniSim::InstanceIndex *createIndexTable();
 
-    void readParameterElement(QList<QObject*> parents);
-    void setParameterElement(QObject *parent);
+    void readParameterElement(QList<NamedObject*> parents);
+    void setParameterElement(NamedObject *parent);
     UniSim::ParameterIndex *createParameterTable(QString fileName);
 
-    void readOutputElement(QObject *parent);
-    void readOutputTableElement(QObject* parent);
-    void readOutputSubElement(QObject *parent);
+    void readOutputElement(NamedObject *parent);
+    void readOutputTableElement(NamedObject* parent);
+    void readOutputSubElement(NamedObject *parent);
 
     bool elementNameEquals(QString s) const;
     bool elementNameNotEquals(QString s) const;
     QString elementName() const;
     QString attributeValue(QString name, QString defaultValue) const;
-    QString attributeValue(QString name, QObject *parent) const;
+    QString attributeValue(QString name, NamedObject *parent) const;
     QString attributeValue(QStringList synonyms, QString defaultValue) const;
-    QString attributeValue(QStringList synonyms, QObject *parent) const;
+    QString attributeValue(QStringList synonyms, NamedObject *parent) const;
 
     QString message(QString text) const;
     void redirectParameters();

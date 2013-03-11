@@ -19,7 +19,7 @@ void TestFixed::cleanup() {
 void TestFixed::testPullVariables() {
     createSimulation("test_fixed.xml");
 
-    Model *model = seekOneDescendant<Model*>("fixed", sim);
+    Model *model = sim->seekOneDescendant<Model*>("fixed");
     QVERIFY(model);
     double Tavg = model->pullValue<double>("Tavg");
     int I = model->pullValue<int>("I");
@@ -35,10 +35,10 @@ void TestFixed::testPullVariables() {
     }
 
     try {
-        Model *empty = seekOneDescendant<Model*>("empty", sim);
+        Model *empty = sim->seekOneDescendant<Model*>("empty");
         QVERIFY(empty);
 
-        Model *model = seekOneDescendant<Model*>("fixed", sim);
+        Model *model = sim->seekOneDescendant<Model*>("fixed");
         QVERIFY(model);
 
         double Tavg = model->pullValue<double>("Tavg");

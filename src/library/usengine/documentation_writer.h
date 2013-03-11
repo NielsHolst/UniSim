@@ -13,6 +13,7 @@
 namespace UniSim{
 
 class Model;
+class NamedObject;
 class FactoryPlugIn;
 	
 class DocumentationWriter
@@ -28,7 +29,7 @@ private:
 
     // methods
     void openFile();
-    QObject *createModel(FactoryPlugIn *plugin, Identifier modelId);
+    NamedObject *createModel(FactoryPlugIn *plugin, Identifier modelId);
     void writePlugins();
     void writeTimeStamp();
     void writeVersion();
@@ -37,8 +38,8 @@ private:
     void writeAuthor(QString id);
     void writeModels(FactoryPlugIn *plugin);
     void writeModel(FactoryPlugIn *plugin, Identifier modelId);
-    void writeParameters(QObject *model);
-    void writeVariables(QObject *model);
+    void writeParameters(NamedObject *model);
+    void writeVariables(NamedObject *model);
     void writeTableTitle(QString title);
     void writeTableRow(QString format, QString a, QString b, QString c);
     void write(QString s);

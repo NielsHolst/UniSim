@@ -77,7 +77,7 @@ void OutputPlot::amend() {
     for (int i = 0; i < tables.size(); ++i) {
         TableRecord rec;
         rec.data = tables[i];
-        rec.initX();
+        rec.initX(this);
         rec.initY();
         _tableRecords << rec;
     }
@@ -90,12 +90,12 @@ void OutputPlot::amend() {
     }
 }
 
-void OutputPlot::TableRecord::initX() {
+void OutputPlot::TableRecord::initX(OutputPlot *parent) {
     int nRows = data->rowNumber();
     QString xString = data->cell(0,0);
     try {
         stringToValue<QDate>(xString);
-        Model *calendar = seekOne<Model*>("calendar");
+        Model *calendar = parent->seekOne<Model*>("calendar");
         QDate initialDate = calendar->pullValue<QDate>("initialDate");
         QVector<QDate> xDate = data->column<QDate>(0);
         for (int i = 0; i < nRows; ++i) {
@@ -105,7 +105,7 @@ void OutputPlot::TableRecord::initX() {
     catch(Exception &) {
         try {
             stringToValue<QTime>(xString);
-            Model *calendar = seekOne<Model*>("calendar");
+            Model *calendar = parent->seekOne<Model*>("calendar");
             QTime initialTime = calendar->pullValue<QTime>("initialTimeOfDay");
             QVector<QTime> xTime = data->column<QTime>(0);
             for (int i = 0; i < nRows; ++i) {

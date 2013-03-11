@@ -3,13 +3,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include "exception.h"
+#include "named_object.h"
 #include "utilities.h"
 #include "variable_base.h"
 
 namespace UniSim{
 
 VariableBase::VariableBase(Identifier id, QObject *parent, QString description)
-    : QObject(parent), _id(id), _description(description)
+    : QObject(parent),  _id(id), _description(description)
 {
     setObjectName(id.key());
     assertUniqueness();
@@ -24,17 +26,18 @@ QString VariableBase::description() const {
 }
 
 void VariableBase::assertUniqueness() {
-    if (!parent())
+    NamedObject *par = dynamic_cast<NamedObject*>(parent());
+    if (!par)
         return;
 
-    QList<VariableBase*> found = seekChildren<VariableBase*>(id().key(), parent());
+    QList<VariableBase*> found = par->seekChildren<VariableBase*>(id().key());
     bool isUnique = true;
     for (int i=0; isUnique && (i < found.size()); ++i) {
         isUnique = (found[i] == this);
     }
     if (!isUnique) {
-        QString msg = "Variable '" + id().label() + "' is not unique in '" + fullName(parent()) +"'";
-        Q_ASSERT_X(isUnique, "VariableBase::assertUniqueness", qPrintable(msg));
+        QString msg = "Variable '%1' is not unique in '%2'";
+        throw Exception(msg.arg(id().label()).arg(par->fullName()));
     }
 }
 

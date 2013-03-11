@@ -12,7 +12,6 @@ using namespace UniSim;
 
 void TestSimulationTrickle::initTestCase() {
     simulation = new Simulation("trickles");
-    setSimulationObject(simulation);
     integrator = new Steps("integrator", simulation);
 }
 
@@ -32,7 +31,7 @@ void TestSimulationTrickle::testExecute() {
 }
 
 void TestSimulationTrickle::executeAndTest(int steps, int check0, int check1, int check2) {
-    Parameter<int> *maxSteps = seekOneChild<Parameter<int> *>("maxSteps", integrator);
+    Parameter<int> *maxSteps = integrator->seekOneChild<Parameter<int> *>("maxSteps");
     maxSteps->setValue(steps);
     simulation->execute();
     testBox(0, check0);

@@ -14,6 +14,7 @@
 #include <usbase/model.h>
 #include <usbase/integrator.h>
 #include <usbase/exception.h>
+#include <usbase/named_object.h>
 #include <usbase/output.h>
 #include <usbase/trace.h>
 #include <usbase/parameter.h>
@@ -37,12 +38,12 @@
 namespace UniSim{
 
 namespace {
-    inline QList<QObject*> asList(QObject * object) {
-        return (QList<QObject*>() << object);
+    inline QList<NamedObject*> asList(NamedObject * object) {
+        return (QList<NamedObject*>() << object);
     }
 
     template <class T> void amend() {
-        QList<T> components = seekChildren<T>("*", simulation());
+        QList<T> components = simulation()->seekChildren<T>("*");
         QListIterator<T>  i(components);
         while (i.hasNext()) {
             i.next()->deepAmend();
@@ -129,7 +130,6 @@ Simulation* SimulationMaker::parse(QString filePath)
     simName = attributeValue("name", "anonymous");
 	
     Simulation *sim = new Simulation(simName);
-    UniSim::setSimulationObject(sim);
     sim->setFilePath(filePath);
 
     nextElementDelim();
@@ -193,7 +193,7 @@ QString SimulationMaker::compileToFile(QString filePath) {
     return compiledFilePath;
 }
 
-void SimulationMaker::readIntegratorElement(QObject* parent) {
+void SimulationMaker::readIntegratorElement(NamedObject* parent) {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
     QString type = attributeValue("type", parent);
@@ -221,7 +221,7 @@ void SimulationMaker::readIntegratorElement(QObject* parent) {
 	nextElementDelim();
 }	
 
-void SimulationMaker::readSequenceElement(QObject* parent)
+void SimulationMaker::readSequenceElement(NamedObject* parent)
 {
 	Q_ASSERT(reader->isStartElement() && parent);
 
@@ -244,7 +244,7 @@ void SimulationMaker::readSequenceElement(QObject* parent)
 	nextElementDelim();
 }
 
-void SimulationMaker::readModelElement(QList<QObject*> parents) {
+void SimulationMaker::readModelElement(QList<NamedObject*> parents) {
     Q_ASSERT(!parents.isEmpty());
     Q_ASSERT(reader->isStartElement());
 
@@ -253,9 +253,9 @@ void SimulationMaker::readModelElement(QList<QObject*> parents) {
     QString context = !parameterName.isEmpty() ? parameterName : modelType;
 
     InstanceIndex *table = createIndexTable();
-    QList<QObject*> models;
+    QList<NamedObject*> models;
     for (int i = 0; i < parents.size(); ++i) {;
-        QObject *parent = parents[i];
+        NamedObject *parent = parents[i];
         table->reset(context, dynamic_cast<Model*>(parent));
         models << createModelElement(table, parent);
     }
@@ -323,10 +323,10 @@ InstanceIndex* SimulationMaker::createIndexTable() {
         return instanceTables[filePath] = new InstanceIndexFromTable(filePath);
 }
 
-QList<QObject*> SimulationMaker::createModelElement(InstanceIndex *table, QObject *parent) {
+QList<NamedObject*> SimulationMaker::createModelElement(InstanceIndex *table, NamedObject *parent) {
     QString modelType = attributeValue("type", "Anonymous");
     QString hide = attributeValue("hide", "");
-    QList<QObject*> models;
+    QList<NamedObject*> models;
     Models instances;
 
     try {
@@ -340,7 +340,7 @@ QList<QObject*> SimulationMaker::createModelElement(InstanceIndex *table, QObjec
             for (int i = 0;i < numParam; ++i) {
                 QString name = rec.paramNameValue.keys().at(i);
                 QString value = rec.paramNameValue.values().at(i);
-                ParameterBase *parameter = seekOneChild<ParameterBase*>(name, model);
+                ParameterBase *parameter = model->seekOneChild<ParameterBase*>(name);
                 parameter->setValueFromString(value);
             }
             if (!hide.isEmpty()) {
@@ -361,7 +361,7 @@ QList<QObject*> SimulationMaker::createModelElement(InstanceIndex *table, QObjec
     return models;
 }
 
-void SimulationMaker::readParameterElement(QList<QObject*> parents)
+void SimulationMaker::readParameterElement(QList<NamedObject*> parents)
 {
     Q_ASSERT(!parents.isEmpty());
     Q_ASSERT(reader->isStartElement());
@@ -373,7 +373,7 @@ void SimulationMaker::readParameterElement(QList<QObject*> parents)
 	nextElementDelim();
 }
 
-void SimulationMaker::setParameterElement(QObject *parent) {
+void SimulationMaker::setParameterElement(NamedObject *parent) {
     QString name = attributeValue("name", "");
     QString value = attributeValue("value", "");
     QString reference = attributeValue(QStringList() << "ref" << "variable", "");
@@ -409,7 +409,7 @@ void SimulationMaker::setParameterElement(QObject *parent) {
         table->reset(dynamic_cast<Model*>(parent));
         while (table->hasNext()) {
             ParameterIndex::Result theNext = table->next();
-            ParameterBase *parameter = seekOneChild<ParameterBase*>(theNext.first, parent);
+            ParameterBase *parameter = parent->seekOneChild<ParameterBase*>(theNext.first);
             parameter->setValueFromString(theNext.second);
         }
     }
@@ -418,7 +418,7 @@ void SimulationMaker::setParameterElement(QObject *parent) {
             QString msg("Parameter must have a name");
             throw Exception(message(msg), parent);
         }
-        ParameterBase *parameter = seekOneChild<ParameterBase*>(name, parent);
+        ParameterBase *parameter = parent->seekOneChild<ParameterBase*>(name);
         if (hasValue)
             parameter->setValueFromString(value.trimmed());
         else if (hasReference)
@@ -442,7 +442,7 @@ ParameterIndex *SimulationMaker::createParameterTable(QString fileName) {
         return parameterTables[filePath] = new ParameterIndexFromTable(filePath);
 }
 
-void SimulationMaker::readOutputElement(QObject* parent)
+void SimulationMaker::readOutputElement(NamedObject* parent)
 {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
@@ -472,7 +472,7 @@ void SimulationMaker::readOutputElement(QObject* parent)
 	nextElementDelim();
 }	
 
-void SimulationMaker::readOutputSubElement(QObject* parent)
+void SimulationMaker::readOutputSubElement(NamedObject* parent)
 {
     Q_ASSERT(reader->isStartElement() && parent);
 
@@ -491,7 +491,7 @@ void SimulationMaker::readOutputSubElement(QObject* parent)
     nextElementDelim();
 }
 
-void SimulationMaker::readOutputTableElement(QObject* parent) {
+void SimulationMaker::readOutputTableElement(NamedObject* parent) {
     Q_ASSERT(reader->isStartElement() && parent);
     QString fileName = attributeValue("table", parent);
     QString filePath = simulation()->inputFilePath(fileName);
@@ -504,7 +504,7 @@ void SimulationMaker::createTraces() {
         const TraceParam &param( traceVariableParam.value(i) );
         QString label = param.attribute("label").toString();
         QString ref = param.attribute("ref").toString();
-        QList<VariableBase*> bases = seekMany<QObject*, VariableBase*>(ref);
+        QList<VariableBase*> bases = simulation()->seekMany<NamedObject*, VariableBase*>(ref);
         // If several bases are found they will all get the same label.
         // This must be fixed, as needed, by Output
         for (int i = 0; i < bases.size(); ++i) {
@@ -534,7 +534,7 @@ QString SimulationMaker::attributeValue(QString name, QString defaultValue) cons
     return result.isEmpty() ? defaultValue : result;
 }
 
-QString SimulationMaker::attributeValue(QString name, QObject *parent) const {
+QString SimulationMaker::attributeValue(QString name, NamedObject *parent) const {
     QString result = attributeValue(name, "");
     if (result.isEmpty()) {
         QString msg("Missing attribute: '%1'");
@@ -559,7 +559,7 @@ QString SimulationMaker::attributeValue(QStringList synonyms, QString defaultVal
     return result.isEmpty() ? defaultValue : result;
 }
 
-QString SimulationMaker::attributeValue(QStringList synonyms, QObject *parent) const {
+QString SimulationMaker::attributeValue(QStringList synonyms, NamedObject *parent) const {
     QString result = attributeValue(synonyms, "");
     if (result.isEmpty()) {
         QString msg("Missing attribute: '%1'");
@@ -621,7 +621,7 @@ void SimulationMaker::redirectParameters() {
     for (int i = 0; i < redirectedParameters.size(); ++i) {
         ParameterBase *parameter = redirectedParameters[i].first;
         QString variableFullName = redirectedParameters[i].second;
-        const VariableBase *variable = seekOne<QObject*, VariableBase*>(variableFullName);
+        const VariableBase *variable =simulation()-> seekOne<NamedObject*, VariableBase*>(variableFullName);
         bool coupled =
             couple<bool>(parameter, variable) ||
             couple<int>(parameter, variable) ||

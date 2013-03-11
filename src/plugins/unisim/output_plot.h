@@ -41,7 +41,7 @@ public:
         DataGrid *data;
         QVector<double> x;
         QList<YRecord> yList;
-        void initX();
+        void initX(OutputPlot *parent);
         void initY();
     };
     // methods for unit tests

@@ -31,10 +31,17 @@
 
 namespace UniSim{
 
+Simulation *Simulation::theSimulation = 0;
+
 Simulation::Simulation(Identifier name)
     : NamedObject(name, 0)
 {
+    theSimulation = this;
     setProperty("classLabel", "Simulation");
+}
+
+Simulation::~Simulation() {
+    theSimulation = 0;
 }
 
 //! Executes one or more runs of the simulation as determined by the integrator
@@ -143,11 +150,13 @@ QString Simulation::inputFilePath(QString fileName) {
     return findNearestFile(fileFolder, "input", fileName).absoluteFilePath();
 }
 
-//! Return the current simulation object; guaranteed to be a valid object
+//! Return the current simulation object
+/*! An exception will be thrown if there is no current simulation object
+*/
 Simulation* simulation() {
-    Simulation *sim = dynamic_cast<Simulation*>(simulationObject());
-    Q_ASSERT(sim);
-    return sim;
+    if (!Simulation::theSimulation)
+        throw("No current simulation");
+    return Simulation::theSimulation;
 }
 
 } //namespace

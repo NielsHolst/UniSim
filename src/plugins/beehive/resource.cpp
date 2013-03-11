@@ -6,12 +6,15 @@
 #include <usbase/parameter.h>
 #include <usbase/test_num.h>
 #include <usbase/variable.h>
+#include "beehive_factory.h"
 #include "resource.h"
 
 using namespace UniSim;
 
 
 namespace beehive {
+
+int *i = new int;
 
 Resource::Resource(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)

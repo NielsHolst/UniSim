@@ -25,7 +25,7 @@ void TestSum::testSum() {
         QString msg = "Could not execute: " + ex.message();
         QFAIL(qPrintable(msg));
     }
-    double sum = seekOne<Model*>("sum")->pullValue<double>("value");
+    double sum = sim->seekOne<Model*>("sum")->pullValue<double>("value");
     QCOMPARE(sum,10.+100.+1000.);
 }
 

@@ -25,6 +25,7 @@ HEADERS += \
     $${US_BASE}/test/test_minimiser.h \
     $${US_BASE}/test/test_matrix.h \
     $${US_BASE}/test/test_moments.h \
+    $${US_BASE}/test/test_named_object.h \
     $${US_BASE}/test/test_name_list.h \
     $${US_BASE}/test/test_parameter.h \
     $${US_BASE}/test/test_parameter_vector.h \
@@ -83,6 +84,7 @@ SOURCES += \
     $${US_BASE}/test/test_matrix.cpp \
     $${US_BASE}/test/test_minimiser.cpp \
     $${US_BASE}/test/test_moments.cpp \
+    $${US_BASE}/test/test_named_object.cpp \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
     $${US_BASE}/test/test_parameter_vector.cpp \

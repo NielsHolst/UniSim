@@ -21,7 +21,7 @@ TimeLimited::TimeLimited(Identifier name, QObject *parent)
 
 void TimeLimited::initialize() {
     Integrator::initialize();
-    time = UniSim::seekOneChild<Model*>("time", this);
+    time = seekOneChild<Model*>("time");
 }
 
 bool TimeLimited::nextStep()

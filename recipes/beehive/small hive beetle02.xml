@@ -149,6 +149,14 @@
 	<!-- Tables -->
 	
 	<output type="table">
+		<parameter name="fileName" value ="shb adults.txt"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Number" value="adult/number[value]"/>
+		<trace label="Mass" value="adult/mass[value]"/>
+		<trace label="Size" value="adult[size]"/>
+	</output>
+	
+	<output type="table">
 		<parameter name="fileName" value ="shb res=5000k.txt"/>
 		<trace label="Day" value="calendar[totalTime]"/>
 		<trace label="larvaTotalMass" value="larva/mass[outflowTotal]"/>

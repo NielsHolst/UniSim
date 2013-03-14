@@ -11,6 +11,7 @@ class TestSimulationMakerFromFile : public QObject
 {
     Q_OBJECT
 private slots:
+    /*
     void testCommonElement();
     void testModelInstances();
     void testModelsFromFileOneLevel();
@@ -19,11 +20,14 @@ private slots:
     void testModelsFromFileThreeLevels();
     void testModelsAndParametersFromFile();
     void testModelsAndParametersFromFileNoParent();
+    */
     void testModelsAndParametersFromFileSame();
+    /*
     void testModelsAndParametersFromFileCondensed();
     void testModelsFromCondensedFileParameterKey();
     void testModelsFromCondensedFileParameter2Keys();
     void testVariableParameter();
+    */
 private:
     void createSimulation(QString fileName);
     QString filePath(QString fileName) const;

@@ -633,7 +633,7 @@ void SimulationMaker::redirectParameters() {
             couple<QString>(parameter, variable);
         if (!coupled) {
             QString msg("The type of variable '%1' does not match that of the parameter");
-            throw Exception(message(msg.arg(variableFullName)), parameter);
+            throw Exception(message(msg.arg(variableFullName)));
         }
     }
 }

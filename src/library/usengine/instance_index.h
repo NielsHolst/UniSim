@@ -22,7 +22,7 @@ public:
         QMap<QString, QString> paramNameValue;
     };
     InstanceIndex();
-    ~InstanceIndex();
+    virtual ~InstanceIndex();
     virtual void reset(QString context, Model *parent) = 0;
     virtual bool hasNext() = 0;
     virtual Record next() = 0;

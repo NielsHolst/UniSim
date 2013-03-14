@@ -195,7 +195,11 @@ NamedObject* DocumentationWriter::createModel(FactoryPlugIn *plugin, Identifier 
 // Refactor the three methods below when they have been given a common base class
 // Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
 void DocumentationWriter::writeParameters(NamedObject *model) {
-    QList<ParameterBase*> params = model->seekChildren<ParameterBase*>("*");
+    QList<VariableBase*> params, all = model->seekChildren<VariableBase*>("*");
+    for (int i = 0; i < all.size(); ++i) {
+        if (dynamic_cast<ParameterBase*>(all[i]))
+            params << all[i];
+    }
     int n = params.size();
     if (n == 0) return;
 

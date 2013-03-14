@@ -86,14 +86,16 @@ void SensitivityAnalysis::stratifyParameters() {
     for (int i = 0; i < parameters.size(); ++i) {
         //double useDeviance = deviance;
         ParameterBase *parameter = parameters[i];
-        if (dynamic_cast<Parameter<QDate>*>(parameter)) {
+        Parameter<QDate> *pDate = dynamic_cast<Parameter<QDate>*>(parameter);
+        Parameter<QTime> *pTime = dynamic_cast<Parameter<QTime>*>(parameter);
+        if (pDate) {
             if (days == -1)
-                throw Exception("You must specify 'days' parameter for sensitivity analysis", parameter);
+                throw Exception("You must specify 'days' parameter for sensitivity analysis", pDate);
             //useDeviance = days;
         }
-        else if (dynamic_cast<Parameter<QTime>*>(parameter)) {
+        else if (pTime) {
             if (seconds == -1)
-                throw Exception("You must specify 'seconds' parameter for sensitivity analysis", parameter);
+                throw Exception("You must specify 'seconds' parameter for sensitivity analysis", pTime);
             //useDeviance = seconds;
         }
         //parameters[i]->createStrata(useDeviance, iterations, type);
@@ -101,12 +103,12 @@ void SensitivityAnalysis::stratifyParameters() {
 }
 
 void SensitivityAnalysis::setNames() {
-    QStringList fullNames;
-    for (int i = 0; i < parameters.size(); ++i) {
-        fullNames.append(UniSim::fullName(parameters[i]));
-    }
-    NameList nl(fullNames);
-    names = nl.simplified();
+//    QStringList fullNames;
+//    for (int i = 0; i < parameters.size(); ++i) {
+//        fullNames.append(UniSim::fullName(parameters[i]));
+//    }
+//    NameList nl(fullNames);
+//    names = nl.simplified();
 }
 
 bool SensitivityAnalysis::nextRun() {

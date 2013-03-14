@@ -1,6 +1,6 @@
 # Enable use of Qwt library
 win32 {
-    # On windows use binary found in vendor/gsl folder
+    # On windows use binary found in vendor/qwt folder
     INCLUDEPATH += $${US_QWT}/include
     LIBS += -L$${US_QWT}/lib -lqwt$${DEBUG_SUFFIX}
 }

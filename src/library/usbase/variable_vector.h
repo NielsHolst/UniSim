@@ -15,7 +15,7 @@
 namespace UniSim{
 
 template <class T>
-class VariableVector : public virtual VariableBase
+class VariableVector : public VariableBase
 {
     //Q_OBJECT
 public:

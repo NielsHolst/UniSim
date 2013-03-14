@@ -33,10 +33,10 @@ void Fecundity::reset() {
 }
 
 void Fecundity::update() {
-    number = numberOfAdults->pullValue<double>("value") * rate;
+    number = numberOfAdults->pullValue<double>("value") * rate*sexRatio;
     if (adult->pullValue<double>("size") < sizeThreshold)
         number = 0;
-    mass = sexRatio*number*eggMass;
+    mass = number*eggMass;
 }
 
 } //namespace

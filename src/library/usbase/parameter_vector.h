@@ -34,9 +34,9 @@ private:
 template <class T>
 ParameterVector<T>::ParameterVector(Identifier id, const QVector<T> *valuePtr, QObject *parent, QString desc)
     :
-      VariableBase(id, parent, desc), // ? otherwise compiler complains
+//      VariableBase(id, parent, desc), // ? otherwise compiler complains
       VariableVector<T>(id, valuePtr, parent, desc),
-      ParameterBase(id, parent, desc),
+//      ParameterBase(id, parent, desc),
       redirectedValuePtr(0)
 {
 }

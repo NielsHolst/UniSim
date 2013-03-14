@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
+#include <iostream>
 #include "model.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ namespace {
         if (key == model->classId())
             return model->id().label();
 
-        QList<ParameterBase*> parameter = model->seekChildren<ParameterBase*>(key.label());
+        QList<VariableBase*> parameter = model->seekChildren<VariableBase*>(key.label());
         if (parameter.size() == 1)
             return parameter.value(0)->toString();
         Q_ASSERT(parameter.isEmpty());

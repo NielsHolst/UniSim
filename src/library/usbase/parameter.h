@@ -35,9 +35,9 @@ private:
 template <class T>
 Parameter<T>::Parameter(Identifier id, T *valuePtr, T defaultvalue_, QObject *parent, QString desc)
     :
-      VariableBase(id, parent, desc), // ? otherwise compiler complains
+//      VariableBase(id, parent, desc), // ? otherwise compiler complains
       Variable<T>(id, valuePtr, parent, desc),
-      ParameterBase(id, parent, desc),
+//      ParameterBase(id, parent, desc),
       defaultValue(defaultvalue_),
       redirectedValuePtr(0)
 {

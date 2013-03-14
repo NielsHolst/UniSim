@@ -2,8 +2,6 @@
 # Configuration of make process (can be edited)
 #
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
 UNISIM_VERSION      = 1-42
 
 CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
@@ -13,9 +11,11 @@ CONFIG += unisim_development     # Activate this if targets are under developmen
 # Ensuing configuration (should not be edited)
 #
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 win32 {
     # Check if this will be needed for Qt5.0
-    QMAKE_LFLAGS +=  -enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
+    lessThan(QT_MAJOR_VERSION, 5): QMAKE_LFLAGS +=  -enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
 }
 
 DEFINES += UNISIM_VERSION
@@ -46,7 +46,8 @@ US_BASE = $${UNISIM_ROOT}/src/library/usbase
 US_ENGINE = $${UNISIM_ROOT}/src/library/usengine
 US_APPLICATIONS = $${UNISIM_ROOT}/src/applications
 US_PLUGINS = $${UNISIM_ROOT}/src/plugins
-US_QWT = $${UNISIM_ROOT}/vendor/qwt
+lessThan(QT_MAJOR_VERSION, 5): US_QWT = $${UNISIM_ROOT}/vendor/qwt_qt4
+greaterThan(QT_MAJOR_VERSION, 4): US_QWT = $${UNISIM_ROOT}/vendor/qwt_qt5
 US_GSL = $${UNISIM_ROOT}/vendor/gsl
 US_TCLAP = $${UNISIM_ROOT}/vendor/tclap
 

@@ -147,7 +147,7 @@ QString XmlNode::buildQueryString(QString filePath, QString queryAttr) const {
         query = queryAttr.contains("http") ? queryAttr : insertDocPath(filePath, queryAttr);
     }
     else {
-        query = "doc('" + filePath + "')";
+        query = "doc('file:///" + filePath + "')";
         if (!queryAttr.startsWith("/"))
             query += xmlPath() + "/";
         query += queryAttr;
@@ -170,7 +170,7 @@ QString XmlNode::insertDocPath(QString filePath, QString queryAttr) {
     QString path = QFileInfo(filePath).absoluteDir().absolutePath();
     QString docPath = path + "/" + docName;
 
-    QString result = "doc('" + docPath + "')" + tail;
+    QString result = "doc('file:///" + docPath + "')" + tail;
     return result;
 }
 

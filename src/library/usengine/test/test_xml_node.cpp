@@ -352,9 +352,9 @@ void TestXmlNode::testBuildQueryString()  {
     qsLocal = d1->buildQueryString(filePath, qLocal);
     qsRemote = d1->buildQueryString(filePath, qRemote);
 
-    QCOMPARE(qsInsideRel, QString("doc('C:/filepath/somefile.xml')/model[@name='a']/model[@name='d']/model[@name='d1']/../../model[@name='a']"));
-    QCOMPARE(qsInsideAbs, QString("doc('C:/filepath/somefile.xml')/simulation/model[@name='a']"));
-    QCOMPARE(qsLocal, QString("doc('C:/filepath/anotherfile.xml')/simulation/model[@name='a']"));
+    QCOMPARE(qsInsideRel, QString("doc('file:///C:/filepath/somefile.xml')/model[@name='a']/model[@name='d']/model[@name='d1']/../../model[@name='a']"));
+    QCOMPARE(qsInsideAbs, QString("doc('file:///C:/filepath/somefile.xml')/simulation/model[@name='a']"));
+    QCOMPARE(qsLocal, QString("doc('file:///C:/filepath/anotherfile.xml')/simulation/model[@name='a']"));
     QCOMPARE(qsRemote, QString("doc('http://www.ecolmod.org/test/somefile.xml')/simulation/model[@name='a']"));
 
     delete root;

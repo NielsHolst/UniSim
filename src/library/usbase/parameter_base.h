@@ -13,12 +13,12 @@
 
 namespace UniSim{
 
-class ParameterBase : public virtual VariableBase
+class ParameterBase// : public VariableBase
 {
     //Q_OBJECT
 public:
-    ParameterBase(Identifier id, QObject *parent, QString desc) :
-        VariableBase(id, parent, desc) { }
+    ParameterBase() { }
+//        : VariableBase(id, parent, desc) { }
     virtual void setValueFromString(QString newValue) = 0;
     virtual void followRedirection() = 0;
 };

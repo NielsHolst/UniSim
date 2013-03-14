@@ -37,7 +37,8 @@ private slots:
     void testIntToDate();
 
     void testMissing();
-    
+
+    void testBaseClass();
 private:
     UniSim::Model *model;
 };

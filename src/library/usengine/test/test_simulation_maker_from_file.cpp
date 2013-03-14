@@ -15,7 +15,7 @@
 
 using namespace UniSim;
 
-
+/*
 
 void TestSimulationMakerFromFile::testCommonElement() {
     createSimulation("common.xml");
@@ -128,7 +128,7 @@ void TestSimulationMakerFromFile::testModelsAndParametersFromFileNoParent() {
     QCOMPARE(harvest->pullValue<int>("Cost"), 350);
     QCOMPARE(harvest->pullValue<bool>("IsOrganic"), true);
 }
-
+*/
 void TestSimulationMakerFromFile::testModelsAndParametersFromFileSame() {
     createSimulation("models_and_parameters_from_files_same.xml");
     Model *farmA = sim->peekOneDescendant<Model*>("landscape/A");
@@ -136,7 +136,7 @@ void TestSimulationMakerFromFile::testModelsAndParametersFromFileSame() {
     QCOMPARE(farmA->pullValue<int>("leakageRate"), 120);
     QCOMPARE(farmD->pullValue<int>("leakageRate"), 30);
 }
-
+/*
 void TestSimulationMakerFromFile::testModelsAndParametersFromFileCondensed() {
     createSimulation("models_and_parameters_from_file_condensed.xml");
 
@@ -203,6 +203,7 @@ void TestSimulationMakerFromFile::testVariableParameter() {
         QCOMPARE(data.cell(i,2), data.cell(i,5));
     }
 }
+*/
 
  void TestSimulationMakerFromFile::createSimulation(QString fileName) {
     SimulationMaker maker;

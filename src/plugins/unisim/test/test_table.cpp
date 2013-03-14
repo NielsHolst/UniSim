@@ -1,3 +1,4 @@
+#include <iostream>
 #include <usbase/data_grid.h>
 #include <usbase/model.h>
 #include <usengine/simulation.h>
@@ -12,6 +13,10 @@ void TestTable::test3Levels() {
     Simulation * sim = 0;
     try {
         sim = maker.parse(filePath);
+
+        Model *model = sim->seekOne<Model*>("calendar");
+        int i = model->pullValue<int>("totalTimeSteps");
+        std::cout << i;
         sim->execute();
     }
     catch (Exception &ex) {

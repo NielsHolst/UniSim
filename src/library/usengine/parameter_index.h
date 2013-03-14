@@ -19,7 +19,7 @@ class ParameterIndex
 public:
     typedef QPair<QString, QString> Result;
     ParameterIndex(QString filePath);
-    ~ParameterIndex();
+    virtual ~ParameterIndex();
     virtual void reset(Model *model) = 0;
     virtual bool hasNext() = 0;
     virtual Result next() = 0;

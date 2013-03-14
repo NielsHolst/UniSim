@@ -6,6 +6,10 @@
 @set QTENV="%QT_ROOT%\mingw\bin\qtenv2.bat"
 @if exist %QTENV% goto :qt_root_ok
 
+@rem Set environment for newer Qt versions (from 2013)
+@set QTENV="%QT_ROOT%\qtenv2.bat"
+@if exist %QTENV% goto :qt_root_ok
+
 @echo .
 @echo Batch file (build_all.bat) could not find %QTENV%
 @echo Set the QT_ROOT environment variable correctly and try again
@@ -19,13 +23,14 @@
 @echo . with Boost library found in...  %BOOST_ROOT%
 @echo .
 @echo Press Ctrl+C to break. Or:
-@pause
 
 @rem Copy authors list to UniSim root
 call copy_authors
 
 @rem Prepare system path for compiling
+pushd .
 call %QTENV%
+popd
 
 @rem Erase all exe and dll targets
 call clean_targets

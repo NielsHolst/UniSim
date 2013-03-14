@@ -6,11 +6,11 @@
 #include "../identifier.h"
 #include "../model.h"
 #include "../parameter.h"
+#include "../parameter_base.h"
 #include "test_parameter.h"
 
 using std::cout;
-using UniSim::Exception;
-using UniSim::Parameter;
+using namespace UniSim;
 
 void TestParameter::init() {
     model = new UniSim::Model("model",0);
@@ -189,5 +189,20 @@ void TestParameter::testMissing() {
     QVERIFY(excepted);
 }
 
+void TestParameter::testBaseClass() {
+    int i;
+    Parameter<int> *p = new Parameter<int>("i", &i, 123, model, "desc");
+    // Base: ParameterBase
+    ParameterBase *q = p;
+    q->setValueFromString("456");
+    QCOMPARE(model->pullValue<int>("i"), 456);
 
+    // Base: Variable<T>
+    Variable<int> *r = p;
+    QCOMPARE(r->toString(), QString("456"));
+
+    // Base: VariableBase
+    VariableBase *s = p;
+    QCOMPARE(s->toString(), QString("456"));
+}
 

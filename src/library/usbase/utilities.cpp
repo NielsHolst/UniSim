@@ -160,7 +160,7 @@ double divBounded(double x, double y, double bound) {
     }
 }
 
-//! Gutierrez-Baumgärtner functional response
+//! Gutierrez-Baumgaertner functional response
 double GBFuncResp(double demand, double supply) {
     if (demand < 0 ||  supply < 0)
         throw Exception("Illegal arguments to GBFuncResp(d,s), "

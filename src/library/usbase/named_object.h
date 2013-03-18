@@ -140,9 +140,10 @@ template <class T> T NamedObject::peekOneChild(QString name) {
 template <class T> T NamedObject::seekOneChild(QString name) {
     T result = peekOneChild<T>(name);
     if (!result)
-        throw Exception("'" + fullLabel() +
-                        "' has no child called '" + name + "'" +
-                        " of class " + typeid(T).name(), this);
+        throw Exception("TEST");
+//        throw Exception("'" + fullLabel() +
+//                        "' has no child called '" + name + "'" +
+//                        " of class " + typeid(T).name(), this);
     return result;
 }
 

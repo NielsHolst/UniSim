@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Virtual Greenhouse">
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="2880"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="55"/>
+		<parameter name="timeStep" value="5"/>
+		<parameter name="timeUnit" value="m"/>
+	</model>
+
+	<model name="outdoors" type="vg::Outdoors">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="sel_dk.txt"/>
+		</model>
+		<model name="sky" type="vg::Sky">
+			<parameter name="Tair" ref="indoors/temperature[air]"/>
+			<parameter name="rh" ref="indoors/humidity[rh]"/>
+		</model>
+	</model>
+
+	<model name="greenhouse" type="vg::Greenhouse">
+		<parameter name="latcov" value="35"/>
+		<parameter name="Kcover" value="7.9"/>
+
+		<model name="transmission" type="vg::GreenhouseTransmission">
+			<parameter name="diffuse" value="0.72"/>
+			<parameter name="sinb" ref="calendar[sinb]"/>
+			<parameter name="swartFileName" value="swart.txt"/>
+		</model>
+
+		<model name="cover" type="vg::Cover">
+			<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+			<parameter name="Toutdoors" ref="outdoors/records[Tair]"/>
+			<parameter name="Tsky" ref="sky[temperature]"/>
+			<parameter name="windspeed" ref="outdoors/records[windspeed]"/>
+			<parameter name="latCov" ref="greenhouse[latcov]"/>
+		</model>
+
+		<model name="screen" type="vg::Screen">
+			<parameter name="type" value="1"/>
+			<parameter name="spMaxOpening" value="0.95"/>
+			<parameter name="spHumidityPassed" ref="indoors/humidity[spEitherPassed]">
+
+			<model name="temperature" type="vg::ScreenTemperature">
+				<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+				<parameter name="Tcover" ref="cover[temperature]"/>
+			</model>
+
+			<model name="energy" type="vg::ScreenEnergyBalance">
+				<parameter name="globRad" ref="outdoors/records[globRad]"/>
+				<parameter name="trGhDir" ref="greenhouse/transmission[direct]"/>
+				<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+				<parameter name="Toutdoors" ref="outdoors/records[Tair]"/>
+				<parameter name="Kcover" ref="greenhouse[Kcover]"/>
+				<parameter name="spLight" value="10"/>
+			</model>
+
+			<model name="shade" type="vg::ScreenShade">
+				<parameter name="globRad" ref="outdoors/records[globRad]"/>
+				<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+				<parameter name="spScreenEnergy" ref="screen/energy[sp]"/>
+				<parameter name="spLight" value="10"/>
+				<parameter name="spTemperature" value="30"/>
+			</model>
+
+			<!--
+			<model name="blackout" type="vg::ScreenBlackout">
+			</model>
+			-->
+			
+			<model name="transmission" type="vg::ScreenTransmission">
+				<parameter name="trScreenEnergy" value="0.4"/>
+				<parameter name="trScreenShade" value="0.05"/>
+				<parameter name="trScreenBlackout" value="0"/>
+				<parameter name="spScreenEnergy" ref="screen/energy[sp]"/>
+				<!--
+				<parameter name="spScreenShade" ref="screen/shade[sp]"/>
+				<parameter name="spScreenBlackout" ref="screen/blackout[sp]"/>
+				-->
+			</model>
+		</model>
+		
+		<model name="lamps">
+			<model name="switch" type="vg::LampSwitch">
+				<parameter name="day" ref="calendar[dayOfyear]"/>
+				<parameter name="hour" ref="calendar[hour]"/>
+				<parameter name="minute" ref="calendar[minute]"/>
+				<parameter name="globRad" ref="outdoors/records[globRad]"/>
+				<parameter name="spDayOn" value="300"/>
+				<parameter name="spDayOff" value="60"/>
+				<parameter name="spHourOn" value="8"/>
+				<parameter name="spHourOff" value="24"/>
+				<parameter name="spRadiationOn" value="0"/>
+				<parameter name="spRadiationOff" value="150"/>
+			</model>
+			<model name="yield" type="vg::LampHpsl400">
+				<parameter name="switchedOn" ref="switch[on]"/>
+				<parameter name="capacity" value="40.2"/>
+			</model>
+		</model>
+	</model>
+	
+	<model name="indoors" type="vg::Indoors">
+		<model name="temperature" type="vg::IndoorsTemperature">
+			<parameter name="rh" ref="indoors/humidity[rh]"/>
+
+			<model name="spHeating" type="vg::SpHeating">
+				<parameter name="globRad" ref="outdoors/records[globRad]"/>
+				<parameter name="spGlobRad" value="300"/>
+				<parameter name="spHeatingBasis" value="20"/>
+				<parameter name="spHeatingMax" value="24"/>
+				<parameter name="humidityIncrement" ref="humidityEffect[spIncrement]"/>
+
+				<model name="humidityEffect" type="vg::SpHeatingHumidityDeltaX">
+					<parameter name="spDeltaX" ref="indoors/humidity/sp[spDeltaX]"/>
+					<parameter name="moistureDeficit" ref="indoors/humidity[moistureDeficit]"/>
+					<parameter name="spMaxIncrement" value="2"/>
+				</model>
+			</model>
+		</model>
+
+		<model name="humidity" type="vg::IndoorsHumidity">
+			<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+			
+			<model name="sp" type="vg::SpHumidityRegular">
+				<parameter name="globRad" ref="outdoors/records[globRad]"/>
+				<parameter name="spDaylight" value="10"/>
+				<parameter name="spHumidityDay" value="80"/>
+				<parameter name="spHumidityNight" value="90"/>
+				<parameter name="spDeltaXBasis" value="1"/>
+				<parameter name="useDeltaX" value="no"/>
+			</model>
+		</model>
+				
+		<model name="radiation" type="vg::IndoorsRadiation">
+			<parameter name="directOutdoors" ref="outdoors[dirRad]"/>
+			<parameter name="diffuseOutdoors" ref="outdoors/records[difRad]"/>
+			<parameter name="screenType" ref="screen[type]"/>
+			<parameter name="trScreen" ref="screen/transmission[transmission]"/>
+			<parameter name="trGhDif" ref="greenhouse/transmission[diffuse]"/>
+			<parameter name="trGhDir" ref="greenhouse/transmission[direct]"/>
+		</model>
+
+		<model name="crop">
+			<model name="temperature" type="vg::CropWetness">
+				<parameter name="Tgh" ref="indoors/temperature[air]"/>
+				<parameter name="Tcrop" value="27"/>
+				<parameter name="rh" ref="indoors/humidity[rh]"/>
+			</model>
+		</model>
+	</model>
+	
+	<!--
+	*** Output ***
+	-->
+	
+	<output type="plot">
+		<parameter name="title" value ="Temperatures"/>
+		<trace label="Minutes" ref="calendar[totalTime]"/>
+		<trace label="Toutdoors" ref="outdoors/records[Tair]"/>
+		<trace label="Tsky" ref="sky[temperature]"/>
+		<trace label="Tcover" ref="cover[temperature]"/>
+		<trace label="Tscreen" ref="screen/temperature[temperature]"/>
+		<trace label="spHeating" ref="spHeating[sp]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Light"/>
+		<trace label="Minutes" ref="calendar[totalTime]"/>
+		<trace label="Glob Rad" ref="outdoors/records[globRad]"/>
+		<trace label="Lamp PAR" ref="lamps/yield[par]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Sun"/>
+		<trace label="Minutes" ref="calendar[totalTime]"/>
+		<trace label="sinb" ref="calendar[sinb]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value ="vg.txt"/>
+		<trace label="Day" ref="calendar[day]"/>
+		<trace label="Month" ref="calendar[month]"/>
+		<trace label="Hour" ref="calendar[hour]"/>
+		<trace label="Minute" ref="calendar[minute]"/>
+		<trace label="switchedOn" ref="switch[on]"/>
+		<trace label="lampPar" ref="yield[par]"/>
+		<trace label="day" ref="calendar[dayOfyear]"/>
+		<trace label="hour" ref="calendar[hour]"/>
+		<trace label="minute" ref="calendar[minute]"/>
+		<trace label="globRad" ref="outdoors/records[globRad]"/>
+		<trace label="sinb" ref="calendar[sinb]"/>
+	</output>
+
+		
+</simulation>

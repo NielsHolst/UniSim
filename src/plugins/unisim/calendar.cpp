@@ -119,6 +119,7 @@ void Calendar::updateDerived() {
     Q_ASSERT(TestNum::neZero(cosLD));
     double aob = sinLD/cosLD;
     dayLength = 12.*(1. + 2.*asin(aob)/PI);
+    handleClockTick(hour + minute/60 + second/60/60);
 }
 
 void Calendar::handleClockTick(double hour) {

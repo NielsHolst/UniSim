@@ -1,9 +1,31 @@
-/* Copyright (C) 2009-2012 by Niels Holst [niels.holst@agrsci.dk] and co-authors.
+/* Copyright (C) 2013 by Oliver Koerner, AgroTech [oko@agrotech.dk] and
+** Niels Holst, Aarhus University [niels.holst@agrsci.dk].
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "environment.h"
+#include "cover.h"
+#include "crop_wetness.h"
+#include "greenhouse.h"
+#include "greenhouse_transmission.h"
+#include "indoors.h"
+#include "indoors_humidity.h"
+#include "indoors_radiation.h"
+#include "indoors_temperature.h"
+#include "lamp_hpsl_400.h"
+#include "lamp_led.h"
+#include "lamp_switch.h"
+#include "outdoors.h"
+#include "screen.h"
+#include "screen_energy_balance.h"
+#include "screen_energy_light.h"
+#include "screen_temperature.h"
+#include "screen_transmission.h"
+#include "sp_heating.h"
+#include "sp_heating_humidity_delta_x.h"
+#include "sp_heating_humidity_rh.h"
+#include "sp_humidity_regular.h"
+#include "sky.h"
 #include "vg_factory.h"
 
 using namespace UniSim;
@@ -11,7 +33,28 @@ using namespace UniSim;
 namespace vg{
 
 void VgFactory::defineProducts() {
-    addProduct<Environment>("Environment", this, "desc");
+    addProduct<Cover>("Cover", this, "desc");
+    addProduct<CropWetness>("CropWetness", this, "desc");
+    addProduct<Greenhouse>("Greenhouse", this, "desc");
+    addProduct<GreenhouseTransmission>("GreenhouseTransmission", this, "desc");
+    addProduct<SpHeating>("SpHeating", this, "desc");
+    addProduct<SpHeatingHumidityDeltaX>("SpHeatingHumidityDeltaX", this, "desc");
+    addProduct<SpHeatingHumidityRh>("SpHeatingHumidityRh", this, "desc");
+    addProduct<Indoors>("Indoors", this, "desc");
+    addProduct<IndoorsHumidity>("IndoorsHumidity", this, "desc");
+    addProduct<IndoorsRadiation>("IndoorsRadiation", this, "desc");
+    addProduct<IndoorsTemperature>("IndoorsTemperature", this, "desc");
+    addProduct<LampHpsl400>("LampHpsl400", this, "desc");
+    addProduct<LampLed>("LampLed", this, "desc");
+    addProduct<LampSwitch>("LampSwitch", this, "desc");
+    addProduct<Outdoors>("Outdoors", this, "desc");
+    addProduct<Screen>("Screen", this, "desc");
+    addProduct<ScreenEnergyBalance>("ScreenEnergyBalance", this, "desc");
+    addProduct<ScreenEnergyLight>("ScreenEnergyLight", this, "desc");
+    addProduct<ScreenTemperature>("ScreenTemperature", this, "desc");
+    addProduct<ScreenTransmission>("ScreenTransmission", this, "desc");
+    addProduct<Sky>("Sky", this, "desc");
+    addProduct<SpHumidityRegular>("SpHumidityRegular", this, "desc");
 }
 
 UniSim::Identifier VgFactory::id() const {

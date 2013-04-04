@@ -29,6 +29,7 @@ public:
 
     template <class T> T pullValue(Identifier name);
     template <class T> const T* pullValuePtr(Identifier name);
+    template <class T> const T* peekValuePtr(Identifier name);
     template <class T> void pushValue(Identifier name, T value);
 
     template <class T> const QVector<T>& pullValueVector(Identifier name);
@@ -62,6 +63,13 @@ template <class T>
 const T* Model::pullValuePtr(Identifier name)
 {
     return seekOneChild<Variable<T>*>(name.key())->valuePtr();
+}
+
+template <class T>
+const T* Model::peekValuePtr(Identifier name)
+{
+    Variable<T> *var = peekOneChild<Variable<T>*>(name.key());
+    return var ? var->valuePtr() : 0;
 }
 
 template <class T>

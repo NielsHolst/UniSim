@@ -19,7 +19,11 @@ public:
 
 private:
     // Parameters
-    double width, length, height, latcov, Kcover, trDif;
+    double width, length, height, roofRatio, sideRatio,
+        windowLength, windowHeight, fractionWindows,
+        alphaVentilationMax,leakageVentilation,
+        floorHec,
+        latcov, Kcover, trDif;
 
     // Variables
     double volume, groundArea, coverArea;

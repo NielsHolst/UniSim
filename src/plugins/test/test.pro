@@ -9,6 +9,8 @@ include ($${US_BASE}/base.pri)
 
 HEADERS += \
     constant_world.h \
+    cost.h \
+    cost_error.h \
     crop.h \
     farm.h \
     life_cycle.h \
@@ -18,6 +20,8 @@ HEADERS += \
 
 SOURCES += \
     constant_world.cpp \
+    cost.cpp \
+    cost_error.cpp \
     crop.cpp \
     farm.cpp \
     life_cycle.cpp \

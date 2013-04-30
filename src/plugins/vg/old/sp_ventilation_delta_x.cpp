@@ -5,23 +5,23 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "general.h"
-#include "sp_heating_humidity_delta_x.h"
+#include "sp_ventilation_delta_x.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
-SpHeatingHumidityDeltaX::SpHeatingHumidityDeltaX(Identifier name, QObject *parent)
-    : SpHeatingHumidityBase(name, parent)
+SpVentilationDeltaX::SpVentilationDeltaX(Identifier name, QObject *parent)
+    : SpVentilationBase(name, parent)
 {
+    new Parameter<double>("pBand", &pBand, 0.5, this, "Slope for max decrement due to humidity (oC)");
     new Parameter<double>("spDeltaX", &spDeltaX, 1, this, "Setpoint for delta x (g/m3)");
     new Parameter<double>("moistureDeficit", &moistureDeficit, 2, this, "Moisture deficit (g/m3)");
 }
 
-void SpHeatingHumidityDeltaX::update() {
-    double deltaRX = (spDeltaX - moistureDeficit)*1.5;
-    spIncrement = (deltaRX > 0) ?
-        spMaxIncrement*(1-exp(-(deltaRX*10/pBandRh)/spMaxIncrement)) : 0.;
+double SpVentilationDeltaX::spDecrement() {
+    double deltaRX = spDeltaX - moistureDeficit;
+    return propControl(deltaRX, pBand, maxDecrement);
 }
 
 

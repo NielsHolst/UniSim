@@ -15,9 +15,9 @@ LampBase::LampBase(Identifier name, QObject *parent)
 {
     new Parameter<bool>("switchedOn", &switchedOn, false, this, "Lamps switched on?");
     new Parameter<double>("capacity", &capacity, 40., this, "Capacity of installed assimilation lamps (W/m2)");
-    new Variable<double>("convectiveHeat", &convectiveHeat, this, "Convective heat");
-    new Variable<double>("bnLight", &bnLight, this, "Bn produced by the lamps reaching the crop");
-    new Variable<double>("rnLight", &rnLight, this, "Short-wave radiation that reaches the crop");
+    new Variable<double>("convectiveHeat", &convectiveHeat, this, "Convective heat (W/m2)");
+    new Variable<double>("bnLight", &bnLight, this, "Longwave radiation exchanged from the canopy (W m-2)");
+    new Variable<double>("rnLight", &rnLight, this, "Shortwave radiation reaching the canopy (W/m2)");
     new Variable<double>("par", &par, this, "PAR that reaches the crop");
     new Variable<double>("energyUse", &energyUse, this, "Energy use, including the ballast");
 }

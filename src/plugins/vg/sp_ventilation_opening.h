@@ -4,28 +4,28 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SCREEN_TRANSMISSION_H
-#define VG_SCREEN_TRANSMISSION_H
+#ifndef VG_SP_VENTILATION_OPENING_H
+#define VG_SP_VENTILATION_OPENING_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class ScreenTransmission : public UniSim::Model
+class SpVentilationOpening : public UniSim::Model
 {
 public:
-    ScreenTransmission(UniSim::Identifier name, QObject *parent);
+    SpVentilationOpening(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
-
 private:
     // Parameters
-    double
-        trScreenEnergy, trScreenShade, trScreenBlackout,
-        spScreenEnergy,spScreenShade,spScreenBlackout;
-
+    double alphaTemperature, alphaHumidity, alphaMax, Tindoors, Toutdoors, spTemperature,
+        windspeed;
     // Variables
-    double transmission;
+    double alphaLeeSide, alphaWindSide;
+    // Methods
+    double correctedAlphaHumidity();
+    double correctedAlphaTemperature();
 };
 } //namespace
 

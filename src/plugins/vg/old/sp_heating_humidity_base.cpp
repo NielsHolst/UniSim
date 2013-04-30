@@ -15,7 +15,6 @@ SpHeatingHumidityBase::SpHeatingHumidityBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     new Parameter<double>("spMaxIncrement", &spMaxIncrement, 2., this, "Set point for max heating increment due to humidity (oC)");
-    new Parameter<double>("pBandRh", &pBandRh, 10., this, "Slope for max heating increment due to humidity (oC)");
     new Variable<double>("spIncrement", &spIncrement, this, "Increment in set point for heating (oC)");
 }
 

@@ -6,10 +6,10 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
+#include <usbase/product.h>
 #include "plant.h"
 
 using namespace UniSim;
-
 
 namespace ambrosia{
 

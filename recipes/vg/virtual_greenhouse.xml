@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation name="Virtual Greenhouse">
-	<integrator name="steps" type="UniSim::Steps">
+    <integrator name="steps" type="UniSim::Steps">
 		<parameter name="maxSteps" value="2880"/>
 	</integrator>
 
@@ -24,10 +25,22 @@
 		<parameter name="latcov" value="35"/>
 		<parameter name="Kcover" value="7.9"/>
 
-		<model name="transmission" type="vg::GreenhouseTransmission">
-			<parameter name="diffuse" value="0.72"/>
-			<parameter name="sinb" ref="calendar[sinb]"/>
-			<parameter name="swartFileName" value="swart.txt"/>
+		<model name="ventilation" type="vg::GreenhouseVentilation">
+			<parameter name="timeStep" ref="calendar[timeStep]"/>
+			<parameter name="timeUnit" ref="calendar[timeUnit]"/>
+			<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+			<parameter name="Toutdoors" ref="outdoors/records[Tair]"/>
+			<parameter name="windspeed" ref="outdoors/records[windspeed]"/>
+			<parameter name="greenHouseHeight" ref="greenhouse[greenHouseHeight]"/>
+			<parameter name="roofRatio" ref="greenhouse[roofRatio]"/>
+			<parameter name="sideRatio" ref="greenhouse[sideRatio]"/>
+			<parameter name="windowLength" ref="greenhouse[windowLength]"/>
+			<parameter name="alphaVentilationMax" ref="greenhouse[alphaVentilationMax]"/>
+			<parameter name="fractionWindows" ref="greenhouse[fractionWindows]"/>
+			<parameter name="leakageVentilation" ref="greenhouse[leakageVentilation]"/>
+			<parameter name="screenAirTransmission" ref="greenhouse/screen/airTransmission[transmission]"/>
+			<parameter name="alphaLeeSide" ref="ventilation/spOpening[alphaLeeSide]"/>
+			<parameter name="alphaWindSide" ref="ventilation/spOpening[alphaWindSide]"/>
 		</model>
 
 		<model name="cover" type="vg::Cover">
@@ -41,7 +54,7 @@
 		<model name="screen" type="vg::Screen">
 			<parameter name="type" value="1"/>
 			<parameter name="spMaxOpening" value="0.95"/>
-			<parameter name="spHumidityPassed" ref="indoors/humidity[spEitherPassed]">
+			<parameter name="spHumidityPassed" ref="indoors/humidity[spEitherPassed]"/>-->
 
 			<model name="temperature" type="vg::ScreenTemperature">
 				<parameter name="Tindoors" ref="indoors/temperature[air]"/>
@@ -62,7 +75,11 @@
 				<parameter name="Tindoors" ref="indoors/temperature[air]"/>
 				<parameter name="spScreenEnergy" ref="screen/energy[sp]"/>
 				<parameter name="spLight" value="10"/>
-				<parameter name="spTemperature" value="30"/>
+				<parameter name="spTemperature" ref="screen/shade/spVentilation[spTemperature]"/>
+				<model name="spVentilation" type="vg::SpVentilationDeltaX">
+					<parameter name="spDeltaX" value="1"/>
+					<parameter name="moistureDeficit" ref="indoors/humidity[moistureDeficit]"/>
+				</model>
 			</model>
 
 			<!--
@@ -70,15 +87,16 @@
 			</model>
 			-->
 			
-			<model name="transmission" type="vg::ScreenTransmission">
-				<parameter name="trScreenEnergy" value="0.4"/>
-				<parameter name="trScreenShade" value="0.05"/>
-				<parameter name="trScreenBlackout" value="0"/>
+			<model name="lightTransmission" type="vg::ScreenLightTransmission">
 				<parameter name="spScreenEnergy" ref="screen/energy[sp]"/>
-				<!--
 				<parameter name="spScreenShade" ref="screen/shade[sp]"/>
 				<parameter name="spScreenBlackout" ref="screen/blackout[sp]"/>
-				-->
+			</model>
+
+			<model name="airTransmission" type="vg::ScreenAirTransmission">
+				<parameter name="spScreenEnergy" ref="screen/energy[sp]"/>
+				<parameter name="spScreenShade" ref="screen/shade[sp]"/>
+				<parameter name="spScreenBlackout" ref="screen/blackout[sp]"/>
 			</model>
 		</model>
 		
@@ -100,6 +118,97 @@
 				<parameter name="capacity" value="40.2"/>
 			</model>
 		</model>
+		
+		<model name="ventilation">
+
+			<model name="maxOpening" type="vg::MaxVentilationOpening">
+				<parameter name="daylight" value="10"/>
+				<parameter name="globRad" ref="outdoors/records[globRad]"/>
+			</model>
+
+			<model name="spOpening" type="vg::spVentilationOpening">
+				<parameter name="alphaHumidity" ref="ventilation/spOpening/alphaHumidity[response]"/>
+				<parameter name="alphaTemperature" ref="ventilation/spOpening/alphaTemperature[response]"/>
+				<parameter name="alphaMax" ref="ventilation/maxOpening[value]"/>
+				<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+				<parameter name="Toutdoors" ref="outdoors/records[Tair]"/>
+				<parameter name="windspeed" ref="outdoors/records[windspeed]"/>
+				<parameter name="spTemperature" ref="ventilation/alphaTemperature/spTemperature[sp]"/>
+
+				<model name="alphaHumidity" type="vg::ProportionalControl">
+					<parameter name="actualValue" ref="indoors/humidity[rh]"/>
+					<parameter name="targetValue" ref="indoors/humidity/sp[rh]"/>
+					<parameter name="targetType" value="ceiling"/>
+					<parameter name="gapMultiplier" value="2"/>
+					<parameter name="pBand" value="100"/>
+					<parameter name="maxResponse" ref="ventilation/maxOpening[value]"/>
+				</model>
+
+				<model name="alphaTemperature" type="vg::ProportionalControl">
+					<parameter name="actualValue" ref="indoors/temperature[air]"/>
+					<parameter name="targetValue" ref="ventilation/alphaTemperature/spTemperature[sp]"/>
+					<parameter name="targetType" value="floor"/>
+					<parameter name="pBand" value="5"/>
+					<parameter name="maxResponse" value="100"/>
+
+					<model name="spTemperature" type="vg::spVentilationTemperature">
+						<parameter name="spHeating" ref="temperature/spHeating[sp]"/>
+						<parameter name="heatingIncrement" value="1"/>
+						<parameter name="humidityDecrement" ref="spOpening/spTemperature/humidityControl[response]"/>
+					
+						<model name="humidityControl" type="vg::ProportionalControl">
+							<parameter name="actualValue" ref="indoors/humidity[rh]"/>
+							<parameter name="targetValue" ref="indoors/humidity/sp[rh]"/>
+							<parameter name="targetType" value="ceiling"/>
+							<parameter name="pBand" value="100"/>
+							<parameter name="maxResponse" value="1"/>
+						</model>
+					</model>
+				</model>
+			</model>
+
+		</model>
+		<model name="temperature" type="vg::GreenhouseTemperature">
+			<model name="energy" type="vg::GreenhouseEnergy">
+				<parameter name="spScreenEnergy" ref="screen/energy[sp]"/>
+				<parameter name="bnLight" ref="lamps/yield[bnLight]"/>
+				<parameter name="rnLight" ref="lamps/yield[rnLight]"/>
+				<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+				<parameter name="Toutdoors" ref="outdoors/records[Tair]"/>
+			</model>
+			<model name="pipes" type="vg::Pipes">
+				<model name="pipe1" type="vg::Pipe">
+					<parameter name="timeStep" ref="calendar[timeStep]"/>
+					<parameter name="timeUnit" ref="calendar[timeUnit]"/>
+					<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+					<parameter name="Tunheated" ref="greenhouse/temperature/energy[Tunheated]"/>
+					<parameter name="heatingDemand" ref="greenhouse/temperature/energy[heatingDemand]"/>
+					<parameter name="spHeating" ref="temperature/spHeating[sp]"/>
+					<parameter name="isEnergyScreenOpening" ref="screen/energy[isOpening]"/>
+					<parameter name="pipeType" value="s51"/>
+					<parameter name="pipeLength" value="100"/>
+				</model>
+				<model name="pipe2" type="vg::Pipe">
+					<model name="otherPipes" type="UniSim::sum">
+						<parameter name="toAdd" value="(pipes/pipe1[heatTransfer])"/>
+					</model>
+					<parameter name="timeStep" ref="calendar[timeStep]"/>
+					<parameter name="timeUnit" ref="calendar[timeUnit]"/>
+					<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+					<parameter name="Tunheated" ref="greenhouse/temperature/energy[Tunheated]"/>
+					<parameter name="heatingDemand" ref="greenhouse/temperature/energy[heatingDemand]"/>
+					<parameter name="spHeating" ref="temperature/spHeating[sp]"/>
+					<parameter name="isEnergyScreenOpening" ref="screen/energy[isOpening]"/>
+					<parameter name="otherPipesHeatTransfer" ref="pipe2/otherPipes[value]"/>
+					<parameter name="pipeType" value="s51"/>
+					<parameter name="pipeLength" value="150"/>
+				</model>
+			</model>
+			<parameter name="energyBalance" ref="greenhouse/temperature/energy[energyBalance]"/>
+			<parameter name="heatCapacity" ref="greenhouse/temperature/energy[heatCapacity]"/>
+			<parameter name="pipesHeatTransfer" ref="greenhouse/temperature/pipes[HeatTransfer]"/>
+		</model>
+
 	</model>
 	
 	<model name="indoors" type="vg::Indoors">
@@ -111,12 +220,15 @@
 				<parameter name="spGlobRad" value="300"/>
 				<parameter name="spHeatingBasis" value="20"/>
 				<parameter name="spHeatingMax" value="24"/>
-				<parameter name="humidityIncrement" ref="humidityEffect[spIncrement]"/>
+				<parameter name="humidityIncrement" ref="humidityControl[response]"/>
 
-				<model name="humidityEffect" type="vg::SpHeatingHumidityDeltaX">
-					<parameter name="spDeltaX" ref="indoors/humidity/sp[spDeltaX]"/>
-					<parameter name="moistureDeficit" ref="indoors/humidity[moistureDeficit]"/>
-					<parameter name="spMaxIncrement" value="2"/>
+				<model name="humidityControl" type="vg::proportionalControl">
+					<parameter name="actualValue" ref="indoors/humidity[moistureDeficit]"/>
+					<parameter name="targetValue" ref="indoors/humidity/sp[spDeltaX]"/>
+					<parameter name="targetType" value="floor"/>
+					<parameter name="gapMultiplier" value="1.5"/>
+					<parameter name="pBand" value="5"/>
+					<parameter name="maxResponse" value="2"/>
 				</model>
 			</model>
 		</model>
@@ -130,7 +242,6 @@
 				<parameter name="spHumidityDay" value="80"/>
 				<parameter name="spHumidityNight" value="90"/>
 				<parameter name="spDeltaXBasis" value="1"/>
-				<parameter name="useDeltaX" value="no"/>
 			</model>
 		</model>
 				
@@ -143,12 +254,28 @@
 			<parameter name="trGhDir" ref="greenhouse/transmission[direct]"/>
 		</model>
 
+		<model name="radiationAbsorption" type="vg::IndoorsRadiationAbsorption">
+			<parameter name="Tcover" ref="greenhouse/cover[temperature]"/>
+			<parameter name="Tscreen" ref="greenhouse/screen[temperature]"/>
+			<parameter name="bnLamps" ref="greenhouse/lamps/yield[bnLight]"/>
+			<parameter name="rnLamps" ref="greenhouse/lamps/yield[rnLight]"/>
+			<parameter name="spScreen" ref="screen/energy[sp]"/> <!-- Combine screens? -->
+			<parameter name="Tindoors" ref="indoors/temperature[air]"/>
+			<parameter name="incomingRadiation" ref="indoors/radiation[total]"/>
+			<parameter name="longwaveEmission" value="0.95"/>
+			<parameter name="shortwaveEmission" value="0.66"/>
+		</model>
+
 		<model name="crop">
-			<model name="temperature" type="vg::CropWetness">
+			<model name="wetness" type="vg::CropWetness">
 				<parameter name="Tgh" ref="indoors/temperature[air]"/>
 				<parameter name="Tcrop" value="27"/>
 				<parameter name="rh" ref="indoors/humidity[rh]"/>
 			</model>
+			<model name="boundaryLayerResistance" type="vg::BoundaryLayerResistance">
+				<parameter name="windspeed" ref="outdoors/records[windspeed]"/>
+				<parameter name="greenhouseVentilation" ref="greenhouse/ventilation[ventilation]"/>
+			<model>
 		</model>
 	</model>
 	

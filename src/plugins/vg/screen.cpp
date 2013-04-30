@@ -14,7 +14,7 @@ Screen::Screen(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     new Parameter<double>("spMaxOpening", &spMaxOpening, 0.95, this,"");
-    new Parameter<bool>("spHumidityPassed", &spHumidityPassed, this, false, "Is either humidity set point passed?");
+    new Parameter<bool>("spHumidityPassed", &spHumidityPassed, false, this, "Is either humidity set point passed?");
     new Parameter<int>("type", &type, 1, this,
         "Screen type installed:\n"
         "0- No screens\n"

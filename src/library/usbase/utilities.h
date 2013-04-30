@@ -40,6 +40,7 @@ QFileInfo findNearestFile(QDir home, QString subFolder, QString fileName);
 
 //! @name Mathematics
 //@{
+template<class T> T minMax(T low, T x, T high);
 double accum(const QVector<double> &x);
 void increment(QVector<double> &x, const QVector<double> &toAdd);
 void increment(double *x, const double *toAdd, int n);
@@ -52,6 +53,7 @@ double negExp(double x);
 double divBounded(double x, double y, double bound = std::numeric_limits<double>::max());
 double GBFuncResp(double demand, double supply);
 int toDayOfYear(int day, int month);
+double convertTime(double time, char fromUnit, char toUnit, QObject *context = 0);
 //@}
 
 //! @name String handling
@@ -104,6 +106,14 @@ void writeStandardTestFile(QString filePath);
 
 // ========================
 // Template implementations
+
+template<class T> T minMax(T low, T x, T high) {
+    if (x < low)
+        return low;
+    else if (x > high)
+        return high;
+    return x;
+}
 
 template<class T> bool isMissingValue(T value) {
     return value == missingValue<T>();

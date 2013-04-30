@@ -55,9 +55,6 @@ private:
     QHash<QString, InstanceIndex*> instanceTables;
     QHash<QString, ParameterIndex*> parameterTables;
 
-    typedef QPair<ParameterBase*, QString> RedirectedParameter;
-    QList<RedirectedParameter> redirectedParameters;
-
     struct TraceParam : public Attributes {
         NamedObject *parent;
     };
@@ -95,7 +92,7 @@ private:
     QString attributeValue(QStringList synonyms, NamedObject *parent) const;
 
     QString message(QString text) const;
-    void redirectParameters();
+//    void redirectParameters();
     void createTraces();
 };
 

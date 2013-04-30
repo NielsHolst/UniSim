@@ -8,28 +8,30 @@
 	</model>	
 
 	<model name="Gazella" type="UniSim::Fixed">
-		<parameter name="parameters" value="((Density 100)) "/>
+		<parameter name="parameters" value="((Density 100.0)) "/>
 	</model>
 	<model name="Gnu" type="UniSim::Fixed">
-		<parameter name="parameters" value="((Density 200)) "/>
+		<parameter name="parameters" value="((Density 200.0)) "/>
 	</model>
 	<model name="Zebra" type="UniSim::Fixed">
-		<parameter name="parameters" value="((Density 150)) "/>
+		<parameter name="parameters" value="((Density 150.0)) "/>
 	</model>
 	<model name="Leopard" type="UniSim::Fixed">
-		<parameter name="parameters" value="((Density 5) (Demand 12)) "/>
+		<parameter name="parameters" value="((Density 5.0) (Demand 12.0)) "/>
 	</model>
 	<model name="Lion" type="UniSim::Fixed">
-		<parameter name="parameters" value="((Demand 18)) "/>
+		<parameter name="parameters" value="((Demand 18.0)) "/>
 	</model>
 
 	<model name="Predation" type="UniSim::Predation">
-		<parameter name="apparencyMatrix" value="predation.txt"/>
+		<parameter name="apparencyMatrix" value="test_predation.txt"/>
 	</model>
 	
 	<output type="table">
 		<parameter name="fileName" value="test_predation.prn"/>
+		<trace label="Gazella" ref="Gazella[Density]"/>
 		<variable label="totalTimeSteps" ref="calendar[totalTimeSteps]"/>
-		<variable label="lionSupply" ref="predation[Lion-Supply]"/>
+		<variable label="lionGazella" ref="predation[Lion-Gazella]"/>
+<!--		<variable label="lionSupply" ref="predation[Lion-Supply]"/>-->
 	</output>
 </simulation>

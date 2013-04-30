@@ -16,6 +16,8 @@ private slots:
     void init();
     void cleanup();
 
+    void testNameMacro();
+
     void testDefaultInt();
     void testChangeInt();
     void testSetIntWithStringValue();

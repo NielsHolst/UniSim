@@ -15,20 +15,26 @@ class GreenhouseTransmission : public UniSim::Model
 {
 public:
     GreenhouseTransmission(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 
 private:
     // Parameters
-    double diffuse, sinb;
-    QString swartFileName;
+    double sinb, diffuseDiffusion;
+    QString glassTypeStr;
+    typedef enum{Single, Double, Hortiplus} GlassType;
+    GlassType glassType;
 
     // Variables
-    double direct;
-
-    // Links
+    double directDiffusion;
 
     // Data
+    double a[3], b[3], c[3];
+
+    // Methods
+    void defineConstants();
+    void decodeGlassType();
 };
 } //namespace
 

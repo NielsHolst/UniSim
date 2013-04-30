@@ -13,6 +13,7 @@ class TestPredation : public QObject
 private slots:
     void cleanup();
     void testRecipe();
+    void testRun();
 
 private:
     void createSimulation(QString filename);

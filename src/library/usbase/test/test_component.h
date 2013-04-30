@@ -7,6 +7,7 @@
 
 namespace UniSim {
     class Component;
+    class Simulation;
 }
 	
 class TestComponent : public QObject
@@ -31,12 +32,21 @@ private slots:
     void testSeekOneAscendant();
     void testSeekOneAscendantWithJoker();
 
+    void testParameterRef();
+    void testParameterRefError();
 private:
     UniSim::Component
         *animals,
         *reptiles, *snakes, *cobra, *lizards,
         *mammals, *mice[2], *elephants, *dogs, *femaleDogs, *maleDogs;
+
+    UniSim::Simulation *sim;
+    void createSimulation(QString fileName, bool isOk);
+    QString filePath(QString fileName) const;
+    QString outputPath(QString fileName) const;
+
 };
+
 
 DECLARE_TEST(TestComponent)
 

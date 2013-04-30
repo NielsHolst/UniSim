@@ -24,7 +24,8 @@ void ScreenTemperature::reset() {
 }
 
 void ScreenTemperature::update() {
-    double alfa_o = 1.2*0 + 2.8; // Bot, 1993  1.2*0??
+    const double windSpeed = 0.;
+    double alfa_o = 1.2*windSpeed + 2.8; // Bot, 1993
     double alfa_i = 3;
     temperature = ((6+alfa_i)*(Tindoors+T0) + (6+alfa_o)*(Tcover+T0)) / (12 + alfa_o + alfa_i) - T0;
     //NB. Original returned temperature in K not oC.

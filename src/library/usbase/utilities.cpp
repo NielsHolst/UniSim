@@ -180,6 +180,25 @@ int toDayOfYear(int day, int month) {
     return date.dayOfYear();
 }
 
+//! Convert time from one unit to another
+double convertTime(double time, char fromUnit, char toUnit, QObject *context) {
+    static QMap<char, int> u;
+    if (u.isEmpty()) {
+        u['s'] = 1;
+        u['m'] = 60;
+        u['h'] = 60*60;
+        u['d'] = 60*60*24;
+        u['y'] = 60*60*24*365;
+    }
+    QString msg = "Time units must be 's', 'm', 'h', 'd' or 'y', not '%1'";
+    if (!u.contains(fromUnit))
+        throw Exception(msg.arg(fromUnit), context);
+    if (!u.contains(toUnit))
+        throw Exception(msg.arg(toUnit), context);
+    return time*u.value(fromUnit)/u.value(toUnit);
+}
+
+
 //
 // String handling
 //

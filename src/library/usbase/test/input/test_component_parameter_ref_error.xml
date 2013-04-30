@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+	</model>	
+
+	<model name="operation" type="Test::Operation">
+	</model>
+
+	<model name="cost" type="Test::CostError">
+	</model>
+	
+	<output type="table">
+		<parameter name="fileName" value="test_component_parameter_ref.prn"/>
+		<trace label="OperationEnergy" ref="operation[energy]"/>
+		<trace label="OperationLabour" ref="operation[labour]"/>
+		<trace label="OperationCO2" ref="operation[CO2]"/>
+		<trace label="CostEnergy" ref="cost[energyCost]"/>
+		<trace label="CostLabour" ref="cost[labourCost]"/>
+		<trace label="CostCO2" ref="cost[CO2Cost]"/>
+	</output>
+</simulation>

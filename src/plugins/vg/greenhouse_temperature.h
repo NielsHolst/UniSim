@@ -4,24 +4,27 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SP_HEATING_HUMIDITY_BASE_H
-#define VG_SP_HEATING_HUMIDITY_BASE_H
+#ifndef VG_GREENHOUSE_TEMPERATURE_H
+#define VG_GREENHOUSE_TEMPERATURE_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class SpHeatingHumidityBase : public UniSim::Model
+class GreenhouseTemperature : public UniSim::Model
 {
 public:
-    SpHeatingHumidityBase(UniSim::Identifier name, QObject *parent);
+    GreenhouseTemperature(UniSim::Identifier name, QObject *parent);
     void reset();
+    void update();
 
-protected:
+private:
     // Parameters
-    double spMaxIncrement, pBandRh;
+    double energyBalance, heatCapacity, pipesHeatTransfer;
+
     // Variables
-    double spIncrement;
+    double temperature;
+
 };
 } //namespace
 

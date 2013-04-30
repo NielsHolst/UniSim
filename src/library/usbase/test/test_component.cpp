@@ -1,5 +1,9 @@
 #include <iostream>
+#include <usengine/file_locations_strict.h>
+#include <usengine/simulation.h>
+#include <usengine/simulation_maker.h>
 #include "../component.h"
+#include "../data_grid.h"
 #include "test_component.h"
 
 using namespace UniSim;
@@ -252,3 +256,51 @@ void TestComponent::testSeekOneAscendantWithJoker() {
         QFAIL("Component not found");
     }
 }
+
+void TestComponent::testParameterRef() {
+    createSimulation("test_component_parameter_ref.xml", true);
+    sim->execute();
+
+    DataGrid data( outputPath("test_component_parameter_ref.prn") );
+    QCOMPARE(data.cell(0,3).toInt(), 20);
+    QCOMPARE(data.cell(1,4).toInt(), 1020);
+    QCOMPARE(data.cell(2,5).toInt(), 15045);
+    delete sim;
+    sim = 0;
+}
+
+void TestComponent::testParameterRefError() {
+    createSimulation("test_component_parameter_ref_error.xml", false);
+}
+
+void TestComponent::createSimulation(QString fileName, bool isOk) {
+   SimulationMaker maker;
+   bool excepted = false;
+   QString msg;
+   try {
+       sim = maker.parse(filePath(fileName));
+   }
+   catch (Exception &ex) {
+       excepted = true;
+       msg = "Unexpected exception. " + ex.message();
+   }
+   if (isOk && excepted) {
+       QFAIL(qPrintable(msg));
+   }
+   if (!isOk && !excepted) {
+       QFAIL("Exception expected");
+   }
+}
+
+QString TestComponent::filePath(QString fileName) const {
+   QDir uniSimDir = QDir("../..");
+   return uniSimDir.absolutePath() +
+           "/src/library/usbase/test/input/" +
+           fileName;
+}
+
+QString TestComponent::outputPath(QString fileName) const {
+    QDir dir = FileLocations::location(FileLocationInfo::Output);
+    return dir.absoluteFilePath(fileName);
+}
+

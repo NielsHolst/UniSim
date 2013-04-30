@@ -16,13 +16,12 @@
 #include <usbase/exception.h>
 #include <usbase/named_object.h>
 #include <usbase/output.h>
+#include <usbase/ref.h>
 #include <usbase/trace.h>
 #include <usbase/parameter.h>
 #include <usbase/parameter_base.h>
-#include <usbase/parameter_vector.h>
 #include <usbase/variable.h>
 #include <usbase/variable_base.h>
-#include <usbase/variable_vector.h>
 #include <usbase/utilities.h>
 #include "instance_index_from_condensed_table.h"
 #include "instance_index_from_table.h"
@@ -107,7 +106,6 @@ Simulation* SimulationMaker::parse(QString filePath)
 {
     QString simName;
 
-    redirectedParameters.clear();
     traceVariableParam.clear();
     clearTables();
 
@@ -164,7 +162,13 @@ Simulation* SimulationMaker::parse(QString filePath)
 
     amend<Integrator*>();
     amend<Model*>();
-    redirectParameters();
+    try {
+        Ref::resolve();
+    }
+    catch (Exception &ex) {
+        throw Exception(message(ex.message()));
+    }
+
     createTraces();
     amend<Output*>();
 
@@ -422,7 +426,7 @@ void SimulationMaker::setParameterElement(NamedObject *parent) {
         if (hasValue)
             parameter->setValueFromString(value.trimmed());
         else if (hasReference)
-            redirectedParameters.append(RedirectedParameter(parameter, reference));
+            new Ref(parent, parameter, reference);
         else {
             QString msg("Parameter '%1' must have either a 'value' or a 'reference' attribute");
             throw Exception(message(msg.arg(name)), parent);
@@ -578,64 +582,6 @@ QString SimulationMaker::message(QString text) const {
           << "XML-reader reported: " << reader->errorString() << "\n"
           << "Last token read: " << reader->tokenString();
     return s;
-}
-
-namespace {
-
-
-    template <class ParameterT, class VariableT, class ValuePtrT>
-    bool baseCouple(ParameterBase *parameter, const VariableBase *variable)
-    {
-        ParameterT* parameterTyped = dynamic_cast<ParameterT*>(parameter);
-        const VariableT *variableTyped = dynamic_cast<const VariableT*>(variable);
-        bool matchedT = parameterTyped && variableTyped;
-            if (matchedT) {
-                const ValuePtrT *redirectTo = variableTyped->valuePtr();
-                parameterTyped->redirectValuePtr(redirectTo);
-            }
-        return matchedT;
-    }
-
-
-    template <class T>
-    bool couple(ParameterBase *parameter, const VariableBase *variable)
-    {
-        return baseCouple<Parameter<T>, Variable<T>, T >(parameter, variable) ||
-               baseCouple<ParameterVector<T>, VariableVector<T>, QVector<T> >(parameter, variable);
-    }
-
-//    template <class T>
-//    bool couple(ParameterBase *parameter, const VariableBase *variable) {
-//        Parameter<T>* parameterT = dynamic_cast<Parameter<T>*>(parameter);
-//        const Variable<T> *variableT = dynamic_cast<const Variable<T>*>(variable);
-//        bool matchedT = parameterT && variableT;
-//        if (matchedT) {
-//            const T *redirectTo = variableT->valuePtr();
-//            parameterT->redirectValuePtr(redirectTo);
-//        }
-//        return matchedT;
-//    }
-}
-
-void SimulationMaker::redirectParameters() {
-    for (int i = 0; i < redirectedParameters.size(); ++i) {
-        ParameterBase *parameter = redirectedParameters[i].first;
-        QString variableFullName = redirectedParameters[i].second;
-        const VariableBase *variable =simulation()-> seekOne<NamedObject*, VariableBase*>(variableFullName);
-        bool coupled =
-            couple<bool>(parameter, variable) ||
-            couple<int>(parameter, variable) ||
-            couple<long>(parameter, variable) ||
-            couple<unsigned>(parameter, variable) ||
-            couple<float>(parameter, variable) ||
-            couple<double>(parameter, variable) ||
-            couple<QDate>(parameter, variable) ||
-            couple<QString>(parameter, variable);
-        if (!coupled) {
-            QString msg("The type of variable '%1' does not match that of the parameter");
-            throw Exception(message(msg.arg(variableFullName)));
-        }
-    }
 }
 
 } //namespace

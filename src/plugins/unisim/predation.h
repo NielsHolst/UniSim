@@ -10,10 +10,13 @@
 
 namespace UniSim {
 
+class DataGrid;
+
 class Predation : public Model
 {
 public:
     Predation(UniSim::Identifier name, QObject *parent=0);
+    ~Predation();
     // standard methods
     void amend();
     void reset();
@@ -21,7 +24,9 @@ public:
 private:
     // parameters
     QString apparencyMatrixFileName;
+    DataGrid *am;
     Matrix<double> apparencies;
+    QStringList predatorNames, preyNames;
     int numPredators, numPrey;
     // variables
     Matrix<double> attacks;
@@ -29,7 +34,12 @@ private:
     typedef QVector<const double*> Links;
     Links demands, resources;
     // methods
+    void setPredators();
+    void setPrey();
+    void setApparencies();
+    void setAttacks();
     void createLinks(Links &links, QStringList refs);
+    void extractNames(QStringList &names, QStringList refs);
     void updateAttacksByPredator();
     void updateAttacksByPrey();
 };

@@ -42,7 +42,8 @@
 				<parameter name="apparancy" value="0.5"/>
 				<parameter name="resourceDensity" ref="resource[value]"/>
 				<parameter name="demand" ref="demand[value]"/>
-				<parameter name="egestionRatio" value="0.45" note="meikle et al. 2012, Fig. 1"/>
+				<parameter name="egestionRatio" value="0.45" 
+					note="meikle et al. 2012, Fig. 1"/>
 			</model>
 			<model name="mass" type="UniSim::Stage">
 				<parameter name="duration" value="10"/>
@@ -134,7 +135,7 @@
 	<output type="plot">
 		<parameter name="title" value ="Larva growth"/>
 		<trace label="Day" value="calendar[totalTime]"/>
-		<trace label="demand" value="larva/mass[demand]"/>
+		<trace label="demand" value="larva/demand[value]"/>
 		<trace label="supply" value="larva/mass[growthIncrement]"/>
 	</output>
 	<output type="plot">

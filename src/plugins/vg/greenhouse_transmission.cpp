@@ -4,6 +4,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/utilities.h>
 #include "greenhouse_transmission.h"
 
 using namespace UniSim;
@@ -13,17 +14,55 @@ namespace vg {
 GreenhouseTransmission::GreenhouseTransmission(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("diffuse", &diffuse, 0.72, this, "Transmission of diffuse light through greenhouse construction [0;1]");
     new Parameter<double>("sinb", &sinb, 1, this, "Sine of sun elevation");
-    new Parameter<QString>("swartFileName", &swartFileName, QString("swart.txt"), this, "File with transmission parameters");
-    new Variable<double>("direct", &direct, this, "Transmission of direct light through greenhouse construction [0;1]");
+    new Parameter<QString>("glassType", &glassTypeStr, QString("Single"), this, "Glass type: Single, Double or Hortiplus");
+    new Parameter<double>("diffuseDiffusion", &diffuseDiffusion, 0.79, this, "Transmission of diffuse light through greenhouse construction [0;1]");
+    new Variable<double>("directDiffusion", &directDiffusion, this, "Transmission of direct light through greenhouse construction [0;1]");
+}
+
+void GreenhouseTransmission::initialize() {
+    defineConstants();
+}
+
+void GreenhouseTransmission::defineConstants() {
+    int i = int(Single);
+    a[i] = 0.844;
+    b[i] = 7.39;
+    c[i] = -1.66;
+    i = int(Double);
+    a[i] = 0.818;
+    b[i] = 9.77;
+    c[i] = -1.73;
+    i = int(Hortiplus);
+    a[i] = 0.758;
+    b[i] = 7.39;
+    c[i] = -1.66;
 }
 
 void GreenhouseTransmission::reset() {
-    direct = diffuse;
+    decodeGlassType();
+    update();
+}
+
+void GreenhouseTransmission::decodeGlassType() {
+    QString s = glassTypeStr.toLower();
+    if (s=="single")
+        glassType = Single;
+    else if (s=="double")
+        glassType = Double;
+    else if (s=="hortiplus")
+        glassType = Hortiplus;
+    else {
+        QString msg = "Unknown glass type: '%1'";
+        throw Exception(msg.arg(glassTypeStr));
+    }
 }
 
 void GreenhouseTransmission::update() {
+    double angle = asin(sinb)*180./PI;
+    int i = int(glassType);
+    directDiffusion = a[i]/(1. + pow(angle/b[i], c[i]));
+    Q_ASSERT(directDiffusion>=0. && directDiffusion<=1.);
 }
 
 

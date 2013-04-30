@@ -5,6 +5,7 @@
 #include "../exception.h"
 #include "../identifier.h"
 #include "../model.h"
+#include "../name.h"
 #include "../parameter.h"
 #include "../parameter_base.h"
 #include "test_parameter.h"
@@ -19,6 +20,13 @@ void TestParameter::init() {
 void TestParameter::cleanup() {
     delete model;
     model = 0;
+}
+
+void TestParameter::testNameMacro() {
+    int i;
+    new Parameter<int>(Name(i), 123, model, "desc");
+    QCOMPARE(i,123);
+    QCOMPARE(model->pullValue<int>("i"), 123);
 }
 
 

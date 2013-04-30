@@ -29,6 +29,7 @@ HEADERS += \
         $${US_BASE}/minimiser.h \
         $${US_BASE}/model.h \
         $${US_BASE}/moments.h \
+        $${US_BASE}/name.h \
         $${US_BASE}/named_object.h \
         $${US_BASE}/name_list.h \
         $${US_BASE}/object_pool.h \
@@ -36,11 +37,12 @@ HEADERS += \
         $${US_BASE}/parameter.h \
         $${US_BASE}/parameter_base.h \
         $${US_BASE}/parameter_vector.h \
-        $${US_BASE}/product_base.h \
         $${US_BASE}/product.h \
+        $${US_BASE}/product_base.h \
         $${US_BASE}/variable.h \
         $${US_BASE}/variable_base.h \
         $${US_BASE}/random.h \
+        $${US_BASE}/ref.h \
         $${US_BASE}/root_solver.h \
         $${US_BASE}/strata.h \
         $${US_BASE}/strata_base.h \
@@ -74,6 +76,7 @@ SOURCES += \
         $${US_BASE}/product_base.cpp \
         $${US_BASE}/variable_base.cpp \
         $${US_BASE}/random.cpp \
+        $${US_BASE}/ref.cpp \
         $${US_BASE}/root_solver.cpp \
         $${US_BASE}/ustime.cpp \
         $${US_BASE}/trace.cpp \

@@ -6,6 +6,7 @@
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
 #include "constant_world.h"
+#include "cost.h"
 #include "crop.h"
 #include "farm.h"
 #include "life_cycle.h"
@@ -13,17 +14,19 @@
 #include "operation.h"
 #include "test_factory.h"
 
+
 using namespace UniSim;
 
 namespace test{
 
 void TestFactory::defineProducts() {
-    addProduct<ConstantWorld>("ConstantWorld", this, "Description pending");
-    addProduct<Crop>("Crop", this, "Description pending");
-    addProduct<Farm>("Farm", this, "Description pending");
-    addProduct<LifeCycle>("LifeCycle", this, "Description pending");
-    addProduct<LifeStage>("LifeStage", this, "Description pending");
-    addProduct<Operation>("Operation", this, "Description pending");
+    AddProduct(ConstantWorld, "Description");
+    AddProduct(Cost, "Description");
+    AddProduct(Crop, "Description");
+    AddProduct(Farm, "Description");
+    AddProduct(LifeCycle, "Description");
+    AddProduct(LifeStage, "Description");
+    AddProduct(Operation, "Description");
 }
 
 Identifier TestFactory::id() const {

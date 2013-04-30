@@ -5,25 +5,24 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "general.h"
-#include "sp_heating_humidity_rh.h"
+#include "sp_ventilation_rh.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
-SpHeatingHumidityRh::SpHeatingHumidityRh(Identifier name, QObject *parent)
-    : SpHeatingHumidityBase(name, parent)
+SpVentilationRh::SpVentilationRh(Identifier name, QObject *parent)
+    : SpVentilationBase(name, parent)
 {
+    new Parameter<double>("pBand", &pBand, 5, this, "Slope for max decrement due to humidity");
     new Parameter<double>("spRh", &spRh, 85, this, "Setpoint for relative humidity (%)");
     new Parameter<double>("rh", &rh, 80, this, "Indoors humidity (%)");
 }
 
-void SpHeatingHumidityRh::update() {
-    double deltaRh = (rh - spRh)*1.5;
-    spIncrement = (deltaRh > 0) ?
-        spMaxIncrement*(1-exp(-(deltaRh*10/pBandRh)/spMaxIncrement)) : 0.;
+double SpVentilationRh::spDecrement() {
+    double deltaRh = spRh - rh;
+    return propControl(deltaRh, pBand, maxDecrement);
 }
-
 
 } //namespace
 

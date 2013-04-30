@@ -12,12 +12,22 @@
 using namespace UniSim;
 
 void TestPredation::cleanup() {
-//    delete sim;
-//    sim = 0;
+    delete sim;
+    sim = 0;
 }
 
 void TestPredation::testRecipe() {
-    //createSimulation("test_predation.xml");
+    createSimulation("test_predation.xml");
+}
+
+void TestPredation::testRun()  {
+//    createSimulation("test_predation.xml");
+//    try {
+//        sim->execute();
+//    }
+//    catch (Exception &ex) {
+//        QFAIL(qPrintable(ex.message()));
+//    }
 }
 
 //

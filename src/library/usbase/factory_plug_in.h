@@ -14,6 +14,8 @@
 #include <usbase/utilities.h>
 #include "product.h"
 
+#define AddProduct(name, desc) addProduct< name >( #name , this, desc )
+
 class QObject;
 
 namespace UniSim{
@@ -22,7 +24,7 @@ class FactoryPlugIn
 {
 public:
     typedef QMap<Identifier, const ProductBase*> Products;
-    virtual ~FactoryPlugIn() { }
+//    virtual ~FactoryPlugIn() { }
     virtual void defineProducts() = 0;
     virtual Identifier id() const = 0;
     virtual QString description() const = 0;

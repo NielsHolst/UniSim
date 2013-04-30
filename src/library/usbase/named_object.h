@@ -88,14 +88,17 @@ template <class T> T NamedObject::seekOne(QString name) {
 template <class TParentPtr, class TChildPtr> TChildPtr NamedObject::seekOne(QString expression)
 {
     QList<TChildPtr> result = seekMany<TParentPtr, TChildPtr>(expression);
-    QString msg = expression +
-                  " with parent class: " + typeid(TParentPtr).name() +
-                  " and child class: " + typeid(TChildPtr).name();
-    if (result.isEmpty())
-        throw Exception("No object found matching: " + msg);
-    else if (result.size() > 1)
-        throw Exception("More than one object found matching: " + msg);
-    return result[0];
+    if (result.size() == 1)
+        return result[0];
+
+    QString head = result.isEmpty() ? "No object found matching:"
+                                    : "More than one object found matching:";
+    QString msg = "%1 '%2' with parent class '%3' and child class '%4'";
+    throw Exception(msg
+                    .arg(head)
+                    .arg(expression)
+                    .arg(typeid(TParentPtr).name())
+                    .arg(typeid(TChildPtr).name()));
 }
 
 //! Finds any number of parent-child objects
@@ -106,7 +109,7 @@ template <class TParentPtr, class TChildPtr> TChildPtr NamedObject::seekOne(QStr
 */
 template <class TParentPtr, class TChildPtr> QList<TChildPtr> NamedObject::seekMany(QString expression)
 {
-    QStringList split = splitParentChildExpression(expression);
+    QStringList split = UniSim::splitParentChildExpression(expression);
     QString parent = split[0], child = split[1];
 
     QList<TParentPtr> parentPtr = seekMany<TParentPtr>(parent);

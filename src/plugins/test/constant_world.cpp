@@ -12,6 +12,9 @@ using namespace UniSim;
 
 namespace test{
 
+int i = 8;
+int *j = new int;
+
 ConstantWorld::ConstantWorld(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 

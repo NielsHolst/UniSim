@@ -21,11 +21,15 @@ public:
 
     // Parameters
 protected:
-    double spLight;
+    double spLight, K;
 
 private:
     // Variable
     double sp;
+    bool isIncreasing;
+
+    // Data
+    double prevSp;
 
     // Links
     const int *type;

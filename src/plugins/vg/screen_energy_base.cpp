@@ -14,7 +14,9 @@ ScreenEnergyBase::ScreenEnergyBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     new Parameter<double>("spLight", &spLight, 10., this,"Global radiation threshold for using energy screen (W/m2)");
+    new Parameter<double>("K", &K, 5.2, this,"K-value (W/m2/K)");
     new Variable<double>("sp", &sp, this,"Set point for energy screen [0;1]");
+    new Variable<bool>("isIncreasing", &isIncreasing, this,"Is the set point increasing?");
 }
 
 void ScreenEnergyBase::initialize() {
@@ -25,6 +27,7 @@ void ScreenEnergyBase::initialize() {
 }
 
 void ScreenEnergyBase::reset() {
+    prevSp = -1.;
     update();
 }
 
@@ -33,6 +36,8 @@ void ScreenEnergyBase::update() {
         sp = 0.;
     else
         sp = (useScreen() && *spHumidityPassed) ? *spMaxOpening : 0;
+    isIncreasing = (prevSp < 0) ? false : (sp > prevSp);
+    prevSp = sp;
 }
 
 } //namespace

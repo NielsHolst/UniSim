@@ -10,6 +10,9 @@
 #include <QMap>
 #include <QObject>
 #include "named_object.h"
+#include "parameter.h"
+#include "ref.h"
+#include "variable.h"
 
 namespace UniSim{
 
@@ -32,6 +35,15 @@ public:
 	
     Component(Identifier name, QObject *parent=0);
 		
+    template <class T>
+    void addParameter(Identifier name, T *valuePtr, T defaultvalue, QString desc);
+
+    template <class T>
+    void addParameterRef(Identifier name, T *valuePtr, QString reference);
+
+    template <class T>
+    void addVariable(Identifier name, T *valuePtr, QString desc);
+
     virtual void amend() { }
     virtual void initialize() { }
     virtual void reset() { }
@@ -72,6 +84,22 @@ private:
 };
 
 typedef QList<Component*> Components;
+
+template <class T>
+void Component::addParameter(Identifier name, T *valuePtr, T defaultvalue, QString desc) {
+    new Parameter<T>(name, valuePtr, defaultvalue, this, desc);
+}
+
+template <class T>
+void Component::addParameterRef(Identifier name, T *valuePtr, QString reference) {
+    Parameter<T> *par = new Parameter<T>(name, valuePtr, T(), this, reference);
+    new Ref(this, par, reference);
+}
+
+template <class T>
+void Component::addVariable(Identifier name, T *valuePtr, QString desc) {
+    new Variable<T>(name, valuePtr, this, desc);
+}
 
 } //namespace
 

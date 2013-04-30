@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/file_locations.h>
+#include <usbase/name.h>
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "operation.h"
@@ -15,13 +16,13 @@ namespace test{
 Operation::Operation(Identifier name, QObject *parent)
 	: Model(name,parent) 
 { 
-    new Parameter<QDate>("Date", &date, QDate(2000,1,1), this, "description");
-    new Parameter<int>("Cost", &cost, 0, this, "description");
-    new Parameter<bool>("IsOrganic", &isOrganic, false, this, "description");
+    addParameter<QDate>(Name(date), QDate(2000,1,1), "description");
+    addParameter<int>(Name(cost), 0, "description");
+    addParameter<bool>(Name(isOrganic), false, "description");
 
-    new Variable<int>("energy", &energy, this, "description");
-    new Variable<int>("labour", &labour, this, "description");
-    new Variable<int>("CO2", &CO2, this, "description");
+    addVariable<int>(Name(energy), "description");
+    addVariable<int>(Name(labour), "description");
+    addVariable<int>(Name(CO2), "description");
 }
 
 void Operation::reset() {

@@ -60,6 +60,7 @@ HEADERS += \
     $${US_PLUGINS}/unisim/test/test_functional_response_g_b.h \
     $${US_PLUGINS}/unisim/test/test_fixed.h \
     $${US_PLUGINS}/unisim/test/test_forage.h \
+    $${US_PLUGINS}/unisim/test/test_infection.h \
     $${US_PLUGINS}/unisim/test/test_predation.h \
     $${US_PLUGINS}/unisim/test/test_random.h \
     $${US_PLUGINS}/unisim/test/test_range.h \
@@ -119,6 +120,7 @@ SOURCES += \
     $${US_PLUGINS}/unisim/test/test_functional_response_g_b.cpp \
     $${US_PLUGINS}/unisim/test/test_fixed.cpp \
     $${US_PLUGINS}/unisim/test/test_forage.cpp \
+    $${US_PLUGINS}/unisim/test/test_infection.cpp \
     $${US_PLUGINS}/unisim/test/test_predation.cpp \
     $${US_PLUGINS}/unisim/test/test_random.cpp \
     $${US_PLUGINS}/unisim/test/test_range.cpp \

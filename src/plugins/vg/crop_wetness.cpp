@@ -13,11 +13,11 @@ namespace vg {
 CropWetness::CropWetness(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("Tgh", &Tgh, 27., this, "Indoors temperature (oC)");
-    new Parameter<double>("Tcrop", &Tcrop, 27., this, "Crop temperature (oC)");
-    new Parameter<double>("rh", &rh, 80., this, "Indoors relative humidity (%)");
-    new Variable<double>("Tdew", &Tdew, this, "Dew point temperature of crop (oC)");
-    new Variable<bool>("isWet", &isWet, this, "Is crop wet?");
+    addParameterRef<double>(Name(Tgh), "indoors/temperature[air]");
+    addParameterRef<double>(Name(rh), "indoors/humidity[rh]");
+    addParameter<double>(Name(Tcrop), 27., "Crop temperature (oC)");
+    addVariable<double>(Name(Tdew),"Dew point temperature of crop (oC)");
+    addVariable<bool>(Name(isWet), "Is crop wet?");
 }
 
 void CropWetness::reset() {

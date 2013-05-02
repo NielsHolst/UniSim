@@ -1,5 +1,5 @@
-#ifndef TEST_UNISIM_PREDATION_H
-#define TEST_UNISIM_PREDATION_H
+#ifndef TEST_UNISIM_INFECTION_H
+#define TEST_UNISIM_INFECTION_H
 
 #include <usbase/test/autotest.h>
 
@@ -7,14 +7,13 @@ namespace UniSim {
     class Simulation;
 }
 
-class TestPredation : public QObject
+class TestInfection : public QObject
 {
     Q_OBJECT
 private slots:
     void cleanup();
     void testRecipe();
-    void testOnePredator();
-    void testTwoPredators();
+    void testTwoParasitoids();
 
 private:
     void createSimulation(QString filename);
@@ -22,7 +21,7 @@ private:
     UniSim::Simulation *sim;
 };
 
-DECLARE_TEST(TestPredation)
+DECLARE_TEST(TestInfection)
 
 
 #endif

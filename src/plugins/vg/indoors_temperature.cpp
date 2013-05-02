@@ -14,9 +14,9 @@ namespace vg {
 IndoorsTemperature::IndoorsTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("rh", &rh, 80., this, "Indoors humidity (%)");
-    new Variable<double>("air", &air, this, "Air temperature (oC)");
-    new Variable<double>("dewPoint", &dewPoint, this, "Dew point temperaure (oC)");
+    addParameterRef<double>(Name(rh), "indoors/humidity[rh]");
+    addVariable<double>(Name(air), "Air temperature (oC)");
+    addVariable<double>(Name(dewPoint), "Dew point temperaure (oC)");
 }
 
 void IndoorsTemperature::reset() {

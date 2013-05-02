@@ -13,7 +13,7 @@ namespace vg {
 LampHpsl400::LampHpsl400(Identifier name, QObject *parent)
     : LampBase(name, parent)
 {
-    new Parameter<bool>("capacityAsInput", &capacityAsInput, false, this, "Capacity given as input?");
+    addParameter<bool>(Name(capacityAsInput), false, "Capacity given as input?");
 }
 
 void LampHpsl400::calculate() {

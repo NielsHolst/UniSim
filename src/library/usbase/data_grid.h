@@ -36,6 +36,7 @@ public:
     QList<int> rowIndices(const KeySubset &rowKeys) const;
     QString cell(int row, int col) const;
     QString cell(const QStringList &rowKeys, QString colKey) const;
+    template<class T> QVector<T> row(int i);
     template<class T> QVector<T> column(int i);
 
 private:
@@ -66,6 +67,16 @@ private:
     QStringList lineItems;
     bool pastLastLine;
 };
+
+template<class T> QVector<T> DataGrid::row(int aRow) {
+    QVector<T> result;
+    result.resize(columnNumber());
+    for (int j = 0; j < columnNumber(); ++j) {
+        QString s = cell(aRow, j);
+        result[j] = stringToValue<T>(s);
+    }
+    return result;
+}
 
 template<class T> QVector<T> DataGrid::column(int col) {
     QVector<T> result;

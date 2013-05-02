@@ -14,17 +14,17 @@ namespace vg {
 IndoorsRadiationAbsorption::IndoorsRadiationAbsorption(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("Tcover", &Tcover, 0., this, "Greenhouse cover temperature (oC)");
-    new Parameter<double>("Tscreen", &Tscreen, 0., this, "Greenhouse screen temperature (oC)");
-    new Parameter<double>("bnLamps", &bnLamps, 0., this, "Longwave radiation produced by lamps (W/m2)");
-    new Parameter<double>("rnLamps", &rnLamps, 0., this, "Shortwave radiation produced by lamps (W/m2)");
-    new Parameter<double>("spScreen", &spScreen, 0., this, "Setpoint for screen [0;1]");
-    new Parameter<double>("Tindoors", &Tindoors, 0., this, "Indoors temperature (oC)");
-    new Parameter<double>("incomingRadiation", &incomingRadiation, 0., this, "Total incoming, natural radiation (W/m2)");
-    new Parameter<double>("longwaveEmission", &longwaveEmission, 0., this, "Proportion of longwave radiation emitted by canopy [0;1]");
-    new Parameter<double>("shortwaveEmission", &shortwaveEmission, 0., this, "Proportion of longwave radiation emitted by canopy [0;1]");
-    new Variable<double>("bnAbsorbed", &bnAbsorbed, this, "Shortwave radiation absorbed by (W/m2)");
-    new Variable<double>("rnAbsorbed", &rnAbsorbed, this, "Longwave radiation absorbed by (W/m2)");
+    addParameterRef<double>(Name(Tcover), "greenhouse/cover[temperature]");
+    addParameterRef<double>(Name(Tscreen), "greenhouse/screen[temperature]");
+    addParameterRef<double>(Name(bnLamps), "greenhouse/lamps/yield[bnLight]");
+    addParameterRef<double>(Name(rnLamps), "greenhouse/lamps/yield[rnLight]");
+    addParameterRef<double>(Name(spScreen), "screen/energy[sp]"); // combine screens!
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addParameterRef<double>(Name(incomingRadiation), "indoors/radiation[total]");
+    addParameter<double>(Name(longwaveEmission), 0., "Proportion of longwave radiation emitted by canopy [0;1]");
+    addParameter<double>(Name(shortwaveEmission), 0., "Proportion of longwave radiation emitted by canopy [0;1]");
+    addVariable<double>(Name(bnAbsorbed), "Shortwave radiation absorbed by (W/m2)");
+    addVariable<double>(Name(rnAbsorbed), "Longwave radiation absorbed by (W/m2)");
 }
 
 void IndoorsRadiationAbsorption::reset() {

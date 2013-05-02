@@ -16,6 +16,8 @@
 #include "variable.h"
 #include "variable_vector.h"
 
+#include "name.h"
+
 namespace UniSim{
 
 //template<class T> class Parameter;

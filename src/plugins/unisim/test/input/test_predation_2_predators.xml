@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+	</model>	
+
+	<model name="Gazella" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 100.0)) "/>
+	</model>
+	<model name="Gnu" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 200.0)) "/>
+	</model>
+	<model name="Zebra" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 150.0)) "/>
+	</model>
+	<model name="Leopard" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 5.0) (Demand 12.0)) "/>
+	</model>
+	<model name="Lion" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Demand 18.0)) "/>
+	</model>
+
+	<model name="Predation" type="UniSim::Predation">
+		<parameter name="apparencyMatrix" value="test_predation_2_predators.txt"/>
+	</model>
+	
+	<output type="table">
+		<parameter name="fileName" value="test_predation_2_predators.prn"/>
+		<trace label="TotalTimeSteps" ref="calendar[totalTimeSteps]"/>
+		<trace label="Gazella" ref="Gazella[Density]"/>
+		<trace label="LionGazella" ref="predation[Lion-Gazella]"/>
+		<trace label="LionLeopard" ref="predation[Lion-Leopard]"/>
+		<trace label="LeopardGazella" ref="predation[Leopard-Gazella]"/>
+		<trace label="LeopardSupply" ref="predation[Leopard-Supply]"/>
+		<trace label="LeopardLoss" ref="predation[Leopard-Loss]"/>
+		<trace label="GnuLoss" ref="predation[Gnu-Loss]"/>
+	</output>
+</simulation>

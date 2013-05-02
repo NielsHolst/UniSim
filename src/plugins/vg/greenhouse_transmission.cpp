@@ -14,10 +14,10 @@ namespace vg {
 GreenhouseTransmission::GreenhouseTransmission(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("sinb", &sinb, 1, this, "Sine of sun elevation");
-    new Parameter<QString>("glassType", &glassTypeStr, QString("Single"), this, "Glass type: Single, Double or Hortiplus");
-    new Parameter<double>("diffuseDiffusion", &diffuseDiffusion, 0.79, this, "Transmission of diffuse light through greenhouse construction [0;1]");
-    new Variable<double>("directDiffusion", &directDiffusion, this, "Transmission of direct light through greenhouse construction [0;1]");
+    addParameterRef<double>(Name(sinb), "calendar[sinb]");
+    addParameter<QString>("glassType", &glassTypeStr, QString("Single"), "Glass type: Single, Double or Hortiplus");
+    addParameter<double>(Name(diffuseDiffusion), 0.79, "Transmission of diffuse light through greenhouse construction [0;1]");
+    addVariable<double>(Name(directDiffusion), "Transmission of direct light through greenhouse construction [0;1]");
 }
 
 void GreenhouseTransmission::initialize() {

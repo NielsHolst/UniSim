@@ -23,7 +23,9 @@ HEADERS += \
     fixed.h \
     forage.h \
     functional_response_g_b.h \
+    functional_response_multiway.h \
     hydro_thermal_time.h \
+    infection.h \
     inachis.h \
     insect_life_cycle.h \
     lactin_time.h \
@@ -70,7 +72,9 @@ SOURCES += \
     fixed.cpp \
     forage.cpp \
     functional_response_g_b.cpp \
+    functional_response_multiway.cpp \
     hydro_thermal_time.cpp \
+    infection.cpp \
     inachis.cpp \
     insect_life_cycle.cpp \
     lactin_time.cpp \

@@ -15,10 +15,10 @@ namespace vg {
 GreenhouseTemperature::GreenhouseTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("energyBalance", &energyBalance, 0., this, "Energy balance of greenhouse (W/m2)");
-    new Parameter<double>("heatCapacity", &heatCapacity, 0., this, "Heat capacity of greenhouse (W/m2/K)");
-    new Parameter<double>("pipesHeatTransfer", &pipesHeatTransfer, 0., this, "Heat transfer of all pipes (W/m2)");
-    new Variable<double>("temperature", &temperature, this, "Current greenhouse temperature (oC)");
+    addParameterRef<double>(Name(energyBalance), "greenhouse/temperature/energy[energyBalance]");
+    addParameterRef<double>(Name(heatCapacity), "greenhouse/temperature/energy[heatCapacity]");
+    addParameterRef<double>(Name(pipesHeatTransfer), "greenhouse/temperature/pipes[heatTransfer]");
+    addVariable<double>(Name(temperature), "Current greenhouse temperature (oC)");
 }
 
 void GreenhouseTemperature::reset() {

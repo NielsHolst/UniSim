@@ -4,6 +4,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+//#include <usbase/name.h>
 #include "cover.h"
 #include "general.h"
 
@@ -14,12 +15,12 @@ namespace vg {
 Cover::Cover(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("Tindoors", &Tindoors, 27., this, "Indoors temperature");
-    new Parameter<double>("Toutdoors", &Toutdoors, 20., this, "Outdoors temperature");
-    new Parameter<double>("Tsky", &Tsky, 10., this, "Sky temperature");
-    new Parameter<double>("windspeed", &windspeed, 5., this, "Outdoors windspeed");
-    new Parameter<double>("latcov", &latcov, 35., this, "Lat cover (degrees)");
-    new Variable<double>("temperature", &temperature, this, "Cover temperature");
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addParameterRef<double>(Name(Toutdoors), "outdoors/records[Tair]");
+    addParameterRef<double>(Name(Tsky), "sky[temperature]");
+    addParameterRef<double>(Name(windspeed), "outdoors/records[windspeed]");
+    addParameterRef<double>(Name(latcov), "greenhouse[latcov]");
+    addVariable<double>(Name(temperature), "Cover temperature");
 }
 
 void Cover::reset() {

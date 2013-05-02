@@ -40,7 +40,7 @@ double ah(double temperature, double rh) {
 
 //! Compute dew point temperature temperature and humidity
 /*! Calculated as an inverse function of p_satu.
-/*!	\param temperature (oC)
+    \param temperature (oC)
     \param rh relative humidity (%)
     \return dew point temperature (oC)
  */

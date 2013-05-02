@@ -13,7 +13,7 @@ namespace vg {
 LampLed::LampLed(Identifier name, QObject *parent)
     : LampBase(name, parent)
 {
-    new Parameter<double>("density", &density, 0.015, this, "Number of lamps per m2");
+    addParameter<double>(Name(density), 0.015, "Number of lamps per m2");
 }
 
 /*  Heat loss to the greenhouse, Wm-2, Thermal heat and long-wave

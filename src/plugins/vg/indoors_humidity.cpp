@@ -14,12 +14,12 @@ namespace vg {
 IndoorsHumidity::IndoorsHumidity(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("Tindoors", &Tindoors, 27., this, "Indoors temperature (oC)");
-    new Variable<double>("rh", &rh, this, "Relative humidity (%)");
-    new Variable<double>("moistureDeficit", &moistureDeficit, this, "Moisture deficit (g/m3)");
-    new Variable<bool>("spRhPassed", &spRhPassed, this, "Is relative humidity above the set point?");
-    new Variable<bool>("spDeltaXPassed", &spDeltaXPassed, this, "Is moisture deficit less than the delta x set point?");
-    new Variable<bool>("spEitherPassed", &spEitherPassed, this, "Is either set point passed?");
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addVariable<double>(Name(rh), "Relative humidity (%)");
+    addVariable<double>(Name(moistureDeficit), "Moisture deficit (g/m3)");
+    addVariable<bool>(Name(spRhPassed), "Is relative humidity above the set point?");
+    addVariable<bool>(Name(spDeltaXPassed), "Is moisture deficit less than the delta x set point?");
+    addVariable<bool>(Name(spEitherPassed), "Is either set point passed?");
 }
 
 void IndoorsHumidity::initialize() {

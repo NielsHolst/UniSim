@@ -5,7 +5,6 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <stdlib.h>
-#include <usbase/name.h>
 #include "boundary_layer_resistance.h"
 
 using namespace std;

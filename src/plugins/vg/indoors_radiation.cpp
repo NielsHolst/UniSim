@@ -13,16 +13,16 @@ namespace vg {
 IndoorsRadiation::IndoorsRadiation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("directOutdoors", &directOutdoors, 10., this, "Outdoors direct radiation");
-    new Parameter<double>("diffuseOutdoors", &diffuseOutdoors, 10., this, "Outdoors diffuse radiation");
-    new Parameter<int>("screenType", &screenType, 1, this, "Screen type installed");
-    new Parameter<double>("trScreen", &trScreen, 1, this, "Transmission of light through screen [0;1]");
-    new Parameter<double>("trGhDif", &trGhDif, 0.72, this, "Transmission of diffuse light through greenhouse construction [0;1]");
-    new Parameter<double>("trGhDir", &trGhDir, 0.5, this, "Transmission of direct light through greenhouse construction [0;1]");
+    addParameterRef<double>(Name(directOutdoors), "outdoors[dirRad]");
+    addParameterRef<double>(Name(diffuseOutdoors), "outdoors/records[difRad]");
+    addParameterRef<int>(Name(screenType), "screen[type]");
+    addParameterRef<double>(Name(trScreen), "screen/transmission[transmission]");
+    addParameterRef<double>(Name(trGhDif), "greenhouse/transmission[diffuse]");
+    addParameterRef<double>(Name(trGhDir), "greenhouse/transmission[direct]");
 
-    new Variable<double>("total", &total, this, "Total indoors radiation");
-    new Variable<double>("direct", &direct, this, "Direct indoors radiation");
-    new Variable<double>("diffuse", &diffuse, this, "Diffuse indoors radiation");
+    addVariable<double>(Name(total), "Total indoors radiation");
+    addVariable<double>(Name(direct), "Direct indoors radiation");
+    addVariable<double>(Name(diffuse), "Diffuse indoors radiation");
 }
 
 void IndoorsRadiation::reset() {

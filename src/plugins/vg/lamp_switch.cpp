@@ -13,18 +13,19 @@ namespace vg {
 LampSwitch::LampSwitch(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<int>("day", &day, 1, this, "Julian day");
-    new Parameter<int>("hour", &hour, 12, this, "Hour of the day");
-    new Parameter<int>("minute", &minute, 0, this, "Minute of the hour");
-    new Parameter<double>("globRad", &globRad, 280., this, "Global outdoors radiation (W/m2)");
-    new Parameter<int>("spDayOn", &spDayOn, 300, this, "Julian day when to switch on (1..365)");
-    new Parameter<int>("spDayOff", &spDayOff, 60, this, "Julian day when to switch off (1..365)");
-    new Parameter<double>("spHourOn", &spHourOn, 8, this, "Hour when to switch on (0..24)");
-    new Parameter<double>("spHourOff", &spHourOff, 24, this, "Hour when to switch off (0..24)");
-    new Parameter<double>("spRadiationOn", &spRadiationOn, 250, this, "Radiation intensity at which to switch on (W/m2)");
-    new Parameter<double>("spRadiationOff", &spRadiationOff, 300, this, "Radiation intensity at which to switch off (W/m2)");
+    addParameterRef<int>(Name(day), "calendar[dayOfyear] ");
+    addParameterRef<int>(Name(hour), "calendar[hour]");
+    addParameterRef<int>(Name(minute),"calendar[minute]");
+    addParameterRef<double>(Name(globRad), "outdoors/records[globRad]");
 
-    new Variable<bool>("on", &on, this, "Switch lamps on?");
+    addParameter<int>(Name(spDayOn), 300, "Julian day when to switch on (1..365)");
+    addParameter<int>(Name(spDayOff), 60, "Julian day when to switch off (1..365)");
+    addParameter<double>(Name(spHourOn), 8, "Hour when to switch on (0..24)");
+    addParameter<double>(Name(spHourOff), 24, "Hour when to switch off (0..24)");
+    addParameter<double>(Name(spRadiationOn), 250, "Radiation intensity at which to switch on (W/m2)");
+    addParameter<double>(Name(spRadiationOff), 300, "Radiation intensity at which to switch off (W/m2)");
+
+    addVariable<bool>(Name(on), "Switch lamps on?");
 }
 
 void LampSwitch::reset() {

@@ -13,6 +13,7 @@
 #include "fixed.h"
 #include "functional_response_g_b.h"
 #include "hydro_thermal_time.h"
+#include "infection.h"
 #include "inachis.h"
 #include "insect_life_cycle.h"
 #include "lactin_time.h"
@@ -96,6 +97,9 @@ void UniSim::UniSimFactory::defineProducts() {
 
     addProduct<Inachis>("Inachis", this,
     "A stage-structured model of the Nymphalid butterfly @I{Inachis io}.");
+
+    AddProduct(Infection,
+    "Multi-way infection based upon @F Predation model.");
 
     addProduct<InsectLifeCycle>("InsectLifeCycle", this,
     "A stage-structured insect model. Under development");

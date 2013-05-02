@@ -13,13 +13,13 @@ namespace vg {
 LampBase::LampBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<bool>("switchedOn", &switchedOn, false, this, "Lamps switched on?");
-    new Parameter<double>("capacity", &capacity, 40., this, "Capacity of installed assimilation lamps (W/m2)");
-    new Variable<double>("convectiveHeat", &convectiveHeat, this, "Convective heat (W/m2)");
-    new Variable<double>("bnLight", &bnLight, this, "Longwave radiation exchanged from the canopy (W m-2)");
-    new Variable<double>("rnLight", &rnLight, this, "Shortwave radiation reaching the canopy (W/m2)");
-    new Variable<double>("par", &par, this, "PAR that reaches the crop");
-    new Variable<double>("energyUse", &energyUse, this, "Energy use, including the ballast");
+    addParameterRef<bool>(Name(switchedOn), "lamps/switch[on]");
+    addParameter<double>(Name(capacity), 40., "Capacity of installed assimilation lamps (W/m2)");
+    addVariable<double>(Name(convectiveHeat), "Convective heat (W/m2)");
+    addVariable<double>(Name(bnLight), "Longwave radiation exchanged from the canopy (W m-2)");
+    addVariable<double>(Name(rnLight), "Shortwave radiation reaching the canopy (W/m2)");
+    addVariable<double>(Name(par), "PAR that reaches the crop");
+    addVariable<double>(Name(energyUse), "Energy use, including the ballast");
 }
 
 void LampBase::reset() {

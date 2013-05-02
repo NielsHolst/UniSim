@@ -3,20 +3,20 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_PREDATION_H
-#define UNISIM_PREDATION_H
-#include <QVector>
+#ifndef UNISIM_INFECTION_H
+#define UNISIM_INFECTION_H
+#include <usbase/matrix.h>
 #include "functional_response_multiway.h"
 
 namespace UniSim {
 
-class Predation : public FunctionalResponseMultiway
+class Infection : public FunctionalResponseMultiway
 {
 public:
-    Predation(UniSim::Identifier name, QObject *parent=0);
+    Infection(UniSim::Identifier name, QObject *parent=0);
 private:
     // variables
-    QVector<double> supplies, losses;
+    Matrix<double> attacksPerHost, numHostsAttacked, propHostsAttacked;
     // methods
     void createVariables();
     void updateFromNumAttacks();

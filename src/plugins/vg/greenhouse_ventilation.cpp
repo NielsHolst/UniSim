@@ -16,24 +16,24 @@ namespace vg {
 GreenhouseVentilation::GreenhouseVentilation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("timeStep", &timeStep, 5., this, "Time step of simulation in @F timeUnit units");
-    new Parameter<char>("timeUnit", &timeUnit, 'm', this, "Unit of time step 's', 'm' or 'h'");
-    new Parameter<double>("Tindoors", &Tindoors, 27., this, "Indoors temperature (oC)");
-    new Parameter<double>("Toutdoors", &Toutdoors, 20., this, "Outdoors temperature (oC)");
-    new Parameter<double>("windspeed", &windspeed, 0., this, "Outdoors windspeed (m/s)");
-    new Parameter<double>("greenhouseHeight", &greenhouseHeight, 4., this, "Height (m)");
-    new Parameter<double>("roofRatio", &roofRatio, 1., this, "Roof/Side wall ratio (-)");
-    new Parameter<double>("sideRatio", &sideRatio, 1., this, "Side ratio ? (-)");
-    new Parameter<double>("windowLength", &windowLength, 2., this, "Window length (m)");
-    new Parameter<double>("alphaVentilationMax", &alphaVentilationMax, 44., this, "Max. ventilation opening (degrees)");
-    new Parameter<double>("fractionWindows", &fractionWindows, 0.078, this, "Fraction windows [0;1]");
-    new Parameter<double>("leakageVentilation", &leakageVentilation, 0.5, this, "Smaller values for better insulation");
-    new Parameter<double>("alphaLeeSide", &alphaLeeSide, 0., this, "Ventilation opening on the lee side [0;100]");
-    new Parameter<double>("alphaWindSide", &alphaWindSide, 0., this, "Ventilation opening on the wind side [0;100]");
-    new Parameter<double>("screenAirTransmission", &screenAirTransmission, 0., this, "Air transmission of screen coverage [0;1]");
-    new Variable<double>("windows", &windows, this, "Greenhouse ventilation rate through windows (m3 air/m2 greenhouse/s");
-    new Variable<double>("leakage", &leakage, this, "Greenhouse ventilation rate through leakage (m3 air/m2 greenhouse/s");
-    new Variable<double>("total", &total, this, "Greenhouse ventilation rate total (m3 air/m2 greenhouse/s");
+    addParameterRef<double>(Name(timeStep), "calendar[timeStep]");
+    addParameterRef<char>(Name(timeUnit), "calendar[timeUnit]");
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addParameterRef<double>(Name(Toutdoors), "outdoors/records[Tair]");
+    addParameterRef<double>(Name(windspeed), "outdoors/records[windspeed]");
+    addParameterRef<double>(Name(greenhouseHeight), "greenhouse[greenHouseHeight]");
+    addParameterRef<double>(Name(roofRatio), "greenhouse[roofRatio]");
+    addParameterRef<double>(Name(sideRatio), "greenhouse[sideRatio]");
+    addParameterRef<double>(Name(windowLength), "greenhouse[windowLength]");
+    addParameterRef<double>(Name(alphaVentilationMax), "greenhouse[alphaVentilationMax]");
+    addParameterRef<double>(Name(fractionWindows), "greenhouse[fractionWindows]");
+    addParameterRef<double>(Name(leakageVentilation), "greenhouse[leakageVentilation]");
+    addParameterRef<double>(Name(alphaLeeSide), "ventilation/spOpening[alphaLeeSide]");
+    addParameterRef<double>(Name(alphaWindSide), "ventilation/spOpening[alphaWindSide]");
+    addParameterRef<double>(Name(screenAirTransmission), "greenhouse/screen/airTransmission[transmission]");
+    addVariable<double>(Name(windows), "Greenhouse ventilation rate through windows (m3 air/m2 greenhouse/s");
+    addVariable<double>(Name(leakage), "Greenhouse ventilation rate through leakage (m3 air/m2 greenhouse/s");
+    addVariable<double>(Name(total), "Greenhouse ventilation rate total (m3 air/m2 greenhouse/s");
 }
 
 void GreenhouseVentilation::reset() {

@@ -14,8 +14,8 @@ namespace vg {
 Pipes::Pipes(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Variable<double>("heatTransfer", &heatTransfer, this, "Heat transfer of all pipes (W/m2)");
-    new Variable<double>("heatEnergy", &heatEnergy, this, "Energy used for heating by all pipes (J/m2)");
+    addVariable<double>(Name(heatTransfer), "Heat transfer of all pipes (W/m2)");
+    addVariable<double>(Name(heatEnergy), "Energy used for heating by all pipes (J/m2)");
 }
 
 void Pipes::initialize() {

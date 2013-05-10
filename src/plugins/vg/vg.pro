@@ -44,6 +44,7 @@ HEADERS += \
     sp_humidity_base.h \
     sp_humidity_regular.h \
     sp_ventilation_opening.h \
+    sp_ventilation_opening_max.h \
     sp_ventilation_temperature.h \
     sky.h \
     stomatal_resistance.h \
@@ -85,6 +86,7 @@ SOURCES += \
     sp_humidity_base.cpp \
     sp_humidity_regular.cpp \
     sp_ventilation_opening.cpp \
+    sp_ventilation_opening_max.cpp \
     sp_ventilation_temperature.cpp \
     sky.cpp \
     stomatal_resistance.cpp \

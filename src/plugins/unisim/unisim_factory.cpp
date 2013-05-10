@@ -5,7 +5,9 @@
 */
 #include <usbase/object_pool.h>
 #include <usbase/utilities.h>
-#include "anonymous_model.h"
+#include "anonymous.h"
+#include "asymptotic_decreasing.h"
+#include "asymptotic_increasing.h"
 #include "calendar.h"
 #include "day_degrees.h"
 #include "days.h"
@@ -45,10 +47,20 @@
 namespace UniSim{
 
 void UniSim::UniSimFactory::defineProducts() {
-    addProduct<AnonymousModel>("Anonymous", this,
+    AddProduct(Anonymous,
     "An @F Anonymous model simply acts as a container of other models");
 
-    addProduct<Calendar>("Calendar", this,
+    AddProduct(AsymptoticDecreasing,
+    "Asymptotic curve which begins at a value of @F max at @F {x=0}"
+    "and decreases to @F min as a lower asymtote ar large @F {x}. "
+    "The @F slope parameter determines the curvature");
+
+    AddProduct(AsymptoticIncreasing,
+    "Asymptotic curve which begins at a value of @F min at @F {x=0}"
+    "and increases to @F max as an upper asymtote ar large @F {x}. "
+    "The @F slope parameter determines the curvature");
+
+    AddProduct(Calendar,
     "The @F Calendar model keeps track of the date. Since @F latitude is one of its parameters, "
     "it also knows of the current day length. Solar elevation is calculated every time "
     "the hour of the day is set by a tick of the global clock object. For example,"
@@ -59,7 +71,7 @@ void UniSim::UniSimFactory::defineProducts() {
 
     addProduct<OutputCrosstab>("CrossTab", this, "Output class. Description pending");
 
-    addProduct<DayDegrees>("DayDegrees", this,
+    AddProduct(DayDegrees,
     "This is a standard day-degree model. It obtains the daily average temperature from "
     "the weather object, which must exist as @F Model named @F {weather} having a pull "
     "variable named @F {Tavg}. The daily increment in day-degrees increases linerly above "
@@ -69,42 +81,42 @@ void UniSim::UniSimFactory::defineProducts() {
     " @F {PhotoThermalTime}. They all start updating right from the beginning, or when triggered "
     "by a child model, for example a @F TriggerByDate model.");
 
-    addProduct<Days>("Days", this,
+    AddProduct(Days,
     "This model has the same pull variables as the @F DayDegrees model but it works in "
     "simple chronological time counting every day as just that, one day.");
 
-    addProduct<Exponential>("Exponential", this,
+    AddProduct(Exponential,
     "Simple exponential growth model, @Math{y = exp(rt)}, "
     "where @I t is taken from the nearest model called @F {time}.");
 
-    addProduct<Fixed>("Fixed", this,
+    AddProduct(Fixed,
     "Often used for test purposes, or an initial version of a model, a @F Fixed model "
     "sets up fixed values for chosen parameters, and push and pull variables. The only type "
     "of values currently supported is @F {double}. Note that these 'artifical' parameters "
     "and variables are not created until @F initialize() of @F {Fixed} is called. "
     "This is unlike their real counterparts which are always created in the model's constructor");
 
-    addProduct<FunctionalResponseGB>("FunctionalResponseGB", this,
+    AddProduct(FunctionalResponseGB,
     "The Gutierrez-Baumgaertner functional response model, "
     "including the energy budget for egestion and respiration");
 
-    addProduct<HydroThermalTime>("HydroThermalTime", this,
+    AddProduct(HydroThermalTime,
     "Hydrothermal time accounts for temperature and soil water potential at the same time. "
     "In this implementation the daily increment, as calculated by the @F DayDegrees model, "
     "is set to zero if soil water potential is less than the threshold, otherwise the "
     "daily increment is unaltered. A @F Model named @F {weather} with a pull "
     "variable named @F SWP must exist to supply @F HydroThermalTime with soil water potential.");
 
-    addProduct<Inachis>("Inachis", this,
+    AddProduct(Inachis,
     "A stage-structured model of the Nymphalid butterfly @I{Inachis io}.");
 
     AddProduct(Infection,
     "Multi-way infection based upon @F Predation model.");
 
-    addProduct<InsectLifeCycle>("InsectLifeCycle", this,
+    AddProduct(InsectLifeCycle,
     "A stage-structured insect model. Under development");
 
-    addProduct<LactinTime>("LactinTime", this,
+    AddProduct(LactinTime,
     "This is the physiological time scale of Lactin et al. (reference to be added). "
     "It pulls the daily average temperature from the @F weather object just like the @F "
     "DayDegrees model. The equation used to calculate the daily increment in physiological "
@@ -114,33 +126,34 @@ void UniSim::UniSimFactory::defineProducts() {
     addProduct<OutputMap>("Map", this,
     "Creates output as an animated map. The @F output element must hold exactly one @F Trace element.");
 
-    addProduct<PhotoThermalTime>("PhotoThermalTime", this,
+    AddProduct(PhotoThermalTime,
      "Photothermal time accounts for temperature and day length at the same time. "
      "In this implementation the daily increment, as calculated by the @F DayDegrees model, "
      "is multiplied by day length in hours (acquired from the @F calendar object) "
      "divided by 24 hours.");
 
-    addProduct<OutputPlot>("Plot", this, "Output class. Description pending");
+    addProduct<OutputPlot>("Plot", this,
+    "Output class. Description pending");
 
-    addProduct<Predation>("Predation", this,
+    AddProduct(Predation,
     "Multi-way predation based upon @F FunctionalResponseGB model.");
 
-    addProduct<RandomLognormal>("RandomLognormal", this,
+    AddProduct(RandomLognormal,
     "The model maintains a random variable with a log-normal distribution.");
 
-    addProduct<RandomNormal>("RandomNormal", this,
+    AddProduct(RandomNormal,
     "The model maintains a random variable with a normal distribution.");
 
-    addProduct<RandomPoisson>("RandomPoisson", this,
+    AddProduct(RandomPoisson,
     "The model maintains a random variable with a Poisson distribution.");
 
-    addProduct<RandomUniform>("RandomUniform", this,
+    AddProduct(RandomUniform,
     "The model maintains a random variable with uniform (i.e. flat) distribution.");
 
-    addProduct<Range>("Range", this,
+    AddProduct(Range,
     "The model produces equally spaced numbers inside a [min,max] range.");
 
-    addProduct<Records>("Records", this,
+    AddProduct(Records,
     "A @F Records model reads input from a text file formatted in columns with labels in the first line. "
     "Columns can be separated by spaces or tab characters. Labels may not contain spaces. "
     "A pull variable will be created for every column in the input file, named after the column label. "
@@ -155,50 +168,54 @@ void UniSim::UniSimFactory::defineProducts() {
     "need to know about the current date and time of day, you should pull this information from "
     "the @F calender model. See UniSim::Calendar @CrossLink {page @PageOf UniSim::Calendar}.");
 
-    addProduct<RunIteratorFixed>("RunIteratorFixed", this,
+    AddProduct(RunIteratorFixed,
     "The model increments its @F iteration counter for every @F {update}. "
     "Its @F value remains true as long as @Math{@F{iteration <= numIterations}}.");
 
-    addProduct<Scheduled>("Scheduled", this,
+    AddProduct(Scheduled,
     "A @F Scheduled model produces canned data which are derived from a list of time value pairs, e.g., "
     "@F {((10.2 14.6) (45.1 32.3) (57.1 24.43))}. Values are interpolated from the current time "
     "which is taken from the nearest model called @F {time}. "
     "At times outside the range covered by the list (outside [10.2;57.1], in this case) values are extrapolated "
     "(to 14.6 or 24.43, in this case).");
 
-    addProduct<SensitivityAnalysis>("SensitivityAnalysis", this, "Integrator class. Description pending");
+    AddProduct(SensitivityAnalysis,
+    "Integrator class. Description pending");
 
-    addProduct<Stage>("Stage", this,
+    AddProduct(Stage,
     "The @F Stage model implements a distributed delay (@Cite{$label{Manetsch 1976}manetsch, $label{Vansickle 1977}vansickle}). "
     "The implementation follows the original FORTRAN code of @Cite{$label{Abkin \"&\" Wolf (1976)}abkin}. The two parameters @F "
     "duration and @F k determine the average and variance of stage duration with variance equal to "
     "@Math{@F duration sup 2 slash @F k sup 2}. The time scale used by the @F Stage model is "
     "determined by the nearest model called @F {time}.");
 
-    addProduct<StageAndPhase>("StageAndPhase", this,
+    AddProduct(StageAndPhase,
     "The @F StageAndPhase model simulates a population undergoing two processes at the same, for instance"
     "physiological development (ageing) and incubation (after being infected). "
     "The discern the two, the first is called a stage and the second, a phase. Phase change is characterised"
     "by the parameters @F phaseL and @F phaseK with the same meaning as @F L and @F k in the @F Stage class.");
 
-    addProduct<StageDemand>("StageDemand", this,
+    AddProduct(StageDemand,
     "This model calculates the growth demand of the stage, identified by @F {stage}, which must be of type @F {UniSim::Stage}."
     "The stage's @growthDemand method is used for the calculation.");
 
-    addProduct<Steps>("Steps", this, "Integrator class. Description pending");
+    AddProduct(Steps,
+    "Integrator class. Description pending");
 
-    addProduct<Sum>("Sum", this,
-        "Calculates sum of variables supplied as a list of references. The variables "
-        "must all be of type double.");
+    AddProduct(Sum,
+    "Calculates sum of variables supplied as a list of references. The variables "
+    "must all be of type double.");
 
-    addProduct<OutputTable>("Table", this, "Output class. Description pending");
+    addProduct<OutputTable>("Table", this,
+    "Output class. Description pending");
 
-    addProduct<TimeLimited>("TimeLimited", this, "Integrator class. Description pending");
+    AddProduct(TimeLimited,
+    "Integrator class. Description pending");
 
-    addProduct<TriggerByDate>("TriggerByDate", this,
+    AddProduct(TriggerByDate,
     "The  @F TriggerByDate model can be used by other models to trigger changes in their behaviour.");
 
-    addProduct<Weather>("Weather", this,
+    AddProduct(Weather,
     "This @F Weather model simply supplies a daily reading from a @F Records child model. If the records file contains a column named @F Tavg "
     "then that colum is used. Otherwise, if columns named @F Tmin and @F Tmax are present "
     "then @F Tavg is calculated as the average of those");

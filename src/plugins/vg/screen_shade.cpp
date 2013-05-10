@@ -13,12 +13,12 @@ namespace vg {
 ScreenShade::ScreenShade(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("globRad", &globRad, 0., this, "Global radiation (W/m2)");
-    new Parameter<double>("Tindoors", &Tindoors, 27., this, "Indoors temperature (oC)");
-    new Parameter<double>("spLight", &spLight, 10., this, "Global radiation threshold for using shade screen (W/m2)");
-    new Parameter<double>("spTemperature", &spTemperature, 30., this, "Temperature set point for ventilation (oC)");
-    new Parameter<double>("spScreenEnergy", &spScreenEnergy, 0., this, "Set point for energy screen. Set to zero if no interaction with shade screen");
-    new Variable<double>("sp", &sp, this,"Set point for energy screen [0;1]");
+    addParameterRef<double>(Name(globRad), "outdoors/records[globRad]");
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addParameter<double>(Name(spLight), 10., "Global radiation threshold for using shade screen (W/m2)");
+    addParameterRef<double>(Name(spTemperature), "screen/shade/spVentilation[spTemperature]");
+    addParameterRef<double>(Name(spScreenEnergy), "screen/energy[sp]");
+    addVariable<double>(Name(sp),"Set point for energy screen [0;1]");
 }
 
 void ScreenShade::initialize() {

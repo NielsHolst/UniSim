@@ -14,9 +14,9 @@ namespace vg {
 ScreenTemperature::ScreenTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("Tindoors", &Tindoors, 27., this, "Indoors temperature");
-    new Parameter<double>("Tcover", &Tcover, 10., this, "Cover temperature");
-    new Variable<double>("temperature", &temperature, this, "Screen temperature (oC)");
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addParameterRef<double>(Name(Tcover), "cover[temperature]");
+    addVariable<double>(Name(temperature), "Screen temperature (oC)");
 }
 
 void ScreenTemperature::reset() {

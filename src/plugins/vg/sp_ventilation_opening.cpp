@@ -18,15 +18,15 @@ SpVentilationOpening::SpVentilationOpening(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
 
-    new Parameter<double>("alphaTemperature", &alphaTemperature, 0., this, "Alpha determined by temperature [0;100]");
-    new Parameter<double>("alphaHumidity", &alphaHumidity, 0., this, "Alpha determined by humidity [0;100]");
-    new Parameter<double>("alphaMax", &alphaMax, 100., this, "Max opening allowed [0;100]");
-    new Parameter<double>("Tindoors", &Tindoors, 25., this, "Indoors temperature (oC))");
-    new Parameter<double>("Toutdoors", &Toutdoors, 20., this, "Outdoors temperature (oC))");
-    new Parameter<double>("spTemperature", &spTemperature, 23., this, "Setpoint temperature for ventilation opening (oC))");
-    new Parameter<double>("windspeed", &windspeed, 0., this, "Setpoint temperature for ventilation opening (oC))");
-    new Variable<double>("alphaLeeSide", &alphaLeeSide, this, "Ventilation opening on the lee side [0;100]");
-    new Variable<double>("alphaWindSide", &alphaWindSide, this, "Ventilation opening on the wind side [0;100]");
+    addParameterRef<double>(Name(alphaTemperature), "ventilation/spOpening/alphaTemperature[response]");
+    addParameterRef<double>(Name(alphaHumidity), "ventilation/spOpening/alphaHumidity[response]");
+    addParameterRef<double>(Name(alphaMax), "ventilation/maxOpening[value]");
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addParameterRef<double>(Name(Toutdoors), "outdoors/records[Tair]");
+    addParameterRef<double>(Name(spTemperature), "ventilation/alphaTemperature/spTemperature[sp]");
+    addParameterRef<double>(Name(windspeed), "outdoors/records[windspeed]");
+    addVariable<double>(Name(alphaLeeSide), "Ventilation opening on the lee side [0;100]");
+    addVariable<double>(Name(alphaWindSide), "Ventilation opening on the wind side [0;100]");
 }
 
 void SpVentilationOpening::reset() {

@@ -15,13 +15,13 @@ namespace vg {
 ProportionalControl::ProportionalControl(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("actualValue", &actualValue, 20., this, "");
-    new Parameter<double>("targetValue", &targetValue, 20., this, "");
-    new Parameter<double>("gapMultiplier", &gapMultiplier, 1., this, "");
-    new Parameter<double>("pBand", &pBand, 5., this, "");
-    new Parameter<double>("maxResponse", &maxResponse, 100., this, "");
-    new Parameter<QString>("targetType", &targetTypeString, QString("ceiling"), this, "");
-    new Variable<double>("response", &response, this, "");
+    addParameter<double>(Name(actualValue), 20., "");
+    addParameter<double>(Name(targetValue), 20., "");
+    addParameter<double>(Name(gapMultiplier), 1., "");
+    addParameter<double>(Name(pBand), 5., "");
+    addParameter<double>(Name(maxResponse), 100., "");
+    addParameter<QString>("targetType", &targetTypeString, QString("ceiling"), "");
+    addVariable<double>(Name(response), "");
 }
 
 void ProportionalControl::reset() {

@@ -13,14 +13,14 @@ namespace vg {
 ScreenAirTransmission::ScreenAirTransmission(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("trScreenEnergy", &trScreenEnergy, 0.29, this, "Air transmission of energy screen [0;1]");
-    new Parameter<double>("trScreenShade", &trScreenShade, 0.6, this, "Air transmission of shade screen [0;1]");
-    new Parameter<double>("trScreenBlackout", &trScreenBlackout, 0, this, "Air transmission of blackout screen [0;1]");
-    new Parameter<double>("spScreenEnergy", &spScreenEnergy, 0, this, "Set point for energy screen [0;1]");
-    new Parameter<double>("spScreenShade", &spScreenShade, 0, this, "Set point for shade screen [0;1]");
-    new Parameter<double>("spScreenBlackout", &spScreenBlackout, 0, this, "Set point for blackout screen [0;1]");
+    addParameterRef<double>(Name(spScreenEnergy), "screen/energy[sp]");
+    addParameterRef<double>(Name(spScreenShade), "screen/shade[sp]");
+    addParameterRef<double>(Name(spScreenBlackout), "screen/blackout[sp]");
+    addParameter<double>(Name(trScreenEnergy), 0.29, "Air transmission of energy screen [0;1]");
+    addParameter<double>(Name(trScreenShade), 0.6, "Air transmission of shade screen [0;1]");
+    addParameter<double>(Name(trScreenBlackout), 0, "Air transmission of blackout screen [0;1]");
 
-    new Variable<double>("transmission", &transmission, this, "Transmission of air through screen [0;1]");
+    addVariable<double>(Name(transmission), "Transmission of air through screen [0;1]");
 }
 
 void ScreenAirTransmission::reset() {

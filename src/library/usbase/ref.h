@@ -17,6 +17,7 @@ class Ref
 {
 public: 
     Ref(NamedObject *parameterParent, ParameterBase *parameter, QString reference);
+    static void clear();
     static void resolve();
 private:
     NamedObject *parameterParent;
@@ -24,7 +25,8 @@ private:
     QString reference;
 
     static QList<Ref*> all;
-    static void clear();
+    QString notFoundMessage();
+    QStringList lookupVariables(NamedObject *parent);
 };
 
 

@@ -13,8 +13,8 @@ namespace vg {
 SpHumidityBase::SpHumidityBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Variable<double>("spRh", &spRh, this, "Setpoint for relative humidity (%)");
-    new Variable<double>("spDeltaX", &spDeltaX, this, "Setpoint for delta x (%)");
+    addVariable<double>(Name(spRh), "Setpoint for relative humidity (%)");
+    addVariable<double>(Name(spDeltaX), "Setpoint for delta x (%)");
 }
 
 

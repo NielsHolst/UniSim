@@ -14,12 +14,12 @@ namespace vg {
 Sky::Sky(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("Tair", &Tair, 27., this, "Air temperature (oC)");
-    new Parameter<double>("rh", &rh, 80., this, "Relative humidity (%)");
-    new Parameter<double>("slope", &slope, 0.00577, this, "Emissivity as a linear function of Tdew");
-    new Parameter<double>("intercept", &intercept, 0.735, this, "Emissivity as a linear function of Tdew");
-    new Variable<double>("temperature", &temperature, this, "Sky temperature");
-    new Variable<double>("emissivity", &emissivity, this, "Sky emissivity");
+    addParameterRef<double>(Name(Tair), "indoors/temperature[air]");
+    addParameterRef<double>(Name(rh), "indoors/humidity[rh]");
+    addParameter<double>(Name(slope), 0.00577, "Emissivity as a linear function of Tdew");
+    addParameter<double>(Name(intercept), 0.735, "Emissivity as a linear function of Tdew");
+    addVariable<double>(Name(temperature), "Sky temperature");
+    addVariable<double>(Name(emissivity), "Sky emissivity");
 }
 
 void Sky::initialize() {

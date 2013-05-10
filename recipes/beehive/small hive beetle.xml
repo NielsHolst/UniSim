@@ -14,7 +14,7 @@
 	</model>
 
 	<model name="resource" type="beehive::Resource">
-		<parameter name="initial" value="100000"/>
+		<parameter name="initial" value="10000"/>
 		<parameter name="decrement" ref="larva/funcresp[totalSupply]"/>
 	</model>
 
@@ -34,12 +34,19 @@
 		</model>
 
 		<model name="larva" type="beehive::LifeStage">
+			<parameter name="outputFileName" value="larva_size_dist.txt"/>		
 			<model name="time" type="UniSim::Days"/>
 			<model name="demand" type="UniSim::StageDemand">
 				<parameter name="stage" value="mass"/>		
 			</model>
 			<model name="funcResp" type="FunctionalResponseGB">
-				<parameter name="apparancy" value="0.5"/>
+				<model name="apparency" type="UniSim::AsymptoticDecreasing">
+					<parameter name="x" ref="larva/mass[value]"/>		
+					<parameter name="min" value="0"/>		
+					<parameter name="max" value="1"/>		
+					<parameter name="slope" value="0.01"/>		
+				</model>
+				<parameter name="apparancy" ref="apparency[value]"/>
 				<parameter name="resourceDensity" ref="resource[value]"/>
 				<parameter name="demand" ref="demand[value]"/>
 				<parameter name="egestionRatio" value="0.45" 
@@ -123,9 +130,14 @@
 		<trace label="*" value="SHB/*[size]"/>
 	</output>
 	<output type="plot">
-		<parameter name="title" value ="Resource"/>
+		<parameter name="title" value ="Resource amount"/>
 		<trace label="Day" value="calendar[totalTime]"/>
 		<trace label="Amount" value="resource[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Resource apparency"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Amount" value="apparency[value]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Larva S/D-ratio"/>
@@ -148,17 +160,18 @@
 	
 	<output type="table">
 		<parameter name="fileName" value ="shb.txt"/>
-		<trace label="Day" value="calendar[totalTime]"/>
-		<trace label="larvaTotalMass" value="larva/mass[outflowTotal]"/>
-		<trace label="larvaTotalSupply" value="larva/funcResp[totalSupply]"/>
-		<trace label="resource" value="funcresp[resourceDensity]"/>
-		<trace label="demandBG" value="funcresp[demand]"/>
-		<trace label="demandL" value="larva/mass[demand]"/>
-		<trace label="supply" value="funcresp[supply]"/>
-		<trace label="sdratio" value="funcresp[sdratio]"/>
-		<trace label="growth" value="larva/mass[growthIncrement]"/>
-		<trace label="latestInflow" value="larva/mass[latestInflow]"/>
-		<trace label="appliedGrowthRate" value="larva/mass[appliedGrowthRate]"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="larvaTotalMass" ref="larva/mass[outflowTotal]"/>
+		<trace label="larvaTotalSupply" ref="larva/funcResp[totalSupply]"/>
+		<trace label="resource" ref="funcresp[resourceDensity]"/>
+		<trace label="demandBG" ref="funcresp[demand]"/>
+		<trace label="demandL" ref="larva/mass[demand]"/>
+		<trace label="supply" ref="funcresp[supply]"/>
+		<trace label="sdratio" ref="funcresp[sdratio]"/>
+		<trace label="growth" ref="larva/mass[growthIncrement]"/>
+		<trace label="latestInflow" ref="larva/mass[latestInflow]"/>
+		<trace label="appliedGrowthRate" ref="larva/mass[appliedGrowthRate]"/>
+		<trace label="appliedGrowthRate" ref="larva/mass[appliedGrowthRate]"/>
 	</output>
 	
 </simulation>

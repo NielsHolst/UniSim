@@ -13,7 +13,7 @@ namespace vg {
 ScreenEnergyLight::ScreenEnergyLight(Identifier name, QObject *parent)
     : ScreenEnergyBase(name, parent)
 {
-    new Parameter<double>("globRad", &globRad, 0., this, "Global radiation (W/m2)");
+    addParameterRef<double>(Name(globRad), "outdoors/records[globRad]");
 }
 
 bool ScreenEnergyLight::useScreen() {

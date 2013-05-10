@@ -4,26 +4,24 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SP_CO2_H
-#define VG_SP_CO2_H
+#ifndef VG_SP_VENTILATION_OPENING_MAX_H
+#define VG_SP_VENTILATION_OPENING_MAX_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class SpCo2 : public UniSim::Model
+class SpVentilationOpeningMax : public UniSim::Model
 {
 public:
-    SpCo2(UniSim::Identifier name, QObject *parent);
+    SpVentilationOpeningMax(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
-
 private:
     // Parameters
-    double globRad, alphaLeeSide, alphaWindSide;
-
+    double globRad, day, night, thresholdRad;
     // Variables
-    double sp;
+    double value;
 };
 } //namespace
 

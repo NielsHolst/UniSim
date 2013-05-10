@@ -16,8 +16,8 @@ GreenhouseTransmission::GreenhouseTransmission(Identifier name, QObject *parent)
 {
     addParameterRef<double>(Name(sinb), "calendar[sinb]");
     addParameter<QString>("glassType", &glassTypeStr, QString("Single"), "Glass type: Single, Double or Hortiplus");
-    addParameter<double>(Name(diffuseDiffusion), 0.79, "Transmission of diffuse light through greenhouse construction [0;1]");
-    addVariable<double>(Name(directDiffusion), "Transmission of direct light through greenhouse construction [0;1]");
+    addParameter<double>(Name(diffuse), 0.79, "Transmission of diffuse light through greenhouse construction [0;1]");
+    addVariable<double>(Name(direct), "Transmission of direct light through greenhouse construction [0;1]");
 }
 
 void GreenhouseTransmission::initialize() {
@@ -61,8 +61,8 @@ void GreenhouseTransmission::decodeGlassType() {
 void GreenhouseTransmission::update() {
     double angle = asin(sinb)*180./PI;
     int i = int(glassType);
-    directDiffusion = a[i]/(1. + pow(angle/b[i], c[i]));
-    Q_ASSERT(directDiffusion>=0. && directDiffusion<=1.);
+    direct = a[i]/(1. + pow(angle/b[i], c[i]));
+    Q_ASSERT(direct>=0. && direct<=1.);
 }
 
 

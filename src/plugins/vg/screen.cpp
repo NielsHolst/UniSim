@@ -13,9 +13,9 @@ namespace vg {
 Screen::Screen(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("spMaxOpening", &spMaxOpening, 0.95, this,"");
-    new Parameter<bool>("spHumidityPassed", &spHumidityPassed, false, this, "Is either humidity set point passed?");
-    new Parameter<int>("type", &type, 1, this,
+    addParameter<double>(Name(spMaxOpening), 0.95,"");
+    addParameter<bool>(Name(spHumidityPassed), false, "Is either humidity set point passed?");
+    addParameter<int>(Name(type), 1,
         "Screen type installed:\n"
         "0- No screens\n"
         "1- Energy screen roof\n"

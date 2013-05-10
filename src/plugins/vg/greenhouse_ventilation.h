@@ -22,8 +22,8 @@ private:
     // Parameters
     double greenhouseHeight, windowLength, roofRatio, sideRatio,
         alphaLeeSide, alphaWindSide, alphaVentilationMax, leakageVentilation, fractionWindows,
-        Tindoors, Toutdoors, windspeed, screenAirTransmission,
-        timeStep;
+        Tindoors, Toutdoors, windspeed, screenAirTransmission;
+    int timeStep;
     char timeUnit;
 
     // Variables

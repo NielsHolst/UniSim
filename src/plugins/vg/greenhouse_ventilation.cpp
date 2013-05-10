@@ -16,12 +16,12 @@ namespace vg {
 GreenhouseVentilation::GreenhouseVentilation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(timeStep), "calendar[timeStep]");
+    addParameterRef<int>(Name(timeStep), "calendar[timeStep]");
     addParameterRef<char>(Name(timeUnit), "calendar[timeUnit]");
     addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
     addParameterRef<double>(Name(Toutdoors), "outdoors/records[Tair]");
     addParameterRef<double>(Name(windspeed), "outdoors/records[windspeed]");
-    addParameterRef<double>(Name(greenhouseHeight), "greenhouse[greenHouseHeight]");
+    addParameterRef<double>(Name(greenhouseHeight), "greenhouse[height]");
     addParameterRef<double>(Name(roofRatio), "greenhouse[roofRatio]");
     addParameterRef<double>(Name(sideRatio), "greenhouse[sideRatio]");
     addParameterRef<double>(Name(windowLength), "greenhouse[windowLength]");
@@ -73,13 +73,7 @@ void GreenhouseVentilation::update() {
 }
 
 double GreenhouseVentilation::timeStepSecs() const {
-    switch (timeUnit) {
-        case 's': return timeStep;
-        case 'm': return 60*timeStep;
-        case 'h': return 60*60*timeStep;
-    }
-    QString msg = "Time unit of time step must be 's', 'h' or 'm', not '%1'";
-    throw Exception(msg.arg(timeUnit));
+    return convertTime(timeStep, timeUnit, 's');
 }
 
 

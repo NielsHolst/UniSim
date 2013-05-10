@@ -17,25 +17,25 @@ namespace vg {
 Pipe::Pipe(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("timeStep", &timeStep, 5., this, "Time step of simulation in @F timeUnit units");
-    new Parameter<char>("timeUnit", &timeUnit, 'm', this, "Unit of time step 's', 'm' or 'h'");
-    new Parameter<double>("Tindoors", &Tindoors, 27., this, "Indoors temperature (oC)");
-    new Parameter<double>("Tunheated", &Tunheated, 20., this, "Greenhouse temperature if not heated (oC)");
-    new Parameter<double>("heatingDemand", &heatingDemand, 0., this, "Current energy demand for heating (W/m2");
-    new Parameter<double>("spHeating", &spHeating, 0., this, "Setpoint for heating (oC)");
-    new Parameter<double>("otherPipesHeatTransfer", &otherPipesHeatTransfer, 0., this, "Heat transfer from other pipes (W/m2)");
-    new Parameter<bool>("isEnergyScreenOpening", &isEnergyScreenOpening, false, this, "Is energy screen opening?");
-    new Parameter<QString>("pipeType", &pipeType, QString("s51"), this, "Pipe type: " + pipeTypes());
-    new Parameter<double>("pipeLength", &pipeLength, 50., this, "Pipe temperature (oC)");
-    new Parameter<double>("Tmax", &Tmax, 70., this, "Max pipe temperature (oC)");
-    new Parameter<double>("heatParameter", &heatParameter, 1.42, this, "Heat parameter (?)");
-    new Parameter<double>("heatTransferParameter", &heatTransferParameter, 0.50, this, "Heat transfer parameter (?)");
-    new Parameter<double>("pidK", &pidK, 25., this, "PID control parameter (-)");
-    new Parameter<double>("pidRho", &pidRho, 0.003, this, "PID control parameter (s)");
+    addParameterRef<int>(Name(timeStep), "calendar[timeStep]");
+    addParameterRef<char>(Name(timeUnit), "calendar[timeUnit]");
+    addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
+    addParameterRef<double>(Name(Tunheated), "greenhouse/temperature/energy[Tunheated]");
+    addParameterRef<double>(Name(heatingDemand), "greenhouse/temperature/energy[heatingDemand]");
+    addParameterRef<double>(Name(spHeating), "temperature/spHeating[sp]");
+    addParameterRef<bool>(Name(isEnergyScreenOpening), "screen/energy[isOpening]");
+    addParameter<double>(Name(otherPipesHeatTransfer), 0., "Heat transfer from other pipes (W/m2)");
+    addParameter<QString>(Name(pipeType), QString("s51"), "Pipe type: " + pipeTypes());
+    addParameter<double>(Name(pipeLength), 50., "Pipe temperature (oC)");
+    addParameter<double>(Name(Tmax), 70., "Max pipe temperature (oC)");
+    addParameter<double>(Name(heatParameter), 1.42, "Heat parameter (?)");
+    addParameter<double>(Name(heatTransferParameter), 0.50, "Heat transfer parameter (?)");
+    addParameter<double>(Name(pidK), 25., "PID control parameter (-)");
+    addParameter<double>(Name(pidRho), 0.003, "PID control parameter (s)");
 
-    new Variable<double>("temperature", &temperature, this, "Pipe temperature (oC)");
-    new Variable<double>("heatTransfer", &heatTransfer, this, "Heat transfer (W/m2)");
-    new Variable<double>("heatEnergy", &heatEnergy, this, "Energy used for heating (J/m2)");
+    addVariable<double>(Name(temperature), "Pipe temperature (oC)");
+    addVariable<double>(Name(heatTransfer), "Heat transfer (W/m2)");
+    addVariable<double>(Name(heatEnergy), "Energy used for heating (J/m2)");
 
     par["p25"] = Par(0.005, 0.71, -1.8);
     par["s26"] = Par(0.0054, 0.9327, -2.1607);

@@ -13,11 +13,11 @@ namespace vg {
 SpHumidityRegular::SpHumidityRegular(Identifier name, QObject *parent)
     : SpHumidityBase(name, parent)
 {
-    new Parameter<double>("globRad", &globRad, 0., this, "Global radiation (W/m2)");
-    new Parameter<double>("spDaylight", &spDaylight, 10., this, "Global radiation threshold for daylight (W/m2)");
-    new Parameter<double>("spHumidityDay", &spHumidityDay, 80., this, "Set point for relative humidity during the day (%)");
-    new Parameter<double>("spHumidityNight", &spHumidityNight, 90., this, "Set point for relative humidity during the night (%)");
-    new Parameter<double>("spDeltaXBasis", &spDeltaXBasis, 1., this, "Set point for delta x (g/m3)");
+    addParameterRef<double>(Name(globRad), "outdoors/records[globRad]");
+    addParameter<double>(Name(spDaylight), 10., "Global radiation threshold for daylight (W/m2)");
+    addParameter<double>(Name(spHumidityDay), 80., "Set point for relative humidity during the day (%)");
+    addParameter<double>(Name(spHumidityNight), 90., "Set point for relative humidity during the night (%)");
+    addParameter<double>(Name(spDeltaXBasis), 1., "Set point for delta x (g/m3)");
 }
 
 void SpHumidityRegular::reset() {

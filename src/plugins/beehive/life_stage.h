@@ -5,6 +5,7 @@
 */
 #ifndef BEEHIVE_LIFESTAGE
 #define BEEHIVE_LIFESTAGE
+#include <QFile>
 #include <QObject>
 #include <usbase/model.h>
 
@@ -19,16 +20,24 @@ public:
     void initialize();
 	void reset();
 	void update();
+    void cleanup();
 
 private:
 	// parameters
-    double rate;
+    QString outputFileName;
 
-	// pull variables
+    // variables
     double size;
 
     // models
     UniSim::Model *number, *mass, *growth;
+
+    // data
+    QFile f;
+
+    // methods
+    bool hasOutput();
+    void writeSizeDistribution();
 };
 
 } //namespace

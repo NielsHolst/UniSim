@@ -13,10 +13,10 @@ namespace vg {
 ScreenEnergyBase::ScreenEnergyBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("spLight", &spLight, 10., this,"Global radiation threshold for using energy screen (W/m2)");
-    new Parameter<double>("K", &K, 5.2, this,"K-value (W/m2/K)");
-    new Variable<double>("sp", &sp, this,"Set point for energy screen [0;1]");
-    new Variable<bool>("isIncreasing", &isIncreasing, this,"Is the set point increasing?");
+    addParameter<double>(Name(spLight), 10.,"Global radiation threshold for using energy screen (W/m2)");
+    addParameter<double>(Name(K), 5.2,"K-value (W/m2/K)");
+    addVariable<double>(Name(sp),"Set point for energy screen [0;1]");
+    addVariable<bool>(Name(isIncreasing),"Is the set point increasing?");
 }
 
 void ScreenEnergyBase::initialize() {

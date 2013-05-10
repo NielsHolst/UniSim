@@ -106,6 +106,7 @@ Simulation* SimulationMaker::parse(QString filePath)
 {
     QString simName;
 
+    Ref::clear();
     traceVariableParam.clear();
     clearTables();
 

@@ -12,7 +12,9 @@ include ($${US_GSL}/gsl.pri)
 include ($${US_QWT}/qwt.pri)
 
 HEADERS += \
-    anonymous_model.h \
+    anonymous.h \
+    asymptotic_decreasing.h \
+    asymptotic_increasing.h \
     calendar.h \
     day_degrees.h \
     days.h \
@@ -61,7 +63,9 @@ HEADERS += \
     weather.h
 
 SOURCES += \
-    anonymous_model.cpp \
+    anonymous.cpp \
+    asymptotic_decreasing.cpp \
+    asymptotic_increasing.cpp \
     calendar.cpp \
     day_degrees.cpp \
     days.cpp \

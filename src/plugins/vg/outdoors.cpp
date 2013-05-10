@@ -13,9 +13,8 @@ namespace vg {
 Outdoors::Outdoors(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("CO2", &co2, 350., this, "CO2 concentration");
-
-    new Variable<double>("dirRad", &dirRad, this, "desc");
+    addParameter<double>(Name(co2), 350., "CO2 concentration");
+    addVariable<double>(Name(dirRad), "desc");
 }
 
 void Outdoors::initialize() {

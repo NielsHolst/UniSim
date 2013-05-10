@@ -13,10 +13,10 @@ namespace vg {
 SpVentilationTemperature::SpVentilationTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("spHeating", &spHeating, 24., this, "Set point for heating (oC)");
-    new Parameter<double>("heatingIncrement", &heatingIncrement, 1., this, "The basic ventilation set point is incremented this much over the heating set point (oC)");
-    new Parameter<double>("humidityDecrement", &humidityDecrement, 1., this, "The basic ventilation set point is incremented this much over the heating set point (oC)");
-    new Variable<double>("sp", &sp, this, "Set point for ventilation (oC)");
+    addParameterRef<double>(Name(spHeating), "temperature/spHeating[sp]");
+    addParameter<double>(Name(heatingIncrement), 1., "The basic ventilation set point is incremented this much over the heating set point (oC)");
+    addParameterRef<double>(Name(humidityDecrement), "spOpening/spTemperature/humidityControl[response]");
+    addVariable<double>(Name(sp), "Set point for ventilation (oC)");
 }
 
 void SpVentilationTemperature::update() {

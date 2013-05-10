@@ -22,9 +22,10 @@ public:
 private:
     // Parameters
     QString pipeType;
-    double timeStep, Tindoors, Tunheated, heatingDemand, spHeating, otherPipesHeatTransfer,
+    double Tindoors, Tunheated, heatingDemand, spHeating, otherPipesHeatTransfer,
         pipeLength, Tmax, heatParameter, heatTransferParameter, pidK, pidRho;
     bool isEnergyScreenOpening;
+    int timeStep;
     char timeUnit;
 
     // Variables

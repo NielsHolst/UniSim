@@ -8,6 +8,8 @@ CONFIG += plugin
 include ($${US_BASE}/base.pri)
 
 HEADERS += \
+    ../unisim/distributed_delay_base.h \
+    ../unisim/stage_base.h \
     beehive_factory.h \
     fecundity.h \
     growth.h \
@@ -18,6 +20,8 @@ HEADERS += \
     small_hive_beetle.h
 
 SOURCES += \
+    ../unisim/distributed_delay_base.cpp \
+    ../unisim/stage_base.cpp \
     beehive_factory.cpp \
     fecundity.cpp \
     growth.cpp \

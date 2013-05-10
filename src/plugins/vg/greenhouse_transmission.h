@@ -21,13 +21,13 @@ public:
 
 private:
     // Parameters
-    double sinb, diffuseDiffusion;
+    double sinb, diffuse;
     QString glassTypeStr;
     typedef enum{Single, Double, Hortiplus} GlassType;
     GlassType glassType;
 
     // Variables
-    double directDiffusion;
+    double direct;
 
     // Data
     double a[3], b[3], c[3];

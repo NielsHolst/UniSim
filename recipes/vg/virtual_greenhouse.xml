@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<?xml version="1.0" encoding="ISO-8859-1"?>
 <simulation name="Virtual Greenhouse">
     <integrator name="steps" type="UniSim::Steps">
 		<parameter name="maxSteps" value="2880"/>
@@ -25,13 +24,15 @@
 		<parameter name="latcov" value="35"/>
 		<parameter name="Kcover" value="7.9"/>
 
+		<model name="transmission" type="vg::GreenhouseTransmission"/>
+		
 		<model name="ventilation" type="vg::GreenhouseVentilation">
 			<parameter name="timeStep" ref="calendar[timeStep]"/>
 			<parameter name="timeUnit" ref="calendar[timeUnit]"/>
 			<parameter name="Tindoors" ref="indoors/temperature[air]"/>
 			<parameter name="Toutdoors" ref="outdoors/records[Tair]"/>
 			<parameter name="windspeed" ref="outdoors/records[windspeed]"/>
-			<parameter name="greenHouseHeight" ref="greenhouse[greenHouseHeight]"/>
+			<parameter name="greenHouseHeight" ref="greenhouse[height]"/>
 			<parameter name="roofRatio" ref="greenhouse[roofRatio]"/>
 			<parameter name="sideRatio" ref="greenhouse[sideRatio]"/>
 			<parameter name="windowLength" ref="greenhouse[windowLength]"/>
@@ -76,10 +77,12 @@
 				<parameter name="spScreenEnergy" ref="screen/energy[sp]"/>
 				<parameter name="spLight" value="10"/>
 				<parameter name="spTemperature" ref="screen/shade/spVentilation[spTemperature]"/>
-				<model name="spVentilation" type="vg::SpVentilationDeltaX">
+<!--				
+				<model name="spVentilation" type="vg::SpHumidityRegular">
 					<parameter name="spDeltaX" value="1"/>
 					<parameter name="moistureDeficit" ref="indoors/humidity[moistureDeficit]"/>
 				</model>
+				-->
 			</model>
 
 			<!--
@@ -121,12 +124,9 @@
 		
 		<model name="ventilation">
 
-			<model name="maxOpening" type="vg::MaxVentilationOpening">
-				<parameter name="daylight" value="10"/>
-				<parameter name="globRad" ref="outdoors/records[globRad]"/>
-			</model>
+			<model name="maxOpening" type="vg::SpVentilationOpeningMax"/>
 
-			<model name="spOpening" type="vg::spVentilationOpening">
+			<model name="spOpening" type="vg::SpVentilationOpening">
 				<parameter name="alphaHumidity" ref="ventilation/spOpening/alphaHumidity[response]"/>
 				<parameter name="alphaTemperature" ref="ventilation/spOpening/alphaTemperature[response]"/>
 				<parameter name="alphaMax" ref="ventilation/maxOpening[value]"/>
@@ -275,7 +275,7 @@
 			<model name="boundaryLayerResistance" type="vg::BoundaryLayerResistance">
 				<parameter name="windspeed" ref="outdoors/records[windspeed]"/>
 				<parameter name="greenhouseVentilation" ref="greenhouse/ventilation[ventilation]"/>
-			<model>
+			</model>
 		</model>
 	</model>
 	

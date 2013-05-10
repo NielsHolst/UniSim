@@ -13,11 +13,11 @@ namespace vg {
 StomatalResistance::StomatalResistance(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("rh", &rh, 80., this, "Relative humidity of the air [0;100]");
-    new Parameter<double>("co2", &co2, 500., this, "Air CO2 [ppm]");
-    new Parameter<double>("Pgc", &Pgc, 0., this, "Photosynthetic rate (g CO2/m2/h)");
-    new Parameter<double>("rbH2O", &rbH2O, 0., this, "Boundary layer resistance against water vapour");
-    new Variable<double>("riH2O", &riH2O, this, "Stomatal resistance against water vapour (s/m)");
+    addParameterRef<double>(Name(rh), "indoors/humidity[rh]");
+    addParameter<double>(Name(co2), 500., "Air CO2 [ppm]");
+    addParameter<double>(Name(Pgc), 0., "Photosynthetic rate (g CO2/m2/h)");
+    addParameterRef<double>(Name(rbH2O), "boundaryLayerResistance[rbH2O]");
+    addVariable<double>(Name(riH2O), "Stomatal resistance against water vapour (s/m)");
 }
 
 void StomatalResistance::reset() {

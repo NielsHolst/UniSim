@@ -14,12 +14,12 @@ namespace vg {
 SpHeating::SpHeating(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("globRad", &globRad, 0., this, "Global radiation (W/m2)");
-    new Parameter<double>("spGlobRad", &spGlobRad, 300., this, "Threshold for global radiation dependency (W/m2)");
-    new Parameter<double>("spHeatingBasis", &spHeatingBasis, 20., this, "Set point for heating (oC)");
-    new Parameter<double>("spHeatingMax", &spHeatingMax, 24., this, "Set point for max heating temperature (oC)");
-    new Parameter<double>("humidityIncrement", &humidityIncrement, 0., this, "Set point increment due to humidity (oC)");
-    new Variable<double>("sp", &sp, this, "Setpoint for heating (oC)");
+    addParameterRef<double>(Name(globRad), "outdoors/records[globRad]");
+    addParameterRef<double>(Name(humidityIncrement), "humidityControl[response]");
+    addParameter<double>(Name(spGlobRad), 300., "Threshold for global radiation dependency (W/m2)");
+    addParameter<double>(Name(spHeatingBasis), 20., "Set point for heating (oC)");
+    addParameter<double>(Name(spHeatingMax), 24., "Set point for max heating temperature (oC)");
+    addVariable<double>(Name(sp), "Setpoint for heating (oC)");
 }
 
 void SpHeating::reset() {

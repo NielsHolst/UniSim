@@ -37,13 +37,12 @@ private:
     QString dotCommand();
     void writeDotFile();
     void writeOutputFile(OutputFormat format);
-    void writeModel(QFile *f, UniSim::NamedObject *parent, UniSim::NamedObject *child, int parentNumber);
+    void writeModel(QFile *f, UniSim::NamedObject *parent, UniSim::NamedObject *child);
 	
 	// Data
     UniSim::Simulation *simulation;
     bool dotFileOk;
     QMap<OutputFormat, QString> dotOption, fileType;
-    int nodeNumber;
 };
 //@}
 #endif

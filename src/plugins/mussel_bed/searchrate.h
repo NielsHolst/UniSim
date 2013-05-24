@@ -3,29 +3,34 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef MUSSEL_BED_MUSSEL_H
-#define MUSSEL_BED_MUSSEL_H
+
+#ifndef MUSSEL_BED_SEARCHRATE_H
+#define MUSSEL_BED_SEARCHRATE_H
 
 #include <usbase/model.h>
 
 namespace mussel_bed {
 
-class Mussel : public UniSim::Model
+class searchrate : public UniSim::Model
 {
 public:
-    Mussel(UniSim::Identifier name, QObject *parent);
+    searchrate(UniSim::Identifier name, QObject *parent);
     void reset();
+    void initialize();
     void update();
 
 private:
     // Parameters
-    double initialDensity, initialN, LossB, LossN, growthRate;
+    double maxSR;
 
     // Variables
-    double density, N;
+    double value;
+
+    // Links
+    QList<Model*> scales;
 };
 
 } //namespace
 
-
 #endif
+

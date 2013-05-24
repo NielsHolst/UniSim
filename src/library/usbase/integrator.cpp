@@ -36,7 +36,9 @@ void Integrator::amend() {
 }
 
 void Integrator::initialize() {
-    runIterator = peekOneChild<Model*>("RunIterator");
+    runIterator = peekOneChild<Model*>("runIterator");
+    if (!runIterator)
+        runIterator = peekOneChild<Model*>("iterator");
     runNumber = 0;
     reporting = cancelled = false;
 }

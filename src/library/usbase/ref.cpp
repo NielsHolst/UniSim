@@ -17,7 +17,8 @@ namespace UniSim{
 QList<Ref*> Ref::all;
 
 Ref::Ref(NamedObject *_parameterParent, ParameterBase *_parameter, QString _reference)
-    : parameterParent(_parameterParent), parameter(_parameter), reference(_reference)
+    : parameterParent(_parameterParent), parameter(_parameter), reference(_reference),
+      source(0)
 {
     all << this;
 }
@@ -56,29 +57,27 @@ namespace {
 void Ref::resolve() {
     for (int i = 0; i < all.size(); ++i) {
         Ref *ref = all[i];
-        const VariableBase *source;
         try {
-            source = ref->parameterParent->seekOne<NamedObject*, VariableBase*>(ref->reference);
+            ref->source = ref->parameterParent->seekOne<NamedObject*, VariableBase*>(ref->reference);
         }
         catch (Exception &ex) {
             throw Exception(ref->notFoundMessage());
         }
         bool coupled =
-            couple<bool>(ref->parameter, source) ||
-            couple<char>(ref->parameter, source) ||
-            couple<int>(ref->parameter, source) ||
-            couple<long>(ref->parameter, source) ||
-            couple<unsigned>(ref->parameter, source) ||
-            couple<float>(ref->parameter, source) ||
-            couple<double>(ref->parameter, source) ||
-            couple<QDate>(ref->parameter, source) ||
-            couple<QString>(ref->parameter, source);
+            couple<bool>(ref->parameter, ref->source) ||
+            couple<char>(ref->parameter, ref->source) ||
+            couple<int>(ref->parameter, ref->source) ||
+            couple<long>(ref->parameter, ref->source) ||
+            couple<unsigned>(ref->parameter, ref->source) ||
+            couple<float>(ref->parameter, ref->source) ||
+            couple<double>(ref->parameter, ref->source) ||
+            couple<QDate>(ref->parameter, ref->source) ||
+            couple<QString>(ref->parameter, ref->source);
         if (!coupled) {
             QString msg("The type of the value referred to by '%1' does not match that of the parameter");
             throw Exception(msg.arg(ref->reference), ref->parameterParent);
         }
     }
-    clear();
 }
 
 QString Ref::notFoundMessage() {
@@ -108,6 +107,20 @@ QStringList Ref::lookupVariables(NamedObject *parent) {
         names << var[i]->id().label();
     }
     return names;
+}
+
+void Ref::writeEdges(QFile &f) {
+    f.write("edge [color=red];");
+    for (int i = 0; i < all.size(); ++i) {
+        Ref *ref = all[i];
+        Q_ASSERT(ref->source);
+        NamedObject *from = dynamic_cast<NamedObject*>(ref->source->parent());
+        Q_ASSERT(from);
+        QString line = QString("%1->%2;\n")
+                .arg(from->uniqueId())
+                .arg(ref->parameterParent->uniqueId());
+        f.write(qPrintable(line));
+    }
 }
 
 } //namespace

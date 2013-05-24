@@ -161,7 +161,8 @@ Simulation* SimulationMaker::parse(QString filePath)
     if (noOutputs)
         throw Exception(message("Missing 'output' element in 'simulation'"));
 
-    amend<Integrator*>();
+    //amend<Integrator*>();
+    //amend<Model*>();
     amend<Model*>();
     try {
         Ref::resolve();

@@ -15,6 +15,7 @@
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/named_object.h>
+#include <usbase/ref.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
 #include "graph_generator.h"
@@ -85,29 +86,20 @@ void GraphGenerator::writeDotFile()
 	if (!f.open(QIODevice::Text | QIODevice::WriteOnly))   
         throw Exception("Could not open output file to draw graph:'" + dotFilePath + "'");
 
-    nodeNumber = 0;
     f.write("digraph G {size=\"16,24\";graph[rankdir=LR];\n");
 
     Models models = simulation->seekChildren<Model*>("*");
     for (Models::const_iterator mo = models.begin(); mo != models.end(); ++mo) {
         if (!(*mo)->hide())
-            writeModel(&f, simulation, *mo, 0);
-	}
+            writeModel(&f, simulation, *mo);
+    }
+    //Ref::writeEdges(f);
 	f.write("\n}\n");
 }
 
 namespace {
 
-    QString nodeId(QObject *node) {
-        QString nodeId = node->objectName();
-        return QString("x") +
-                nodeId
-                .replace("(","_")
-                .replace(")","_")
-                .replace("-","_");
-    }
-
-    void writeNode(QTextStream *sink, NamedObject *node, int number)
+    void writeNode(QTextStream *sink, NamedObject *node)
 	{
         QVariant label = node->property("classLabel");
         if (!label.isValid()) {
@@ -116,8 +108,8 @@ namespace {
         QString className = label.toString();
         if (className.contains("Anonymous"))
             className.clear();
-        *sink << nodeId(node) << number << "[label=\"" << className;
-        if (nodeId(node) != "anonymous") {
+        *sink << node->uniqueId() << "[label=\"" << className;
+        if (node->uniqueId() != "anonymous") {
             if (!className.isEmpty())
                 *sink << "\\n";
             *sink << node->id().label();
@@ -127,25 +119,21 @@ namespace {
 	
 }	
 
-void GraphGenerator::writeModel(QFile *f, NamedObject *parent, NamedObject *child, int parentNumber)
+void GraphGenerator::writeModel(QFile *f, NamedObject *parent, NamedObject *child)
 {
-    int myNumber = ++nodeNumber;
-    if (myNumber > 50)
-        return;
-
     QString statement;
     QTextStream sink(&statement);
 
-	writeNode(&sink, parent, parentNumber);
-	writeNode(&sink, child, myNumber);
-    sink << nodeId(parent) << parentNumber << "->" << nodeId(child) << myNumber << ";\n";
-			
+    writeNode(&sink, parent);
+    writeNode(&sink, child);
+    sink << parent->uniqueId() <<  "->" << child->uniqueId() <<  ";\n";
+
 	f->write(qPrintable(statement));
 
 	for (QList<QObject*>::const_iterator ch = child->children().begin(); ch != child->children().end(); ++ch) {
 		Model *model = dynamic_cast<Model*>(*ch);
         if (model && ! model->hide())
-            writeModel(f, child, model, myNumber);
-	}
+            writeModel(f, child, model);
+    }
 }
 

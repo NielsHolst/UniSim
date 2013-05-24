@@ -19,7 +19,9 @@ public:
 
 private:
     // Parameters
-    double feedingRate;
+    double supply;
+    double stDensity;
+    double temperature;
 
     // Variables
     double value;

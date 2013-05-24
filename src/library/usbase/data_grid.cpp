@@ -168,8 +168,8 @@ void DataGrid::setColumnIndex() {
             name.remove(0,1);
         }
         if (data.columnIndex.contains(name)) {
-            QString msg("Column names must be unique: '%1' occurs twice in file '%2'");
-            throw Exception(msg.arg(name).arg(filePath));
+            QString msg("Column names must be unique: '%1' occurs twice in file '%2'.\nLine: '%3'");
+            throw Exception(msg.arg(name).arg(filePath).arg(lineItems.join(" ")));
         }
         data.columnIndex[name] = i;
         data.columnNamesInOrder << name;

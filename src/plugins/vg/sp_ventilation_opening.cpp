@@ -23,7 +23,7 @@ SpVentilationOpening::SpVentilationOpening(Identifier name, QObject *parent)
     addParameterRef<double>(Name(alphaMax), "ventilation/maxOpening[value]");
     addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
     addParameterRef<double>(Name(Toutdoors), "outdoors/records[Tair]");
-    addParameterRef<double>(Name(spTemperature), "ventilation/alphaTemperature/spTemperature[sp]");
+    addParameterRef<double>(Name(spTemperature), "ventilation/spOpening/alphaTemperature/spTemperature[sp]");
     addParameterRef<double>(Name(windspeed), "outdoors/records[windspeed]");
     addVariable<double>(Name(alphaLeeSide), "Ventilation opening on the lee side [0;100]");
     addVariable<double>(Name(alphaWindSide), "Ventilation opening on the wind side [0;100]");

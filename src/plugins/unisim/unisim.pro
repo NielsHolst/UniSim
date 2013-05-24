@@ -49,6 +49,7 @@ HEADERS += \
     range.h \
     records.h \
     run_iterator_fixed.h \
+    scenarios.h \
     scheduled.h \
     sensitivity_analysis.h \
     stage.h \
@@ -100,6 +101,7 @@ SOURCES += \
     range.cpp \
     records.cpp \
     run_iterator_fixed.cpp \
+    scenarios.cpp \
     scheduled.cpp \
     sensitivity_analysis.cpp \
     stage.cpp \

@@ -16,7 +16,7 @@ IndoorsRadiation::IndoorsRadiation(Identifier name, QObject *parent)
     addParameterRef<double>(Name(directOutdoors), "outdoors[dirRad]");
     addParameterRef<double>(Name(diffuseOutdoors), "outdoors/records[difRad]");
     addParameterRef<int>(Name(screenType), "screen[type]");
-    addParameterRef<double>(Name(trScreen), "screen/transmission[transmission]");
+    addParameterRef<double>(Name(trScreen), "screen/lightTransmission[transmission]");
     addParameterRef<double>(Name(trGhDif), "greenhouse/transmission[diffuse]");
     addParameterRef<double>(Name(trGhDir), "greenhouse/transmission[direct]");
 

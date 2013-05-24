@@ -3,26 +3,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef MUSSEL_BED_MUSSEL_H
-#define MUSSEL_BED_MUSSEL_H
+#ifndef THINNING_H
+#define THINNING_H
 
 #include <usbase/model.h>
 
 namespace mussel_bed {
 
-class Mussel : public UniSim::Model
+class thinning : public UniSim::Model
 {
 public:
-    Mussel(UniSim::Identifier name, QObject *parent);
+    thinning(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
 private:
     // Parameters
-    double initialDensity, initialN, LossB, LossN, growthRate;
+    double Density, N, supply;
 
     // Variables
-    double density, N;
+    double LossN, LossB, thin, avgs, maxN;
 };
 
 } //namespace

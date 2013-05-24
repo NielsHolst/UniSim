@@ -40,9 +40,13 @@ Identifier::Identifier(const char *label)
 }
 
 void Identifier::makeKey() {
-    _key = _label.toLower();
-    _key = _key.simplified();
-    _key.replace(" ", "_");
+    _key = _label
+        .toLower()
+        .simplified()
+        .replace(" ", "_")
+        .replace("(","_")
+        .replace(")","_")
+        .replace("-","_");
 }
 
 QString Identifier::key() const {

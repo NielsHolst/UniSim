@@ -17,7 +17,11 @@ HEADERS += \
     starfish_feeding_rate.h \
     starfish_growth_rate.h \
     temperature_stscale.h \
-    mussel_loss_rate.h
+    starfish_salinity_mortality.h \
+    searchrate.h \
+    hydrodynamic_SRscale.h \
+    salinity_SRscale.h \
+    thinning.h
 
 SOURCES += \
     mussel.cpp \
@@ -29,5 +33,9 @@ SOURCES += \
     starfish_feeding_rate.cpp \
     starfish_growth_rate.cpp \
     temperature_stscale.cpp \
-    mussel_loss_rate.cpp
+    starfish_salinity_mortality.cpp \
+    searchrate.cpp \
+    hydrodynamic_SRscale.cpp \
+    salinity_SRscale.cpp \
+    thinning.cpp
 

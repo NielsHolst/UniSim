@@ -32,6 +32,7 @@
 #include "range.h"
 #include "records.h"
 #include "run_iterator_fixed.h"
+#include "scenarios.h"
 #include "scheduled.h"
 #include "sensitivity_analysis.h"
 #include "stage.h"
@@ -171,6 +172,9 @@ void UniSim::UniSimFactory::defineProducts() {
     AddProduct(RunIteratorFixed,
     "The model increments its @F iteration counter for every @F {update}. "
     "Its @F value remains true as long as @Math{@F{iteration <= numIterations}}.");
+
+    AddProduct(Scenarios,
+    "The @F Scenarios model is used to iterate through several parameter settings. Description pending...");
 
     AddProduct(Scheduled,
     "A @F Scheduled model produces canned data which are derived from a list of time value pairs, e.g., "

@@ -3,26 +3,24 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef MUSSEL_BED_MUSSEL_LOSS_RATE_H
-#define MUSSEL_BED_MUSSEL_LOSS_RATE_H
+#ifndef PRODUSPLOTS_H
+#define PRODUSPLOTS_H
 
 #include <usbase/model.h>
 
 namespace mussel_bed {
 
-class MusselLossRate : public UniSim::Model
+class Produsplots : public UniSim::Model
 {
 public:
-    MusselLossRate(UniSim::Identifier name, QObject *parent);
-    void reset();
-    void update();
+    Produsplots(UniSim::Identifier name, QObject *parent);
+
 
 private:
     // Parameters
-    double feedingRate, stdensity;
+    double stDensity, mDensity, days;
+    QDate startDate;
 
-    // Variables
-    double value;
 };
 
 } //namespace

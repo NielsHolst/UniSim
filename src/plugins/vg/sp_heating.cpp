@@ -15,7 +15,7 @@ SpHeating::SpHeating(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     addParameterRef<double>(Name(globRad), "outdoors/records[globRad]");
-    addParameterRef<double>(Name(humidityIncrement), "humidityControl[response]");
+    addParameterRef<double>(Name(humidityIncrement), "indoors/temperature/spHeating/humidityControl[response]");
     addParameter<double>(Name(spGlobRad), 300., "Threshold for global radiation dependency (W/m2)");
     addParameter<double>(Name(spHeatingBasis), 20., "Set point for heating (oC)");
     addParameter<double>(Name(spHeatingMax), 24., "Set point for max heating temperature (oC)");

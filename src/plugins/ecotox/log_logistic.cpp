@@ -45,7 +45,7 @@ void LogLogistic::update() {
 double LogLogistic::f(double z) {
     if (slope == 0.) return (upper - lower)/2.;
     if (z == 0) return (slope > 0.) ? lower : upper;
-    return lower + (upper - lower)/(1. + pow((dose/ED50), -slope));
+    return lower + (upper - lower)/(1. + pow((z/ED50), -slope));
 }
 
 } //namespace

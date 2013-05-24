@@ -19,7 +19,7 @@ public:
 
 private:
     // Parameters
-    double temperature;
+    double temperature, avgs;
 
     // Variables
     double value;

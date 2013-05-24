@@ -3,6 +3,10 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+
+/* ##SALINITY SCALE FOR MUSSEL GROWTH: scale mussel growth with the effect of the current step daily average salinity.
+   formulation is the result of field data analysis within the Wadden Sea (PRODUS project experimental plots)*/
+
 #include "salinity_scale.h"
 
 using namespace UniSim;
@@ -12,10 +16,9 @@ namespace mussel_bed {
 SalinityScale::SalinityScale(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("Smax", &Smax, 30., this, "desc");
-    new Parameter<double>("Smin", &Smin, 24., this, "desc");
-    new Parameter<int>("bufferSize", &bufferSize, 7, this, "desc");
-    new Variable<double>("value", &value, this, "desc");
+    new Parameter<double>("Smax", &Smax, 30., this, "salinity at high tide");
+    new Parameter<double>("Smin", &Smin, 24., this, "salinity at low tide");
+    new Variable<double>("value", &value, this, "mussel growth scaling factor");
 }
 
 void SalinityScale::reset() {
@@ -23,28 +26,8 @@ void SalinityScale::reset() {
 }
 
 void SalinityScale::update() {
-    if (salinities.isEmpty()) {
-        salinities.fill(Smax, bufferSize);
-        index = 0;
-    }
-    else {
-        salinities[index] = Smax;
-        index = (index + 1)%bufferSize;
-    }
-
-    if (Smax > 10){
-        if ((Smax - Smin)>=6)
-            value = 0.;
-        else {
-            if(Smin < 10)
-                value = 0.5;
-            else
-                value = 1.;
-        }
-    }
-    else
-        value = 0.;
-        }
-
+    double Sal = (Smax+Smin)*0.5;
+    value = 0.0311*Sal+0.0363;
+}
 } //namespace
 

@@ -327,7 +327,8 @@ void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart) {
     }
 }
 
-QStringList splitParentChildExpression(QString expression) {
+QStringList splitParentChildExpression(QString expression_) {
+    QString expression = expression_.trimmed();
     int begin = expression.indexOf('[');
     int end = expression.indexOf(']');
     QString msg;

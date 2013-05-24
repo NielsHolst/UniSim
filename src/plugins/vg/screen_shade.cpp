@@ -16,7 +16,7 @@ ScreenShade::ScreenShade(Identifier name, QObject *parent)
     addParameterRef<double>(Name(globRad), "outdoors/records[globRad]");
     addParameterRef<double>(Name(Tindoors), "indoors/temperature[air]");
     addParameter<double>(Name(spLight), 10., "Global radiation threshold for using shade screen (W/m2)");
-    addParameterRef<double>(Name(spTemperature), "screen/shade/spVentilation[spTemperature]");
+    addParameterRef<double>(Name(spTemperature), "ventilation/spOpening/alphaTemperature/spTemperature[sp]");
     addParameterRef<double>(Name(spScreenEnergy), "screen/energy[sp]");
     addVariable<double>(Name(sp),"Set point for energy screen [0;1]");
 }

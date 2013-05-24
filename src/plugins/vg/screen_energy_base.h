@@ -26,7 +26,7 @@ protected:
 private:
     // Variable
     double sp;
-    bool isIncreasing;
+    bool isOpening;
 
     // Data
     double prevSp;

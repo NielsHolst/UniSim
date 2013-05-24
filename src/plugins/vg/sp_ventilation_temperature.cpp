@@ -15,7 +15,7 @@ SpVentilationTemperature::SpVentilationTemperature(Identifier name, QObject *par
 {
     addParameterRef<double>(Name(spHeating), "temperature/spHeating[sp]");
     addParameter<double>(Name(heatingIncrement), 1., "The basic ventilation set point is incremented this much over the heating set point (oC)");
-    addParameterRef<double>(Name(humidityDecrement), "spOpening/spTemperature/humidityControl[response]");
+    addParameterRef<double>(Name(humidityDecrement), "spOpening/alphaTemperature/spTemperature/humidityControl[response]");
     addVariable<double>(Name(sp), "Set point for ventilation (oC)");
 }
 

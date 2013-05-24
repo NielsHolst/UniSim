@@ -16,7 +16,7 @@ ScreenEnergyBase::ScreenEnergyBase(Identifier name, QObject *parent)
     addParameter<double>(Name(spLight), 10.,"Global radiation threshold for using energy screen (W/m2)");
     addParameter<double>(Name(K), 5.2,"K-value (W/m2/K)");
     addVariable<double>(Name(sp),"Set point for energy screen [0;1]");
-    addVariable<bool>(Name(isIncreasing),"Is the set point increasing?");
+    addVariable<bool>(Name(isOpening),"Is the screen opening?");
 }
 
 void ScreenEnergyBase::initialize() {
@@ -36,7 +36,7 @@ void ScreenEnergyBase::update() {
         sp = 0.;
     else
         sp = (useScreen() && *spHumidityPassed) ? *spMaxOpening : 0;
-    isIncreasing = (prevSp < 0) ? false : (sp > prevSp);
+    isOpening = (prevSp < 0) ? false : (sp > prevSp);
     prevSp = sp;
 }
 

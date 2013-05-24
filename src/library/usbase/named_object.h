@@ -20,9 +20,12 @@ public:
     NamedObject();
     NamedObject(Identifier name, QObject *parent=0);
     Identifier id() const;
+    QString uniqueId() const;
     void setId(Identifier id);
     QString fullName() const;
     QString fullLabel() const;
+    static void resetNumbering();
+    long int number() const;
 
     NamedObject* root();
     template <class T> QList<T> seekMany(QString name);
@@ -63,7 +66,15 @@ public:
 
 private:
 	Identifier _id;
+    static long int objectCount;
+    long int myNumber;
     template <class T> static QList<T> filterByName(QString name, const QList<QObject*> &candidates);
+    struct AbsolutePath {
+        AbsolutePath(NamedObject *o, QString a) : origin(o), absoluteName(a) {}
+        NamedObject *origin;
+        QString absoluteName;
+    };
+    AbsolutePath absolutePath(QString name);
 };
 
 //! Finds a number (n>=0) of objects anywhere in the object tree

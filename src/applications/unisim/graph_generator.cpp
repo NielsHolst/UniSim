@@ -93,7 +93,7 @@ void GraphGenerator::writeDotFile()
         if (!(*mo)->hide())
             writeModel(&f, simulation, *mo);
     }
-    //Ref::writeEdges(f);
+//    Ref::writeEdges(f);
 	f.write("\n}\n");
 }
 

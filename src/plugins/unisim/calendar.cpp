@@ -6,8 +6,6 @@
 /* Day length and solar elevation equations copied from the FORTRAN code of Kroppf &
 ** Laar (1993). Modelling Crop-Weed Interactions. CAB International.
 */
-#include <iostream>
-#include <QMessageBox>
 #include <QTextStream>
 #include <cfloat>
 #include <cmath>
@@ -24,54 +22,54 @@ namespace UniSim{
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("latitude", &latitude, 52., this, "Latitude of simulated system");
+    addParameter<double>(Name(latitude), 52., "Latitude of simulated system");
 
-    new Parameter<QDate>("initialDate", &initialDate, QDate(2000,1,1), this,
+    addParameter<QDate>(Name(initialDate), QDate(2000,1,1),
     "Initial date of simulation. "
     "You should perform a @F deepReset on your @F Calendar object after pushing a new "
     "value to @F {initialDate}.");
 
-    new Parameter<QTime>("initialTimeOfDay", &initialTimeOfDay, QTime(0,0,0), this,
+    addParameter<QTime>(Name(initialTimeOfDay), QTime(0,0,0),
     "Initial time of day of simulation. Default is midnight. "
     "You should perform a @F deepReset on your @F Calendar object after pushing a new "
     "value to @F {initialDate}.");
 
-    new Parameter<int>("timeStep", &timeStep, 1, this,
+    addParameter<int>(Name(timeStep), 1,
     "Duration of one integration time step in units determined by @F {timeUnit}");
 
-    new Parameter<char>("timeUnit", &timeUnitAsChar, 'd', this,
+    addParameter<char>("timeUnit", &timeUnitAsChar, 'd',
     "Time unit of @F {timeStep}: s)econds, m)inutes, h)ours, d)ays or y)ears.");
 
-    new Parameter<int>("timeStepOffset", &timeStepOffset, -1, this,
+    addParameter<int>(Name(timeStepOffset), -1,
     "The first values are reported to plot and table outputs after one time step. "
     "With the default value of -1 for @F timeStepOffset, the first output will occur "
     "at time zero, defined by @F initialDay and @F {initialTimeOfDay}. "
     "Often this is what is intuitively expected. With a @F timeStepOffset value of zero "
     "the first output will occur one time step after time zero.");
 
-    new Variable<QDate>("date", &date, this, "Current date");
-    new Variable<QTime>("timeOfDay", &timeOfDay, this, "Current time of day");
-    new Variable<QDateTime>("dateTime", &dateTime, this, "Current date and time");
-    new Variable<int>("totalTimeSteps", &totalTimeSteps, this,
+    addVariable<QDate>(Name(date), "Current date");
+    addVariable<QTime>(Name(timeOfDay), "Current time of day");
+    addVariable<QDateTime>(Name(dateTime), "Current date and time");
+    addVariable<double>(Name(timeStepSecs), "Duration of @F timeStep in seconds");
+    addVariable<int>(Name(totalTimeSteps),
     "Total number of time steps performed since beginning of simulation");
-    new Variable<int>("totalTime", &totalTime, this,
+    addVariable<int>(Name(totalTime),
     "Total time, in units determined by @F {timeUnit}. passed since beginning of simulation");
-    new Variable<double>("totalDays", &totalDays, this,
+    addVariable<double>(Name(totalDays),
     "Total days passed since beginning of simulation");
-    new Variable<int>("dayOfYear", &dayOfYear, this, "Day number in year, also known as Julian day");
-    new Variable<int>("day", &day, this, "Current day in month (1..31)");
-    new Variable<int>("month", &month, this, "Current month (1..12)");
-    new Variable<int>("year", &year, this, "Current year");
-    new Variable<int>("hour", &hour, this, "Current hour of the day (0..23)");
-    new Variable<int>("minute", &minute, this, "Current minute of the hour (0..59)");
-    new Variable<int>("second", &second, this, "Current second of the minute (0..59)");
+    addVariable<int>(Name(dayOfYear), "Day number in year, also known as Julian day");
+    addVariable<int>(Name(day), "Current day in month (1..31)");
+    addVariable<int>(Name(month), "Current month (1..12)");
+    addVariable<int>(Name(year), "Current year");
+    addVariable<int>(Name(hour), "Current hour of the day (0..23)");
+    addVariable<int>(Name(minute), "Current minute of the hour (0..59)");
+    addVariable<int>(Name(second), "Current second of the minute (0..59)");
 
-
-    new Variable<double>("dateAsReal", &dateAsReal, this, "Date as a real number measured in years");
-    new Variable<double>("dayLength", &dayLength, this, "Current day length (hours)");
-    new Variable<double>("sinb", &sinb, this, "Sine of sun elevation, updated by the @F tick event of the @F clock object");
-    new Variable<double>("sinLD", &sinLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
-    new Variable<double>("cosLD", &cosLD, this, "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
+    addVariable<double>(Name(dateAsReal), "Date as a real number measured in years");
+    addVariable<double>(Name(dayLength), "Current day length (hours)");
+    addVariable<double>(Name(sinb), "Sine of sun elevation, updated by the @F tick event of the @F clock object");
+    addVariable<double>(Name(sinLD), "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
+    addVariable<double>(Name(cosLD), "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
 }
 
 void Calendar::initialize() {
@@ -83,6 +81,7 @@ void Calendar::reset() {
     dateTime = QDateTime(initialDate, initialTimeOfDay, Qt::UTC);
     dateTime = dateTime + Time(timeStep*timeStepOffset, timeUnit);
     totalTimeSteps = 0;
+    timeStepSecs = timeStep*Time::conversionFactor(timeUnit, Time::Seconds);
     updateDerived();
 }
 
@@ -106,7 +105,7 @@ void Calendar::updateDerived() {
     second = timeOfDay.second();
 
     totalTime = totalTimeSteps*timeStep;
-    totalDays = totalTime/Time::conversionFactor(timeUnit, Time::Days);
+    totalDays = totalTime*Time::conversionFactor(timeUnit, Time::Days);
 
     QDateTime beginning = QDateTime(QDate(year,1,1), QTime(), Qt::UTC);
     double secsPassed = beginning.secsTo(dateTime);
@@ -119,7 +118,7 @@ void Calendar::updateDerived() {
     Q_ASSERT(TestNum::neZero(cosLD));
     double aob = sinLD/cosLD;
     dayLength = 12.*(1. + 2.*asin(aob)/PI);
-    handleClockTick(hour + minute/60 + second/60/60);
+    handleClockTick(hour + minute/60. + second/60./60.);
 }
 
 void Calendar::handleClockTick(double hour) {

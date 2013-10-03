@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="BtButTox">
+
+	<integrator type="Steps">
+		<model name="RunIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="10"/>
+		</model>
+		<parameter name="maxSteps" value="365"/> 
+	</integrator>
+	
+	<model name="calendar" type="Calendar"/>
+	<model name="random" select="doc('base_pollen.xml')/simulation/model[@name='random']"/>
+	<model name="weather" select="doc('base_N_records.xml')/simulation/model[@name='weather']"/>
+<!--	<model name="pollen" select="doc('base_N_records.xml')/simulation/model[@name='pollen']">
+		<parameter name="Npeak" value="1200"/>
+	</model>
+-->
+
+	<model name="pollen" type="EcoTox::Pollen">
+		<model name="depositionRate" type="EcoTox::DepositionMonotonicSampled"/>
+		<model name="depositionFlush" type="EcoTox::DepositionFlush">
+			<parameter name="duration" value="14"/>
+		</model>
+		<model name="lossRate" type="EcoTox::PollenLossConstant">
+			<parameter name="rate" value="0.05" ref2="random/lossRate[value]"/>
+		</model>
+		<parameter name="distance" value="0"/>
+		<parameter name="Npeak" value="100" ref2="random/Npeak[value]"/>
+	</model>
+
+	<!-- 
+	*** Plots  ***
+	-->
+
+	<output select="doc('base_output.xml')/outputs/output[@name='Environment']"/>
+	<output select="doc('base_output.xml')/outputs/output[@name='Pollen']"/>
+
+	</simulation>

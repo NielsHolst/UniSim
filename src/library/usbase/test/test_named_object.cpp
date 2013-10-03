@@ -1,5 +1,7 @@
+#include <iostream>
 #include <usbase/model.h>
 #include <usbase/named_object.h>
+#include <usbase/utilities.h>
 #include <usbase/variable.h>
 #include <usengine/simulation.h>
 #include "test_named_object.h"
@@ -49,6 +51,7 @@ void TestNamedObject::initTestCase() {
     dogsModel = create<Model>("dogs", mammals);
     femaleDogsModel = create<Model>("female", dogsModel);
     maleDogsModel = create<Model>("male", dogsModel);
+//    writeObjectTree(animals);
 }
 
 void TestNamedObject::cleanupTestCase() {
@@ -449,3 +452,63 @@ void TestNamedObject::testSeekParent() {
     QCOMPARE(ofFemaleDogsModel, dogsModel);
 }
 
+void TestNamedObject::testRelativeSelf() {
+    QString path = dogs->absolutePath("./female[size]");
+    QCOMPARE(path.toLower(), QString("/animals/mammals/dogs/female[size]"));
+}
+
+void TestNamedObject::testRelativeSelfBare() {
+    QString path = dogs->absolutePath(".[size]");
+    QCOMPARE(path.toLower(), QString("/animals/mammals/dogs[size]"));
+}
+
+void TestNamedObject::testRelativeSibling() {
+    QString path = dogs->absolutePath("../elephants/female[size]");
+    QCOMPARE(path.toLower(), QString("/animals/mammals/elephants/female[size]"));
+}
+
+void TestNamedObject::testRelativeSiblingBare() {
+    QString path = dogs->absolutePath("..[size]");
+    QCOMPARE(path.toLower(), QString("/animals/mammals[size]"));
+}
+
+void TestNamedObject::testRelativeFromRoot() {
+    QString path = animals->absolutePath("./reptiles[size]");
+    QCOMPARE(path.toLower(), QString("/animals/reptiles[size]"));
+}
+
+void TestNamedObject::testRelativeAtRoot() {
+    QString path = reptiles->absolutePath("../mammals[size]");
+}
+
+void TestNamedObject::testRelativeAtRootBare() {
+    QString path = reptiles->absolutePath("..[size]");
+    QCOMPARE(path.toLower(), QString("/animals[size]"));
+}
+
+void TestNamedObject::testRelativeBeyondRoot() {
+    bool excepted = false;
+    try {
+        reptiles->absolutePath("../..[size]");
+    }
+    catch (Exception &) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
+void TestNamedObject::testRelativeNot() {
+    QString path = dogs->absolutePath("elephants/female[size]");
+    QCOMPARE(path.toLower(), QString("elephants/female[size]"));
+}
+
+void TestNamedObject::testRelativeSeek() {
+    Variable<int>* found;
+    try  {
+        found = elephants->seekOne<NamedObject*, Variable<int>*>("../dogs/female[size]");
+    }
+    catch (Exception &ex) {
+        QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
+    }
+    QCOMPARE(found->valuePtr(), &femaleDogsSize);
+}

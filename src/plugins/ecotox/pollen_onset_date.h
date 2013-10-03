@@ -21,6 +21,7 @@ class PollenOnsetDate
 {
 public: 
     PollenOnsetDate() {}
+    virtual ~PollenOnsetDate() {}
     virtual QDate calculate() = 0;
 };
 

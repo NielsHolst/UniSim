@@ -15,18 +15,21 @@ class IndoorsRadiation : public UniSim::Model
 {
 public:
     IndoorsRadiation(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 
 private:
     // Parameters
-    int screenType;
-    double diffuseOutdoors, directOutdoors, trScreen, trGhDif, trGhDir;
+    int glassType;
+    double sinb, diffuseTransmission, outdoorsDirectRadiation, outdoorsDiffuseRadiation;
 
     // Variables
-    double total, diffuse, direct;
-};
+    double direct, diffuse;
 
+    // Data
+    double a, b, c;
+};
 } //namespace
 
 

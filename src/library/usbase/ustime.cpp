@@ -52,7 +52,7 @@ double Time::conversionFactor(Unit from, Unit to) {
         unitToSeconds[Days] = 24.*60.*60;
         unitToSeconds[Years] = 365.*24.*60.*60;
     }
-    return (from == to) ?  1. : unitToSeconds[to]/unitToSeconds[from];
+    return (from == to) ?  1. : unitToSeconds[from]/unitToSeconds[to];
 }
 
 

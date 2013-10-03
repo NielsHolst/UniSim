@@ -53,6 +53,19 @@ private slots:
     void testPeekParent();
     void testSeekParent();
 
+    void testRelativeSelf();
+    void testRelativeSelfBare();
+    void testRelativeSibling();
+    void testRelativeSiblingBare();
+    void testRelativeFromRoot();
+    void testRelativeAtRoot();
+    void testRelativeAtRootBare();
+    void testRelativeBeyondRoot();
+    void testRelativeNot();
+
+    void testRelativeSeek();
+
+
 private:
     UniSim::NamedObject
         *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,

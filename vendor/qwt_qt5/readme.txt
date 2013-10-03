@@ -4,4 +4,4 @@
 
 17 August 2011, Niels Holst: DLL library compiled from Qwt 6.0.1 using mingw32 gcc 4.4.0
 
-13 March 2013, Niels Holst: DLL library compiled from Qwt 6.1.rc3 using mingGW 4.7 32-bit and Qt5 libraries.
+15 August 2013, Niels Holst: DLL library compiled from Qwt 6.1.0 using Qt Creator 2.7.2, based on Qt 5.1.0 and mingGW 4.8 32 bits

@@ -52,7 +52,7 @@ void LifeTable::seekSplitModel() {
         doSplit = true;
         split[0] = splitModel->pullValuePtr<double>("first");
         split[1] = splitModel->pullValuePtr<double>("second");
-        myPosition = stage->seekSiblingPosition<LifeStage*>("*");
+        myPosition = stage->seekSiblingPosition<LifeStage*>();
         if (myPosition > 1)
             throw Exception("There can be at most two sibling LifeStage models together with a split model", this);
     }

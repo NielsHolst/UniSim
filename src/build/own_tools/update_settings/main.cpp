@@ -25,7 +25,7 @@ void cdmk(QDir &dir, QString subDirName) {
     dir.cd(subDirName);
 }
 
-int main(int argc, char *argv[])
+int main(int, char **)
 {    
     QCoreApplication::setOrganizationName("Aarhus University");
     QCoreApplication::setOrganizationDomain("www.agrsci.dk");

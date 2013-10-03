@@ -7,7 +7,6 @@
 #define UNISIM_REF_H
 #include <QFile>
 #include <QList>
-#include <QPair>
 
 namespace UniSim{
 
@@ -20,6 +19,7 @@ class Ref
 public: 
     Ref(NamedObject *parameterParent, ParameterBase *parameter, QString reference);
     static void clear();
+    static void remove(ParameterBase *parameter);
     static void resolve();
     static void writeEdges(QFile &f);
 private:

@@ -5,6 +5,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <math.h>
+#include <usbase/utilities.h>
 #include "general.h"
 
 using namespace std;
@@ -20,7 +21,27 @@ double svp(double temperature) {
     return 133.32*exp((1.0887*T - 276.4)/(0.0583*T - 2.1938));
 }
 
-//! Compute water vapour pressure from dry air temperature and humidity
+//! Compute slope of saturated water vapour pressure curve on temperature
+/*!	\param temperature (oC)
+    \return saturated water vapour pressure slope, dsvp/dT (Pa/K)
+ */
+double svpSlope(double temperature) {
+    double T = temperature + T0,
+        a = 1.088/(0.0583*T - 2.1938),
+        b = (1.0887*T - 276.4) / pow(0.0583*T - 2.1938, 2),
+        c = (1.0887*T - 276.4) / (0.0583*T - 2.1938);
+    return 133.32*(a +  b*0.0583)*exp(c);
+}
+
+//! Compute saturated moisture content from temperature
+/*!	\param temperature (oC)
+    \return moisture content (g/m3)
+ */
+double saturatedMoistureContent(double temperature) {
+    return moistureContent(temperature, svp(temperature));
+}
+
+//! Compute water vapour pressure from dry air temperature and r.h.
 /*!	\param temperature (oC)
     \param rh relative humidity (%)
     \return water vapour pressure (Pa)
@@ -29,7 +50,7 @@ double vp(double temperature, double rh) {
     return rh*svp(temperature)/100;
 }
 
-//! Compute absolute humidity from dry air temperature and humidity
+//! Compute absolute (or 'specific') humidity from dry air temperature and r.h.
 /*!	\param temperature (oC)
     \param rh relative humidity (%)
     \return absolute humidity (g/g)
@@ -38,7 +59,7 @@ double ah(double temperature, double rh) {
     return 18/28.8*(svp(temperature)*rh)/(P0 - svp(temperature)*rh);
 }
 
-//! Compute dew point temperature temperature and humidity
+//! Compute dew point temperature from temperature and r.h.
 /*! Calculated as an inverse function of p_satu.
     \param temperature (oC)
     \param rh relative humidity (%)
@@ -54,7 +75,7 @@ double Tdew(double temperature, double rh) {
     return (k5*log(vp/k1) - k3) / (log(vp/k1)*k4 - k2) - T0;
 }
 
-//! Compute vapour pressure deficit from temperature and relative humidity
+//! Compute vapour pressure deficit from temperature and r.h.
 /*!	\param temperature (oC)
     \param rh relative humidity (%)
     \return vapour pressure deficit (Pa)
@@ -69,17 +90,35 @@ double vpd(double temperature, double rh) {
     \return moisture deficit (g/m3)
  */
 double moistureDeficit(double temperature, double rh) {
-    return vpd(temperature,rh)*Mwater/(R*(temperature + T0));
+    return moistureContent(temperature, vpd(temperature,rh));
 }
 
-//! Compute absolute humidity deficit from temperature and humidity
+//! Compute moisture content from temperature and water vapour pressure
+/*!	\param temperature (oC)
+    \param vp water vapour pressure (Pa)
+    \return moisture content (g/m3)
+ */
+double moistureContent(double temperature, double vp) {
+    return vp*Mwater/(R*(temperature + T0));
+}
+
+//! Compute absolute humidity deficit ('delta X') from temperature and r.h.
 /*!	\param temperature (oC)
     \param rh relative humidity (%)
     \return absolute humidity deficit (g/kg)
  */
 double ahDeficit(double temperature, double rh) {
-    const double cpAir = 1.2;   // kg/m3 air at standard pressure and temperature
-    return moistureDeficit(temperature,rh)/cpAir;
+    return moistureDeficit(temperature,rh)/RhoAir;
+}
+
+//! Compute relative humidity from temperature and moisture content
+/*!	\param temperature (oC)
+    \param moistureContent (g/m3)
+    \return relative humidity (%)
+ */
+double rhFromMc(double temperature, double moistureContent) {
+    double ratio = moistureContent/saturatedMoistureContent(temperature);
+    return UniSim::minMax(0., ratio, 1.)*100;
 }
 
 //! Compute relative humidity from temperature and moisture deficit
@@ -87,7 +126,7 @@ double ahDeficit(double temperature, double rh) {
     \param moistureDeficit (g/m3)
     \return relative humidity (%)
  */
-double rh(double temperature, double moistureDeficit) {
+double rhFromMd(double temperature, double moistureDeficit) {
     double T = temperature + T0;
     double xSat = Mwater/(R*T)*svp(T);
     double xGh = xSat - moistureDeficit;

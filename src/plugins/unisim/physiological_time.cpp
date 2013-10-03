@@ -23,7 +23,7 @@ void PhysiologicalTime::initialize() {
     calendar = seekOne<Model*>("calendar");
     calendarTimeStep = calendar->pullValue<int>("timeStep");
     Time::Unit unit = Time::charToUnit( calendar->pullValue<char>("timeUnit") );
-    calendarTimeStep /= Time::conversionFactor(unit, Time::Days);
+    calendarTimeStep *= Time::conversionFactor(unit, Time::Days);
 
     static bool always = true;
     Model *trigger = peekOneChild<Model*>("trigger");

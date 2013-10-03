@@ -14,19 +14,26 @@ const double
     T0 = 273.15,        //!< Absolute zero offset (oC)
     Sigma = 5.6704e-08, //!< Stefan-Boltzmann constant (W/m2/K4)
     Mwater = 18.016,    //!< Molar mass of water (g/mol)
+    Mwa = 0.61,         //!< Molar mass of water relative to molar mass of air (-)
     R = 8.314,          //!< Gas constant (m3 Pa/mol/K)
-    P0 = 101325,        //!< Standard atmosperic pressure = 1 atm (Pa)
-    CpAir = 1200,       //!< Specific heat capacity of air (J/m3/K)
-    LHe=2454e3;         //!< Latent heat of vaporisation of water (J/kg)
+    P0 = 101325,        //!< Standard atmospheric pressure = 1 atm (Pa)
+    CpAir = 1200,       //!< Specific heat capacity of air (J/kg/K)
+    RhoAir = 1.19,      //!< Density of air (kg/m3)
+    LHe = 2454e3,       //!< Latent heat of vaporisation of water (J/kg)
+    Psychr = CpAir*P0/LHe/Mwa;  //!< Psychrometric constant (Pa/K)
 
 double svp(double temperature);
+double svpSlope(double temperature);
+double saturatedMoistureContent(double temperature);
 double vp(double temperature, double rh);
 double ah(double temperature, double rh);
 double Tdew(double temperature, double rh);
 double moistureDeficit(double temperature, double rh);
 double ahDeficit(double temperature, double rh);
-double rh(double temperature, double moistureDeficit);
+double rhFromMc(double temperature, double moistureContent);
+double rhFromMd(double temperature, double moistureDeficit);
 double vpd(double temperature, double rh);
+double moistureContent(double temperature, double vp);
 double propControl(double input, double pBand, double maxResponse);
 
 } //namespace

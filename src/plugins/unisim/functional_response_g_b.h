@@ -21,7 +21,7 @@ public:
 
 private:
     // parameters
-    double apparancy, resourceDensity, demand;
+    double apparency, resourceDensity, demand;
     double egestionRatio, respiration;
 
 

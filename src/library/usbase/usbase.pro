@@ -46,6 +46,7 @@ HEADERS += \
         $${US_BASE}/root_solver.h \
         $${US_BASE}/strata.h \
         $${US_BASE}/strata_base.h \
+        $${US_BASE}/string_map.h \
         $${US_BASE}/test_num.h \
         $${US_BASE}/ustime.h \
         $${US_BASE}/trace.h \

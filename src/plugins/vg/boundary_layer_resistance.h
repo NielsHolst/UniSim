@@ -20,11 +20,13 @@ public:
 
 private:
     // Parameters
-    double windspeed, greenhouseVentilation;
+    double windSpeed, ventilation;
 
     // Variables
-    double rbH2O;
+    double value;
 
+    // Methods
+    void updateValue(double windSpeed);
 };
 } //namespace
 

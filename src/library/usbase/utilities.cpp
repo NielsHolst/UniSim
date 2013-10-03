@@ -129,8 +129,14 @@ double interpolate(const QMap<int, double> xy, int x) {
 }
 
 //! Power function that tolerates x equal to zero
-double pow0(double x, double c) {
-    return (x == 0) ? 0. : std::pow(x, c);
+double pow0(double x, double c, QObject *context) {
+    if (x == 0) {
+        if (c >= 0) return 0.;
+        QString msg = "Cannot raise zero to power of '%1'";
+        throw Exception(msg.arg(c), context);
+    }
+    else
+        return std::pow(x, c);
 }
 
 //! Returns exp(-x) where x>=0
@@ -327,7 +333,7 @@ void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart) {
     }
 }
 
-QStringList splitParentChildExpression(QString expression_) {
+QStringList splitParentChildExpression(QString expression_, QObject *context) {
     QString expression = expression_.trimmed();
     int begin = expression.indexOf('[');
     int end = expression.indexOf(']');
@@ -344,7 +350,7 @@ QStringList splitParentChildExpression(QString expression_) {
         msg = "Expression misses child name inside the brackets";
     if (!msg.isEmpty()) {
         msg += ": '" + expression + "'";
-        throw (Exception(msg));
+        throw Exception(msg, context);
     }
     QString parent = expression.left(begin).trimmed();
     QString child = expression.mid(begin + 1, end - begin -1).trimmed();
@@ -445,6 +451,10 @@ template<> QDate stringToValue<QDate>(QString s_, QObject *concerning) {
     QDate date = QDate::fromString(s, "d/M/yyyy");
     if (!date.isValid())
         date = QDate::fromString(s, "d.M.yyyy");
+    if (!date.isValid())
+        date = QDate::fromString(s, "yyyy/M/d");
+    if (!date.isValid())
+        date = QDate::fromString(s, "yyyy.M.d");
     if (!date.isValid()) {
         QString msg = "Cannot convert '" + s + "' to a date";
         throw Exception(msg, concerning);

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Greenhouse energetics">
+
+    <integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="5760"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="55"/>
+		<parameter name="timeStep" value="5"/>
+		<parameter name="timeUnit" value="m"/>
+	</model>
+
+	<model name="greenhouse">
+		<model name="construction" type="vg::GreenhouseConstruction">
+			<parameter name="glassType"  value="Single"/>
+			<parameter name="lampType"  value="HPSL"/>
+		</model>
+		<model name="energetics" type="vg::GreenhouseEnergetics">
+			<parameter name="dewCondensationRate"  value="0"/>
+			<parameter name="ventilation"  value="0.5"/>
+			<parameter name="energyScreenState"  value="0"/>
+			<parameter name="longWaveLight"  value="16"/>
+			<parameter name="shortWaveLight"  value="20"/>
+			<parameter name="lampHeat"  value="8"/>
+			<parameter name="Toutdoors"  value="20"/>
+			<parameter name="Tindoors"  value="27"/>
+			<parameter name="LEtot"  value="0"/>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Greenhouse energetics"/>
+		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
+		<trace label="Tunheated (oC)" ref="energetics[Tunheated]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Greenhouse energetics"/>
+		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
+		<trace label="Energy balance (kW_m2)" ref="energetics[energyBalance]" divisor="1000"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Greenhouse energetics"/>
+		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
+		<trace label="Heat capacity (W_m2_K)" ref="energetics[heatCapacity]"/>
+	</output>
+
+	</simulation>

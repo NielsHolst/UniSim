@@ -1,7 +1,7 @@
 <project>
     <shortName>UniSim</shortName>
     <fullName>Universal Simulator</fullName>
-    <version>1-41</version>
+    <version>1-44</version>
     <installerFilename></installerFilename>
     <readmeFile>C:/data/QDev/UniSim/readme.txt</readmeFile>
     <licenseFile>C:/data/QDev/UniSim/ship/gpl-3.0.txt</licenseFile>

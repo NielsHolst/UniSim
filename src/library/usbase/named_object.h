@@ -28,6 +28,7 @@ public:
     long int number() const;
 
     NamedObject* root();
+    QString absolutePath(QString relativePath);
     template <class T> QList<T> seekMany(QString name);
     template <class T> T peekOne(QString name);
     template <class T> T seekOne(QString name);
@@ -51,7 +52,7 @@ public:
     template <class T> T seekPrecedingSibling(QString name);
     template <class T> T peekFollowingSibling(QString name);
     template <class T> T seekFollowingSibling(QString name);
-    template <class T> int seekSiblingPosition(QString name);
+    template <class T> int seekSiblingPosition();
     template <class T> QList<T> seekSiblings(QString name, int *ixPreceding = 0);
 
     template <class T> T peekOneDescendant(QString name);
@@ -69,12 +70,6 @@ private:
     static long int objectCount;
     long int myNumber;
     template <class T> static QList<T> filterByName(QString name, const QList<QObject*> &candidates);
-    struct AbsolutePath {
-        AbsolutePath(NamedObject *o, QString a) : origin(o), absoluteName(a) {}
-        NamedObject *origin;
-        QString absoluteName;
-    };
-    AbsolutePath absolutePath(QString name);
 };
 
 //! Finds a number (n>=0) of objects anywhere in the object tree
@@ -120,7 +115,7 @@ template <class TParentPtr, class TChildPtr> TChildPtr NamedObject::seekOne(QStr
 */
 template <class TParentPtr, class TChildPtr> QList<TChildPtr> NamedObject::seekMany(QString expression)
 {
-    QStringList split = UniSim::splitParentChildExpression(expression);
+    QStringList split = UniSim::splitParentChildExpression( absolutePath(expression), this );
     QString parent = split[0], child = split[1];
 
     QList<TParentPtr> parentPtr = seekMany<TParentPtr>(parent);
@@ -265,9 +260,9 @@ template <class T> T  NamedObject::seekFollowingSibling(QString name) {
     return sibling;
 }
 //! Finds my position among siblings
-template <class T> int NamedObject::seekSiblingPosition(QString name) {
+template <class T> int NamedObject::seekSiblingPosition() {
     int ixPreceding;
-    seekSiblings<T>(name, &ixPreceding);
+    seekSiblings<T>("*", &ixPreceding);
     return ixPreceding + 1;
 }
 

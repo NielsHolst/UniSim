@@ -16,7 +16,7 @@ QString delCmd(QDir dir, QString fileName) {
     return "if exist " + filePath +" del " + filePath + " /Q\n";
 }
 
-int main(int argc, char *argv[])
+int main(int, char **)
 {
     QString filePath = "../win/clean_ephemerals.bat";
     openFile(filePath);
@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
     write(cleanCmd(getSourceDir(), "build/own_tools/write_clean_ephemerals"));
     write(cleanCmd(getSourceDir(), "build/own_tools/write_plugins_project"));
     write(cleanCmd(getSourceDir(), "build/own_tools/write_unisim_root"));
+    write(cleanCmd(getSourceDir(), "build/own_tools/write_qwt_version"));
 
 
     write(cleanCmd(getSourceDir(), "applications/unisim"));

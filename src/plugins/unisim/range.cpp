@@ -13,16 +13,13 @@ namespace UniSim{
 Range::Range(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("progress", &progress, 0., this,
-    "The @F progress parameter is a number in the range [0,1]. "
-    "Set this as a variable in the XML file to achieve dynamic behaviour.");
-
-    new Parameter<double>("min", &minValue, 0., this, "Minimum value in range");
-    new Parameter<double>("max", &maxValue, 100., this, "Maximum value in range");
-    new Parameter<QString>("scale", &scaleAsString, QString("linear"), this,
+    addParameterRef<double>(Name(progress), "steps[progress]");
+    addParameter<double>("min", &minValue, 0., "Minimum value in range");
+    addParameter<double>("max", &maxValue, 100., "Maximum value in range");
+    addParameter<QString>("scale", &scaleAsString, QString("linear"),
 	"Scale is either @F linear or @F {log10}. "
 	"With a @F log10 scale, @F min=-2 and @F {max=3}, values in the range [0.01,1000] will result");
-    new Variable<double>("value", &value, this, "Current value in range");
+    addVariable<double>(Name(value), "Current value in range");
 
 }
 void Range::initialize() {

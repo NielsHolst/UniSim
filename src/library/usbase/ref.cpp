@@ -29,6 +29,15 @@ void Ref::clear() {
     all.clear();
 }
 
+void Ref::remove(ParameterBase *theParameter) {
+    for (int i = 0; i < all.size(); ++i) {
+        if (all.at(i)->parameter == theParameter) {
+            delete all.takeAt(i);
+            break;
+        }
+    }
+}
+
 namespace {
 
     template <class ParameterT, class VariableT, class ValuePtrT>
@@ -71,6 +80,7 @@ void Ref::resolve() {
             couple<unsigned>(ref->parameter, ref->source) ||
             couple<float>(ref->parameter, ref->source) ||
             couple<double>(ref->parameter, ref->source) ||
+            couple<QTime>(ref->parameter, ref->source) ||
             couple<QDate>(ref->parameter, ref->source) ||
             couple<QString>(ref->parameter, ref->source);
         if (!coupled) {
@@ -82,7 +92,7 @@ void Ref::resolve() {
 
 QString Ref::notFoundMessage() {
     QString from = QString("referenced from '%1'").arg(parameterParent->id().label());
-    QStringList names = splitParentChildExpression(reference);
+    QStringList names = splitParentChildExpression(reference, parameterParent);
     NamedObject *model = parameterParent->peekOne<NamedObject*>(names[0]);
     // No model found
     if (!model) {
@@ -93,7 +103,7 @@ QString Ref::notFoundMessage() {
     // No variable found
     QString msg = "Error in reference '%1' %2: Parameter named '%3' not found.\n"
             "Model '%4' contains these parameters and variables:\n%5";
-    QStringList vars = lookupVariables(parameterParent);
+    QStringList vars = lookupVariables(model);
     msg = msg.arg(reference).arg(from).arg(names[1]).arg(names[0]).arg(vars.join("\n"));
     if (vars.isEmpty())
         msg += "None!";
@@ -103,8 +113,8 @@ QString Ref::notFoundMessage() {
 QStringList Ref::lookupVariables(NamedObject *parent) {
     QList<VariableBase*> var = parent->seekChildren<VariableBase*>("*");
     QStringList names;
-    for (int i = 0; i < names.size(); ++i) {
-        names << var[i]->id().label();
+    for (int i = 0; i < var.size(); ++i) {
+        names << "'" + var[i]->id().label() + "'";
     }
     return names;
 }

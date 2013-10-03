@@ -13,39 +13,38 @@ using namespace UniSim;
 namespace vg {
 	
 ProportionalControl::ProportionalControl(Identifier name, QObject *parent)
-	: Model(name, parent)
+    : DirectedControl(name, parent)
 {
-    addParameter<double>(Name(actualValue), 20., "");
-    addParameter<double>(Name(targetValue), 20., "");
-    addParameter<double>(Name(gapMultiplier), 1., "");
-    addParameter<double>(Name(pBand), 5., "");
-    addParameter<double>(Name(maxResponse), 100., "");
-    addParameter<QString>("targetType", &targetTypeString, QString("ceiling"), "");
-    addVariable<double>(Name(response), "");
+    addParameter<double>(Name(actualValue), 20.,
+        "Current value being regulated");
+    addParameter<double>(Name(targetValue), 20.,
+        "Value to regulate towards");
+    addParameter<double>(Name(gapMultiplier), 1.,
+        "Multiplier on gap between @F actualValue and @F {targetValue}");
+    addParameter<double>(Name(pBand), 5.,
+        "Proportional band of response");
+    addParameter<double>(Name(maxSignal), 100.,
+        "Maximum absolute value of @F {signal}");
+    addParameter<bool>(Name(signalNotNegative), true,
+        "Should a negative @F signal be set to zero?");
+
+    addVariable<double>(Name(signal),
+        "Response between zero and @F maxSignal, increasing with increasing difference between "
+        "@F actualValue and @F {targetValue}, positive or negative according to direction of change "
+        "and setting of @F signalNotNegative flag");
 }
 
 void ProportionalControl::reset() {
-    decodeTargetType();
-    update();
-}
-
-void ProportionalControl::decodeTargetType() {
-    QString s = targetTypeString.toLower();
-    if (s == "floor")
-        targetType = Floor;
-    else if (s == "ceiling")
-        targetType = Ceiling;
-    else {
-        QString msg = "Target type must be 'floor' or 'ceiling', not '%1'";
-        throw Exception(msg.arg(targetTypeString), this);
-    }
+    signal = 0;
 }
 
 void ProportionalControl::update() {
     double gap = gapMultiplier*(actualValue - targetValue);
-    if (targetType == Ceiling)
+    if (direction() == Ceiling)
         gap = -gap;
-    response = propControl(gap, pBand, maxResponse);
+    signal = propControl(gap, pBand, maxSignal);
+    if (signal < 0. && signalNotNegative)
+        signal = 0.;
 }
 
 

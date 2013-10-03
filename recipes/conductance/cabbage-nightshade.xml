@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<simulation version="1.0">
-    <integrator type="Steps">
+<simulation name="Cabbage field" version="1.0">
+    <integrator name="steps" type="UniSim::Steps">
         <parameter name="maxSteps" value="100"/>
     </integrator>
 	
-	<model name="calendar" type="Calendar">
+	<model name="calendar" type="UniSim::Calendar">
 		<parameter name="initialDate" value="1/1/2010"/>
 	</model>
 	

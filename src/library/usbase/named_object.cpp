@@ -68,36 +68,19 @@ NamedObject* NamedObject::root() {
 
 }
 
-NamedObject::AbsolutePath NamedObject::absolutePath(QString name) {
-    if (name[0] != '.') {
-        return AbsolutePath(root(), name);
+QString NamedObject::absolutePath(QString path) {
+    if (path[0] != '.') return path;
+    NamedObject *origin = this;
+    QString tail = path;
+    while (tail.left(2) == "..") {
+        origin = origin->seekParent<NamedObject*>("*");
+        tail = tail.mid( tail[2]== '/' ? 3 : 1);
     }
-
-    AbsolutePath res = AbsolutePath(this, name);
-    res.origin = this;
-    res.absoluteName = name.mid(2);
-
-    if (name.left(2) == "./") {
-        if (res.absoluteName[0] == '.') {
-            QString msg = "'./' cannot be followed by another indirection (i.e. a '.') in '%1'";
-            throw Exception(msg.arg(name), this);
-        }
-    }
-    else {
-        while (res.absoluteName.left(3) == "../") {
-            res.origin = res.origin->seekParent<NamedObject*>("*");
-            res.absoluteName = res.absoluteName.mid(3);
-        }
-        if (res.absoluteName.left(2) == "./") {
-            QString msg = "A '../' cannot be follow by a './' indirection in '%1'";
-            throw Exception(msg.arg(name), this);
-        }
-        if (res.absoluteName[0] == '/') {
-            QString msg = "Double-slash '//' not allowed in '%1'";
-            throw Exception(msg.arg(name), this);
-        }
-    }
-    return res;
+    if (tail.left(2) == "./" || tail.left(2) == ".[")
+        tail = tail.mid(1);
+    else
+        tail.prepend("/");
+    return origin->fullLabel() + tail;
 }
 
 } //namespace

@@ -14,8 +14,10 @@ namespace UniSim{
 FunctionalResponseGB::FunctionalResponseGB(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("apparancy", &apparancy, 1., this,
+    new Parameter<double>("apparency", &apparency, 1., this,
         "The apparancy of the resource, also known as attack rate or search rate");
+    new Parameter<double>("apparancy", &apparency, 1., this,
+        "Common miss-spelling");
     new Parameter<double>("resourceDensity", &resourceDensity, 100., this,
         "The density of the resource (prey, host)");
     new Parameter<double>("demand", &demand, 1.0, this,
@@ -53,7 +55,7 @@ void FunctionalResponseGB::update() {
         throw Exception(msg.arg(egestionRatio));
     }
     totalDemand = (demand + respiration)/(1. - egestionRatio);
-    totalSupply = GBFuncResp(totalDemand, apparancy*resourceDensity);
+    totalSupply = GBFuncResp(totalDemand, apparency*resourceDensity);
     if (totalSupply > resourceDensity)
         totalSupply = resourceDensity;
     double netSupply = totalSupply*(1. - egestionRatio);

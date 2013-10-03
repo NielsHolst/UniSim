@@ -43,7 +43,7 @@ private:
     QTime timeOfDay;
     QDateTime dateTime;
     int day, month, year, hour, minute, second, dayOfYear, totalTime, totalTimeSteps;
-    double totalDays, dateAsReal, dayLength, sinb, sinLD, cosLD;
+    double timeStepSecs, totalDays, dateAsReal, dayLength, sinb, sinLD, cosLD;
 
 };
 

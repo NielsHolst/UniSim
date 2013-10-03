@@ -77,7 +77,7 @@ QString Mussel_bedFactory::description() const {
 
 QStringList Mussel_bedFactory::authors() const {
     return QStringList()
-        << "Niels & Antonio";
+            << "Antonio" << "Niels";
 
 }
 
@@ -85,7 +85,9 @@ QObject* Mussel_bedFactory::asQObject() {
    return this;
 }
 
+#if QT_VERSION < 0x50000
 Q_EXPORT_PLUGIN2(mussel_bed_factory, Mussel_bedFactory)
+#endif
 
 }
  //namespace

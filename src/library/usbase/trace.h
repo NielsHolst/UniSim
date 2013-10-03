@@ -39,11 +39,11 @@ public:
 
     Output* traceParent();
     Model* variableParent();
-    double currentValue();
     QVector<double>* history();
 
 private:
     // methods
+    void setScaling();
     void setSummary();
     void setType();
     void setThreshold(QString summaryCode);
@@ -51,6 +51,8 @@ private:
 
     void resetSummary();
     void updateSummary();
+
+    double currentValue();
 
     // data
     VariableBase *variable;
@@ -61,6 +63,8 @@ private:
         double value, sum, prevValue, minValue, maxValue, threshold, x;
         bool pastThreshold, hasPrevValue;
     } s;
+
+    double multiplier, divisor;
 
     QVector<double> _history;	//!< Series of collected values
     bool historyCleared;

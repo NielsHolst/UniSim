@@ -3,32 +3,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "file_locations_forgiving.h"
-
 #include <QFileDialog>
 #include "file_location_dialog.h"
+#include "main_window.h"
 
 using namespace UniSim;
 
 FileLocationDialog::FileLocationDialog(FileLocationInfo::FileType fileType)
-    : _location()
+    : title("Select folder for " + FileLocationInfo::label(fileType).toLower()),
+      folder(FileLocations::possibleLocation(fileType).absolutePath()),
+      _location()
 {
-    dialog = new QFileDialog(0, "Select folder for " + FileLocationInfo::label(fileType).toLower());
-    dialog->setDirectory(FileLocations::possibleLocation(fileType));
-    dialog->setFileMode(QFileDialog::Directory);
-}
-
-FileLocationDialog::~FileLocationDialog() {
-    delete dialog;
 }
 
 bool FileLocationDialog::exec() {
-    QStringList fileNames;
-    QDir dir;
-    if (dialog->exec()) {
-        fileNames = dialog->selectedFiles();
+    QFileDialog dialog(mainWindow(), title, folder);
+    if (dialog.exec()) {
+        QStringList fileNames = dialog.selectedFiles();
         if (fileNames.size() > 0) {
-            _location = QDir(fileNames[0]);
+            QDir dir = QFileInfo(fileNames[0]).absoluteDir();
+            _location = dir.absolutePath();
             return true;
         }
     }

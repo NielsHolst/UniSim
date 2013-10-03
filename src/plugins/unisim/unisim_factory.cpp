@@ -201,7 +201,7 @@ void UniSim::UniSimFactory::defineProducts() {
 
     AddProduct(StageDemand,
     "This model calculates the growth demand of the stage, identified by @F {stage}, which must be of type @F {UniSim::Stage}."
-    "The stage's @growthDemand method is used for the calculation.");
+    "The stage's @F growthDemand method is used for the calculation.");
 
     AddProduct(Steps,
     "Integrator class. Description pending");

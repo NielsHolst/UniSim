@@ -8,86 +8,95 @@ CONFIG += plugin
 include ($${US_BASE}/base.pri)
 
 HEADERS += \
+    air_infiltration.h \
+    blackout_screen_controller.h \
     boundary_layer_resistance.h \
-    crop_wetness.h \
-    cover.h \
-    indoors.h \
-    indoors_humidity.h \
-    indoors_radiation.h \
-    indoors_radiation_absorption.h \
-    indoors_temperature.h \
+    control_element.h \
+    control_element_asym.h \
+    control_element_base.h \
+    cover_dew.h \
+    cover_temperature.h \
+    cover_vapour_flux.h \
+    crop.h \
+    crop_layer.h \
+    crop_radiation_absorption.h \
+    directed_control.h \
+    energy_screen_balance.h \
+    energy_screen_controller.h \
+    environment.h \
     general.h \
-    greenhouse.h \
-    greenhouse_energy.h \
-    greenhouse_temperature.h \
-    greenhouse_transmission.h \
+    greenhouse_construction.h \
+    greenhouse_energetics.h \
     greenhouse_ventilation.h \
-    lamp_base.h \
-    lamp_hpsl_400.h \
-    lamp_led.h \
-    lamp_switch.h \
-    outdoors.h \
+    heating_demand.h \
+    humidity_setpoints.h \
+    indoors_radiation.h \
+    lamp_attributes.h \
+    light_controller.h \
+    microclimate_humidity.h \
+    microclimate_temperature.h \
+    pid_control.h \
     pipe.h \
     pipes.h \
     proportional_control.h \
-    screen.h \
-    screen_air_transmission.h \
-    screen_energy_base.h \
-    screen_energy_balance.h \
-    screen_energy_light.h \
-    screen_light_transmission.h \
-    screen_shade.h \
+    screen_dew.h \
     screen_temperature.h \
     screen_transmission.h \
-    sp_co2.h \
-    sp_heating.h \
-    sp_humidity_base.h \
-    sp_humidity_regular.h \
-    sp_ventilation_opening.h \
-    sp_ventilation_opening_max.h \
-    sp_ventilation_temperature.h \
-    sky.h \
+    screens.h \
+    shade_screen_controller.h \
     stomatal_resistance.h \
-    vg_factory.h
+    temperature_setpoints.h \
+    variable_collection.h \
+    ventilation_by_temperature_diff.h \
+    ventilation_controller.h \
+    ventilation_latent_energy_balance.h \
+    ventilation_max.h \
+    vg_factory.h \
+    windows_ventilation.h
 
 SOURCES += \
+    air_infiltration.cpp \
+    blackout_screen_controller.cpp \
     boundary_layer_resistance.cpp \
-    crop_wetness.cpp \
-    cover.cpp \
-    indoors.cpp \
-    indoors_humidity.cpp \
-    indoors_radiation.cpp \
-    indoors_radiation_absorption.cpp \
-    indoors_temperature.cpp \
+    control_element.cpp \
+    control_element_asym.cpp \
+    control_element_base.cpp \
+    cover_dew.cpp \
+    cover_temperature.cpp \
+    cover_vapour_flux.cpp \
+    crop.cpp \
+    crop_layer.cpp \
+    crop_radiation_absorption.cpp \
+    directed_control.cpp \
+    energy_screen_balance.cpp \
+    energy_screen_controller.cpp \
+    environment.cpp \
     general.cpp \
-    greenhouse.cpp \
-    greenhouse_energy.cpp \
-    greenhouse_temperature.cpp \
-    greenhouse_transmission.cpp \
+    greenhouse_construction.cpp \
+    greenhouse_energetics.cpp \
     greenhouse_ventilation.cpp \
-    lamp_base.cpp \
-    lamp_hpsl_400.cpp \
-    lamp_led.cpp \
-    lamp_switch.cpp \
-    outdoors.cpp \
+    heating_demand.cpp \
+    humidity_setpoints.cpp \
+    indoors_radiation.cpp \
+    lamp_attributes.cpp \
+    light_controller.cpp \
+    microclimate_humidity.cpp \
+    microclimate_temperature.cpp \
+    pid_control.cpp \
     pipe.cpp \
     pipes.cpp \
     proportional_control.cpp \
-    screen.cpp \
-    screen_air_transmission.cpp \
-    screen_energy_base.cpp \
-    screen_energy_balance.cpp \
-    screen_energy_light.cpp \
-    screen_light_transmission.cpp \
-    screen_shade.cpp \
+    screen_dew.cpp \
     screen_temperature.cpp \
-    sp_co2.cpp \
-    sp_heating.cpp \
-    sp_humidity_base.cpp \
-    sp_humidity_regular.cpp \
-    sp_ventilation_opening.cpp \
-    sp_ventilation_opening_max.cpp \
-    sp_ventilation_temperature.cpp \
-    sky.cpp \
+    screen_transmission.cpp \
+    screens.cpp \
+    shade_screen_controller.cpp \
     stomatal_resistance.cpp \
-    vg_factory.cpp
+    temperature_setpoints.cpp \
+    variable_collection.cpp \
+    ventilation_by_temperature_diff.cpp \
+    ventilation_controller.cpp \
+    ventilation_latent_energy_balance.cpp \
+    ventilation_max.cpp \
+    vg_factory.cpp \
+    windows_ventilation.cpp

@@ -31,33 +31,40 @@ copy ..\src\applications\unisim*.exe bin
 copy ..\src\applications\base*.dll bin
 copy ..\src\applications\engine*.dll bin
 copy ..\vendor\gsl\bin\libgsl*.dll bin
-copy ..\vendor\qwt_qt4\lib\qwt.dll bin
+copy ..\vendor\qwt_qt5\lib\qwt.dll bin
 
-rem Copy MinGW and Qt lib files
-if exist %QT_ROOT%\mingw\lib goto :newer_qt_versions
-pushd %QT_ROOT%\qt\bin
-copy mingwm10.dll %UNISIM_BIN%
+rem copy MinGW libraries
+pushd %QT_ROOT%
+copy icu*.dll %UNISIM_BIN%
+copy libwinpthread-1.dll %UNISIM_BIN%
 copy libgcc_s_dw2-1.dll %UNISIM_BIN%
-copy qtcore4.dll %UNISIM_BIN%
-copy qtgui4.dll %UNISIM_BIN%
-copy QtNetwork4.dll %UNISIM_BIN%
-copy qtxml4.dll %UNISIM_BIN%
-copy qtxmlpatterns4.dll %UNISIM_BIN%
+copy libstd~1.dll %UNISIM_BIN%
+rem copy Qt libraries
+copy qt5core.dll %UNISIM_BIN%
+copy qt5gui.dll %UNISIM_BIN%
+copy Qt5Network.dll %UNISIM_BIN%
+copy Qt5PrintSupport.dll %UNISIM_BIN%
+copy qt5test.dll %UNISIM_BIN%
+copy Qt5Widgets.dll %UNISIM_BIN%
+copy qt5xmlpatterns.dll %UNISIM_BIN%
 popd
-goto :end_copy_lib
-
-:newer_qt_versions
-pushd C:\QtSDK\mingw\bin
-copy mingwm10.dll %UNISIM_BIN%
-copy libgcc_s_dw2-1.dll %UNISIM_BIN%
+rem create Qt plugin folders
+pushd %UNISIM_BIN%
+md accessible 
+md imageformats
+md platforms
 popd
-pushd %QT_ROOT%\mingw\bin
-copy qtcore4.dll %UNISIM_BIN%
-copy qtgui4.dll %UNISIM_BIN%
-copy QtNetwork4.dll %UNISIM_BIN%
-copy qtsvg4.dll %UNISIM_BIN%
-copy qtxml4.dll %UNISIM_BIN%
-copy qtxmlpatterns4.dll %UNISIM_BIN%
+rem copy Qt plugin folders
+pushd C:\Qt\Qt5.1.1\5.1.1\mingw48_32\plugins
+copy accessible %UNISIM_BIN%\accessible
+copy imageformats %UNISIM_BIN%\imageformats
+copy platforms %UNISIM_BIN%\platforms
+popd
+rem Remove debug versions of Qt plugins
+pushd %UNISIM_BIN%
+del /Q accessible\*d.dll
+del /Q imageformats\*d.dll
+del /Q platforms\*d.dll
 popd
 :end_copy_lib
 

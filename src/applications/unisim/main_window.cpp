@@ -319,7 +319,7 @@ void MainWindow::doWindowsSaveGraphics() {
             if (!subWindow)
                 continue;
             if (subWindow->type() == SubWindow::SimulationOutput) {
-                QPixmap pixmap = QPixmap::grabWidget(windows[i]->widget());
+                QPixmap pixmap = windows[i]->widget()->grab();
                 if (pixmap.isNull())
                     throw Exception("Could not grab graphics for saving");
                 QString filePath = QString("%1/%2-graphics-%3.png").arg(path).arg(++fileNo).arg(rinse(windows[i]->windowTitle()));

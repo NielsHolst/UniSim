@@ -17,13 +17,12 @@ public:
     ScreenTemperature(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
-
 private:
     // Parameters
     double Tindoors, Tcover;
 
     // Variables
-    double temperature;
+    double value;
 };
 } //namespace
 

@@ -16,7 +16,7 @@ using namespace UniSim;
 namespace ecotox {
 
 DepositionFlush::DepositionFlush(UniSim::Identifier name, QObject *parent)
-    : Model(name, parent)
+    : Model(name, parent), pollenOnsetDate(0)
 {
     new Parameter<double>("duration", &durationAsDouble, 14., this,
                           "Duration (days) of pollen release from crop");
@@ -67,16 +67,23 @@ void DepositionFlush::reset() {
 }
 
 void DepositionFlush::calcScaling() {
-    double sum = 0;
+    double peak = 0;
     for (int i = 1; i < duration; ++i) {
-        sum += f(i);
+        if (f(i) > peak)
+            peak = f(i);
     }
-    double scaling1 = sum;
+    scaling = 1./peak;
 
-    double eps = loss->pullValue<double>("rate");
-    double scaling2 = -50.0700*eps*eps*eps + 28.0483*eps*eps - 6.95117*eps + 1;
+//    double sum = 0;
+//    for (int i = 1; i < duration; ++i) {
+//        sum += f(i);
+//    }
+//    double scaling1 = sum;
 
-    scaling = 1/scaling1/scaling2;
+//    double eps = loss->pullValue<double>("rate");
+//    double scaling2 = -50.0700*eps*eps*eps + 28.0483*eps*eps - 6.95117*eps + 1;
+
+//    scaling = 1/scaling1/scaling2;
 }
 
 void DepositionFlush::update() {

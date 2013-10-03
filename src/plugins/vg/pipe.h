@@ -7,8 +7,8 @@
 #ifndef VG_PIPE_H
 #define VG_PIPE_H
 
-#include <QMap>
 #include <usbase/model.h>
+#include <usbase/string_map.h>
 
 namespace vg {
 
@@ -16,35 +16,29 @@ class Pipe : public UniSim::Model
 {
 public:
     Pipe(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 
 private:
     // Parameters
     QString pipeType;
-    double Tindoors, Tunheated, heatingDemand, spHeating, otherPipesHeatTransfer,
-        pipeLength, Tmax, heatParameter, heatTransferParameter, pidK, pidRho;
-    bool isEnergyScreenOpening;
-    int timeStep;
-    char timeUnit;
+    double heatingDemand, Tunheated, Tindoors, Tminimum, actualTpipe, TmaxPipe, pipeLength;
+    int energyScreenCourse;
 
     // Variables
-    double temperature, heatTransfer, heatEnergy;
+    double signal, _heatFlux;
+
+    // Data
+    typedef enum {p25, s26, s33, s51} PipeType;
+    UniSim::StringMap<PipeType> pipeTypes;
+    double a, b, c;
 
     // Methods
-    double heatingTemperature();
-    double equilibrate(double Told, double Tnew) const;
-    double dtSec() const;
-    double dtMin() const;
-
-    struct Par {
-        Par() {}
-        Par(double _a, double _b, double _c) : a(_a), b(_b), c(_c) {}
-        double a, b, c;
-    };
-    QMap<QString, Par> par;
-    QString pipeTypes();
-    double parabola(QString name, double dTemp);
+    double energyScreenCorrection();
+    double heatFlux(double Tpipe);
+    double Tpipe (double _heatFlux);
+    void selfTest();
 };
 } //namespace
 

@@ -40,6 +40,7 @@ QFileInfo findNearestFile(QDir home, QString subFolder, QString fileName);
 
 //! @name Mathematics
 //@{
+template<class T> int sign(T x);
 template<class T> T minMax(T low, T x, T high);
 double accum(const QVector<double> &x);
 void increment(QVector<double> &x, const QVector<double> &toAdd);
@@ -48,7 +49,7 @@ QVector<double> add(const QVector<double> &x, const QVector<double> &y);
 void scale(QVector<double> &x, double factor);
 
 double interpolate(const QMap<int, double> xy, int x);
-double pow0(double x, double c);
+double pow0(double x, double c, QObject *context = 0);
 double negExp(double x);
 double divBounded(double x, double y, double bound = std::numeric_limits<double>::max());
 double GBFuncResp(double demand, double supply);
@@ -66,7 +67,7 @@ QStringList decodeList(QString s, QObject *context = 0);
 template<class T> QList<T> decodeList(QString s, QObject *context = 0);
 template<class T, class U> QMap<T,U> decodeList(QString s, QObject *context = 0);
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
-QStringList splitParentChildExpression(QString expression);
+QStringList splitParentChildExpression(QString expression, QObject *context = 0);
 template <class T> QList< QPair<QString, T> > decodeNameValueList(QString nameValueList, QObject *concerning = 0);
 
 template<class T> T missingValue();
@@ -106,6 +107,10 @@ void writeStandardTestFile(QString filePath);
 
 // ========================
 // Template implementations
+
+template<class T> int sign(T x) {
+    return (x > 0) ? 1 : (x < 0) ? -1 : 0;
+}
 
 template<class T> T minMax(T low, T x, T high) {
     if (x < low)

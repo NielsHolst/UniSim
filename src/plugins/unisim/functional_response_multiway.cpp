@@ -70,7 +70,7 @@ void FunctionalResponseMultiway::createLinks(Links &links, QStringList refs) {
 void FunctionalResponseMultiway::extractNames(QStringList &names, QStringList refs) {
     names.clear();
     for (int i = 0; i < refs.size(); ++i) {
-        QStringList parts = splitParentChildExpression(refs[i]);
+        QStringList parts = splitParentChildExpression(refs[i], this);
         names << parts[0];
     }
 }

@@ -9,17 +9,14 @@
 #include <QDir>
 #include <usbase/file_locations.h>
 
-class QFileDialog;
-
 class FileLocationDialog
 {
 public:
     FileLocationDialog(UniSim::FileLocationInfo::FileType fileType);
-    ~FileLocationDialog();
     bool exec();
     QDir location() const;
 private:
-    QFileDialog *dialog;
+    QString title, folder;
     QDir _location;
 };
 

@@ -7,11 +7,11 @@
 #ifndef VG_PROPORTIONAL_CONTROL_H
 #define VG_PROPORTIONAL_CONTROL_H
 
-#include <usbase/model.h>
+#include "directed_control.h"
 
 namespace vg {
 
-class ProportionalControl : public UniSim::Model
+class ProportionalControl : public DirectedControl
 {
 public:
     ProportionalControl(UniSim::Identifier name, QObject *parent);
@@ -20,15 +20,11 @@ public:
 
 private:
     // Parameters
-    double actualValue, targetValue, gapMultiplier, pBand, maxResponse;
-    QString targetTypeString;
-    enum{Floor, Ceiling} targetType;
+    double actualValue, targetValue, gapMultiplier, pBand, maxSignal;
+    bool signalNotNegative;
 
     // Variables
-    double response;
-
-    // Methods
-    void decodeTargetType();
+    double signal;
 };
 } //namespace
 

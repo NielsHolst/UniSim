@@ -22,7 +22,7 @@ public:
 
 private:
     // parameters
-    double distance, distanceExp, distanceMin, halfDist, maxTotal;
+    double distance, distanceExp, distanceMin, halfDist, peakDensity;
 
     // pull variables
     double

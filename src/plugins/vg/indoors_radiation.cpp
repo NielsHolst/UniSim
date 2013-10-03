@@ -4,6 +4,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/utilities.h>
+#include "greenhouse_construction.h"
 #include "indoors_radiation.h"
 
 using namespace UniSim;
@@ -13,40 +15,52 @@ namespace vg {
 IndoorsRadiation::IndoorsRadiation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(directOutdoors), "outdoors[dirRad]");
-    addParameterRef<double>(Name(diffuseOutdoors), "outdoors/records[difRad]");
-    addParameterRef<int>(Name(screenType), "screen[type]");
-    addParameterRef<double>(Name(trScreen), "screen/lightTransmission[transmission]");
-    addParameterRef<double>(Name(trGhDif), "greenhouse/transmission[diffuse]");
-    addParameterRef<double>(Name(trGhDir), "greenhouse/transmission[direct]");
+    addParameterRef<int>(Name(glassType), "construction[iGlassType]");
+    addParameterRef<double>(Name(sinb), "calendar[sinb]");
+    addParameterRef<double>(Name(outdoorsDirectRadiation), "environment[directRadiation]");
+    addParameterRef<double>(Name(outdoorsDiffuseRadiation), "environment[diffuseRadiation]");
+    addParameter<double>(Name(diffuseTransmission), 0.79, "Transmission of diffuse light through greenhouse construction [0;1]");
+    addVariable<double>(Name(direct), "Direct light transmitted through greenhouse construction (W/m2)");
+    addVariable<double>(Name(diffuse), "Diffuse light transmitted through greenhouse construction (W/m2)");
+}
 
-    addVariable<double>(Name(total), "Total indoors radiation");
-    addVariable<double>(Name(direct), "Direct indoors radiation");
-    addVariable<double>(Name(diffuse), "Diffuse indoors radiation");
+void IndoorsRadiation::initialize() {
+    switch (GreenhouseConstruction::GlassType(glassType)) {
+    case GreenhouseConstruction::Single:
+        a = 0.844;
+        b = 7.39;
+        c = -1.66;
+        break;
+    case GreenhouseConstruction::Double:
+        a = 0.818;
+        b = 9.77;
+        c = -1.73;
+        break;
+    case GreenhouseConstruction::Hortiplus:
+        a = 0.758;
+        b = 7.39;
+        c = -1.66;
+        break;
+    default:
+        throw Exception(QString("Unknown glass type number: %1").arg(glassType), this);
+    }
 }
 
 void IndoorsRadiation::reset() {
-    total = direct = diffuse = 0;
+    direct = diffuse = 0.;
 }
 
 void IndoorsRadiation::update() {
-    direct = trGhDif*directOutdoors;
-    diffuse = trGhDif*diffuseOutdoors;
-
-    direct *= trScreen;
-    diffuse *= trScreen;
-
-    if (screenType==1 || screenType==3) {
-         // Roof and side wall screens
-         direct *= 0.975;
-         diffuse *= 0.975;
+    if (sinb == 0.) {
+        direct = diffuse = 0.;
     }
-    else if (screenType > 0){
-        // Only roof screen
-        direct *= 0.95;
-        diffuse *= 0.95;
+    else {
+        double angle = asin(sinb)*180./PI;
+        double directTransmission = a/(1. + pow(angle/b, c));
+        Q_ASSERT(directTransmission>=0 && directTransmission<=1);
+        direct = directTransmission*outdoorsDirectRadiation;
+        diffuse = diffuseTransmission*outdoorsDiffuseRadiation;
     }
-    total = direct + diffuse;
 }
 
 

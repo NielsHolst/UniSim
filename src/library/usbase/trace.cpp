@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include "exception.h"
 #include "identifier.h"
 #include "model.h"
 #include "output.h"
@@ -15,14 +16,29 @@ namespace UniSim{
 Trace::Trace(QString name, VariableBase *variable_, QObject *parent)
     : Component(name, parent),
       variable(variable_),
+      multiplier(1.), divisor(1.),
       historyCleared(false)
 {
     output = dynamic_cast<Output*>(parent);
 }
 
 void Trace::amend() {
+    setScaling();
     setSummary();
     setType();
+}
+
+void Trace::setScaling() {
+    if (hasAttribute("multiplier")) {
+        multiplier = attribute("multiplier").value<double>();
+        if (multiplier == 0.)
+            throw Exception("Trace multiplier cannot be zero", this);
+    }
+    if (hasAttribute("divisor")) {
+        if (divisor == 0.)
+            throw Exception("Trace divisor cannot be zero", this);
+        divisor = attribute("divisor").value<double>();
+    }
 }
 
 void Trace::setSummary() {
@@ -209,7 +225,7 @@ Model* Trace::variableParent() {
 
 double Trace::currentValue() {
     QVariant v = variable->toVariant();
-    return v.value<double>();
+    return v.value<double>()*multiplier/divisor;
 }
 
 QVector<double>* Trace::history() {

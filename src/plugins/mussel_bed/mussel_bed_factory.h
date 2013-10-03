@@ -3,11 +3,9 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
 #ifndef UNISIM_MUSSEL_BED_FACTORY_H
 #define UNISIM_MUSSEL_BED_FACTORY_H
 
-#include <QObject>
 #include <usbase/factory_plug_in.h>
 
 namespace mussel_bed {

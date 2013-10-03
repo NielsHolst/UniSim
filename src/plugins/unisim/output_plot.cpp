@@ -69,8 +69,8 @@ OutputPlot::~OutputPlot() {
 void OutputPlot::amend() {
     Output::amend();
     if (traceRecords().size() < 2) {
-        QString msg("Output plot must have at least two traces");
-        throw Exception(msg, this);
+        QString msg("Output plot titled '%1' must have at least two traces");
+        throw Exception(msg.arg(title), this);
     }
 
     QList<DataGrid*> tables = seekChildren<DataGrid*>("*");

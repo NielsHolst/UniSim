@@ -11,7 +11,7 @@
 	</model>
 
 	<model name="funcresp1" type="UniSim::FunctionalResponseGB">
-		<parameter name="apparancy" value="0.8"/>
+		<parameter name="apparency" value="0.8"/>
 		<parameter name="resourceDensity" ref="resource[value]"/>
 		<parameter name="demand" value="10"/>
 		<parameter name="egestionRatio" value="0"/>
@@ -19,7 +19,7 @@
 	</model>
 
 	<model name="funcresp2" type="UniSim::FunctionalResponseGB">
-		<parameter name="apparancy" value="0.8"/>
+		<parameter name="apparency" value="0.8"/>
 		<parameter name="resourceDensity" ref="resource[value]"/>
 		<parameter name="demand" value="10"/>
 		<parameter name="egestionRatio" value="0.2"/>
@@ -27,7 +27,7 @@
 	</model>
 
 	<model name="funcresp3" type="UniSim::FunctionalResponseGB">
-		<parameter name="apparancy" value="0.8"/>
+		<parameter name="apparency" value="0.8"/>
 		<parameter name="resourceDensity" ref="resource[value]"/>
 		<parameter name="demand" value="10"/>
 		<parameter name="egestionRatio" value="0.2"/>

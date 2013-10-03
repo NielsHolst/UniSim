@@ -164,13 +164,7 @@ Simulation* SimulationMaker::parse(QString filePath)
     //amend<Integrator*>();
     //amend<Model*>();
     amend<Model*>();
-    try {
-        Ref::resolve();
-    }
-    catch (Exception &ex) {
-        throw Exception(message(ex.message()));
-    }
-
+    Ref::resolve();
     createTraces();
     amend<Output*>();
 
@@ -425,6 +419,7 @@ void SimulationMaker::setParameterElement(NamedObject *parent) {
             throw Exception(message(msg), parent);
         }
         ParameterBase *parameter = parent->seekOneChild<ParameterBase*>(name);
+        Ref::remove(parameter);
         if (hasValue)
             parameter->setValueFromString(value.trimmed());
         else if (hasReference)
@@ -489,6 +484,8 @@ void SimulationMaker::readOutputSubElement(NamedObject* parent)
     param.setAttribute( "type", attributeValue("type", "") );
     param.setAttribute( "columns", attributeValue("columns", "") );
     param.setAttribute( "rows", attributeValue("rows", "") );
+    param.setAttribute( "multiplier", attributeValue("multiplier", "1") );
+    param.setAttribute( "divisor", attributeValue("divisor", "1") );
     param.parent = parent;
     traceVariableParam.append(param);
 

@@ -11,32 +11,29 @@ using namespace std;
 using namespace UniSim;
 
 namespace vg {
-	
+
 BoundaryLayerResistance::BoundaryLayerResistance(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(windspeed), "outdoors/records[windspeed]");
-    addParameterRef<double>(Name(greenhouseVentilation), "greenhouse/ventilation[total]");
-    addVariable<double>(Name(rbH2O), "Boundary layer resistance against water vapour (s/m)");
+    addParameterRef<double>(Name(windSpeed), "environment[windspeed]");
+    addParameterRef<double>(Name(ventilation), "greenhouse/ventilation[value]");
+    addVariable<double>(Name(value), "Boundary layer resistance against water vapour (s/m)");
 }
 
 void BoundaryLayerResistance::reset() {
-    update();
+    updateValue(0.);
 }
 
 void BoundaryLayerResistance::update() {
+    updateValue(0.1*windSpeed/4.*ventilation);
+}
+
+void BoundaryLayerResistance::updateValue(double windSpeed) {
     // Characteristic leaf dimension
-    double l=25/1000;
-
-    /* Determination of wind-speed u in the greenhouse as function of windspeed
-       outside the greenhouse (windsp) ventilation through vents (Vntu) and greenhouse
-       leakage n*/
-    double u = max(0.05, 0.1*windspeed/4*greenhouseVentilation);
-
-     // Boundary layer resistence to water vapour (Stanghellini GCC p 146 modified)
-    rbH2O = 200*sqrt(l/u);
-  }
-
+    const double L = 25./1000.;
+    // (Stanghellini GCC p 146 modified)
+    value = 200.*sqrt( L/max(0.05,windSpeed) );
+}
 
 } //namespace
 

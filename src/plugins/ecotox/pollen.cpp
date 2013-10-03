@@ -23,7 +23,7 @@ Pollen::Pollen(UniSim::Identifier name, QObject *parent)
                           "This is described as a power function with the exponent @F {distanceExp}");
     new Parameter<double>("distanceMin", &distanceMin, 0.3, this,
                           "Minimum distance of pollen dispersion model (m)");
-    new Parameter<double>("Npeak", &maxTotal, 1750., this,
+    new Parameter<double>("Npeak", &peakDensity, 1750., this,
                           "Peak average density of pollen deposited on food plant (pollen per cm @Sup {2}) at field edge, i.e. "
                           "at @F {distance <= distanceMin}");
 
@@ -55,7 +55,7 @@ void Pollen::reset() {
 }
 
 void Pollen::update() {
-    pollenDepositionRate = maxTotal*distanceEffect()*(*depositionRate);
+    pollenDepositionRate = peakDensity*distanceEffect()*(*depositionRate);
     pollenDepositionTotal += pollenDepositionRate;
     pollenDensity *= 1. - (*lossRate);
     pollenDensity +=  pollenDepositionRate;

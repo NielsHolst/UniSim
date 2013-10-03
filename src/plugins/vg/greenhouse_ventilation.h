@@ -8,6 +8,7 @@
 #define VG_GREENHOUSE_VENTILATION_H
 
 #include <usbase/model.h>
+#include "variable_collection.h"
 
 namespace vg {
 
@@ -15,23 +16,17 @@ class GreenhouseVentilation : public UniSim::Model
 {
 public:
     GreenhouseVentilation(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 
 private:
-    // Parameters
-    double greenhouseHeight, windowLength, roofRatio, sideRatio,
-        alphaLeeSide, alphaWindSide, alphaVentilationMax, leakageVentilation, fractionWindows,
-        Tindoors, Toutdoors, windspeed, screenAirTransmission;
-    int timeStep;
-    char timeUnit;
-
     // Variables
-    double windows, leakage, total;
-
-    // Methods
-    double timeStepSecs() const;
+    double value;
+    // Data
+    VariableCollection v;
 };
+
 } //namespace
 
 

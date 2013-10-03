@@ -20,11 +20,13 @@ public:
 
 private:
     // Parameters
-    double rh, rbH2O, co2, Pgc;
+    double rh, rbH2O, co2, PgcMol;
 
     // Variables
-    double riH2O;
+    double value;
 
+    // Methods
+    void updateValue(double PgcMol);
 };
 } //namespace
 

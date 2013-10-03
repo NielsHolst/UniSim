@@ -6,7 +6,7 @@ void writeDir(QString name, QDir dir) {
 }
 
 
-int main(int argc, char *argv[])
+int main(int, char **)
 {
     QString filePath = getSourceDir().absolutePath() + "/unisim_root.pri";
     openFile(filePath);

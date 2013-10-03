@@ -11,8 +11,6 @@
 
 namespace vg {
 
-class Pipe;
-
 class Pipes : public UniSim::Model
 {
 public:
@@ -20,13 +18,15 @@ public:
     void initialize();
     void reset();
     void update();
-
 private:
-    // Variables
-    double heatTransfer, heatEnergy;
+    // Parameteres
+    double timeStepsSecs;
 
-    // Links
-    QList<Pipe*> pipes;
+    // Variables
+    double heatFlux, energyUsed;
+
+    // Data
+    QList<const double*> heatFluxes;
 };
 } //namespace
 

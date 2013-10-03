@@ -315,6 +315,7 @@ void TestUtilities::testStringToValueBool() {
 
 void TestUtilities::testStringToValueDate() {
     QCOMPARE(stringToValue<QDate>(QString("24/12/2012")), QDate(2012, 12, 24));
+    QCOMPARE(stringToValue<QDate>(QString("2012/12/24")), QDate(2012, 12, 24));
 
     bool excepted = false;
     try {
@@ -383,12 +384,12 @@ void TestUtilities::testStringToMissingValueChar() {
 }
 
 void TestUtilities::testStringToMissingValueBool() {
-    bool excepted = false;
+    //bool excepted = false;
     try {
         QWARN ("missingValue<bool>() won't compile?");
     }
     catch (Exception &) {
-        excepted = true;
+//        excepted = true;
     }
     // QVERIFY(excepted);
 }

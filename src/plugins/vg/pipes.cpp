@@ -14,26 +14,30 @@ namespace vg {
 Pipes::Pipes(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addVariable<double>(Name(heatTransfer), "Heat transfer of all pipes (W/m2)");
-    addVariable<double>(Name(heatEnergy), "Energy used for heating by all pipes (J/m2)");
+    addParameterRef<double>(Name(timeStepsSecs), "calendar[timeStepSecs]");
+    addVariable<double>(Name(heatFlux), "Total heat transfered from all pipes (W/m2)");
+    addVariable<double>(Name(energyUsed), "Accumulated energy used for heating (MJ/m2)");
 }
 
 void Pipes::initialize() {
-    pipes = seekChildren<Pipe*>("*");
-}
-
-void Pipes::reset() {
-    heatTransfer = heatEnergy = 0.;
-}
-
-void Pipes::update() {
-    heatTransfer = heatEnergy = 0.;
+    heatFluxes.clear();
+    QList<Pipe*> pipes = seekChildren<Pipe*>("*");
     for (int i = 0; i < pipes.size(); ++i) {
-        heatTransfer += pipes[i]->pullValue<double>("heatTransfer");
-        heatEnergy += pipes[i]->pullValue<double>("heatEnergy");
+        heatFluxes << pipes.at(i)->pullValuePtr<double>("heatFlux");
     }
 }
 
+void Pipes::reset() {
+    heatFlux = energyUsed = 0.;
+}
+
+void Pipes::update() {
+    heatFlux = 0.;
+    for (int i = 0; i < heatFluxes.size(); ++i) {
+        heatFlux += *heatFluxes.at(i);
+    }
+    energyUsed += heatFlux*timeStepsSecs/1e6;
+}
 
 } //namespace
 

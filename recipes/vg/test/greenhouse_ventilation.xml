@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Greenhouse ventilation">
+
+    <integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+	
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="latitude" value="55"/>
+		<parameter name="timeStep" value="5"/>
+		<parameter name="timeUnit" value="m"/>
+	</model>
+
+	<model name="windspeed" type="UniSim::Range">
+		<parameter name="min" value="0"/>
+		<parameter name="max" value="20"/>
+	</model>
+
+	<model name="Tdiff" type="UniSim::Range">
+		<parameter name="min" value="0"/>
+		<parameter name="max" value="25"/>
+	</model>
+
+	<model name="greenhouse">
+		<model name="construction" type="vg::GreenhouseConstruction">
+			<parameter name="glassType"  value="Single"/>
+			<parameter name="lampType"  value="HPSL"/>
+		</model>
+
+		<model name="ventilation" type="vg::GreenhouseVentilation">
+			<model name="infiltration1" type="vg::AirInfiltration">
+				<parameter name="screensAirTransmission"  value="0.2"/>
+				<parameter name="windspeed"  ref="windspeed[value]"/>
+			</model>
+			<model name="infiltration2" type="vg::AirInfiltration">
+				<parameter name="screensAirTransmission"  value="0.5"/>
+				<parameter name="windspeed"  ref="windspeed[value]"/>
+			</model>
+		</model>
+		<model name="windows1" type="vg::WindowsVentilation">
+			<parameter name="windspeed"  ref="windspeed[value]"/>
+			<parameter name="Tindoors"  value="25"/>
+			<parameter name="Toutdoors"  value="20"/>
+			<parameter name="ventilationLeeSide"  value="100"/>
+			<parameter name="ventilationWindSide"  value="75"/>
+		</model>
+		<model name="windows2" type="vg::WindowsVentilation">
+			<parameter name="windspeed"  ref="windspeed[value]"/>
+			<parameter name="Tindoors"  value="25"/>
+			<parameter name="Toutdoors"  value="0"/>
+			<parameter name="ventilationLeeSide"  value="100"/>
+			<parameter name="ventilationWindSide"  value="75"/>
+		</model>
+		<model name="windows3" type="vg::WindowsVentilation">
+			<parameter name="windspeed"  ref="windspeed[value]"/>
+			<parameter name="Tindoors"  value="25"/>
+			<parameter name="Toutdoors"  value="0"/>
+			<parameter name="ventilationLeeSide"  value="50"/>
+			<parameter name="ventilationWindSide"  value="37.5"/>
+		</model>
+
+	</model>
+	
+	
+	<output type="plot">
+		<parameter name="title" value ="Air infiltration (m3 air/m2 greenhouse/s)"/>
+		<trace label="Wind speed" ref="windspeed[value]"/>
+		<trace label="ScreenTrans=0.2" ref="infiltration1[rate]"/>
+		<trace label="ScreenTrans=0.5" ref="infiltration2[rate]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Windows ventilation (m3 air/m2 greenhouse/s)"/>
+		<trace label="Wind speed" ref="windspeed[value]"/>
+		<trace label="Full, Tdiff=5" ref="windows1[rate]"/>
+		<trace label="Full, Tdiff=25" ref="windows2[rate]"/>
+		<trace label="Half, Tdiff=25" ref="windows3[rate]"/>
+	</output>
+
+
+	</simulation>

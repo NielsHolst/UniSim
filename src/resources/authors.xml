@@ -11,6 +11,16 @@
 		<address>Aarhus University, Aarhus, Denmark</address>
 	</author>
 	<author>
+		<id>Antonio</id>
+		<name>Antonio Agüera</name>
+		<address>Wageningen University, Netherlands</address>
+	</author>
+	<author>
+		<id>Clement</id>
+		<name>Clement Mweya</name>
+		<address>National Institute for Medical Research, Tanzania</address>
+	</author>
+	<author>
 		<id>David</id>
 		<name>David Driessen</name>
 		<address>Denmark</address>
@@ -54,6 +64,11 @@
 		<id>Niels</id>
 		<name>Niels Holst</name>
 		<address>Aarhus University, Flakkebjerg, Denmark</address>
+	</author>
+	<author>
+		<id>Oliver</id>
+		<name>Oliver Körner</name>
+		<address>AgroTech, Denmark</address>
 	</author>
 	<author>
 		<id>Roberta</id>

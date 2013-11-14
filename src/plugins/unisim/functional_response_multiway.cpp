@@ -7,8 +7,9 @@
 #include <usbase/data_grid.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
-#include "forage.h"
 #include "functional_response_multiway.h"
+
+using namespace std;
 
 namespace UniSim {
 
@@ -16,16 +17,12 @@ namespace UniSim {
 FunctionalResponseMultiway::FunctionalResponseMultiway(Identifier name, QObject *parent)
     : Model(name, parent), am(0)
 {
-    addParameter<QString>("apparencyMatrix", &apparencyMatrixFileName, QString(""),
+    addParameter<QString>("apparancyMatrix", &apparancyMatrixFileName, QString(""),
     "File with references to predator demands and apparency value for each predator x prey combination");
 }
 
-FunctionalResponseMultiway::~FunctionalResponseMultiway() {
-    delete am;
-}
-
 void FunctionalResponseMultiway::amend() {
-    QString fn = simulation()->inputFilePath(apparencyMatrixFileName);
+    QString fn = simulation()->inputFilePath(apparancyMatrixFileName);
     am = new DataGrid(fn, this);
     setPredators();
     setPrey();
@@ -38,7 +35,7 @@ void FunctionalResponseMultiway::setPredators() {
     QStringList names = am->rowNames();
     if (names.isEmpty()) {
         QString msg = "No predators found in the rows of file '%1'";
-        throw Exception(msg.arg(apparencyMatrixFileName));
+        throw Exception(msg.arg(apparancyMatrixFileName));
     }
     createLinks(demands, names);
     extractNames(predatorNames, names);
@@ -50,7 +47,7 @@ void FunctionalResponseMultiway::setPrey() {
     QStringList names = am->columnNames().mid(1);
     if (names.isEmpty()) {
         QString msg = "No prey found in the columns of file '%1'";
-        throw Exception(msg.arg(apparencyMatrixFileName));
+        throw Exception(msg.arg(apparancyMatrixFileName));
     }
     createLinks(resources, names);
     extractNames(preyNames, names);
@@ -59,11 +56,11 @@ void FunctionalResponseMultiway::setPrey() {
 }
 
 void FunctionalResponseMultiway::createLinks(Links &links, QStringList refs) {
-    links.clear();
+    links.resize(refs.size());
     for (int i = 0; i < refs.size(); ++i) {
         QString name = refs[i];
         Variable<double> *variable = seekOne<Model*, Variable<double>* >(name);
-        links << variable->valuePtr();
+        links[i] = variable->valuePtr();
     }
 }
 
@@ -85,13 +82,13 @@ void FunctionalResponseMultiway::setApparencies() {
 }
 
 void FunctionalResponseMultiway::reset() {
-    update();
+    attacks.fill(0.);
 }
 
 void FunctionalResponseMultiway::update() {
     updateAttacksByPredator();
     updateAttacksByPrey();
-    updateFromNumAttacks();
+    updateCreatedVariables();
 }
 
 void FunctionalResponseMultiway::updateAttacksByPredator() {
@@ -120,18 +117,6 @@ void FunctionalResponseMultiway::updateAttacksByPredator(int ixPredator) {
 void FunctionalResponseMultiway::updateAttacksByPrey() {
     for (int j = 0; j < numPrey; ++j)
         updateAttacksByPrey(j);
-}
-
-void FunctionalResponseMultiway::updateAttacksByPrey(int ixPrey)  {
-    QVector<double> proportionsWanted(numPrey), proportionsGotten(numPrey);
-    double X = *resources.at(ixPrey);
-    for (int i = 0; i < numPredators; ++i) {
-        proportionsWanted[i] = (X == 0.) ? 0 :attacks.at(i,ixPrey)/X;
-    }
-    proportionsGotten = Forage::forage(proportionsWanted);
-    for (int i = 0; i < numPredators; ++i) {
-        attacks(i,ixPrey) = X*proportionsGotten.at(i);
-    }
 }
 
 

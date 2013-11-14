@@ -5,14 +5,16 @@
 */
 #include "example_factory.h"
 #include "even_odd.h"
+#include "logistic_growth.h"
 
 using namespace UniSim;
 
 namespace example{
 
 void ExampleFactory::defineProducts() {
-    // Add you own models here...
-    addProduct<EvenOdd>("EvenOdd", this, "Even-and-odd dynamics model");
+    // Add your own models here...
+    AddProduct(EvenOdd, "Even-and-odd dynamics model");
+    AddProduct(LogisticGrowth, "Logistic growth model");
 }
 
 UniSim::Identifier ExampleFactory::id() const {
@@ -21,7 +23,7 @@ UniSim::Identifier ExampleFactory::id() const {
 
 QString ExampleFactory::description() const {
     return
-    "The example plugin includes models for creatures of the example";
+    "The example plugin includes models for teaching purposes";
 }
 
 QStringList ExampleFactory::authors() const {

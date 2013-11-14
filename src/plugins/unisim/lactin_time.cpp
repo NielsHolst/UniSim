@@ -21,6 +21,7 @@ LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
 
 void LactinTime::initialize()
 {
+    PhysiologicalTime::initialize();
     weather = seekOne<Model*>("weather");
 }
 

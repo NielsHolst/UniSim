@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Insect development">
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="1/4/2005"/>
+		<parameter name="latitude" value="60"/>
+	</model>
+	
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="flakkebjerg2005-06.txt"/>
+		<parameter name="imposeInitialDateTime" value="no"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Calendar"/>
+		<trace label="Julian day" ref="calendar[dayOfYear]"/>
+		<trace label="Day length" ref="calendar[dayLength]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Temperature"/>
+		<trace label="Julian day" ref="calendar[dayOfYear]"/>
+		<trace label="Min" ref="weather[Tmin]"/>
+		<trace label="Max" ref="weather[Tmax]"/>
+		<trace label="Average" ref="weather[Tavg]"/>
+	</output>
+</simulation>

@@ -19,7 +19,8 @@ private:
     QVector<double> supplies, losses;
     // methods
     void createVariables();
-    void updateFromNumAttacks();
+    void updateCreatedVariables();
+    void updateAttacksByPrey(int ixPrey);
 };
 
 }

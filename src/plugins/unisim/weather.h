@@ -3,8 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef SUPPLYDEMAND_WEATHER
-#define SUPPLYDEMAND_WEATHER
+#ifndef UNISIM_WEATHER_H
+#define UNISIM_WEATHER_H
 #include <usbase/model.h>
 
 namespace UniSim {

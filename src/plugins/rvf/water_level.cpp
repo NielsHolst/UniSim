@@ -8,25 +8,30 @@
 using namespace UniSim;
 
 namespace rvf {
-	
 WaterLevel::WaterLevel(Identifier name, QObject *parent)
-	: Model(name, parent)
+    : Model(name, parent)
 {
-    new Parameter<double>("initialValue", &initialValue, 100., this, "desc");
-    new Parameter<double>("dailyRainfall", &dailyRainfall, 2., this, "desc");
-    new Parameter<double>("dailyLoss", &dailyLoss, 10., this, "desc");
+    new Parameter<double>("dailyLoss", &dailyLoss, 0.2, this, "desc");
+    new Variable<double>("rainfall", &rainfall, this, "Daily average rainfall, either read from records file, " "or calculated as the daily average of minimum and maximum rainfall. " "Must have a child model called @F {records}.");
     new Variable<double>("value", &value, this, "desc");
 }
+void WaterLevel::initialize() {
+    Model *records = seekOneChild<Model*>("records");
+    Variable<double> *pullRainfall = records->peekOneChild<Variable<double>*>("rainfall");
 
-void WaterLevel::reset() {
-    value = initialValue;
+    rainfallIsPresent = pullRainfall;
+    if (rainfallIsPresent) {
+        ptrRainfall = pullRainfall->valuePtr();
+    }
 }
-
+void WaterLevel::reset() {
+    value = rainfall;
+}
 void WaterLevel::update() {
-    value += dailyRainfall - dailyLoss;
+    rainfall = rainfallIsPresent ? *ptrRainfall : 0.;
+    value += rainfall - dailyLoss;
     if (value < 0.)
         value = 0.;
 }
-
 } //namespace
 

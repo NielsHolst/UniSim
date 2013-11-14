@@ -17,7 +17,7 @@ EnergyScreenController::EnergyScreenController(Identifier name, QObject *parent)
     addParameter<double>(Name(radiationThreshold), 10., "Radiation threshold for using energy screen (W/m2)");
     addParameterRef<double>(Name(radiation), "environment[radiation]");
     addParameterRef<bool>(Name(isHumidityHigh), "climate/humidity[isHigh]");
-    addVariable<double>(Name(signal),"Signal to shade screen [0;1]");
+    addVariable<double>(Name(signal),"Signal to screen [0;1]");
 }
 
 void EnergyScreenController::initialize() {
@@ -26,7 +26,7 @@ void EnergyScreenController::initialize() {
 }
 
 void EnergyScreenController::reset() {
-    update();
+    signal = 0;
 }
 
 void EnergyScreenController::update() {

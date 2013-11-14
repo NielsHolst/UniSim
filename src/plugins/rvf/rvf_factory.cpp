@@ -6,9 +6,9 @@
 #include "mosquito_fecundity.h"
 #include "rvf_factory.h"
 #include "water_level.h"
-#include "inactiveegg.h"
-#include "adult.h"
-#include "egg.h"
+#include "sheep_fecundity.h"
+#include "mosquito_infection.h"
+#include "sheep_infection.h"
 
 using namespace UniSim;
 
@@ -18,9 +18,9 @@ void RvfFactory::defineProducts() {
     // Add you own models here...
     addProduct<MosquitoFecundity>("MosquitoFecundity", this, "Daily egg-laying rate of adult mosquitoes. Depends on water level");
     addProduct<WaterLevel>("WaterLevel", this, "Water level in the environment.");
-    addProduct<InactiveEgg>("InactiveEgg", this, "Inactive eggs laid on the ground.");
-    addProduct<Adult>("Adult", this, "Adult mosquitoes laying eggs.");
-    addProduct<Egg>("Egg", this, "Mosquitoes eggs in water");
+    addProduct<SheepFecundity>("SheepFecundity", this, "Daily birth rate of adult sheep. Depends on Carrying Capacity K");
+    addProduct<MosquitoInfection>("MosquitoInfection", this, "Infection transfer from mosquito to sheep given contact rate");
+    addProduct<SheepInfection>("SheepInfection", this, "Infection transfer from sheep to mosquitoes given effective contact rate");
 }
 
 UniSim::Identifier RvfFactory::id() const {
@@ -34,16 +34,12 @@ QString RvfFactory::description() const {
 
 QStringList RvfFactory::authors() const {
     return QStringList()
-        << "Clement";
+        << "Niels";
     // Add Clement here. But first add to src/resources/authors.xml
 }
 
 QObject* RvfFactory::asQObject() {
    return this;
 }
-
-#if QT_VERSION < 0x50000
-Q_EXPORT_PLUGIN2(rvf_factory, RvfFactory)
-#endif
 
 } //namespace

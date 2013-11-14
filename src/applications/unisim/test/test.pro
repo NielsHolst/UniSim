@@ -34,6 +34,7 @@ HEADERS += \
     $${US_BASE}/test/test_strata.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
+    $${US_ENGINE}/test/test_builder.h \
     $${US_ENGINE}/test/test_mega_factory.h \
     $${US_ENGINE}/test/test_simulation.h \
     $${US_ENGINE}/test/test_simulation_maker.h \
@@ -94,6 +95,7 @@ SOURCES += \
     $${US_BASE}/test/test_strata.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
+    $${US_ENGINE}/test/test_builder.cpp \
     $${US_ENGINE}/test/test_mega_factory.cpp \
     $${US_ENGINE}/test/test_simulation.cpp \
     $${US_ENGINE}/test/test_simulation_maker.cpp \

@@ -32,7 +32,7 @@ void BlackoutScreenController::initialize() {
 }
 
 void BlackoutScreenController::reset() {
-    update();
+    signal = 0;
 }
 
 void BlackoutScreenController::update() {

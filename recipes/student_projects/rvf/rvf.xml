@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="RVFModel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="1000"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="temperature_ngorongoro_narok2.txt"/>
+		</model>
+	</model>
+	
+	<model name="Water" type="rvf::WaterLevel">
+			<parameter name="dailyLoss" value="0.5"/>
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="rainfall_ngorongoro_narok2.txt"/>
+		</model>
+	</model>
+
+	<model name="Aedes">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="8"/>
+		</model>
+		<model name="S">
+			<model name="Demand" type="rvf::MosquitoFecundity">
+				<parameter name="density" value="50"/>
+			</model>
+			<model name="funcresp1" type="Unisim::FunctionalResponseGB">
+				<parameter name="apparancy" value="0.5"/> <!-- changes the shape of the curve/slope -->
+				<parameter name="resourceDensity" ref="sheep/S/adult[value]"/> <!-- changes the value="100" if necessary for a better look-->
+				<parameter name="demand" ref="Aedes/S/Demand[value]"/>
+			</model>
+			<model name="fecundity" type="rvf::MosquitoFecundity">
+				<parameter name="waterLevel" ref="water[value]"/>
+				<parameter name="waterLevelThreshold" value="0.15"/>
+				<parameter name="fecundityPerBloodmeal" value="20"/>
+				<parameter name="bloodmeal" ref="Aedes/S/funcresp1[supply]"/>
+			</model>
+			<model name="egg" type="UniSim::Stage">
+				<model name="inflows" type="UniSim::Sum">
+					<parameter name="toAdd" value="(Aedes/S/toBeLaid[outflow] Aedes/I/toBeLaid[outflow])"/> 
+				</model>
+				<parameter name="inflow" ref="Aedes/S/fecundity[value]"/>
+				<parameter name="duration" value="50"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="larva" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/S/egg[outflow]"/>
+				<parameter name="duration" value="250"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="pupa" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/S/larva[outflow]"/>
+				<parameter name="duration" value="98"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/S/pupa[outflow]"/>
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="30"/>
+				<parameter name="phaseOutflowProportion" value="0.04"/>
+			</model>
+			<model name="toBeLaid" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/S/pupa[outflow]"/>
+				<parameter name="duration" ref="Aedes/S/adult[duration]"/>
+				<parameter name="k" ref="Aedes/S/adult[k]"/>
+				<parameter name="growthRate" value="50"/> <!-- Life time fecundity corrected for sex ratio -->
+				<parameter name="phaseOutflowProportion" ref="Aedes/S/adult[phaseOutflowProportion]"/>
+			</model>
+		</model>
+		<model name="I">
+			<!--<model name="egg" type="rvf::MosquitoFecundity">
+					<parameter name="waterLevel" ref="water[value]"/>
+					<parameter name="waterLevelThreshold" value="2.0"/>
+				<model name="number" type="UniSim::Stage">
+					<parameter name="duration" ref="Aedes/S/egg[duration]"/>
+					<parameter name="k" ref="Aedes/S/egg[k]"/>
+				</model>
+			</model> -->
+			<!--TRY TO CONTROL INFECTIOUS MOSQUITO TO DEPEND ON WATER LEVEL AND BLOODMEAL CONTACT WITH SHEEP-->
+			<model name="egg" type="UniSim::Stage">
+				<parameter name="duration" ref="Aedes/S/egg[duration]"/>
+				<parameter name="k" ref="Aedes/S/egg[k]"/>
+			</model>
+			<model name="larva" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/I/egg[outflow]"/>
+				<parameter name="duration" ref="Aedes/S/larva[duration]"/>
+				<parameter name="k" ref="Aedes/S/larva[k]"/>
+			</model>
+			<model name="pupa" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/I/larva[outflow]"/>
+				<parameter name="duration" ref="Aedes/S/pupa[duration]"/>
+				<parameter name="k" ref="Aedes/S/pupa[k]"/>
+			</model>
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/I/pupa[outflow]"/>
+				<parameter name="duration" ref="Aedes/S/adult[duration]"/>
+				<parameter name="k" ref="Aedes/S/adult[k]"/>
+				<parameter name="phaseInflow" ref="Aedes/S/adult[phaseOutflow]"/>
+			</model>
+			<model name="toBeLaid" type="UniSim::Stage">
+				<parameter name="inflow" ref="Aedes/I/pupa[outflow]"/>
+				<parameter name="duration" ref="Aedes/S/toBeLaid[duration]"/>
+				<parameter name="k" ref="Aedes/S/toBeLaid[k]"/>
+				<parameter name="growthRate" ref="Aedes/S/toBeLaid[growthRate]"/>
+				<parameter name="phaseInflow" ref="Aedes/S/toBeLaid[phaseOutflow]"/>
+			</model>
+		</model>
+	</model>
+
+	<model name="Culex">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="8"/>
+		</model>
+		<model name="S">
+			<model name="Demand" type="rvf::MosquitoFecundity">
+				<parameter name="density" value="50"/>
+			</model>
+			<model name="funcresp1" type="Unisim::FunctionalResponseGB">
+				<parameter name="apparancy" value="0.5"/> <!-- changes the shape of the curve/slope -->
+				<parameter name="resourceDensity" value="30"/> <!-- changes the ref="sheep/S/adult[value]" if necessary -->
+				<parameter name="demand" ref="Culex/S/Demand[value]"/>
+			</model>
+			<model name="fecundity" type="rvf::MosquitoFecundity">
+				<parameter name="waterLevel" ref="water[value]"/>
+				<parameter name="waterLevelThreshold" value="0"/>
+				<parameter name="fecundityPerBloodmeal" value="20"/>
+				<parameter name="bloodmeal" ref="Culex/S/funcresp1[supply]"/>
+			</model>
+			<model name="egg" type="UniSim::Stage">
+				<model name="inflows" type="UniSim::Sum">
+					<parameter name="toAdd" value="(Culex/S/toBeLaid[outflow] Culex/I/toBeLaid[outflow])"/> 
+				</model>
+				<parameter name="inflow" ref="Culex/S/fecundity[value]"/>
+				<parameter name="duration" value="50"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="larva" type="UniSim::Stage">
+				<parameter name="inflow" ref="Culex/S/egg[outflow]"/>
+				<parameter name="duration" value="250"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="pupa" type="UniSim::Stage">
+				<parameter name="inflow" ref="Culex/S/larva[outflow]"/>
+				<parameter name="duration" value="98"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="inflow" ref="Culex/S/pupa[outflow]"/>
+				<parameter name="duration" value="100"/>
+				<parameter name="k" value="30"/>
+				<parameter name="phaseOutflowProportion" value="0.04"/>
+			</model>
+			<model name="toBeLaid" type="UniSim::Stage">
+				<parameter name="inflow" ref="Culex/S/pupa[outflow]"/>
+				<parameter name="duration" ref="Culex/S/adult[duration]"/>
+				<parameter name="k" ref="Culex/S/adult[k]"/>
+				<parameter name="growthRate" value="50"/> <!-- Life time fecundity corrected for sex ratio -->
+				<parameter name="phaseOutflowProportion" ref="Culex/S/adult[phaseOutflowProportion]"/>
+			</model>
+		</model>
+		<model name="I"> <!-- CHANGE THIS, THERE ARE NO INFECTIOUS EGGS IN CULEX BUT ONLY IN AEDES -->
+			<model name="egg" type="UniSim::Stage">
+				<parameter name="duration" ref="Culex/S/egg[duration]"/>
+				<parameter name="k" ref="Culex/S/egg[k]"/>
+			</model>
+			<model name="larva" type="UniSim::Stage">
+				<parameter name="inflow" ref="Culex/I/egg[outflow]"/>
+				<parameter name="duration" ref="Culex/S/larva[duration]"/>
+				<parameter name="k" ref="Culex/S/larva[k]"/>
+			</model>
+			<model name="pupa" type="UniSim::Stage">
+				<parameter name="inflow" ref="Culex/I/larva[outflow]"/>
+				<parameter name="duration" ref="Culex/S/pupa[duration]"/>
+				<parameter name="k" ref="Culex/S/pupa[k]"/>
+			</model>
+			<model name="adult" type="UniSim::Stage"> <!--INFECTIOUS SHOULD ORIGINATE FROM CONTACT WITH INFECTIOUS SHEEP ONLY AND RUN ONCE -->
+				<parameter name="inflow" ref="Culex/I/pupa[outflow]"/>
+				<parameter name="duration" ref="Culex/S/adult[duration]"/>
+				<parameter name="k" ref="Culex/S/adult[k]"/>
+				<parameter name="phaseInflow" ref="Culex/S/adult[phaseOutflow]"/>
+			</model>
+			<model name="toBeLaid" type="UniSim::Stage">
+				<parameter name="inflow" ref="Culex/I/pupa[outflow]"/>
+				<parameter name="duration" ref="Culex/S/toBeLaid[duration]"/>
+				<parameter name="k" ref="Culex/S/toBeLaid[k]"/>
+				<parameter name="growthRate" ref="Culex/S/toBeLaid[growthRate]"/>
+				<parameter name="phaseInflow" ref="Culex/S/toBeLaid[phaseOutflow]"/>
+			</model>
+		</model>
+	</model>
+	
+	<model name="sheep">
+		<model name="time" type="UniSim::Days"/>
+
+		<model name="S">
+			<model name="lamb" type="UniSim::Stage">
+				<parameter name="initialInflow" value="50"/>
+				<parameter name="inflow" ref="sheep/S/foetus[outflow]"/>
+				<parameter name="duration" value="365"/>
+				<parameter name="k" value="30"/>
+			</model>
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="initialInflow" value="100"/>
+				<parameter name="inflow" ref="sheep/S/lamb[outflow]"/>
+				<parameter name="duration" value="730"/>
+				<parameter name="k" value="30"/>
+				<parameter name="phaseOutflowProportion" value="0.01"/> <!--UPDATE THIS FROM MOSQUITO INFECTION/EXPOSURE RATE -->
+			</model>
+			<model name="fecundity" type="rvf::SheepFecundity">
+				<parameter name="adultDensity" ref="../adult[number]"/>
+				<parameter name="sexRatio" value="0.9"/>
+				<parameter name="rate" value="3" comment="per year"/>
+				<parameter name="carryingCapacity" value="100" comment="sheep per km2"/>
+			</model>
+			<model name="foetus" type="UniSim::Stage">
+				<parameter name="inflow" ref="../fecundity[value]"/>
+				<parameter name="duration" value="730"/>
+				<parameter name="k" value="30"/>
+			</model>
+		</model>
+		<model name="E">
+			<model name="adult" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="sheep/S/adult[duration]"/>
+				<parameter name="k" ref="sheep/S/adult[k]"/>
+				<parameter name="timeStep" ref="sheep/time[step]"/>
+				<parameter name="phaseInflow" ref="sheep/S/adult[phaseOutflow]"/> <!--UPDATE THIS FROM MOSQUITO INFECTION/INFECTION RATE -->
+				<parameter name="phaseDuration" value="10"/>
+				<parameter name="phaseK" value="15"/>
+				<parameter name="phaseTimeStep" ref="sheep/time[step]"/>
+			</model>
+			<model name="lamb" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="sheep/S/lamb[duration]"/>
+				<parameter name="k" ref="sheep/S/adult[k]"/>
+				<parameter name="timeStep" ref="sheep/time[step]"/>
+				<parameter name="phaseInflow" ref="sheep/S/lamb[phaseOutflow]"/>
+				<parameter name="phaseDuration" value="10"/>
+				<parameter name="phaseK" value="15"/>
+				<parameter name="phaseTimeStep" ref="sheep/time[step]"/>
+			</model>
+		</model>
+		<model name="I">
+			<model name="adult" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="sheep/S/adult[duration]"/>
+				<parameter name="k" ref="sheep/S/adult[k]"/>
+				<parameter name="timeStep" ref="sheep/time[step]"/>
+				<parameter name="phaseInflow" ref="sheep/E/adult[phaseOutflow]"/>
+				<parameter name="phaseDuration" value="20"/>
+				<parameter name="phaseK" value="15"/>
+			</model>
+			<model name="lamb" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="sheep/S/lamb[duration]"/>
+				<parameter name="k" ref="sheep/S/adult[k]"/>
+				<parameter name="timeStep" ref="sheep/time[step]"/>
+				<parameter name="phaseInflow" ref="sheep/E/lamb[phaseOutflow]"/>
+				<parameter name="phaseDuration" value="20"/>
+				<parameter name="phaseK" value="15"/>
+			</model>
+		</model>
+		<model name="R">
+			<model name="adult" type="UniSim::Stage">
+				<parameter name="duration" ref="sheep/S/adult[duration]"/>
+				<parameter name="k" ref="sheep/S/adult[k]"/>
+				<parameter name="phaseInflow" ref="sheep/I/adult[phaseOutflow]"/>
+			</model>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Ngorongoro weather data"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Rainfall and water level"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Rainfall" value="water[rainfall]"/>
+		<trace label="WaterLevel" value="water[value]"/>
+	</output>	
+	<output type="plot">
+		<parameter name="title" value ="Culex population dynamics"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Egg" value="Culex/S/egg[value]"/>
+		<trace label="Larva" value="Culex/S/larva[value]"/>
+		<trace label="Pupa" value="Culex/S/pupa[value]"/>
+		<trace label="Adult" value="Culex/S/adult[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value =" SI Compartmental model for Culex (MANUAL INFECTION NEED UPDATE) "/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="S" value="Culex/S/adult[value]"/>
+		<trace label="I" value="Culex/I/adult[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Floodwater Aedes population dynamics depends on water level and sheep availability"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Egg" value="Aedes/S/egg[value]"/>
+		<trace label="Larva" value="Aedes/S/larva[value]"/>
+		<trace label="Pupa" value="Aedes/S/pupa[value]"/>
+		<trace label="Adult" value="Aedes/S/adult[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="SI Compartmental model for Aedes(MANUAL INFECTION-UPDATE!!!!) "/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="S" value="Aedes/S/adult[value]"/>
+		<trace label="I" value="Aedes/I/adult[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Sheep Development Stages"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="lamb" value="Sheep/S/lamb[value]"/>
+		<trace label="adult" value="Sheep/S/adult[value]"/>
+		<trace label="foetus" value="Sheep/S/foetus[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="SEIR Compartmental model for Sheep (MANUAL INFECTION-UPDATE!!!!) "/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Slamb" value="sheep/S/lamb[value]"/>
+		<trace label="Sadult" value="sheep/S/adult[value]"/>
+		<trace label="Eadult" value="sheep/E/adult[value]"/>
+		<trace label="Elamb" value="sheep/E/lamb[value]"/>
+		<trace label="Iadult" value="sheep/I/adult[value]"/>
+		<trace label="Ilamb" value="sheep/I/lamb[value]"/>
+		<trace label="Radult" value="sheep/R/adult[value]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Sheep mortality due to disease"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="lambMortality" value="sheep/S/lamb[value]"/>
+		<trace label="adultMortality" value="sheep/S/adult[value]"/>
+		<trace label="Abortions" value="sheep/E/adult[value]"/>
+	</output>
+	<!--<output type="plot">
+		<parameter name="title" value ="Sensitivity to water level threshold"/>
+		<trace label="Water level threshold" ref="random/waterThreshold[value]"/>
+		<trace label="Peak adults" ref="Aedes/S/adult[value]" summary="max"/>
+	</output> -->
+</simulation>

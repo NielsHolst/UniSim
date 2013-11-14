@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<simulation name="Logistic growth">
+
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="400"/>
+	</integrator>
+	
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="time" type="UniSim::DayDegrees">
+		<parameter name="T0" value="15"/>
+	</model>
+
+	<model name="pop1" type="example::LogisticGrowth">
+		<parameter name="timeStep" ref="time[step]"/>
+		<parameter name="initialDensity" value="10"/>
+		<parameter name="growthRate" value="0.003"/>
+	</model>
+
+	<model name="pop2" type="example::LogisticGrowth">
+		<parameter name="timeStep" ref="time[step]"/>
+		<parameter name="initialDensity" value="10"/>
+		<parameter name="growthRate" value="0.004"/>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value="Logistic growth"/>
+		<trace label="Time (days)" ref="steps[stepNumber]"/>
+		<trace label="Density 1" ref="pop1[density]"/>
+		<trace label="Density 2" ref="pop2[density]"/>
+	</output>
+
+</simulation>

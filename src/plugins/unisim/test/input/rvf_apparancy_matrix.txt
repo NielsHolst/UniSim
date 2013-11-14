@@ -1,0 +1,5 @@
+*Apparencies	sheep/S/lamb[value]	sheep/S/adult[value]	sheep/E/lamb[value]	sheep/E/adult[value]	sheep/I/lamb[value]	sheep/I/adult[value]	sheep/R/adult[value]
+Aedes/S[bloodDemand]	0.5	0.5	0.5	0.5	0.5	0.5	0.5
+Aedes/I[bloodDemand]	0.5	0.5	0.5	0.5	0.5	0.5	0.5
+Culex/S[bloodDemand]	0.5	0.5	0.5	0.5	0.5	0.5	0.5
+Culex/I[bloodDemand]	0.5	0.5	0.5	0.5	0.5	0.5	0.5

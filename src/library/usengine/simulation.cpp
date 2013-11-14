@@ -40,9 +40,9 @@ Simulation::Simulation(Identifier name)
     setProperty("classLabel", "Simulation");
 }
 
-Simulation::~Simulation() {
-    theSimulation = 0;
-}
+//Simulation::~Simulation() {
+//    theSimulation = 0;
+//}
 
 //! Executes one or more runs of the simulation as determined by the integrator
 /*!	The integrator determines through nextRun() and nextStep() the two controlling loops of the simulation:

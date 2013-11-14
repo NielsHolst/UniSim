@@ -16,10 +16,12 @@ public:
     Infection(UniSim::Identifier name, QObject *parent=0);
 private:
     // variables
-    Matrix<double> attacksPerHost, numHostsAttacked, propHostsAttacked;
+    Matrix<double> attacked, propAttacked;
+    QVector<double> attacksVector, attackedVector, attacksHost, attackedHost;
     // methods
     void createVariables();
-    void updateFromNumAttacks();
+    void updateCreatedVariables();
+    void updateAttacksByPrey(int ixPrey);
 };
 
 }

@@ -14,6 +14,7 @@ namespace vg {
 CropRadiationAbsorption::CropRadiationAbsorption(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    addParameterRef<double>(Name(Tscreen), "screens[temperature]");
     addParameterRef<double>(Name(Tindoors), "climate/temperature[value]");
     addParameterRef<double>(Name(diffuseRadiation), "climate/radiation[diffuse]");
     addParameterRef<double>(Name(screenTransmission), "regulation/screens[lightTransmission]");

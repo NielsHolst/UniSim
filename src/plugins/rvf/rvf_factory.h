@@ -4,8 +4,8 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#ifndef rvf_factory_H
-#define rvf_factory_H
+#ifndef UNISIM_RVF_FACTORY_H
+#define UNISIM_RVF_FACTORY_H
 
 #include <QObject>
 #include <usbase/factory_plug_in.h>

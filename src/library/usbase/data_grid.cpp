@@ -33,7 +33,8 @@ QStringList DataGrid::columnNames() const {
 }
 
 QStringList DataGrid::rowNames() const {
-    return QStringList( data.rowIndex.keys() );
+    // return QStringList( data.rowIndex.keys() );
+    return data.rowKeysInOrder;
 }
 
 QStringList DataGrid::row(int row) const {
@@ -200,6 +201,7 @@ void DataGrid::appendLine() {
         throw Exception(msg.arg(filePath).arg(rowNumber).arg(rowKey));
     }
     data.rowIndex[rowKey] = data.rows.size() - 1;
+    data.rowKeysInOrder << rowKey;
 }
 
 } //namespace

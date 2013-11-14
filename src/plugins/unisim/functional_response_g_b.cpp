@@ -56,8 +56,6 @@ void FunctionalResponseGB::update() {
     }
     totalDemand = (demand + respiration)/(1. - egestionRatio);
     totalSupply = GBFuncResp(totalDemand, apparency*resourceDensity);
-    if (totalSupply > resourceDensity)
-        totalSupply = resourceDensity;
     double netSupply = totalSupply*(1. - egestionRatio);
     egestion = totalSupply*egestionRatio;
     if (netSupply <= respiration) {

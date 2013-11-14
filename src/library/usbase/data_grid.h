@@ -45,7 +45,7 @@ private:
     struct {
         QVector<QStringList> rows;
         Index rowIndex, columnIndex;
-        QStringList columnNamesInOrder;
+        QStringList rowKeysInOrder, columnNamesInOrder;
         int numKeys;
     } data;
     //QHash<QByteArray, Index*> subIndices;

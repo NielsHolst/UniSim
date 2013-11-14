@@ -12,6 +12,7 @@ include ($${US_BASE}/base.pri)
 
 # Source code
 HEADERS += 	\
+    $${US_ENGINE}/builder.h \
     $${US_ENGINE}/confirmation.h \
     $${US_ENGINE}/documentation_writer.h \
     $${US_ENGINE}/file_locations_strict.h \
@@ -32,6 +33,7 @@ HEADERS += 	\
     $${US_ENGINE}/xml_node.h
 
 SOURCES += 	\
+    $${US_ENGINE}/builder.cpp \
     $${US_ENGINE}/confirmation.cpp \
     $${US_ENGINE}/documentation_writer.cpp \
     $${US_ENGINE}/file_locations_strict.cpp \

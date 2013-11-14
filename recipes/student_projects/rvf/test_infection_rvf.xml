@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+	</model>	
+
+	<model name="Aedes">
+		<model name="S" type="UniSim::Fixed">
+			<parameter name="parameters" value="((bloodDemand 5.0)) "/>
+		</model>
+		<model name="I" type="UniSim::Fixed">
+			<parameter name="parameters" value="((bloodDemand 2.0)) "/>
+		</model>
+	</model>
+
+	<model name="Culex">
+		<model name="S" type="UniSim::Fixed">
+			<parameter name="parameters" value="((bloodDemand 20.0)) "/>
+		</model>
+		<model name="I" type="UniSim::Fixed">
+			<parameter name="parameters" value="((bloodDemand 1.0)) "/>
+		</model>
+	</model>
+	
+	<model name="Sheep">
+		<model name="S">
+			<model name="lamb" type="UniSim::Fixed">
+				<parameter name="parameters" value="((value 100.0)) "/>
+			</model>
+			<model name="adult" type="UniSim::Fixed">
+				<parameter name="parameters" value="((value 25.0)) "/>
+			</model>
+		</model>
+		<model name="E">
+			<model name="lamb" type="UniSim::Fixed">
+				<parameter name="parameters" value="((value 5.0)) "/>
+			</model>
+			<model name="adult" type="UniSim::Fixed">
+				<parameter name="parameters" value="((value 2.0)) "/>
+			</model>
+		</model>
+		<model name="I">
+			<model name="lamb" type="UniSim::Fixed">
+				<parameter name="parameters" value="((value 10.0)) "/>
+			</model>
+			<model name="adult" type="UniSim::Fixed">
+				<parameter name="parameters" value="((value 1.0)) "/>
+			</model>
+		</model>
+		<model name="R">
+			<model name="adult" type="UniSim::Fixed">
+				<parameter name="parameters" value="((value 30.0)) "/>
+			</model>
+		</model>
+	</model>
+	
+	<model name="infection" type="UniSim::Infection">
+		<parameter name="apparencyMatrix" value="rvf_apparancy_matrix.txt"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Demands"/>
+		<trace label="TotalTimeSteps" ref="calendar[totalTimeSteps]"/>
+		<trace label="Culex/S/bloodDemand" ref="Culex/S/[bloodDemand]"/>
+		<trace label="aedes/s_sheep/s/lamb_numattacks" ref="infection[aedes/s_sheep/s/lamb_numattacks]"/>
+	</output>
+</simulation>

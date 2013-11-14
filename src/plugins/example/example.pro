@@ -8,9 +8,11 @@ CONFIG += plugin
 include ($${US_BASE}/base.pri)
 
 HEADERS += \
+    logistic_growth.h \
     even_odd.h \
     example_factory.h
 
 SOURCES += \
+    logistic_growth.cpp \
     even_odd.cpp \
     example_factory.cpp

@@ -19,7 +19,7 @@ public:
 
 private:
     // Parameters
-    double waterLevel, waterLevelThreshold, dailyFecundity;
+    double waterLevel, waterLevelThreshold, fecundityPerBloodmeal, sexRatio, density, bloodmeal;
 
     // Variables
     double value;

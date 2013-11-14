@@ -167,17 +167,17 @@ double divBounded(double x, double y, double bound) {
 }
 
 //! Gutierrez-Baumgaertner functional response
-double GBFuncResp(double demand, double supply) {
-    if (demand < 0 ||  supply < 0)
+double GBFuncResp(double demand, double resource) {
+    if (demand < 0 ||  resource < 0)
         throw Exception("Illegal arguments to GBFuncResp(d,s), "
                         "d = " + QString::number(demand) +
-                        "s = " + QString::number(supply));
+                        "s = " + QString::number(resource));
 
     if (demand <= DBL_EPSILON)
         return 0.;
 
-    double res = demand*(1. - negExp(supply/demand));
-    return (res > supply) ? supply : res;
+    double supply = demand*(1. - negExp(resource/demand));
+    return supply;
 }
 
 //! Returns the Julian day (1..365)

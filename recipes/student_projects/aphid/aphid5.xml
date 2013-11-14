@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="SHBmodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+		<parameter name="initialDate" value="1/5/2009"/>
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Flakkebjerg 2009.txt"/>
+			<parameter name="imposeInitialDateTime" value="no"/>
+		</model>
+	</model>
+
+	<model name="aphid">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="3.4"/>
+		</model>
+
+		<model name="Susceptible">
+			<model name="Snymph" type="UniSim::Stage">
+				<parameter name="duration" value="150"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="100"/>
+				<parameter name="inflow" ref="SnymphToBeBorn[outflow]"/>
+				<parameter name="phaseOutflowProportion" value="0.01"/> 
+			</model>
+
+
+			<model name="Sadult" type="UniSim::Stage">
+				<model name="time" type="UniSim::Days"/>
+				<parameter name="duration" value="30"/>
+				<parameter name="k" value="10"/>
+				<parameter name="inflow" ref="Snymph[outflow]"/>
+				<parameter name="phaseOutflowProportion" value="0.01"/>
+			</model>
+			
+			<model name="SnymphToBeBorn" type="UniSim::Stage">
+				<parameter name="duration" value="10"/>
+				<parameter name="k" value="20"/>
+				<parameter name="inflow" ref="Snymph[outflow]"/>
+				<parameter name="growthRate" value="20"/> <!-- Life time fecundity corrected for sex ratio -->
+			</model>
+		</model>
+		
+		<model name="Infectious">
+			<model name="Inymph" type="UniSim::StageAndPhase">
+				<parameter name="duration" ref="Snymph[duration]"/>
+				<parameter name="k" ref="Snymph[k]"/>
+				<parameter name="phaseInflow" ref="Snymph[phaseOutflow]"/>
+				<parameter name="phaseDuration" value="10"/>
+				<parameter name="phaseK" value="15"/>	
+			</model>
+
+
+			<model name="Iadult" type="UniSim::StageAndPhase">
+				<model name="time" type="UniSim::Days"/>
+				<parameter name="duration" ref="Sadult[duration]"/>
+				<parameter name="k" ref="Sadult[k]"/>
+				<parameter name="inflow" ref="Inymph[outflow]"/>
+				<parameter name="phaseInflow" ref="Sadult[phaseOutflow]"/> 
+				<parameter name="phaseDuration" value="10"/> 
+				<parameter name="phaseK" ref="Inymph[phaseK]"/>
+			</model>
+		</model>
+		
+		<model name="Cadavers">
+			<model name="Cnymph" type="UniSim::Stage">
+				<parameter name="duration" value="50"/>
+				<parameter name="k" ref="Snymph[k]"/>
+				<parameter name="phaseInflow" ref="Inymph[phaseOutflow]"/>
+			</model>
+
+			<model name="Cadult" type="UniSim::Stage">
+				<parameter name="duration" ref="Cnymph[duration]"/>
+				<parameter name="k" ref="Sadult[k]"/>
+				<parameter name="phaseInflow" ref="Iadult[phaseOutflow]"/>
+			</model>
+		</model>
+	</model>
+	
+
+	<output type="plot">
+		<parameter name="title" value ="weather log"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Insect numbers"/>
+		<parameter name="logy" value ="yes"/>
+		<parameter name="ymin" value ="-2"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="SNymphs" value="Snymph[value]"/>
+		<trace label="SAdults" value="Sadult[value]"/>
+		<trace label="INymphs" value="Inymph[value]"/>
+		<trace label="IAdults" value="Iadult[value]"/>
+		<trace label="CNymphs" value="Cnymph[value]"/>
+		<trace label="CAdults" value="Cadult[value]"/>
+	</output>
+
+	</simulation>

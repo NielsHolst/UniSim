@@ -17,7 +17,7 @@ public:
     DateInterval(QDate date, Frequency frequency);
     bool includes(QDate date);
 private:
-	QDate from, to;;
+    QDate from, to;
     Frequency frequency;
 };
 

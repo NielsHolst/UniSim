@@ -19,12 +19,13 @@ private slots:
     void testCalendarDateIsFirst();
     void testCalendarDateIsInside();
     void testImposeDate();
-
+    void testTwiceOpened();
 private:
     void createSimulation(QString filename);
     void readLineItems();
     void readData(QVector<double> *data);
     void openOutputFile(QString fileName);
+    bool compareFiles(QString fileName1, QString fileName2);
 
     UniSim::Simulation *sim;
     QFile outputFile;

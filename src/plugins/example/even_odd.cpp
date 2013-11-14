@@ -12,8 +12,8 @@ namespace example {
 EvenOdd::EvenOdd(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<int>("initialValue", &initialValue, 100, this, "desc");
-    new Variable<int>("value", &value, this, "desc");
+    addParameter<int>(Name(initialValue), 100, "Initial value");
+    addVariable<int>(Name(value), "Current value");
 }
 
 void EvenOdd::reset() {
@@ -26,7 +26,6 @@ void EvenOdd::update() {
     else
         value = 3*value + 1;
 }
-
 
 } //namespace
 

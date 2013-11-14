@@ -52,7 +52,7 @@ double interpolate(const QMap<int, double> xy, int x);
 double pow0(double x, double c, QObject *context = 0);
 double negExp(double x);
 double divBounded(double x, double y, double bound = std::numeric_limits<double>::max());
-double GBFuncResp(double demand, double supply);
+double GBFuncResp(double demand, double resource);
 int toDayOfYear(int day, int month);
 double convertTime(double time, char fromUnit, char toUnit, QObject *context = 0);
 //@}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Functional response">
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="50"/>
+	</integrator>
+
+	<model name="resource" type="UniSim::Range">
+		<parameter name="progress" variable="steps[progress]"/>
+		<parameter name="min" value="0"/>
+		<parameter name="max" value="100"/>
+	</model>
+
+	<model name="funcresp1" type="UniSim::FunctionalResponseGB">
+		<parameter name="apparency" value="1"/>
+		<parameter name="resourceDensity" ref="resource[value]"/>
+		<parameter name="demand" value="1000"/>
+	</model>
+
+	<model name="funcresp2" type="UniSim::FunctionalResponseGB">
+		<parameter name="apparency" value="10"/>
+		<parameter name="resourceDensity" ref="resource[value]"/>
+		<parameter name="demand" ref="funcresp1[demand]"/>
+	</model>
+
+	<model name="funcresp3" type="UniSim::FunctionalResponseGB">
+		<parameter name="apparency" value="100"/>
+		<parameter name="resourceDensity" ref="resource[value]"/>
+		<parameter name="demand" ref="funcresp1[demand]"/>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value="Functional response supplies"/>
+		<trace label="Cadavers" ref="resource[value]"/>
+		<trace label="Supply 1" ref="funcresp1[supply]"/>
+		<trace label="Supply 2" ref="funcresp2[supply]"/>
+		<trace label="Supply 3" ref="funcresp3[supply]"/>
+		<trace label="Demand" ref="funcresp1[demand]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Functional response supply/demand ratios"/>
+		<trace label="Cadavers" ref="resource[value]"/>
+		<trace label="S/D 1" ref="funcresp1[sdRatio]"/>
+		<trace label="S/D 2" ref="funcresp2[sdRatio]"/>
+		<trace label="S/D 3" ref="funcresp3[sdRatio]"/>
+	</output>
+</simulation>

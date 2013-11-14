@@ -1,6 +1,7 @@
 #include <iostream>
 #include <QDir>
 #include <QGenericMatrix>
+#include <QCryptographicHash>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
@@ -195,6 +196,19 @@ void TestRecords::testImposeDate() {
     QCOMPARE(M(9, C_C), 38.);   // 13 Jan
 }
 
+
+void TestRecords::testTwiceOpened() {
+    createSimulation("test_records2.xml");
+    try {
+        sim->execute();
+    }
+    catch (Exception &ex) {
+        QString msg = "Could not execute: " + ex.message();
+        QFAIL(qPrintable(msg));
+    }
+    QVERIFY(compareFiles("test_records.prn", "test_records2.prn"));
+}
+
 //
 // Supporting methods
 //
@@ -207,6 +221,7 @@ void TestRecords::createSimulation(QString fileName) {
 }
 
 void TestRecords::openOutputFile(QString fileName) {
+    outputFile.close();
     QString filePath = FileLocations::location(FileLocationInfo::Output).absolutePath() +
                        "/" + fileName;
     outputFile.setFileName(filePath);
@@ -238,4 +253,14 @@ void TestRecords::readData(QVector<double> *data) {
             QVERIFY(ok);
         }
     }
+}
+
+bool TestRecords::compareFiles(QString fileName1, QString fileName2) {
+    QCryptographicHash hash1(QCryptographicHash::Sha1), hash2(QCryptographicHash::Sha1);
+    openOutputFile(fileName1);
+    hash1.addData(outputFile.readAll());
+    openOutputFile(fileName2);
+    hash2.addData(outputFile.readAll());
+    QByteArray signature1 = hash1.result(), signature2 = hash2.result();
+    return signature1 == signature2;
 }

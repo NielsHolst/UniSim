@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Stage demo">
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="25"/>
+	</integrator>
+	
+	<model name="calendar" type="UniSim::Calendar"/>
+	<model name="time" type="UniSim::Days"/>
+	
+	<model name="stage1" type="UniSim::Stage">
+		<parameter name="initialInflow" value="1"/>
+		<parameter name="k" value="1"/>
+		<parameter name="duration" value="10"/>
+	</model>
+	<model name="stage2" type="UniSim::Stage">
+		<parameter name="initialInflow" value="1"/>
+		<parameter name="k" value="2"/>
+		<parameter name="duration" ref="stage1[duration]"/>
+	</model>
+	<model name="stage5" type="UniSim::Stage">
+		<parameter name="initialInflow" value="1"/>
+		<parameter name="k" value="5"/>
+		<parameter name="duration" ref="stage1[duration]"/>
+	</model>
+	<model name="stage10" type="UniSim::Stage">
+		<parameter name="initialInflow" value="1"/>
+		<parameter name="k" value="10"/>
+		<parameter name="duration" ref="stage1[duration]"/>
+	</model>
+	<model name="stage20" type="UniSim::Stage">
+		<parameter name="initialInflow" value="1"/>
+		<parameter name="k" value="20"/>
+		<parameter name="duration" ref="stage1[duration]"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Stage density"/>
+		<trace label="Time" value="calendar[totalDays]"/>
+		<trace label="k=1" value="stage1[value]"/>
+		<trace label="k=2" value="stage2[value]"/>
+		<trace label="k=5" value="stage5[value]"/>
+		<trace label="k=10" value="stage10[value]"/>
+		<trace label="k=20" value="stage20[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Stage outflow per day"/>
+		<trace label="Time" value="calendar[totalDays]"/>
+		<trace label="k=1" value="stage1[outflow]"/>
+		<trace label="k=2" value="stage2[outflow]"/>
+		<trace label="k=5" value="stage5[outflow]"/>
+		<trace label="k=10" value="stage10[outflow]"/>
+		<trace label="k=20" value="stage20[outflow]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Stage total outflow"/>
+		<trace label="Time" value="calendar[totalDays]"/>
+		<trace label="k=1" value="stage1[outflowTotal]"/>
+		<trace label="k=2" value="stage2[outflowTotal]"/>
+		<trace label="k=5" value="stage5[outflowTotal]"/>
+		<trace label="k=10" value="stage10[outflowTotal]"/>
+		<trace label="k=20" value="stage20[outflowTotal]"/>
+	</output>
+
+	</simulation>

@@ -21,7 +21,7 @@ public:
     enum State {Uninitialized, Initialized, Faulty};
 
     Simulation(Identifier name);
-    ~Simulation();
+//    ~Simulation();
     void execute();
     QString version() const;
     State state() const;

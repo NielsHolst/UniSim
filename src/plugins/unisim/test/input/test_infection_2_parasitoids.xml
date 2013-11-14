@@ -7,35 +7,38 @@
 	<model name="calendar" type="unisim::Calendar">
 	</model>	
 
-	<model name="Gazella" type="UniSim::Fixed">
+	<model name="io" type="UniSim::Fixed">
 		<parameter name="parameters" value="((Density 100.0)) "/>
+		<model name="fly" type="UniSim::Fixed">
+			<parameter name="parameters" value="((Density 5.0)) "/>
+		</model>
 	</model>
-	<model name="Gnu" type="UniSim::Fixed">
+	<model name="levana" type="UniSim::Fixed">
 		<parameter name="parameters" value="((Density 200.0)) "/>
 	</model>
-	<model name="Zebra" type="UniSim::Fixed">
+	<model name="paphia" type="UniSim::Fixed">
 		<parameter name="parameters" value="((Density 150.0)) "/>
 	</model>
-	<model name="Leopard" type="UniSim::Fixed">
-		<parameter name="parameters" value="((Density 5.0) (Demand 12.0)) "/>
+	<model name="Fly" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Demand 12.0)) "/>
 	</model>
-	<model name="Lion" type="UniSim::Fixed">
+	<model name="Wasp" type="UniSim::Fixed">
 		<parameter name="parameters" value="((Demand 18.0)) "/>
 	</model>
 
 	<model name="infection" type="UniSim::Infection">
-		<parameter name="apparencyMatrix" value="test_predation_2_predators.txt"/>
+		<parameter name="apparancyMatrix" value="test_infection_2_parasitoids.txt"/>
 	</model>
-	
+
 	<output type="table">
 		<parameter name="fileName" value="test_infection_2_parasitoids.prn"/>
 		<trace label="TotalTimeSteps" ref="calendar[totalTimeSteps]"/>
-		<trace label="Gazella" ref="Gazella[Density]"/>
-		<trace label="LionGazella" ref="predation[Lion-Gazella]"/>
-		<trace label="LionLeopard" ref="predation[Lion-Leopard]"/>
-		<trace label="LeopardGazella" ref="predation[Leopard-Gazella]"/>
-		<trace label="LeopardSupply" ref="predation[Leopard-Supply]"/>
-		<trace label="LeopardLoss" ref="predation[Leopard-Loss]"/>
-		<trace label="GnuLoss" ref="predation[Gnu-Loss]"/>
+		<trace label="io" ref="io[Density]"/>
+		<trace label="Fly-io attacks" ref="infection[Fly-io-attacks]"/>
+		<trace label="Fly-io attacked" ref="infection[Fly-io-attacked]"/>
+		<trace label="Fly attacks" ref="infection[Fly-attacks]"/>
+		<trace label="Fly attacked" ref="infection[Fly-attacked]"/>
+		<trace label="paphia attacks" ref="infection[paphia-attacks]"/>
+		<trace label="paphia attacked" ref="infection[paphia-attacked]"/>
 	</output>
 </simulation>

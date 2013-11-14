@@ -17,10 +17,12 @@ Records::Records(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     new Parameter<QString>("fileName", &fileName, "records.txt", this,
-    "Name of input file. If date and time are included, their column titles must be @F date and @F {time}");
+    "Name of input file. It may contain a relative path, e.g. @F {observations/experiment1.txt}. "
+    "If date and/or time are included, their column titles must be @F date and @F {time}");
     new Parameter<QString>("fileLocation", &fileLocation, "input", this,
-    "Valid locations are the standard folders: @F {input} and @F {plugins}. "
-    "The standard folders can be set from the File|Locations menu.");
+    "Valid locations are: @F {input} and @F {plugins}. The former will look first in the same folder where the recipe is reciding, "
+    "then in a sub-folder of that called@ F {input}, and then for a sub-folder @F input in parent, grandparent and earlier ancestors."
+    "A value of @F plugins refers to the standard folder for plug-ins.");
     new Parameter<bool>("imposeInitialDateTime", &imposeInitialDateTime, true, this,
     "Impose the first date and time on @F {calendar}. Either or both, date and time, are imposed; "
     "it depends on which are included in the file. If neither is included, there is no effect "

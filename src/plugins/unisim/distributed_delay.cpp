@@ -67,7 +67,6 @@ void DistributedDelay::update(double inflow, double dt, double fgr) {
         // Finish with first age class; enter inflow into that
         x[0] += dividedInflow - a*b*x.at(0);
     }
-    //s.data = x.data();
     xSum = accum(x);
     s.growthRate = xSum + s.outflowRate - totalBefore;
 }

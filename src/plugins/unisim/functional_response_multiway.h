@@ -17,7 +17,6 @@ class FunctionalResponseMultiway : public Model
 {
 public:
     FunctionalResponseMultiway(UniSim::Identifier name, QObject *parent=0);
-    ~FunctionalResponseMultiway();
     // standard methods
     void amend();
     void reset();
@@ -33,14 +32,15 @@ protected:
     Links resources;
 private:
     // parameters
-    QString apparencyMatrixFileName;
+    QString apparancyMatrixFileName;
     DataGrid *am;
     Matrix<double> apparencies;
     // links
     Links demands;
     // methods
     virtual void createVariables() = 0;
-    virtual void updateFromNumAttacks() = 0;
+    virtual void updateCreatedVariables() = 0;
+    virtual void updateAttacksByPrey(int ixPrey) = 0;
     void setPredators();
     void setPrey();
     void setApparencies();
@@ -49,7 +49,6 @@ private:
     void updateAttacksByPredator();
     void updateAttacksByPredator(int ixPredator);
     void updateAttacksByPrey();
-    void updateAttacksByPrey(int ixPrey);
 };
 
 }

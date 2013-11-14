@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="IPMmodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="150"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="time" type="UniSim::LactinTime">
+		<parameter name="a" value="0.1229"/>
+		<parameter name="b" value="32.7"/>
+		<parameter name="c" value="8.055"/>
+		<parameter name="d" value="-0.05606"/>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Harlingen weather log"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Lactin time (time step per day)"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Time step" value="time[step]"/>
+	</output>
+
+
+	</simulation>

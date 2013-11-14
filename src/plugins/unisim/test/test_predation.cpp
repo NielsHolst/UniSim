@@ -31,13 +31,20 @@ void TestPredation::testOnePredator() {
 void TestPredation::testTwoPredators() {
     run("test_predation_2_predators.xml");
     Model *pred = sim->seekOne<Model*>("predation");
-    QVERIFY(TestNum::eq(pred->pullValue<double>("Leopard-Gazella"), 4.1267, 1e-4));
-    QVERIFY(TestNum::eq(pred->pullValue<double>("Gnu-Loss"),  8.6662, 1e-4));
-    QVERIFY(TestNum::eq(pred->pullValue<double>("Leopard-Loss"),  0.036056, 1e-4));
-    QVERIFY(TestNum::eq(pred->pullValue<double>("Leopard-Supply"), 11.729, 1e-4));
+    std::cout
+        << pred->pullValue<double>("Leopard-Gazella")   << "\n"
+        << pred->pullValue<double>("Gnu-Loss")<< "\n"
+        << pred->pullValue<double>("Leopard-Loss")<< "\n"
+        << pred->pullValue<double>("Leopard-Supply")<< "\n"
+        << pred->pullValue<double>("Lion-Gazella")<< "\n"
+        << pred->pullValue<double>("Lion-Leopard")<< "\n";
+    QVERIFY(TestNum::eq(pred->pullValue<double>("Leopard-Gazella"), 3.4104, 1e-4));
+    QVERIFY(TestNum::eq(pred->pullValue<double>("Gnu-Loss"),  1.6597, 1e-4));
+    QVERIFY(TestNum::eq(pred->pullValue<double>("Leopard-Loss"),  0.0019693, 1e-4));
+    QVERIFY(TestNum::eq(pred->pullValue<double>("Leopard-Supply"), 5.8207, 1e-4));
 
-    QVERIFY(TestNum::eq(pred->pullValue<double>("Lion-Gazella"), 6.1423, 1e-4));
-    QVERIFY(TestNum::eq(pred->pullValue<double>("Lion-Leopard"), 0.036056, 1e-4));
+    QVERIFY(TestNum::eq(pred->pullValue<double>("Lion-Gazella"), 4.9991, 1e-4));
+    QVERIFY(TestNum::eq(pred->pullValue<double>("Lion-Leopard"), 0.0019693, 1e-4));
 }
 
 

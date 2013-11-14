@@ -21,7 +21,7 @@
 	</model>
 
 	<model name="Predation" type="UniSim::Predation">
-		<parameter name="apparencyMatrix" value="test_predation_1_predator.txt"/>
+		<parameter name="apparancyMatrix" value="test_predation_1_predator.txt"/>
 	</model>
 	
 	<output type="table">

@@ -5,25 +5,19 @@
 */
 #ifndef FILE_LOCATIONS_WIDGET_H
 #define FILE_LOCATIONS_WIDGET_H
-#include <QObject>
-#include <QWidget>
-#include <usbase/file_locations.h>
+#include <QDialog>
 
 class QLayout;
 class QPushButton;
 
-class FileLocationsWidget : public QWidget
+class FileLocationsWidget : public QDialog
 {
 	Q_OBJECT
 public:
     FileLocationsWidget(QWidget *parent = 0);
-private slots:
-    void doClose();
 private:
     QLayout* createEntries();
     QLayout* createButtons();
-    QPushButton *closeButton;
-    QWidget *parentWidget;
 };
 
 

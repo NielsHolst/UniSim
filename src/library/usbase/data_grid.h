@@ -55,17 +55,21 @@ private:
     void createSubIndex(const QList<int> &keyColumns);
     QString joinKeys(QStringList keys) const;
     void readData();
-    void readFirstLine();
+    void openFile();
+    void readFirstTwoLines();
     void readLineItems();
     void setColumnIndex();
     void checkLine();
     void appendLine();
+    typedef enum {None, AddFirstColumnName, ReplaceFirstColumnName} ColumnAction;
+    ColumnAction columnAction();
 
     // housekeeping data
     QString filePath;
     QFile file;
     QStringList lineItems;
     bool pastLastLine;
+    QList<QStringList> firstTwoLines;
 };
 
 template<class T> QVector<T> DataGrid::row(int aRow) {

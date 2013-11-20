@@ -46,7 +46,8 @@ FunctionalResponseGB::FunctionalResponseGB(Identifier name, QObject *parent)
 }
 
 void FunctionalResponseGB::reset() {
-    update();
+    supply = sdRatio = totalDemand = totalSupply = egestion =
+    attacksPerHost = numHostsAttacked = propHostsAttacked = 0;
 }
 
 void FunctionalResponseGB::update() {

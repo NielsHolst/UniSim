@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Multi-way predation">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="10"/>
+	</integrator>
+
+	<model name="calendar" type="unisim::Calendar">
+	</model>	
+
+	<model name="io" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 100.0)) "/>
+		<model name="fly" type="UniSim::Fixed">
+			<parameter name="parameters" value="((Density 5.0)) "/>
+		</model>
+	</model>
+	<model name="levana" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 200.0)) "/>
+	</model>
+	<model name="paphia" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Density 150.0)) "/>
+	</model>
+	<model name="Fly" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Demand 12.0)) "/>
+	</model>
+	<model name="Wasp" type="UniSim::Fixed">
+		<parameter name="parameters" value="((Demand 18.0)) "/>
+	</model>
+
+	<model name="infection" type="UniSim::Infection">
+		<parameter name="apparancyMatrix" value="application_6_infection_apparancies.txt"/>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value="Multi-way infection"/>
+		<trace label="TotalTimeSteps" ref="calendar[totalTimeSteps]"/>
+		<trace label="Fly-io attacks" ref="infection[Fly-io-attacks]"/>
+		<trace label="Fly-io attacked" ref="infection[Fly-io-attacked]"/>
+		<trace label="Fly attacks" ref="infection[Fly-attacks]"/>
+		<trace label="Fly attacked" ref="infection[Fly-attacked]"/>
+		<trace label="wasp-io/fly attacked" ref="infection[wasp-io_fly-attacked]"/>
+		<trace label="paphia attacks" ref="infection[paphia-attacks]"/>
+		<trace label="paphia attacked" ref="infection[paphia-attacked]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="fileName" value="application_6_infection_output.prn"/>
+		<trace label="TotalTimeSteps" ref="calendar[totalTimeSteps]"/>
+		<trace label="Fly-io attacks" ref="infection[Fly-io-attacks]"/>
+		<trace label="Fly-io attacked" ref="infection[Fly-io-attacked]"/>
+		<trace label="Fly attacks" ref="infection[Fly-attacks]"/>
+		<trace label="Fly attacked" ref="infection[Fly-attacked]"/>
+		<trace label="wasp-io/fly attacked" ref="infection[wasp-io_fly-attacked]"/>
+		<trace label="paphia attacks" ref="infection[paphia-attacks]"/>
+		<trace label="paphia attacked" ref="infection[paphia-attacked]"/>
+	</output>
+</simulation>

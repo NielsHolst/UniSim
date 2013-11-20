@@ -22,6 +22,8 @@ private slots:
     void testEmptyFile();
     void testIllFormedFile();
     void testOnlyColumnHeadings();
+    void testAutoColumnHeadingMissing();
+    void testAutoColumnHeadingEmpty();
     void testWrongKeys();
     void testRowIndices();
     void testColumnString();

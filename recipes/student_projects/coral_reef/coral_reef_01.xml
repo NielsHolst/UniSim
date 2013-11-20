@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Coral reef">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="200"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+		<parameter name="timeStep" value="10"/>
+	</model>
+
+	<model name="Siganus">
+		<model name="time" type="UniSim::Days"/>
+		<model name="larva" type="UniSim::Stage">
+			<parameter name="duration" value="60"/>
+		</model>
+		<model name="juvenile" type="UniSim::Stage">
+			<parameter name="duration" value="500"/>
+			<parameter name="inflow" ref="larva[outflow]"/>
+		</model>
+		<model name="adult" type="UniSim::Stage">
+			<parameter name="duration" value="1400"/>
+			<parameter name="inflow" ref="juvenile[outflow]"/>
+			<parameter name="initialInflow" value="1000"/>
+		</model>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value ="Siganus numbers"/>
+		<trace label="Time (years)" value="calendar[totalTime]" divisor="365"/>
+		<trace label="Larvae" value="Siganus/larva[value]"/>
+		<trace label="Juveniles" value="Siganus/juvenile[value]"/>
+		<trace label="Adults" value="Siganus/adult[value]"/>
+	</output>
+
+	</simulation>

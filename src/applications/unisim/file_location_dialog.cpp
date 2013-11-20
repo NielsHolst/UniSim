@@ -18,6 +18,8 @@ FileLocationDialog::FileLocationDialog(FileLocationInfo::FileType fileType)
 
 bool FileLocationDialog::exec() {
     QFileDialog dialog(mainWindow(), title, folder);
+//    QFileDialog dialog(0, title, folder);
+//    dialog.setFileMode(QFileDialog::DirectoryOnly);
     if (dialog.exec()) {
         QStringList fileNames = dialog.selectedFiles();
         if (fileNames.size() > 0) {

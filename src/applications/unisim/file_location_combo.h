@@ -17,6 +17,7 @@ private slots:
     void doBrowse(int index);
 private:
     UniSim::FileLocationInfo::FileType fileType;
+    QString currentFolder;
     bool isBrowsing;
 };
 

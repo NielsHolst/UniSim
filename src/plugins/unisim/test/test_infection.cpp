@@ -47,9 +47,6 @@ void TestInfection::testTwoParasitoids() {
     QVERIFY(TestNum::eq(inf->pullValue<double>("wasp-io_fly-attacks"), 0.0019693, 1e-4));
     QVERIFY(TestNum::eq(inf->pullValue<double>("io_fly-attacks"), 0.0019693, 1e-4));
     QVERIFY(TestNum::eq(inf->pullValue<double>("io_fly-attacked"), 0.0019690, 1e-4));
-
-    QVERIFY(TestNum::eq(inf->pullValue<double>("Fly-io-propAttacked"), 0.34390, 1e-4));
-    QVERIFY(TestNum::eq(inf->pullValue<double>("wasp-io_fly-propAttacked"), 0.0003980, 1e-4));
 }
 
 //

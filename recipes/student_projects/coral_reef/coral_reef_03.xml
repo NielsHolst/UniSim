@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Coral reef">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="200"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+		<parameter name="timeStep" value="10"/>
+	</model>
+
+	<model name="Macroalgae" type="coral_reef::LogisticGrowth">
+		<parameter name="timeStep" ref="calendar[timeStep]"/>
+	</model>
+
+	<model name="Siganus">
+		<model name="time" type="UniSim::Days"/>
+		<model name="spawning" type="coral_reef::Spawning">
+			<parameter name="spawningDay" value="305"/>
+			<parameter name="actualDay" ref="calendar[dayOfYear]"/>
+			<parameter name="fecundity" value="1e6"/>
+			<parameter name="noOfFish" ref="adult[value]"/>
+		</model>
+		<model name="larva" type="UniSim::Stage">
+			<parameter name="duration" value="60"/>
+			<parameter name="inflow" ref="spawning[noOfEggs]"/>
+			<parameter name="growthRate" value="1e-4"/> <!-- Only 0.01% survive -->
+		</model>
+		<model name="juvenile" type="UniSim::Stage">
+			<parameter name="duration" value="500"/>
+			<parameter name="inflow" ref="larva[outflow]"/>
+			<parameter name="growthRate" value="0.1"/> <!-- Only 10% survive -->
+		</model>
+		<model name="adult" type="UniSim::Stage">
+			<parameter name="duration" value="1400"/>
+			<parameter name="inflow" ref="juvenile[outflow]"/>
+			<parameter name="initialInflow" value="1000"/>
+		</model>
+	</model>
+
+	<output type="plot">
+		<parameter name="title" value ="Siganus log numbers"/>
+		<parameter name="logy" value ="yes"/>
+		<parameter name="ymin" value ="-2"/>
+		<trace label="Time (years)" ref="calendar[totalTime]" divisor="365"/>
+		<trace label="Larvae" ref="Siganus/larva[value]"/>
+		<trace label="Juveniles" ref="Siganus/juvenile[value]"/>
+		<trace label="Adults" ref="Siganus/adult[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Siganus numbers"/>
+		<parameter name="ymax" value ="1e6"/>
+		<trace label="Time (years)" ref="calendar[totalTime]" divisor="365"/>
+		<trace label="Larvae" ref="Siganus/larva[value]"/>
+		<trace label="Juveniles" ref="Siganus/juvenile[value]"/>
+		<trace label="Adults" ref="Siganus/adult[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Macroalgae biomass"/>
+		<trace label="Time (years)" ref="calendar[totalTime]" divisor="365"/>
+		<trace label="Macroalgae" ref="Macroalgae[density]"/>
+	</output>
+
+	</simulation>

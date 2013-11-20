@@ -13,24 +13,44 @@ using namespace UniSim;
 FileLocationCombo::FileLocationCombo(FileLocationInfo::FileType fType, QWidget *parent)
     :  QComboBox(parent), fileType(fType), isBrowsing(false)
 {
-    QString location = FileLocations::possibleLocation(fileType).absolutePath();
-    addItem(location);
+    addItem(currentFolder = FileLocations::possibleLocation(fileType).absolutePath());
     addItem("Browse...");
     setCurrentIndex(0);
     connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(doBrowse(int)));
 }
 
 void FileLocationCombo::doBrowse(int /*index*/) {
-    if (isBrowsing) return;
+    if (isBrowsing)
+        return;
     isBrowsing = true;
-    setEnabled(false);
     FileLocationDialog dialog(fileType);
     if (dialog.exec()) {
         removeItem(0);
         insertItem(0, dialog.location().absolutePath());
         FileLocationInfo::setLocation(fileType, dialog.location());
     }
+
+//    QString selectedFolder =
+//        QFileDialog::getExistingDirectory(this, "Select a folder");
+//    if (!selectedFolder.isEmpty()) {
+//        removeItem(0);
+//        insertItem(0, selectedFolder);
+//        //FileLocationInfo::setLocation(fileType, selectedFolder);
+//    }
+
+//    QFileDialog *dialog = new QFileDialog(this, "Select a folder", "C:\\");
+//    dialog->setFileMode(QFileDialog::Directory);
+//    dialog->setOption(QFileDialog::ShowDirsOnly);
+//    if (dialog->exec()) {
+//        QString selectedFolder = "TST";
+//        removeItem(0);
+//        insertItem(0, selectedFolder);
+
+//    }
+
+    QWidget *parentDialog = parentWidget();
     setCurrentIndex(0);
-    setEnabled(true);
+    parentDialog->raise();
+    parentDialog->activateWindow();
     isBrowsing = false;
 }

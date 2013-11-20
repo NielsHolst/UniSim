@@ -24,8 +24,8 @@ void TestDataGrid::test1D() {
     QString test = data.cell(keys, QString("Nitrogen"));
     QCOMPARE(test, QString("90.1"));
     QCOMPARE(data.cell(keys, QString("Nitrogen")), QString("90.1"));
-
 }
+
 void TestDataGrid::test2D() {
     DataGrid data( filePath("data_grid_2_keys.txt") );
     QCOMPARE(data.numKeys(), 2);
@@ -78,6 +78,22 @@ void TestDataGrid::testIllFormedFile() {
 void TestDataGrid::testOnlyColumnHeadings() {
     DataGrid data( filePath("data_grid_only_column_headings.txt") );
     QCOMPARE(data.rowNames().size(), 0);
+}
+
+void TestDataGrid::testAutoColumnHeadingMissing() {
+    DataGrid data( filePath("data_grid_auto_column_heading_missing.txt") );
+    QCOMPARE(data.numKeys(), 1);
+    QStringList keys;
+    keys << "barley";
+    QCOMPARE(data.cell(keys, QString("Nitrogen")), QString("90.1"));
+}
+
+void TestDataGrid::testAutoColumnHeadingEmpty() {
+    DataGrid data( filePath("data_grid_auto_column_heading_empty.txt") );
+    QCOMPARE(data.numKeys(), 1);
+    QStringList keys;
+    keys << "barley";
+    QCOMPARE(data.cell(keys, QString("Nitrogen")), QString("90.1"));
 }
 
 void TestDataGrid::testWrongKeys() {

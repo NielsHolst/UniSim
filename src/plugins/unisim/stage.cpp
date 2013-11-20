@@ -96,10 +96,19 @@ void Stage::update() {
     dd->update(inflowPending, dt, realFgr);
     inflowPending = 0;
 
-    if (phaseOutflowProportion > 0.) {
+    if (phaseOutflowProportion == 0.) {
+        phaseOutflow.fill(0.);
+    }
+    else{
+        TestNum::snapTo(phaseOutflowProportion, 1.);
+        if (phaseOutflowProportion > 1.) {
+            QString msg = "phaseOutflowProportion = %1 must not be > 1";
+            throw Exception(msg.arg(phaseOutflowProportion), this);
+        }
         phaseOutflow = dd->take(phaseOutflowProportion);
         phaseOutflowTotal += accum(phaseOutflow);
     }
+
     sum = dd->content();
     outflowTotal += outflow = dd->state().outflowRate;
     growth = dd->state().growthRate;

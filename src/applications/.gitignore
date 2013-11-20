@@ -1,4 +1,4 @@
-*build-desktop*/
+*build-*/
 *.dll
 *.exe
 output/*.*

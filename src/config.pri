@@ -2,7 +2,7 @@
 # Configuration of make process (can be edited)
 #
 
-UNISIM_VERSION      = 1-44
+UNISIM_VERSION      = 1-45
 
 CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
 #CONFIG += unisim_deployment     # Or, this if targets will be used to produce an installation file
@@ -16,6 +16,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 win32 {
     lessThan(QT_MAJOR_VERSION, 5): QMAKE_LFLAGS +=  -enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
 }
+
+QMAKE_CXXFLAGS += -Wno-unused-local-typedefs
 
 DEFINES += UNISIM_VERSION
 

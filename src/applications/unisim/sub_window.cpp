@@ -18,8 +18,8 @@ SubWindow::SubWindow(QMdiArea *area, QString title, Type type)
     ** it is not deleted from memory. For SimulationOutput windows we override
     ** this, so that these windows are deleted when closed.
     */
-    if (_type == SimulationOutput)
-        setAttribute(Qt::WA_DeleteOnClose);
+//    if (_type == SimulationOutput)
+//        setAttribute(Qt::WA_DeleteOnClose);
 }
 
 SubWindow::Type SubWindow::type() const {

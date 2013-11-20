@@ -121,8 +121,12 @@ QString DataGrid::joinKeys(QStringList keys) const {
 }
 
 void DataGrid::readData() {
-    readFirstLine();
+    openFile();
     setColumnIndex();
+    file.close();
+
+    openFile();
+    readLineItems();
     while (true) {
         readLineItems();
         if (pastLastLine) break;
@@ -132,30 +136,30 @@ void DataGrid::readData() {
     file.close();
 }
 
-void DataGrid::readFirstLine() {
+void DataGrid::openFile() {
     file.setFileName(filePath);
     bool fileOk = file.open(QIODevice::ReadOnly | QIODevice::Text);
     if (!fileOk) {
         QString msg("Cannot open DataGrid file '%1'");
         throw Exception(msg.arg(filePath));
     }
-    readLineItems();
-    if (pastLastLine) {
-        QString msg("DataGrid file is empty: '%1'");
-        throw Exception(msg.arg(filePath));
-    }
-}
-
-void DataGrid::readLineItems() {
-    QString line;
-    while (!file.atEnd() && line.isEmpty()) {
-        line = QString(file.readLine().trimmed());
-    }
-    lineItems = line.split("\t", QString::SkipEmptyParts);
-    pastLastLine = lineItems.isEmpty();
 }
 
 void DataGrid::setColumnIndex() {
+    readFirstTwoLines();
+    lineItems = firstTwoLines[0];
+
+    switch (columnAction()) {
+    case ReplaceFirstColumnName:
+        lineItems[0] = "*Dummy";
+        break;
+    case AddFirstColumnName:
+        lineItems.prepend("*Dummy");
+        break;
+    case None:
+        break;
+    }
+
     data.numKeys = 0;
     for (int i = 0; i < lineItems.size(); ++i) {
         QString name = lineItems.value(i);
@@ -175,6 +179,45 @@ void DataGrid::setColumnIndex() {
         data.columnIndex[name] = i;
         data.columnNamesInOrder << name;
     }
+}
+
+DataGrid::ColumnAction DataGrid::columnAction() {
+    ColumnAction action = None;
+    int numItems1 = firstTwoLines[0].size();
+    int numItems2 = firstTwoLines[1].size();
+
+    if (numItems1 == numItems2) {
+        if (firstTwoLines[0][0].isEmpty())
+            action = ReplaceFirstColumnName;
+    }
+    else if (numItems1+1 == numItems2)
+        action = AddFirstColumnName;
+    else if (numItems2 != 0) {
+        QString msg = "Number of items in line 1 (%1 items) and line 2 (%2 items) in file '%3' does not match.";
+        throw Exception(msg.arg(numItems1).arg(numItems2).arg(filePath));
+    }
+    return action;
+}
+
+void DataGrid::readFirstTwoLines() {
+    firstTwoLines.clear();
+    readLineItems();
+    if (pastLastLine) {
+        QString msg("DataGrid file is empty: '%1'");
+        throw Exception(msg.arg(filePath));
+    }
+    firstTwoLines << lineItems;
+    readLineItems();
+    firstTwoLines << lineItems;
+}
+
+void DataGrid::readLineItems() {
+    QString line;
+    while (!file.atEnd() && line.isEmpty()) {
+        line = QString(file.readLine().trimmed());
+    }
+    lineItems = line.split("\t", QString::SkipEmptyParts);
+    pastLastLine = lineItems.isEmpty();
 }
 
 void DataGrid::checkLine() {

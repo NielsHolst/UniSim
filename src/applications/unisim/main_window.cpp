@@ -26,7 +26,7 @@
 #include <usbase/version.h>
 #include <usengine/documentation_writer.h>
 #include <usengine/plot_widget.h>  // test
-#include "file_locations_sub_window.h"
+#include "file_locations_widget.h"
 #include "image_widget.h"
 #include "live_simulation.h"
 #include "main_window.h"
@@ -196,14 +196,19 @@ QList<SubWindow*> MainWindow::subWindowList(SubWindow::Type type) {
 }
 
 void MainWindow::closeSubWindows(SubWindow::Type type) {
-    if (type == SubWindow::All) {
-        _mdiArea->closeAllSubWindows();
-        return;
+//    if (type == SubWindow::All) {
+//        _mdiArea->closeAllSubWindows();
+//        return;
+//    }
+//    QList<SubWindow*> windows = subWindowList(type);
+//    for (int i = 0; i < windows.size(); ++i) {
+//        windows[i]->close();
+//    }
+    QList<QMdiSubWindow *> subWindows = _mdiArea->subWindowList();
+    for (int i = 0; i < subWindows.size(); ++i) {
+        _mdiArea->removeSubWindow(subWindows.at(i));
     }
-    QList<SubWindow*> windows = subWindowList(type);
-    for (int i = 0; i < windows.size(); ++i) {
-        windows[i]->close();
-    }
+
 }
 
 void MainWindow::minimizeSubWindows(SubWindow::Type type) {
@@ -275,8 +280,8 @@ void MainWindow::openFile(QString filePath) {
 
 
 void  MainWindow::viewModel() {
-    if (!viewModelSubWindow)
-        viewModelSubWindow = new SubWindow(_mdiArea, "Model view", SubWindow::ModelView);
+//    if (!viewModelSubWindow)
+    SubWindow *viewModelSubWindow = new SubWindow(_mdiArea, "Model view", SubWindow::ModelView);
 
     imageLabel = new QLabel;
     imageLabel->setBackgroundRole(QPalette::Base);
@@ -357,10 +362,13 @@ void MainWindow::doFileClose()
 
 void MainWindow::doFileLocations()
 {
-    if (!fileLocationsSubWindow)
-        fileLocationsSubWindow = new FileLocationsSubWindow(_mdiArea);
-    fileLocationsSubWindow->adjustSize();
-    fileLocationsSubWindow->show();
+    QDialog *dialog = new FileLocationsWidget(0);
+    dialog->setModal(true);
+    dialog->show();
+//    if (!fileLocationsSubWindow)
+//        fileLocationsSubWindow = new FileLocationsSubWindow(_mdiArea);
+//    fileLocationsSubWindow->adjustSize();
+//    fileLocationsSubWindow->show();
 }
 
 void MainWindow::doFileExit()

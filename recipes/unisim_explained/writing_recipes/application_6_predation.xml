@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<simulation version="1.0">
+<simulation name="Multi-way predation">
 	<integrator type="Steps">
 		<parameter name="maxSteps" value="10"/>
 	</integrator>
@@ -28,9 +28,8 @@
 	</model>
 	
 	<output type="plot">
-		<parameter name="title" value="Predation.prn"/>
+		<parameter name="title" value="Multi-way predation"/>
 		<trace label="TotalTimeSteps" ref="calendar[totalTimeSteps]"/>
-		<trace label="Gazella" ref="Gazella[Density]"/>
 		<trace label="LionGazella" ref="predation[Lion-Gazella]"/>
 		<trace label="LionLeopard" ref="predation[Lion-Leopard]"/>
 		<trace label="LeopardGazella" ref="predation[Leopard-Gazella]"/>
@@ -42,7 +41,6 @@
 	<output type="table">
 		<parameter name="fileName" value="application_6_predation_output.prn"/>
 		<trace label="TotalTimeSteps" ref="calendar[totalTimeSteps]"/>
-		<trace label="Gazella" ref="Gazella[Density]"/>
 		<trace label="LionGazella" ref="predation[Lion-Gazella]"/>
 		<trace label="LionLeopard" ref="predation[Lion-Leopard]"/>
 		<trace label="LeopardGazella" ref="predation[Leopard-Gazella]"/>

@@ -16,10 +16,10 @@ namespace mussel_bed {
 StarfishGrowthRate::StarfishGrowthRate(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("supply", &supply, 0.007, this, "total amount of mussel flesh consumed kg/m2");
-    new Parameter<double>("stDensity", &stDensity, 0.3, this, "current starfish density kg/m2");
-    new Parameter<double>("temperature",&temperature, 13 ,this, "current temperature degrees celsius");
-    new Variable<double>("value", &value, this, "total increase in starfish biomass at step kg/m2");
+    new Parameter<double>("supply", &supply, 7, this, "total amount of mussel flesh consumed g/m2");
+    new Parameter<double>("stDensity", &stDensity, 0.3, this, "current starfish density g/m2");
+    new Parameter<double>("temperature",&temperature, 13. ,this, "current temperature degrees celsius");
+    new Variable<double>("value", &value, this, "total increase in starfish biomass at step g/m2");
 }
 
 
@@ -29,13 +29,9 @@ void StarfishGrowthRate::reset() {
 
 void StarfishGrowthRate::update() {
 
-    double manrate =(0.00161*exp(0.1032*temperature)); /* to account for changes in manteinance (this expression comes from Fonds determination of basal metabolism at different temperatures */
+    double intake = supply -((0.00161*exp(0.1032*temperature)*stDensity)); /* to account for changes in manteinance (this expression comes from Fonds determination of basal metabolism at different temperatures */
 
-    if (supply < (manrate*stDensity))
-        value = supply-(manrate*stDensity);
-    else
-        value = (0.9*supply)-(manrate*stDensity);
-
+    value=(-0.003459+1.182468*intake);
 }
 
 } //namespace

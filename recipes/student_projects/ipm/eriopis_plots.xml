@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<outputs>
+	<output type="plot" name="EriopisDevelopment">
+		<parameter name="title" value ="Eriopis Development rates"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="EggSteps"     value="eEgg/time[step]"/>
+		<trace label="Larvae1Steps" value="eLarva1/time[step]"/>
+		<trace label="Larvae2Steps" value="eLarva2/time[step]"/>
+		<trace label="Larvae3Steps" value="eLarva3/time[step]"/>
+		<trace label="Larvae4Steps" value="eLarva4/time[step]"/>
+		<trace label="Larvae5Steps" value="eLarva5/time[step]"/>
+		<trace label="PupaeSteps"   value="ePupa/time[step]"/>
+		<trace label="AdultSteps"   value="eAdult/time[step]"/>
+	</output>
+	
+	<output type="plot" name="EriopisNumbers">
+		<parameter name="title" value ="Eriopis numbers"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="eEgg/number[value]"/>
+		<trace label="Larvae1" value="eLarva1/number[value]"/>
+		<trace label="Larvae2" value="eLarva2/number[value]"/>
+		<trace label="Larvae3" value="eLarva3/number[value]"/>
+		<trace label="Larvae4" value="eLarva4/number[value]"/>
+		<trace label="Larvae5" value="eLarva5/number[value]"/>
+		<trace label="Pupae"   value="ePupa/number[value]"/>
+		<trace label="Adults"  value="eAdult/number[value]"/>
+		<trace label="ScaledLossRate" ref="eLossrate[scaledValue]"/>
+	</output>
+
+	<output type="plot" name="EriopisLogNumbers">
+		<parameter name="title" value ="Eriopis numbers (log10)"/>
+		<parameter name="logy" value="yes"/>
+		<parameter name="ymin" value="-1	"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="eEgg/number[value]"/>
+		<trace label="Larvae1" value="eLarva1/number[value]"/>
+		<trace label="Larvae2" value="eLarva2/number[value]"/>
+		<trace label="Larvae3" value="eLarva3/number[value]"/>
+		<trace label="Larvae4" value="eLarva4/number[value]"/>
+		<trace label="Larvae5" value="eLarva5/number[value]"/>
+		<trace label="Pupae"   value="ePupa/number[value]"/>
+		<trace label="Adults"  value="eAdult/number[value]"/>
+	</output>
+	
+	<output type="table" name="EriopisTable">
+		<parameter name="fileName" value ="eriopis_table.txt"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="eEgg/number[value]"/>
+		<trace label="Larvae1" value="eLarva1/number[value]"/>
+		<trace label="Larvae2" value="eLarva2/number[value]"/>
+		<trace label="Larvae3" value="eLarva3/number[value]"/>
+		<trace label="Larvae4" value="eLarva4/number[value]"/>
+		<trace label="Larvae5" value="eLarva5/number[value]"/>
+		<trace label="Pupae"   value="ePupa/number[value]"/>
+		<trace label="Adults"  value="eAdult/number[value]"/>
+	</output>
+
+</outputs>

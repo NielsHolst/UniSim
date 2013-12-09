@@ -22,12 +22,12 @@ namespace mussel_bed {
 thinning::thinning(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("Density", &Density, 1., this, "current mussel density biomass kg/m2");
+    new Parameter<double>("Density", &Density, 1., this, "current mussel density biomass g/m2");
     new Parameter<double>("N", &N, 1, this, "current mussel density numbers n/m2");
-    new Parameter<double>("supply", &supply, 0., this, "biomass of mussesl consumed by starfish kg/m2");
-    new Variable<double>("thin", &thin, this, "loss casused by thinning as kg/m2");
+    new Parameter<double>("supply", &supply, 0., this, "biomass of mussesl consumed by starfish g/m2");
+    new Variable<double>("thin", &thin, this, "loss casused by thinning as g/m2");
     new Variable<double>("LossN", &LossN, this, "mussel loss as numbers n/m2");
-    new Variable<double>("LossB", &LossB, this, "mussel loss as biomass kg/m2");
+    new Variable<double>("LossB", &LossB, this, "mussel loss as biomass g/m2");
     new Variable<double>("avgs", &avgs, this, "current mussel mean individual weight");
     new Variable<double>("maxN", &maxN, this, "maximum density in numbers/m2 for the current avgs");
 }
@@ -41,8 +41,8 @@ void thinning::reset() {
 }
 
 void thinning::update() {
-        avgs = Density/N;
-        maxN = 1.232051*pow(avgs,-1.28046);  /*.95 quantile */
+        avgs = (Density/N);
+        maxN = 2152.0453-1073.5058*log(avgs); /*1.232051*pow((avgs/1000),-1.28046);  .95 quantile */
         thin = (N-maxN)*avgs;
         if (thin>0 && thin>supply){
             LossB = thin;

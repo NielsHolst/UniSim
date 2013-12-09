@@ -1,0 +1,52 @@
+simulation  {
+	title: "Insect phenology"
+}
+
+controller 
+UniSim::Steps steps {
+	maxSteps: 365
+}
+
+models
+UniSim::Calendar calendar { }
+
+UniSim::Records weather {
+	fileName: Flakkebjerg2005-06.txt
+}
+
+UniSim::Bare butterfly {
+	UniSim::DayDegrees time {
+		T0: 4.5
+	}
+	UniSim::Stage egg {
+		duration: 100
+		initialInflow: 50
+	}
+	UniSim::Stage larva {
+		duration: 200
+		inflow: *egg[outflow]
+	}
+	UniSim::Stage pupa {
+		duration: 50
+		inflow: *larva[outflow]
+	}
+	UniSim::Stage adult {
+		duration: 150
+		inflow: *pupa[outflow]
+	}
+}
+
+outputs
+Plot {
+	title: Temperature
+	trace calendar[dayInYear] {title: "Day in year"}
+	trace weather[Tavg] { "Temperature" }
+}
+Plot {
+	title: "Insect phenology"
+	trace calendar[dayInYear] {title: "Day in year"}
+	trace butterfly/egg[number] {title: "Eggs"}
+	trace butterfly/larva[number] {title: "Larvae"}
+	trace butterfly/pupa[number] {title: "Pupae"}
+	trace butterfly/adult[number] {title: "Adults"}
+}

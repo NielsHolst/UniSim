@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Test pollen onset date">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="365"/> 
+		<model name="runIterator" type="UniSim::RunIteratorFixed">
+			<parameter name="numIterations" value="10"/>
+		</model>
+	</integrator>
+
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="rheinfelden 1995-2000.txt"/>
+		<parameter name="randomizeInitialYear" value="yes"/>
+	</model>
+
+	
+	<model name="pollenOnset" type="EcoTox::PollenOnsetDateFromMaizeObs">
+		<parameter name="obsFileName" value="Bavaria shedding onset.txt"/>
+	</model>
+
+	<model name="pollen" type="EcoTox::Pollen">
+		<parameter name="onsetDate" ref="pollenOnset[date]"/>
+		<parameter name="currentDate" ref="calendar[date]"/>
+		<parameter name="lossRate" value="0.3"/>
+	</model>
+
+	<!-- OUTPUT -->
+	
+	<output type="plot">
+		<parameter name="title" value="Pollen deposition rate"/>
+		<trace label="Time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="Temperature" ref="weather[Tavg]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Pollen onset day from maize obs"/>
+		<trace label="year" value ="pollenOnset[year]" summary="final"/>
+		<trace label="onsetDay" ref="pollenOnset[dayOfYear]" summary="final"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Pollen deposition rate"/>
+		<trace label="time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="Deposition rate" ref="pollen[depositionRate]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Pollen total deposition (without loss)"/>
+		<trace label="time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="Deposition total" ref="pollen[depositionTotal]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Pollen actual density"/>
+		<trace label="time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="Actual density" ref="pollen[density]"/>
+	</output>
+
+</simulation>

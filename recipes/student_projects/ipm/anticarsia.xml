@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="IPMmodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="106"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="anticarsia">
+		
+		<model name="egg">
+		
+			<model name="time" type="ipm::BriereIITime">  
+				<parameter name="a" value="0.0000494135"/>
+				<parameter name="b" value="11.91223575"/>
+				<parameter name="c" value="40.60000534"/>
+				<parameter name="d" value="1.576366639"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="100"/>
+				<parameter name="inflow" ref="adult/eggsToBeLaid[outflow]"/>
+			</model>
+		</model>
+
+		<model name="larva1">	
+		
+			<model name="time" type="ipm::BriereIITime">  
+				<parameter name="a" value="0.0001334"/>
+				<parameter name="b" value="12.8"/>
+				<parameter name="c" value="40.6"/>
+				<parameter name="d" value="1.43"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="egg/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="larva2">
+		
+			<model name="time" type="ipm::BriereIITime">  
+				<parameter name="a" value="0.000206129"/>
+				<parameter name="b" value="10.60327171"/>
+				<parameter name="c" value="40.6"/>
+				<parameter name="d" value="2.953522418"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="larva1/number[outflow]"/>
+			</model>
+		</model>
+		
+		<model name="pupa">
+		
+			<model name="time" type="ipm::BriereIITime">  
+				<parameter name="a" value="0.000128102"/>
+				<parameter name="b" value="8.691306827"/>
+				<parameter name="c" value="40.6"/>
+				<parameter name="d" value="5.045942311"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="larva2/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="adult">
+		
+			<model name="time" type="ipm::CuadraticLongTime">  
+				<parameter name="a" value="0.000873474"/>
+				<parameter name="b" value="8.01471e-05"/>
+				<parameter name="c" value="13.0"/>
+				<parameter name="d" value="35.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="pupa/number[outflow]"/>
+			</model>
+			
+			<model name="fecundity" type="ipm::Fecundity5Time">  
+				<parameter name="a" value="858.147946600"/>
+				<parameter name="b" value="25.758294960"/>
+				<parameter name="c" value="0.173959628"/>
+				<parameter name="d" value="21.0"/>
+				<parameter name="e" value="33.0"/>
+			</model>	
+			
+			<model name="eggsToBeLaid" type="UniSim::Stage">
+				<parameter name="duration" value="0.5"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="pupa/number[outflow]"/>
+				<parameter name="growthRate" ref="fecundity[step]"/> <!-- Life time fecundity corrected for sex ratio -->
+			</model>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Harlingen weather log (log10)"/>
+		<parameter name="logy"  value="yes"/>
+		<parameter name="ymin"  value="-6	"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+		<trace label="GrowthRate"   ref="adult/eggsToBeLaid[growthRate]"/>	
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Development rate"/>
+		<trace label="Day"   value="calendar[totalTime]"/>
+		<trace label="Steps" value="egg/time[step]"/>
+		<trace label="Steps" value="larva1/time[step]"/>
+		<trace label="Steps" value="larva2/time[step]"/>
+		<trace label="Steps" value="pupa/time[step]"/>   
+		<trace label="Steps" value="adult/time[step]"/> 		
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Insect numbers"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="egg/number[value]"/>
+		<trace label="Larvae1" value="larva1/number[value]"/>
+		<trace label="Larvae2" value="larva2/number[value]"/>
+		<trace label="Pupae"   value="pupa/number[value]"/>
+		<trace label="Adults"  value="adult/number[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Insect numbers (log10)"/>
+		<parameter name="logy"  value="yes"/>
+		<parameter name="ymin"  value="-1	"/>
+		<trace label="Day"      value="calendar[totalTime]"/>
+		<trace label="Eggs"     value="egg/number[value]"/>
+		<trace label="Larvae1"  value="larva1/number[value]"/>
+		<trace label="Larvae2"  value="larva2/number[value]"/>
+		<trace label="Pupae"    value="pupa/number[value]"/>
+		<trace label="Adults"   value="adult/number[value]"/>
+	
+	</output>
+
+	<output type="table">
+		<parameter name="fileName" value ="application3.txt"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Eggs" value="egg/number[value]"/>
+		<trace label="Larvae" value="larva1/number[value]"/>
+		<trace label="Larvae" value="larva2/number[value]"/>
+		<trace label="Pupae" value="pupa/number[value]"/>
+		<trace label="Adults" value="adult/number[value]"/>
+	</output>
+
+	</simulation>

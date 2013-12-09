@@ -20,10 +20,10 @@ public:
 private:
     // Parameters
     int day;
-    double dosage;
+    double dosage, proportionToSoil;
 
     // Variables
-    double application;
+    double outflowToSoil;
 
     // Data
     int daysPassed;

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation">
+	
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="200"/> 
+	</integrator>
+	
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="01/01/2008"/>
+	</model>
+	
+	<model name="rLossrate" type="ipm::ScheduledG1LossRate">
+		<parameter name="scheduleAsString" value="(20/01/2008 20/02/2008 20/03/2008)"/>
+		<parameter name="initialValue" value="0.8"/>
+		<parameter name="growthRate"   value="-0.25"/>
+		<parameter name="scale"        value="1.0e4"/>			
+	</model>
+	
+	<output type="plot" name="ScheduledPesticides">
+		<parameter name="title"  value ="Scheduled G1 trial"/>
+		<trace label="Day"       ref="calendar[totalTime]"/>
+		<trace label="rLossRate" ref="rLossRate[scaledValue]"/>
+	</output>
+	
+</simulation>

@@ -10,9 +10,11 @@ include ($${US_BASE}/base.pri)
 HEADERS += \
     application.h \
     compartment.h \
-    insecticide_factory.h
+    insecticide_factory.h \
+    substance.h
 
 SOURCES += \
     application.cpp \
     compartment.cpp \
-    insecticide_factory.cpp
+    insecticide_factory.cpp \
+    substance.cpp

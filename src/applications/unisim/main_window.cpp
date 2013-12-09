@@ -195,7 +195,7 @@ QList<SubWindow*> MainWindow::subWindowList(SubWindow::Type type) {
     return result;
 }
 
-void MainWindow::closeSubWindows(SubWindow::Type type) {
+void MainWindow::closeSubWindows(SubWindow::Type) {
 //    if (type == SubWindow::All) {
 //        _mdiArea->closeAllSubWindows();
 //        return;

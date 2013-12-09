@@ -18,7 +18,7 @@ LightController::LightController(Identifier name, QObject *parent)
     addParameter<QTime>(Name(onTime), QTime(8,0), "Time when to switch on");
     addParameter<QTime>(Name(offTime), QTime(24,0), "Time when to switch off");
     addParameter<double>(Name(onRadiation), 0., "Outdoors radiation when to switch on (W/m2)");
-    addParameter<double>(Name(offRadiation), 20., "Outdoors radiation when to switch on (W/m2)");
+    addParameter<double>(Name(offRadiation), 20., "Outdoors radiation when to switch off (W/m2)");
 
     addParameterRef<int>(Name(day), "calendar[dayOfyear] ");
     addParameterRef<QTime>(Name(time), "calendar[timeOfDay]");

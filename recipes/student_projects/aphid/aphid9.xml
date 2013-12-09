@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="SHBmodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="250"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+		<parameter name="initialDate" value="1/1/2009"/>
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Flakkebjerg 2009.txt"/>
+		</model>
+	</model>
+
+	<model name="aphid">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="3.4"/>
+		</model>
+
+		<model name="S">
+
+			<model name="nymph">
+				<model name="fecundity" type="aphid::AphidFecundity">
+					<parameter name="vegetativePlants" ref="oats/vegetative[value]"/>
+					<parameter name="pre_floweringPlants" ref="oats/pre_flowering[value]"/>
+					<parameter name="floweringPlants" ref="oats/flowering[value]"/>
+					<parameter name="maturePlants" ref="oats/mature[value]"/>
+					<parameter name="parentDensity" ref="S/adult/density[value]"/>
+					<parameter name="dayDegreeTimeStep" ref="aphid/time[step]"/>
+					<parameter name="parentDensityThreshold" value="10000"/>
+					<parameter name="maxFecundity" value="25"/>
+				</model>
+
+				<model name="infectionRate" type="UniSim::FunctionalResponseGB">
+					<parameter name="resourceDensity" ref="cadavers[value]"/>
+					<parameter name="apparency" value="10"/>
+					<parameter name="demand" ref="../density[value]"/>
+				</model>
+
+				<model name="density" type="UniSim::Stage">
+					<parameter name="duration" value="150"/>
+					<parameter name="k" value="30"/>
+					<parameter name="inflow" ref="../fecundity[newborns]"/>
+					<parameter name="phaseOutflowProportion" ref="../infectionRate[sdRatio]"/> 
+				</model>
+			</model>
+
+
+			<model name="adult">
+			
+				<model name="immigration"> <!-- From primary host -->
+					<model name="time" type="UniSim::DayDegrees">
+						<model name="trigger" type="UniSim::TriggerByDate">
+							<parameter name="fromDate" value="1/4/2009"/>
+							<parameter name="toDate" value="31/12/2009"/>
+						</model>
+						<parameter name="T0" ref="aphid/time[T0]"/>
+					</model>
+					<model name="rate" type="UniSim::Stage">
+						<parameter name="initialInflow" value="1"/>
+						<parameter name="duration" value="150"/>
+					</model>
+				</model>
+
+				<model name="totalInflow" type="UniSim::Sum">
+					<parameter name="toAdd" value="(../immigration/rate[outflow] S/nymph/density[outflow])"/>
+				</model>
+
+				<model name="infectionRate" type="UniSim::FunctionalResponseGB">
+					<parameter name="resourceDensity" ref="cadavers[value]"/>
+					<parameter name="apparency" ref="S/nymph/infectionRate[apparency]"/>
+					<parameter name="demand" ref="../density[value]"/>
+				</model>
+
+				<model name="density" type="UniSim::Stage">
+					<parameter name="duration" value="120"/>
+					<parameter name="k" value="10"/>
+					<parameter name="inflow" ref="../totalInflow[value]"/>
+					<parameter name="phaseOutflowProportion" ref="../infectionRate[sdRatio]"/> 
+				</model>
+			</model>
+		</model>
+		
+		<model name="I">
+			<model name="nymph">
+				<model name="density" type="UniSim::StageAndPhase">
+					<parameter name="duration" ref="S/nymph/density[duration]"/>
+					<parameter name="k" ref="S/nymph/density[k]"/>
+					<parameter name="phaseInflow" ref="S/nymph/density[phaseOutflow]"/>
+					<parameter name="phaseDuration" value="10"/>
+					<parameter name="phaseK" value="15"/>	
+				</model>
+			</model>
+
+			<model name="adult">
+				<model name="density" type="UniSim::StageAndPhase">
+					<parameter name="duration" ref="S/adult/density[duration]"/>
+					<parameter name="k" ref="S/adult/density[k]"/>
+					<parameter name="phaseInflow" ref="S/adult/density[phaseOutflow]"/> 
+					<parameter name="inflow" ref="I/nymph/density[outflow]"/>
+					<parameter name="phaseDuration" value="10"/> 
+					<parameter name="phaseK" ref="I/nymph/density[phaseK]"/>
+				</model>
+			</model>
+		</model>
+		
+		<model name="C"> <!-- Cadavers -->
+			<model name="innoculum">
+				<model name="time" type="UniSim::DayDegrees">
+					<model name="trigger" type="UniSim::TriggerByDate">
+						<parameter name="fromDate" value="1/6/2009"/>
+						<parameter name="toDate" value="31/12/2009"/>
+					</model>
+					<parameter name="T0" ref="aphid/time[T0]"/>
+				</model>
+				<model name="rate" type="UniSim::Stage">
+					<parameter name="initialInflow" value="1"/>
+					<parameter name="duration" value="150"/>
+				</model>
+				<model name="density" type="UniSim::Stage">
+					<parameter name="inflow" ref="../rate[outflow]"/>
+					<parameter name="duration" value="60"/>
+				</model>
+			</model>
+
+			<model name="nymph">
+				<model name="density" type="UniSim::Stage">
+					<parameter name="duration" value="30"/>
+					<parameter name="k" ref="I/nymph/density[k]"/>
+					<parameter name="phaseInflow" ref="I/nymph/density[phaseOutflow]"/>
+				</model>
+			</model>
+
+			<model name="adult">
+				<model name="density" type="UniSim::Stage">
+					<parameter name="duration" value="60"/>
+					<parameter name="k" ref="I/adult/density[k]"/>
+					<parameter name="phaseInflow" ref="I/adult/density[phaseOutflow]"/>
+				</model>
+			</model>
+			
+			<model name="cadavers" type="UniSim::Sum">
+				<parameter name="toAdd" value="(../innoculum/density[value] ../nymph/density[value] ../adult/density[value])"/>
+			</model>
+		</model>
+	</model>
+		
+	<model name="oats">
+		<model name="time" type="UniSim::DayDegrees">
+			<model name="trigger" type="UniSim::TriggerByDate">
+				<parameter name="fromDate" value="1/3/2009"/>
+				<parameter name="toDate" value="31/12/2009"/>
+			</model>
+			<parameter name="T0" value="0"/>
+		</model>
+			
+		<model name="vegetative" type="UniSim::Stage">
+			<parameter name="duration" value="300"/>
+			<parameter name="k" value="100"/>
+			<parameter name="initialInflow" value="1"/>
+		</model>
+		
+		<model name="pre_flowering" type="UniSim::Stage">
+			<parameter name="duration" value="350"/>
+			<parameter name="k" value="100"/>
+			<parameter name="inflow" ref="vegetative[outflow]"/>
+		</model>
+		
+		<model name="flowering" type="UniSim::Stage">
+			<parameter name="duration" value="300"/>
+			<parameter name="k" value="100"/>
+			<parameter name="inflow" ref="pre_flowering[outflow]"/>
+		</model>
+		
+		<model name="mature" type="UniSim::Stage">
+			<parameter name="duration" value="450"/>
+			<parameter name="k" value="100"/>
+			<parameter name="inflow" ref="flowering[outflow]"/>
+		</model>
+		
+	</model>
+		
+	<model name="damageThreshold" type="Aphid::DamageThreshold">
+		
+	</model>
+	<!-- OUTPUT -->
+		
+	<output type="plot">
+		<parameter name="title" value ="weather log"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Day-degree scales"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="Oats DD" value="oats/time[total]"/>
+		<trace label="Aphid DD" value="aphid/time[total]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Aphid immigration"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="From winter host" value="S/adult/immigration/rate[outflow]"/>
+		<trace label="Disease innoculum" value="innoculum/rate[outflow]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Log insect numbers"/>
+		<parameter name="logy" value ="yes"/>
+		<parameter name="ymin" value ="-10"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="SNymphs" value="S/nymph/density[value]"/>
+		<trace label="SAdults" value="S/adult/density[value]"/>
+		<trace label="INymphs" value="I/nymph/density[value]"/>
+		<trace label="IAdults" value="I/adult/density[value]"/>
+		<trace label="CNymphs" value="C/nymph/density[value]"/>
+		<trace label="CAdults" value="C/adult/density[value]"/>
+	</output>
+
+		<output type="plot">
+		<parameter name="title" value ="Insect numbers"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="SNymphs" value="S/nymph/density[value]"/>
+		<trace label="SAdults" value="S/adult/density[value]"/>
+		<trace label="INymphs" value="I/nymph/density[value]"/>
+		<trace label="IAdults" value="I/adult/density[value]"/>
+		<trace label="CNymphs" value="C/nymph/density[value]"/>
+		<trace label="CAdults" value="C/adult/density[value]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Cadavers"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="Cadavers" value="cadavers[value]"/>
+		<trace label="fec" value="fecundity[newborns]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Infection rate"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="Nymphs" value="S/nymph/infectionRate[sdRatio]"/>
+		<trace label="Adults" value="S/adult/infectionRate[sdRatio]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="fileName" value ="aphid.txt"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="demand" value="S/nymph/infectionRate[demand]"/>
+		<trace label="resource" value="S/nymph/infectionRate[resourceDensity]"/>
+		<trace label="supply" value="S/nymph/infectionRate[supply]"/>
+		<trace label="sdRatio" value="S/nymph/infectionRate[sdRatio]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Phenological development oat"/>
+		<trace label="Day of year" value="calendar[dayOfYear]"/>
+		<trace label="Vegetative" value="vegetative[value]"/>
+		<trace label="Pre_flowering" value="pre_flowering[value]"/>
+		<trace label="Flowering" value="flowering[value]"/>
+		<trace label="Mature" value="mature[value]"/>
+	</output>
+
+	</simulation>

@@ -16,7 +16,7 @@
 		<parameter name="ymin" value="-2"/>
 		<trace label="Day" ref="calendar[totalTime]"/>
 		<trace label="Larva" ref="generation(1)/larva[value]"/>
-		<trace label="Pollen density" ref="pollen[pollenDensity]"/>
+		<trace label="Pollen density" ref="pollen[density]"/>
 	</output>
 		
 	<output type="plot" name="Response">

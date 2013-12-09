@@ -1,0 +1,5 @@
+*ignored	sheep/S/adult[value]	sheep/E/adult[value]	sheep/I/adult[value]	sheep/R/adult[value]	sheep/S/lamb[value]	sheep/E/lamb[value]	sheep/I/lamb[value]	sheep/R/lamb[value]
+Aedes/S/Demand[value]	0.1	0.1	0.1	0.1	0.1	0.1	0.1	0.1
+Aedes/I/Demand[value]	0.1	0.1	0.1	0.1	0.1	0.1	0.1	0.1
+Culex/S/Demand[value]	0.1	0.1	0.1	0.1	0.1	0.1	0.1	0.1
+Culex/I/Demand[value]	0.1	0.1	0.1	0.1	0.1	0.1	0.1	0.1

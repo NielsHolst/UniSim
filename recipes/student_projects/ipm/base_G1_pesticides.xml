@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation">
+	
+	<model name="rLossrate" type="ipm::G1LossRate">
+		<parameter name="day"          value="20"/>
+		<parameter name="month"        value="01"/>
+		<parameter name="year"         value="2008"/>		
+		<parameter name="initialValue" value="0.8"/>
+		<parameter name="growthRate"   value="-0.25"/>
+		<parameter name="scale"        value="1.0e4"/>			
+	</model>
+
+	<model name="eLossrate" type="ipm::G1LossRate">
+		<parameter name="day"          value="20"/>
+		<parameter name="month"        value="01"/>
+		<parameter name="year"         value="2008"/>		
+		<parameter name="initialValue" value="0.8"/>
+		<parameter name="growthRate"   value="-0.25"/>
+		<parameter name="scale"        value="1.0e4"/>			
+	</model>	
+	
+</simulation>

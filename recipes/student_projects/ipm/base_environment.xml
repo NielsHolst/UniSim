@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation">
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="01/01/2008"/>
+	</model>
+	
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+	
+</simulation>

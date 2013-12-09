@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Mussel bed">
+	<integrator name="steps" type="Steps">
+		<parameter name="maxSteps" value="100"/>
+		
+		<model name="iterator" type="UniSim::Scenarios">
+			<parameter name="fileName" value="scenarios1.txt"/>				
+		</model>
+		
+	</integrator>
+	
+	<model name="ocean" type="UniSim::Records">
+		<parameter name="fileName" value="BR_.txt"/>
+	</model>
+	
+	<model name="calendar" type="Calendar">
+	<parameter name="initialDate" value="01/01/2009"/>
+	</model>
+
+	
+	<model name="stfeeding" type="mussel_bed::StarfishFeedingRate">
+			<parameter name="stdensity" ref="starfish[stdensity]"/>	
+			<parameter name="stnumber" value="1"/>
+			<model name="stscale" type="mussel_bed::TemperatureStScale">
+				<parameter name="temperature" ref="ocean[tmean]"/>
+			</model>
+			<model name="stscale" type="mussel_bed::SalinityStScale">
+				<parameter name="smean" ref="ocean[smean]"/>
+			</model>
+	</model>
+	
+	<model name="funcresp" type="UniSim::FunctionalResponseGB">
+		<parameter name="apparancy" value="1"/>
+		<parameter name="resourceDensity" ref="mussel[density]"/>
+		<parameter name="demand" ref="stfeeding[value]"/>
+		<parameter name="egestionRatio" value="0.843"/>
+		<parameter name="respiration" value="0"/>
+	</model>
+	
+	<model name="starfish" type="mussel_bed::Starfish">
+		<parameter name="inDensity" value="300"/>
+		<parameter name="stgrowthRate" ref="stgrowth[value]"/>
+			
+		<model name="stgrowth" type="mussel_bed::StarfishGrowthRate">
+			<parameter name="supply" ref="funcresp[supply]"/>
+			<parameter name="stDensity" ref="starfish[stdensity]"/>
+			<parameter name="temperature" ref="ocean[tmean]"/>
+		</model>	
+		
+	</model>
+	
+	<model name="mussel" type="mussel_bed::Mussel">
+		<parameter name="initialDensity" value="1000"/>
+		<parameter name="initialN" value="1300"/>
+		<parameter name="growthRate" ref="growth[value]"/>
+		<parameter name="LossB" ref="thinning[LossB]"/>
+		<parameter name="LossN" ref="thinning[LossN]"/>
+		
+		<model name="thinning" type="mussel_bed::thinning">
+			<parameter name="Density" ref="mussel[density]"/>
+			<parameter name="N" ref="mussel[N]"/>
+			<parameter name="supply" ref="funcresp[totalSupply]"/>
+		</model>
+
+		<model name="growth" type="mussel_bed::MusselGrowthRate">
+			<parameter name="density" ref="mussel[density]"/>
+			
+			<model name="scale" type="mussel_bed::TemperatureScale">
+				<parameter name="temperature" ref="ocean[tmean]"/>
+				<parameter name="avgs" ref="thinning[avgs]"/>
+			</model>
+			<model name="scale" type="mussel_bed::SalinityScale">
+				<parameter name="Smax" ref="ocean[smax]"/>
+				<parameter name="Smin" ref="ocean[smin]"/>
+			</model>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Starfish Feeding rate"/>
+		<trace ref="steps[stepNumber]" label="Steps"/>
+		<trace ref="funcresp[supply]" label="supply"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Starfish Feeding rate"/>
+		<trace ref="steps[stepNumber]" label="Steps"/>
+		<trace ref="stfeeding[value]" label="Feeding Rate"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value="Temp+Sal"/>
+		<trace ref="steps[stepNumber]" label="Steps"/>
+		<trace ref="ocean[tmean]" label="Temperature"/>
+		<trace ref="ocean[smean]" label="Salinity"/>
+	</output>
+	
+	<output type="plot">
+	<parameter name="title" value ="Validation starfish size"/>
+		<trace label="Observed" ref="iterator[Final.Size]"/>
+		<trace label="1/1" ref="iterator[Final.Size]"/>
+		<trace label="Simulated" ref="stfeeding[stsize]" summary="Final"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Validation Starfish Biomass"/>
+		<trace label="Observed" ref="iterator[St.Bm.2]"/>
+		<trace label="1/1" ref="iterator[St.Bm.2]"/>
+		<trace label="Simulated" ref="starfish[stdensity]" summary="Final"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Validation Mussel Biomass"/>
+		<trace label="Observed" ref="iterator[M.Bm.2]"/>
+		<trace label="1/1" ref="iterator[M.Bm.2]"/>
+		<trace label="Simulated" ref="mussel[density]" summary="Final"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Validation Mussel Numbers"/>
+		<trace label="Observed" ref="iterator[M.Nb.2]"/>
+		<trace label="1/1" ref="iterator[M.Nb.2]"/>
+		<trace label="Simulated" ref="mussel[N]" summary="Final"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Validation Mussel size"/>
+		<trace label="Observed" ref="iterator[m.f.size]"/>
+		<trace label="1/1" ref="iterator[m.f.size]"/>
+		<trace label="Simulated" ref="thinning[avgs]" summary="Final"/>
+	</output>
+		<output type="table">
+		<parameter name="fileName" value ="mussel_bed_summary.txt"/>
+		<trace label="Scenario" ref="iterator[scenario]"/>
+		<trace label="Final mussel density" ref="mussel[density]" summary="Final"/>
+		<trace label="Final starfish density" ref="starfish[stdensity]" summary="Final"/>
+		<trace label="Final Starfish Size" ref="stfeeding[st.size]" summary="Final"/>
+	</output>
+	
+</simulation>

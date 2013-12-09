@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<outputs>
+		<output type="plot" name="RachiplusiaDevelopment">
+		<parameter name="title" value ="Rachiplusia Development rates"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="EggSteps"     value="rEgg/time[step]"/>
+		<trace label="Larvae1Steps" value="rLarva1/time[step]"/>
+		<trace label="Larvae2Steps" value="rLarva2/time[step]"/>
+		<trace label="Larvae3Steps" value="rLarva3/time[step]"/>
+		<trace label="Larvae4Steps" value="rLarva4/time[step]"/>
+		<trace label="Larvae5Steps" value="rLarva5/time[step]"/>
+		<trace label="PupaeSteps"   value="rPupa/time[step]"/>
+		<trace label="AdultSteps"   value="rAdult/time[step]"/>
+	</output>
+	
+	<output type="plot" name="RachiplusiaNumbers">
+		<parameter name="title" value ="Rachiplusia numbers"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="rEgg/number[value]"/>
+		<trace label="Larvae1" value="rLarva1/number[value]"/>
+		<trace label="Larvae2" value="rLarva2/number[value]"/>
+		<trace label="Larvae3" value="rLarva3/number[value]"/>
+		<trace label="Larvae4" value="rLarva4/number[value]"/>
+		<trace label="Larvae5" value="rLarva5/number[value]"/>
+		<trace label="Pupae"   value="rPupa/number[value]"/>
+		<trace label="Adults"  value="rAdult/number[value]"/>
+		<trace label="ScaledLossRate" ref="rLossrate[scaledValue]"/>
+	</output>
+
+	<output type="plot" name="RachiplusiaLogNumbers">
+		<parameter name="title" value ="Rachiplusia numbers (log10)"/>
+		<parameter name="logy" value="yes"/>
+		<parameter name="ymin" value="-1	"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="rEgg/number[value]"/>
+		<trace label="Larvae1" value="rLarva1/number[value]"/>
+		<trace label="Larvae2" value="rLarva2/number[value]"/>
+		<trace label="Larvae3" value="rLarva3/number[value]"/>
+		<trace label="Larvae4" value="rLarva4/number[value]"/>
+		<trace label="Larvae5" value="rLarva5/number[value]"/>
+		<trace label="Pupae"   value="rPupa/number[value]"/>
+		<trace label="Adults"  value="rAdult/number[value]"/>
+	</output>
+	
+	<output type="table" name="RachiplusiaTable">
+		<parameter name="fileName" value ="rachiplusia_table.txt"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="rEgg/number[value]"/>
+		<trace label="Larvae1" value="rLarva1/number[value]"/>
+		<trace label="Larvae2" value="rLarva2/number[value]"/>
+		<trace label="Larvae3" value="rLarva3/number[value]"/>
+		<trace label="Larvae4" value="rLarva4/number[value]"/>
+		<trace label="Larvae5" value="rLarva5/number[value]"/>
+		<trace label="Pupae"   value="rPupa/number[value]"/>
+		<trace label="Adults"  value="rAdult/number[value]"/>
+	</output>
+
+</outputs>

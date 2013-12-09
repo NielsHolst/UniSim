@@ -4,13 +4,15 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#ifndef UNISIM_IPM_FACTORY_H
-#define UNISIM_IPM_FACTORY_H
+#ifndef IPM_FACTORY_H
+#define IPM_FACTORY_H
 
 #include <QObject>
 #include <usbase/factory_plug_in.h>
 
-namespace ipm {
+using namespace UniSim;
+
+namespace ipm{
 
 class IpmFactory : public QObject, public UniSim::FactoryPlugIn
 {

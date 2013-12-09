@@ -6,6 +6,7 @@
 #include "insecticide_factory.h"
 #include "application.h"
 #include "compartment.h"
+#include "substance.h"
 
 using namespace UniSim;
 
@@ -15,6 +16,7 @@ void InsecticideFactory::defineProducts() {
     // Add your own models here...
     AddProduct(Application, "An insecticide application");
     AddProduct(Compartment, "A compartpent where insecticide is degrading");
+    AddProduct(Substance, "A substance such as parent or metabolite");
 }
 
 UniSim::Identifier InsecticideFactory::id() const {

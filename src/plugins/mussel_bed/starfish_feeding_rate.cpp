@@ -16,8 +16,11 @@ namespace mussel_bed {
 StarfishFeedingRate::StarfishFeedingRate(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("stdensity",&stdensity, 0.3, this, "current starfish density Kg/m2");
-    new Variable<double>("value", &value, this, "total demand for the current density kg/m2 of mussel flesh");
+    new Parameter<double>("stdensity",&stdensity, 0.3, this, "current starfish density g/m2");
+    new Parameter<double>("stnumber", &stnumber, 1., this, "density as numbers per m2");
+    new Variable<double>("stsize", &stsize, this, "starfish mean size gr/individual");
+    new Variable<double>("FR", &FR, this, "Feeding rate as gr mussel flesh/gr of");
+    new Variable<double>("value", &value, this, "total demand for the current density g/m2 of mussel flesh");
 }
 
 void StarfishFeedingRate::initialize() {
@@ -29,7 +32,9 @@ void StarfishFeedingRate::reset() {
 }
 
 void StarfishFeedingRate::update() {
-    value = 0.02305*stdensity;
+    stsize = stdensity/stnumber;
+    double FR = exp(-1.54731-0.51040*log(stsize));
+    value = FR*stdensity;
     for (int i = 0; i < scales.size(); ++i) {
         value *= scales[i]->pullValue<double>("value");
     }

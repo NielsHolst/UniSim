@@ -7,8 +7,11 @@
 #include "rvf_factory.h"
 #include "water_level.h"
 #include "sheep_fecundity.h"
+#include "mosquito_demand.h"
 #include "mosquito_infection.h"
 #include "sheep_infection.h"
+#include "egg_time.h"
+#include "interactions.h"
 
 using namespace UniSim;
 
@@ -18,9 +21,14 @@ void RvfFactory::defineProducts() {
     // Add you own models here...
     addProduct<MosquitoFecundity>("MosquitoFecundity", this, "Daily egg-laying rate of adult mosquitoes. Depends on water level");
     addProduct<WaterLevel>("WaterLevel", this, "Water level in the environment.");
+    addProduct<EggTime>("EggTime", this, "Time for activation of eggs");
     addProduct<SheepFecundity>("SheepFecundity", this, "Daily birth rate of adult sheep. Depends on Carrying Capacity K");
     addProduct<MosquitoInfection>("MosquitoInfection", this, "Infection transfer from mosquito to sheep given contact rate");
     addProduct<SheepInfection>("SheepInfection", this, "Infection transfer from sheep to mosquitoes given effective contact rate");
+    addProduct<Interactions>("Interactions", this, "Interactions between vectors and hosts at different phases");
+    addProduct<MosquitoDemand>("MosquitoDemand", this, "Daily demand for bloodmeals");
+
+
 }
 
 UniSim::Identifier RvfFactory::id() const {

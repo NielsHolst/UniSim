@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="simulation">
+
+	<model name="rachiplusia">
+		
+		<model name="rEgg">
+			<model name="time" type="ipm::LambTime">  
+				<parameter name="a" value="0.454"/>
+				<parameter name="b" value="30.893"/>
+				<parameter name="c" value="5.475"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="100"/>
+				<parameter name="inflow" ref="rAdult/rEggsToBeLaid[outflow]"/>
+			</model>
+		</model>
+
+		<model name="rLarva1">	
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.108945747"/>
+				<parameter name="b" value="47.60987839"/>
+				<parameter name="c" value="9.108605242"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rEgg/number[outflow]"/>
+				<parameter name="instantLossRate" ref="rlossrate[value]"/>	
+			</model>
+		</model>
+
+		<model name="rLarva2">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.106397357"/>
+				<parameter name="b" value="44.14738218"/>
+				<parameter name="c" value="9.257530365"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva1/number[outflow]"/>
+			</model>
+		</model>
+		
+		<model name="rLarva3">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.121742954"/>
+				<parameter name="b" value="43.13699770"/>
+				<parameter name="c" value="8.127151938"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva2/number[outflow]"/>
+			</model>
+		</model>
+		
+		<model name="rLarva4">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.188388993"/>
+				<parameter name="b" value="36.57043532"/>
+				<parameter name="c" value="5.297159044"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva3/number[outflow]"/>
+			</model>
+		</model>	
+
+		<model name="rLarva5">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.170891138"/>
+				<parameter name="b" value="39.33603680"/>
+				<parameter name="c" value="5.842136909"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva4/number[outflow]"/>
+			</model>
+		</model>		
+		
+		<model name="rPupa">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.161404221"/>
+				<parameter name="b" value="40.95959223"/>
+				<parameter name="c" value="6.190980152"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva5/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="rAdult">
+			<model name="time" type="ipm::CuadraticLongTime">  
+				<parameter name="a" value="0.0408"/>
+				<parameter name="b" value="0.0001"/>
+				<parameter name="c" value="12.67607926"/>
+				<parameter name="d" value="35.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rPupa/number[outflow]"/>			
+			</model>
+			
+			<model name="rFecundity" type="ipm::Fecundity5Time">  
+				<parameter name="a" value="62.73336239"/>
+				<parameter name="b" value="22.67327981"/>
+				<parameter name="c" value="0.057454418"/>
+				<parameter name="d" value="15.0"/>
+				<parameter name="e" value="35.0"/>
+			</model>			
+			
+			<model name="rEggsToBeLaid" type="UniSim::Stage">
+				<parameter name="duration" value="0.5"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rPupa/number[outflow]"/>
+				<parameter name="growthRate" ref="rFecundity[step]"/> <!-- Life time fecundity corrected for sex ratio -->
+				</model>
+		</model>
+	</model>
+	
+</simulation>

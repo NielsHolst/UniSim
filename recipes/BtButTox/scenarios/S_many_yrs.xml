@@ -35,7 +35,7 @@
 
 	<output type="plot">
 		<parameter name="title" value ="Effect of pollen loss rate"/>
-		<trace label="Pollen loss rate" ref="pollen/lossRate[rate]"/>
+		<trace label="Pollen loss rate" ref="pollen[lossRate]"/>
 		<trace label="I.io pop. growth" ref="generation(2)/pupa[inflowTotal]" summary="Final"/>
 	</output>
 	
@@ -47,7 +47,7 @@
 		<parameter name="fileName" value ="S Germany response summary.txt"/>
 		<trace label="Year" ref="calendar[year]"/>
 		<trace label="Npeak" ref="pollen[Npeak]"/>
-		<trace label="LossRate" ref="pollen/lossRate[rate]"/>
+		<trace label="LossRate" ref="pollen[lossRate]"/>
 		<trace label="Pupae" ref="generation(2)/pupa[inflowTotal]" summary="Final"/>
 		<trace label="AdHib" ref="hibernatingAdult[value]" summary="Final"/>
 	</output>

@@ -19,10 +19,10 @@ public:
 
 private:
     // Parameters
-    double waterLevel, waterLevelThreshold, fecundityPerBloodmeal, sexRatio, density, bloodmeal;
+    double waterLevel, waterLevelThreshold, fecundityPerBloodmeal, sexRatio, density, bloodmeal, propInfectedEggs;
 
     // Variables
-    double value;
+    double unInfectedEggs, infectedEggs;
 };
 
 } //namespace

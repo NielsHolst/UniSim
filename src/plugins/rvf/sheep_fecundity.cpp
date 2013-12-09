@@ -18,6 +18,7 @@ SheepFecundity::SheepFecundity(Identifier name, QObject *parent)
     new Parameter<double>("rate", &rate, 0.001, this, "Number of foestus per year, gestation period per 356 days per 365 days of a year");
     new Parameter<double>("carryingCapacity", &carryingCapacity, 200., this, "Maximum sheep density per km2");
     new Variable<double>("value", &value, this, "desc");
+    /// add lamp density and then make carrying capcity equal to lamp density plus adult density!!!
 }
 
 void SheepFecundity::reset() {

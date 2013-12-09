@@ -19,15 +19,20 @@ MosquitoFecundity::MosquitoFecundity(Identifier name, QObject *parent)
     new Parameter<double>("sexRatio", &sexRatio, 0.5, this, "Proportion of females");
     new Parameter<double>("density", &density, 100., this, "Density of adults");
     new Parameter<double>("bloodmeal", &bloodmeal, 0.2, this, "Supply of blood meals per day");
-    new Variable<double>("value", &value, this, "desc");
+    new Parameter<double>("propInfectedEggs", &propInfectedEggs, 0., this, "Proportion infected eggs");
+    new Variable<double>("infectedEggs", &infectedEggs, this, "Infected Eggs");
+    new Variable<double>("uninfectedEggs", &unInfectedEggs, this, "desc");
 }
 
 void MosquitoFecundity::reset() {
-    value = 0;
+    unInfectedEggs = 0;
+    infectedEggs = 0;
 }
 
 void MosquitoFecundity::update() {
-    value = (waterLevel < waterLevelThreshold) ? 0. : fecundityPerBloodmeal*density*sexRatio*bloodmeal;
+    double totalEggs = (waterLevel < waterLevelThreshold) ? 0. : fecundityPerBloodmeal*density*sexRatio*bloodmeal;
+    unInfectedEggs = totalEggs * (1 - propInfectedEggs);
+    infectedEggs = totalEggs * propInfectedEggs;
 }
 
 } //namespace

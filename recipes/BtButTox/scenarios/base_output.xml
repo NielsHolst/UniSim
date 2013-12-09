@@ -9,9 +9,9 @@
 	<output type="plot" name="Pollen">
 		<parameter name="title" value="Pollen"/>
 		<trace label="Day" ref="calendar[totalTime]"/>
-		<trace label="Rate" ref="pollen[pollenDepositionRate]"/>
-		<trace label="Density" ref="pollen[pollenDensity]"/>
-		<trace label="Production" ref="pollen[pollenDepositionTotal]"/>
+		<trace label="Rate" ref="pollen[depositionRate]"/>
+		<trace label="Density" ref="pollen[density]"/>
+		<trace label="Production" ref="pollen[depositionTotal]"/>
 	</output>
 		
 </outputs>

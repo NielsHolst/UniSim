@@ -38,7 +38,7 @@
 
 			<model name="larva" type="UniSim::Stage">
 				<model name="survival" type="EcoTox::LogLogistic">
-					<parameter name="dose" variable="pollen[pollenDensity]"/>
+					<parameter name="dose" variable="pollen[density]"/>
 					<parameter name="upper" value="1"/>
 					<parameter name="lower" value="0"/>
 					<parameter name="slope" value="-1.76" original_incorrect="-1.62"/>

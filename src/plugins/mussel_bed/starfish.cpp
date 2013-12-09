@@ -17,10 +17,10 @@ namespace mussel_bed {
 Starfish::Starfish(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("inDensity", &inDensity, 0.3, this, "Starfish density at t0 (kg/m2");
-    new Parameter<double>("mortality", &mortality, 0., this, "Starfish mortality at step (kg)");
-    new Parameter<double>("stgrowthRate", &stgrowthRate, 0.12, this, "Starfish population increase in biomass (kg) at current step");
-    new Variable<double>("stdensity", &stdensity, this, "current step starfish density (kg/m2)");
+    new Parameter<double>("inDensity", &inDensity, 0., this, "Starfish density at t0 (g/m2");
+    new Parameter<double>("mortality", &mortality, 0., this, "Starfish mortality at step (g)");
+    new Parameter<double>("stgrowthRate", &stgrowthRate, 0.12, this, "Starfish population increase in biomass (g) at current step");
+    new Variable<double>("stdensity", &stdensity, this, "current step starfish density (g/m2)");
 }
 void Starfish::reset() {
     stdensity = inDensity;

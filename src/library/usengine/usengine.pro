@@ -12,7 +12,6 @@ include ($${US_BASE}/base.pri)
 
 # Source code
 HEADERS += 	\
-    $${US_ENGINE}/builder.h \
     $${US_ENGINE}/confirmation.h \
     $${US_ENGINE}/documentation_writer.h \
     $${US_ENGINE}/file_locations_strict.h \
@@ -29,11 +28,11 @@ HEADERS += 	\
     $${US_ENGINE}/simulation.h \
     $${US_ENGINE}/simulation_maker.h \
     $${US_ENGINE}/test_dataset.h \
+    $${US_ENGINE}/uni_parser.h \
     $${US_ENGINE}/xml_elements_reader.h \
     $${US_ENGINE}/xml_node.h
 
 SOURCES += 	\
-    $${US_ENGINE}/builder.cpp \
     $${US_ENGINE}/confirmation.cpp \
     $${US_ENGINE}/documentation_writer.cpp \
     $${US_ENGINE}/file_locations_strict.cpp \
@@ -50,5 +49,6 @@ SOURCES += 	\
     $${US_ENGINE}/simulation.cpp \
     $${US_ENGINE}/simulation_maker.cpp \
     $${US_ENGINE}/test_dataset.cpp \
+    $${US_ENGINE}/uni_parser.cpp \
     $${US_ENGINE}/xml_elements_reader.cpp \
     $${US_ENGINE}/xml_node.cpp

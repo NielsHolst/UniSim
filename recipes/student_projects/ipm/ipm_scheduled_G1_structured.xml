@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="IPM_G1">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="200"/> 
+	</integrator>
+	
+	<!-- *** Environment  ***	-->
+	
+	<model name="calendar" select="doc('base_environment.xml')/simulation/model[@name='calendar']"/>
+	<model name="weather" select="doc('base_environment.xml')/simulation/model[@name='weather']"/>
+
+	<!-- *** Pesticides  ***	-->
+	
+	<model name="rLossRate" select="doc('base_scheduled_G1_pesticides.xml')/simulation/model[@name='rLossrate']"/>
+	<model name="eLossRate" select="doc('base_scheduled_G1_pesticides.xml')/simulation/model[@name='eLossrate']"/>
+
+	<!-- *** Insects Life Cycle  ***	-->
+		
+	<model name="rachiplusia" select="doc('base_rachiplusia.xml')/simulation/model[@name='rachiplusia']"/>-->
+	<model name="eriopis" select="doc('base_eriopis.xml')/simulation/model[@name='eriopis']"/>	
+
+	<!-- *** Plots  ***	-->
+
+	<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisDevelopment']"/>
+	<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisNumbers']"/>
+	<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisLogNumbers']"/> 
+	<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaDevelopment']"/> 
+	<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaNumbers']"/>
+	<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaLogNumbers']"/>
+	<output select="doc('environment_plots.xml')/outputs/output[@name='Environment']"/>	
+	
+	<!-- *** Tables  *** -->	
+	<output select="doc('environment_plots.xml')/outputs/output[@name='EnvironmentTable']"/>
+	<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaTable']"/>
+	<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisTable']"/>
+
+</simulation>

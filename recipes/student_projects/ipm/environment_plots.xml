@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<outputs>
+	<output type="plot" name="Environment">
+		<parameter name="title" value ="Harlingen weather log"/>
+		<trace label="Day"      ref="calendar[totalTime]"/>
+		<trace label="Temperature" ref="weather[Tavg]"/>
+		<trace label="rGrowthRate"  ref="rAdult/rEggsToBeLaid[growthRate]"/>
+		<trace label="eGrowthRate"  ref="eAdult/eEggsToBeLaid[growthRate]"/>
+	</output>
+	
+	<output type="table" name="EnvironmentTable">
+		<parameter name="fileName" value ="environment_table.txt"/>
+		<trace label="Day"      ref="calendar[totalTime]"/>
+		<trace label="Temperature" ref="weather[Tavg]"/>
+		<trace label="rGrowthRate"  ref="rAdult/rEggsToBeLaid[growthRate]"/>
+		<trace label="eGrowthRate"  ref="eAdult/eEggsToBeLaid[growthRate]"/>
+	</output>
+	
+</outputs>

@@ -13,18 +13,19 @@ Application::Application(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     addParameter<int>(Name(day), 30, "Day of application after sowing");
-    addParameter<double>(Name(dosage), 3.5, "Dosage (a.i. pe rm2)");
-    addVariable<double>(Name(application), "Takes the value dosage on the day of application, otherwise zero");
+    addParameter<double>(Name(dosage), 3.5, "Dosage (a.i. per m2)");
+    addParameter<double>(Name(proportionToSoil), 0.99, "Proportion of dosage going to soil");
+    addVariable<double>(Name(outflowToSoil), "Outflow of treatment to soil");
 }
 
 void Application::reset() {
     daysPassed = 0;
-    application = 0;
+    outflowToSoil = 0;
 }
 
 void Application::update() {
     ++daysPassed;
-    application = (daysPassed == day) ? dosage : 0.;
+    outflowToSoil = (daysPassed == day) ? proportionToSoil*dosage : 0.;
 }
 
 } //namespace

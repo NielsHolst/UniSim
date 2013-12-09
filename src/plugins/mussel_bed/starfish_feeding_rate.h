@@ -22,8 +22,11 @@ public:
 private:
     // Parameters
     double stdensity;
+    double stnumber;
 
     // Variables
+    double stsize;
+    double FR;
     double value;
 
     // Links

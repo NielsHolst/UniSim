@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="IPM_G1">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="200"/> 
+	</integrator>
+	
+	<!-- *** Environment  ***	-->
+	
+	<!--<model name="calendar" select="doc('base_environment.xml')/simulation/model[@name='calendar']"/>-->
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="01/01/2008"/>
+	</model>
+	
+	<!--<model name="weather" select="doc('base_environment.xml')/simulation/model[@name='weather']"/>-->
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Harlingen2008.txt"/>
+		</model>
+	</model>
+	
+	<!-- *** Pesticides  ***	-->
+	
+	<!--<model name="rLossRate" select="doc('base_G1_pesticides.xml')/simulation/model[@name='rLossrate']"/>-->
+	<model name="rLossrate" type="ipm::G1LossRate">
+		<parameter name="day"          value="20"/>
+		<parameter name="month"        value="01"/>
+		<parameter name="year"         value="2008"/>		
+		<parameter name="initialValue" value="0.8"/>
+		<parameter name="growthRate"   value="-0.25"/>
+		<parameter name="scale"        value="1.0e4"/>			
+	</model>
+	
+	<!--<model name="eLossRate" select="doc('base_G1_pesticides.xml')/simulation/model[@name='eLossrate']"/>-->
+	<model name="eLossrate" type="ipm::G1LossRate">
+		<parameter name="day"          value="20"/>
+		<parameter name="month"        value="01"/>
+		<parameter name="year"         value="2008"/>		
+		<parameter name="initialValue" value="0.8"/>
+		<parameter name="growthRate"   value="-0.25"/>
+		<parameter name="scale"        value="1.0e4"/>			
+	</model>
+	
+	<!-- *** Insects Life Cycle  ***	-->
+		
+	<!--<model name="rachiplusia" select="doc('base_rachiplusia.xml')/simulation/model[@name='rachiplusia']"/>-->
+	<model name="rachiplusia">
+		
+		<model name="rEgg">
+			<model name="time" type="ipm::LambTime">  
+				<parameter name="a" value="0.454"/>
+				<parameter name="b" value="30.893"/>
+				<parameter name="c" value="5.475"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="100"/>
+				<parameter name="inflow" ref="rAdult/rEggsToBeLaid[outflow]"/>
+			</model>
+		</model>
+
+		<model name="rLarva1">	
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.108945747"/>
+				<parameter name="b" value="47.60987839"/>
+				<parameter name="c" value="9.108605242"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rEgg/number[outflow]"/>
+				<parameter name="instantLossRate" ref="rlossrate[value]"/>	
+			</model>
+		</model>
+
+		<model name="rLarva2">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.106397357"/>
+				<parameter name="b" value="44.14738218"/>
+				<parameter name="c" value="9.257530365"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva1/number[outflow]"/>
+			</model>
+		</model>
+		
+		<model name="rLarva3">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.121742954"/>
+				<parameter name="b" value="43.13699770"/>
+				<parameter name="c" value="8.127151938"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva2/number[outflow]"/>
+			</model>
+		</model>
+		
+		<model name="rLarva4">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.188388993"/>
+				<parameter name="b" value="36.57043532"/>
+				<parameter name="c" value="5.297159044"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva3/number[outflow]"/>
+			</model>
+		</model>	
+
+		<model name="rLarva5">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.170891138"/>
+				<parameter name="b" value="39.33603680"/>
+				<parameter name="c" value="5.842136909"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva4/number[outflow]"/>
+			</model>
+		</model>		
+		
+		<model name="rPupa">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.161404221"/>
+				<parameter name="b" value="40.95959223"/>
+				<parameter name="c" value="6.190980152"/>
+				<parameter name="d" value="39.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rLarva5/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="rAdult">
+			<model name="time" type="ipm::CuadraticLongTime">  
+				<parameter name="a" value="0.0408"/>
+				<parameter name="b" value="0.0001"/>
+				<parameter name="c" value="12.67607926"/>
+				<parameter name="d" value="35.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rPupa/number[outflow]"/>			
+			</model>
+			
+			<model name="rFecundity" type="ipm::Fecundity5Time">  
+				<parameter name="a" value="62.73336239"/>
+				<parameter name="b" value="22.67327981"/>
+				<parameter name="c" value="0.057454418"/>
+				<parameter name="d" value="15.0"/>
+				<parameter name="e" value="35.0"/>
+			</model>			
+			
+			<model name="rEggsToBeLaid" type="UniSim::Stage">
+				<parameter name="duration" value="0.5"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="rPupa/number[outflow]"/>
+				<parameter name="growthRate" ref="rFecundity[step]"/> <!-- Life time fecundity corrected for sex ratio -->
+				</model>
+		</model>
+	</model>	
+	
+	<!--<model name="eriopis" select="doc('base_eriopis.xml')/simulation/model[@name='eriopis']"/>	-->
+	<model name="eriopis">
+		
+		<model name="eEgg">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.20774361"/>
+				<parameter name="b" value="35.00145782"/>
+				<parameter name="c" value="4.809420525"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="100"/>
+				<parameter name="inflow" ref="eAdult/eEggsToBeLaid[outflow]"/>
+			</model>
+		</model>
+
+		<model name="eLarva1">	
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.138997263"/>
+				<parameter name="b" value="39.98749015"/>
+				<parameter name="c" value="7.150264992"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="eEgg/number[outflow]"/>
+				<parameter name="instantLossRate" ref="eLossrate[value]"/>
+			</model>
+		</model>
+
+		<model name="eLarva2">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.149109345"/>
+				<parameter name="b" value="39.98382518"/>
+				<parameter name="c" value="6.664441414"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="eLarva1/number[outflow]"/>
+			</model>
+		</model>
+		
+		<model name="eLarva3">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.1486562577"/>
+				<parameter name="b" value="39.98190137"/>
+				<parameter name="c" value="6.686380541"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="eLarva2/number[outflow]"/>
+			</model>
+		</model>
+		
+		<model name="eLarva4">
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.140261934"/>
+				<parameter name="b" value="39.97911052"/>
+				<parameter name="c" value="7.103659032"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="eLarva3/number[outflow]"/>
+			</model>
+		</model>		
+		
+		<model name="ePupa">
+		
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.138340863"/>
+				<parameter name="b" value="39.9810867"/>
+				<parameter name="c" value="7.199500248"/>
+				<parameter name="d" value="37.9"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="eLarva4/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="eAdult">
+		
+			<model name="time" type="ipm::Lactin2Time">  
+				<parameter name="a" value="0.111029321"/>
+				<parameter name="b" value="40.21281551"/>
+				<parameter name="c" value="9.001083665"/>
+				<parameter name="d" value="40.0"/>
+			</model>
+		
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="ePupa/number[outflow]"/>
+			</model>
+			
+			<model name="eFecundity" type="ipm::Fecundity5Time">  
+				<parameter name="a" value="627.3336239"/>
+				<parameter name="b" value="22.67327981"/>
+				<parameter name="c" value="0.057454418"/>
+				<parameter name="d" value="15.0"/>
+				<parameter name="e" value="35.0"/>
+			</model>			
+			
+			<model name="eEggsToBeLaid" type="UniSim::Stage">
+				<parameter name="duration" value="0.5"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="ePupa/number[outflow]"/>
+				<parameter name="growthRate" ref="eFecundity[step]"/> <!-- Life time fecundity corrected for sex ratio -->
+			</model>
+		</model>
+	</model>
+	
+	<!-- *** Plots  ***	-->
+
+	<!--<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisDevelopment']"/>-->
+	<!--<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisNumbers']"/>-->
+	<!--<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisLogNumbers']"/> -->
+	<output type="plot" name="EriopisDevelopment">
+		<parameter name="title" value ="Eriopis Development rates"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="EggSteps"     value="eEgg/time[step]"/>
+		<trace label="Larvae1Steps" value="eLarva1/time[step]"/>
+		<trace label="Larvae2Steps" value="eLarva2/time[step]"/>
+		<trace label="Larvae3Steps" value="eLarva3/time[step]"/>
+		<trace label="Larvae4Steps" value="eLarva4/time[step]"/>
+		<trace label="Larvae5Steps" value="eLarva5/time[step]"/>
+		<trace label="PupaeSteps"   value="ePupa/time[step]"/>
+		<trace label="AdultSteps"   value="eAdult/time[step]"/>
+	</output>
+	
+	<output type="plot" name="EriopisNumbers">
+		<parameter name="title" value ="Eriopis numbers"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="eEgg/number[value]"/>
+		<trace label="Larvae1" value="eLarva1/number[value]"/>
+		<trace label="Larvae2" value="eLarva2/number[value]"/>
+		<trace label="Larvae3" value="eLarva3/number[value]"/>
+		<trace label="Larvae4" value="eLarva4/number[value]"/>
+		<trace label="Larvae5" value="eLarva5/number[value]"/>
+		<trace label="Pupae"   value="ePupa/number[value]"/>
+		<trace label="Adults"  value="eAdult/number[value]"/>
+		<trace label="ScaledLossRate" ref="eLossrate[scaledValue]"/>
+	</output>
+
+	<output type="plot" name="EriopisLogNumbers">
+		<parameter name="title" value ="Eriopis numbers (log10)"/>
+		<parameter name="logy" value="yes"/>
+		<parameter name="ymin" value="-1	"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="eEgg/number[value]"/>
+		<trace label="Larvae1" value="eLarva1/number[value]"/>
+		<trace label="Larvae2" value="eLarva2/number[value]"/>
+		<trace label="Larvae3" value="eLarva3/number[value]"/>
+		<trace label="Larvae4" value="eLarva4/number[value]"/>
+		<trace label="Larvae5" value="eLarva5/number[value]"/>
+		<trace label="Pupae"   value="ePupa/number[value]"/>
+		<trace label="Adults"  value="eAdult/number[value]"/>
+	</output>	
+	
+	<!--<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaDevelopment']"/> -->
+	<!--<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaNumbers']"/>-->
+	<!--<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaLogNumbers']"/>-->
+		<output type="plot" name="RachiplusiaDevelopment">
+		<parameter name="title" value ="Rachiplusia Development rates"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="EggSteps"     value="rEgg/time[step]"/>
+		<trace label="Larvae1Steps" value="rLarva1/time[step]"/>
+		<trace label="Larvae2Steps" value="rLarva2/time[step]"/>
+		<trace label="Larvae3Steps" value="rLarva3/time[step]"/>
+		<trace label="Larvae4Steps" value="rLarva4/time[step]"/>
+		<trace label="Larvae5Steps" value="rLarva5/time[step]"/>
+		<trace label="PupaeSteps"   value="rPupa/time[step]"/>
+		<trace label="AdultSteps"   value="rAdult/time[step]"/>
+	</output>
+	
+	<output type="plot" name="RachiplusiaNumbers">
+		<parameter name="title" value ="Rachiplusia numbers"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="rEgg/number[value]"/>
+		<trace label="Larvae1" value="rLarva1/number[value]"/>
+		<trace label="Larvae2" value="rLarva2/number[value]"/>
+		<trace label="Larvae3" value="rLarva3/number[value]"/>
+		<trace label="Larvae4" value="rLarva4/number[value]"/>
+		<trace label="Larvae5" value="rLarva5/number[value]"/>
+		<trace label="Pupae"   value="rPupa/number[value]"/>
+		<trace label="Adults"  value="rAdult/number[value]"/>
+		<trace label="ScaledLossRate" ref="rLossrate[scaledValue]"/>
+	</output>
+
+	<output type="plot" name="RachiplusiaLogNumbers">
+		<parameter name="title" value ="Rachiplusia numbers (log10)"/>
+		<parameter name="logy" value="yes"/>
+		<parameter name="ymin" value="-1	"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="rEgg/number[value]"/>
+		<trace label="Larvae1" value="rLarva1/number[value]"/>
+		<trace label="Larvae2" value="rLarva2/number[value]"/>
+		<trace label="Larvae3" value="rLarva3/number[value]"/>
+		<trace label="Larvae4" value="rLarva4/number[value]"/>
+		<trace label="Larvae5" value="rLarva5/number[value]"/>
+		<trace label="Pupae"   value="rPupa/number[value]"/>
+		<trace label="Adults"  value="rAdult/number[value]"/>
+	</output>	
+	
+	<!--<output select="doc('environment_plots.xml')/outputs/output[@name='Environment']"/>-->
+	<output type="plot" name="Environment">
+		<parameter name="title" value ="Harlingen weather log"/>
+		<trace label="Day"      ref="calendar[totalTime]"/>
+		<trace label="Temperature" ref="weather[Tavg]"/>
+		<trace label="rGrowthRate"  ref="rAdult/rEggsToBeLaid[growthRate]"/>
+		<trace label="eGrowthRate"  ref="eAdult/eEggsToBeLaid[growthRate]"/>
+	</output>
+	
+	<!-- *** Tables  *** -->
+	
+	<!--<output select="doc('environment_plots.xml')/outputs/output[@name='EnvironmentTable']"/>-->
+	<output type="table" name="EnvironmentTable">
+		<parameter name="fileName" value ="environment_table.txt"/>
+		<trace label="Day"      ref="calendar[totalTime]"/>
+		<trace label="Temperature" ref="weather[Tavg]"/>
+		<trace label="rGrowthRate"  ref="rAdult/rEggsToBeLaid[growthRate]"/>
+		<trace label="eGrowthRate"  ref="eAdult/eEggsToBeLaid[growthRate]"/>
+	</output>	
+	
+	<!--<output select="doc('eriopis_plots.xml')/outputs/output[@name='EriopisTable']"/>-->	
+	<output type="table" name="EriopisTable">
+		<parameter name="fileName" value ="eriopis_table.txt"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="eEgg/number[value]"/>
+		<trace label="Larvae1" value="eLarva1/number[value]"/>
+		<trace label="Larvae2" value="eLarva2/number[value]"/>
+		<trace label="Larvae3" value="eLarva3/number[value]"/>
+		<trace label="Larvae4" value="eLarva4/number[value]"/>
+		<trace label="Larvae5" value="eLarva5/number[value]"/>
+		<trace label="Pupae"   value="ePupa/number[value]"/>
+		<trace label="Adults"  value="eAdult/number[value]"/>
+	</output>
+	
+	<!--<output select="doc('rachiplusia_plots.xml')/outputs/output[@name='RachiplusiaTable']"/>-->
+	<output type="table" name="RachiplusiaTable">
+		<parameter name="fileName" value ="rachiplusia_table.txt"/>
+		<trace label="Day"     value="calendar[totalTime]"/>
+		<trace label="Eggs"    value="rEgg/number[value]"/>
+		<trace label="Larvae1" value="rLarva1/number[value]"/>
+		<trace label="Larvae2" value="rLarva2/number[value]"/>
+		<trace label="Larvae3" value="rLarva3/number[value]"/>
+		<trace label="Larvae4" value="rLarva4/number[value]"/>
+		<trace label="Larvae5" value="rLarva5/number[value]"/>
+		<trace label="Pupae"   value="rPupa/number[value]"/>
+		<trace label="Adults"  value="rAdult/number[value]"/>
+	</output>
+
+</simulation>

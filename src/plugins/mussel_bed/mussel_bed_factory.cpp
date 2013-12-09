@@ -12,15 +12,12 @@
 #include "starfish_feeding_rate.h"
 #include "starfish_growth_rate.h"
 #include "temperature_stscale.h"
-#include "salinity_SRscale.h"
-#include "starfish_salinity_mortality.h"
-#include "hydrodynamic_SRscale.h"
-#include "searchrate.h"
+#include "salinity_stscale.h"
 #include "thinning.h"
 
 using namespace UniSim;
 
-namespace mussel_bed{
+namespace mussel_bed {
 
 void Mussel_bedFactory::defineProducts() {
 
@@ -48,21 +45,11 @@ void Mussel_bedFactory::defineProducts() {
     addProduct<TemperatureStScale>("TemperatureStScale", this,
     "Scaling of feeding rate of starfish by Temperature. Yields a number [0;1]");
 
-
-    addProduct<StarfishSalMortality>("StarfishSalMortality", this,
-    "Starfish mortality produced by salinity changes");
-
-    addProduct<searchrate>("searchrate", this,
-    "estimating appearance for fResp");
-
     addProduct<thinning>("thinning", this,
     "stimate loss rate considering also self thinning rule");
 
-    addProduct<SalinitySRScale>("SalinitySRScale", this,
+    addProduct<SalinityStScale>("SalinityStScale", this,
     "Scaling searching rate of starfish by average salinity. Yields a number [0;1]");
-
-    addProduct<HydrodynamicSRScale>("HydrodynamicSRScale", this,
-    "Scaling searching rate of starfish by hydrodynamic regime in the area. Yields a number [0;1]");
 
 }
 
@@ -77,18 +64,14 @@ QString Mussel_bedFactory::description() const {
 
 QStringList Mussel_bedFactory::authors() const {
     return QStringList()
-            << "Antonio" << "Niels";
+        << "Niels & Antonio";
 
 }
 
 QObject* Mussel_bedFactory::asQObject() {
    return this;
 }
-
-#if QT_VERSION < 0x50000
-Q_EXPORT_PLUGIN2(mussel_bed_factory, Mussel_bedFactory)
-#endif
-
 }
+
  //namespace
 

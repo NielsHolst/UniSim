@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Predator-Prey Insect Model">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="365"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="harlingen2008.txt"/>
+		</model>
+	</model>
+
+	<model name="Prey">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="4"/>
+		</model>
+		
+		<model name="egg" type="UniSim::Stage">
+			<parameter name="initialInflow" value="10"/>
+			<parameter name="inflow" ref="../adult/fecundity[value]"/>
+			<parameter name="duration" value="50"/>
+		</model>
+		<model name="larva" type="UniSim::Stage">
+			<parameter name="inflow" ref="../egg[outflow]"/>
+			<parameter name="duration" value="250"/>
+			<parameter name="instantLossRate" ref="predator/adult/funcresp[sdRatio]"/>
+		</model>
+		<model name="pupa" type="UniSim::Stage">
+			<parameter name="inflow" ref="../larva[outflow]"/>
+			<parameter name="duration" value="100"/>
+		</model>
+		<model name="adult" type="UniSim::Stage">
+			<parameter name="inflow" ref="../pupa[outflow]"/>
+			<parameter name="duration" value="100"/>
+			
+			<model name="Demand" type="ipm::Demand">
+				<parameter name="density" ref="..[value]"/>
+				<parameter name="perCapitaDemand" value="2"/>
+			</model>
+			
+			<model name="funcresp" type="Unisim::FunctionalResponseGB">
+				<parameter name="apparancy" value="0.5"/>
+				<parameter name="resourceDensity" value="100"/> <!-- Host tissue available -->
+				<parameter name="demand" ref="../demand[value]"/>
+			</model>
+
+			<model name="fecundity" type="ipm::Fecundity">
+				<parameter name="density" ref="..[value]"/>
+				<parameter name="maxPerCapitaFecundity" value="5"/>
+				<parameter name="sdRatio" ref="../funcresp[sdRatio]"/>
+			</model>
+		</model>
+	</model>
+	
+	<model name="Predator">
+		
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="6"/>
+		</model>
+		
+		<model name="egg" type="UniSim::Stage">
+			<parameter name="initialInflow" value="10"/>
+			<parameter name="inflow" ref="../adult/fecundity[value]"/>
+			<parameter name="duration" value="30"/>
+		</model>
+		
+		<model name="larva" type="UniSim::Stage">
+			<parameter name="inflow" ref="../egg[outflow]"/>
+			<parameter name="duration" value="300"/>
+		</model>
+		
+		<model name="pupa" type="UniSim::Stage">
+			<parameter name="inflow" ref="../larva[outflow]"/>
+			<parameter name="duration" value="80"/>
+		</model>
+		
+		<model name="adult" type="UniSim::Stage">
+			<parameter name="inflow" ref="../pupa[outflow]"/>
+			<parameter name="duration" value="150"/>
+			
+			<model name="Demand" type="ipm::Demand">
+				<parameter name="density" ref="..[value]"/>
+				<parameter name="perCapitaDemand" value="5"/>
+			</model>
+			
+			<model name="funcresp" type="Unisim::FunctionalResponseGB">
+				<parameter name="apparancy" value="0.2"/>
+				<parameter name="resourceDensity" ref="prey/larva[value]"/> 
+				<parameter name="demand" ref="../demand[value]"/>
+			</model>
+
+			<model name="fecundity" type="ipm::Fecundity">
+				<parameter name="density" ref="..[value]"/>
+				<parameter name="maxPerCapitaFecundity" value="2"/>
+				<parameter name="sdRatio" ref="../funcresp[sdRatio]"/>
+			</model>
+		</model>
+		
+	</model>
+	
+	
+	
+	
+	<output type="plot">
+		<parameter name="title" value ="Texas weather data"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Supply/demand-ratio"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Prey S/D" value="prey/adult/funcresp[sdRatio]"/>
+		<trace label="Predator S/D" value="predator/adult/funcresp[sdRatio]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Prey population dynamics"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Egg" value="prey/egg[value]"/>
+		<trace label="Larva" value="prey/larva[value]"/>
+		<trace label="Pupa" value="prey/pupa[value]"/>
+		<trace label="Adult" value="prey/adult[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Predator population dynamics"/>
+		<trace label="Days" value="calendar[totalTime]"/>
+		<trace label="Egg" value="predator/egg[value]"/>
+		<trace label="Larva" value="predator/larva[value]"/>
+		<trace label="Pupa" value="predator/pupa[value]"/>
+		<trace label="Adult" value="predator/adult[value]"/>
+	</output>
+
+	
+</simulation>

@@ -5,7 +5,7 @@
 */
 
 /* ##STARFISH FEEDING TEMPERATURE SCALING: this function scales the demand to the current
-   temperature. From Agüera et al. 2012*/
+   temperature. From Agï¿½era et al. 2012*/
 
 #include "temperature_stscale.h"
 #include <math.h>
@@ -16,7 +16,7 @@ namespace mussel_bed {
 TemperatureStScale::TemperatureStScale(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("temperature", &temperature, 15., this, "current temperature degree celsius");
+    new Parameter<double>("temperature", &temperature, 11., this, "current temperature degree celsius");
     new Variable<double>("value", &value, this, "scaling factor for feeding rate");
 }
 
@@ -25,10 +25,7 @@ void TemperatureStScale::reset() {
 }
 
 void TemperatureStScale::update() {
-    if (temperature <= 15)
-        value = 0.0219 * exp (0.2547*temperature);
-    else
-        value = 1.;
+    value = (exp(0.853*temperature - 3.197)/(1+exp(0.853*temperature - 3.197)));
     }
 
 } //namespace

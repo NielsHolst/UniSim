@@ -7,15 +7,16 @@
 	</model>
 	
 	<model name="pollen" type="EcoTox::Pollen">
-		<model name="depositionRate" type="EcoTox::DepositionMonotonicSampled"/>
-		<model name="depositionFlush" type="EcoTox::DepositionFlush">
-			<parameter name="duration" value="14"/>
+		<model name="onset" type="EcoTox::PollenOnsetDateFromTrapObs">
+			<parameter name="obsFileName" ref="weather[fileName]"/>
 		</model>
-		<model name="lossRate" type="EcoTox::PollenLossConstant">
-			<parameter name="rate" ref="random/lossRate[value]"/>
-		</model>
+
+		<parameter name="onsetDate" ref="./onset[date]"/>
+		<parameter name="currentDate" ref="calendar[date]"/>
 		<parameter name="distance" value="0"/>
+		<parameter name="duration" value="14"/>
 		<parameter name="Npeak" ref="random/Npeak[value]"/>
+		<parameter name="lossRate" ref="random/lossRate[value]"/>
 	</model>
-	
+
 </simulation>

@@ -8,7 +8,7 @@
 
 #include <QObject>
 #include <QVariant>
-#include "utilities.h"
+#include "string_conversion.h"
 #include "variable_base.h"
 
 namespace UniSim{

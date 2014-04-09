@@ -1,5 +1,7 @@
-#include <usbase/exception.h>
-#include <usbase/utilities.h>
+#include <QObject>
+#include <QVariant>
+#include "exception.h"
+#include "utilities.h"
 #include "name_list.h"
 
 namespace UniSim{

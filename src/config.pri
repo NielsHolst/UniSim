@@ -17,7 +17,7 @@ win32 {
     lessThan(QT_MAJOR_VERSION, 5): QMAKE_LFLAGS +=  -enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
 }
 
-QMAKE_CXXFLAGS += -Wno-unused-local-typedefs
+QMAKE_CXXFLAGS += -Wno-unused-local-typedefs -Wattributes
 
 DEFINES += UNISIM_VERSION
 
@@ -37,6 +37,8 @@ else {
     DEBUG_SUFFIX =
 }
     
+CONFIG += c++11
+
 QT += xml xmlpatterns
 
 DEFINES += QT_FATAL_ASSERT

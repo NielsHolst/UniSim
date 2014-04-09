@@ -27,10 +27,15 @@ void TemperatureScale::reset() {
 }
 
 void TemperatureScale::update() {
-    value = -1.7580306-0.3903995*log(avgs)+0.0894647*temperature;
-    value = exp(value);
+    if (temperature > 0 && temperature < 18 )
+        value = 0.1997*exp(0.0895*temperature);
+    else {
+        if (temperature < 0)
+            value = 0;
+        else
+            value = 1;
     }
-
-} //namespace
+}
+}//namespace
 
 

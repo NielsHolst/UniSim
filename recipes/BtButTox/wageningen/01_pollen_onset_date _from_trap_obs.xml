@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Test pollen onset date">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="365"/> 
+	</integrator>
+
+	<model name="calendar" type="Calendar"/>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="Westerloge - Bad Hersfeld.txt"/>
+		<parameter name="randomizeInitialYear" value="yes"/>
+	</model>
+
+	<model name="pollenOnset" type="EcoTox::PollenOnsetDateFromTrapObs">
+		<parameter name="obsFileName" ref="weather[fileName]"/>
+	</model>
+
+	<model name="pollen" type="EcoTox::Pollen">
+		<parameter name="onsetDate" ref="pollenOnset[date]"/>
+		<parameter name="currentDate" ref="calendar[date]"/>
+		<parameter name="Npeak" value="1000"/>
+		<parameter name="lossRate" value="0.1"/>
+	</model>
+
+	<!-- OUTPUT -->
+	
+	<output type="plot">
+		<parameter name="title" value="Weather"/>
+		<trace label="Time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="Temperature" ref="weather[Tavg]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Pollen deposition rate"/>
+		<trace label="time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="Deposition rate" ref="pollen[depositionRate]"/>
+		<trace label="Deposition total" ref="pollen[depositionTotal]"/>
+		<trace label="Actual density" ref="pollen[density]"/>
+	</output>	
+	
+	
+</simulation>

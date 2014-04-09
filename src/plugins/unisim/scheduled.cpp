@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/decode_list.h>
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
 #include <usbase/variable.h>

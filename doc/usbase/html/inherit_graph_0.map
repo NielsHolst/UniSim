@@ -1,0 +1,23 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_uni_sim_1_1_attributes.html" title="UniSim::Attributes" alt="" coords="356,157,484,184"/>
+<area shape="rect" id="node3" href="$class_uni_sim_1_1_trace.html" title="UniSim::Trace" alt="" coords="612,157,716,184"/>
+<area shape="rect" id="node4" href="$class_uni_sim_1_1_parameter_base.html" title="UniSim::ParameterBase" alt="" coords="339,436,501,463"/>
+<area shape="rect" id="node6" href="$class_uni_sim_1_1_parameter.html" title="UniSim::Parameter\&lt; T \&gt;" alt="" coords="583,411,745,437"/>
+<area shape="rect" id="node8" href="$class_uni_sim_1_1_parameter_vector.html" title="UniSim::ParameterVector\&lt; T \&gt;" alt="" coords="563,461,765,488"/>
+<area shape="rect" id="node11" href="$class_uni_sim_1_1_authors.html" title="UniSim::Authors" alt="" coords="143,5,260,32"/>
+<area shape="rect" id="node13" href="$class_uni_sim_1_1_clock.html" title="UniSim::Clock" alt="" coords="149,56,254,83"/>
+<area shape="rect" id="node15" href="$class_uni_sim_1_1_data_grid.html" title="UniSim::DataGrid" alt="" coords="140,107,263,133"/>
+<area shape="rect" id="node17" href="$class_uni_sim_1_1_file_locations.html" title="UniSim::FileLocations" alt="" coords="127,157,276,184"/>
+<area shape="rect" id="node19" href="$class_uni_sim_1_1_named_object.html" title="UniSim::NamedObject" alt="" coords="126,208,277,235"/>
+<area shape="rect" id="node30" href="$class_uni_sim_1_1_object_pool.html" title="UniSim::ObjectPool" alt="" coords="133,259,269,285"/>
+<area shape="rect" id="node32" href="$class_uni_sim_1_1_product_base.html" title="UniSim::ProductBase" alt="" coords="128,309,275,336"/>
+<area shape="rect" id="node36" href="$class_uni_sim_1_1_random.html" title="UniSim::Random" alt="" coords="141,360,261,387"/>
+<area shape="rect" id="node38" href="$class_uni_sim_1_1_variable_base.html" title="UniSim::VariableBase" alt="" coords="127,411,276,437"/>
+<area shape="rect" id="node21" href="$class_uni_sim_1_1_component.html" title="The Component class provides the basic building block to construct models. " alt="" coords="351,208,489,235"/>
+<area shape="rect" id="node23" href="$class_uni_sim_1_1_model.html" title="UniSim::Model" alt="" coords="611,208,717,235"/>
+<area shape="rect" id="node27" href="$class_uni_sim_1_1_output.html" title="UniSim::Output" alt="" coords="609,259,719,285"/>
+<area shape="rect" id="node25" href="$class_uni_sim_1_1_integrator.html" title="UniSim::Integrator" alt="" coords="814,208,941,235"/>
+<area shape="rect" id="node34" href="$class_uni_sim_1_1_product.html" title="UniSim::Product\&lt; T \&gt;" alt="" coords="346,309,494,336"/>
+<area shape="rect" id="node40" href="$class_uni_sim_1_1_variable.html" title="UniSim::Variable\&lt; T \&gt;" alt="" coords="345,385,495,412"/>
+<area shape="rect" id="node43" href="$class_uni_sim_1_1_variable_vector.html" title="UniSim::VariableVector\&lt; T \&gt;" alt="" coords="326,487,514,513"/>
+</map>

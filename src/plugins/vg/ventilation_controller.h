@@ -19,7 +19,7 @@ public:
     void update();
 private:
     // Parameters
-    double windSideProportion, maxTemperature,
+    double windSideProportion, Tventilation,
         windSpeed, indoorsTemperature, outdoorsTemperature,
         maxSignal, byTemperature, byHumidity, byTemperatureDiff;
     // Variables

@@ -70,7 +70,7 @@ void Ref::resolve() {
             ref->source = ref->parameterParent->seekOne<NamedObject*, VariableBase*>(ref->reference);
         }
         catch (Exception &ex) {
-            throw Exception(ref->notFoundMessage());
+            throw Exception(ref->notFoundMessage(ex));
         }
         bool coupled =
             couple<bool>(ref->parameter, ref->source) ||
@@ -90,34 +90,38 @@ void Ref::resolve() {
     }
 }
 
-QString Ref::notFoundMessage() {
-    QString from = QString("referenced from '%1'").arg(parameterParent->id().label());
+namespace {
+    template<class ChildType>
+    QStringList lookupChildren(NamedObject *parent) {
+        auto children = parent->seekChildren<ChildType>("*");
+        QStringList names;
+        for (auto child : children) {
+            names << "'" + child->id().label() + "'";
+        }
+        return names;
+    }
+}
+
+QString Ref::notFoundMessage(Exception &ex) {
+    QString from = QString("referenced from '%1'").arg(parameterParent->fullLabel());
     QStringList names = splitParentChildExpression(reference, parameterParent);
     NamedObject *model = parameterParent->peekOne<NamedObject*>(names[0]);
     // No model found
     if (!model) {
-        QString msg = "Error in reference '%1' %2: Model '%3' not found";
-        return msg.arg(reference).arg(from).arg(names[0]);
+        QString msg = "Exception: %1\n\nError in reference '%2' %3: Model '%4' not found";
+        return msg.arg(ex.message()).arg(reference).arg(from).arg(names[0]);
     }
 
     // No variable found
-    QString msg = "Error in reference '%1' %2: Parameter named '%3' not found.\n"
-            "Model '%4' contains these parameters and variables:\n%5";
-    QStringList vars = lookupVariables(model);
-    msg = msg.arg(reference).arg(from).arg(names[1]).arg(names[0]).arg(vars.join("\n"));
+    QString msg = "Exception: %1\n\nError in reference '%2' %3: Parameter named '%4' not found.\n"
+            "Model '%5' contains these parameters and variables:\n%6";
+    QStringList vars = lookupChildren<VariableBase*>(model);
+    msg = msg.arg(ex.message()).arg(reference).arg(from).arg(names[1]).arg(names[0]).arg(vars.join("\n"));
     if (vars.isEmpty())
         msg += "None!";
     return msg;
 }
 
-QStringList Ref::lookupVariables(NamedObject *parent) {
-    QList<VariableBase*> var = parent->seekChildren<VariableBase*>("*");
-    QStringList names;
-    for (int i = 0; i < var.size(); ++i) {
-        names << "'" + var[i]->id().label() + "'";
-    }
-    return names;
-}
 
 void Ref::writeEdges(QFile &f) {
     f.write("edge [color=red];");

@@ -155,7 +155,7 @@ QString Simulation::inputFilePath(QString fileName) {
 */
 Simulation* simulation() {
     if (!Simulation::theSimulation)
-        throw("No current simulation");
+        throw Exception("No current simulation");
     return Simulation::theSimulation;
 }
 

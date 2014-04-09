@@ -57,6 +57,7 @@ HEADERS += \
     stage_demand.h \
     stage_and_phase.h \
     steps.h \
+    sub_steps.h \
     sum.h \
     time_limited.h \
     trigger_by_date.h \
@@ -109,6 +110,7 @@ SOURCES += \
     stage_demand.cpp \
     stage_and_phase.cpp \
     steps.cpp \
+    sub_steps.cpp \
     sum.cpp \
     time_limited.cpp \
     trigger_by_date.cpp \

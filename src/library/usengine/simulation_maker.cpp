@@ -14,6 +14,7 @@
 #include <usbase/model.h>
 #include <usbase/integrator.h>
 #include <usbase/exception.h>
+#include <usbase/file_locations.h>
 #include <usbase/named_object.h>
 #include <usbase/output.h>
 #include <usbase/ref.h>
@@ -451,6 +452,7 @@ void SimulationMaker::readOutputElement(NamedObject* parent)
     QString type = attributeValue("type", parent);
 
     Output *output = MegaFactory::create<Output>(type, objectName, parent);
+    output->setAttribute( "frequency", attributeValue("frequency", "1") );
 
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {
@@ -486,6 +488,7 @@ void SimulationMaker::readOutputSubElement(NamedObject* parent)
     param.setAttribute( "rows", attributeValue("rows", "") );
     param.setAttribute( "multiplier", attributeValue("multiplier", "1") );
     param.setAttribute( "divisor", attributeValue("divisor", "1") );
+    param.setAttribute( "sample", attributeValue("sample", "last") );
     param.parent = parent;
     traceVariableParam.append(param);
 

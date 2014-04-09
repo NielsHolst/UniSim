@@ -29,8 +29,7 @@ private:
     const VariableBase *source;
 
     static QList<Ref*> all;
-    QString notFoundMessage();
-    QStringList lookupVariables(NamedObject *parent);
+    QString notFoundMessage(UniSim::Exception &ex);
 };
 
 

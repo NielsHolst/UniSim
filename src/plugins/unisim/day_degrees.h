@@ -13,14 +13,13 @@ namespace UniSim{
 
 class DayDegrees : public PhysiologicalTime
 {
-	//Q_OBJECT
 public: 
     DayDegrees(UniSim::Identifier name, QObject *parent=0);
 	//standard methods
-    virtual void initialize();
+    void initialize();
 
     // special methods
-    virtual double calcDailyTimeStep();
+    double calcDailyTimeStep();
 
 protected:
 	// parameters

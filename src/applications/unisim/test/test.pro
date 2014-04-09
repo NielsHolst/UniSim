@@ -22,6 +22,7 @@ HEADERS += \
     $${US_BASE}/test/test_component.h \
     $${US_BASE}/test/test_data_grid.h \
     $${US_BASE}/test/test_identifier.h \
+    $${US_BASE}/test/test_interpolate.h \
     $${US_BASE}/test/test_minimiser.h \
     $${US_BASE}/test/test_matrix.h \
     $${US_BASE}/test/test_moments.h \
@@ -83,6 +84,7 @@ SOURCES += \
     $${US_BASE}/test/test_component.cpp \
     $${US_BASE}/test/test_data_grid.cpp \
     $${US_BASE}/test/test_identifier.cpp \
+    $${US_BASE}/test/test_interpolate.cpp \
     $${US_BASE}/test/test_matrix.cpp \
     $${US_BASE}/test/test_minimiser.cpp \
     $${US_BASE}/test/test_moments.cpp \

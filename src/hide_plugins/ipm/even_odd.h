@@ -8,7 +8,7 @@
 
 #include <usbase/model.h>
 
-namespace ipm {
+namespace ipm{
 
 class EvenOdd : public UniSim::Model
 {
@@ -26,6 +26,5 @@ private:
 };
 
 } //namespace
-
 
 #endif

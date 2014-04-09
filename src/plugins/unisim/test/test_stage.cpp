@@ -1,5 +1,6 @@
 #include <iostream>
 #include <usbase/exception.h>
+#include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/moments.h>
 #include <usbase/parameter.h>

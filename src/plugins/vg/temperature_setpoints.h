@@ -15,13 +15,21 @@ class TemperatureSetpoints : public UniSim::Model
 {
 public:
     TemperatureSetpoints(UniSim::Identifier name, QObject *parent);
+    void amend();
     void update();
 private:
     // Parameters
-    double setMinimum, setMaximum, humidityIncrement, humidityDecrement;
+    double baseTHeating, baseTVentilation, humidityIncrement, humidityDecrement;
 
     // Variables
-    double minimum, maximum;
+    double THeating, TVentilation;
+
+    // Data
+    struct TemperatureSwitch {
+        const double *temperature;
+        const bool *on;
+    };
+    QList<TemperatureSwitch> ventilationTemperatureSwitches;
 };
 } //namespace
 

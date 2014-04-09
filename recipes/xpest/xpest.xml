@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="XPEST" version="1.0">
+    <integrator type="UniSim::Steps">
+        <parameter name="maxSteps" value="240"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="15/3/2005"/>
+	</model>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="flakkebjerg 2005-06.txt"/>
+		<parameter name="imposeInitialDateTime" value="no"/>
+	</model>
+
+	<model name="pests" type="UniSim::Fixed">
+		<parameter name="parameters" 
+			value="((sepNodorum 20.)(sepTritici 0.)(brownRust 0.)(yellowRust 0.)(aphid 0.)(weeds 0.)(bydv 0.)(takeAll 0.)(eyespotS 0.)(eyespotM 0.)(eyespotL 0.)(sharpEyespotS 0.)(sharpEyespotM 0.)(sharpEyespotL 0.)(fusariumStemS 0.)(fusariumStemL 0.)(fusariumHead 0.)(powderyMildew 0.)) "/>
+		<!-- <constant name="aphid" value="10"/> -->
+	</model>
+	
+	<model name="crop">
+		<model name="stage" type="xpest::Stage">
+			<model type="xpest::DayDegreeScale">
+				<parameter name="from" value="0"/>
+				<parameter name="to" value="1"/>
+				<parameter name="T0" value="0"/>
+				<parameter name="duration" value="1000"/>
+			</model>
+			<model type="xpest::DayDegreeScale">
+				<parameter name="from" value="1"/>
+				<parameter name="to" value="2"/>
+				<parameter name="T0" value="0"/>
+				<parameter name="duration" value="600"/>
+			</model>
+		</model>
+		
+		<model name="remob" type="xpest::Remobilization">
+			<parameter name="from" value="stem"/>
+			<parameter name="to" value="ears"/>
+			<parameter name="atGs" value="1"/>
+			<parameter name="untilGs" value="2"/>
+			<parameter name="proportion" value="0.2"/>
+		</model>
+
+		<model name="belowGroundPartition" type="xpest::InputTable">
+			<parameter name="fileName" value="partition_below_ground.txt"/>
+			<parameter name="xName" value="growthStage"/>
+			<parameter name="yName" value="belowGround"/>
+			<parameter name="xValue" ref="stage[growthStage]"/>
+		</model>
+
+		<model name="organs">
+			<model name="roots" type="xpest::CropComponent">
+				<parameter name="initMass" value="4.3"/>
+				<parameter name="isBelowGround" value="yes"/>
+				<parameter name="partitioningCoefficient" value="1"/>
+			</model>
+
+			<model name="leaves" type="xpest::CropComponent">
+				<model name="partition" type="xpest::InputTable">
+					<parameter name="fileName" value="partition_leaves.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="leaves"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<model name="slaTable" type="xpest::InputTable">
+					<parameter name="fileName" value="sla_leaves.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="leaves"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<model name="senescenceTable" type="xpest::InputTable">
+					<parameter name="fileName" value="senescence_leaves.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="leaves"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<parameter name="initMass" value="14"/>
+				<parameter name="isBelowGround" value="no"/>
+				<parameter name="sla" ref="./slaTable[yValue]"/>
+				<parameter name="senescence" ref="./senescenceTable[yValue]"/>
+			</model>
+
+			<model name="stem" type="xpest::CropComponent">
+				<model name="partition" type="xpest::InputTable">
+					<parameter name="fileName" value="partition_stem.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="stem"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<parameter name="initMass" value="0"/>
+				<parameter name="isBelowGround" value="no"/>
+			</model>
+
+			<model name="ears" type="xpest::CropComponent">
+				<model name="partition" type="xpest::RemainingPartition"/>
+				<model name="fusarium" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[fusariumHead]"/>
+					<parameter name="maxDamage" value="1.1"/>
+				</model>
+				<parameter name="initMass" value="0"/>
+				<parameter name="assimilateLoss" ref="./fusarium[damage]"/>
+				<parameter name="isBelowGround" value="no"/>
+			</model>
+		</model>
+		
+		<model name="growth" type="xpest::Growth">
+			<parameter name="rue" value="1.19"/>
+			<parameter name="lai" ref="leaves[lai]"/>
+		</model>
+		
+	</model>
+
+	<model name="damages">
+		<model name="assimilateDemand">
+			<model name="aphid" type="xpest::AphidAssimilate">
+				<parameter name="density" ref="pests[aphid]"/>
+			</model>
+
+			<model name="BrownRust" type="xpest::RustDamage">
+				<parameter name="pestSeverity" ref="pests[BrownRust]"/>
+				<parameter name="lai" ref="leaves[lai]"/>
+			</model>
+
+			<model name="YellowRust" type="xpest::RustDamage">
+				<parameter name="pestSeverity" ref="pests[YellowRust]"/>
+				<parameter name="lai" ref="leaves[lai]"/>
+			</model>
+		</model>
+
+		<model name="assimilateDiversion">
+			<model name="SepNodorum" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[SepNodorum]"/>
+				<parameter name="maxDamage" value="0.63"/>
+			</model>
+			<model name="SepTritici" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[SepTritici]"/>
+				<parameter name="maxDamage" value="0.63"/>
+			</model>
+		</model>
+
+		<model name="lai">
+			<model name="SepNodorum" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[SepNodorum]"/>
+				<parameter name="maxDamage" value="1."/>
+			</model>
+			<model name="SepTritici" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[SepTritici]"/>
+				<parameter name="maxDamage" value="1."/>
+				<parameter name="beta" value="1.25"/>
+			</model>
+			<model name="BrownRust" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[BrownRust]"/>
+				<parameter name="maxDamage" value="1."/>
+			</model>
+			<model name="YellowRust" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[YellowRust]"/>
+				<parameter name="maxDamage" value="1."/>
+				<parameter name="beta" value="1.5"/>
+			</model>
+			<model name="PowderyMildew" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[PowderyMildew]"/>
+				<parameter name="maxDamage" value="1."/>
+			</model>
+		</model>
+
+		<model name="rue">
+			<model name="aphid" type="xpest::AphidRue">
+				<parameter name="assimilateEaten" ref="assimilateDemand/aphid[damage]"/>
+			</model>
+
+			<model name="weeds" type="xpest::Weeds">
+				<parameter name="density" ref="pests[weeds]"/>
+			</model>
+
+			<model name="bydv" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[bydv]"/>
+				<parameter name="maxDamage" value="0.35"/>
+			</model>
+			
+			<model name="takeAll" type="xpest::Reduction">
+				<parameter name="pestSeverity" ref="pests[takeAll]"/>
+				<parameter name="maxDamage" value="1"/>
+			</model>
+			
+			<model name="eyespot" type="xpest::Reduction">
+				<model name="slight" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[eyespotS]"/>
+					<parameter name="maxDamage" value="0.03"/>
+				</model>
+				<model name="moderate" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[eyespotM]"/>
+					<parameter name="maxDamage" value="0.28"/>
+				</model>
+				<model name="severe" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[eyespotL]"/>
+					<parameter name="maxDamage" value="0.78"/>
+				</model>
+			</model>
+
+			<model name="sharpEyespot" type="xpest::Reduction">
+				<model name="slight" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[sharpEyespotS]"/>
+					<parameter name="maxDamage" value="0.07"/>
+				</model>
+				<model name="moderate" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[sharpEyespotM]"/>
+					<parameter name="maxDamage" value="0.14"/>
+				</model>
+				<model name="severe" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[sharpEyespotL]"/>
+					<parameter name="maxDamage" value="0.65"/>
+				</model>
+			</model>
+
+			<model name="fusariumStem" type="xpest::Reduction">
+				<model name="slight" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[fusariumStemS]"/>
+					<parameter name="maxDamage" value="0.26"/>
+				</model>
+				<model name="severe" type="xpest::Reduction">
+					<parameter name="pestSeverity" ref="pests[fusariumStemL]"/>
+					<parameter name="maxDamage" value="0.67"/>
+				</model>
+			</model>
+			
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value="Weather"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Temperature" ref="weather[Tavg]"/>
+		<trace label="Irradiation" ref="weather[irradiationMJ]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Growth stage"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Growth stage" ref="stage[growthStage]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Enerby budget (g/d)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Production" ref="growth[production]"/>
+		<trace label="Gain" ref="growth[gain]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Crop biomass (g/m2)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Ears" ref="ears[mass]"/>
+		<trace label="Stem" ref="stem[mass]"/>
+		<trace label="Leaves" ref="leaves[mass]"/>
+		<trace label="Roots" ref="roots[mass]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Leaf area index"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Leaves" ref="leaves[lai]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Net partitioning coefficients"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Ears" ref="ears[netPartition]"/>
+		<trace label="Stem" ref="stem[netPartition]"/>
+		<trace label="Leaves" ref="leaves[netPartition]"/>
+		<trace label="Roots" ref="roots[netPartition]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Specific leaf area (m2/g)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Leaves" ref="leaves[sla]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Senescence (per day)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Leaves" ref="leaves[senescence]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Remobilization (g/m2/d)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="remob" ref="remob[rate]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Assimilate loss rate (g/m2/d)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Aphid" ref="assimilateDemand/aphid[damage]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Assimilate diversion"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="S.nodorum" ref="assimilateDiversion/SepNodorum[damage]"/>
+		<trace label="S.tritici" ref="assimilateDiversion/SepTritici[damage]"/>
+		<trace label="Brown rust" ref="assimilateDiversion/brownRust[damage]"/>
+		<trace label="Yellow rust" ref="assimilateDiversion/yellowRust[damage]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="RUE reduction"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Aphid" ref="rue/aphid[damage]"/>
+		<trace label="Weeds" ref="weeds[damage]"/>
+		<trace label="BYDV" ref="bydv[damage]"/>
+		<trace label="Take-all" ref="takeAll[damage]"/>
+		<trace label="Eyespot" ref="eyespot[damage]"/>
+		<trace label="Sharp eyespot" ref="sharpEyespot[damage]"/>
+		<trace label="Fus stem rot" ref="fusariumStem[damage]"/>
+		<trace label="Fus head blight" ref="fusariumHead[damage]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="LAI reduction"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="S.nodorum" ref="lai/SepNodorum[damage]"/>		
+		<trace label="S.tritici" ref="lai/SepTritici[damage]"/>		
+		<trace label="Brown rust" ref="lai/BrownRust[damage]"/>		
+		<trace label="Yellow rust" ref="lai/YellowRust[damage]"/>		
+		<trace label="Powdery mildew" ref="lai/PowderyMildew[damage]"/>		
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Net reductions"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="RUE" ref="growth[rueReduction]"/>		
+		<trace label="LAI" ref="growth[laiReduction]"/>		
+	</output>
+
+	<output type="table">
+		<parameter name="fileName" value="xpest.txt"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Growth stage" ref="stage[growthStage]"/>
+		<trace label="Stem" ref="stem[mass]"/>
+		<trace label="remob" ref="remob[rate]"/>
+	</output>
+
+</simulation>

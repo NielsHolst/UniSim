@@ -3,14 +3,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "aedes_fecundity.h"
-#include "culex_fecundity.h"
+#include "mosquito_fecundity.h"
 #include "rvf_factory.h"
 #include "water_level.h"
-#include "inactiveegg.h"
-#include "adult.h"
+#include "sheep_fecundity.h"
 #include "mosquito_demand.h"
+#include "mosquito_infection.h"
+#include "sheep_infection.h"
 #include "egg_time.h"
+#include "interactions.h"
 
 using namespace UniSim;
 
@@ -18,13 +19,16 @@ namespace rvf{
 
 void RvfFactory::defineProducts() {
     // Add you own models here...
-    addProduct<AedesFecundity>("AedesFecundity", this, "Daily egg-laying rate of adult mosquitoes. Independent of water level");
-    addProduct<CulexFecundity>("CulexFecundity", this, "Daily egg-laying rate of adult mosquitoes. Depends on water level");
+    addProduct<MosquitoFecundity>("MosquitoFecundity", this, "Daily egg-laying rate of adult mosquitoes. Depends on water level");
     addProduct<WaterLevel>("WaterLevel", this, "Water level in the environment.");
-    addProduct<InactiveEgg>("InactiveEgg", this, "Inactive eggs laid on the ground.");
-    addProduct<Adult>("Adult", this, "Adult mosquitoes laying eggs.");
-    addProduct<MosquitoDemand>("MosquitoDemand", this, "Mosquito bloodmeal per day.");
-    addProduct<EggTime>("EggTime", this, "Time scale for Aedes eggs.");
+    addProduct<EggTime>("EggTime", this, "Time for activation of eggs");
+    addProduct<SheepFecundity>("SheepFecundity", this, "Daily birth rate of adult sheep. Depends on Carrying Capacity K");
+    addProduct<MosquitoInfection>("MosquitoInfection", this, "Infection transfer from mosquito to sheep given contact rate");
+    addProduct<SheepInfection>("SheepInfection", this, "Infection transfer from sheep to mosquitoes given effective contact rate");
+    addProduct<Interactions>("Interactions", this, "Interactions between vectors and hosts at different phases");
+    addProduct<MosquitoDemand>("MosquitoDemand", this, "Daily demand for bloodmeals");
+
+
 }
 
 UniSim::Identifier RvfFactory::id() const {
@@ -38,13 +42,12 @@ QString RvfFactory::description() const {
 
 QStringList RvfFactory::authors() const {
     return QStringList()
-        << "Clement";
+        << "Niels";
     // Add Clement here. But first add to src/resources/authors.xml
 }
 
 QObject* RvfFactory::asQObject() {
    return this;
 }
-
 
 } //namespace

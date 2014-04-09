@@ -33,8 +33,8 @@ public:
     template <class T> T peekOne(QString name);
     template <class T> T seekOne(QString name);
 
-    template <class TParentPtr, class TChildPtr> QList<TChildPtr> seekMany(QString expression);
-    template <class TParentPtr, class TChildPtr> TChildPtr seekOne(QString expression);
+    template <class TParent, class TChild> QList<TChild> seekMany(QString expression);
+    template <class TParent, class TChild> TChild seekOne(QString expression);
 
     template <class T> T peekOneChild(QString name);
     template <class T> T seekOneChild(QString name);
@@ -45,6 +45,8 @@ public:
 
     template <class T> T peekOneNearest(QString name);
     template <class T> T seekOneNearest(QString name);
+    template <class T> QList<T> seekManyNearest(QString name);
+    template <class TParent, class TChild> QList<TChild> seekManyNearest(QString expression);
 
     template <class T> T peekOneSibling(QString name);
     template <class T> T seekOneSibling(QString name);
@@ -91,10 +93,10 @@ template <class T> T NamedObject::seekOne(QString name) {
 /*!
     Uses seekMany<T,U> but throws an Exception if not exactly one match is found.
 */
-template <class TParentPtr, class TChildPtr> TChildPtr NamedObject::seekOne(QString expression)
+template <class TParent, class TChild> TChild NamedObject::seekOne(QString expression)
 {
-    QList<TChildPtr> result = seekMany<TParentPtr, TChildPtr>(expression);
-    if (result.size() == 1)
+    QList<TChild> result = seekMany<TParent, TChild>(expression);
+    if (result.size() == 1 || expression.left(3) == "...")
         return result[0];
 
     QString head = result.isEmpty() ? "No object found matching:"
@@ -103,8 +105,8 @@ template <class TParentPtr, class TChildPtr> TChildPtr NamedObject::seekOne(QStr
     throw Exception(msg
                     .arg(head)
                     .arg(expression)
-                    .arg(typeid(TParentPtr).name())
-                    .arg(typeid(TChildPtr).name()));
+                    .arg(typeid(TParent).name())
+                    .arg(typeid(TChild).name()));
 }
 
 //! Finds any number of parent-child objects
@@ -113,17 +115,26 @@ template <class TParentPtr, class TChildPtr> TChildPtr NamedObject::seekOne(QStr
   the child is given in brackets, e.g. "mammals/elephant[size]. The matching children are returned
   as a list.
 */
-template <class TParentPtr, class TChildPtr> QList<TChildPtr> NamedObject::seekMany(QString expression)
+template <class TParent, class TChild> QList<TChild> NamedObject::seekMany(QString expression)
 {
-    QStringList split = UniSim::splitParentChildExpression( absolutePath(expression), this );
-    QString parent = split[0], child = split[1];
-
-    QList<TParentPtr> parentPtr = seekMany<TParentPtr>(parent);
-    QList<TChildPtr> result;
-    for (int i = 0; i < parentPtr.size(); ++i) {
-        QList<TChildPtr> more = parentPtr[i]->seekChildren<TChildPtr>(child);
-        result.append(more);
+    if (expression.left(3) == "...") {
+        if (expression[3] != '/') {
+            QString msg{"Illegal path expression ('%1'). '/' expected after '...'"};
+            throw UniSim::Exception(msg.arg(expression));
+        }
+        return seekManyNearest<TParent, TChild>(expression.mid(4));
     }
+    QStringList split = UniSim::splitParentChildExpression( absolutePath(expression), this );
+    QString parentName = split[0], childName = split[1];
+
+    auto parents = seekMany<TParent>(parentName);
+    QList<TChild> result;
+    for (auto parent : parents)
+        result << parent->seekChildren<TChild>(childName);
+//    for (int i = 0; i < parentPtr.size(); ++i) {
+//        QList<TChild> more = parentPtr[i]->seekChildren<TChild>(child);
+//        result.append(more);
+//    }
     return result;
 }
 
@@ -190,12 +201,15 @@ template <class T> QList<T> NamedObject::seekChildren(QString name) {
 //! Finds exactly one nearest object or none (n==1 || n==0)
 template <class T> T NamedObject::peekOneNearest(QString name) {
     QList<NamedObject*> parents;
-    parents.append(this);
-    parents.append(seekAscendants<NamedObject*>("*"));
-    for (int i = 0; i < parents.size(); ++i) {
-        T child = parents[i]->peekOneChild<T>(name);
+    parents << this << seekAscendants<NamedObject*>("*");
+    for (auto parent : parents) {
+        T child = parent->peekOneChild<T>(name);
         if (child) return child;
     }
+//    for (int i = 0; i < parents.size(); ++i) {
+//        T child = parents[i]->peekOneChild<T>(name);
+//        if (child) return child;
+//    }
     return 0;
 }
 
@@ -205,6 +219,31 @@ template <class T> T NamedObject::seekOneNearest(QString name) {
     if (child) return child;
     throw Exception("Found no nearest object called '" + name + "'" +
                     " of class " + typeid(T).name(), this);
+}
+
+template <class T> QList<T> NamedObject::seekManyNearest(QString name) {
+    if (name.contains(".")) {
+        QString msg{"Expression seeking for nearest model cannot be a relative path ('%1')"};
+        throw UniSim::Exception(msg.arg(name), this);
+    }
+    QList<NamedObject*> parents;
+    parents << this << seekAscendants<NamedObject*>("*");
+    QList<T> nearest;
+    for (auto parent : parents)
+        nearest << parent->seekChildren<T>(name);
+    return nearest;
+}
+
+template <class TParent, class TChild>
+QList<TChild> NamedObject::seekManyNearest(QString expression) {
+    QStringList split = UniSim::splitParentChildExpression(expression, this );
+    QString parentName{split[0]}, childName{split[1]};
+
+    auto parents = seekManyNearest<TParent>(parentName);
+    QList<TChild> nearest;
+    for (auto parent : parents)
+        nearest << parent->seekChildren<TChild>(childName);
+    return nearest;
 }
 
 //! Finds exactly one sibling or none (n==1 || n==0)
@@ -397,10 +436,12 @@ template <class T> QList<T> NamedObject::filterByName(QString name, const QList<
     if (names.isEmpty())
         return result;
 
-    for (int ca = 0; ca < candidates.size(); ++ca) {
+    for (auto candidate : candidates) {
+//    for (int ca = 0; ca < candidates.size(); ++ca) {
         int i = names.size()-1;
-        QObject *candidate, *p;
-        candidate = p = candidates.at(ca);
+        QObject *p{candidate};
+//        QObject *candidate, *p;
+//        candidate = p = candidates.at(ca);
         while (i > 0 && p->parent() && (p->objectName() == names[i] || names[i] == "*")) {
             --i;
             p = p->parent();
@@ -410,7 +451,7 @@ template <class T> QList<T> NamedObject::filterByName(QString name, const QList<
         bool isT = dynamic_cast<T>(candidate) != 0;
         bool pathOk  =	i == 0 && (p->objectName() == names[0] || names[0] == "*");
         if (isT && pathOk) {
-            result.append(dynamic_cast<T>(candidate));
+            result << dynamic_cast<T>(candidate);
         }
     }
     return result;

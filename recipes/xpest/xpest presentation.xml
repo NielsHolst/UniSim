@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="XPest demo">
+    <integrator name="steps" type="UniSim::Steps">
+        <parameter name="maxSteps" value="240"/>
+	</integrator>
+
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="15/3/2005"/>
+	</model>
+
+	<model name="weather" type="UniSim::Records">
+		<parameter name="fileName" value="flakkebjerg 2005-06.txt"/>
+		<parameter name="imposeInitialDateTime" value="no"/>
+	</model>
+
+	<model name="crop">
+		<model name="stage" type="xpest::Stage">
+			<model type="xpest::DayDegreeScale">
+				<parameter name="from" value="0"/>
+				<parameter name="to" value="1"/>
+				<parameter name="T0" value="0"/>
+				<parameter name="duration" value="1000"/>
+			</model>
+			<model type="xpest::DayDegreeScale">
+				<parameter name="from" value="1"/>
+				<parameter name="to" value="2"/>
+				<parameter name="T0" value="0"/>
+				<parameter name="duration" value="600"/>
+			</model>
+		</model>
+		
+		<model name="remobilization" type="xpest::Remobilization">
+			<parameter name="from" value="stem"/>
+			<parameter name="to" value="ears"/>
+			<parameter name="atGs" value="1"/>
+			<parameter name="untilGs" value="2"/>
+			<parameter name="proportion" value="0.2"/>
+		</model>
+
+		<model name="belowGroundPartition" type="xpest::InputTable">
+			<parameter name="fileName" value="partition_below_ground.txt"/>
+			<parameter name="xName" value="growthStage"/>
+			<parameter name="yName" value="belowGround"/>
+			<parameter name="xValue" ref="stage[growthStage]"/>
+		</model>
+
+		<model name="organs">
+			<model name="roots" type="xpest::CropComponent">
+				<parameter name="initMass" value="4.3"/>
+				<parameter name="isBelowGround" value="yes"/>
+				<parameter name="partitioningCoefficient" value="1"/>
+			</model>
+
+			<model name="leaves" type="xpest::CropComponent">
+				<model name="partition" type="xpest::InputTable">
+					<parameter name="fileName" value="partition_leaves.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="leaves"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<model name="slaTable" type="xpest::InputTable">
+					<parameter name="fileName" value="sla_leaves.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="leaves"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<model name="senescenceTable" type="xpest::InputTable">
+					<parameter name="fileName" value="senescence_leaves.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="leaves"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<parameter name="initMass" value="14"/>
+				<parameter name="isBelowGround" value="no"/>
+				<parameter name="sla" ref="./slaTable[yValue]"/>
+				<parameter name="senescence" ref="./senescenceTable[yValue]"/>
+			</model>
+
+			<model name="stem" type="xpest::CropComponent">
+				<model name="partition" type="xpest::InputTable">
+					<parameter name="fileName" value="partition_stem.txt"/>
+					<parameter name="xName" value="growthStage"/>
+					<parameter name="yName" value="stem"/>
+					<parameter name="xValue" ref="stage[growthStage]"/>
+				</model>
+				<parameter name="initMass" value="0"/>
+				<parameter name="isBelowGround" value="no"/>
+			</model>
+
+			<model name="ears" type="xpest::CropComponent">
+				<model name="partition" type="xpest::RemainingPartition"/>
+				<parameter name="initMass" value="0"/>
+				<parameter name="isBelowGround" value="no"/>
+			</model>
+		</model>
+		
+		<model name="growth" type="xpest::Growth">
+			<parameter name="rue" value="1.19"/>
+			<parameter name="lai" ref="leaves[lai]"/>
+		</model>
+		
+	</model>
+
+	<!-- OUTPUTS -->
+	
+	<output type="plot">
+		<parameter name="title" value="Weather"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Temperature" ref="weather[Tavg]"/>
+		<trace label="Irradiation" ref="weather[irradiationMJ]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Growth stage"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Growth stage" ref="stage[growthStage]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Growth rate (g/d)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Growth rate" ref="growth[rate]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Crop biomass (g/m2)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Ears" ref="ears[mass]"/>
+		<trace label="Stem" ref="stem[mass]"/>
+		<trace label="Leaves" ref="leaves[mass]"/>
+		<trace label="Roots" ref="roots[mass]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Leaf area index"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Leaves" ref="leaves[lai]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Net partitioning coefficients"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Ears" ref="ears[netPartition]"/>
+		<trace label="Stem" ref="stem[netPartition]"/>
+		<trace label="Leaves" ref="leaves[netPartition]"/>
+		<trace label="Roots" ref="roots[netPartition]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Specific leaf area (m2/g)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Leaves" ref="leaves[sla]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Senescence (per day)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="Leaves" ref="leaves[senescence]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Remobilization (g/m2/d)"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>		
+		<trace label="remob" ref="remobilization[rate]"/>
+	</output>
+
+</simulation>

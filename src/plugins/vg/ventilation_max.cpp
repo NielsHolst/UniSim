@@ -14,7 +14,7 @@ VentilationMax::VentilationMax(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
 
-    addParameterRef<double>(Name(radiation), "environment[radiation]");
+    addParameterRef<double>(Name(radiation), "outdoors[radiation]");
     addParameter<double>(Name(thresholdRadiation), 10., "Threshold radiation day vs. night (W/m2)");
     addParameter<double>(Name(dayMax), 100., "Max. ventilation opening in the day [0;100]");
     addParameter<double>(Name(nightMax), 5., "Max. ventilation opening in the night [0;100]");

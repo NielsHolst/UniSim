@@ -13,7 +13,7 @@ namespace UniSim {
 	
 class Exception {
 public:
-    Exception(QString message, QObject *concerning = 0);
+    Exception(QString message, const QObject *concerning = 0);
 	virtual ~Exception() { }
 	
 	//! Get message
@@ -24,7 +24,7 @@ public:
 	
 protected:
     QString _message;
-    QObject *concerning;
+    const QObject *concerning;
 
 private:
     static bool excepted;

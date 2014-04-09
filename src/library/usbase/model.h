@@ -20,12 +20,8 @@
 
 namespace UniSim{
 
-//template<class T> class Parameter;
-//template<class T> class Variable;
-
 class Model : public UniSim::Component
 {
-	//Q_OBJECT
 public:
     Model(Identifier name, QObject *parent=0);
 

@@ -13,24 +13,26 @@ namespace vg {
 HumiditySetpoints::HumiditySetpoints(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    addParameterRef<double>(Name(radiation), "environment[radiation]");
+    addParameterRef<double>(Name(radiation), "outdoors[radiation]");
     addParameter<double>(Name(daylightThreshold), 10., "Global radiation threshold for daylight (W/m2)");
-    addParameter<double>(Name(maxRHDay), 80., "Setpoint for relative humidity during the day (%)");
-    addParameter<double>(Name(maxRHNight), 90., "Setpoint for relative humidity during the night (%)");
+    addParameter<double>(Name(maxRhDay), 80., "Setpoint for relative humidity during the day (%)");
+    addParameter<double>(Name(maxRhNight), 90., "Setpoint for relative humidity during the night (%)");
     addParameter<double>(Name(minDeltaXBasis), 1., "Setpoint for delta x (g/m3)");
-    addVariable<double>(Name(maxRH), "Setpoint for maximum relative humidity (%)");
+
+    addVariable<double>(Name(maxRh), "Setpoint for maximum relative humidity (%)");
     addVariable<double>(Name(minDeltaX), "Setpoint for minimum delta x (g/m3)");
 }
 
 void HumiditySetpoints::reset() {
-    update();
-}
-
-void HumiditySetpoints::update() {
-    maxRH = (radiation < daylightThreshold) ? maxRHNight : maxRHDay;
+    maxRh = maxRhNight;
     minDeltaX = minDeltaXBasis;
 }
 
+void HumiditySetpoints::update() {
+    // Setpoints
+    maxRh = (radiation < daylightThreshold) ? maxRhNight : maxRhDay;
+    minDeltaX = minDeltaXBasis;
+}
 
 } //namespace
 

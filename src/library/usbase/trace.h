@@ -19,7 +19,6 @@ class VariableBase;
 
 class Trace : public Component, public Attributes
 {
-	//Q_OBJECT
 public:
     Trace(QString name, VariableBase *variable, QObject *parent = 0);
 	

@@ -26,10 +26,10 @@ public:
 
 private:
 	// parameters
-    double inflow, initialInflow, phaseOutflowProportion;
+    double dt, inflow, initialInflow, phaseOutflowProportion;
 
     // variables
-    double latestInflow, outflow, dt;
+    double latestInflow, outflow; //, dt;
 
     // data
     bool firstUpdate;

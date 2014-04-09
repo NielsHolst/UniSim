@@ -1,0 +1,50 @@
+Simulation demo("XPest demo") {
+	Steps steps(maxSteps = 240);
+	Calendar calendar(initialDate = "15/3/2005");
+	Records weather("flakkebjerg 2005-06.txt");
+	Model crop {
+		Stage stage {
+			DayDegreeScale(from=0, to=1, T0=0, duration=1000);
+			DayDegreeScale(from=2, to=2, T0=0, duration=600);
+		}
+	
+		Remobilization remobilization(from="stem", to="ears", 
+								 	   atGs=1, untilGs=2, proportion=20%);
+		
+		InputTable belowGroundPartition("partition_below_ground.txt", 
+										xName="growthStage",
+										yName="belowGround",
+										xValue=stage[growthStage]);
+		Model organs {
+			CropComponent roots(initMass=4.3, isBelowGround=true, 
+			                    partitioningCoefficient=1);
+		
+			CropComponent leaves(initMass=14, isBelowGround=false, 
+			                     partitioningCoefficient=./partition[yValue],
+								 sla = =./slaTable[yValue],
+								 senescence = =./senescenceTable[yValue]) {
+				InputTable partition("partition_leaves.txt", 
+									xName="growthStage",
+									yName="leaves",
+									xValue=stage[growthStage]);
+				InputTable slaTable as partition("sla_leaves.txt");
+				InputTable senescenceTable as partition("senescence_leaves.txt");
+			}
+			
+			CropComponent stem(initMass=0, isBelowGround=false, 
+			                    partitioningCoefficient=./partition[yValue]) {
+				InputTable partition("partition_stem.txt", 
+										xName="growthStage",
+										yName="stem",
+										xValue=stage[growthStage]);
+			}
+			
+			CropComponent ear(initMass=0, isBelowGround=false, 
+			                    partitioningCoefficient=./partition[yValue]) {
+				RemainingPartition partition;
+			}
+		} #organs
+		
+		Growth growth(rue=1.19, lai=leaves[lai]);
+	} #Model crop
+} #Simulation 

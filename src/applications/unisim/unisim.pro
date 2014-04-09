@@ -30,6 +30,7 @@ HEADERS += \
     main_window.h \
     stored_widget.h \
     sub_window.h \
+    tree_view_widget.h \
     image_widget.h
 
 SOURCES += \
@@ -44,5 +45,6 @@ SOURCES += \
     main_window.cpp \
     stored_widget.cpp \
     sub_window.cpp \
+    tree_view_widget.cpp \
     unisim.cpp \
     image_widget.cpp

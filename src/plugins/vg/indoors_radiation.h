@@ -15,20 +15,16 @@ class IndoorsRadiation : public UniSim::Model
 {
 public:
     IndoorsRadiation(UniSim::Identifier name, QObject *parent);
-    void initialize();
     void reset();
     void update();
 
 private:
     // Parameters
-    int glassType;
-    double sinb, diffuseTransmission, outdoorsDirectRadiation, outdoorsDiffuseRadiation;
+    double diffuseTransmission, directTransmissionAsDirect, directTransmissionAsDiffuse,
+        outdoorsDirectRadiation, outdoorsDiffuseRadiation;
 
     // Variables
-    double direct, diffuse;
-
-    // Data
-    double a, b, c;
+    double direct, diffuse, total;
 };
 } //namespace
 

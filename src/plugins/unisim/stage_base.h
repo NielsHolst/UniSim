@@ -39,7 +39,7 @@ protected:
     QVector<double> phaseOutflow;
 
     // links
-    Model *time;
+//    Model *time;
 
 	// methods
     void applyInstantMortality();

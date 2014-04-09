@@ -8,6 +8,7 @@
 
 #include <QList>
 #include <usbase/component.h>
+#include "attributes.h"
 
 namespace UniSim{
 
@@ -15,11 +16,11 @@ class DataGrid;
 class Integrator;
 class Trace;
 
-class Output : public Component
+class Output : public Component, public Attributes
 {
-	//Q_OBJECT
 public:
     Output(Identifier name, QObject *parent=0);
+    virtual ~Output(){}
     // standard methods
     void amend();
     // special methods
@@ -31,6 +32,7 @@ public:
 
     QList<TraceRecord>& traceRecords();
     bool hasSummary() const;
+    int frequency() const;
     virtual int numXTraces() const = 0;
 protected:
     // methods
@@ -39,6 +41,7 @@ protected:
 private:
     // data
     bool _hasSummary;
+    int _frequency;
     // links
     QList<TraceRecord> _traceRecords;
     Integrator *integrator;

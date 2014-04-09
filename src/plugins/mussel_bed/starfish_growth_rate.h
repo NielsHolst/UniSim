@@ -21,7 +21,8 @@ private:
     // Parameters
     double supply;
     double stDensity;
-    double temperature;
+    double stsize;
+    double stnumber;
 
     // Variables
     double value;

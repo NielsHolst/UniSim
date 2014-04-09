@@ -42,11 +42,11 @@ void thinning::reset() {
 
 void thinning::update() {
         avgs = (Density/N);
-        maxN = 2152.0453-1073.5058*log(avgs); /*1.232051*pow((avgs/1000),-1.28046);  .95 quantile */
-        thin = (N-maxN)*avgs;
-        if (thin>0 && thin>supply){
+        maxN = 3502*pow(avgs,-0.84);
+        thin = ((N-maxN)*avgs);
+        if (thin>0 && (thin)>supply){
             LossB = thin;
-            LossN = N-maxN;
+            LossN = (N-maxN);
         }
         else {
             LossB = supply;

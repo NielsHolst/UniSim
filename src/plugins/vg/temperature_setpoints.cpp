@@ -4,7 +4,9 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include "switch_setpoint.h"
 #include "temperature_setpoints.h"
+#include "time_switch.h"
 
 using namespace UniSim;
 
@@ -13,17 +15,27 @@ namespace vg {
 TemperatureSetpoints::TemperatureSetpoints(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(humidityIncrement), "./humidityIncrement[signal]");
-    addParameterRef<double>(Name(humidityDecrement), "./humidityDecrement[signal]");
-    addParameter<double>(Name(setMinimum), 20., "Desired minimum temperature, which may be increased by humidity (oC)");
-    addParameter<double>(Name(setMaximum), 27., "Desired maximum temperature, which may be lowered by humidity (oC)");
-    addVariable<double>(Name(minimum), "Desired minimum temperature, corrected for humidity (oC)");
-    addVariable<double>(Name(maximum), "Desired maximum temperature, corrected for humidity (oC)");
+    addVariable<double>(Name(baseTHeating), "Temperature for heating, which may be increased due to humidity (oC)");
+    addVariable<double>(Name(baseTVentilation), "Temperature for ventilation, which may be lowered dur to humidity (oC)");
+    addVariable<double>(Name(humidityIncrement), "Increment for baseTheating due to humidity (oC)");
+    addVariable<double>(Name(humidityDecrement), "Decrement for baseTventilation due to humidity (oC)");
+    addVariable<double>(Name(THeating), "Temperature for heating, corrected for humidity (oC)");
+    addVariable<double>(Name(TVentilation), "Temperature for ventilation, corrected for humidity (oC)");
+}
+
+void TemperatureSetpoints::amend() {
+    auto ventilationSetpoints = seekOneChild<Model*>("ventilationSetpoints")->seekChildren<SwitchSetpoint*>("*");
+    for (auto sp : ventilationSetpoints) {
+        TemperatureSwitch ts;
+        ts.temperature = sp->pullValuePtr<double>("setpoint");
+        ts.on = sp->pullValuePtr<bool>("on");
+        ventilationTemperatureSwitches << ts;
+    }
 }
 
 void TemperatureSetpoints::update() {
-    minimum = setMinimum + humidityIncrement;
-    maximum = setMaximum - humidityDecrement;
+    THeating = baseTHeating + humidityIncrement;
+    TVentilation = baseTVentilation - humidityDecrement;
 }
 
 

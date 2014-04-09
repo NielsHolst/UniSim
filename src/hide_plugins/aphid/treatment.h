@@ -16,11 +16,14 @@ public:
 private:
     // parameters
     double insect_number, damage;
+    int delay;
 
     // Variables
     double control_efficiency;
     bool hasTreated;
 
+    // Data
+    int delayCounter;
 
 };
 

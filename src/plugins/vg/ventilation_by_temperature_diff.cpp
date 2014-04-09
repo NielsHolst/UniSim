@@ -17,8 +17,8 @@ namespace vg {
 VentilationByTemperatureDiff::VentilationByTemperatureDiff(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(indoorsTemperature), "climate/temperature[value]");
-    addParameterRef<double>(Name(outdoorsTemperature), "environment[temperature]");
+    addParameterRef<double>(Name(indoorsTemperature), "indoors/temperature[value]");
+    addParameterRef<double>(Name(outdoorsTemperature), "outdoors[temperature]");
     addParameterRef<double>(Name(ventilationMax), "../maximum[signal]");
     addVariable<double>(Name(signal), "The desired ventilation opening [0;100]");
 }

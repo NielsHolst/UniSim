@@ -29,21 +29,22 @@ private slots:
 private:
     // methods
     void updateDerived();
+    void updateAzimuth();
 
 	// parameters
-    double latitude;
+    double latitude, longitude;
     QDate initialDate;
     QTime initialTimeOfDay;
-    int timeStep, timeStepOffset;
+    int timeStep, timeStepOffset, timeZone;
     char timeUnitAsChar;
     Time::Unit timeUnit;
 
-    // pull variables
+    // variables
     QDate date;
     QTime timeOfDay;
     QDateTime dateTime;
     int day, month, year, hour, minute, second, dayOfYear, totalTime, totalTimeSteps;
-    double timeStepSecs, totalDays, dateAsReal, dayLength, sinb, sinLD, cosLD;
+    double timeStepSecs, totalDays, dateAsReal, dayLength, sinb, sinLD, cosLD, azimuth;
 
 };
 

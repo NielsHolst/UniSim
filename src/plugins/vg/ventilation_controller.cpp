@@ -19,10 +19,10 @@ VentilationController::VentilationController(Identifier name, QObject *parent)
 {
 
     addParameter<double>(Name(windSideProportion), 0.75, "The wind side signal as a proportion of the lee side signal [0;1]");
-    addParameterRef<double>(Name(indoorsTemperature), "climate/temperature[value]");
-    addParameterRef<double>(Name(outdoorsTemperature), "environment[temperature]");
-    addParameterRef<double>(Name(maxTemperature), "setpoints/temperature[maximum]");
-    addParameterRef<double>(Name(windSpeed), "environment[windspeed]");
+    addParameterRef<double>(Name(indoorsTemperature), "indoors/temperature[value]");
+    addParameterRef<double>(Name(outdoorsTemperature), "outdoors[temperature]");
+    addParameterRef<double>(Name(Tventilation), "setpoints/temperature/ventilation[setpoint]");
+    addParameterRef<double>(Name(windSpeed), "outdoors[windspeed]");
     addParameterRef<double>(Name(byTemperature), "./byTemperature[signal]");
     addParameterRef<double>(Name(byTemperatureDiff), "./byTemperatureDiff[signal]");
     addParameterRef<double>(Name(byHumidity), "./byHumidity[signal]");
@@ -37,7 +37,7 @@ void VentilationController::reset() {
 }
 
 void VentilationController::update() {
-    bool tooColdIndoors = (indoorsTemperature + 15 < maxTemperature);
+    bool tooColdIndoors = (indoorsTemperature + 15 < Tventilation);
     bool tooColdOutdoors = outdoorsTemperature < 4;
     leeSideSignal = (tooColdIndoors || tooColdOutdoors) ? 0. :
                     max(min(byHumidity,byTemperatureDiff), byTemperature*windFactor());

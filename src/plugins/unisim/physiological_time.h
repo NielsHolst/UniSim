@@ -12,12 +12,11 @@ namespace UniSim{
 
 class PhysiologicalTime : public Model
 {
-	//Q_OBJECT
 public: 
     PhysiologicalTime(UniSim::Identifier name, QObject *parent=0);
     // standard methods
-    virtual void initialize();
-    virtual void reset();
+    void initialize();
+    void reset();
     void update();
 
     // special methods

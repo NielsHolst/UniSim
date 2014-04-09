@@ -1,0 +1,7 @@
+Scenario	Longitude	Latitude	ocean[fileName]	calendar[initialDate]	steps[maxSteps]	starfish[inNumber]	starfish[inDensity]	mussel[initialN]	mussel[initialDensity]	Locatiekort	Season
+1	5.15173631	53.00526672	ADw.txt	01/02/2009	30	9.48136911	50	1318.391562	1000	AD-w	A
+2	5.15173631	53.00526672	ADw.txt	01/04/2009	30	9.48136911	50	1318.391562	1000	AD-w	A
+3	5.15173631	53.00526672	ADw.txt	01/06/2009	30	9.48136911	50	1318.391562	1000	AD-w	A
+4	5.15173631	53.00526672	ADw.txt	01/08/2009	30	9.48136911	50	1318.391562	1000	AD-w	A
+5	5.15173631	53.00526672	ADw.txt	02/08/2009	30	9.48136911	50	1318.391562	1000	AD-w	A
+

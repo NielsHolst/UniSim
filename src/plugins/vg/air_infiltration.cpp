@@ -4,10 +4,10 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <math.h>
 #include <usbase/exception.h>
 #include <usbase/utilities.h>
 #include "air_infiltration.h"
+#include "general.h"
 
 using namespace UniSim;
 
@@ -16,24 +16,23 @@ namespace vg {
 AirInfiltration::AirInfiltration(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(timeStepSecs), "calendar[timeStepSecs]");
-    addParameterRef<double>(Name(height), "construction[height]");
-    addParameterRef<double>(Name(roofRatio), "construction[roofRatio]");
-    addParameterRef<double>(Name(sideRatio), "construction[sideRatio]");
-    addParameterRef<double>(Name(windspeed), "environment[windspeed]");
-    addParameterRef<double>(Name(screensAirTransmission), "screens[airTransmission]");
+    addParameterRef<double>(Name(greenhouseVolume), "construction/geometry[volumeTotal]");
+    addParameterRef<double>(Name(windspeed), "outdoors[windspeed]");
     addParameter<double>(Name(leakage), 0.5, "Air exchange through leakage (m3 air/m3 greenhouse/h");
-    addVariable<double>(Name(value), "Greenhouse air infiltration (m3 air/m2 greenhouse/s)");
+    addParameter<double>(Name(roofRatio), 1., "construction[roofRatio]");
+    addParameter<double>(Name(sideRatio), 1., "construction[sideRatio]");
+    addParameter<double>(Name(screensAirTransmission), 1., "screens[airTransmission]");
+    addVariable<double>(Name(rate), "Greenhouse air infiltration (m3 air/h)");
 }
 
 void AirInfiltration::reset() {
-    value = 0.;
+    rate = 0.;
 }
 
 void AirInfiltration::update() {
-    value = height*(leakage/3600)*windspeed/4.;
     // Reduce leakage ventilation in the roof part, but not the side part.
-    value *= (screensAirTransmission*roofRatio+sideRatio)/(roofRatio+sideRatio);
+    double reduction = (screensAirTransmission*roofRatio+sideRatio)/(roofRatio+sideRatio);
+    rate = reduction*greenhouseVolume*leakage*windspeed/4;
 }
 
 

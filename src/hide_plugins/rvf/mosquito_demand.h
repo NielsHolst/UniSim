@@ -3,9 +3,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
-#ifndef RVF_MOSQUITODEMAND_H
-#define RVF_MOSQUITODEMAND_H
+#ifndef RVF_MOSQUITO_DEMAND_H
+#define RVF_MOSQUITO_DEMAND_H
 
 #include <usbase/model.h>
 
@@ -20,16 +19,13 @@ public:
 
 private:
     // Parameters
-    double demandPerFemale, populationDensity, sexRatio;
+    double sexRatio, density, demandRate;
 
     // Variables
     double value;
-
-    //Links
-
 };
 
 } //namespace
 
-#endif // RVF_MOSQUITODEMAND_H
 
+#endif

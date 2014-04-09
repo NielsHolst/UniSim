@@ -72,8 +72,7 @@ void Pollen::setScaleToPeakAtOne() {
 }
 
 double Pollen::parabola(int x) {
-    const double scaleToPeakAtOne = 4./duration/duration;
-    return x*(duration - x)*scaleToPeakAtOne;
+    return x*(duration - x)*4./duration/duration;
 }
 
 int Pollen::daysIntoShedding() {

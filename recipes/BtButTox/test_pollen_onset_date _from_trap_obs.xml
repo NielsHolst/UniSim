@@ -28,7 +28,7 @@
 	<!-- OUTPUT -->
 	
 	<output type="plot">
-		<parameter name="title" value="Pollen deposition rate"/>
+		<parameter name="title" value="Weather"/>
 		<trace label="Time (day of year)" value ="calendar[dayOfyear]"/>
 		<trace label="Temperature" ref="weather[Tavg]"/>
 	</output>

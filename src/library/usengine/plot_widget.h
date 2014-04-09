@@ -16,6 +16,7 @@ namespace UniSim {
 class PlotWidget {
 public:
     PlotWidget(QwtPlot *plot, QWidget *widget);
+    ~PlotWidget();
     void setXYtitles(QString xTitle, QString yTitle);
     void showLegend(bool doShow);
     void addCurve(QwtPlotCurve *curve);

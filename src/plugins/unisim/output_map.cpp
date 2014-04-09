@@ -8,7 +8,7 @@
 #include <usbase/exception.h>
 #include <usbase/model.h>
 #include <usbase/trace.h>
-#include <usbase/utilities.h>
+#include <usbase/decode_list.h>
 #include "output_map.h"
 
 using std::max;

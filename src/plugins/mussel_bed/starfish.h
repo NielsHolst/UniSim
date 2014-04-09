@@ -19,10 +19,10 @@ public:
 
 private:
     // Parameters
-    double inDensity, mortality, stgrowthRate;
+    double inDensity, inNumber, stgrowthRate;
 
     // Variables
-    double stdensity;
+    double stdensity, stnumbers, stsize, loss;
 };
 
 } //namespace

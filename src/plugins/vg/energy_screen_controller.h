@@ -15,19 +15,14 @@ class EnergyScreenController : public UniSim::Model
 {
 public:
     EnergyScreenController(UniSim::Identifier name, QObject *parent);
-    void initialize();
     void reset();
     void update();
 private:
     // Parameters
-    double radiationThreshold, radiation, maxSignalHighHumidity;
-    bool isHumidityHigh;
+    double radiationThreshold, radiation, maxSignalAtHighHumidity, energyBalance;
 
     // Variable
     double signal;
-
-    // Links
-    const double *energyBalance;
 };
 } //namespace
 

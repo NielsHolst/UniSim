@@ -3,7 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
+#include "../unisim/day_degrees.h"
 #include "egg_time.h"
 
 using namespace UniSim;

@@ -16,19 +16,19 @@ class LightController : public UniSim::Model
 {
 public:
     LightController(UniSim::Identifier name, QObject *parent);
+    void amend();
     void reset();
     void update();
 
 private:
-    // Parameters
-    double onRadiation, offRadiation, radiation;
-    int onDay, offDay, day;
-    QTime onTime, offTime, time;
-
     // Variables
     double signal;
-    bool signalDay, signalTime, signalRadiation;
 
+    // Links
+    QList<const bool *> timeSwitchesOn, highLightSwitchesOff, lowLightSwitchesOn;
+
+    // Methods
+    bool onPeriod();
 };
 } //namespace
 

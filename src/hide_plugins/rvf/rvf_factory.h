@@ -4,8 +4,8 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#ifndef rvf_factory_H
-#define rvf_factory_H
+#ifndef UNISIM_RVF_FACTORY_H
+#define UNISIM_RVF_FACTORY_H
 
 #include <QObject>
 #include <usbase/factory_plug_in.h>
@@ -19,7 +19,6 @@ class RvfFactory : public QObject, public UniSim::FactoryPlugIn
     #if QT_VERSION >= 0x50000
     Q_PLUGIN_METADATA(IID "org.ecolmod.UniSim")
     #endif
-
 public:
     void defineProducts();
     UniSim::Identifier id() const;

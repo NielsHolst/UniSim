@@ -20,8 +20,8 @@ public:
     void update();
 private:
     // Parameters
-    double radiationThreshold, temperatureThreshold, radiation, temperature, maxSignalHighHumidity, tolerance;
-    bool isHumidityHigh, followEnergyScreen;
+    double radiationThreshold, radiation, maxSignalAtHighHumidity, tolerance;
+    bool followEnergyScreen;
 
     // Variable
     double signal;

@@ -8,6 +8,10 @@
 #include <usbase/utilities.h>
 #include "general.h"
 
+/*! \file
+ *
+ */
+
 using namespace std;
 
 namespace vg {

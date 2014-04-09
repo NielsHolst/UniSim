@@ -65,6 +65,8 @@ inline QObject* create(FactoryPlugIn *factory, Identifier className, Identifier 
 {
     //setSimulationObjectFromDescendent(parent);
     FactoryPlugIn::Products::const_iterator p = factory->_products.find(className);
+    auto adjustedName =
+            Identifier(objectName.label().isEmpty() ? "anonymous" : objectName);
     return (p==factory->_products.end()) ? 0 : p.value()->create(objectName, parent);
 }
 

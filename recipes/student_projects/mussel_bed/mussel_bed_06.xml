@@ -9,7 +9,6 @@
 
 	<model name="ocean" type="UniSim::Records">
 		<parameter name="fileName" value="Harlingen2008.txt"/>
-		
 	</model>
 	
 	<model name="stfeeding" type="mussel_bed::StarfishFeedingRate">

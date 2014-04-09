@@ -21,8 +21,8 @@ public:
 private:
     // Parameters
     QTime fromTime, toTime, time;
-    double radiationThreshold, radiation, maxSignalHighHumidity;
-    bool isHumidityHigh, followEnergyScreen;
+    double radiationThreshold, radiation, maxSignalAtHighHumidity;
+    bool followEnergyScreen;
 
     // Variable
     double signal;

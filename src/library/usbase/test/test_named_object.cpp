@@ -22,6 +22,12 @@ namespace {
             set2 << list.at(i);
         return set == set2;
     }
+
+    void createTimeWithUnit(NamedObject *parent) {
+        NamedObject *time = create<NamedObject>("time", parent);
+        create<Model>("unit", time);
+    }
+
 }
 
 void TestNamedObject::initTestCase() {
@@ -51,6 +57,16 @@ void TestNamedObject::initTestCase() {
     dogsModel = create<Model>("dogs", mammals);
     femaleDogsModel = create<Model>("female", dogsModel);
     maleDogsModel = create<Model>("male", dogsModel);
+
+    fish = create<NamedObject>("fish", animals);
+    cod = create<NamedObject>("fish", fish);
+    trout = create<NamedObject>("fish", fish);
+    rainbow = create<NamedObject>("fish", trout);
+    createTimeWithUnit(fish);
+    createTimeWithUnit(cod);
+    createTimeWithUnit(trout);
+    createTimeWithUnit(rainbow);
+
 //    writeObjectTree(animals);
 }
 
@@ -60,10 +76,10 @@ void TestNamedObject::cleanupTestCase() {
 
 void TestNamedObject::testFindAtomicGloballyAll() {
     QList<NamedObject*> objects = animals->seekDescendants<NamedObject*>("*");
-    QCOMPARE(objects.size(), 16);
+    QCOMPARE(objects.size(), 28);
 
     QList<Component*> components = animals->seekDescendants<Component*>("*");
-    QCOMPARE(components.size(), 3);
+    QCOMPARE(components.size(), 3+4);
 }
 
 void TestNamedObject::testFindAtomicGloballySome() {
@@ -229,8 +245,8 @@ void TestNamedObject::testFindEmpty() {
 void TestNamedObject::testFindChildrenFromRoot() {
     QList<NamedObject*> objects;
     objects = animals->seekChildren<NamedObject*>("*");
-    QCOMPARE(objects.size(), 3);
-    QVERIFY( setEqualsList(QSet<NamedObject*>() << femaleAnimals << mammals << reptiles, objects) );
+    QCOMPARE(objects.size(), 4);
+    QVERIFY( setEqualsList(QSet<NamedObject*>() << femaleAnimals << mammals << reptiles << fish, objects) );
     objects = animals->seekChildren<NamedObject*>("mammals");
     QCOMPARE(objects.size(), 1);
     QCOMPARE(objects[0], mammals);
@@ -511,4 +527,71 @@ void TestNamedObject::testRelativeSeek() {
         QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
     }
     QCOMPARE(found->valuePtr(), &femaleDogsSize);
+}
+
+void TestNamedObject::testSeekManyNearest0() {
+    QList<NamedObject*> nearest = reptiles->seekManyNearest<NamedObject*>("time");
+    QCOMPARE(nearest.size(), 0);
+}
+
+void TestNamedObject::testSeekManyNearest1() {
+    QList<NamedObject*> nearest = fish->seekManyNearest<NamedObject*>("time");
+    QCOMPARE(nearest.size(), 1);
+    QCOMPARE(nearest.first(), fish->seekOneChild<NamedObject*>("time"));
+}
+
+void TestNamedObject::testSeekManyNearest2() {
+    QList<NamedObject*> nearest = trout->seekManyNearest<NamedObject*>("time");
+    QCOMPARE(nearest.size(), 2);
+    QCOMPARE(nearest.first(), trout->seekOneChild<NamedObject*>("time"));
+    QCOMPARE(nearest.last(), fish->seekOneChild<NamedObject*>("time"));
+}
+
+void TestNamedObject::testSeekManyNearest3() {
+    QList<NamedObject*> nearest = rainbow->seekManyNearest<NamedObject*>("time");
+    QCOMPARE(nearest.size(), 3);
+    QCOMPARE(nearest.first(), rainbow->seekOneChild<NamedObject*>("time"));
+    QCOMPARE(nearest.at(1), trout->seekOneChild<NamedObject*>("time"));
+    QCOMPARE(nearest.last(), fish->seekOneChild<NamedObject*>("time"));
+}
+
+void TestNamedObject::testSeekManyNearestExpression0() {
+    QList<Model*> nearest = fish->seekManyNearest<Model*, Model*>("time[unit]");
+    QCOMPARE(nearest.size(), 0);
+}
+
+void TestNamedObject::testSeekManyNearestExpression1() {
+    QList<Model*> nearest = fish->seekManyNearest<NamedObject*, Model*>("time[unit]");
+    QCOMPARE(nearest.size(), 1);
+    QCOMPARE(nearest.first(), fish->seekOneChild<NamedObject*>("time")->seekOneChild<Model*>("unit"));
+}
+
+void TestNamedObject::testSeekManyNearestExpression2() {
+    QList<Model*> nearest = trout->seekManyNearest<NamedObject*, Model*>("time[unit]");
+    QCOMPARE(nearest.size(), 2);
+    QCOMPARE(nearest.first(), trout->seekOneChild<NamedObject*>("time")->seekOneChild<Model*>("unit"));
+    QCOMPARE(nearest.last(), fish->seekOneChild<NamedObject*>("time")->seekOneChild<Model*>("unit"));
+}
+
+void TestNamedObject::testSeekManyNearestExpressionRelative() {
+    bool excepted{false};
+    try {
+        fish->seekManyNearest<NamedObject*>("./time");
+    }
+    catch (Exception &) {
+        excepted = true;
+    }
+    QVERIFY(excepted);
+}
+
+void TestNamedObject::testSeekManyTripleDot() {
+    QList<Model*> nearestDirect = trout->seekManyNearest<NamedObject*, Model*>("time[unit]");
+    QList<Model*> nearestTripleDot = trout->seekMany<NamedObject*, Model*>(".../time[unit]");
+    QCOMPARE(nearestDirect, nearestTripleDot);
+}
+
+void TestNamedObject::testSeekManyTripleDotJoker() {
+    QList<Model*> nearestDirect = trout->seekManyNearest<NamedObject*, Model*>("time[unit]");
+    QList<Model*> nearestTripleDot = trout->seekMany<NamedObject*, Model*>(".../*[unit]");
+    QCOMPARE(nearestDirect, nearestTripleDot);
 }

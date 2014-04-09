@@ -73,7 +73,7 @@ void StageBase::initialize()
     if (L <= 0)
         throw Exception(QString("Duration (%1) must be > 0").arg(L), this);
 
-    time = seekOneNearest<Model*>("time");
+//    time = seekOneNearest<Model*>("time");
     ddBase = createDistributedDelay();
 }
 

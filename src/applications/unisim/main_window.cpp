@@ -30,6 +30,7 @@
 #include "image_widget.h"
 #include "live_simulation.h"
 #include "main_window.h"
+#include "tree_view_widget.h"
 
 using namespace UniSim;
 
@@ -99,6 +100,9 @@ void MainWindow::createMenus() {
 
         toolsMenu->addAction( toolsGenerateDocs = new QAction("&Generate documentation...", this) );
         connect( toolsGenerateDocs, SIGNAL(triggered()), this, SLOT(doToolsGenerateDocs()) );
+
+        toolsMenu->addAction( toolsTreeView = new QAction("&Tree view...", this) );
+        connect( toolsTreeView, SIGNAL(triggered()), this, SLOT(doToolsTreeView()) );
     }
 
     //View menu
@@ -239,7 +243,9 @@ void MainWindow::doFileOpen() {
     QString filePath = QFileDialog::getOpenFileName(this,
                                                     "Open model file",
                                                     folder,
-                                                    "Model files (*.xml)");
+                                                    "Model files (*.xml)",
+                                                    0,
+                                                    QFileDialog::DontResolveSymlinks);
     if (filePath.isEmpty()) return;
     openFile(filePath);
 }
@@ -408,6 +414,18 @@ void MainWindow::doSimulationRun()
         showErrorMessage(ex);
     }
     tile();
+}
+
+void MainWindow::doToolsTreeView() {
+    QDialog *dialog;
+    try {
+        dialog = new TreeViewWidget(0);
+        dialog->setModal(true);
+        dialog->show();
+    }
+    catch (UniSim::Exception &ex) {
+        showErrorMessage(ex);
+    }
 }
 
 void MainWindow::doToolsGenerateDocs() {

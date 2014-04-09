@@ -1,0 +1,7 @@
+<map id="UniSim::Component" name="UniSim::Component">
+<area shape="rect" id="node7" href="$class_uni_sim_1_1_model.html" title="UniSim::Model" alt="" coords="15,229,121,256"/>
+<area shape="rect" id="node11" href="$class_uni_sim_1_1_output.html" title="UniSim::Output" alt="" coords="146,229,256,256"/>
+<area shape="rect" id="node13" href="$class_uni_sim_1_1_trace.html" title="UniSim::Trace" alt="" coords="281,229,385,256"/>
+<area shape="rect" id="node2" href="$class_uni_sim_1_1_named_object.html" title="UniSim::NamedObject" alt="" coords="126,80,276,107"/>
+<area shape="rect" id="node9" href="$class_uni_sim_1_1_integrator.html" title="UniSim::Integrator" alt="" coords="5,304,131,331"/>
+</map>

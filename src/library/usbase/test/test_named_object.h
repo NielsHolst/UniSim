@@ -62,14 +62,25 @@ private slots:
     void testRelativeAtRootBare();
     void testRelativeBeyondRoot();
     void testRelativeNot();
-
     void testRelativeSeek();
 
+    void testSeekManyNearest0();
+    void testSeekManyNearest1();
+    void testSeekManyNearest2();
+    void testSeekManyNearest3();
+
+    void testSeekManyNearestExpressionRelative();
+    void testSeekManyNearestExpression0();
+    void testSeekManyNearestExpression1();
+    void testSeekManyNearestExpression2();
+    void testSeekManyTripleDot();
+    void testSeekManyTripleDotJoker();
 
 private:
     UniSim::NamedObject
         *animals, *femaleAnimals, *reptiles, *femaleReptiles, *snakes, *cobra, *lizards,
-        *mammals, *mice, *elephants, *femaleElephants, *dogs, *femaleDogs, *maleDogs;
+        *mammals, *mice, *elephants, *femaleElephants, *dogs, *femaleDogs, *maleDogs,
+        *fish, *cod, *trout, *rainbow;
     UniSim::Model
         *dogsModel, *femaleDogsModel, *maleDogsModel;
     int femaleDogsSize, maleDogsSize;

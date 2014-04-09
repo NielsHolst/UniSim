@@ -20,9 +20,9 @@ public:
 
 private:
     // Parameters
-    double radiation, daylightThreshold, maxRHDay, maxRHNight, minDeltaXBasis;
+    double radiation, daylightThreshold, maxRhDay, maxRhNight, minDeltaXBasis, rh, vp;
     // Variables
-    double maxRH, minDeltaX;
+    double maxRh, minDeltaX;
 };
 } //namespace
 

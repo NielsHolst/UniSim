@@ -5,17 +5,17 @@
 */
 #include <iomanip>
 #include <iostream>
-#include <limits>
-#include <cmath>
+//#include <limits>
+//#include <cmath>
 #include <QDate>
-#include <QFile>
-#include <QFileInfo>
+//#include <QFile>
+//#include <QFileInfo>
 #include <QMap>
-#include <QObject>
-#include <QStringList>
+//#include <QObject>
+//#include <QStringList>
 #include <QXmlStreamWriter>
 #include "exception.h"
-#include "model.h"
+//#include "model.h"
 #include "utilities.h"
 
 /*! \namespace UniSim
@@ -103,31 +103,6 @@ void scale(QVector<double> &x, double factor) {
         *p *= factor;
 }
 
-
-//! Interpolate from (x,y) table
-/*! Interpolates a y-value from the given x-value. For x-values less than the first x-value in the table,
-the first y-value is returned. For x-values greater then the last x-value in the table, the last y-value
-is returned.
-*/
-double interpolate(const QMap<int, double> xy, int x) {
-    if (xy.size() == 0) return 0;
-    double lastY = xy[0];
-
-    QMap<int, double>::const_iterator low = xy.begin();
-    for (QMap<int, double>::const_iterator high = xy.begin();
-                                           high != xy.end();
-                                           ++high)
-    {
-        if (x < high.key()) {
-            if (high.key() == low.key()) return low.value();
-            return double(x - low.key())/(high.key() - low.key())*(high.value() - low.value()) + low.value();
-        }
-        lastY = high.value();
-        low = high;
-    }
-    return lastY;
-}
-
 //! Power function that tolerates x equal to zero
 double pow0(double x, double c, QObject *context) {
     if (x == 0) {
@@ -173,7 +148,7 @@ double GBFuncResp(double demand, double resource) {
                         "d = " + QString::number(demand) +
                         "s = " + QString::number(resource));
 
-    if (demand <= DBL_EPSILON)
+    if (demand <= numeric_limits<double>::epsilon())
         return 0.;
 
     double supply = demand*(1. - negExp(resource/demand));
@@ -204,32 +179,6 @@ double convertTime(double time, char fromUnit, char toUnit, QObject *context) {
     return time*u.value(fromUnit)/u.value(toUnit);
 }
 
-
-//
-// String handling
-//
-
-
-    void chopParentheses(QString &s, QObject *concerning) {
-        if (s.left(1) != "(")
-            throw UniSim::Exception("Value list miss left parenthesis: " + s, concerning);
-        s.remove(0, 1);
-
-        if (s.right(1) != ")")
-            throw UniSim::Exception("Value list miss right parenthesis: " + s, concerning);
-
-        s.chop(1);
-        s = s.simplified();
-    }
-
-    void chopRightParenthesis(QString &s, QObject *concerning) {
-        if (s.right(1) != ")")
-            throw Exception("Missing right parenthesis: (" + s, concerning);
-        s.chop(1);
-        s = s.simplified();
-    }
-
-
 QString fullName(const QObject *object) {
     if (!object) return QString();
     QString name = object->objectName();
@@ -239,87 +188,6 @@ QString fullName(const QObject *object) {
     return fullName(object->parent()) + "/" + name;
 }
 
-
-//! Parses a simple list "(A B C)"
-/*! Throws an Exception if the list is ill-formated or is empty.
-*/
-QStringList decodeSimpleList(QString parenthesizedList, QObject *concerning) {
-    QString s = parenthesizedList.simplified();
-    if (s.size() == 0)
-        return QStringList();
-    if (s[0] != '(') {
-        if (s.endsWith(')'))
-            throw UniSim::Exception("Value list misses left parenthesis", concerning);
-        else
-            return QStringList() << s;
-    }
-    chopParentheses(s, concerning);
-    return s.split(" ", QString::SkipEmptyParts);
-}
-
-
-namespace {
-
-    bool nextItem(QString *s, QString *item, QObject *context) {
-        *s = s->trimmed();
-        if (s->isEmpty())
-            return false;
-
-        if (s->startsWith("(")) {
-            int left = 1, right = 0, n = s->size();
-            int i = 1;
-            while (i < n && left != right) {
-                if (s->at(i) == '(')
-                    ++left;
-                else if (s->at(i) == ')')
-                    ++right;
-                ++i;
-            }
-            if (left != right)
-                throw Exception("Unmatched parentheses in " + *s, context);
-            int end = i - 1;
-            *item = s->mid(0, end+1);
-            s->remove(0, end+1);
-            return true;
-        }
-
-        if (s->startsWith(")"))
-            throw Exception("Unmatched parentheses in " + *s, context);
-
-        int end = s->indexOf(QRegExp("[ ()]"));
-        *item = s->mid(0, end);
-        if (end==-1) {
-            s->clear();
-		}
-        else {
-			if (s->at(end) == ')')
-				throw Exception("Surplus ')' in" + *s, context);
-            s->remove(0, end+1);
-		}
-        return true;
-
-    }
-}
-
-QStringList decodeList(QString s_, QObject *context) {
-    QStringList result;
-    QString s = s_.trimmed();
-
-    if (!s.startsWith("("))
-        throw Exception("Missing '(' at beginning of " + s, context);
-    if (!s.endsWith(")"))
-        throw Exception("Missing ')' at end of " + s, context);
-    s.remove(0,1);
-    s.chop(1);
-
-    QString item;
-    while (nextItem(&s, &item, context))
-        result.append(item);
-
-    return result;
-}
-
-//
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart) {
     Q_ASSERT(namespacePart && ownNamePart);
     int i = s.lastIndexOf("::");
@@ -361,136 +229,6 @@ QStringList splitParentChildExpression(QString expression_, QObject *context) {
     return result;
 }
 
-template<> QString missingValue() {
-    return "NA";
-}
-
-template<> double missingValue() {
-    return numeric_limits<double>::max();
-}
-
-template<> int missingValue() {
-    return numeric_limits<int>::max();
-}
-
-template<> char missingValue() {
-    return char(0);
-}
-
-template<> QDate missingValue() {
-    return QDate(0,0,0);
-}
-
-template<> QTime missingValue() {
-    return QTime(-1,-1);
-}
-
-template<> bool isMissingValue(bool) {
-    return false;
-}
-
-template<> QString stringToValue<QString>(QString s_, QObject *) {
-    return s_;
-}
-
-template<> double stringToValue<double>(QString s_, QObject *concerning) {
-    QString s = s_.trimmed();
-    if (s == missingValue<QString>())
-        return missingValue<double>();
-    bool ok;
-    double value = s.toDouble(&ok);
-    if (!ok) {
-        QString msg = "Cannot convert '" + s + "' to double";
-        throw Exception(msg, concerning);
-    }
-    return value;
-}
-
-template<> int stringToValue<int>(QString s_, QObject *concerning) {
-    QString s = s_.trimmed();
-    if (s == missingValue<QString>())
-        return missingValue<int>();
-    bool ok;
-    int value = s.toInt(&ok);
-    if (!ok) {
-        QString msg = "Cannot convert '" + s + "' to int";
-        throw Exception(msg, concerning);
-    }
-    return value;
-}
-
-template<> char stringToValue<char>(QString s_, QObject *concerning) {
-    QString s = s_.trimmed();
-    if (s == missingValue<QString>())
-        return missingValue<char>();
-    if (s.size() != 1) {
-        QString msg = "Cannot convert '" + s + "' to char";
-        throw Exception(msg, concerning);
-    }
-    return s[0].toLatin1();
-}
-
-template<> bool stringToValue<bool>(QString s_, QObject *concerning) {
-    QString s = s_.trimmed().toLower();
-    bool value;
-    if (s=="yes" || s=="true")
-        value = true;
-    else if (s=="no" || s=="false")
-        value = false;
-    else {
-        QString msg = "Cannot convert '" + s + "' to bool";
-        throw Exception(msg, concerning);
-    }
-    return value;
-}
-
-template<> QDate stringToValue<QDate>(QString s_, QObject *concerning) {
-    QString s = s_.trimmed();
-    if (s == missingValue<QString>())
-        return missingValue<QDate>();
-    QDate date = QDate::fromString(s, "d/M/yyyy");
-    if (!date.isValid())
-        date = QDate::fromString(s, "d.M.yyyy");
-    if (!date.isValid())
-        date = QDate::fromString(s, "yyyy/M/d");
-    if (!date.isValid())
-        date = QDate::fromString(s, "yyyy.M.d");
-    if (!date.isValid()) {
-        QString msg = "Cannot convert '" + s + "' to a date";
-        throw Exception(msg, concerning);
-    }
-    return date;
-}
-
-template<> QTime stringToValue<QTime>(QString s_, QObject *concerning) {
-    QString s = s_.trimmed();
-    if (s == missingValue<QString>())
-        return missingValue<QTime>();
-    QTime time = QTime::fromString(s, "h:m:s");
-    if (!time.isValid())
-            time = QTime::fromString(s, "h:m");
-    if (!time.isValid()) {
-        QString msg = "Cannot convert '" + s + "' to a time";
-        throw Exception(msg, concerning);
-    }
-    return time;
-}
-
-template<> QString valueToString<char>(char value) {
-    return isMissingValue(value) ? QString("NA") :QString(value);
-}
-
-template<> QString valueToString<bool>(bool value) {
-    return value ? "yes" : "no";
-}
-
-template<> QString valueToString<QDate>(QDate value) {
-    return isMissingValue(value) ? QString("NA") :value.toString("d/M/yyyy");
-}
-
-template<> QString valueToString<QTime>(QTime value) {
-    return isMissingValue(value) ? QString("NA") :value.toString("0:0:0");
-}
 
 //! Write object tree to std::cout
 /*!

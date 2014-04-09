@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Test pollen onset date">
+
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="40"/> 
+	</integrator>
+
+	<model name="calendar" type="Calendar"/>
+
+	<model name="s1" type="UniSim::Stage">
+		<model name="time" type="UniSim::Days"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="5"/>
+	</model>
+
+	<model name="s2" type="UniSim::Stage">
+		<model name="time" type="UniSim::Days"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="30"/>
+	</model>
+
+	<model name="s3" type="UniSim::Stage">
+		<model name="time" type="UniSim::Days"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="5"/>
+		<parameter name="growthRate" value="0.8"/>
+	</model>
+
+	<model name="s4" type="UniSim::Stage">
+		<model name="time" type="UniSim::Days"/>
+		<parameter name="initialInflow" value="100"/>
+		<parameter name="duration" value="20"/>
+		<parameter name="k" value="30"/>
+		<parameter name="growthRate" value="0.8"/>
+	</model>
+
+	<!-- OUTPUT -->
+
+	<output type="plot">
+		<parameter name="title" value="Distributed delay"/>
+		<trace label="Time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="k=5" ref="s1[outflow]"/>
+		<trace label="k=30" ref="s2[outflow]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Accumulated"/>
+		<trace label="Time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="k=5" ref="s1[outflowTotal]"/>
+		<trace label="k=30" ref="s2[outflowTotal]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Distributed delay with 20% loss"/>
+		<trace label="Time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="k=5" ref="s3[outflow]"/>
+		<trace label="k=30" ref="s4[outflow]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Accumulated with 20% loss"/>
+		<trace label="Time (day of year)" value ="calendar[dayOfyear]"/>
+		<trace label="k=5" ref="s3[outflowTotal]"/>
+		<trace label="k=30" ref="s4[outflowTotal]"/>
+	</output>
+	
+</simulation>

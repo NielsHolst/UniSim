@@ -4,6 +4,7 @@
 #include <QtAlgorithms>
 #include <QTime>
 #include <usbase/exception.h>
+#include <usbase/file_locations.h>
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include <usbase/random.h>

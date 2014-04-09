@@ -1,5 +1,6 @@
 #include <iostream>
 #include <usbase/data_grid.h>
+#include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usengine/simulation.h>
 #include <usengine/simulation_maker.h>

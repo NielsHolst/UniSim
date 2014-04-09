@@ -42,7 +42,7 @@
 					<parameter name="upper" value="1"/>
 					<parameter name="lower" value="0"/>
 					<parameter name="slope" value="-1.76" original_incorrect="-1.62"/>
-					<parameter name="ED50" value="451" original_incorrect="470"/>
+					<parameter name="ED50" value="1200" original_incorrect="470"/>
 				</model>
 				<model name="time" type="UniSim::DayDegrees">
 					<parameter name="T0" value="8.3" ref="Bryant et al. 2002"/>

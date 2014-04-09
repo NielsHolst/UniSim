@@ -20,10 +20,10 @@ public:
 
 private:
     // Parameters
-    double intrinsicRate, carryingCapacity, density;
+    double carryingCapacity, msize, density;
 
     // Variables
-    double value;
+    double value, growth;
 
     // Links
     QList<Model*> scales;

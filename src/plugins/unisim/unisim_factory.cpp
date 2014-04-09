@@ -40,6 +40,7 @@
 #include "stage_and_phase.h"
 #include "time_limited.h"
 #include "steps.h"
+#include "sub_steps.h"
 #include "sum.h"
 #include "trigger_by_date.h"
 #include "unisim_factory.h"
@@ -205,6 +206,9 @@ void UniSim::UniSimFactory::defineProducts() {
 
     AddProduct(Steps,
     "Integrator class. Description pending");
+
+    AddProduct(SubSteps,
+    "Carries out a number of sub-steps when updated: All child models are updated the given number of times.");
 
     AddProduct(Sum,
     "Calculates sum of variables supplied as a list of references. The variables "

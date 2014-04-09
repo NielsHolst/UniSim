@@ -14,9 +14,10 @@
 namespace UniSim{
 	
 Output::Output(Identifier name, QObject *parent)
-    : Component(name, parent), _hasSummary(false)
+    : Component(name, parent), _hasSummary(false), _frequency(1)
 {
 }
+
 
 void Output::amend() {
     QList<Trace*> traces = seekChildren<Trace*>("*");
@@ -42,6 +43,10 @@ int Output::runNumber() const {
 
 bool Output::hasSummary() const {
     return _hasSummary;
+}
+
+int Output::frequency() const {
+    return _frequency;
 }
 
 void Output::setYLabels() {

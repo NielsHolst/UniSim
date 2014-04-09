@@ -8,7 +8,7 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include <usbase/test_num.h>
-#include <usbase/utilities.h>
+#include <usbase/decode_list.h>
 #include "partitioning_fixed_by_stage.h"
 #include "plant.h"
 

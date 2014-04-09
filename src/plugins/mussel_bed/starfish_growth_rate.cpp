@@ -18,7 +18,8 @@ StarfishGrowthRate::StarfishGrowthRate(Identifier name, QObject *parent)
 {
     new Parameter<double>("supply", &supply, 7, this, "total amount of mussel flesh consumed g/m2");
     new Parameter<double>("stDensity", &stDensity, 0.3, this, "current starfish density g/m2");
-    new Parameter<double>("temperature",&temperature, 13. ,this, "current temperature degrees celsius");
+    new Parameter<double>("stsize",&stsize, 10, this, "average individual size in g");
+    new Parameter<double>("stnumber",&stnumber, 50, this, "density in numbers/m2");
     new Variable<double>("value", &value, this, "total increase in starfish biomass at step g/m2");
 }
 
@@ -29,9 +30,7 @@ void StarfishGrowthRate::reset() {
 
 void StarfishGrowthRate::update() {
 
-    double intake = supply -((0.00161*exp(0.1032*temperature)*stDensity)); /* to account for changes in manteinance (this expression comes from Fonds determination of basal metabolism at different temperatures */
-
-    value=(-0.003459+1.182468*intake);
+    value = (0.030023+0.901106*(supply/stnumber)-(0.000995*stsize))*stnumber;
 }
 
 } //namespace

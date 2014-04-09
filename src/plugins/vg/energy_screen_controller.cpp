@@ -6,6 +6,7 @@
 */
 #include "energy_screen_controller.h"
 
+using std::min;
 using namespace UniSim;
 
 namespace vg {
@@ -13,16 +14,11 @@ namespace vg {
 EnergyScreenController::EnergyScreenController(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameter<double>(Name(maxSignalHighHumidity), 0.95, "Maximum signal to screen at high humidity [0;1]");
     addParameter<double>(Name(radiationThreshold), 10., "Radiation threshold for using energy screen (W/m2)");
-    addParameterRef<double>(Name(radiation), "environment[radiation]");
-    addParameterRef<bool>(Name(isHumidityHigh), "climate/humidity[isHigh]");
+    addParameterRef<double>(Name(energyBalance), "./energyBalance[value]");
+    addParameterRef<double>(Name(maxSignalAtHighHumidity), "../humidityBalance[signal]");
+    addParameterRef<double>(Name(radiation), "outdoors[radiation]");
     addVariable<double>(Name(signal),"Signal to screen [0;1]");
-}
-
-void EnergyScreenController::initialize() {
-    Model *model = peekOneSibling<Model*>("energyBalance");
-    energyBalance = model ? model->pullValuePtr<double>("value") : 0;
 }
 
 void EnergyScreenController::reset() {
@@ -30,13 +26,9 @@ void EnergyScreenController::reset() {
 }
 
 void EnergyScreenController::update() {
-    // Outdoors radiation control
     bool lowRadiation = (radiation < radiationThreshold);
-    bool negativeEnergyBalance = energyBalance ? *energyBalance < 0. : true;
-    signal = (lowRadiation && negativeEnergyBalance) ? 1. : 0.;
-    // Humidity control
-    if (isHumidityHigh && signal > maxSignalHighHumidity)
-        signal = maxSignalHighHumidity;
+    bool negativeEnergyBalance = (energyBalance <= 0.);
+    signal = (lowRadiation && negativeEnergyBalance) ? min(1.,maxSignalAtHighHumidity) : 0.;
 }
 
 } //namespace

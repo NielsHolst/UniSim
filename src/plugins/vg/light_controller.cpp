@@ -4,7 +4,12 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QList>
+#include <QMessageBox>
 #include "light_controller.h"
+#include "time_switch.h"
+#include "high_light_switch.h"
+#include "low_light_switch.h"
 
 using namespace UniSim;
 
@@ -13,21 +18,19 @@ namespace vg {
 LightController::LightController(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameter<int>(Name(onDay), 300, "Julian day when to switch on (1..365)");
-    addParameter<int>(Name(offDay), 60, "Julian day when to switch off (1..365)");
-    addParameter<QTime>(Name(onTime), QTime(8,0), "Time when to switch on");
-    addParameter<QTime>(Name(offTime), QTime(24,0), "Time when to switch off");
-    addParameter<double>(Name(onRadiation), 0., "Outdoors radiation when to switch on (W/m2)");
-    addParameter<double>(Name(offRadiation), 20., "Outdoors radiation when to switch off (W/m2)");
-
-    addParameterRef<int>(Name(day), "calendar[dayOfyear] ");
-    addParameterRef<QTime>(Name(time), "calendar[timeOfDay]");
-    addParameterRef<double>(Name(radiation), "environment[radiation]");
-
     addVariable<double>(Name(signal), "Signal to lamp (0 or 1)");
-    addVariable<bool>(Name(signalDay), "Switch on according to day?");
-    addVariable<bool>(Name(signalTime), "Switch on according to time of day?");
-    addVariable<bool>(Name(signalRadiation), "Switch on according to outdoors radiation?");
+}
+
+void LightController::amend() {
+    auto timeSwitches = seekChildren<TimeSwitch*>("*");
+    for (TimeSwitch *sw : timeSwitches) {
+        if (dynamic_cast<HighLightSwitch*>(sw))
+            highLightSwitchesOff << sw->pullValuePtr<bool>("lightOff");
+        else if (dynamic_cast<LowLightSwitch*>(sw))
+            lowLightSwitchesOn << sw->pullValuePtr<bool>("lightOn");
+        else
+            timeSwitchesOn << sw->pullValuePtr<bool>("timeOn");
+    }
 }
 
 void LightController::reset() {
@@ -35,15 +38,31 @@ void LightController::reset() {
 }
 
 void LightController::update() {
-    signalDay = (onDay < offDay) ?
-                 (day >= onDay) && (day <= offDay) :
-                 (day >= onDay) || (day <= offDay);
-    signalTime = (onTime < offTime) ?
-                  (time >= onTime) && (time <= offTime) :
-                  (time >= onTime) || (time <= offTime);
-    signalRadiation = (radiation >= onRadiation) && (radiation <= offRadiation);
-    signal = (signalDay && signalTime && signalRadiation) ? 1. : 0.;
+    if (!onPeriod()) {
+        signal = 0.;
+        return;
+    }
+    if (signal == 1.) {
+        bool off = true;
+        for (auto switchOff : highLightSwitchesOff)
+            off = off || *switchOff;
+        signal = off ? 0. : 1.;
+    }
+    else {
+        bool on = true;
+        for (auto switchOn : lowLightSwitchesOn)
+            on = on || *switchOn;
+        signal = on ? 1. : 0.;
+    }
 }
+
+bool LightController::onPeriod() {
+    bool on = true;
+    for (auto switchOn : timeSwitchesOn)
+        on = on || *switchOn;
+    return on;
+}
+
 
 
 } //namespace

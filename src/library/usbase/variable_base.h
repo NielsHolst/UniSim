@@ -7,6 +7,7 @@
 #define UNISIM_VARIABLE_BASE_H
 
 #include <QObject>
+#include "identifier.h"
 
 namespace UniSim{
 

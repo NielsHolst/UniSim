@@ -16,6 +16,9 @@ PlotWidget::PlotWidget(QwtPlot *plot, QWidget *widget_) :
     _plot(plot), widget(widget_) {
 }
 
+PlotWidget::~PlotWidget() {
+}
+
 void PlotWidget::setXYtitles(QString xTitle, QString yTitle) {
     _plot->setAxisTitle(QwtPlot::xBottom, xTitle);
     _plot->setAxisTitle(QwtPlot::yLeft, yTitle);

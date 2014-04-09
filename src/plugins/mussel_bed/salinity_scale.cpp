@@ -26,8 +26,8 @@ void SalinityScale::reset() {
 }
 
 void SalinityScale::update() {
-    double Sal = (Smax+Smin)*0.5;
-    value = 0.0311*Sal+0.0363;
+    double range = Smax - Smin;
+    value = exp(3.69365-2.15219*log(range))/(1+exp(3.69365-2.15219*log(range)));
 }
 } //namespace
 

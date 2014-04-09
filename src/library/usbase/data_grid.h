@@ -14,9 +14,10 @@
 #include <QPair>
 #include <QStringList>
 #include <QVector>
-#include "utilities.h"
+#include "string_conversion.h"
 
-namespace UniSim{
+
+namespace UniSim {
 
 class DataGrid : public QObject
 {
@@ -31,11 +32,12 @@ public:
     int columnNumber() const;
     QStringList rowNames() const;
     QStringList columnNames() const;
+    int findColumn(QString colName, Qt::CaseSensitivity cs = Qt::CaseInsensitive) const;
     QStringList row(int row) const;
     QStringList row(const QStringList &rowKeys) const;
     QList<int> rowIndices(const KeySubset &rowKeys) const;
-    QString cell(int row, int col) const;
     QString cell(const QStringList &rowKeys, QString colKey) const;
+    template<class T = QString> T cell(int row, int col) const;
     template<class T> QVector<T> row(int i);
     template<class T> QVector<T> column(int i);
 
@@ -76,8 +78,7 @@ template<class T> QVector<T> DataGrid::row(int aRow) {
     QVector<T> result;
     result.resize(columnNumber());
     for (int j = 0; j < columnNumber(); ++j) {
-        QString s = cell(aRow, j);
-        result[j] = stringToValue<T>(s);
+        result[j] = cell<T>(aRow, j);
     }
     return result;
 }
@@ -86,10 +87,14 @@ template<class T> QVector<T> DataGrid::column(int col) {
     QVector<T> result;
     result.resize(rowNumber());
     for (int i = 0; i < rowNumber(); ++i) {
-        QString s = cell(i,col);
-        result[i] = stringToValue<T>(s);
+        result[i] = cell<T>(i,col);
     }
     return result;
+}
+
+template<class T> T DataGrid::cell(int _row, int col) const {
+    Q_ASSERT(0 <= col && col < data.columnIndex.size());
+    return stringToValue<T>( row(_row).value(col) );
 }
 
 } //namespace

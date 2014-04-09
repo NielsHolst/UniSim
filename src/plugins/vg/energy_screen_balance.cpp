@@ -13,10 +13,10 @@ namespace vg {
 EnergyScreenBalance::EnergyScreenBalance(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(indoorsDirectRadiation), "climate/radiation[direct]");
-    addParameterRef<double>(Name(indoorsTemperature), "climate/temperature[value]");
-    addParameterRef<double>(Name(outdoorsTemperature), "environment[temperature]");
-    addParameterRef<double>(Name(KCover), "construction[KCover]");
+    addParameterRef<double>(Name(indoorsDirectRadiation), "indoors/radiation[total]");
+    addParameter<double>(Name(indoorsTemperature), 20., "Change to indoors temperature (oC)");
+    addParameterRef<double>(Name(outdoorsTemperature), "outdoors[temperature]");
+//    addParameterRef<double>(Name(KCover), "construction[KCover]");
     addVariable<double>(Name(value),"Value of energy balance (W/m2)");
 }
 

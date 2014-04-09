@@ -11,6 +11,11 @@ using namespace UniSim;
 
 namespace vg {
 	
+/*! \class
+ * \brief Base class for the control of an effectuator according to a signal
+ * \param signal
+ * \param parent
+ */
 ControlElementBase::ControlElementBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

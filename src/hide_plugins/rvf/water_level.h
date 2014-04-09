@@ -14,18 +14,22 @@ class WaterLevel : public UniSim::Model
 {
 public:
     WaterLevel(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
-
 private:
     // Parameters
-    double initialValue, dailyRainfall, dailyLoss;
+    double dailyLoss;
 
     // Variables
-    double value;
+    double value, rainfall;
+
+    // links
+    const double *ptrRainfall;
+    bool rainfallIsPresent;
+
 };
 
 } //namespace
 
-
-#endif
+#endif // WATER_LEVEL_H

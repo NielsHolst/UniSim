@@ -22,7 +22,7 @@ namespace UniSim {
 
 bool Exception::excepted = false;
 
-Exception::Exception(QString message, QObject *concerning_)
+Exception::Exception(QString message, const QObject *concerning_)
     : _message(message), concerning(concerning_)
 {
     if (excepted) {

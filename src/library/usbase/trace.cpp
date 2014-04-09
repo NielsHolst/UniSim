@@ -3,13 +3,16 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <limits>
 #include "exception.h"
 #include "identifier.h"
 #include "model.h"
 #include "output.h"
 #include "trace.h"
-#include "utilities.h"
+#include "decode_list.h"
 #include "variable_base.h"
+
+using std::numeric_limits;
 
 namespace UniSim{
 	
@@ -115,11 +118,11 @@ void Trace::resetSummary() {
     switch (summary()) {
     case Max:
     case XAtMax:
-        s.maxValue = -DBL_MAX;
+        s.maxValue = -numeric_limits<double>::max();
         break;
     case Min:
     case XAtMin:
-        s.minValue = DBL_MAX;
+        s.minValue = numeric_limits<double>::max();
         break;
     case XAtThreshold:
         s.pastThreshold = s.hasPrevValue = false;

@@ -24,6 +24,7 @@ namespace UniSim {
 Stage::Stage(UniSim::Identifier name, QObject *parent)
     : StageBase(name, parent), dd(0)
 {
+    addParameterRef<double>("timeStep", &dt, ".../time[step]");
     new Parameter<double>("inflow", &inflow, 0., this,
         "Number of units to be put into the stage in the next time step");
     new Parameter<double>("initialInflow", &initialInflow, 0., this,
@@ -35,8 +36,8 @@ Stage::Stage(UniSim::Identifier name, QObject *parent)
         "Inflow into the stage in latest time step");
     new Variable<double>("outflow", &outflow, this,
         "Outflow from the stage in latest time step");
-    new Variable<double>("timeStep", &dt, this,
-        "The latest time step applied to the stage");
+//    new Variable<double>("timeStep", &dt, this,
+//        "The latest time step applied to the stage");
 }
 
 DistributedDelayBase* Stage::createDistributedDelay() {
@@ -79,7 +80,7 @@ void Stage::update() {
         phaseInflowTotal += accum(phaseInflow);
     }
 
-    dt = time->pullValue<double>("step");
+//    dt = time->pullValue<double>("step");
     if (TestNum::eqZero(dt)) {
         sum = dd->content() + inflowPending;
         outflow = growth = 0.;

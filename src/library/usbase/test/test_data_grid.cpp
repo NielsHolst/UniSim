@@ -4,13 +4,12 @@
 #include <usengine/simulation_maker.h>
 #include "test_data_grid.h"
 
-using std::cout;
 using namespace UniSim;
 
 void TestDataGrid::testNoKeys() {
     DataGrid data( filePath("data_grid_0_keys.txt") );
     QCOMPARE(data.numKeys(), 0);
-    QCOMPARE(data.cell(0,0), QString("barley"));
+    QCOMPARE(data.cell<>(0,0), QString("barley"));
     QCOMPARE(data.cell(3,4), QString("no"));
 }
 

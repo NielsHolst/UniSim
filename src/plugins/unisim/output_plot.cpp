@@ -139,6 +139,7 @@ void OutputPlot::cleanup() {
 void OutputPlot::debrief() {
     if (mainWindow && hasSummary()) {
         createPlotWidget();
+        showPlotWidget();
         showPlot();
         setZoomer();
     }

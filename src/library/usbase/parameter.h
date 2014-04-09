@@ -8,6 +8,7 @@
 
 #include "exception.h"
 #include "parameter_base.h"
+#include "string_conversion.h"
 #include "variable.h"
 
 namespace UniSim{

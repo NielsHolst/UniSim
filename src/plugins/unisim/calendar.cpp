@@ -13,6 +13,7 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include <usbase/test_num.h>
+#include <usbase/utilities.h>
 #include "calendar.h"
 
 using namespace std;
@@ -22,7 +23,11 @@ namespace UniSim{
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameter<double>(Name(latitude), 52., "Latitude of simulated system");
+    addParameter<double>(Name(latitude), 52., "Latitude of simulated system (degrees)");
+    addParameter<double>(Name(longitude), 11., "Longitude of simulated system (degrees)");
+
+    addParameter<int>(Name(timeZone), 1,
+    "Time zone in hours relative to GMT, e.g., Copenhagen has @F timeZone = 1");
 
     addParameter<QDate>(Name(initialDate), QDate(2000,1,1),
     "Initial date of simulation. "
@@ -70,6 +75,7 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     addVariable<double>(Name(sinb), "Sine of sun elevation, updated by the @F tick event of the @F clock object");
     addVariable<double>(Name(sinLD), "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
     addVariable<double>(Name(cosLD), "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
+    addVariable<double>(Name(azimuth), "Azimuth of the sun relative to north (degrees)");
 }
 
 void Calendar::initialize() {
@@ -89,11 +95,10 @@ void Calendar::update() {
     ++totalTimeSteps;
     dateTime = dateTime + Time(timeStep, timeUnit);
     updateDerived();
+
 }
 
 void Calendar::updateDerived() {
-    const double RAD = PI/180.;
-
     date = dateTime.date();
     timeOfDay = dateTime.time();
     day = date.day();
@@ -119,6 +124,45 @@ void Calendar::updateDerived() {
     double aob = sinLD/cosLD;
     dayLength = 12.*(1. + 2.*asin(aob)/PI);
     handleClockTick(hour + minute/60. + second/60./60.);
+}
+
+//! Azimuth is 90 at noon, zero at sunset and sunrise, and -90 at midnight
+/* See
+    http://www.esrl.noaa.gov/gmd/grad/solcalc/calcdetails.html
+    http://www.jgiesen.de/astro/suncalc/calculations.htm
+*/
+void Calendar::updateAzimuth() {
+    // First, the fractional year y is calculated, in radians.
+    double y = 2*PI*(dayOfYear-1+(hour-12.)/24)/365.;
+
+    //From y, we can estimate the equation of time (in minutes) and the solar declination angle (in radians).
+    double eqtime =
+    229.18*( 0.000075+0.001868*cos(y)-0.032077*sin(y)-0.014615*cos(2*y)-0.040849*sin(2*y) );
+
+    double declin = 0.006918-0.399912*cos(y)+0.070257*sin(y)
+            -0.006758*cos(2*y)+0.000907*sin(2*y)
+            -0.002697*cos(3*y)+0.00148*sin(3*y);
+
+    // Next, the true solar time is calculated in the following two equations. First the time offset is
+    // found, in minutes, and then the true solar time, in minutes.
+    double timeOffset = eqtime - 4*longitude + 60*timeZone;
+    // where eqtime is in minutes, longitude is in degrees, timezone is in hours from UTC
+
+    // True solar time
+    double tst = hour*60 + + minute + second/60. + timeOffset;
+
+    // The solar hour angle, in radians, is:
+    double ha = (tst/4 - 180)*RAD;
+
+    // The solar zenith angle (phi) can then be found from the following equation:
+    double lat = latitude*RAD;
+    double cosPhi = sin(lat)*sin(declin) + cos(lat)*cos(declin)*cos(ha);
+    double phi = acos(cosPhi);
+
+    // And the solar azimuth is:
+    double az1 = -(sin(lat)*cos(phi)-sin(declin))/(cos(lat)*sin(phi));
+    double az2 = acos(az1)*DEGREES;
+    azimuth = az2-90.;
 }
 
 void Calendar::handleClockTick(double hour) {

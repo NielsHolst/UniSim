@@ -25,7 +25,7 @@
 		<trace label="Day" ref="calendar[totalTime]"/>
 		<trace label="Larva 1.gen" ref="generation(1)/larva[value]"/>
 		<trace label="Larva 2.gen" ref="generation(2)/larva[value]"/>
-		<trace label="Pollen density" ref="pollen[pollenDensity]"/>
+		<trace label="Pollen density" ref="pollen[density]"/>
 	</output>
 
 	<output type="plot" name="Response">

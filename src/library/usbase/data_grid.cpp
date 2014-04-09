@@ -32,6 +32,16 @@ QStringList DataGrid::columnNames() const {
     return data.columnNamesInOrder;
 }
 
+int DataGrid::findColumn(QString colName, Qt::CaseSensitivity cs) const {
+    const QStringList &colNames(columnNames());
+    int colIndex = colNames.indexOf( QRegExp(colName, cs) );
+    if (colIndex == -1) {
+        QString msg = "Could not find column named '%1' among columns: '%2'";
+        throw Exception(msg.arg(colName).arg(colNames.join(',')), this);
+    }
+    return colIndex;
+}
+
 QStringList DataGrid::rowNames() const {
     // return QStringList( data.rowIndex.keys() );
     return data.rowKeysInOrder;
@@ -102,10 +112,6 @@ void DataGrid::createSubIndex(const QList<int> &keyColumns) {
     }
 }
 
-QString DataGrid::cell(int _row, int col) const {
-    Q_ASSERT(0 <= col && col < data.columnIndex.size());
-    return row(_row).value(col);
-}
 
 QString DataGrid::cell(const QStringList &rowKeys, QString colKey) const {
     if (!data.columnIndex.contains(colKey)) {
@@ -246,6 +252,7 @@ void DataGrid::appendLine() {
     data.rowIndex[rowKey] = data.rows.size() - 1;
     data.rowKeysInOrder << rowKey;
 }
+
 
 } //namespace
 

@@ -19,14 +19,17 @@ HEADERS += \
         $${US_BASE}/data_grid.h \
         $${US_BASE}/date_interval.h \
         $${US_BASE}/exception.h \
+        $${US_BASE}/decode_list.h \
         $${US_BASE}/factory_plug_in.h \
         $${US_BASE}/file_location_info.h \
         $${US_BASE}/file_locations.h \
         $${US_BASE}/identifier.h \
         $${US_BASE}/integrator.h \
+        $${US_BASE}/interpolate.h \
         $${US_BASE}/main_window_interface.h \
         $${US_BASE}/matrix.h \
         $${US_BASE}/minimiser.h \
+        $${US_BASE}/missing_value.h \
         $${US_BASE}/model.h \
         $${US_BASE}/moments.h \
         $${US_BASE}/name.h \
@@ -46,6 +49,7 @@ HEADERS += \
         $${US_BASE}/root_solver.h \
         $${US_BASE}/strata.h \
         $${US_BASE}/strata_base.h \
+        $${US_BASE}/string_conversion.h \
         $${US_BASE}/string_map.h \
         $${US_BASE}/test_num.h \
         $${US_BASE}/ustime.h \
@@ -62,12 +66,14 @@ SOURCES += \
         $${US_BASE}/component.cpp \
         $${US_BASE}/data_grid.cpp \
         $${US_BASE}/date_interval.cpp \
+        $${US_BASE}/decode_list.cpp \
         $${US_BASE}/exception.cpp \
         $${US_BASE}/file_location_info.cpp \
         $${US_BASE}/file_locations.cpp \
         $${US_BASE}/identifier.cpp \
         $${US_BASE}/integrator.cpp \
         $${US_BASE}/minimiser.cpp \
+        $${US_BASE}/missing_value.cpp \
         $${US_BASE}/model.cpp \
         $${US_BASE}/moments.cpp \
         $${US_BASE}/named_object.cpp \
@@ -79,6 +85,7 @@ SOURCES += \
         $${US_BASE}/random.cpp \
         $${US_BASE}/ref.cpp \
         $${US_BASE}/root_solver.cpp \
+        $${US_BASE}/string_conversion.cpp \
         $${US_BASE}/ustime.cpp \
         $${US_BASE}/trace.cpp \
         $${US_BASE}/utilities.cpp \

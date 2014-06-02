@@ -9,16 +9,36 @@
 #include <usbase/utilities.h>
 #include "control_element_asym.h"
 #include "general.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(ControlElementAsym)
+
+/*! \class ControlElementAsym
+ * \brief Control elements which let _state_ approach _signal_ asymmetrically, at different rates from above and below
+ *
+ * Inputs
+ * ------
+ * - _rateUp_ is the rate at which _state_ approaches _signal_ from below [min<SUP>-1</SUP>]
+ * - _rateDown_ is the rate at which _state_ approaches _signal_ from above [min<SUP>-1</SUP>]
+ *
+ * Outputs
+ * ------
+ * - see ControlElementBase
+
+ * Default dependencies
+ * ------------
+ * - see ControlElementBase
+ */
+
 ControlElementAsym::ControlElementAsym(Identifier name, QObject *parent)
     : ControlElementBase(name, parent)
 {
-    addParameter<double>(Name(rateUp), 0.1, "Rate at which state approaches signal (per minute), when state is going @B up towards signal");
-    addParameter<double>(Name(rateDown), 0.01, "Rate at which state approaches signal (per minute), when state is going @B down towards signal");
+    Input(double, rateUp, 0.1);
+    Input(double, rateDown, 0.1);
 }
 
 double ControlElementAsym::change(double error) {

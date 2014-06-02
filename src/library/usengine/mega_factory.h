@@ -18,7 +18,6 @@ class FactoryPlugIn;
 
 class MegaFactory : public QObject
 {
-    //Q_OBJECT
 public:
     MegaFactory();
     static QString id();
@@ -32,11 +31,13 @@ private:
     // methods
     static MegaFactory* me();
     static QObject* createObject(Identifier className, Identifier objectName, QObject *parent=0);
+    static Identifier adjustedId(Identifier id);
     // data
     typedef QMap<Identifier, FactoryPlugIn*> ProductIndex;
     static MegaFactory *_me;
     ProductIndex productIndex;
     QList<UniSim::FactoryPlugIn*> _factories;
+    static int productCount;
 };
 
 template <class T>

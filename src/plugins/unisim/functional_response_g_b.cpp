@@ -7,10 +7,13 @@
 #include <usbase/utilities.h>
 #include <usbase/test_num.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "functional_response_g_b.h"
 
 namespace UniSim{
-	
+
+PUBLISH(FunctionalResponseGB)
+
 FunctionalResponseGB::FunctionalResponseGB(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

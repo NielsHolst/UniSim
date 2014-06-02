@@ -6,19 +6,14 @@
 #ifndef UNISIM_PARAMETER_BASE_H
 #define UNISIM_PARAMETER_BASE_H
 
-#include <QObject>
-#include <QVariant>
-#include "identifier.h"
-#include "variable_base.h"
+#include <QString>
 
 namespace UniSim{
 
-class ParameterBase// : public VariableBase
+class ParameterBase
 {
-    //Q_OBJECT
 public:
     ParameterBase() { }
-//        : VariableBase(id, parent, desc) { }
     virtual void setValueFromString(QString newValue) = 0;
     virtual void followRedirection() = 0;
 };

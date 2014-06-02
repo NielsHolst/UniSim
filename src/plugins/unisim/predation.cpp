@@ -4,10 +4,12 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "forage.h"
+#include "publish.h"
 #include "predation.h"
 
 namespace UniSim {
 
+PUBLISH(Predation)
 
 Predation::Predation(Identifier name, QObject *parent)
     : FunctionalResponseMultiway(name, parent)

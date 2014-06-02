@@ -42,9 +42,11 @@ template<class X, class Y> QPair<int,int> bracket(const QVector<X> increasing, Y
  */
 template<class X, class Y, class Z>
 double interpolate(QPair<X,Y> p1, QPair<X,Y> p2, Z x) {
-    if (p2.first == p1.first) {
-        QString msg{"Cannot interpolate between two points with same x: (%1,%2) and (%3,%4)"};
-        throw Exception(msg.arg(p1.first).arg(p1.second).arg(p2.first).arg(p2.second));
+    if (p1.first == p2.first) {
+        if (x == p1.first)
+            return p1.second;
+        QString msg{"Cannot interpolate x (%5) between two points with same x: (%1,%2) and (%3,%4)"};
+        throw Exception(msg.arg(p1.first).arg(p1.second).arg(p2.first).arg(p2.second).arg(x));
     }
     return double(x - p1.first)/(p2.first - p1.first)*(p2.second - p1.second) + p1.second;
 
@@ -82,7 +84,7 @@ template<class X> double interpolate(const DataGrid &matrix, X rowValue, X colVa
     }
     X x{rowValue}, y{colValue};
     QStringList xs = matrix.rowNames(), ys = matrix.columnNames();
-    ys[0] = ys[1]; // remove dummy column name
+    ys[0] = ys[1];  // alias dummy column name
     QVector<double> xIncreasing, yIncreasing;
     for (QString s : xs) {
         bool ok;
@@ -103,6 +105,9 @@ template<class X> double interpolate(const DataGrid &matrix, X rowValue, X colVa
 
     QPair<int,int> xb = bracket(xIncreasing, x),
             yb = bracket(yIncreasing, y);
+    if (yb.first==0 && yb.second==0) {
+        yb.first = yb.second = 1; // found alias in first column, step one column up
+    }
     double x1 = xIncreasing.at(xb.first),
            x2 = xIncreasing.at(xb.second),
            y1 = yIncreasing.at(yb.first),
@@ -111,6 +116,12 @@ template<class X> double interpolate(const DataGrid &matrix, X rowValue, X colVa
            z21 = matrix.cell<double>(xb.second, yb.first),
            z12 = matrix.cell<double>(xb.first, yb.second),
            z22 = matrix.cell<double>(xb.second, yb.second);
+
+    if (xb.first==xb.second)
+        return interpolate(qMakePair(y1,z11), qMakePair(y2,z12), y);
+    else if (yb.first==yb.second)
+        return interpolate(qMakePair(x1,z11), qMakePair(x2,z21), x);
+
     double r1 = interpolate(qMakePair(x1, z11), qMakePair(x2, z21), x),
            r2 = interpolate(qMakePair(x1, z12), qMakePair(x2, z22), x);
     return interpolate(qMakePair(y1, r1), qMakePair(y2, r2), y);

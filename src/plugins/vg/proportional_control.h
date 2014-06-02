@@ -15,16 +15,7 @@ class ProportionalControl : public DirectedControl
 {
 public:
     ProportionalControl(UniSim::Identifier name, QObject *parent);
-    void reset();
     void update();
-
-private:
-    // Parameters
-    double actualValue, targetValue, gapMultiplier, pBand, maxSignal;
-    bool signalNotNegative;
-
-    // Variables
-    double signal;
 };
 } //namespace
 

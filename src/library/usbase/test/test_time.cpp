@@ -4,7 +4,7 @@
 
 using namespace UniSim;
 	
-void TestTime::testConversion() {
+void TestTime::testUnitCodes() {
     QCOMPARE(Time::unitToChar(Time::charToUnit('s')), 's');
     QCOMPARE(Time::unitToChar(Time::charToUnit('m')), 'm');
     QCOMPARE(Time::unitToChar(Time::charToUnit('h')), 'h');
@@ -21,6 +21,11 @@ void TestTime::testConversion() {
         excepted = true;
     }
     QVERIFY(excepted);
+}
+
+void TestTime::testToSeconds() {
+    Time time(1, Time::Days);
+    QCOMPARE(time.toSeconds(), 24*60*60);
 }
 
 void TestTime::testAddSeconds() {

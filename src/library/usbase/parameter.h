@@ -16,9 +16,8 @@ namespace UniSim{
 template <class T>
 class Parameter : public Variable<T>, public ParameterBase
 {
-    //Q_OBJECT
 public:
-    Parameter(Identifier name, T *valuePtr, T defaultvalue, QObject *parent, QString desc);
+    Parameter(Identifier name, T *valuePtr, T defaultvalue, NamedObject *parent, QString desc);
     // generic
     void setValueFromString(QString newValue);
     void followRedirection();
@@ -34,7 +33,7 @@ private:
 };
 
 template <class T>
-Parameter<T>::Parameter(Identifier id, T *valuePtr, T defaultvalue_, QObject *parent, QString desc)
+Parameter<T>::Parameter(Identifier id, T *valuePtr, T defaultvalue_, NamedObject *parent, QString desc)
     :
 //      VariableBase(id, parent, desc), // ? otherwise compiler complains
       Variable<T>(id, valuePtr, parent, desc),

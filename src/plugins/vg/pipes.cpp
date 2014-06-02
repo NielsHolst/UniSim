@@ -4,39 +4,60 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "pipe.h"
 #include "pipes.h"
-
+#include "publish.h"
 using namespace UniSim;
 
 namespace vg {
-	
+
+PUBLISH(Pipes)
+
+/*! \class Pipes
+ * \brief Temperature and effect of all pipes
+ *
+ * Inputs
+ * ------
+ * - _timeStep_ is the integration time step [s]
+ *
+ * Outputs
+ * ------
+ * - _effect_ is the energy emission per greenhouse area [W/m<SUP>2</SUP>]
+ * - _sumEnergy_ is the summed energy spent per greenhouse area [MJ/m<SUP>2</SUP>]
+ *
+ * Default dependencies
+ * ------------
+ * - a _calendar_ model with a _timeStepSecs_ port [s]
+ *
+ * Optional dependencies
+ * ------------
+ * - some (0..n) child models with an _effect_ port [W/m<SUP>2</SUP>]
+ */
+
 Pipes::Pipes(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(timeStepsSecs), "calendar[timeStepSecs]");
-    addVariable<double>(Name(heatFlux), "Total heat transfered from all pipes (W/m2)");
-    addVariable<double>(Name(energyUsed), "Accumulated energy used for heating (MJ/m2)");
+    InputRef(double, timeStep, "calendar[timeStepSecs]");
+    Output(double, effect);
+    Output(double, sumEnergy);
 }
 
 void Pipes::initialize() {
-    heatFluxes.clear();
-    QList<Pipe*> pipes = seekChildren<Pipe*>("*");
-    for (int i = 0; i < pipes.size(); ++i) {
-        heatFluxes << pipes.at(i)->pullValuePtr<double>("heatFlux");
+    pipeEffects.clear();
+    auto pipes = seekChildren<Model*>("*");
+    for (auto pipe : pipes) {
+        auto effect = pipe->peekValuePtr<double>("effect");
+        if (effect) pipeEffects << effect;
     }
 }
 
 void Pipes::reset() {
-    heatFlux = energyUsed = 0.;
+    effect = sumEnergy = 0;
 }
 
 void Pipes::update() {
-    heatFlux = 0.;
-    for (int i = 0; i < heatFluxes.size(); ++i) {
-        heatFlux += *heatFluxes.at(i);
-    }
-    energyUsed += heatFlux*timeStepsSecs/1e6;
+    effect = 0;
+    for (auto eff : pipeEffects) effect += *eff;
+    sumEnergy += effect*timeStep*1e-6;
 }
 
 } //namespace

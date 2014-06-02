@@ -55,9 +55,9 @@ void Simulation::execute()
 {
     Integrator *integrator = seekOneChild<Integrator*>("*");
     QList<Model*> models = seekChildren<Model*>("*");       //integrator is also a model
-    QList<Output*> outputs = seekChildren<Output*>("*");
+    QList<OutputBase*> outputs = seekChildren<OutputBase*>("*");
     QListIterator<Model*> mo(models);
-    QListIterator<Output*> ou(outputs);
+    QListIterator<OutputBase*> ou(outputs);
 
     mo.toFront();
     while (mo.hasNext())

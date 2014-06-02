@@ -9,6 +9,7 @@
 #include <QObject>
 #include "exception.h"
 #include "identifier.h"
+#include "reference.h"
 #include "utilities.h"
 
 namespace UniSim{
@@ -24,17 +25,17 @@ public:
     void setId(Identifier id);
     QString fullName() const;
     QString fullLabel() const;
+    QString absolutePath(QString path);
     static void resetNumbering();
     long int number() const;
 
     NamedObject* root();
-    QString absolutePath(QString relativePath);
     template <class T> QList<T> seekMany(QString name);
     template <class T> T peekOne(QString name);
     template <class T> T seekOne(QString name);
 
-    template <class TParent, class TChild> QList<TChild> seekMany(QString expression);
-    template <class TParent, class TChild> TChild seekOne(QString expression);
+    template <class TParent, class TChild> QList<TChild> seekMany(Reference ref);
+    template <class TParent, class TChild> TChild seekOne(Reference ref);
 
     template <class T> T peekOneChild(QString name);
     template <class T> T seekOneChild(QString name);
@@ -46,7 +47,7 @@ public:
     template <class T> T peekOneNearest(QString name);
     template <class T> T seekOneNearest(QString name);
     template <class T> QList<T> seekManyNearest(QString name);
-    template <class TParent, class TChild> QList<TChild> seekManyNearest(QString expression);
+    template <class TParent, class TChild> QList<TChild> seekManyNearest(Reference ref);
 
     template <class T> T peekOneSibling(QString name);
     template <class T> T seekOneSibling(QString name);
@@ -93,10 +94,10 @@ template <class T> T NamedObject::seekOne(QString name) {
 /*!
     Uses seekMany<T,U> but throws an Exception if not exactly one match is found.
 */
-template <class TParent, class TChild> TChild NamedObject::seekOne(QString expression)
+template <class TParent, class TChild> TChild NamedObject::seekOne(Reference ref)
 {
-    QList<TChild> result = seekMany<TParent, TChild>(expression);
-    if (result.size() == 1 || expression.left(3) == "...")
+    QList<TChild> result = seekMany<TParent, TChild>(ref);
+    if (result.size() == 1 || ref.toString().left(3) == "...")
         return result[0];
 
     QString head = result.isEmpty() ? "No object found matching:"
@@ -104,7 +105,7 @@ template <class TParent, class TChild> TChild NamedObject::seekOne(QString expre
     QString msg = "%1 '%2' with parent class '%3' and child class '%4'";
     throw Exception(msg
                     .arg(head)
-                    .arg(expression)
+                    .arg(ref.toString())
                     .arg(typeid(TParent).name())
                     .arg(typeid(TChild).name()));
 }
@@ -115,26 +116,26 @@ template <class TParent, class TChild> TChild NamedObject::seekOne(QString expre
   the child is given in brackets, e.g. "mammals/elephant[size]. The matching children are returned
   as a list.
 */
-template <class TParent, class TChild> QList<TChild> NamedObject::seekMany(QString expression)
+template <class TParent, class TChild> QList<TChild> NamedObject::seekMany(Reference ref)
 {
-    if (expression.left(3) == "...") {
-        if (expression[3] != '/') {
+    QString s = ref.toString();
+    if (s.left(3) == "...") {
+        if (s[3] != '/') {
             QString msg{"Illegal path expression ('%1'). '/' expected after '...'"};
-            throw UniSim::Exception(msg.arg(expression));
+            throw UniSim::Exception(msg.arg(s));
         }
-        return seekManyNearest<TParent, TChild>(expression.mid(4));
+//        return seekManyNearest<TParent, TChild>(s.mid(4));
+        return seekManyNearest<TParent, TChild>(Reference(s.mid(4), this));
     }
-    QStringList split = UniSim::splitParentChildExpression( absolutePath(expression), this );
-    QString parentName = split[0], childName = split[1];
+//    QStringList split = UniSim::splitParentChildExpression( absolutePath(ref), this );
+    Reference absRef = Reference(absolutePath(s), this);
+//    QString parentName = split[0], childName = split[1];
+    QString parentName = absRef.path(), childName = absRef.name();
 
     auto parents = seekMany<TParent>(parentName);
     QList<TChild> result;
     for (auto parent : parents)
         result << parent->seekChildren<TChild>(childName);
-//    for (int i = 0; i < parentPtr.size(); ++i) {
-//        QList<TChild> more = parentPtr[i]->seekChildren<TChild>(child);
-//        result.append(more);
-//    }
     return result;
 }
 
@@ -235,9 +236,9 @@ template <class T> QList<T> NamedObject::seekManyNearest(QString name) {
 }
 
 template <class TParent, class TChild>
-QList<TChild> NamedObject::seekManyNearest(QString expression) {
-    QStringList split = UniSim::splitParentChildExpression(expression, this );
-    QString parentName{split[0]}, childName{split[1]};
+QList<TChild> NamedObject::seekManyNearest(Reference ref) {
+//    QStringList split = UniSim::splitParentChildExpression(ref, this );
+    QString parentName{ref.path()}, childName{ref.name()};
 
     auto parents = seekManyNearest<TParent>(parentName);
     QList<TChild> nearest;
@@ -437,17 +438,16 @@ template <class T> QList<T> NamedObject::filterByName(QString name, const QList<
         return result;
 
     for (auto candidate : candidates) {
-//    for (int ca = 0; ca < candidates.size(); ++ca) {
         int i = names.size()-1;
         QObject *p{candidate};
-//        QObject *candidate, *p;
-//        candidate = p = candidates.at(ca);
         while (i > 0 && p->parent() && (p->objectName() == names[i] || names[i] == "*")) {
             --i;
             p = p->parent();
         }
-        if (names[i].isEmpty())
-            throw Exception("Composite component name contains an empty name: " + name, candidate);
+        if (names[i].isEmpty()) {
+            QString msg = "Composite component name '%1' contains an empty name";
+            throw Exception(msg.arg(name), candidate);
+        }
         bool isT = dynamic_cast<T>(candidate) != 0;
         bool pathOk  =	i == 0 && (p->objectName() == names[0] || names[0] == "*");
         if (isT && pathOk) {
@@ -456,7 +456,6 @@ template <class T> QList<T> NamedObject::filterByName(QString name, const QList<
     }
     return result;
 }
-
 
 } //namespace
 

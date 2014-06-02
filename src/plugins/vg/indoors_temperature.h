@@ -18,11 +18,8 @@ public:
     void reset();
     void update();
 private:
-    // Parameters
-    double energyBalance, heatCapacity, pipesHeatFlux;
-
-    // Variable
-    double value;
+    double timeStep, averageHeight, heatBalance, relativeVentilationRate, indoorsAh,
+        initValue, value, virtualTemperature;
 };
 } //namespace
 

@@ -8,7 +8,8 @@
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
 #include "distributed_delay.h"
-	
+#include "publish.h"
+
 namespace UniSim {
 
 DistributedDelay::DistributedDelay(const Parameters &p_, QObject *parent)

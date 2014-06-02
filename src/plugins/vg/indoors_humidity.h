@@ -4,8 +4,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_MICROCLIMATE_HUMIDITY_H
-#define VG_MICROCLIMATE_HUMIDITY_H
+#ifndef VG_INDOORS_HUMIDITY_H
+#define VG_INDOORS_HUMIDITY_H
 
 #include <usbase/model.h>
 
@@ -15,19 +15,31 @@ class IndoorsHumidity : public UniSim::Model
 {
 public:
     IndoorsHumidity(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 private:
-    // Parameters
-    double temperature, maxRh, minDeltaX;
+    // Input / Output
+    double indoorsTemperature, timeStep, averageHeight,
+        ah, rh, ahEq, outdoorsAh,
+        netVapourFlux, grossVapourFlux,
+        timeConstant, surplusAh,
+        latentHeatBalance;
 
-    // Variable
-    double rh, vp, mc, vpd,
-        rhExcess, vpdInsufficiency;
-    bool highRh, lowDeltaX, highHumidity;
+    // Data
+    struct FluxPtr {
+        const double *conductance, *gain, *vapourFlux;
+    };
+    typedef QVector<FluxPtr> Fluxes;
+    Fluxes transpiration, evaporation, condensation, ventilation;
+    QVector<const Fluxes*> all;
 
     // Methods
-    void setBalances();
+    void collectFluxes();
+    Fluxes collectFluxes(QString fluxName);
+    double sumConductance();
+    double sumGain();
+    double sumVapourFlux(const Fluxes &fluxes);
 };
 
 } //namespace

@@ -11,7 +11,8 @@ class TestTime : public QObject
     Q_OBJECT
     
 private slots:
-    void testConversion();
+    void testUnitCodes();
+    void testToSeconds();
     void testAddSeconds();
     void testAddMinutes();
     void testAddHours();

@@ -10,20 +10,38 @@
 using namespace UniSim;
 
 namespace vg {
-	
-/*! \class
- * \brief Base class for the control of an effectuator according to a signal
- * \param signal
- * \param parent
+
+/*! \class ControlElementBase
+ * \brief Base class for control elements which maintain a _state_ in response to a _signal_
+ *
+ * Depending on the logic implemented in the pure virtual _change_ method, _state_ will approach
+ * _signal_ with time
+ *
+ * Inputs
+ * ------
+ * - _initState_ is the initial value of state when control element is reset [any]
+ * - _timeStepSecs_ is the integration time step [s]
+ * - _signal_ is telling the desired state [any]
+ *
+ * Outputs
+ * ------
+ * - _state_ is the current state according to the time integration of _signal_ [any]
+ * - _course_ is the current course of the signal [_Course_]
+
+ * Default dependencies
+ * ------------
+ * - a _calendar_ model with a _timeStepSecs_ port [s]
+ * - a parent model with a _signal_ port [any]
  */
+
 ControlElementBase::ControlElementBase(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(signal), "..[signal]");
-    addParameterRef<double>(Name(timeStepSecs), "calendar[timeStepSecs]");
-    addParameter<double>(Name(initState), 0. , "Initial value of @F {state}");
-    addVariable<double>(Name(state),"Current state of control element");
-    addVariable<int>(Name(course),"Current course of change: @F {Decreasing}, @F Stable or @F {Increasing}");
+    Input(double, initState, 0.);
+    InputRef(double, timeStepSecs, "calendar[timeStepSecs]");
+    InputRef(double, signal, "..[signal]");
+    Output(double, state);
+    Output(int, course);
 }
 
 void ControlElementBase::reset() {

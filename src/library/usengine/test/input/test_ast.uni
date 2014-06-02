@@ -1,0 +1,44 @@
+Simulation()
+Simulation()[]
+Simulation()[[]]
+Simulation()[][[]]
+Simulation()[[]][]
+
+Simulation(){}
+Simulation()[]{}
+Simulation()[[]]{}
+Simulation()[][[]]{}
+Simulation()[[]][]{}
+
+!
+Simulation{}
+Simulation[]
+Simulation[[]]
+
+Simulation(p="a b")
+Simulation("a b")
+Simulation(p->x[y])
+Simulation(->x[y])
+Simulation(p="a b", "a b", p->x[y], ->x[y])
+
+Simulation()[p="a b"]
+Simulation()["a b"]
+Simulation()[p->x[y]]
+Simulation()[->x[y]]
+Simulation()[p="a b", "a b", p->x[y], ->x[y]]
+
+Simulation()[[p="a b"]]
+Simulation()[["a b"]]
+Simulation()[[p->x[y]]]
+Simulation()[[->x[y]]]
+Simulation()[[p="a b", "a b", p->x[y], ->x[y]]]
+
+Simulation animal() {
+	Mammal whale(a=b)
+	Insect wasp(c=d) {
+		Stage egg()
+	}
+}
+
+
+

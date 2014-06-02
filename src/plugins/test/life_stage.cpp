@@ -8,11 +8,14 @@
 #include <usbase/variable.h>
 #include <iostream>
 #include "life_stage.h"
+#include "publish.h"
 
 using namespace std;
 using namespace UniSim;
 
 namespace test{
+
+PUBLISH(LifeStage)
 
 LifeStage::LifeStage(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 

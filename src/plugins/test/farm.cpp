@@ -7,10 +7,13 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "farm.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace test{
+
+PUBLISH(Farm)
 
 Farm::Farm(Identifier name, QObject *parent)
 	: Model(name,parent) 

@@ -11,9 +11,11 @@ HEADERS += \
     ambrosia_time.h \
     ambrosia_factory.h \
     plant.h\
+    publish.h
 
 SOURCES += \
     ambrosia_time.cpp \
     ambrosia_factory.cpp \
-    plant.cpp
+    plant.cpp \
+    publish.cpp
 

@@ -3,14 +3,12 @@
 #include <usbase/exception.h>
 #include <usbase/identifier.h>
 #include <usbase/file_locations.h>
+#include <usbase/model.h>
 #include <usbase/output.h>
 #include <usbase/utilities.h>
+#include <usengine/mega_factory.h>
 #include <usengine/simulation_maker.h>
-#include <unisim/anonymous_model.h>
-#include <unisim/steps.h>
 #include "../simulation.h"
-#include "trickle_box.h"
-#include "trickle_sequence.h"
 #include "test_simulation.h"
 
 
@@ -52,20 +50,20 @@ void TestSimulation::testInitialize()
 void TestSimulation::testFindModels() 
 {
     Simulation *sim = new Simulation("apple-tree");
-    new Steps("integrator", sim);
+    MegaFactory::create<Model>("Steps", "integrator", sim);
 	
-	AnonymousModel *butterfly, *mite;
+    Model *butterfly, *mite;
 	
-	butterfly = new AnonymousModel("butterfly", sim);
-	new AnonymousModel("egg", butterfly);
-	new AnonymousModel("larva", butterfly);
-	new AnonymousModel("pupa", butterfly);
-	new AnonymousModel("adult", butterfly);
+    butterfly = MegaFactory::create<Model>("Anonymous", "butterfly", sim);
+    MegaFactory::create<Model>("Anonymous", "egg", butterfly);
+    MegaFactory::create<Model>("Anonymous", "larva", butterfly);
+    MegaFactory::create<Model>("Anonymous", "pupa", butterfly);
+    MegaFactory::create<Model>("Anonymous", "adult", butterfly);
 	
-	mite = new AnonymousModel("mite", sim);
-	new AnonymousModel("egg", mite);
-	new AnonymousModel("nymph", mite);
-	new AnonymousModel("adult", mite);
+    mite = MegaFactory::create<Model>("Anonymous", "mite", sim);
+    MegaFactory::create<Model>("Anonymous", "egg", mite);
+    MegaFactory::create<Model>("Anonymous", "nymph", mite);
+    MegaFactory::create<Model>("Anonymous", "adult", mite);
 	
     QList<Model*> models;
     models = sim->seekDescendants<Model*>("adult");
@@ -126,8 +124,8 @@ void TestSimulation::testFindModels()
 
 void TestSimulation::testFindOutputs()
 {
-    QList<Output*> outputs;
-    outputs = _simulation->seekDescendants<Output*>("butterflyTable");
+    QList<OutputBase*> outputs;
+    outputs = _simulation->seekDescendants<OutputBase*>("butterflyTable");
     QCOMPARE(outputs.size(), 1);
     QVERIFY(Identifier("butterflyTable").equals(outputs[0]->objectName()));
 }

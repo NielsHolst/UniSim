@@ -7,11 +7,13 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "constant_world.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace test{
 
+PUBLISH(ConstantWorld)
 int i = 8;
 int *j = new int;
 

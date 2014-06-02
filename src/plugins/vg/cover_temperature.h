@@ -19,10 +19,11 @@ public:
     void update();
 private:
     // Parameters
-    double Tindoors, Tsky, Toutdoors, windspeed, latcov;
+    double indoorsTemperature, skyTemperature, outdoorsTemperature, windspeed, latcov, indoorsAh;
 
     // Variables
-    double value;
+    double value,virtualTemperature;
+    bool hasCondensation;
 };
 } //namespace
 

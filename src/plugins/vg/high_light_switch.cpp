@@ -5,17 +5,37 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "high_light_switch.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(HighLightSwitch)
+
+/*! \class HighLightSwitch
+ * \brief Switches off at high sunlight irradiation
+ *
+ * Inputs
+ * ------
+ * - _threshold_ is the sunlight irradiation above which the switch is off [W/m<SUP>2</SUP>]
+ * - _outdoorsRadiation_ is the intensity of sunlight irradiation [W/m<SUP>2</SUP>]
+ *
+ * Outputs
+ * ------
+ * - _lightOff_ flags whether switch is on or off [true,false]
+
+ * Default dependencies
+ * ------------
+ * - an _outdoors_ model with a _radiation_ port [W/m<SUP>2</SUP>]
+ */
+
 HighLightSwitch::HighLightSwitch(Identifier name, QObject *parent)
     : TimeSwitch(name, parent)
 {
-    addParameter<double>(Name(threshold), 40., "Outdoors radiation above which to switch off (W/m2)");
-    addParameterRef<double>(Name(outdoorsRadiation), "outdoors[radiation]");
-    addVariable<bool>(Name(lightOff), "Switch off according to threshold?");
+    Input(double, threshold, 40.);
+    InputRef(double, outdoorsRadiation, "outdoors[radiation]");
+    Output(bool, lightOff);
 }
 
 void HighLightSwitch::reset() {

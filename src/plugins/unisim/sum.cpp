@@ -6,9 +6,12 @@
 #include <usbase/exception.h>
 #include <usbase/decode_list.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "sum.h"
 
 namespace UniSim{
+
+PUBLISH(Sum)
 
 Sum::Sum(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)

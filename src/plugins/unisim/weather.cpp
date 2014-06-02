@@ -8,9 +8,12 @@
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "calendar.h"
+#include "publish.h"
 #include "weather.h"
 
 namespace UniSim{
+
+PUBLISH(Weather)
 
 Weather::Weather(Identifier name, QObject *parent)
     : Model(name, parent)

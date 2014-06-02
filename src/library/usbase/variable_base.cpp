@@ -10,35 +10,28 @@
 
 namespace UniSim{
 
-VariableBase::VariableBase(Identifier id, QObject *parent, QString description)
-    : QObject(parent),  _id(id), _description(description)
+VariableBase::VariableBase(Identifier id, NamedObject *parent)
+    : QObject(parent), _id(id), _parent(parent)
 {
     setObjectName(id.key());
     assertUniqueness();
 }
 
-Identifier VariableBase::id() const {
-    return _id;
-}
-
-QString VariableBase::description() const {
-    return _description;
-}
-
 void VariableBase::assertUniqueness() {
-    NamedObject *par = dynamic_cast<NamedObject*>(parent());
-    if (!par)
-        return;
-
-    QList<VariableBase*> found = par->seekChildren<VariableBase*>(id().key());
-    bool isUnique = true;
-    for (int i=0; isUnique && (i < found.size()); ++i) {
-        isUnique = (found[i] == this);
-    }
-    if (!isUnique) {
+    auto meAndSiblings = _parent->seekChildren<VariableBase*>(id().key());
+    if (meAndSiblings.size() != 1) {
         QString msg = "Variable '%1' is not unique in '%2'";
-        throw Exception(msg.arg(id().label()).arg(par->fullName()));
+        throw Exception(msg.arg(_id.label()).arg(_parent->fullLabel()));
     }
+//    QList<VariableBase*> found = _parent->seekChildren<VariableBase*>(id().key());
+//    bool isUnique = true;
+//    for (int i=0; isUnique && (i < found.size()); ++i) {
+//        isUnique = (found[i] == this);
+//    }
+//    if (!isUnique) {
+//        QString msg = "Variable '%1' is not unique in '%2'";
+//        throw Exception(msg.arg(id().label()).arg(parent->fullName()));
+//    }
 }
 
 } //namespace

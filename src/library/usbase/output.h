@@ -16,11 +16,11 @@ class DataGrid;
 class Integrator;
 class Trace;
 
-class Output : public Component, public Attributes
+class OutputBase : public Component, public Attributes
 {
 public:
-    Output(Identifier name, QObject *parent=0);
-    virtual ~Output(){}
+    OutputBase(Identifier name, QObject *parent=0);
+    virtual ~OutputBase(){}
     // standard methods
     void amend();
     // special methods
@@ -32,16 +32,16 @@ public:
 
     QList<TraceRecord>& traceRecords();
     bool hasSummary() const;
-    int frequency() const;
     virtual int numXTraces() const = 0;
 protected:
+    // parameters
+    int frequency;
     // methods
     int runNumber() const;
 
 private:
     // data
     bool _hasSummary;
-    int _frequency;
     // links
     QList<TraceRecord> _traceRecords;
     Integrator *integrator;
@@ -49,7 +49,7 @@ private:
     void setYLabels();
 };
 
-typedef QList<Output*> Outputs;
+typedef QList<OutputBase*> Outputs;
 
 } //namespace
 

@@ -4,30 +4,19 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 
-#include "factory_plug_in.h"
 #include "product_base.h"
 
 namespace UniSim{
 
-ProductBase::ProductBase(Identifier id, FactoryPlugIn *parent, QString description)
-    : QObject(parent->asQObject()),
-      _id(id),
-      _factory(parent),
-      _description(description)
+ProductBase::ProductBase(Identifier id, ProductList &list)
+    : _id(id)
 {
-    setObjectName(id.key());
+    ProductList test = list;
+    list[id] = this;
 }
 
 Identifier ProductBase::id() const {
     return _id;
-}
-
-FactoryPlugIn* ProductBase::factory() const {
-    return _factory;
-}
-
-QString ProductBase::description() const {
-    return _description;
 }
 
 } //namespace

@@ -12,6 +12,7 @@
 	<model name="outdoors" type="vg::Outdoors">
 		<model name="records" type="UniSim::Records">
 			<parameter name="fileName" value="sel_dk.txt"/>
+			<parameter name="imposeInitialDateTime" value="false"/>
 		</model>
 	</model>
 	<model name="greenhouse">

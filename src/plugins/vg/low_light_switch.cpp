@@ -5,21 +5,37 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "low_light_switch.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(LowLightSwitch)
+
+/*! \class LowLightSwitch
+ * \brief Switches off at low sunlight irradiation
+ *
+ * Inputs
+ * ------
+ * - _threshold_ is the sunlight irradiation below which the switch is off [W/m<SUP>2</SUP>]
+ * - _outdoorsRadiation_ is the intensity of sunlight irradiation [W/m<SUP>2</SUP>]
+ *
+ * Outputs
+ * ------
+ * - _timeOn_ flags whether switch is on or off [true,false]
+
+ * Default dependencies
+ * ------------
+ * - an _outdoors_ model with a _radiation_ port [W/m<SUP>2</SUP>]
+ */
+
 LowLightSwitch::LowLightSwitch(Identifier name, QObject *parent)
     : TimeSwitch(name, parent)
 {
-    addParameter<double>(Name(threshold), 20., "Outdoors radiation below which to switch on (W/m2)");
-    addParameterRef<double>(Name(outdoorsRadiation), "outdoors[radiation]");
-    addVariable<>(Name(lightOn), "Switch on according to threshold?");
-
-//    Input(threshold).reset(40);
-//    Input(outdoorsRadiation).from("outdoors[radiation]");
-//    Output(on).reset(false).text("Switch on according to threshold?");
+    Input(double, threshold, 20.);
+    InputRef(double, outdoorsRadiation, "outdoors[radiation]");
+    Output(bool, lightOn);
 }
 
 void LowLightSwitch::reset() {

@@ -28,6 +28,7 @@ private:
 bool operator<(const Identifier &id1, const Identifier &id2);
 bool operator==(const Identifier &id1, const Identifier &id2);
 bool operator!=(const Identifier &id1, const Identifier &id2);
+uint qHash(Identifier key);
 
 typedef QList<Identifier> Identifiers;
 

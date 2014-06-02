@@ -18,7 +18,7 @@ class MainWindowInterface;
 class PlotWidget;
 class Trace;
 
-class OutputPlot : public Output
+class OutputPlot : public OutputBase
 {
 	//Q_OBJECT
 public:

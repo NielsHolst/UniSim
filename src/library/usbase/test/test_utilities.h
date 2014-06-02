@@ -21,11 +21,6 @@ private slots:
 
     void testQStringSplit();
     void testSplitAtNamespace();
-    void testSplitParentChildExpression();
-    void testMissingLeftBracket();
-    void testMissingRightBracket();
-    void testMissplacedLeftBracket();
-    void testMissingChildName();
 
     void testStringToValueDouble();
     void testStringToValueInt();

@@ -72,227 +72,227 @@ const char FORMAT_VERY_LAST_ROW[] =
 const QString F("{Courier Base -2p} @Font ");
 
 void DocumentationWriter::write() {
-	openFile();
-    writeTimeStamp();
-    writeVersion();
-    write(HEAD);
-    writePlugins();
-    write(TAIL);
-    file.close();
+//	openFile();
+//    writeTimeStamp();
+//    writeVersion();
+//    write(HEAD);
+//    writePlugins();
+//    write(TAIL);
+//    file.close();
 }
 
-void DocumentationWriter::openFile() {
-    QDir dir = FileLocations::location(FileLocationInfo::Output);
-    QString fileName = dir.absolutePath() + "/ms_generated.txt";
-    file.setFileName(fileName);
-    bool ok = file.open(QIODevice::Text | QIODevice::WriteOnly);
-    if (!ok)
-		throw Exception("Could not open file to write documentation:\n" + fileName);
-}
+//void DocumentationWriter::openFile() {
+//    QDir dir = FileLocations::location(FileLocationInfo::Output);
+//    QString fileName = dir.absolutePath() + "/ms_generated.txt";
+//    file.setFileName(fileName);
+//    bool ok = file.open(QIODevice::Text | QIODevice::WriteOnly);
+//    if (!ok)
+//		throw Exception("Could not open file to write documentation:\n" + fileName);
+//}
 
-void DocumentationWriter::writeTimeStamp() {
-    QString timeStamp = "#Generated on " +
-                        QDateTime::currentDateTime().toString("d MMM yy h:mm") + "\n";
-    write(timeStamp);
-}
+//void DocumentationWriter::writeTimeStamp() {
+//    QString timeStamp = "#Generated on " +
+//                        QDateTime::currentDateTime().toString("d MMM yy h:mm") + "\n";
+//    write(timeStamp);
+//}
 
-void DocumentationWriter::writeVersion() {
-    write("@LP Version: ");
-    write(version());
-    write(".");
-}
+//void DocumentationWriter::writeVersion() {
+//    write("@LP Version: ");
+//    write(version());
+//    write(".");
+//}
 
-namespace {
-    bool pluginLessThan(const FactoryPlugIn* p1,
-                        const FactoryPlugIn* p2) {
-        return p1->id().key() < p2->id().key();
-    }
-}
+//namespace {
+//    bool pluginLessThan(const FactoryPlugIn* p1,
+//                        const FactoryPlugIn* p2) {
+//        return p1->id().key() < p2->id().key();
+//    }
+//}
 
-void DocumentationWriter::writePlugins() {
-    QList<FactoryPlugIn*> plugins = MegaFactory::factories();
-    qSort(plugins.begin(), plugins.end(), pluginLessThan);
-    for (int i = 0; i < plugins.size(); ++i) {
-        QString beginning = plugins[i]->description().left(8);
-        if (beginning.toLower() == "!exclude") continue;
-        write(plugins[i]);
-    }
-}
+//void DocumentationWriter::writePlugins() {
+//    QList<FactoryPlugIn*> plugins = MegaFactory::factories();
+//    qSort(plugins.begin(), plugins.end(), pluginLessThan);
+//    for (int i = 0; i < plugins.size(); ++i) {
+//        QString beginning = plugins[i]->description().left(8);
+//        if (beginning.toLower() == "!exclude") continue;
+//        write(plugins[i]);
+//    }
+//}
 
-void DocumentationWriter::write(FactoryPlugIn *plugin) {
-    Identifier id = plugin->id();
-    write("@SubAppendix\n");
-    write("@Title {" + id.label() + " plugin}\n");
-    write("@Tag {" + id.key() + ".plugin}\n");
-    write("@Begin @LP\n");
-    write(index(id));
-    write(desc(plugin->description()));
-    writeAuthors(plugin);
-    writeModels(plugin);
-    write("@NP @End @SubAppendix\n");
-}
+//void DocumentationWriter::write(FactoryPlugIn *plugin) {
+//    Identifier id = plugin->id();
+//    write("@SubAppendix\n");
+//    write("@Title {" + id.label() + " plugin}\n");
+//    write("@Tag {" + id.key() + ".plugin}\n");
+//    write("@Begin @LP\n");
+//    write(index(id));
+//    write(desc(plugin->description()));
+//    writeAuthors(plugin);
+//    writeModels(plugin);
+//    write("@NP @End @SubAppendix\n");
+//}
 
-void DocumentationWriter::writeAuthors(FactoryPlugIn *plugin) {
-    QStringList ids = plugin->authors();
-    int n = ids.size();
-    write("@LP Author");
-    if (n > 1) write("s");
-    write(": ");
-    writeAuthor(ids[0]);
-    for (int i = 1; i < n; ++i) {
-        write(" @LP\n");
-        writeAuthor(ids[i]);
-    }
-    write("\n");
-}
+//void DocumentationWriter::writeAuthors(FactoryPlugIn *plugin) {
+//    QStringList ids = plugin->authors();
+//    int n = ids.size();
+//    write("@LP Author");
+//    if (n > 1) write("s");
+//    write(": ");
+//    writeAuthor(ids[0]);
+//    for (int i = 1; i < n; ++i) {
+//        write(" @LP\n");
+//        writeAuthor(ids[i]);
+//    }
+//    write("\n");
+//}
 
 
-void DocumentationWriter::writeAuthor(QString id) {
-    Authors::Author author = authors()->find(id);
-    write(author.name + ", " + author.address + ".");
-}
+//void DocumentationWriter::writeAuthor(QString id) {
+//    Authors::Author author = authors()->find(id);
+//    write(author.name + ", " + author.address + ".");
+//}
 
-void DocumentationWriter::writeModels(FactoryPlugIn *plugin) {
-    write("@BeginSubSubAppendices\n");
-    Identifiers ids = UniSim::products(plugin).keys();
-    qSort(ids);
-    for (int i = 0; i < ids.size(); ++i) {
-        writeModel (plugin, ids[i]);
+//void DocumentationWriter::writeModels(FactoryPlugIn *plugin) {
+//    write("@BeginSubSubAppendices\n");
+//    Identifiers ids = UniSim::products(plugin).keys();
+//    qSort(ids);
+//    for (int i = 0; i < ids.size(); ++i) {
+//        writeModel (plugin, ids[i]);
 
-    }
-    write("@EndSubSubAppendices\n");
-}
+//    }
+//    write("@EndSubSubAppendices\n");
+//}
 
-void DocumentationWriter::writeModel(FactoryPlugIn *plugin, Identifier modelId) {
-    QString modelName = plugin->id().label() + "::" + modelId.label();
-    NamedObject *model = createModel(plugin, modelId);
-    write("@SubSubAppendix\n");
-    write("@Title {" + modelName + "}\n");
-    write("@Tag {" + modelName + "}\n");
-    write("@Begin @LP\n");
-    write(index(modelId));
-    const ProductBase *product = UniSim::products(plugin).value(modelId);
-    write(product->description() + "\n");
-    write(TABLE_BEGIN);
-    writeParameters(model);
-    writeVariables(model);
-    write(TABLE_END);
-    write("@End @SubSubAppendix\n");
-    delete model;
-}
+//void DocumentationWriter::writeModel(FactoryPlugIn *plugin, Identifier modelId) {
+//    QString modelName = plugin->id().label() + "::" + modelId.label();
+//    NamedObject *model = createModel(plugin, modelId);
+//    write("@SubSubAppendix\n");
+//    write("@Title {" + modelName + "}\n");
+//    write("@Tag {" + modelName + "}\n");
+//    write("@Begin @LP\n");
+//    write(index(modelId));
+//    const ProductBase *product = UniSim::products(plugin).value(modelId);
+//    write(product->description() + "\n");
+//    write(TABLE_BEGIN);
+//    writeParameters(model);
+//    writeVariables(model);
+//    write(TABLE_END);
+//    write("@End @SubSubAppendix\n");
+//    delete model;
+//}
 
-NamedObject* DocumentationWriter::createModel(FactoryPlugIn *plugin, Identifier modelId) {
-    QObject *model = create(plugin, modelId, "anonymous", 0);
-    Q_ASSERT_X(model,
-               "DocumentationWriter::createModel",
-               qPrintable(plugin->id().label() +
-               " cannot create " + modelId.label()));
-    NamedObject *result = dynamic_cast<NamedObject*>(model);
-    Q_ASSERT(result);
-    return result;
-}
+//NamedObject* DocumentationWriter::createModel(FactoryPlugIn *plugin, Identifier modelId) {
+//    QObject *model = create(plugin, modelId, "anonymous", 0);
+//    Q_ASSERT_X(model,
+//               "DocumentationWriter::createModel",
+//               qPrintable(plugin->id().label() +
+//               " cannot create " + modelId.label()));
+//    NamedObject *result = dynamic_cast<NamedObject*>(model);
+//    Q_ASSERT(result);
+//    return result;
+//}
 
-// Refactor the three methods below when they have been given a common base class
-// Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
-void DocumentationWriter::writeParameters(NamedObject *model) {
-    QList<VariableBase*> params, all = model->seekChildren<VariableBase*>("*");
-    for (int i = 0; i < all.size(); ++i) {
-        if (dynamic_cast<ParameterBase*>(all[i]))
-            params << all[i];
-    }
-    int n = params.size();
-    if (n == 0) return;
+//// Refactor the three methods below when they have been given a common base class
+//// Notice use of FORMAT_LAST_ROW and FORMAT_VERY_LAST_ROW
+//void DocumentationWriter::writeParameters(NamedObject *model) {
+//    QList<VariableBase*> params, all = model->seekChildren<VariableBase*>("*");
+//    for (int i = 0; i < all.size(); ++i) {
+//        if (dynamic_cast<ParameterBase*>(all[i]))
+//            params << all[i];
+//    }
+//    int n = params.size();
+//    if (n == 0) return;
 
-    writeTableTitle("Parameters");
-    /* If an empty section is wanted
-    if (n == 0)  {
-        QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
-        writeTableRow(format, "", "", "@I None");
-    }
-    */
-    for (int i = 0; i < n; ++i) {
-        Identifier id = params[i]->id();
-        QString value = params[i]->toString();
-        QString format;
-        if (i == 0)
-            format = FORMAT_FIRST_ROW;
-        else if (i == n-1)
-            format = FORMAT_LAST_ROW;
-        writeTableRow(format, id.label() + index(id), value, desc(params[i]->description()));
-    }
-}
+//    writeTableTitle("Parameters");
+//    /* If an empty section is wanted
+//    if (n == 0)  {
+//        QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
+//        writeTableRow(format, "", "", "@I None");
+//    }
+//    */
+//    for (int i = 0; i < n; ++i) {
+//        Identifier id = params[i]->id();
+//        QString value = params[i]->toString();
+//        QString format;
+//        if (i == 0)
+//            format = FORMAT_FIRST_ROW;
+//        else if (i == n-1)
+//            format = FORMAT_LAST_ROW;
+//        writeTableRow(format, id.label() + index(id), value, desc(params[i]->description()));
+//    }
+//}
 
-void DocumentationWriter::writeVariables(NamedObject *model) {
-    QList<VariableBase*> var, all = model->seekChildren<VariableBase*>("*");
-    for (int i = 0; i < all.size(); ++i) {
-        if (!dynamic_cast<ParameterBase*>(all[i]))
-            var << all[i];
-    }
-    int n = var.size();
-    if (n == 0) return;
+//void DocumentationWriter::writeVariables(NamedObject *model) {
+//    QList<VariableBase*> var, all = model->seekChildren<VariableBase*>("*");
+//    for (int i = 0; i < all.size(); ++i) {
+//        if (!dynamic_cast<ParameterBase*>(all[i]))
+//            var << all[i];
+//    }
+//    int n = var.size();
+//    if (n == 0) return;
 
-    writeTableTitle("Variables");
-    /* If an empty section is wanted
-    if (n == 0)  {
-        QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
-        writeTableRow(format, "", "", "@I None");
-    }
-    */
-    for (int i = 0; i < n; ++i) {
-        QString format;
-        if (i == 0)
-            format = FORMAT_FIRST_ROW;
-        else if (i == n-1)
-            format = FORMAT_LAST_ROW;
-        writeTableRow(format, var[i]->id().label() + index(var[i]->id()), var[i]->typeId(), desc(var[i]->description()));
-    }
-}
+//    writeTableTitle("Variables");
+//    /* If an empty section is wanted
+//    if (n == 0)  {
+//        QString format = QString(FORMAT_FIRST_ROW) + FORMAT_LAST_ROW;
+//        writeTableRow(format, "", "", "@I None");
+//    }
+//    */
+//    for (int i = 0; i < n; ++i) {
+//        QString format;
+//        if (i == 0)
+//            format = FORMAT_FIRST_ROW;
+//        else if (i == n-1)
+//            format = FORMAT_LAST_ROW;
+//        writeTableRow(format, var[i]->id().label() + index(var[i]->id()), var[i]->typeId(), desc(var[i]->description()));
+//    }
+//}
 
-void DocumentationWriter::writeTableTitle(QString title) {
-    write("@Rowb\n");
-    write("ruleabove { yes }\n");
-    write("rulebelow { yes }\n");
-    write("A {" + title +"}\n");
-}
+//void DocumentationWriter::writeTableTitle(QString title) {
+//    write("@Rowb\n");
+//    write("ruleabove { yes }\n");
+//    write("rulebelow { yes }\n");
+//    write("A {" + title +"}\n");
+//}
 
-void DocumentationWriter::writeTableRow(QString format, QString a, QString b, QString c) {
-    write("@Rowa\n");
-    write(format);
-    write("A {" + F + a + "}\n");
-    if (!a.isEmpty() && b.isEmpty())
-        write("B {@I {empty string}}\n");
-    else
-        write("B {"+ F + "{" + b + "}}\n");
-    write("C {" + c + "}\n");
-}
+//void DocumentationWriter::writeTableRow(QString format, QString a, QString b, QString c) {
+//    write("@Rowa\n");
+//    write(format);
+//    write("A {" + F + a + "}\n");
+//    if (!a.isEmpty() && b.isEmpty())
+//        write("B {@I {empty string}}\n");
+//    else
+//        write("B {"+ F + "{" + b + "}}\n");
+//    write("C {" + c + "}\n");
+//}
 
-void DocumentationWriter::write(QString s) {
-    if (s.contains("#include")) {
-        file.write(qPrintable(s));
-        return;
-    }
-    QString t;
-    int n = s.size();
-    for (int i = 0; i < n; ++i) {
-        if (s[i] == '/') {
-            if (i < n-1 && s[i+1] == '/') {
-                t += "//";
-                ++i;
-            }
-            else
-                t += "\"/\"";
-        }
-        else
-            t += s[i];
+//void DocumentationWriter::write(QString s) {
+//    if (s.contains("#include")) {
+//        file.write(qPrintable(s));
+//        return;
+//    }
+//    QString t;
+//    int n = s.size();
+//    for (int i = 0; i < n; ++i) {
+//        if (s[i] == '/') {
+//            if (i < n-1 && s[i+1] == '/') {
+//                t += "//";
+//                ++i;
+//            }
+//            else
+//                t += "\"/\"";
+//        }
+//        else
+//            t += s[i];
 
-    }
-    t.replace("|", "\"|\"");
-    file.write(qPrintable(t));
-}
+//    }
+//    t.replace("|", "\"|\"");
+//    file.write(qPrintable(t));
+//}
 
-void DocumentationWriter::write(const char *s) {
-    file.write(s);
-}
+//void DocumentationWriter::write(const char *s) {
+//    file.write(s);
+//}
 
 } //namespace
 

@@ -31,6 +31,10 @@ public:
     bool hasAttribute(QString name) const
     { return table.contains(name); }
 
+    //! Returns true if attribute _name_ does not exist or if its contains an empty string
+    bool isEmpty(QString name) const
+    { return !hasAttribute(name) || attribute(name).toString().isEmpty(); }
+
     /*! Returns attribute value associated with \em name.
         If \em name does not exist, the function returns a default-constructed variant.
      */

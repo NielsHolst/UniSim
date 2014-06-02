@@ -7,44 +7,50 @@
 #include <usbase/exception.h>
 #include "general.h"
 #include "proportional_control.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(ProportionalControl)
+
+/*! \class ProportionalControl
+ * \brief Provides proportional control towards a target value
+ *
+ * Proportional control provides a _signal_ to control the _actualValue_ towards the _targetValue_.
+ * The size of the _signal_ depends on the size of the gap between the actual and the target value.
+ * When the gap is in the range of the proportional bad [0;_pBand_], the signal is proportional to the gap.
+ *
+ * For further details, see DirectedControl
+ *
+ * Inputs
+ * ------
+ * - see DirectedControl
+ *
+ * Outputs
+ * -------
+ * - see DirectedControl
+ *
+ * Default dependencies
+ * ------------
+ * - none
+ */
+
 ProportionalControl::ProportionalControl(Identifier name, QObject *parent)
     : DirectedControl(name, parent)
 {
-    addParameter<double>(Name(actualValue), 20.,
-        "Current value being regulated");
-    addParameter<double>(Name(targetValue), 20.,
-        "Value to regulate towards");
-    addParameter<double>(Name(gapMultiplier), 1.,
-        "Multiplier on gap between @F actualValue and @F {targetValue}");
-    addParameter<double>(Name(pBand), 5.,
-        "Proportional band of response");
-    addParameter<double>(Name(maxSignal), 100.,
-        "Maximum absolute value of @F {signal}");
-    addParameter<bool>(Name(signalNotNegative), true,
-        "Should a negative @F signal be set to zero?");
-
-    addVariable<double>(Name(signal),
-        "Response between zero and @F maxSignal, increasing with increasing difference between "
-        "@F actualValue and @F {targetValue}, positive or negative according to direction of change "
-        "and setting of @F signalNotNegative flag");
-}
-
-void ProportionalControl::reset() {
-    signal = 0;
 }
 
 void ProportionalControl::update() {
-    double gap = gapMultiplier*(actualValue - targetValue);
-    if (direction() == Ceiling)
-        gap = -gap;
-    signal = propControl(gap, pBand, maxSignal);
-    if (signal < 0. && signalNotNegative)
-        signal = 0.;
+    double gap = (_direction == Ceiling) ?
+                actualValue - targetValue :
+                targetValue - actualValue;
+    signal = (gap <= 0.) ? minSignal
+             :
+             (gap >= pBand) ? maxSignal
+             :
+             minSignal + gap/pBand*(maxSignal - minSignal);
 }
 
 

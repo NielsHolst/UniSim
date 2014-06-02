@@ -8,10 +8,13 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "insect_life_cycle.h"
+#include "publish.h"
 #include "stage.h"
 
 namespace UniSim{
-	
+
+PUBLISH(InsectLifeCycle)
+
 InsectLifeCycle::InsectLifeCycle(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

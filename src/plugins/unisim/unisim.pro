@@ -16,6 +16,7 @@ HEADERS += \
     asymptotic_decreasing.h \
     asymptotic_increasing.h \
     calendar.h \
+    counter.h \
     day_degrees.h \
     days.h \
     distributed_delay.h \
@@ -41,6 +42,7 @@ HEADERS += \
     physiological_time.h \
     plot.h \
     predation.h \
+    publish.h \
     random_base.h \
     random_lognormal.h \
     random_normal.h \
@@ -68,6 +70,7 @@ SOURCES += \
     anonymous.cpp \
     asymptotic_decreasing.cpp \
     asymptotic_increasing.cpp \
+    counter.cpp \
     calendar.cpp \
     day_degrees.cpp \
     days.cpp \
@@ -94,6 +97,7 @@ SOURCES += \
     physiological_time.cpp \
     plot.cpp \
     predation.cpp \
+    publish.cpp \
     random_base.cpp \
     random_lognormal.cpp \
     random_normal.cpp \

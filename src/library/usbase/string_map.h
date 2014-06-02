@@ -23,7 +23,7 @@ class StringMap : public QMap<QString,T>
 public:
     StringMap();
     QStringList validKeys() const;
-    T seek(QString key, NamedObject *context=0);
+    T seek(QString key, const NamedObject *context=0);
 };
 
 template <class T>
@@ -38,7 +38,7 @@ QStringList StringMap<T>::validKeys() const {
 }
 
 template <class T>
-T StringMap<T>::seek(QString key, NamedObject *context) {
+T StringMap<T>::seek(QString key, const NamedObject *context) {
     QString k = key.toLower();
     if (!QMap<QString, T>::contains(k)) {
         QString msg = "Unknown key in list: '%1'. Only these keys are valid: '%2'";

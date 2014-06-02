@@ -109,11 +109,18 @@ namespace {
         if (className.contains("Anonymous"))
             className.clear();
         *sink << node->uniqueId() << "[label=\"" << className;
-        if (node->uniqueId() != "anonymous") {
+        QString objLabel = node->id().label();
+        if (!objLabel.startsWith('_')) {
             if (!className.isEmpty())
                 *sink << "\\n";
-            *sink << node->id().label();
+            *sink << objLabel;
         }
+
+//        if (node->uniqueId() != "anonymous") {
+//            if (!className.isEmpty())
+//                *sink << "\\n";
+//            *sink << node->id().label();
+//        }
 		*sink << "\"];";
 	}
 	

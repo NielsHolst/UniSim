@@ -23,6 +23,7 @@
 #include <usbase/parameter_base.h>
 #include <usbase/variable.h>
 #include <usbase/variable_base.h>
+#include <usbase/ustime.h>
 #include <usbase/utilities.h>
 #include "instance_index_from_condensed_table.h"
 #include "instance_index_from_table.h"
@@ -127,7 +128,7 @@ Simulation* SimulationMaker::parse(QString filePath)
     if (elementNameNotEquals("simulation"))
         throw Exception(message("Root element must be 'simulation'"));
 
-    simName = attributeValue("name", "anonymous");
+    simName = attributeValue("name", "");
 	
     Simulation *sim = new Simulation(simName);
     sim->setFilePath(filePath);
@@ -165,9 +166,9 @@ Simulation* SimulationMaker::parse(QString filePath)
     //amend<Integrator*>();
     //amend<Model*>();
     amend<Model*>();
-    Ref::resolve();
     createTraces();
-    amend<Output*>();
+    Ref::resolve();
+    amend<OutputBase*>();
 
     reader->clear();
     clearTables();
@@ -198,7 +199,7 @@ void SimulationMaker::readIntegratorElement(NamedObject* parent) {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
     QString type = attributeValue("type", parent);
-    QString name = attributeValue("name", "anonymous");
+    QString name = attributeValue("name", "");
 
     Integrator *integrator = MegaFactory::create<Integrator>(type, name, parent);
 
@@ -448,11 +449,10 @@ void SimulationMaker::readOutputElement(NamedObject* parent)
 {
 	Q_ASSERT(reader->isStartElement() && parent);
 	
-    QString objectName = attributeValue("name", "anonymous");
+    QString objectName = attributeValue("name", "");
     QString type = attributeValue("type", parent);
 
-    Output *output = MegaFactory::create<Output>(type, objectName, parent);
-    output->setAttribute( "frequency", attributeValue("frequency", "1") );
+    OutputBase *output = MegaFactory::create<OutputBase>(type, objectName, parent);
 
 	nextElementDelim();
 	while (!reader->hasError() && reader->isStartElement()) {
@@ -480,8 +480,8 @@ void SimulationMaker::readOutputSubElement(NamedObject* parent)
     Q_ASSERT(reader->isStartElement() && parent);
 
     TraceParam param;
-    param.setAttribute( "label", attributeValue("label", parent) );
-    param.setAttribute( "ref", attributeValue(QStringList() << "ref" << "value", parent) );
+    param.setAttribute( "label", attributeValue("label", "") );
+    param.setAttribute( "ref", attributeValue(QStringList() << "ref" << "value", "") );
     param.setAttribute( "summary", attributeValue("summary", "") );
     param.setAttribute( "type", attributeValue("type", "") );
     param.setAttribute( "columns", attributeValue("columns", "") );
@@ -489,6 +489,13 @@ void SimulationMaker::readOutputSubElement(NamedObject* parent)
     param.setAttribute( "multiplier", attributeValue("multiplier", "1") );
     param.setAttribute( "divisor", attributeValue("divisor", "1") );
     param.setAttribute( "sample", attributeValue("sample", "last") );
+    bool isTime = param.attribute("type").toString().toLower() == "time";
+    bool isReference = !param.isEmpty("ref");
+    bool eitherOr = isTime != isReference;
+    if (!eitherOr) {
+        throw Exception("Trace must have, either a 'ref' attribute, "
+                        "or a 'type=\"time\"' attribute", parent);
+    }
     param.parent = parent;
     traceVariableParam.append(param);
 
@@ -503,13 +510,20 @@ void SimulationMaker::readOutputTableElement(NamedObject* parent) {
     QString filePath = simulation()->inputFilePath(fileName);
     new DataGrid(filePath, parent);
     nextElementDelim();
- }
+}
 
 void SimulationMaker::createTraces() {
     for (int i = 0; i < traceVariableParam.size(); ++i) {
         const TraceParam &param( traceVariableParam.value(i) );
         QString label = param.attribute("label").toString();
-        QString ref = param.attribute("ref").toString();
+        QString ref;
+        if (param.attribute("type").toString().toLower() == "time") {
+            if (label.isEmpty()) label = "Time";
+            ref = "steps[stepNumber]";
+        }
+        else {
+            ref = param.attribute("ref").toString();
+        }
         QList<VariableBase*> bases = simulation()->seekMany<NamedObject*, VariableBase*>(ref);
         // If several bases are found they will all get the same label.
         // This must be fixed, as needed, by Output

@@ -7,10 +7,13 @@
 #include <usbase/variable.h>
 #include "life_cycle.h"
 #include "life_stage.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace test {
+
+PUBLISH(LifeCycle)
 
 LifeCycle::LifeCycle(UniSim::Identifier name, QObject *parent)
 	: Model(name,parent) 

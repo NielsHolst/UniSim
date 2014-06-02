@@ -15,12 +15,12 @@ class SwitchSetpointCollection : public UniSim::Model
 {
 public:
     SwitchSetpointCollection(UniSim::Identifier name, QObject *parent);
-    void amend();
+    void initialize();
     void reset();
     void update();
 private:
     // Parameter value
-    double emptyValue;
+    double defaultValue;
     bool emptyAllowed;
     // Variables
     double setpoint;

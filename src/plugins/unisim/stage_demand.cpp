@@ -4,11 +4,14 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
+#include "publish.h"
 #include "stage.h"
 #include "stage_demand.h"
 
 namespace UniSim{
-	
+
+PUBLISH(StageDemand)
+
 StageDemand::StageDemand(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

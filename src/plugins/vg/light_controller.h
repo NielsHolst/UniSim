@@ -22,7 +22,7 @@ public:
 
 private:
     // Variables
-    double signal;
+    bool signal;
 
     // Links
     QList<const bool *> timeSwitchesOn, highLightSwitchesOff, lowLightSwitchesOn;

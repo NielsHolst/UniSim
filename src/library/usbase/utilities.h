@@ -47,7 +47,7 @@ double convertTime(double time, char fromUnit, char toUnit, QObject *context = 0
 //@{
 QString fullName(const QObject *object);
 void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart);
-QStringList splitParentChildExpression(QString expression, QObject *context = 0);
+//QStringList splitParentChildExpression(QString expression, QObject *context = 0);
 
 //@}
 

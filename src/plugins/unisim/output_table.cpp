@@ -12,11 +12,14 @@
 #include <usbase/trace.h>
 #include <usbase/utilities.h>
 #include "output_table.h"
+#include "publish.h"
 
 using std::max;
 
 namespace UniSim{
-	
+
+PUBLISH2(OutputTable, Table)
+
 OutputTable::OutputTable(Identifier name, QObject *parent)
     : OutputTableBase(name, parent)
 {

@@ -3,6 +3,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <QHash>
 #include "identifier.h"
 
 /*! \class UniSim::Identifier
@@ -88,6 +89,10 @@ bool operator==(const Identifier &id1, const Identifier &id2) {
 
 bool operator!=(const Identifier &id1, const Identifier &id2) {
     return id1.key() != id2.key();
+}
+
+uint qHash(Identifier id) {
+    return qHash(id.key());
 }
 
 

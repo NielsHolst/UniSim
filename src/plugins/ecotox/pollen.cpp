@@ -7,11 +7,30 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "pollen.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 
 namespace ecotox {
+
+PUBLISH(Pollen)
+
+/*! \class Pollen
+ * \brief Pollen deposition
+This model must be composed of two models, _depositionRate_ and _lossRate_,
+and possibly a third model, _depositionFlush_. Its parameters determine the total deposition
+and the distance from the source.
+
+The LogLogistic dose-response model can pull the current dose from _Pollen_ as
+_pollenDensity_, _toxinDensity_ or _stdPollenDensity_.
+The exchange rate between these different units of density is determined by the parameters
+_pollenMass_ and _toxinConc_, which set the mass and toxin concentration for the crop at hand,
+and _stdPollenMass_ and _stdToxinConc_, which set the corresponding values for a standard
+reference crop. The transformations are
+_toxinDensity_ = _pollenDensity_*_pollenMass_*_toxinConc_
+and _stdPollenDensity_ = _pollenDensity_*_pollenMass_/_stdPollenMass_*_toxinConc_/_stdToxinConc_
+*/
 
 Pollen::Pollen(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)

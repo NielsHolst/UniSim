@@ -5,32 +5,54 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "humidity_setpoints.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(HumiditySetpoints)
+
+/*! \class HumiditySetpoints
+ * \brief Computes humidity setpoints in terms of relative and absolute humidity
+ *
+ * Inputs
+ * ------
+ * - _maxRhDay_ is the r.h. maximum setpoint in the day [0-100]
+ * - _maxRhNight_ is the r.h. maximum setpoint at night [0-100]
+ * - _minDeltaX_ is the minimum delta-x setpoint [g/m<SUP>3</SUP>]
+ * - _isDay_tells if it is day or night [true,false]
+ * - _radiation_ is the sunlight irradiation [W/m<SUP>2</SUP>]
+ *
+ * Outputs
+ * ------
+ * - _maxRh_ is the r.h. maximum setpoint [0-100]
+ * - _minDeltaX_ is the delta-x minimum setpoint [g/m<SUP>3</SUP>]
+
+ * Default dependencies
+ * ------------
+ * - an _outdoors_ model with a _radiation_ port [W/m<SUP>2</SUP>]
+ */
+
 HumiditySetpoints::HumiditySetpoints(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    addParameterRef<double>(Name(radiation), "outdoors[radiation]");
-    addParameter<double>(Name(daylightThreshold), 10., "Global radiation threshold for daylight (W/m2)");
-    addParameter<double>(Name(maxRhDay), 80., "Setpoint for relative humidity during the day (%)");
-    addParameter<double>(Name(maxRhNight), 90., "Setpoint for relative humidity during the night (%)");
-    addParameter<double>(Name(minDeltaXBasis), 1., "Setpoint for delta x (g/m3)");
-
-    addVariable<double>(Name(maxRh), "Setpoint for maximum relative humidity (%)");
-    addVariable<double>(Name(minDeltaX), "Setpoint for minimum delta x (g/m3)");
+    Input(double, maxRhDay, 80.);
+    Input(double, maxRhNight, 90.);
+    Input(double, minDeltaX, 1.);
+    InputRef(bool, isDay, "./day[isDay]");
+    InputRef(double, radiation, "outdoors[radiation]");
+    Output(double, maxRh);
+    Output(double, minDeltaX);
 }
 
 void HumiditySetpoints::reset() {
     maxRh = maxRhNight;
-    minDeltaX = minDeltaXBasis;
 }
 
 void HumiditySetpoints::update() {
     // Setpoints
-    maxRh = (radiation < daylightThreshold) ? maxRhNight : maxRhDay;
+    maxRh = isDay ? maxRhNight : maxRhDay;
     minDeltaX = minDeltaXBasis;
 }
 

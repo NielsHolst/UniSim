@@ -20,23 +20,23 @@ public:
     void reset();
     void update();
     // Special methods
-    double temperatureNeeded(double effect);
+    double temperatureNeeded(double specificEffect);
 
 private:
     // Parameters
-    double length, diameter, flow, pumpControl,
+    double length, diameter, flowRate, greenhouseArea,
         inflowTemperature, indoorsTemperature, timeStepSecs;
 
     // Variables
-    double temperature, energyEmitted;
+    double temperature, effect;
 
     // Methods
-    double effect(double Tpipe);
+    double specificEffect(double Tpipe);
     void selfTest();
 
     // Data
-    const double a{0.0055};
-    double b, propFlow, volume;
+    const double exponent{1.25};
+    double slope, propFlow, volume;
 };
 } //namespace
 

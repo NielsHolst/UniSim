@@ -20,11 +20,17 @@ public:
 
 private:
     // Parameters
-    double ventLength, ventilationLeeSide, ventilationWindSide, ventMaxOpening, ventProportion,
-        Tindoors, Toutdoors, windspeed;
+    double ventLength, ventWidth, ventDensity, ventMaxOpening, roofPitch,
+        ventilationLeeSide, ventilationWindSide,
+        greenhouseArea, Tindoors, Toutdoors, windspeed;
 
     // Variables
-    double value;
+    double rate;
+
+    // Methods
+    double phiTemp(double angle);
+    double phiWindLeeSide(double angle);
+    double phiWindWindSide(double angle);
 };
 
 } //namespace

@@ -3,28 +3,31 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
 #ifndef UNISIM_PRODUCT_H
 #define UNISIM_PRODUCT_H
-
+#include <QObject>
+#include <usbase/identifier.h>
 #include "product_base.h"
+
+#define PUBLISH(name) \
+Product<name> name##Product(#name, productList());
+
+#define PUBLISH2(name, pubname) \
+Product<name> name##Product(#pubname, productList());
 
 namespace UniSim{
 
-class FactoryPlugIn;
-
 template <class T>
-class Product : public virtual ProductBase
-
+class Product : public ProductBase
 {
 public:
-    Product(Identifier id, FactoryPlugIn *parent, QString desc);
+    Product(Identifier name, ProductList &list);
     QObject* create(Identifier objectName, QObject *parent) const;
 };
 
 template <class T>
-Product<T>::Product(Identifier id, FactoryPlugIn *parent, QString desc)
-    :  ProductBase(id, parent, desc)
+Product<T>::Product(Identifier name, ProductList &list)
+    :  ProductBase(name, list)
 {
 }
 

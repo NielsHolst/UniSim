@@ -7,8 +7,11 @@
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "day_degrees.h"
+#include "publish.h"
 
 namespace UniSim{
+
+PUBLISH(DayDegrees)
 
 DayDegrees::DayDegrees(UniSim::Identifier name, QObject *parent)
     : PhysiologicalTime(name, parent)

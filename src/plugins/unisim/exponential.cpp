@@ -6,9 +6,12 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "exponential.h"
+#include "publish.h"
 
 namespace UniSim{
-	
+
+PUBLISH(Exponential)
+
 Exponential::Exponential(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

@@ -15,14 +15,15 @@ class Outdoors : public UniSim::Model
 {
 public:
     Outdoors(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
 private:
     // Parameters
-    double temperature, skyTemperature, windSpeed, windDirection, rh,
-    radiation, diffuseRadiation, co2;
+    double temperature, skyTemperature, windSpeed, rh,
+    radiation, diffuseRadiation, co2, soilTemperature;
 
     // Variables
-    double directRadiation, vp, mc;
+    double directRadiation, ah, sh;
 
 };
 } //namespace

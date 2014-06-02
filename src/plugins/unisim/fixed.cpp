@@ -7,36 +7,38 @@
 #include <usbase/variable.h>
 #include <usbase/decode_list.h>
 #include "fixed.h"
+#include "publish.h"
 
 namespace UniSim {
 
-namespace {
+PUBLISH(Fixed)
 
+    namespace {
 
-template <class T>
-bool allocateValue(Identifier id, QString s, QMap<Identifier, T> &buf, Fixed *parent) {
-    bool ok = isType<T>(s);
-    if (ok)
-        buf[id] = stringToValue<T>(s, parent);
-    return ok;
-}
+        template <class T>
+        bool allocateValue(Identifier id, QString s, QMap<Identifier, T> &buf, Fixed *parent) {
+            bool ok = isType<T>(s);
+            if (ok)
+                buf[id] = stringToValue<T>(s, parent);
+            return ok;
+        }
 
-template <class T>
-void allocateValues(QVector<T> &values, const QMap<Identifier, T> &buf, Fixed *parent) {
-    QMapIterator<Identifier, T> i(buf);
-    while(i.hasNext()) {
-        i.next();
-        values << i.value();
-    }
-    int ix = -1;
-    i.toFront();
-    while(i.hasNext()) {
-        ++ix; i.next();
-        new Parameter<T>(i.key(), &values[ix], values[ix], parent, "Fixed value");
-    }
-}
+        template <class T>
+        void allocateValues(QVector<T> &values, const QMap<Identifier, T> &buf, Fixed *parent) {
+            QMapIterator<Identifier, T> i(buf);
+            while(i.hasNext()) {
+                i.next();
+                values << i.value();
+            }
+            int ix = -1;
+            i.toFront();
+            while(i.hasNext()) {
+                ++ix; i.next();
+                new Parameter<T>(i.key(), &values[ix], values[ix], parent, "Fixed value");
+            }
+        }
 
-} // namespace
+    } // namespace
 
 
 Fixed::Fixed(Identifier name, QObject *parent)

@@ -11,7 +11,7 @@ namespace UniSim {
 
 QMap<Time::Unit, char> Time::_unitToChar;
 QMap<char, Time::Unit> Time::_charToUnit;
-QMap<Time::Unit, double> Time::unitToSeconds;
+QMap<Time::Unit, long long> Time::unitToSeconds;
 
 Time::Time(int time, Unit unit)
     : _time(time), _unit(unit)
@@ -45,14 +45,18 @@ Time::Unit Time::charToUnit(char ch, QObject *concerning) {
 }
 
 double Time::conversionFactor(Unit from, Unit to) {
+    return (from == to) ?  1. : Time(1,from).toSeconds()/double(Time(1,to).toSeconds());
+}
+
+long long Time::toSeconds() const {
     if (unitToSeconds.isEmpty()) {
-        unitToSeconds[Seconds] = 1.;
-        unitToSeconds[Minutes] = 60.;
-        unitToSeconds[Hours] = 60.*60;
-        unitToSeconds[Days] = 24.*60.*60;
-        unitToSeconds[Years] = 365.*24.*60.*60;
+        unitToSeconds[Seconds] = 1;
+        unitToSeconds[Minutes] = 60;
+        unitToSeconds[Hours] = 60*60;
+        unitToSeconds[Days] = 24*60*60;
+        unitToSeconds[Years] = 365*24*60*60;
     }
-    return (from == to) ?  1. : unitToSeconds[from]/unitToSeconds[to];
+    return _time*unitToSeconds[_unit];
 }
 
 

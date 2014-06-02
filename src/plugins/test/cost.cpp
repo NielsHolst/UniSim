@@ -5,10 +5,13 @@
 */
 #include <usbase/name.h>
 #include "cost.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace test{
+
+PUBLISH(Cost)
 
 Cost::Cost(Identifier name, QObject *parent)
 	: Model(name,parent) 

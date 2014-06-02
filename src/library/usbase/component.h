@@ -14,6 +14,15 @@
 #include "ref.h"
 #include "variable.h"
 
+#define Input(type, name, value)  (*(new Parameter<type>(#name, & name, type(value), this, "")))
+#define Input2(type, cppname, pubname, value)  (*(new Parameter<type>(#pubname, & cppname, type(value), this, "")))
+
+#define InputRef(type, name, ref) addParameterRef<type>(#name, & name, ref)
+#define InputRef2(type, cppname, pubname, ref) addParameterRef<type>(#pubname, & cppname, ref)
+
+#define Output(type, name) (*(new Variable<type>(#name, & name, this, "")))
+#define Output2(type, cppname, pubname) (*(new Variable<type>(#pubname, & cppname, this, "")))
+
 namespace UniSim{
 
 class ParameterBase;
@@ -42,7 +51,7 @@ public:
     void addParameterRef(Identifier name, T *valuePtr, QString reference);
 
     template <class T>
-    void addVariable(Identifier name, T *valuePtr, QString desc);
+    Variable<T>& addVariable(Identifier name, T *valuePtr, QString desc = "");
 
     virtual void amend() { }
     virtual void initialize() { }
@@ -51,6 +60,7 @@ public:
     virtual void cleanup() { }
     virtual void debrief() { }
 
+    void run();
     void deepAmend();
     void deepInitialize();
     void deepReset();
@@ -59,24 +69,19 @@ public:
     void deepDebrief();
 
     void followRedirections();
+    void resolveReferences();
 
     void setRecursionPolicy(Function function, RecursionPolicy policy);
     RecursionPolicy recursionPolicy(Function function) const;
 
 signals:
-    //! Signal provided for derived classes
-    /*! Use this signal to broadcast events, such as
-    \verbatim
-    emit event(crop, "harvest");
-    \endverbatim
-    */
     void event(QObject *sender, QString eventName);
-//    void pullValueChanged(PullVariableBase *var, ParameterBase *param);
-
-//private slots:
-//    void acceptPullVariableChanged(PullVariableBase *var, ParameterBase *param);
 
 private:
+    // inputs
+    int runSteps, runIterations;
+    // outputs
+    int runStep, runIteration;
     // data
     static QObject* _root;
     QMap<Function, RecursionPolicy> policy;
@@ -97,8 +102,8 @@ void Component::addParameterRef(Identifier name, T *valuePtr, QString reference)
 }
 
 template <class T>
-void Component::addVariable(Identifier name, T *valuePtr, QString desc) {
-    new Variable<T>(name, valuePtr, this, desc);
+Variable<T>& Component::addVariable(Identifier name, T *valuePtr, QString desc) {
+    return *(new Variable<T>(name, valuePtr, this, desc));
 }
 
 } //namespace

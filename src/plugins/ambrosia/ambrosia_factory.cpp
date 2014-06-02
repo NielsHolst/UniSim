@@ -4,40 +4,27 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "ambrosia_factory.h"
-#include "plant.h"
-#include "ambrosia_time.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace ambrosia{
+//    "The @F ambrosia plugin is an implementation of the phenology model for @I {Ambrosia artemisiifolia}, "
+//    "as described by @Cite{$label{Deen et al. 1998a}deen_et_al_1998a} and @Cite{$label{1998b}deen_et_al_1998b}";
 
-void AmbrosiaFactory::defineProducts() {
-    addProduct<Plant>("Plant", this, "Description pending");
-    addProduct<AmbrosiaTime>("AmbrosiaTime", this, "Description pending");
-}
-
-UniSim::Identifier AmbrosiaFactory::id() const {
+Identifier AmbrosiaFactory::id() const {
     return "ambrosia";
 }
 
-QString AmbrosiaFactory::description() const {
-    return
-    "!Exclude\n"
-    "The @F ambrosia plugin is an implementation of the phenology model for @I {Ambrosia artemisiifolia}, "
-    "as described by @Cite{$label{Deen et al. 1998a}deen_et_al_1998a} and @Cite{$label{1998b}deen_et_al_1998b}";
+QList<Identifier> AmbrosiaFactory::inventory() {
+    return productList().keys();
 }
 
-QStringList AmbrosiaFactory::authors() const {
-    return QStringList()
-        << "Niels";
+QObject* AmbrosiaFactory::create(Identifier className, Identifier objectName, QObject *parent) {
+    ProductList::const_iterator p = productList().find(className);
+    return (p == productList().end())
+            ? 0
+            : p.value()->create(objectName, parent);
 }
-
-QObject* AmbrosiaFactory::asQObject() {
-   return this;
-}
-
-#if QT_VERSION < 0x50000
-Q_EXPORT_PLUGIN2(ambrosia_factory, AmbrosiaFactory)
-#endif
 
 } //namespace

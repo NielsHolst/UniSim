@@ -7,10 +7,13 @@
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "scheduled.h"
 
 namespace UniSim{
-	
+
+PUBLISH(Scheduled)
+
 Scheduled::Scheduled(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

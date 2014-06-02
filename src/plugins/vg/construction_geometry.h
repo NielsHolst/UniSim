@@ -26,7 +26,7 @@ private:
 
     // Variables
     double width, groundArea, averageHeight,
-        coverAreaTotal, coverAreaSideWalls, coverAreaEndWalls, coverAreaRoof, coverAreaGables,
+        coverArea, coverPerGroundArea, sideWallsArea, endWallsArea, roofArea, gablesArea,
         volumeTotal, volumeBelowRoof, volumeRoof;
 };
 } //namespace

@@ -9,20 +9,39 @@
 #include <usbase/utilities.h>
 #include "control_element.h"
 #include "general.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(ControlElement)
+
+/*! \class ControlElement
+ * \brief Control elements which let _state_ approach _signal_ at a fixed rate
+ *
+ * Inputs
+ * ------
+ * - _rate_ is the rate at which _state_ approaches _signal_ [min<SUP>-1</SUP>]
+ *
+ * Outputs
+ * ------
+ * - see ControlElementBase
+
+ * Default dependencies
+ * ------------
+ * - see ControlElementBase
+ */
+
 ControlElement::ControlElement(Identifier name, QObject *parent)
     : ControlElementBase(name, parent)
 {
-    addParameter<double>(Name(rate), 0.1, "Rate at which state approaches signal (per minute)");
+    Input(double, rate, 0.1);
 }
 
 double ControlElement::change(double error) {
     if (error == 0.) return 0.;
-    double change = fabs(error)*(1. - negExp(rate*60*timeStepSecs/fabs(error)));
+    double change = fabs(error)*(1. - negExp(rate/60*timeStepSecs));
     return change*sign(error);
 }
 

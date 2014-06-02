@@ -367,10 +367,18 @@ void TestNamedObject::testSeekChildrenAndParentsJoker() {
     catch (Exception &ex) {
         QFAIL(qPrintable("Could not find one child and parent: " + ex.message()));
     }
-    QCOMPARE(found.size(), 2);
-    bool match1 = found[0]->valuePtr()==&femaleDogsSize && found[1]->valuePtr()==&femaleDogsWeight;
-    bool match2 = found[1]->valuePtr()==&femaleDogsSize && found[0]->valuePtr()==&femaleDogsWeight;
-    QVERIFY(match1 || match2);
+    QCOMPARE(found.size(), 2+4);
+    bool match1, match2;
+    for (auto var : found) {
+        match1 = var->valuePtr()==&femaleDogsSize;
+        if (match1) break;
+    }
+    QVERIFY(match1);
+    for (auto var : found) {
+        match2 = var->valuePtr()==&femaleDogsWeight;
+        if (match2) break;
+    }
+    QVERIFY(match2);
 }
 
 void TestNamedObject::testPeekOne() {
@@ -469,35 +477,43 @@ void TestNamedObject::testSeekParent() {
 }
 
 void TestNamedObject::testRelativeSelf() {
+//    QString path = Reference("./female[size]", dogs).absolute().toString();
     QString path = dogs->absolutePath("./female[size]");
     QCOMPARE(path.toLower(), QString("/animals/mammals/dogs/female[size]"));
 }
 
 void TestNamedObject::testRelativeSelfBare() {
+//    QString path = Reference(".[size]", dogs).absolute().toString();
     QString path = dogs->absolutePath(".[size]");
     QCOMPARE(path.toLower(), QString("/animals/mammals/dogs[size]"));
 }
 
 void TestNamedObject::testRelativeSibling() {
+//    QString path = Reference("../elephants/female[size]", dogs).absolute().toString();
     QString path = dogs->absolutePath("../elephants/female[size]");
     QCOMPARE(path.toLower(), QString("/animals/mammals/elephants/female[size]"));
 }
 
 void TestNamedObject::testRelativeSiblingBare() {
+//    QString path = Reference("..[size]", dogs).absolute().toString();
     QString path = dogs->absolutePath("..[size]");
     QCOMPARE(path.toLower(), QString("/animals/mammals[size]"));
 }
 
 void TestNamedObject::testRelativeFromRoot() {
+//    QString path = Reference("./reptiles[size]", animals).absolute().toString();
     QString path = animals->absolutePath("./reptiles[size]");
     QCOMPARE(path.toLower(), QString("/animals/reptiles[size]"));
 }
 
 void TestNamedObject::testRelativeAtRoot() {
+//    QString path = Reference("../mammals[size]]", reptiles).absolute().toString();
     QString path = reptiles->absolutePath("../mammals[size]");
+    QCOMPARE(path.toLower(), QString("/animals/mammals[size]"));
 }
 
 void TestNamedObject::testRelativeAtRootBare() {
+//    QString path = Reference("..[size]", reptiles).absolute().toString();
     QString path = reptiles->absolutePath("..[size]");
     QCOMPARE(path.toLower(), QString("/animals[size]"));
 }
@@ -505,6 +521,7 @@ void TestNamedObject::testRelativeAtRootBare() {
 void TestNamedObject::testRelativeBeyondRoot() {
     bool excepted = false;
     try {
+//        Reference("../..[size]", reptiles).absolute();
         reptiles->absolutePath("../..[size]");
     }
     catch (Exception &) {
@@ -514,6 +531,7 @@ void TestNamedObject::testRelativeBeyondRoot() {
 }
 
 void TestNamedObject::testRelativeNot() {
+//    QString path = Reference("elephants/female[size]", dogs).absolute().toString();
     QString path = dogs->absolutePath("elephants/female[size]");
     QCOMPARE(path.toLower(), QString("elephants/female[size]"));
 }

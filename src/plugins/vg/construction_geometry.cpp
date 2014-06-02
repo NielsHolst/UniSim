@@ -7,36 +7,69 @@
 #include <QMap>
 #include <usbase/exception.h>
 #include "construction_geometry.h"
+#include "publish.h"
 
 using std::tan;
 using std::hypot;
+
 using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(ConstructionGeometry)
+/*! \class ConstructionGeometry
+ * \brief Model of the greenhouse construction geometry
+ *
+ * The greenhouse consists of one or more spans of equal size.
+ *
+ * Inputs
+ * ------
+ * - _numSpans_ is the number of spans [1,2,...]
+ * - _spanWidth_ is the width of a span [m]
+ * - _length_  is the length a span [m]
+ * - _height_ is the height of the walls [m]
+ * - _roofPitch_ is the slope of the roof [degrees]
+ *
+ * Outputs
+ * -------
+ * - _width_ is the width of the greenhouse [m]
+ * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
+ * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
+ * - _coverArea_ is the area of the green house cover (walls + roof) [m<SUP>2</SUP>]
+ * - _coverPerGroundArea_ is _coverArea_ divided by _groundArea_ [m<SUP>2</SUP>/[m<SUP>2</SUP>]]
+ * - _sideWallsArea_ is the area of the greenhouse side walls (facing the outside) [m<SUP>2</SUP>]
+ * - _endWallsArea_ is the area of the greenhouse end walls (excluding the triangular gables) [m<SUP>2</SUP>]
+ * - _roofArea_ is the area of the roof (slooping surfaceson top of each span) [m<SUP>2</SUP>]
+ * - _gablesArea_ is the area of the triangular gables at the ends of each span [m<SUP>2</SUP>]
+ * - _volumeTotal_ is the greenhouse total volume [m<SUP>3</SUP>]
+ * - _volumeBelowRoof_ is the box-shaped volume on top of the ground area and enclosed by the four walls [m<SUP>3</SUP>]
+ * - _volumeRoof_ is total of all the the prism-shaped volumes, one for each span, enclosed by roof and gables [m<SUP>3</SUP>]
+
+ * Default dependencies
+ * ------------
+ * - none
+ */
+
 ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameter<int>(Name(numSpans), 1, "Number of adjacent spans");
-    addParameter<double>(Name(spanWidth), 20., "Width (m)");
-    addParameter<double>(Name(length), 50., "Length (m)");
-    addParameter<double>(Name(height), 4., "Height (m)");
-    addParameter<double>(Name(roofPitch), 26., "Roof pitch (degrees)");
-
-    addVariable<double>(Name(groundArea), "Area (horizontal rectangle) of ground occupied (m2)");
-    addVariable<double>(Name(averageHeight), "Average height of greenhouse (m)");
-
-    addVariable<double>(Name(width), "Total width of all spans (m)");
-    addVariable<double>(Name(coverAreaSideWalls), " Area (vertical rectangles) of the two sides (m2)");
-    addVariable<double>(Name(coverAreaEndWalls), " Area (vertical rectangles) of the two ends (m2)");
-    addVariable<double>(Name(coverAreaGables), " Area (vertical triangles) of the gables (m2)");
-    addVariable<double>(Name(coverAreaRoof), "Area (sloping rectangles) of the roof sides (m2)");
-    addVariable<double>(Name(coverAreaTotal), "Total area of greenhouse cover (m2)");
-
-    addVariable<double>(Name(volumeBelowRoof), " Volume (box) spanned by the four sides (m3)");
-    addVariable<double>(Name(volumeRoof), "Volume (prism) of the roof (m3)");
-    addVariable<double>(Name(volumeTotal), "Total volume (m3)");
-
+    Input(int, numSpans, 1);
+    Input(double, spanWidth, 20.);
+    Input(double, length, 50.);
+    Input(double, height, 4.);
+    Input(double, roofPitch, 26.);
+    Output(double, groundArea);
+    Output(double, averageHeight);
+    Output(double, width);
+    Output(double, sideWallsArea);
+    Output(double, endWallsArea);
+    Output(double, gablesArea);
+    Output(double, roofArea);
+    Output(double, coverArea);
+    Output(double, coverPerGroundArea);
+    Output(double, volumeBelowRoof);
+    Output(double, volumeRoof);
+    Output(double, volumeTotal);
 }
 
 void ConstructionGeometry::initialize() {
@@ -45,15 +78,16 @@ void ConstructionGeometry::initialize() {
        roofWidth = hypot(roofHeight, spanWidth/2.);
     width = numSpans*spanWidth;
     groundArea = width*length;
-    coverAreaSideWalls = 2*length*height;
-    coverAreaEndWalls = 2*width*height;
+    sideWallsArea = 2*length*height;
+    endWallsArea = 2*width*height;
 
-    coverAreaGables = numSpans*roofHeight*spanWidth,
-    coverAreaRoof = 2*numSpans*roofWidth*length;
-    coverAreaTotal = coverAreaSideWalls + coverAreaEndWalls + coverAreaGables + coverAreaRoof;
+    gablesArea = numSpans*roofHeight*spanWidth,
+    roofArea = 2*numSpans*roofWidth*length;
+    coverArea = sideWallsArea + endWallsArea + gablesArea + roofArea;
+    coverPerGroundArea = coverArea/groundArea;
 
     volumeBelowRoof = groundArea*height;
-    volumeRoof = coverAreaGables*length;
+    volumeRoof = gablesArea*length/2;
     volumeTotal = volumeBelowRoof + volumeRoof;
 
     averageHeight = volumeTotal/groundArea;

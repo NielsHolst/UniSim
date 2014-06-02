@@ -1,0 +1,7 @@
+            Simulation animal() {
+                Mammal whale(a=b)
+                Insect wasp(c=d) {
+                    Stage egg()
+                }
+            }
+

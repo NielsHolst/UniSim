@@ -12,7 +12,6 @@ namespace ambrosia{
 
 class AmbrosiaTime : public UniSim::Model
 {
-	//Q_OBJECT
 public: 
     AmbrosiaTime(UniSim::Identifier name, QObject *parent=0);
 	// standard methods

@@ -4,9 +4,12 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <iostream>
+#include "publish.h"
 #include "random_normal.h"
 
 namespace UniSim{
+
+PUBLISH(RandomNormal)
 
 RandomNormal::RandomNormal(Identifier name, QObject *parent)
     : RandomBase(name, parent), distribution(0), variate(0)

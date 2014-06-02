@@ -31,31 +31,25 @@ HEADERS += \
     $${US_BASE}/test/test_parameter.h \
     $${US_BASE}/test/test_parameter_vector.h \
     $${US_BASE}/test/test_push_variable.h \
+    $${US_BASE}/test/test_reference.h \
     $${US_BASE}/test/test_root_solver.h \
     $${US_BASE}/test/test_strata.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
+    $${US_ENGINE}/test/test_ast.h \
     $${US_ENGINE}/test/test_builder.h \
     $${US_ENGINE}/test/test_mega_factory.h \
     $${US_ENGINE}/test/test_simulation.h \
     $${US_ENGINE}/test/test_simulation_maker.h \
     $${US_ENGINE}/test/test_simulation_maker_from_file.h \
-    $${US_ENGINE}/test/test_simulation_trickle.h \
-    $${US_ENGINE}/test/trickle_box.h \
-    $${US_ENGINE}/test/trickle_sequence.h \
     $${US_ENGINE}/test/test_xml_node.h \
-    $${US_PLUGINS}/intercom/optimize_allocation.h \
-    $${US_PLUGINS}/intercom/test/test_plant.h \
-    $${US_PLUGINS}/unisim/anonymous_model.h \
+#    $${US_PLUGINS}/intercom/optimize_allocation.h \
+#    $${US_PLUGINS}/intercom/test/test_plant.h \
     $${US_PLUGINS}/unisim/distributed_delay.h \
     $${US_PLUGINS}/unisim/distributed_delay_2d.h \
     $${US_PLUGINS}/unisim/distributed_delay_base.h \
     $${US_PLUGINS}/unisim/forage.h \
-    $${US_PLUGINS}/unisim/functional_response_g_b.h \
-    $${US_PLUGINS}/unisim/stage.h \
     $${US_PLUGINS}/unisim/stage_base.h \
-    $${US_PLUGINS}/unisim/stage_and_phase.h \
-    $${US_PLUGINS}/unisim/steps.h \
     $${US_PLUGINS}/unisim/test/test_calendar.h \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.h \
     $${US_PLUGINS}/unisim/test/test_distributed_delay_2d.h \
@@ -70,12 +64,16 @@ HEADERS += \
     $${US_PLUGINS}/unisim/test/test_scheduled.h \
     $${US_PLUGINS}/unisim/test/test_stage.h \
     $${US_PLUGINS}/unisim/test/test_sum.h \
-    $${US_PLUGINS}/unisim/output_plot.h \
-    $${US_PLUGINS}/unisim/plot.h \
+#    $${US_PLUGINS}/unisim/output_plot.h \
+#    $${US_PLUGINS}/unisim/plot.h \
     $${US_PLUGINS}/unisim/test/test_crosstab.h \
-    $${US_PLUGINS}/unisim/test/test_output_plot.h \
-    $${US_PLUGINS}/unisim/test/test_plot.h \
+#    $${US_PLUGINS}/unisim/test/test_output_plot.h \
+#    $${US_PLUGINS}/unisim/test/test_plot.h \
     $${US_PLUGINS}/unisim/test/test_table.h \
+    $${US_PLUGINS}/vg/test/create.h \
+    $${US_PLUGINS}/vg/test/test_adjustable_setpoint.h \
+    $${US_PLUGINS}/vg/test/test_construction_geometry.h \
+    $${US_PLUGINS}/vg/test/test_transmission.h \
     ../graph_generator.h \
     main_window_stub.h \
     test_numeric_limits.h
@@ -95,29 +93,23 @@ SOURCES += \
     $${US_BASE}/test/test_push_variable.cpp \
     $${US_BASE}/test/test_root_solver.cpp \
     $${US_BASE}/test/test_strata.cpp \
+    $${US_BASE}/test/test_reference.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
+    $${US_ENGINE}/test/test_ast.cpp \
     $${US_ENGINE}/test/test_builder.cpp \
     $${US_ENGINE}/test/test_mega_factory.cpp \
     $${US_ENGINE}/test/test_simulation.cpp \
     $${US_ENGINE}/test/test_simulation_maker.cpp \
     $${US_ENGINE}/test/test_simulation_maker_from_file.cpp \
-    $${US_ENGINE}/test/test_simulation_trickle.cpp \
-    $${US_ENGINE}/test/trickle_box.cpp \
-    $${US_ENGINE}/test/trickle_sequence.cpp \
     $${US_ENGINE}/test/test_xml_node.cpp \
-    $${US_PLUGINS}/intercom/optimize_allocation.cpp \
-    $${US_PLUGINS}/intercom/test/test_plant.cpp \
-    $${US_PLUGINS}/unisim/anonymous_model.cpp \
+#    $${US_PLUGINS}/intercom/optimize_allocation.cpp \
+#    $${US_PLUGINS}/intercom/test/test_plant.cpp \
     $${US_PLUGINS}/unisim/distributed_delay.cpp \
     $${US_PLUGINS}/unisim/distributed_delay_2d.cpp \
     $${US_PLUGINS}/unisim/distributed_delay_base.cpp \
     $${US_PLUGINS}/unisim/forage.cpp \
-    $${US_PLUGINS}/unisim/functional_response_g_b.cpp \
-    $${US_PLUGINS}/unisim/stage.cpp \
     $${US_PLUGINS}/unisim/stage_base.cpp \
-    $${US_PLUGINS}/unisim/stage_and_phase.cpp \
-    $${US_PLUGINS}/unisim/steps.cpp \
     $${US_PLUGINS}/unisim/test/test_calendar.cpp \
     $${US_PLUGINS}/unisim/test/test_distributed_delay.cpp \
     $${US_PLUGINS}/unisim/test/test_distributed_delay_2d.cpp \
@@ -132,12 +124,16 @@ SOURCES += \
     $${US_PLUGINS}/unisim/test/test_scheduled.cpp \
     $${US_PLUGINS}/unisim/test/test_stage.cpp \
     $${US_PLUGINS}/unisim/test/test_sum.cpp \
-    $${US_PLUGINS}/unisim/output_plot.cpp \
-    $${US_PLUGINS}/unisim/plot.cpp \
+#    $${US_PLUGINS}/unisim/output_plot.cpp \
+#    $${US_PLUGINS}/unisim/plot.cpp \
     $${US_PLUGINS}/unisim/test/test_crosstab.cpp \
-    $${US_PLUGINS}/unisim/test/test_output_plot.cpp \
-    $${US_PLUGINS}/unisim/test/test_plot.cpp \
+#    $${US_PLUGINS}/unisim/test/test_output_plot.cpp \
+#    $${US_PLUGINS}/unisim/test/test_plot.cpp \
     $${US_PLUGINS}/unisim/test/test_table.cpp \
+    $${US_PLUGINS}/vg/test/create.cpp \
+    $${US_PLUGINS}/vg/test/test_adjustable_setpoint.cpp \
+    $${US_PLUGINS}/vg/test/test_construction_geometry.cpp \
+    $${US_PLUGINS}/vg/test/test_transmission.cpp \
     ../graph_generator.cpp \
     test_numeric_limits.cpp \
     main.cpp

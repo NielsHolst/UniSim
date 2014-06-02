@@ -6,10 +6,13 @@
 #include <usbase/integrator.h>
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "range.h"
 
 namespace UniSim{
-	
+
+PUBLISH(Range)
+
 Range::Range(Identifier name, QObject *parent)
     : Model(name, parent)
 {

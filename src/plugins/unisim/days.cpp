@@ -6,8 +6,11 @@
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "days.h"
+#include "publish.h"
 
-namespace UniSim{
+namespace UniSim {
+
+PUBLISH(Days)
 
 Days::Days(UniSim::Identifier name, QObject *parent)
     : PhysiologicalTime(name, parent)

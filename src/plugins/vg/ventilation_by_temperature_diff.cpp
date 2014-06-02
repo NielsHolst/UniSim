@@ -6,6 +6,7 @@
 */
 #include <stdlib.h>
 #include "general.h"
+#include "publish.h"
 #include "ventilation_by_temperature_diff.h"
 #include <usbase/utilities.h>
 
@@ -14,13 +15,35 @@ using namespace UniSim;
 
 namespace vg {
 	
+PUBLISH(VentilationByTemperatureDiff)
+
+/* \class VentilationByTemperatureDiff
+ * \brief Check this! Calculates ventilation opening from temperature diffence to outdoors
+ *
+ * Inputs
+ * ------
+ * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
+ * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
+ * - _ventilationMax_ is the maximum ventilation opening [0;100]
+ *
+ * Outputs
+ * ------
+ * - _signal_ is the desired ventilation opening [0;100]
+
+ * Dependencies
+ * ------------
+ * - an _outdoors_ model with a _temperature_ port [<SUP>o</SUP>C]
+ * - an _indoors/temperature_ model with a _value_ port [<SUP>o</SUP>C]
+ * - a _maximum_ sibling model with a _signal_ port [0;100]
+ */
+
 VentilationByTemperatureDiff::VentilationByTemperatureDiff(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(indoorsTemperature), "indoors/temperature[value]");
-    addParameterRef<double>(Name(outdoorsTemperature), "outdoors[temperature]");
-    addParameterRef<double>(Name(ventilationMax), "../maximum[signal]");
-    addVariable<double>(Name(signal), "The desired ventilation opening [0;100]");
+    InputRef(double, outdoorsTemperature, "outdoors[temperature]");
+    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
+    InputRef(double, ventilationMax, "../maximum[signal]");
+    Output(double, signal);
 }
 
 void VentilationByTemperatureDiff::reset() {

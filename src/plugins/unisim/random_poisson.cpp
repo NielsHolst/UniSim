@@ -3,9 +3,12 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include "publish.h"
 #include "random_poisson.h"
 
 namespace UniSim{
+
+PUBLISH(RandomPoisson)
 
 RandomPoisson::RandomPoisson(Identifier name, QObject *parent)
     : RandomBase(name, parent), distribution(0), variate(0)

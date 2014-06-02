@@ -10,11 +10,19 @@
 #include <usbase/random.h>
 #include <usengine/simulation.h>
 #include "pollen_onset_date_from_maize_obs.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace ecotox {
 
+PUBLISH(PollenOnsetDateFromMaizeObs)
+
+/*! \class PollenOnsetDateFromMaizeObs
+ * \brief Onset of pollen depositon sampled from maize observations
+The onset of pollen deposition is sampled from a file with at least two columns named _Date_ and _Onset_.
+A date is picked at random from within the observations of the current year (determined by the Calendar model).)
+ */
 PollenOnsetDateFromMaizeObs::PollenOnsetDateFromMaizeObs(UniSim::Identifier name, QObject *parent)
     : PollenOnsetDate(name, parent)
 {

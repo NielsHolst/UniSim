@@ -17,9 +17,12 @@
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
 #include "distributed_delay.h"
+#include "publish.h"
 #include "stage.h"
 	
 namespace UniSim {
+
+PUBLISH(Stage)
 
 Stage::Stage(UniSim::Identifier name, QObject *parent)
     : StageBase(name, parent), dd(0)

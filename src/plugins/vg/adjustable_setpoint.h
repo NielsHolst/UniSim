@@ -20,7 +20,7 @@ public:
 private:
     // Parameters
     double baseSetpoint, adjustment;
-    QString adjustmentDirection;
+    QString direction;
 
     // Variables
     double setpoint;

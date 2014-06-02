@@ -5,9 +5,12 @@
 */
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
+#include "publish.h"
 #include "sub_steps.h"
 
 namespace UniSim{
+
+PUBLISH(SubSteps)
 
 SubSteps::SubSteps(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)

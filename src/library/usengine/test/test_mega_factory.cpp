@@ -34,7 +34,7 @@ void TestMegaFactory::testCreateModelNoClass() {
 
 void TestMegaFactory::testCreateModelWrongClass() {
     try {
-        MegaFactory::create<Output>("UniSim::StageClass", "larva", 0);
+        MegaFactory::create<OutputBase>("UniSim::StageClass", "larva", 0);
         QFAIL("Exception expected");
     }
     catch (Exception &ex) {

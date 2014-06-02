@@ -16,6 +16,82 @@ using namespace std;
 
 namespace vg {
 
+// Amount of water vapour
+
+//! Compute absolute humidity from temperature and specific humidity
+/*!	\param temperature (oC)
+    \param specific humidity (kg/kg)
+    \return absolute humidity (kg/m3)
+ */
+double ahFromSh(double sh) {
+    return sh*RhoAir;
+}
+
+//! Compute absolute humidity from temperature and vapour pressure
+/*!	\param temperature (oC)
+    \param vapour pressure (Pa)
+    \return absolute humidity (kg/m3)
+ */
+double ahFromVp(double temperature, double vp) {
+    return vp*Mwater/(R*(temperature + T0));
+}
+
+//! Compute specific humidity from temperature and absolute humidity
+/*!	\param temperature (oC)
+    \param absolute humidity (kg/m3)
+    \return specific humidity (kg/kg)
+ */
+double shFromAh(double ah) {
+    return ah/RhoAir;
+}
+
+//! Compute specific humidity from temperature and vapour pressure
+/*!	\param temperature (oC)
+    \param vapour pressure (Pa)
+    \return specific humidity (kg/kg)
+ */
+double shFromVp(double temperature, double vp) {
+    double ah = ahFromVp(temperature, vp);
+    return shFromAh(ah);
+}
+
+//! Compute vapour pressure from temperature and absolute humidity
+/*!	\param temperature (oC)
+    \param absolute humidity (kg/m3)
+    \return vapour pressure (Pa)
+ */
+double vpFromAh(double temperature, double ah) {
+    return ah/Mwater*(R*(temperature + T0));
+}
+
+//! Compute vapour pressure from temperature and specific humidity
+/*!	\param temperature (oC)
+    \param specific humidity (kg/kg)
+    \return vapour pressure (Pa)
+ */
+double vpFromSh(double temperature, double sh) {
+    double ah = ahFromSh(sh);
+    return vpFromAh(temperature,ah);
+}
+
+// Saturated amount of water vapour
+
+//! Compute saturated absolute humidity from temperature
+/*!	\param temperature (oC)
+    \return absolute humidity (kg/m3)
+ */
+double sah(double temperature) {
+    return ahFromVp(temperature, svp(temperature));
+}
+
+//! Compute saturated specific humidity from temperature
+/*!	\param temperature (oC)
+    \return specific humidity (kg/kg)
+ */
+double ssh(double temperature) {
+    return shFromVp(temperature, svp(temperature));
+}
+
 //! Compute saturated water vapour pressure from temperature
 /*!	\param temperature (oC)
     \return saturated water vapour pressure (Pa)
@@ -37,31 +113,108 @@ double svpSlope(double temperature) {
     return 133.32*(a +  b*0.0583)*exp(c);
 }
 
-//! Compute saturated moisture content from temperature
+// Relative measures of water vapour
+
+//! Compute relative humidity from temperature and absolute humidity
 /*!	\param temperature (oC)
-    \return moisture content (g/m3)
+    \param absolute humidity (kg/m3)
+    \return relative humidity [0;100]
  */
-double saturatedMoistureContent(double temperature) {
-    return moistureContent(temperature, svp(temperature));
+double rhFromAh(double temperature, double ah) {
+    return 100*ah/sah(temperature);
 }
 
-//! Compute water vapour pressure from dry air temperature and r.h.
+//! Compute relative humidity from temperature and specific humidity
 /*!	\param temperature (oC)
-    \param rh relative humidity (%)
-    \return water vapour pressure (Pa)
+    \param specific humidity (kg/kg)
+    \return relative humidity [0;100]
  */
-double vp(double temperature, double rh) {
-    return rh*svp(temperature)/100;
+double rhFromSh(double temperature, double sh) {
+    return 100*sh/ssh(temperature);
 }
 
-//! Compute absolute (or 'specific') humidity from dry air temperature and r.h.
+//! Compute relative humidity from temperature and vapour pressure
 /*!	\param temperature (oC)
-    \param rh relative humidity (%)
-    \return absolute humidity (g/g)
+    \param vapour pressure (Pa)
+    \return relative humidity [0;100]
  */
-double ah(double temperature, double rh) {
-    return 18/28.8*(svp(temperature)*rh)/(P0 - svp(temperature)*rh);
+double rhFromVp(double temperature, double vp) {
+    return 100*vp/svp(temperature);
 }
+
+//! Compute absolute humidity from temperature and relative humidity
+/*!	\param temperature (oC)
+    \param relative humidity [0;100]
+    \return absolute humidity (kg/m3)
+ */
+double ahFromRh(double temperature, double rh) {
+    return rh/100*sah(temperature);
+}
+
+//! Compute specific humidity from temperature and relative humidity
+/*!	\param temperature (oC)
+    \param relative humidity [0;100]
+    \return specific humidity (kg/kg)
+ */
+double shFromRh(double temperature, double rh) {
+    return rh/100*ssh(temperature);
+}
+
+//! Compute vapour pressure from temperature and relative humidity
+/*!	\param temperature (oC)
+    \param relative humidity [0;100]
+    \return vapour pressure (Pa)
+ */
+double vpFromRh(double temperature, double rh) {
+    return rh/100*svp(temperature);
+}
+
+//! Compute absolute humidity Delta X from temperature and relative humidity
+/*!	\param temperature (oC)
+    \param relative humidity [0;100]
+    \return absolute humidity Delta X (kg/m3)
+ */
+double adxFromRh(double temperature, double rh) {
+    double ah = ahFromRh(temperature, rh);
+    return sah(temperature) - ah;
+}
+
+//! Compute specific humidity Delta X from temperature and relative humidity
+/*!	\param temperature (oC)
+    \param relative humidity [0;100]
+    \return specific humidity Delta X (kg/kg)
+ */
+double sdxFromRh(double temperature, double rh) {
+    double sh = shFromRh(temperature, rh);
+    return ssh(temperature) - sh;
+}
+
+//! Compute vapour pressure deficit from temperature and relative humidity
+/*!	\param temperature (oC)
+    \param relative humidity [0;100]
+    \return vapour pressure deficit (Pa)
+ */
+double vpdFromRh(double temperature, double rh) {
+    double vp = vpFromRh(temperature, rh);
+    return svp(temperature) - vp;
+}
+
+double rhFromAdx(double temperature, double adx) {
+    double ah = sah(temperature) - adx;
+    return rhFromAh(temperature, ah);
+}
+
+double rhFromSdx(double temperature, double sdx) {
+    double sh = ssh(temperature) - sdx;
+    return rhFromSh(temperature, sh);
+}
+
+double rhFromVpd(double temperature, double vpd) {
+    double vp = svp(temperature) - vpd;
+    return rhFromVp(temperature, vp);
+}
+
+// Other
 
 //! Compute dew point temperature from temperature and r.h.
 /*! Calculated as an inverse function of p_satu.
@@ -70,7 +223,7 @@ double ah(double temperature, double rh) {
     \return dew point temperature (oC)
  */
 double Tdew(double temperature, double rh) {
-    double vp = vg::vp(temperature, rh);
+    double vp = vpFromRh(temperature, rh);
     const double k1 = 133.32,
         k2 = 1.0887,
         k3 = 276.4,
@@ -79,74 +232,8 @@ double Tdew(double temperature, double rh) {
     return (k5*log(vp/k1) - k3) / (log(vp/k1)*k4 - k2) - T0;
 }
 
-//! Compute vapour pressure deficit from temperature and r.h.
-/*!	\param temperature (oC)
-    \param rh relative humidity (%)
-    \return vapour pressure deficit (Pa)
- */
-double vpd(double temperature, double rh) {
-    return svp(temperature) - vp(temperature,rh);
-}
-
-//! Compute moisture deficit from temperature and humidity
-/*!	\param temperature (oC)
-    \param rh relative humidity (%)
-    \return moisture deficit (g/m3)
- */
-double moistureDeficit(double temperature, double rh) {
-    return moistureContent(temperature, vpd(temperature,rh));
-}
-
-//! Compute moisture content from temperature and water vapour pressure
-/*!	\param temperature (oC)
-    \param vp water vapour pressure (Pa)
-    \return moisture content (g/m3)
- */
-double moistureContent(double temperature, double vp) {
-    return vp*Mwater/(R*(temperature + T0));
-}
-
-//! Compute absolute humidity deficit ('delta X') from temperature and r.h.
-/*!	\param temperature (oC)
-    \param rh relative humidity (%)
-    \return absolute humidity deficit (g/kg)
- */
-double ahDeficit(double temperature, double rh) {
-    return moistureDeficit(temperature,rh)/RhoAir;
-}
-
-//! Compute relative humidity from temperature and moisture content
-/*!	\param temperature (oC)
-    \param moistureContent (g/m3)
-    \return relative humidity (%)
- */
-double rhFromMc(double temperature, double moistureContent) {
-    double ratio = moistureContent/saturatedMoistureContent(temperature);
-    return UniSim::minMax(0., ratio, 1.)*100;
-}
-
-//! Compute relative humidity from temperature and moisture deficit
-/*!	\param temperature (oC)
-    \param moistureDeficit (g/m3)
-    \return relative humidity (%)
- */
-double rhFromMd(double temperature, double moistureDeficit) {
-    double T = temperature + T0;
-    double xSat = Mwater/(R*T)*svp(T);
-    double xGh = xSat - moistureDeficit;
-    return 100.*xGh/xSat;
-}
-
-//! Compute proportional control
-/*! Returns a number in the range [0;maxResponse] increasing with input. If input
-    is <= 0 then zero is returned.
-    \param input that controls the response (any unit)
-    \param pBand that determines swiftness of response (in units of response/input)
-    \param maxResponse (in response units)
-    \return response to input (in response units)
-*/
-double propControl(double input, double pBand, double maxResponse) {
-    return (input > 0) ? maxResponse*(1 - exp(-input/pBand/maxResponse)) : 0.;
+double virtualTemperatureFromAh(double temperature, double ah) {
+    return (temperature+T0)*(1+0.608*shFromAh(ah));
 }
 
 } //namespace

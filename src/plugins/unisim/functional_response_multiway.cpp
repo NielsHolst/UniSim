@@ -5,6 +5,7 @@
 */
 #include <iostream>
 #include <usbase/data_grid.h>
+#include <usbase/reference.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
 #include "functional_response_multiway.h"
@@ -12,7 +13,6 @@
 using namespace std;
 
 namespace UniSim {
-
 
 FunctionalResponseMultiway::FunctionalResponseMultiway(Identifier name, QObject *parent)
     : Model(name, parent), am(0)
@@ -67,8 +67,10 @@ void FunctionalResponseMultiway::createLinks(Links &links, QStringList refs) {
 void FunctionalResponseMultiway::extractNames(QStringList &names, QStringList refs) {
     names.clear();
     for (int i = 0; i < refs.size(); ++i) {
-        QStringList parts = splitParentChildExpression(refs[i], this);
-        names << parts[0];
+        Reference ref{refs.at(i), this};
+        names << ref.path();
+//        QStringList parts = splitParentChildExpression(refs[i], this);
+//        names << parts[0];
     }
 }
 

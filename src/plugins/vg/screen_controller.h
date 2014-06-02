@@ -6,7 +6,6 @@
 */
 #ifndef VG_SCREEN_CONTROLLER_H
 #define VG_SCREEN_CONTROLLER_H
-
 #include <usbase/model.h>
 
 namespace vg {
@@ -15,13 +14,15 @@ class ScreenController : public UniSim::Model
 {
 public:
     ScreenController(UniSim::Identifier name, QObject *parent);
-    void amend();
+    void reset();
     void update();
-private:
+protected:
     // Parameters
-    double maxSignalAtHighHumidity;
+    double followSignal, suggestedSignal;
+    bool conditionsOn, periodsOn;
 
-    // Links
+    // Variable
+    double signal;
 };
 } //namespace
 

@@ -10,57 +10,15 @@
 #include "parameter_base.h"
 #include "utilities.h"
 
-/*! \class UniSim::Component
-    \brief The %Component class provides the basic building block to construct models.
-
-    Component is used as a base class to derive specific building blocks for your own modelling. The derived
-    classes will usually add data members to represent parameters, state and input variables.
-
-    Components follow the composite pattern by which Component objects are arranged in parent-child
-    relationships.
-
-    The state of a Component should only be changed through its five transformation functions:
-    initialize(), reset(), update(), cleanup() and debrief().
-
-    The transformation functions also exist in a recursive version (with a 'deep' in the function
-    name, in which the invocation is forwarded recursively to the children and their descendants.
-    You can control the order of invocation for each parent-child relationship by setting the RecursionPolicy.
-
-    Upon creation and subsequent initialization of all components, the transformations are effected by
-    Simulation::execute:
-
-    \verbatim
-    client code {
-        .
-        .
-        create all components;
-        initialize all components;
-        simulation->execute();
-        .
-        .
-    }
-
-    Simulation::execute() {
-        loop {
-            reset all components;
-            loop {
-                update all components;
-            }
-            cleanup all components;
-        }
-        debrief all components;
-    }
-    \endverbatim
-
-    Thus you program the functionality of your derived components by redefining any of the five
-    transformation functions which are all defined empty in the Component class.
-*/
-
 namespace UniSim{
 
 Component::Component(Identifier name, QObject *parent)
     : NamedObject(name, parent)
 {
+    Input(int, runSteps, 1);
+    Input(int, runIterations, 1);
+    Output(int, runStep);
+    Output(int, runIteration);
     setRecursionPolicy(Component::AllFunctions, Component::ChildrenFirst);
 }
 
@@ -99,6 +57,13 @@ void Component::followRedirections() {
         parameters[i]->followRedirection();
 }
 
+void Component::resolveReferences() {
+    for (auto var : seekChildren<VariableBase*>("*"))
+        var->resolveReference();
+    for (auto comp : seekChildren<Component*>("*"))
+        comp->resolveReferences();
+}
+
 //! Amends this and all children according to the RecursionPolicy.
 void Component::deepAmend() {
     parameters = seekChildren<ParameterBase*>("*");
@@ -107,9 +72,9 @@ void Component::deepAmend() {
 
 //! Initializes this and all children according to the RecursionPolicy.
 void Component::deepInitialize() {
-    QList<QObject*> before= seekDescendants<QObject*>("*");
+    auto before= seekDescendants<NamedObject*>("*");
     call(this, &Component::initialize, &Component::deepInitialize, recursionPolicy(Component::Initialize));
-    QList<QObject*> after = seekDescendants<QObject*>("*");
+    auto after = seekDescendants<NamedObject*>("*");
 
     if (before.size() != after.size()) {
         QString msg("It is illegal to create children in initialize(). "
@@ -162,11 +127,21 @@ Component::RecursionPolicy Component::recursionPolicy(Function function) const {
     return policy[function];
 }
 
-//void Component::acceptPullVariableChanged(PullVariableBase *variable,
-//                                          ParameterBase *parameter) {
-//    parameter->setValueFromString(variable->toVariant().toString());
-//}
-
+void Component::run() {
+    runIteration = 0;
+    deepInitialize();
+    while (runIteration < runIterations) {
+        ++runIteration;
+        runStep = 0;
+        deepReset();
+        while (runStep < runSteps) {
+            ++runStep;
+            deepUpdate();
+        }
+        deepCleanup();
+    }
+    deepDebrief();
+}
 
 } //namespace
 

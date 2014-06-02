@@ -9,10 +9,13 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
+#include "publish.h"
 #include "time_limited.h"
 
 namespace UniSim{
-	
+
+PUBLISH(TimeLimited)
+
 TimeLimited::TimeLimited(Identifier name, QObject *parent)
     : Integrator(name, parent)
 {

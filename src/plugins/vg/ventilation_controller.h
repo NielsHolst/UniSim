@@ -19,13 +19,14 @@ public:
     void update();
 private:
     // Parameters
-    double windSideProportion, Tventilation,
-        windSpeed, indoorsTemperature, outdoorsTemperature,
-        maxSignal, byTemperature, byHumidity, byTemperatureDiff;
+    double windSideProportion,
+        frostThreshold, outdoorsTemperature,
+        maxSignal, byTemperature, byHumidity, byWind;
     // Variables
     double leeSideSignal, windSideSignal;
+
     // Methods
-    double windFactor();
+    bool tooColdOutdoors() const;
 };
 } //namespace
 

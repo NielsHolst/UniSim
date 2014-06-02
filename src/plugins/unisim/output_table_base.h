@@ -13,7 +13,7 @@
 
 namespace UniSim{
 
-class OutputTableBase : public Output
+class OutputTableBase : public OutputBase
 {
 	//Q_OBJECT
 public:

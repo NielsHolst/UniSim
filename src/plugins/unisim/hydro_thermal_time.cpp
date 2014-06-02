@@ -6,8 +6,11 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "hydro_thermal_time.h"
+#include "publish.h"
 
 namespace UniSim{
+
+PUBLISH(HydroThermalTime)
 
 HydroThermalTime::HydroThermalTime(UniSim::Identifier name, QObject *parent)
     : DayDegrees(name, parent)

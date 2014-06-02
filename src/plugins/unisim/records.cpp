@@ -10,9 +10,12 @@
 #include <usbase/random.h>
 #include <usbase/utilities.h>
 #include <usengine/simulation.h>
+#include "publish.h"
 #include "records.h"
 
 namespace UniSim {
+
+PUBLISH(Records)
 
 Records::Records(Identifier name, QObject *parent)
     : Model(name, parent)

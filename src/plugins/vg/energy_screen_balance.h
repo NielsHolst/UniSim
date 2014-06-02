@@ -19,10 +19,12 @@ public:
     void update();
 private:
     // Parameters
-    double indoorsDirectRadiation, indoorsTemperature, outdoorsTemperature, KCover;
+    double indoorsRadiation, greenhouseArea,
+        indoorsTemperature, outdoorsTemperature, netK;
 
     // Variable
     double value;
+    bool on;
 };
 
 } //namespace

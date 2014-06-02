@@ -201,33 +201,33 @@ void splitAtNamespace(QString s, QString *namespacePart, QString *ownNamePart) {
     }
 }
 
-QStringList splitParentChildExpression(QString expression_, QObject *context) {
-    QString expression = expression_.trimmed();
-    int begin = expression.indexOf('[');
-    int end = expression.indexOf(']');
-    QString msg;
-    if (begin == -1)
-        msg = "Missing '[' in expression";
-    else if (end == -1)
-        msg = "Missing ']' in expression";
-    else if (end < expression.size() - 1)
-        msg = "Expression must end with ']'";
-    else if (begin == 0)
-        msg = "Expression misses parent name before '['";
-    else if (end - begin == 1)
-        msg = "Expression misses child name inside the brackets";
-    if (!msg.isEmpty()) {
-        msg += ": '" + expression + "'";
-        throw Exception(msg, context);
-    }
-    QString parent = expression.left(begin).trimmed();
-    QString child = expression.mid(begin + 1, end - begin -1).trimmed();
+//QStringList splitParentChildExpression(QString expression_, QObject *context) {
+//    QString expression = expression_.trimmed();
+//    int begin = expression.indexOf('[');
+//    int end = expression.indexOf(']');
+//    QString msg;
+//    if (begin == -1)
+//        msg = "Missing '[' in expression";
+//    else if (end == -1)
+//        msg = "Missing ']' in expression";
+//    else if (end < expression.size() - 1)
+//        msg = "Expression must end with ']'";
+//    else if (begin == 0)
+//        msg = "Expression misses parent name before '['";
+//    else if (end - begin == 1)
+//        msg = "Expression misses child name inside the brackets";
+//    if (!msg.isEmpty()) {
+//        msg += ": '" + expression + "'";
+//        throw Exception(msg, context);
+//    }
+//    QString parent = expression.left(begin).trimmed();
+//    QString child = expression.mid(begin + 1, end - begin -1).trimmed();
 
-    QStringList result;
-    result.append(parent);
-    result.append(child);
-    return result;
-}
+//    QStringList result;
+//    result.append(parent);
+//    result.append(child);
+//    return result;
+//}
 
 
 //! Write object tree to std::cout

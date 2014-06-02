@@ -11,11 +11,22 @@
 #include <usbase/random.h>
 #include <usengine/simulation.h>
 #include "pollen_onset_date_from_trap_obs.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace ecotox {
 
+PUBLISH(PollenOnsetDateFromTrapObs)
+
+/*! \class PollenOnsetDateFromTrapObs
+* \brief Onset of pollen depositon sampled from maize observations
+
+The onset of pollen deposition is sampled from the accumulated maize pollen catch from a pollen trapping station.
+The pollen trap data is read from a file with at least two columns named _Date_ and _Pollen_.
+The pollen data is given as the relative trap catch over the year.
+Hence the column should add up to 1 for every year in the file.
+*/
 
 PollenOnsetDateFromTrapObs::PollenOnsetDateFromTrapObs(UniSim::Identifier name, QObject *parent)
     : PollenOnsetDate(name, parent)

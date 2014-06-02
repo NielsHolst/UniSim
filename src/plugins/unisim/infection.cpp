@@ -5,8 +5,11 @@
 */
 #include "infection.h"
 #include "predation.h"
+#include "publish.h"
 
 namespace UniSim {
+
+PUBLISH(Infection)
 
 Infection::Infection(Identifier name, QObject *parent)
     : FunctionalResponseMultiway(name, parent)

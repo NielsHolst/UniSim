@@ -17,17 +17,18 @@ class Time {
 public:
     enum Unit{Seconds, Minutes, Hours, Days, Years};
     Time(int time, Unit unit);
+    int time() const;
+    Unit unit() const;
+    long long toSeconds() const;
     static char unitToChar(Unit unit);
     static Unit charToUnit(char ch, QObject *concerning = 0);
     static double conversionFactor(Unit from, Unit to);
-    int time() const;
-    Unit unit() const;
 private:
     int _time;
     Unit _unit;
     static QMap<Unit, char> _unitToChar;
     static QMap<char, Unit> _charToUnit;
-    static QMap<Unit, double> unitToSeconds;
+    static QMap<Unit, long long> unitToSeconds;
 };
 
 QDateTime operator+(const QDateTime &dateTime, const Time &time);

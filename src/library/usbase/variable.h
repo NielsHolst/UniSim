@@ -8,6 +8,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include "named_object.h"
 #include "string_conversion.h"
 #include "variable_base.h"
 
@@ -16,27 +17,56 @@ namespace UniSim{
 template <class T>
 class Variable : public VariableBase
 {
-    //Q_OBJECT
 public:
-    Variable(Identifier name, const T *valuePtr, QObject *parent, QString desc);
+    Variable(Identifier name, T *valuePtr, NamedObject *parent, QString);
     // generic
+    void initializeValue();
+    void resetValue();
     QVariant toVariant() const;
     QString toString() const;
     QString typeId() const;
+    void resolveReference();
+    void followReference();
     // special
+    void initialize(T value);
+    void reset(T value);
     T value() const;
     const T* valuePtr() const;
 
 protected:
-    const T *_valuePtr; // Derived class Parameter casts away const to change the value pointed to
+    T *_valuePtr;
+
+private:
+    T valueAtInitialize, valueAtReset;
+    const T *referencedValuePtr;
 };
 
 
 template <class T>
-Variable<T>::Variable(Identifier id, const T *valuePtr, QObject *parent, QString desc)
-    :  VariableBase(id, parent, desc), _valuePtr(valuePtr)
+Variable<T>::Variable(Identifier id, T *valuePtr, NamedObject *parent, QString)
+    :  VariableBase(id, parent), _valuePtr(valuePtr)
 {
     Q_ASSERT(_valuePtr);
+}
+
+template <class T>
+void Variable<T>::initializeValue() {
+    *_valuePtr = valueAtInitialize;
+}
+
+template <class T>
+void Variable<T>::resetValue() {
+    *_valuePtr = valueAtReset;
+}
+
+template <class T>
+void Variable<T>::initialize(T value) {
+    valueAtInitialize = value;
+}
+
+template <class T>
+void Variable<T>::reset(T value) {
+    valueAtReset = value;
 }
 
 template <class T>
@@ -61,9 +91,28 @@ QString Variable<T>::typeId() const
 }
 
 template <class T>
+void Variable<T>::resolveReference() {
+    if (!isReference()) return;
+    try {
+        referencedValuePtr =
+                _parent
+                ->seekOne<NamedObject*, Variable<T>*>(_reference)
+                ->valuePtr();
+    }
+    catch (Exception &) {
+        throw Exception(_reference.notFoundMessage(), _parent);
+    }
+}
+
+template <class T>
+void Variable<T>::followReference() {
+    Q_ASSERT(referencedValuePtr != 0);
+    *_valuePtr = *referencedValuePtr;
+}
+
+template <class T>
 T Variable<T>::value() const
 {
-    Q_ASSERT(_valuePtr);
     return *_valuePtr;
 }
 

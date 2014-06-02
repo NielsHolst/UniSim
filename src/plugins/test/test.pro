@@ -16,6 +16,7 @@ HEADERS += \
     life_cycle.h \
     life_stage.h \
     operation.h \
+    publish.h \
     test_factory.h
 
 SOURCES += \
@@ -27,5 +28,6 @@ SOURCES += \
     life_cycle.cpp \
     life_stage.cpp \
     operation.cpp \
+    publish.cpp \
     test_factory.cpp
 

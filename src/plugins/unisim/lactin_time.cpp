@@ -7,8 +7,11 @@
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "lactin_time.h"
+#include "publish.h"
 
 namespace UniSim{
+
+PUBLISH(LactinTime)
 
 LactinTime::LactinTime(UniSim::Identifier name, QObject *parent)
     : PhysiologicalTime(name, parent)

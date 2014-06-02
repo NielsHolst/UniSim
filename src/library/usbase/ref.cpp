@@ -8,6 +8,7 @@
 #include "parameter_base.h"
 #include "parameter_vector.h"
 #include "ref.h"
+#include "reference.h"
 #include "variable.h"
 #include "variable_base.h"
 #include "variable_vector.h"
@@ -104,19 +105,36 @@ namespace {
 
 QString Ref::notFoundMessage(Exception &ex) {
     QString from = QString("referenced from '%1'").arg(parameterParent->fullLabel());
-    QStringList names = splitParentChildExpression(reference, parameterParent);
-    NamedObject *model = parameterParent->peekOne<NamedObject*>(names[0]);
-    // No model found
-    if (!model) {
-        QString msg = "Exception: %1\n\nError in reference '%2' %3: Model '%4' not found";
-        return msg.arg(ex.message()).arg(reference).arg(from).arg(names[0]);
-    }
+    Reference ref{reference, parameterParent};
+    QString path = ref.path(),
+            name = ref.name();
 
+//    QStringList names = splitParentChildExpression(reference, parameterParent);
+    QString absPath = parameterParent->absolutePath(path);
+//    NamedObject *model = parameterParent->peekOne<NamedObject*>(absPath);
+    QList<NamedObject*> models = parameterParent->seekMany<NamedObject*>(absPath);
+
+
+
+    // No model found
+    if (models.isEmpty()) {
+        QString msg = "Exception: %1\n\nError in reference '%2' %3: Model '%4' not found";
+        return msg.arg(ex.message()).arg(reference).arg(from).arg(path);
+    }
+    // More than one model found
+    else if (models.size() > 1) {
+        QString msg = "Exception: %1\n\nMore than one model found matching '%2':\n%3";
+        QString names;
+        for (auto model : models)
+            names += model->fullLabel() + "\n";
+        return msg.arg(ex.message()).arg(reference).arg(names);
+    }
+    NamedObject *model = models[0];
     // No variable found
     QString msg = "Exception: %1\n\nError in reference '%2' %3: Parameter named '%4' not found.\n"
             "Model '%5' contains these parameters and variables:\n%6";
     QStringList vars = lookupChildren<VariableBase*>(model);
-    msg = msg.arg(ex.message()).arg(reference).arg(from).arg(names[1]).arg(names[0]).arg(vars.join("\n"));
+    msg = msg.arg(ex.message()).arg(reference).arg(from).arg(name).arg(path).arg(vars.join("\n"));
     if (vars.isEmpty())
         msg += "None!";
     return msg;
@@ -128,7 +146,7 @@ void Ref::writeEdges(QFile &f) {
     for (int i = 0; i < all.size(); ++i) {
         Ref *ref = all[i];
         Q_ASSERT(ref->source);
-        NamedObject *from = dynamic_cast<NamedObject*>(ref->source->parent());
+        const NamedObject *from = ref->source->parent();
         Q_ASSERT(from);
         QString line = QString("%1->%2;\n")
                 .arg(from->uniqueId())

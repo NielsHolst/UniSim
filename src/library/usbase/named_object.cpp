@@ -45,7 +45,9 @@ QString NamedObject::fullLabel() const {
     NamedObject *parent = p->peekParent<NamedObject*>("*");
     if (parent)
         heading = parent->fullLabel();
-    return heading + "/" + _id.label();
+    QString myId = _id.label();
+    if (myId.isEmpty()) myId = "*";
+    return heading + "/" + myId;
 }
 
 long int NamedObject::number() const {

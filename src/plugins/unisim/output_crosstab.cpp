@@ -9,11 +9,14 @@
 #include <usbase/trace.h>
 #include <usbase/utilities.h>
 #include "output_crosstab.h"
+#include "publish.h"
 
 using std::max;
 
 namespace UniSim{
-	
+
+PUBLISH2(OutputCrosstab, Crosstab)
+
 OutputCrosstab::OutputCrosstab(Identifier name, QObject *parent)
     : OutputTableBase(name, parent)
 {

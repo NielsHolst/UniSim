@@ -12,7 +12,7 @@
 
 namespace vg {
 
-class ConstructionCover;
+class Cover;
 class HeatPipe;
 
 class HeatingTemperatureController : public UniSim::Model
@@ -25,18 +25,16 @@ public:
 private:
     // Parameters
     double timeStepSecs, greenhouseArea, greenhouseVolume,
-        heatingSetpoint, heatingFlow,
-        minimumSignal, maximumSignal,
-        indoorsTemperature;
+        heatingSetpoint, minimumSignal, maximumSignal, balanceEffect,
+        indoorsTemperature, outdoorsTemperature;
+    bool ventilationOngoing;
     // Variables
     double signal;
     // Data
-    QList<ConstructionCover*> covers;
     QList<HeatPipe*> pipes;
     int numPipes;
-    double coverK;
     // Methods
-    double calcCoverK();
+    double effectNeeded();
 
 };
 } //namespace

@@ -7,7 +7,6 @@
 #ifndef VG_SWITCH_SETPOINT_H
 #define VG_SWITCH_SETPOINT_H
 
-#include <QTime>
 #include <usbase/model.h>
 
 namespace vg {
@@ -16,16 +15,13 @@ class SwitchSetpoint : public UniSim::Model
 {
 public:
     SwitchSetpoint(UniSim::Identifier name, QObject *parent);
-
+    void reset();
+    void update();
 private:
-    // Parameter
     bool on;
-
-    // Variables
-    double setpoint;
-
+    double onSetpoint, offSetpoint, initSetpoint, setpoint;
 };
-} //namespace
 
+} //namespace
 
 #endif

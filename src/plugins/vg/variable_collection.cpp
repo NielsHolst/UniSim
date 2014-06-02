@@ -6,6 +6,7 @@
 */
 #include <usbase/exception.h>
 #include <usbase/model.h>
+#include "publish.h"
 #include "variable_collection.h"
 
 using namespace UniSim;

@@ -17,7 +17,7 @@ public:
     ConstructionVentilation(UniSim::Identifier name, QObject *parent);
 private:
     // Parameters
-    double ventLength, ventMaxOpening, ventProportion;
+    double ventLength, ventWidth, ventMaxOpening, ventDensity;
 };
 } //namespace
 

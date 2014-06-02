@@ -19,7 +19,7 @@ public:
     void update();
 private:
     // Parameters
-    double Tindoors, Tcover;
+    double indoorsTemperature, coverTemperature, latcov;
 
     // Variables
     double value;

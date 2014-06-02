@@ -150,8 +150,34 @@ const double a = 8 + 26./4, b = 13 + 42./4, c = a + (b-a)*0.4;
 
 void TestInterpolate::testInterpolatePlane2x2() {
     DataGrid m( filePath("interpolate_plane_2x2.txt") );
-    double y = interpolate(m, 325, 24);
+    double y;
+    // Mid
+    y = interpolate(m, 325, 24);
     QVERIFY(TestNum::eq(y, c));
+    // Left
+    y = interpolate(m, 325, 20);
+    QVERIFY(TestNum::eq(y, a));
+    // Right
+    y = interpolate(m, 325, 30);
+    QVERIFY(TestNum::eq(y, b));
+    // Top
+    y = interpolate(m, 300, 24);
+    QVERIFY(TestNum::eq(y, 8 + 5*0.4));
+    // Bottom
+    y = interpolate(m, 400, 24);
+    QVERIFY(TestNum::eq(y, 34 + 21*0.4));
+    // Upper left
+    y = interpolate(m, 300, 20);
+    QVERIFY(TestNum::eq(y, 8));
+    // Upper right
+    y = interpolate(m, 300, 30);
+    QVERIFY(TestNum::eq(y, 13));
+    // Lower left
+    y = interpolate(m, 400, 20);
+    QVERIFY(TestNum::eq(y, 34));
+    // Lower right
+    y = interpolate(m, 400, 30);
+    QVERIFY(TestNum::eq(y, 55));
 }
 
 void TestInterpolate::testInterpolatePlane5x4() {
@@ -159,6 +185,7 @@ void TestInterpolate::testInterpolatePlane5x4() {
     double y = interpolate(m, 325, 24);
     QVERIFY(TestNum::eq(y, c));
 }
+
 
 //
 // Helpers

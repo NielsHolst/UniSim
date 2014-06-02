@@ -93,6 +93,7 @@ void Integrator::createReport() {
     report = new QProgressDialog("Computing...", "Cancel simulation", 0, numRuns, mainWindow);
     report->setWindowModality(Qt::WindowModal);
     report->setMinimumDuration(1000);
+    report->setAttribute(Qt::WA_DeleteOnClose);
     connect(report, SIGNAL(canceled()), this, SLOT(doCancel()));
 }
 

@@ -8,6 +8,7 @@
 #include <QPluginLoader>
 #include <QSettings>
 #include <usbase/exception.h>
+#include <usbase/identifier.h>
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
 #include <usbase/factory_plug_in.h>
@@ -18,6 +19,7 @@
 namespace UniSim{
 
 MegaFactory *MegaFactory::_me = 0;
+int MegaFactory::productCount = 0;
 
 MegaFactory::MegaFactory() {
     bool keepLooking = true;
@@ -29,11 +31,12 @@ MegaFactory::MegaFactory() {
             FactoryPlugIn *factory = qobject_cast<FactoryPlugIn*>(loader.instance());
             if (factory) {
                 _factories << factory;
-                factory->defineProducts();
-                FactoryPlugIn::Products products_ = products(factory);
-                QList<Identifier> classNames = products_.keys();
-                for (int i=0; i<classNames.size(); ++i) {
-                    Identifier id = classNames[i];
+//                factory->defineProducts();
+//                FactoryPlugIn::Products products_ = products(factory);
+//                QList<Identifier> classNames = products_.keys();
+//                for (int i=0; i<classNames.size(); ++i) {
+//                    Identifier id = classNames[i];
+                for (Identifier id : factory->inventory()) {
                     productIndex[id] = factory;
                     Identifier idWithNamespace = factory->id().label() + "::" + id.label();
                     productIndex[idWithNamespace] = factory;
@@ -67,13 +70,20 @@ QObject* MegaFactory::createObject(Identifier className, Identifier objectName, 
         throw Exception("No model of class: " + className.key());
     case 1:
         factory = me()->productIndex[className];
-        creation = UniSim::create(factory, className.withoutNamespace(), objectName, parent);
+        creation = factory->create(className.withoutNamespace(), adjustedId(objectName), parent);
         creation->setProperty("classLabel", className.label());
         break;
     default:
-        throw Exception("More than one model of class: " + className.key()+". Qualify type with plug-in name.");
+        QString msg = "More than one model of class '%1'. Qualify type with plug-in name";
+        throw Exception(msg.arg(className.label()));
     }
     return creation;
+}
+
+Identifier MegaFactory::adjustedId(Identifier id) {
+    if (id.key().isEmpty())
+        return (QString("_noname_") + QString::number(productCount++));
+    return id;
 }
 
 const QList<FactoryPlugIn*>& MegaFactory::factories() {

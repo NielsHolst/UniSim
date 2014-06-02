@@ -16,6 +16,7 @@ HEADERS += \
         $${US_BASE}/clock.h \
         $${US_BASE}/colours.h \
         $${US_BASE}/component.h \
+        $${US_BASE}/const_mapped_file.h \
         $${US_BASE}/data_grid.h \
         $${US_BASE}/date_interval.h \
         $${US_BASE}/exception.h \
@@ -46,6 +47,7 @@ HEADERS += \
         $${US_BASE}/variable_base.h \
         $${US_BASE}/random.h \
         $${US_BASE}/ref.h \
+        $${US_BASE}/reference.h \
         $${US_BASE}/root_solver.h \
         $${US_BASE}/strata.h \
         $${US_BASE}/strata_base.h \
@@ -60,6 +62,7 @@ HEADERS += \
         $${US_BASE}/variable_vector.h \
         $${US_BASE}/version.h
 SOURCES += \
+        $$(BOOST_ROOT)/libs/iostreams/src/mapped_file.cpp \
         $${US_BASE}/authors.cpp \
         $${US_BASE}/clock.cpp \
         $${US_BASE}/colours.cpp \
@@ -84,6 +87,7 @@ SOURCES += \
         $${US_BASE}/variable_base.cpp \
         $${US_BASE}/random.cpp \
         $${US_BASE}/ref.cpp \
+        $${US_BASE}/reference.cpp \
         $${US_BASE}/root_solver.cpp \
         $${US_BASE}/string_conversion.cpp \
         $${US_BASE}/ustime.cpp \

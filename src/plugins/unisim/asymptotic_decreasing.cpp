@@ -5,8 +5,11 @@
 */
 #include <usbase/utilities.h>
 #include "asymptotic_decreasing.h"
+#include "publish.h"
 
 namespace UniSim{
+
+PUBLISH(AsymptoticDecreasing)
 
 AsymptoticDecreasing::AsymptoticDecreasing(Identifier name, QObject *parent)
     : Model(name, parent)

@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector>
+#include "named_object.h"
 #include "utilities.h"
 #include "variable_base.h"
 
@@ -19,25 +20,42 @@ class VariableVector : public VariableBase
 {
     //Q_OBJECT
 public:
-    VariableVector(Identifier name, const QVector<T> *valuePtr, QObject *parent, QString desc);
+    VariableVector(Identifier name, QVector<T> *valuePtr, NamedObject *parent, QString);
     // generic
+    void initializeValue();
+    void resetValue();
     QVariant toVariant() const;
     QString toString() const;
     QString typeId() const;
+    void resolveReference();
+    void followReference();
     // special
     const QVector<T>& value() const;
     const QVector<T>* valuePtr() const;
 
 protected:
-    const QVector<T> *_valuePtr; // Derived class Parameter casts away const to change the value pointed to
+    QVector<T> *_valuePtr;
+private:
+    const QVector<T> *referencedValuePtr;
+
 };
 
 
 template <class T>
-VariableVector<T>::VariableVector(Identifier id, const QVector<T> *valuePtr, QObject *parent, QString desc)
-    :  VariableBase(id, parent, desc), _valuePtr(valuePtr)
+VariableVector<T>::VariableVector(Identifier id, QVector<T> *valuePtr, NamedObject *parent, QString)
+    :  VariableBase(id, parent), _valuePtr(valuePtr)
 {
     Q_ASSERT(_valuePtr);
+}
+
+template <class T>
+void VariableVector<T>::initializeValue() {
+    _valuePtr->fill(T());
+}
+
+template <class T>
+void VariableVector<T>::resetValue() {
+    _valuePtr->fill(T());
 }
 
 template <class T>
@@ -65,6 +83,25 @@ QString VariableVector<T>::typeId() const
     if (result.startsWith("q") )
         result = result.remove(0,1);
     return "QVector<" + result  + ">";
+}
+
+template <class T>
+void VariableVector<T>::resolveReference() {
+    try {
+        referencedValuePtr =
+                _parent
+                ->seekOne<NamedObject*, VariableVector<T>*>(_reference)
+                ->valuePtr();
+    }
+    catch (Exception &) {
+        throw Exception(_reference.notFoundMessage(), _parent);
+    }
+}
+
+template <class T>
+void VariableVector<T>::followReference() {
+    Q_ASSERT(referencedValuePtr != 0);
+    *_valuePtr = *referencedValuePtr;
 }
 
 template <class T>

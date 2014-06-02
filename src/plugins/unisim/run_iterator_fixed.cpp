@@ -5,9 +5,12 @@
 */
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "run_iterator_fixed.h"
 
 namespace UniSim{
+
+PUBLISH(RunIteratorFixed)
 
 RunIteratorFixed::RunIteratorFixed(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)

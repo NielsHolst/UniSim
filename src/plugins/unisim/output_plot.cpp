@@ -27,13 +27,16 @@
 #include <usengine/plot_widget.h>
 #include "plot.h"
 #include "output_plot.h"
+#include "publish.h"
 
 namespace UniSim{
+
+PUBLISH2(OutputPlot, Plot)
 
 QList<QColor> OutputPlot::colors;
 
 OutputPlot::OutputPlot(Identifier name, QObject *parent)
-    : Output(name, parent), plotWidget(0)
+    : OutputBase(name, parent), plotWidget(0)
 {    
     new Parameter<QString>("title", &title, QString(), this,
                            "Title of plot shown in window top bar");
@@ -67,7 +70,7 @@ OutputPlot::~OutputPlot() {
 }
 
 void OutputPlot::amend() {
-    Output::amend();
+    OutputBase::amend();
     if (traceRecords().size() < 2) {
         QString msg("Output plot titled '%1' must have at least two traces");
         throw Exception(msg.arg(title), this);

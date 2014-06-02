@@ -8,10 +8,13 @@
 #include <usbase/utilities.h>
 #include <usbase/product.h>
 #include "plant.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace ambrosia{
+
+PUBLISH(Plant)
 
 Plant::Plant(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {

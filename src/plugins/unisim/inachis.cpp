@@ -10,9 +10,12 @@
 #include "inachis.h"
 #include "insect_life_cycle.h"
 #include "stage.h"
+#include "publish.h"
 
 namespace UniSim{
-	
+
+PUBLISH(Inachis)
+
 Inachis::Inachis(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

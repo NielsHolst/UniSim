@@ -16,9 +16,9 @@ namespace vg {
 const double
     PI = 3.14159,       //!< Mathematical PI
     T0 = 273.15,        //!< Absolute zero offset (oC)
-    Sigma = 5.6704e-08, //!< Stefan-Boltzmann constant (W/m2/K4)
-    Mwater = 18.016,    //!< Molar mass of water (g/mol)
-    Mwa = 0.61,         //!< Molar mass of water relative to molar mass of air (-)
+    Sigma = 5.6704e-8,  //!< Stefan-Boltzmann constant (W/m2/K4)
+    Mwater = 18.016e-3, //!< Molar mass of water (kg/mol)
+    Mwa = 0.622,        //!< Molar mass of water relative to molar mass of air (-)
     R = 8.314,          //!< Gas constant (m3 Pa/mol/K)
     P0 = 101325,        //!< Standard atmospheric pressure = 1 atm (Pa)
     CpAir = 1020,       //!< Specific heat capacity of air (J/kg/K)
@@ -27,19 +27,40 @@ const double
     LHe = 2454e3,       //!< Latent heat of vaporisation of water (J/kg)
     Psychr = CpAir*P0/LHe/Mwa;  //!< Psychrometric constant (Pa/K)
 
+// Amount of water vapour
+double ahFromSh(double sh);
+double ahFromVp(double temperature, double vp);
+double shFromAh(double ah);
+double shFromVp(double temperature, double vp);
+double vpFromAh(double temperature, double ah);
+double vpFromSh(double temperature, double sh);
+
+// Saturated amount of water vapour
+double sah(double temperature);
+double ssh(double temperature);
 double svp(double temperature);
 double svpSlope(double temperature);
-double saturatedMoistureContent(double temperature);
-double vp(double temperature, double rh);
-double ah(double temperature, double rh);
+
+// Relative measures of water vapour
+double rhFromAh(double temperature, double ah);
+double rhFromSh(double temperature, double sh);
+double rhFromVp(double temperature, double vp);
+
+double ahFromRh(double temperature, double rh);
+double shFromRh(double temperature, double rh);
+double vpFromRh(double temperature, double rh);
+
+double adxFromRh(double temperature, double rh);
+double sdxFromRh(double temperature, double rh);
+double vpdFromRh(double temperature, double rh);
+double rhFromAdx(double temperature, double adx);
+double rhFromSdx(double temperature, double sdx);
+double rhFromVpd(double temperature, double vpd);
+
+// Other
 double Tdew(double temperature, double rh);
-double moistureDeficit(double temperature, double rh);
-double ahDeficit(double temperature, double rh);
-double rhFromMc(double temperature, double moistureContent);
-double rhFromMd(double temperature, double moistureDeficit);
-double vpd(double temperature, double rh);
-double moistureContent(double temperature, double vp);
-double propControl(double input, double pBand, double maxResponse);
+double virtualTemperatureFromAh(double temperature, double ah);
+
 
 } //namespace
 

@@ -7,11 +7,13 @@
 #include <usbase/variable.h>
 #include <usbase/utilities.h>
 #include "ambrosia_time.h"
+#include "publish.h"
 
 using namespace UniSim;
 
-
 namespace ambrosia{
+
+PUBLISH(AmbrosiaTime)
 
 AmbrosiaTime::AmbrosiaTime(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {

@@ -14,7 +14,7 @@
 namespace UniSim{	
 
 class Model;
-class Output;
+class OutputBase;
 class VariableBase;
 
 class Trace : public Component, public Attributes
@@ -25,6 +25,7 @@ public:
     // standard methods
     void amend();
     void reset();
+    void initialize();
     void update();
     void cleanup();
     void debrief();
@@ -36,11 +37,13 @@ public:
     Type type() const;
     bool hasWildCard() const;
 
-    Output* traceParent();
+    OutputBase* traceParent();
     Model* variableParent();
     QVector<double>* history();
 
 private:
+    // parameters
+    int frequency;
     // methods
     void setScaling();
     void setSummary();
@@ -67,9 +70,11 @@ private:
 
     QVector<double> _history;	//!< Series of collected values
     bool historyCleared;
+    int sampleCount;
+    double sampleSum;
 
     // links
-    const Output *output;   //!< Pointer to parent or null
+    const OutputBase *output;   //!< Pointer to parent or null
 
 };
 

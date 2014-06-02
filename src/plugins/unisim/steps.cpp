@@ -5,10 +5,13 @@
 */
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "steps.h"
 
 namespace UniSim{
-	
+
+PUBLISH(Steps)
+
 Steps::Steps(Identifier name, QObject *parent)
     : Integrator(name, parent)
 {

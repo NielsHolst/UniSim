@@ -4,9 +4,12 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "anonymous.h"
+#include "publish.h"
 
 namespace UniSim{
-	
+
+PUBLISH(Anonymous)
+
 Anonymous::Anonymous(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

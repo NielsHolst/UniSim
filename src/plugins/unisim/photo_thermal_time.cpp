@@ -7,8 +7,11 @@
 #include <usbase/utilities.h>
 #include <usbase/variable.h>
 #include "photo_thermal_time.h"
+#include "publish.h"
 
 namespace UniSim{
+
+PUBLISH(PhotoThermalTime)
 
 PhotoThermalTime::PhotoThermalTime(UniSim::Identifier name, QObject *parent)
     : DayDegrees(name, parent)

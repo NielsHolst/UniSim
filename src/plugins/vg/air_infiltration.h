@@ -20,7 +20,8 @@ public:
 
 private:
     // Parameters
-    double timeStepSecs, leakage, greenhouseVolume, roofRatio, sideRatio, windspeed, screensAirTransmission;
+    double timeStepSecs, leakage, greenhouseVolume, greenhouseArea,
+        windspeed, screensAirTransmission;
 
     // Variables
     double rate;

@@ -110,19 +110,6 @@ void TestUtilities::testDecodeSimpleListFaulty() {
     }
 }
 
-void TestUtilities::testSplitParentChildExpression() {
-    QString expression = "dogs/female[size]";
-    QStringList result;
-    try {
-        result = splitParentChildExpression(expression);
-    }
-    catch (Exception &ex) {
-        QFAIL(qPrintable("Split failed: " + ex.message()));
-    }
-    QCOMPARE(result[0], QString("dogs/female"));
-    QCOMPARE(result[1], QString("size"));
-}
-
 void TestUtilities::testSplitAtNamespace()
 {
     QString namespacePart, ownNamePart;
@@ -165,58 +152,6 @@ void TestUtilities::testQStringSplit() {
     QVERIFY(list[0].isEmpty());
     QCOMPARE(list[1], QString("a"));
     QVERIFY(list[2].isEmpty());
-}
-
-void TestUtilities::testMissingLeftBracket() {
-    QString expression = "femalesize]";
-    bool excepted = false;
-    QStringList result;
-    try {
-        result = splitParentChildExpression(expression);
-    }
-    catch (Exception &ex) {
-        excepted = true;
-    }
-    QVERIFY(excepted);
-}
-
-void TestUtilities::testMissingRightBracket() {
-    QString expression = "female[size";
-    bool excepted = false;
-    try {
-        splitParentChildExpression(expression);
-    }
-    catch (Exception &ex) {
-        excepted = true;
-    }
-    QVERIFY(excepted);
-
-}
-
-void TestUtilities::testMissplacedLeftBracket() {
-    QString expression = "[femalesize]";
-    bool excepted = false;
-    try {
-        splitParentChildExpression(expression);
-    }
-    catch (Exception &ex) {
-        excepted = true;
-    }
-    QVERIFY(excepted);
-
-}
-
-void TestUtilities::testMissingChildName() {
-    QString expression = "female[]";
-    bool excepted = false;
-    try {
-        splitParentChildExpression(expression);
-    }
-    catch (Exception &ex) {
-        excepted = true;
-    }
-    QVERIFY(excepted);
-
 }
 
 void TestUtilities::testStringToValueDouble() {

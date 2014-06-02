@@ -4,15 +4,18 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <limits>
+#include <cmath>
 #include "exception.h"
 #include "identifier.h"
 #include "model.h"
 #include "output.h"
 #include "trace.h"
 #include "decode_list.h"
+#include "ustime.h"
 #include "variable_base.h"
 
 using std::numeric_limits;
+using std::floor;
 
 namespace UniSim{
 	
@@ -22,7 +25,8 @@ Trace::Trace(QString name, VariableBase *variable_, QObject *parent)
       multiplier(1.), divisor(1.),
       historyCleared(false)
 {
-    output = dynamic_cast<Output*>(parent);
+    InputRef(int, frequency, "..[frequency]");
+    output = dynamic_cast<OutputBase*>(parent);
 }
 
 void Trace::amend() {
@@ -90,7 +94,7 @@ void Trace::setThreshold(QString summaryCode) {
 void Trace::setType() {
     Type defaultType = (_summary == None) ? Line : Symbols;
     QVariant v = attribute("type");
-    if (!v.isValid()) {
+    if (!v.isValid() || v.toString().toLower()=="time") {
         _type = defaultType;
         return;
     }
@@ -110,6 +114,8 @@ void Trace::reset() {
     if (!historyCleared || !isSummary())
         _history.clear();
     historyCleared = true;
+    sampleCount = 0;
+    sampleSum = 0.;
 }
 
 void Trace::resetSummary() {
@@ -131,10 +137,46 @@ void Trace::resetSummary() {
     }
 }
 
+inline Time::Unit suggestedUnit(long secs) {
+    if (secs <= Time(5, Time::Minutes).toSeconds())
+        return Time::Seconds;
+    else if (secs <= Time(5, Time::Hours).toSeconds())
+        return Time::Minutes;
+    else if (secs <= Time(48, Time::Hours).toSeconds())
+        return Time::Hours;
+    else if (secs <= Time(500, Time::Days).toSeconds())
+        return Time::Days;
+    return Time::Years;
+}
+
+void Trace::initialize() {
+    QVariant v = attribute("type");
+    bool isTime =  v.isValid() && v.toString().toLower()=="time";
+    if (isTime) {
+        Model *steps = seekOne<Model*>("steps");
+        Model *calendar = seekOne<Model*>("calendar");
+        int maxSteps = steps->pullValue<int>("maxSteps");
+        int timeStepSecs = floor(calendar->pullValue<double>("timeStepSecs") + 0.5);
+        long duration = long(maxSteps)*timeStepSecs;
+        int timeChar = calendar->pullValue<char>("timeUnit");
+        Time::Unit unit = Time::charToUnit(timeChar),
+                   newUnit = suggestedUnit(duration);
+        divisor = (newUnit > unit)
+                  ? Time(1,newUnit).toSeconds() / Time(1,unit).toSeconds() / timeStepSecs
+                  : 1;
+    }
+}
+
 void Trace::update() {
     updateSummary();
-    if (!isSummary())
-        _history.append(summary() == None ? currentValue() : s.value);
+    if (!isSummary()) {
+        sampleSum += summary() == None ? currentValue() : s.value;
+        if (sampleCount++ == frequency) {
+            _history.append(sampleSum/sampleCount);
+            sampleSum = 0.;
+            sampleCount = 0;
+        }
+    }
 }
 
 void Trace::updateSummary() {
@@ -218,12 +260,13 @@ bool Trace::isSummary() const {
     return output && output->hasSummary();
 }
 
-Output* Trace::traceParent() {
-    return dynamic_cast<Output*>(parent());
+OutputBase* Trace::traceParent() {
+    return dynamic_cast<OutputBase*>(parent());
 }
 
 Model* Trace::variableParent() {
-    return dynamic_cast<Model*>(variable->parent());
+    auto model = dynamic_cast<const Model*>(variable->parent());
+    return const_cast<Model*>(model);
 }
 
 double Trace::currentValue() {

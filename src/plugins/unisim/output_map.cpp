@@ -10,11 +10,14 @@
 #include <usbase/trace.h>
 #include <usbase/decode_list.h>
 #include "output_map.h"
+#include "publish.h"
 
 using std::max;
 
 namespace UniSim{
-	
+
+PUBLISH2(OutputMap, Map)
+
 OutputMap::OutputMap(Identifier name, QObject *parent)
     : OutputTableBase(name, parent)
 {

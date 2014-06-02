@@ -8,10 +8,13 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "operation.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace test{
+
+PUBLISH(Operation)
 
 Operation::Operation(Identifier name, QObject *parent)
 	: Model(name,parent) 

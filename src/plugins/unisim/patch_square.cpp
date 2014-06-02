@@ -4,8 +4,11 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "patch_square.h"
+#include "publish.h"
 
 namespace UniSim{
+
+PUBLISH(PatchSquare)
 
 PatchSquare::PatchSquare(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)

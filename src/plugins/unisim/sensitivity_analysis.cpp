@@ -12,10 +12,13 @@
 #include <usbase/name_list.h>
 #include <usbase/parameter.h>
 #include <usbase/utilities.h>
+#include "publish.h"
 #include "sensitivity_analysis.h"
 
 namespace UniSim {
-	
+
+PUBLISH(SensitivityAnalysis)
+
 SensitivityAnalysis::SensitivityAnalysis(Identifier name, QObject *parent)
     : Steps(name, parent)
 {

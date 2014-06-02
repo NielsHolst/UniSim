@@ -7,6 +7,7 @@
 #ifndef VG_PIPES_H
 #define VG_PIPES_H
 
+#include <QVector>
 #include <usbase/model.h>
 
 namespace vg {
@@ -19,14 +20,8 @@ public:
     void reset();
     void update();
 private:
-    // Parameteres
-    double timeStepsSecs;
-
-    // Variables
-    double heatFlux, energyUsed;
-
-    // Data
-    QList<const double*> heatFluxes;
+    double timeStep, effect, sumEnergy;
+    QVector<const double*> pipeEffects;
 };
 } //namespace
 

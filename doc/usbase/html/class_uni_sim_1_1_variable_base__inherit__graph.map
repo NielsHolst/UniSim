@@ -1,6 +1,0 @@
-<map id="UniSim::VariableBase" name="UniSim::VariableBase">
-<area shape="rect" id="node5" href="$class_uni_sim_1_1_variable.html" title="UniSim::Variable\&lt; T \&gt;" alt="" coords="14,155,164,181"/>
-<area shape="rect" id="node9" href="$class_uni_sim_1_1_variable_vector.html" title="UniSim::VariableVector\&lt; T \&gt;" alt="" coords="195,155,383,181"/>
-<area shape="rect" id="node7" href="$class_uni_sim_1_1_parameter.html" title="UniSim::Parameter\&lt; T \&gt;" alt="" coords="5,229,168,256"/>
-<area shape="rect" id="node11" href="$class_uni_sim_1_1_parameter_vector.html" title="UniSim::ParameterVector\&lt; T \&gt;" alt="" coords="193,229,393,256"/>
-</map>

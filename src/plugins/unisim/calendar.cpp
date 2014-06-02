@@ -15,10 +15,13 @@
 #include <usbase/test_num.h>
 #include <usbase/utilities.h>
 #include "calendar.h"
+#include "publish.h"
 
 using namespace std;
 
 namespace UniSim{
+
+PUBLISH(Calendar)
 
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
@@ -80,14 +83,14 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 
 void Calendar::initialize() {
     connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
+    timeUnit = Time::charToUnit(timeUnitAsChar);
+    timeStepSecs = timeStep*Time::conversionFactor(timeUnit, Time::Seconds);
 }
 
 void Calendar::reset() {
-    timeUnit = Time::charToUnit(timeUnitAsChar);
     dateTime = QDateTime(initialDate, initialTimeOfDay, Qt::UTC);
     dateTime = dateTime + Time(timeStep*timeStepOffset, timeUnit);
     totalTimeSteps = 0;
-    timeStepSecs = timeStep*Time::conversionFactor(timeUnit, Time::Seconds);
     updateDerived();
 }
 
@@ -124,6 +127,7 @@ void Calendar::updateDerived() {
     double aob = sinLD/cosLD;
     dayLength = 12.*(1. + 2.*asin(aob)/PI);
     handleClockTick(hour + minute/60. + second/60./60.);
+    updateAzimuth();
 }
 
 //! Azimuth is 90 at noon, zero at sunset and sunrise, and -90 at midnight

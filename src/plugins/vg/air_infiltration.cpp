@@ -4,25 +4,48 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/exception.h>
-#include <usbase/utilities.h>
 #include "air_infiltration.h"
-#include "general.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
-	
+
+PUBLISH(AirInfiltration)
+
+/*! \class AirInfiltration
+ * \brief Air infiltration is the rate of air entering the greenhouse uncontrolled, i.e. in addition to active ventilation
+ *
+ * Inputs
+ * ------
+ * - _leakage_ is infiltration through leakages [m<SUP>3</SUP> air/m<SUP>3</SUP> greenhouse/h]
+ * - _greenhouseVolume_ is the volume of the greenhouse [m<SUP>3</SUP>]
+ * - _greenhouseArea_ is the ground area occupied by the greenhouse [m<SUP>2</SUP>]
+ * - _windspeed_ is the outdoors windspeed [m/s]
+ * - _screensAirTransmission_ is the proportion of air led through the screens [0;1]
+ *
+ * Output
+ * ------
+ * - _rate_ is the infiltration rate per greenhouse area [m<SUP>3</SUP> air/h/m<SUP>2</SUP>]
+ *
+ * Default dependencies
+ * ------------
+ * - a _construction/geometry_ model with two ports:
+ *   + _volumeTotal_ [m<SUP>3</SUP>]
+ *   + _groundArea_ [m<SUP>2</SUP>]
+ * - an _outdoors_ model with a _windspeed_ port [m/s]
+ * - an _indoors/screens/transmission_ model witn an _air_ port [0;1]
+ */
+
 AirInfiltration::AirInfiltration(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameterRef<double>(Name(greenhouseVolume), "construction/geometry[volumeTotal]");
-    addParameterRef<double>(Name(windspeed), "outdoors[windspeed]");
-    addParameter<double>(Name(leakage), 0.5, "Air exchange through leakage (m3 air/m3 greenhouse/h");
-    addParameter<double>(Name(roofRatio), 1., "construction[roofRatio]");
-    addParameter<double>(Name(sideRatio), 1., "construction[sideRatio]");
-    addParameter<double>(Name(screensAirTransmission), 1., "screens[airTransmission]");
-    addVariable<double>(Name(rate), "Greenhouse air infiltration (m3 air/h)");
+    Input(double, leakage, 0.5);
+    InputRef(double, greenhouseVolume, "construction/geometry[volumeTotal]");
+    InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
+    InputRef(double, windspeed, "outdoors[windspeed]");
+    InputRef(double, screensAirTransmission, "indoors/screens/transmission[air]");
+    Output(double, rate);
 }
 
 void AirInfiltration::reset() {
@@ -30,9 +53,7 @@ void AirInfiltration::reset() {
 }
 
 void AirInfiltration::update() {
-    // Reduce leakage ventilation in the roof part, but not the side part.
-    double reduction = (screensAirTransmission*roofRatio+sideRatio)/(roofRatio+sideRatio);
-    rate = reduction*greenhouseVolume*leakage*windspeed/4;
+    rate = greenhouseVolume*leakage*screensAirTransmission*windspeed/4/greenhouseArea;
 }
 
 

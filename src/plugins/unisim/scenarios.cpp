@@ -8,10 +8,12 @@
 #include <usbase/exception.h>
 #include <usbase/ref.h>
 #include <usengine/simulation.h>
+#include "publish.h"
 #include "scenarios.h"
 
 namespace UniSim {
 
+PUBLISH(Scenarios)
 
 Scenarios::Scenarios(Identifier name, QObject *parent)
     : Model(name, parent)

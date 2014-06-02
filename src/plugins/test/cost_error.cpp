@@ -5,10 +5,13 @@
 */
 #include <usbase/name.h>
 #include "cost_error.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace test{
+
+PUBLISH(CostError)
 
 CostError::CostError(Identifier name, QObject *parent)
 	: Model(name,parent) 

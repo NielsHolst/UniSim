@@ -8,6 +8,7 @@
 #include <QObject>
 #include "exception.h"
 #include "integrator.h"
+#include "model.h"
 #include "utilities.h"
 
 /*! \class UniSim::Exception
@@ -47,8 +48,19 @@ Exception::Exception(QString message, const QObject *concerning_)
 QString Exception::message() const
 {
     QString msg = _message;
-    if (concerning)
+    if (concerning) {
         msg += "\nConcerning: " + fullName(concerning);
+        auto conc = const_cast<QObject*>(concerning);
+        Model *model = dynamic_cast<Model*>(conc);
+        if (model) {
+            auto calendars = model->seekMany<Model*>("calendar");
+            if (calendars.size() == 1) {
+                auto step = calendars.at(0)->peekValuePtr<int>("totalTimeSteps");
+                if (step)
+                    msg += "\n In integration step: " + QString::number(*step);
+            }
+        }
+    }
     return msg;
 }
 

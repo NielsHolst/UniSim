@@ -8,26 +8,37 @@
 
 #include <QObject>
 #include "identifier.h"
+#include "reference.h"
 
 namespace UniSim{
 
+class NamedObject;
+
 class VariableBase : public QObject
 {
-    //Q_OBJECT
 public:
-    VariableBase(Identifier id, QObject *parent, QString desc);
+    VariableBase(Identifier id, NamedObject *parent);
+    virtual void initializeValue() = 0;
+    virtual void resetValue() = 0;
     virtual QVariant toVariant() const = 0;
     virtual QString toString() const = 0;
     virtual QString typeId() const = 0;
-    Identifier id() const;
-    QString description() const;
-
+    virtual void resolveReference() = 0;
+    virtual void followReference() = 0;
+    Identifier id() const
+        { return _id; }
+    const NamedObject* parent() const
+        { return _parent; }
+    void from(Reference reference)
+        { _reference = reference; }
+    bool isReference()
+        { return !_reference.isEmpty(); }
 private:
-    // methods
     void assertUniqueness();
-    // data
+protected:
     Identifier _id;
-    QString _description;
+    NamedObject *_parent;
+    Reference _reference;
 };
 
 } //namespace

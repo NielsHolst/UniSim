@@ -6,9 +6,12 @@
 #include <usbase/exception.h>
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "trigger_by_date.h"
 
 namespace UniSim{
+
+PUBLISH(TriggerByDate)
 
 TriggerByDate::TriggerByDate(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)

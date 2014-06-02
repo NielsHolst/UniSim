@@ -13,13 +13,14 @@
 
 namespace UniSim{
 	
-Output::Output(Identifier name, QObject *parent)
-    : Component(name, parent), _hasSummary(false), _frequency(1)
+OutputBase::OutputBase(Identifier name, QObject *parent)
+    : Component(name, parent), _hasSummary(false)
 {
+    Input(int, frequency, 1);
 }
 
 
-void Output::amend() {
+void OutputBase::amend() {
     QList<Trace*> traces = seekChildren<Trace*>("*");
     _hasSummary = false;
     for (int i = 0; i < traces.size(); ++i) {
@@ -33,23 +34,19 @@ void Output::amend() {
     integrator = seekOne<Integrator*>("*");
 }
 
-QList<Output::TraceRecord>& Output::traceRecords() {
+QList<OutputBase::TraceRecord>& OutputBase::traceRecords() {
     return _traceRecords;
 }
 
-int Output::runNumber() const {
+int OutputBase::runNumber() const {
     return integrator->pullValue<int>("runNumber");
 }
 
-bool Output::hasSummary() const {
+bool OutputBase::hasSummary() const {
     return _hasSummary;
 }
 
-int Output::frequency() const {
-    return _frequency;
-}
-
-void Output::setYLabels() {
+void OutputBase::setYLabels() {
     QStringList sl;
     int numX = numXTraces();
     for (int i = numX; i < _traceRecords.size(); ++i) {

@@ -7,25 +7,24 @@
 #ifndef UNISIM_PRODUCT_BASE_H
 #define UNISIM_PRODUCT_BASE_H
 
-#include <QObject>
+#include <QMap>
 #include <usbase/identifier.h>
+
+class QObject;
 
 namespace UniSim{
 
-class FactoryPlugIn;
+class ProductBase;
+typedef QMap<Identifier, ProductBase*> ProductList;
 
-class ProductBase : public QObject
+class ProductBase
 {
 public:
-    ProductBase(Identifier name, FactoryPlugIn *parent, QString description);
+    ProductBase(Identifier name, ProductList &list);
+    virtual QObject* create(Identifier objectName, QObject *parent) const = 0;
     Identifier id() const;
-    FactoryPlugIn* factory() const;
-    QString description() const;
-    virtual QObject* create(Identifier objectName, QObject *parent=0) const = 0;
 private:
     Identifier _id;
-    FactoryPlugIn *_factory;
-    QString _description;
 };
 
 } //namespace

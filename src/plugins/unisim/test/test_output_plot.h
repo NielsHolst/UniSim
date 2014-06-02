@@ -1,5 +1,5 @@
-#ifndef UNISIM_OUTPUTS_TEST_OUTPUT_PLOT_H
-#define UNISIM_OUTPUTS_TEST_OUTPUT_PLOT_H
+#ifndef UNISIM_TEST_OUTPUT_PLOT_H
+#define UNISIM_TEST_OUTPUT_PLOT_H
 
 #include <usbase/test/autotest.h>
 

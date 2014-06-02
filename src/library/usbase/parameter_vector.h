@@ -7,6 +7,7 @@
 #define UNISIM_PARAMETER_VECTOR_H
 
 #include "exception.h"
+#include "named_object.h"
 #include "parameter_base.h"
 #include "variable_vector.h"
 
@@ -17,7 +18,7 @@ class ParameterVector : public VariableVector<T>, public ParameterBase
 {
     //Q_OBJECT
 public:
-    ParameterVector(Identifier name, const QVector<T> *valuePtr, QObject *parent, QString desc);
+    ParameterVector(Identifier name, QVector<T> *valuePtr, NamedObject *parent, QString desc);
     // generic
     void setValueFromString(QString newValue);
     void followRedirection();
@@ -32,7 +33,7 @@ private:
 };
 
 template <class T>
-ParameterVector<T>::ParameterVector(Identifier id, const QVector<T> *valuePtr, QObject *parent, QString desc)
+ParameterVector<T>::ParameterVector(Identifier id, QVector<T> *valuePtr, NamedObject *parent, QString desc)
     :
 //      VariableBase(id, parent, desc), // ? otherwise compiler complains
       VariableVector<T>(id, valuePtr, parent, desc),
@@ -44,7 +45,8 @@ ParameterVector<T>::ParameterVector(Identifier id, const QVector<T> *valuePtr, Q
 template <class T>
 void ParameterVector<T>::setValue(const QVector<T> &newValue)
 {
-    *( const_cast<QVector<T>*>(VariableVector<T>::_valuePtr) ) = newValue;
+//    *( const_cast<QVector<T>*>(VariableVector<T>::_valuePtr) ) = newValue;
+    *VariableVector<T>::_valuePtr = newValue;
 }
 
 template <class T>

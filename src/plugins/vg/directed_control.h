@@ -17,12 +17,17 @@ class DirectedControl : public UniSim::Model
 public:
     DirectedControl(UniSim::Identifier name, QObject *parent);
     void initialize();
+    void reset();
     typedef enum{Floor, Ceiling} Direction;
-    Direction direction() const;
 
-private:
+protected:
     // Parameters
     QString strDirection;
+    double actualValue, targetValue, minSignal, maxSignal, pBand;
+
+    // Variables
+    double signal;
+
     // Data
     UniSim::StringMap<Direction> directions;
     Direction _direction;

@@ -12,13 +12,14 @@
 #include <usbase/utilities.h>
 #include "output_table_base.h"
 #include <usbase/trace.h>
+#include "publish.h"
 
 using std::max;
 
 namespace UniSim{
 	
 OutputTableBase::OutputTableBase(Identifier name, QObject *parent)
-    : Output(name, parent)
+    : OutputBase(name, parent)
 {
     new Parameter<QString>("fileName", &fileName, QString("output.txt"), this, "Name of output file");
 }

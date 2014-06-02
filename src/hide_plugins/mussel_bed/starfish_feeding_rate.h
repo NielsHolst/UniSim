@@ -22,12 +22,13 @@ public:
 private:
     // Parameters
     double stdensity;
-    double stnumber;
+    double stsize;
 
     // Variables
-    double stsize;
+
     double FR;
     double value;
+
 
     // Links
     QList<Model*> scales;

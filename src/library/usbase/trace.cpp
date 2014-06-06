@@ -25,7 +25,7 @@ Trace::Trace(QString name, VariableBase *variable_, QObject *parent)
       multiplier(1.), divisor(1.),
       historyCleared(false)
 {
-    InputRef(int, frequency, "..[frequency]");
+    InputRef(int, sample, "..[sample]");
     output = dynamic_cast<OutputBase*>(parent);
 }
 
@@ -96,6 +96,7 @@ void Trace::setType() {
     QVariant v = attribute("type");
     if (!v.isValid() || v.toString().toLower()=="time") {
         _type = defaultType;
+        setAttribute("label", "test");
         return;
     }
     QMap<QString, Type> types;
@@ -158,12 +159,16 @@ void Trace::initialize() {
         int maxSteps = steps->pullValue<int>("maxSteps");
         int timeStepSecs = floor(calendar->pullValue<double>("timeStepSecs") + 0.5);
         long duration = long(maxSteps)*timeStepSecs;
-        int timeChar = calendar->pullValue<char>("timeUnit");
-        Time::Unit unit = Time::charToUnit(timeChar),
+//        int timeChar = calendar->pullValue<char>("timeUnit");
+//        Time::Unit unit = Time::charToUnit(timeChar),
+//                   newUnit = suggestedUnit(duration);
+//        int timeChar = calendar->pullValue<char>("timeUnit");
+        Time::Unit unit = Time::Seconds,
                    newUnit = suggestedUnit(duration);
         divisor = (newUnit > unit)
-                  ? Time(1,newUnit).toSeconds() / Time(1,unit).toSeconds() / timeStepSecs
+                  ? Time(1,newUnit).toSeconds() / Time(1,unit).toSeconds() // / timeStepSecs
                   : 1;
+        multiplier = timeStepSecs;
     }
 }
 
@@ -171,7 +176,7 @@ void Trace::update() {
     updateSummary();
     if (!isSummary()) {
         sampleSum += summary() == None ? currentValue() : s.value;
-        if (sampleCount++ == frequency) {
+        if (sampleCount++ == sample) {
             _history.append(sampleSum/sampleCount);
             sampleSum = 0.;
             sampleCount = 0;

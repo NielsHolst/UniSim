@@ -23,7 +23,7 @@ public:
     void initialize();
 
     // special methods
-    bool nextStep();
+    bool doNextStep();
 
 private:
     // Parameters

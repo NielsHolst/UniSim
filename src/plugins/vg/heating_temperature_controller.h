@@ -24,10 +24,9 @@ public:
     void update();
 private:
     // Parameters
-    double timeStepSecs, greenhouseArea, greenhouseVolume,
+    double timeStep, averageHeight,
         heatingSetpoint, minimumSignal, maximumSignal, balanceEffect,
         indoorsTemperature, outdoorsTemperature;
-    bool ventilationOngoing;
     // Variables
     double signal;
     // Data

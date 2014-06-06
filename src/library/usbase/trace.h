@@ -43,7 +43,7 @@ public:
 
 private:
     // parameters
-    int frequency;
+    int sample;
     // methods
     void setScaling();
     void setSummary();

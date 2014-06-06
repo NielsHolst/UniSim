@@ -44,7 +44,7 @@ PUBLISH(VentsVentilation)
  *   + _ventMaxOpening_ [0;180]
  *   + _ventProportion_ [0;1]
  *   + _groundArea_ [m<SUP>2</SUP>]
- * - an _effectuators/vents_ model with two child models:
+ * - an _actuators/vents_ model with two child models:
  *   + _leeside_ with a _state_ port [0;100]
  *   + _windside_ with a _state_ port [0;100]
  */
@@ -60,8 +60,8 @@ VentsVentilation::VentsVentilation(Identifier name, QObject *parent)
     InputRef(double, ventDensity, "construction/ventilation[ventDensity]");
     InputRef(double, ventMaxOpening, "construction/ventilation[ventMaxOpening]");
     InputRef(double, roofPitch, "construction/geometry[roofPitch]");
-    InputRef(double, ventilationLeeSide, "effectuators/vents/leeSide[state]");
-    InputRef(double, ventilationWindSide, "effectuators/vents/windSide[state]");
+    InputRef(double, ventilationLeeSide, "actuators/vents/leeSide[state]");
+    InputRef(double, ventilationWindSide, "actuators/vents/windSide[state]");
     Output(double, rate);
 }
 

@@ -28,7 +28,7 @@ PUBLISH(EnergyBalance)
  * Default dependencies
  * ------------
  * - an _indoors/radiation_ model with a total port [W/m<SUP>2</SUP>]
- * - an _effectuators/heating/pipes_ model with an _effect_ port [W/m<SUP>2</SUP>]
+ * - an _actuators/heating/pipes_ model with an _effect_ port [W/m<SUP>2</SUP>]
  *
  * Optional dependencies
  * ------------
@@ -39,7 +39,7 @@ EnergyBalance::EnergyBalance(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     InputRef(double, irradiation, "indoors/radiation[total]");
-    InputRef(double, heatPipes, "effectuators/heating/pipes[effect]");
+    InputRef(double, heatPipes, "actuators/heating/pipes[effect]");
     Output(double, value);
 }
 

@@ -20,23 +20,26 @@ public:
     void reset();
     void update();
     // Special methods
-    double temperatureNeeded(double specificEffect);
+    double inflowTemperatureNeeded(double effect);
 
 private:
     // Parameters
     double length, diameter, flowRate, greenhouseArea,
-        inflowTemperature, indoorsTemperature, timeStepSecs;
+        inflowTemperature, indoorsTemperature, timeStep;
 
     // Variables
-    double temperature, effect;
+    double temperature, effect, propFlow;
 
     // Methods
+    void updateFlow();
     double specificEffect(double Tpipe);
+    double pipeTemperature(double specificEffect);
     void selfTest();
 
     // Data
     const double exponent{1.25};
-    double slope, propFlow, volume;
+    double slope,
+        volume;   // Volume of pipe water per m2 greenhouse [kg = L]
 };
 } //namespace
 

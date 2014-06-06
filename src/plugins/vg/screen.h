@@ -4,8 +4,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SCREEN_EFFECTUATOR_H
-#define VG_SCREEN_EFFECTUATOR_H
+#ifndef VG_SCREEN_H
+#define VG_SCREEN_H
 
 
 #include <QPair>

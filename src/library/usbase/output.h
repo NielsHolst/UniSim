@@ -35,7 +35,7 @@ public:
     virtual int numXTraces() const = 0;
 protected:
     // parameters
-    int frequency;
+    int sample;
     // methods
     int runNumber() const;
 

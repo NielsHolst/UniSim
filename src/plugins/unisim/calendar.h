@@ -35,7 +35,7 @@ private:
     double latitude, longitude;
     QDate initialDate;
     QTime initialTimeOfDay;
-    int timeStep, timeStepOffset, timeZone;
+    int timeStep, timeStepOffset, timeZone, sample;
     char timeUnitAsChar;
     Time::Unit timeUnit;
 

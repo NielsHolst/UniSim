@@ -8,11 +8,11 @@
 #include <usbase/utilities.h>
 #include "general.h"
 
-/*! \file
- *
- */
-
 using namespace std;
+
+/*! \file general.cpp
+ * General physical functions and constants
+ */
 
 namespace vg {
 

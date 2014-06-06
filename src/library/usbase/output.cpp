@@ -16,7 +16,7 @@ namespace UniSim{
 OutputBase::OutputBase(Identifier name, QObject *parent)
     : Component(name, parent), _hasSummary(false)
 {
-    Input(int, frequency, 1);
+    Input(int, sample, 1);
 }
 
 

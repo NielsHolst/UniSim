@@ -32,7 +32,7 @@ PUBLISH(EnergyFluxVentilation)
  *
  * Default dependencies
  * ------------
- * - a _construction/geometry_ model with a _volumeTotal_ port [m<SUP>3</SUP>]
+ * - a _construction/geometry_ model with an _averageHeight_ port [m]
  * - a _calendar_ model with a _timeStepSecs_ port [s]
  */
 

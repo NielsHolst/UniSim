@@ -18,11 +18,8 @@ public:
     void reset();
     void update();
 private:
-    // Parameters
-    double initValue, soilTemperature, Cfloor, Usoil, fluxToFloor;
-
-    // Variables
-    double value;
+    double initValue, soilTemperature, Cfloor, Usoil, fluxToFloor, timeStep,
+        value;
 };
 } //namespace
 

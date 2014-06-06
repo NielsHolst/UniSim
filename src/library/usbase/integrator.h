@@ -6,10 +6,8 @@
 #ifndef UNISIM_INTEGRATOR_H
 #define UNISIM_INTEGRATOR_H
 
+#include <QProgressDialog>
 #include "model.h"
-
-class QMainWindow;
-class QProgressDialog;
 
 namespace UniSim{
 
@@ -22,38 +20,27 @@ public:
     Integrator(Identifier name, QObject *parent=0);
 	
     // standard methods
-    virtual void amend();
-    virtual void initialize();
-    virtual void reset();
+    void initialize();
+    void reset();
 
     // special methods
+    bool nextStep();
     virtual bool nextRun();
-    virtual bool nextStep() = 0;
-    void acceptException(Exception *e);
 	
 protected:
 	// variables
     int stepNumber;
 	double progress;
 
-private slots:
-    void doCancel();
-    void closeReport();
-
 private:
 	// variables
     int runNumber;
 	// links
     Model *runIterator;
-    QMainWindow *mainWindow;
-    QProgressDialog *report;
-	// state
-    bool reporting, cancelled;
+    QProgressDialog progressDialog;
 	// methods
-    void reportProgress();
-    void openReport();
-    void updateReport();
-    void createReport();
+    virtual bool doNextStep() = 0;
+    void setupProgressDialog();
 };
 
 } //namespace

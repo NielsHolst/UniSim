@@ -7,8 +7,8 @@
 #ifndef VG_GENERAL_H
 #define VG_GENERAL_H
 
-/*! \file
- *
+/*! \file general.h
+ * General physical functions and constants
  */
 
 namespace vg {
@@ -19,7 +19,7 @@ const double
     Sigma = 5.6704e-8,  //!< Stefan-Boltzmann constant (W/m2/K4)
     Mwater = 18.016e-3, //!< Molar mass of water (kg/mol)
     Mwa = 0.622,        //!< Molar mass of water relative to molar mass of air (-)
-    R = 8.314,          //!< Gas constant (m3 Pa/mol/K)
+    R = 8.314,          //!< Gas constant (J/mol/K)
     P0 = 101325,        //!< Standard atmospheric pressure = 1 atm (Pa)
     CpAir = 1020,       //!< Specific heat capacity of air (J/kg/K)
     CpWater = 4184,     //!< Specific heat capacity of water (J/kg/K)

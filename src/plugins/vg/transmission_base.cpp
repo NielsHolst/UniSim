@@ -47,7 +47,7 @@ namespace vg {
  *   + _azimuth_ [-90;90]
  *  - a _construction/geometry_ with a _coverArea_ port [m<SUP>2</SUP>]
  * - many (6) models of type Cover, that are children of the _greenhouse/construction_ model
- * - many (0..6) models of type Screen, that are children of the _effectuators/screens_ model
+ * - many (0..6) models of type Screen, that are children of the _actuators/screens_ model
  */
 
 TransmissionBase::TransmissionBase(Identifier name, QObject *parent)
@@ -105,7 +105,7 @@ void TransmissionBase::collectInfo() {
     auto covers = seekMany<Cover*>("greenhouse/construction/*");
     QList<Screen*> screens;
     if (applyScreens())
-        screens = seekMany<Screen*>("effectuators/screens/*");
+        screens = seekMany<Screen*>("actuators/screens/*");
     surfaces.clear();
     for (auto cover : covers) {
         SurfaceInfo si;

@@ -27,7 +27,7 @@ void TimeLimited::initialize() {
     time = seekOneChild<Model*>("time");
 }
 
-bool TimeLimited::nextStep()
+bool TimeLimited::doNextStep()
 {
     return time->pullValue<double>("total") >= maxTime;
 }

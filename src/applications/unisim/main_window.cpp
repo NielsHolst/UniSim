@@ -147,7 +147,6 @@ PlotWidget* MainWindow::createPlotWidget(QString title) {
 }
 
 void MainWindow::tile() {
-//    _mdiArea->tileSubWindows();
     QList<SubWindow*> tiles = subWindowList(SubWindow::SimulationOutput);
     int rows = 2, columns = 2, n = tiles.size();
     while (rows*columns < n) {
@@ -165,6 +164,7 @@ void MainWindow::tile() {
             QPoint pos(col*tile.width(), row*tile.height());
             if (ixTile < n) {
                 tiles[ixTile]->resize(tile);
+                tiles[ixTile]->setMinimumSize(tile);
                 tiles[ixTile]->move(pos);
                 ++ixTile;
             }

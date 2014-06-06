@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <iostream>
 #include <QDir>
+#include <QTime>
 #include <QTimer>
 #include <usbase/exception.h>
 #include <usbase/file_locations.h>
@@ -150,7 +151,13 @@ void LiveSimulation::run() {
     if (_state != Ready)
         throw Exception("Simulation not ready (maybe not opened or in error?)");
     changeState(Running);
+    QTime t;
+    t.start();
     _simulation->execute();
+    int duration = t.elapsed()/1000,
+        m = duration/60,
+        s = duration%60;
+    stateTexts[EndRunning] = QString("Run finished after %1m %2s").arg(m).arg(s);
     changeState(EndRunning);
 }
 

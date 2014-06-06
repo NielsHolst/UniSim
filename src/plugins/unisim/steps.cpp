@@ -18,7 +18,7 @@ Steps::Steps(Identifier name, QObject *parent)
     new Parameter<int>("maxSteps", &maxSteps, 100, this, "description");
 }
 
-bool Steps::nextStep()
+bool Steps::doNextStep()
 {
     ++stepNumber;
 	progress = double(stepNumber)/maxSteps;

@@ -81,8 +81,8 @@ private:
 	QLabel *permanentMessage;
 	QMdiArea *_mdiArea;
     SubWindow *fileLocationsSubWindow, *viewModelSubWindow;
-        QLabel *imageLabel;
-        QScrollArea *scrollArea;
+    QLabel *imageLabel;
+    QScrollArea *scrollArea;
 	
 	// Data
     QString currentFilePath;

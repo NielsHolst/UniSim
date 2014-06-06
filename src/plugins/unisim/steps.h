@@ -19,7 +19,7 @@ public:
     Steps(Identifier name, QObject *parent=0);
 
     // special methods
-    bool nextStep();
+    bool doNextStep();
 	
 private:
 	// Parameters

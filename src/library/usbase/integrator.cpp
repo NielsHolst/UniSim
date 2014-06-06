@@ -3,36 +3,34 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <QApplication>
 #include <QMainWindow>
-#include <QProgressDialog>
-#include <QString>
-#include "exception.h"
+#include <Qt>
 #include "integrator.h"
-#include "main_window_interface.h"
 #include "model.h"
 #include "object_pool.h"
-#include "variable.h"
 
 namespace UniSim{
 	
 Integrator::Integrator(Identifier name, QObject *parent)
-    : Model(name, parent), mainWindow(0), report(0)
+    : Model(name, parent), progressDialog("Running simulation...", "Stop", 0, 100)
 {
-    new Variable<int>("stepNumber", &stepNumber, this, "Number of current time step in this iteration");
-    new Variable<double>("progress", &progress, this, "Progress of current iteration [0,1]");
-    new Variable<int>("runNumber", &runNumber, this, "Number of current iteration");
-    // This make the application task hang in memory
-    //connect(QApplication::instance(), SIGNAL(lastWindowClosed()), this, SLOT(closeReport()));
+    Output(int, stepNumber); // Number of current time step in this iteration");
+    Output(double, progress); // Progress of current iteration [0,1]");
+    Output(int, runNumber); //Number of current iteration");
+    setupProgressDialog();
 }
 
-void Integrator::amend() {
-    try {
-        mainWindow = objectPool()->find<QMainWindow*>("mainWindow");
-    }
-    catch (Exception &) {
-        mainWindow = 0;
-    }
+void Integrator::setupProgressDialog() {
+//    QMainWindow *mainWindow;
+//    try {
+//        mainWindow = objectPool()->find<QMainWindow*>("mainWindow");
+//    }
+//    catch (Exception &) {
+//        mainWindow = 0;
+//    }
+//    progressDialog.setParent(mainWindow->centralWidget());
+//    progressDialog.setAttribute(Qt::Window);
+    progressDialog.setWindowModality(Qt::WindowModal);
 }
 
 void Integrator::initialize() {
@@ -40,7 +38,6 @@ void Integrator::initialize() {
     if (!runIterator)
         runIterator = peekOneChild<Model*>("iterator");
     runNumber = 0;
-    reporting = cancelled = false;
 }
 
 void Integrator::reset() {
@@ -48,63 +45,25 @@ void Integrator::reset() {
 	progress = 0.;
 }
 
+bool Integrator::nextStep() {
+    progressDialog.setValue((int) 100*progress);
+    bool carryOn = doNextStep() && !progressDialog.wasCanceled();
+    if (!carryOn) {
+        progressDialog.setValue(100);
+        progressDialog.reset();
+    }
+    return carryOn;
+}
+
 bool Integrator::nextRun() {
-    if (mainWindow)
-        reportProgress();
+    if (progressDialog.wasCanceled())
+        return false;
     ++runNumber;
-    bool nextOk;
-    if (cancelled) {
-        nextOk = false;
-    }
-    else if (runIterator)
-        nextOk = runIterator->pullValue<bool>("value");
-    else
-        nextOk = runNumber == 1;
-    if (!nextOk)
-        closeReport();
-    return nextOk;
+    return runIterator ?
+           runIterator->pullValue<bool>("value")
+           : runNumber == 1;
 }
 
-void Integrator::doCancel() {
-    cancelled = true;
-}
-
-void Integrator::reportProgress() {
-    if (!reporting) {
-        openReport();
-        reporting = true;
-    }
-    updateReport();
-}
-
-void Integrator::openReport() {
-    if (!report)
-        createReport();
-}
-
-void Integrator::updateReport() {
-    report->setValue(runNumber);
-}
-
-void Integrator::createReport() {
-    int numRuns = 1;
-    if (runIterator)
-        numRuns = runIterator->pullValue<int>("numIterations");
-    report = new QProgressDialog("Computing...", "Cancel simulation", 0, numRuns, mainWindow);
-    report->setWindowModality(Qt::WindowModal);
-    report->setMinimumDuration(1000);
-    report->setAttribute(Qt::WA_DeleteOnClose);
-    connect(report, SIGNAL(canceled()), this, SLOT(doCancel()));
-}
-
-void Integrator::closeReport() {
-    if (report) report->close();
-    reporting = false;
-}
-
-void Integrator::acceptException(Exception *) {
-    closeReport();
-}
 
 } //namespace
 

@@ -55,6 +55,8 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     "Often this is what is intuitively expected. With a @F timeStepOffset value of zero "
     "the first output will occur one time step after time zero.");
 
+    Input(int, sample, 1);
+
     addVariable<QDate>(Name(date), "Current date");
     addVariable<QTime>(Name(timeOfDay), "Current time of day");
     addVariable<QDateTime>(Name(dateTime), "Current date and time");

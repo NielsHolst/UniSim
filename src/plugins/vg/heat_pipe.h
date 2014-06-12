@@ -24,7 +24,7 @@ public:
 
 private:
     // Parameters
-    double length, diameter, flowRate, greenhouseArea,
+    double length, totalLength, diameter, flowRate, greenhouseArea,
         inflowTemperature, indoorsTemperature, timeStep;
 
     // Variables

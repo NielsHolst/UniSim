@@ -4,25 +4,19 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SCREEN_CONTROLLER_H
-#define VG_SCREEN_CONTROLLER_H
+#ifndef VG_CONSTRUCTION_FLOOR_H
+#define VG_CONSTRUCTION_FLOOR_H
+
 #include <usbase/model.h>
 
 namespace vg {
 
-class ScreenController : public UniSim::Model
+class ConstructionFloor : public UniSim::Model
 {
 public:
-    ScreenController(UniSim::Identifier name, QObject *parent);
-    void reset();
-    void update();
-protected:
-    // Parameters
-    double followSignal, suggestedSignal;
-    bool periodsOn;
-
-    // Variable
-    double signal;
+    ConstructionFloor(UniSim::Identifier name, QObject *parent);
+private:
+    double U;
 };
 } //namespace
 

@@ -33,7 +33,6 @@ ScreenController::ScreenController(Identifier name, QObject *parent)
 {
     Input(double, followSignal, 0.);
     InputRef(bool, periodsOn, "./periods[on]");
-    InputRef(bool, conditionsOn, "./conditions[on]");
     InputRef(double, suggestedSignal, "./suggestedSignal[value]");
     Output(double, signal);
 }
@@ -43,7 +42,7 @@ void ScreenController::reset() {
 }
 
 void ScreenController::update() {
-    signal = (periodsOn && conditionsOn) ? suggestedSignal : 0.;
+    signal = periodsOn ? suggestedSignal : 0.;
     signal = max(signal, followSignal);
 }
 

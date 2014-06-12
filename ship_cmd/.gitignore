@@ -1,0 +1,5 @@
+UniSimCmd/altova/*.*
+UniSimCmd/bin/*.*
+UniSimCmd/bin/*/*.*
+UniSimCmd/xslt/*.*
+*.zip

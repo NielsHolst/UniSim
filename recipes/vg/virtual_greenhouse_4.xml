@@ -5,7 +5,7 @@
 		dt=1 m => 525600 steps in 1 year
 		dt=5 m => 105120 steps in 1 year
 		-->
-		<parameter name="maxSteps" value="10512"/>
+		<parameter name="maxSteps" value="105120"/>
 	</integrator>
 	
 	<model name="calendar" type="UniSim::Calendar">
@@ -48,10 +48,9 @@
 			<model name="end2" type="vg::Cover">
 				<parameter name="type" value ="s20sar"/>
 			</model>
-			<model name="floor" type="UniSim::Fixed">
-				<parameter name="parameters" value="((U 6.))"/>
-			</model>
-		</model>
+			<model name="floor" type="vg::ConstructionFloor">
+				<parameter name="U" value="5.7"/>
+			</model>		</model>
 	</model>
 	
 	<model name="indoors">
@@ -128,7 +127,7 @@
 			</model>
 			<model name="maximumRh" type="vg::SwitchSetpointCollection">
 				<parameter name="defaultValue" value="80"/>
-				<model name="setpoint" type="vg::SwitchSetpoint">
+				<model type="vg::SwitchSetpoint">
 					<parameter name="onSetpoint" value="80"/>
 					<model name="timeSwitch" type="vg::TimeSwitch">
 						<parameter name="onDay" value="1"/>
@@ -147,9 +146,9 @@
 				<parameter name="direction" value="decrement"/>
 				
 				<model name="setpoints" type="vg::SwitchSetpointCollection">
-					<parameter name="defaultValue" value="24"/>
+					<parameter name="defaultValue" value="20"/>
 					<model type="vg::SwitchSetpoint">
-						<parameter name="onSetpoint" value="24"/>
+						<parameter name="onSetpoint" value="20"/>
 						<model name="timeSwitch" type="vg::TimeSwitch">
 							<parameter name="onDay" value="1"/>
 							<parameter name="offDay" value="365"/>
@@ -225,21 +224,20 @@
 	
 	<model name="controllers">
 		<model name="screens">
-			<model name="maximum" type="vg::ThresholdValue">
+			<model name="maxDrawn" type="vg::ThresholdValue"> <!-- When too humid do not draw screens completely -->
 				<parameter name="lowValue" value ="1"/>
 				<parameter name="highValue" value ="0.95"/>
-				<parameter name="testValue" value ="90"/>
-				<parameter name="testThreshold" value ="85"/>
+				<parameter name="testThreshold" ref ="setpoints/humidity/maximumRh[setpoint]"/>
+				<parameter name="testValue" ref ="indoors/humidity[rh]"/>
 			</model>
 
 			<model name="energy" type="vg::ScreenController">
 				<model name="suggestedSignal" type="vg::ThresholdValue">
-					<parameter name="lowValue" ref ="../../maximum[value]"/>
+					<parameter name="lowValue" ref ="../../maxDrawn[value]"/>
 					<parameter name="highValue" value ="0"/>
 					<parameter name="testValue" ref ="outdoors[radiation]"/>
 					<parameter name="testThreshold" value ="10"/>
 				</model>
-				<model name="conditions" type="vg::SwitchCollection"/>
 				<model name="periods" type="vg::SwitchCollection">
 					<parameter name="condition" value ="someTrue"/>
 					<model type="vg::TimeSwitch"/>
@@ -248,14 +246,13 @@
 
 
 			<model name="blackout" type="vg::ScreenController">
-				<!-- <parameter name="followSignal" ref ="../energy[signal]"/> -->
+				<parameter name="followSignal" ref ="../energy[signal]"/>
 				<model name="suggestedSignal" type="vg::ThresholdValue">
 					<parameter name="lowValue" value ="0"/>
-					<parameter name="highValue" ref ="../../maximum[value]"/>
+					<parameter name="highValue" value="1"/>
 					<parameter name="testValue" ref ="outdoors[radiation]"/>
 					<parameter name="testThreshold" value ="0"/>
 				</model>
-				<model name="conditions" type="vg::SwitchCollection"/>
 				<model name="periods" type="vg::SwitchCollection">
 					<parameter name="condition" value ="someTrue"/>
 					<model name="timeSwitch" type="vg::TimeSwitch">
@@ -268,14 +265,13 @@
 			</model>
 
 			<model name="shade" type="vg::ScreenController">
-				<!-- <parameter name="followSignal" ref ="../energy[signal]"/> -->
+				<parameter name="followSignal" ref ="../energy[signal]"/>
 				<model name="suggestedSignal" type="vg::ThresholdValue">
 					<parameter name="lowValue" value ="0"/>
-					<parameter name="highValue" ref ="../../maximum[value]"/>
+					<parameter name="highValue" ref ="../../maxDrawn[value]"/>
 					<parameter name="testValue" ref ="outdoors[radiation]"/>
 					<parameter name="testThreshold" value ="20"/>
 				</model>
-				<model name="conditions" type="vg::SwitchCollection"/>
 				<model name="periods" type="vg::SwitchCollection">
 					<parameter name="condition" value ="someTrue"/>
 					<model type="vg::TimeSwitch"/>
@@ -287,7 +283,7 @@
 			<parameter name="frostThreshold" value="0"/>
 			<model name="humidityMaximum" type="vg::ThresholdValue">
 				<parameter name="lowValue" value ="80"/>
-				<parameter name="highValue" value ="80"/>
+				<parameter name="highValue" value ="100"/>
 				<parameter name="testValue" ref ="outdoors[radiation]"/>
 				<parameter name="testThreshold" value ="0"/>
 			</model>
@@ -306,29 +302,9 @@
 				<parameter name="maxSignal" ref="../humidityMaximum[value]"/>
 			</model>
 		</model>
+		
 		<model name="heating">
-			<!--
-			<model name="flow" type="vg::ThresholdValue">
-				<parameter name="lowValue" value ="20"/>
-				<parameter name="highValue" value ="0"/>
-				<parameter name="testValue" ref ="indoors/temperature[value]"/>
-				<parameter name="testThreshold" ref ="setpoints/temperature/heating[setpoint]"/>
-			</model>
-			-->
-			<model name="flow" type="vg::ProportionalControl">
-				<parameter name="actualValue" ref="indoors/temperature[value]"/>
-				<parameter name="targetValue" ref="setpoints/temperature/heating[setpoint]"/>
-				<parameter name="direction" value="floor"/>
-				<parameter name="pBand" value="0.1"/>
-				<parameter name="maxSignal" value="20"/>
-			</model>
 			<model name="temperature" type="vg::HeatingTemperatureController">
-				<model name="ventilationThreshold" type="vg::ThresholdSwitch">
-					<parameter name="type" 	value="high"/>
-					<parameter name="testThreshold" value="5"/>
-					<parameter name="testValue" ref="controllers/ventilation[leesideSignal]"/>
-					<parameter name="initValue" value="false"/>
-				</model>
 				<parameter name="minimumSignal" value ="20"/>
 				<parameter name="maximumSignal" value ="90"/>
 			</model>
@@ -376,7 +352,7 @@
 			<model name="pipes" type="vg::Pipes"> 
 				<model name="pipe1" type="vg::HeatPipe">
 					<parameter name="length" value="2"/>
-					<parameter name="flowRate" value="20" ref2="controllers/heating/flow[signal]"/>
+					<parameter name="flowRate" value="20"/>
 					<parameter name="inflowTemperature" ref="controllers/heating/temperature[signal]"/>
 				</model>
 				<!--
@@ -402,7 +378,6 @@
 	
 	<output type="plot" name="plot">
 		<parameter name="title" value ="Energy screen"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Radiation" ref="outdoors[radiation]" divisor="100"/>
 		<trace label="Signal" ref="controllers/screens/energy[signal]"/>
@@ -410,7 +385,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Blackout screen"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Radiation" ref="outdoors[radiation]" divisor="100"/>
 		<trace label="Signal" ref="controllers/screens/blackout[signal]"/>
@@ -418,7 +392,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Shade screen"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Radiation" ref="outdoors[radiation]" divisor="100"/>
 		<trace label="Signal" ref="controllers/screens/shade[signal]"/>
@@ -426,7 +399,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Cover transmission"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Diffuse" ref="cover/transmission[diffuse]"/>
 		<trace label="DirectDirect" ref="cover/transmission[directAsDirect]"/>
@@ -434,7 +406,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Screens light transmission"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Diffuse" ref="screens/transmission[diffuse]"/>
 		<trace label="DirectDirect" ref="screens/transmission[directAsDirect]"/>
@@ -442,19 +413,16 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Screens air transmission"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Air" ref="screens/transmission[air]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Cover and screens U"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="U" ref="screens/transmission[U]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Indoors radiation"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Direct" ref="indoors/radiation[direct]"/>
 		<trace label="Diffuse" ref="indoors/radiation[diffuse]"/>
@@ -462,7 +430,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Outdoors radiation"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Direct" ref="outdoors[directRadiation]"/>
 		<trace label="Diffuse" ref="outdoors[diffuseRadiation]"/>
@@ -470,27 +437,23 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Ventilation (m3/h/m2)"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Infiltration" ref="indoors/ventilation/infiltration[rate]"/>
 		<trace label="Total" ref="indoors/ventilation[rate]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Relative ventilation"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Proportion" ref="indoors/ventilation[relative]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Weather"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Temperature" ref="outdoors[temperature]"/>
 		<trace label="Windspeed" ref="outdoors[windspeed]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Heat fluxes (W/m2)"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Irradiation" ref="indoors/energy[irradiation]"/>
 		<trace label="Pipes" ref="indoors/energy[heatPipes]"/>
@@ -502,13 +465,11 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Heat balance (W/m2)"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Balance" ref="indoors/energy[value]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Temperature"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Outdoors" ref="outdoors[temperature]"/>
 		<trace label="Indoors" ref="indoors/temperature[value]"/>
@@ -520,7 +481,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Relative humidity"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Outdoors" ref="outdoors[rh]"/>
 		<trace label="Indoors" ref="indoors/humidity[rh]"/>
@@ -528,22 +488,31 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Absolute humidity"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Outdoors" ref="outdoors[ah]"/>
 		<trace label="Indoors" ref="indoors/humidity[ah]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Ventilation"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Signal" ref="controllers/ventilation[signal]"/>
 		<trace label="Lee side state" ref="actuators/vents/leeside[state]"/>
 		<trace label="Wind side state" ref="actuators/vents/windside[state]"/>
 	</output>
+	<!--
+	<output type="plot">
+		<parameter name="title" value ="Ventilation by humidity"/>
+		<trace label="Rh" ref="indoors/humidity[rh]"/>
+		<trace label="Signal" ref="ventilation/byHumidity[signal]" type="symbols"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value ="Ventilation by temperature"/>
+		<trace label="Temperature" ref="indoors/temperature[value]"/>
+		<trace label="Signal" ref="ventilation/byTemperature[signal]" type="symbols"/>
+	</output>
+	-->
 	<output type="plot">
 		<parameter name="title" value ="Heating"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Flow" ref="pipes/pipe1[flowRate]"/>
 		<trace label="Temp inflow" ref="pipes/pipe1[inflowTemperature]"/>
@@ -553,7 +522,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Conductances"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Plant" ref="transpiration/plant[conductance]"/>
 		<trace label="Cover" ref="condensation/cover[conductance]"/>
@@ -562,7 +530,6 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Vapour fluxes"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Plant" ref="transpiration/plant[vapourFlux]"/>
 		<trace label="Cover" ref="condensation/cover[vapourFlux]"/>
@@ -571,56 +538,15 @@
 	</output>
 	<output type="plot">
 		<parameter name="title" value ="Energy expenditure (MJ/m2)"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
 		<trace label ="Days" type="time"/>
 		<trace label="Sum" ref="actuators/heating/pipes[sumEnergy]"/>
 	</output>
 	
-	<!--
-	<output type="plot">
-		<parameter name="title" value ="conductance"/>
-		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
-		<trace label="Screen" ref="condensation/screens[conductance]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value ="vapourFlux"/>
-		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
-		<trace label="Screen" ref="condensation/screens[vapourFlux]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value ="area"/>
-		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
-		<trace label="Screen" ref="condensation/screens[screenArea]"/>
-	</output>
-	<output type="plot">
-  		<parameter name="title" value ="Test"/>
-		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
-		<trace label="byTemp" ref="ventilation/byTemperature[signal]"/>
-		<trace label="byHum" ref="ventilation/byHumidity[signal]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value ="Vapour flux integration"/>
-		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
-		<trace label="Gross" ref="indoors/humidity[grossVapourFlux]"/>
-		<trace label="Net" ref="indoors/humidity[netVapourFlux]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value ="Vapour flux integration"/>
-		<trace label="Net" ref="indoors/humidity[netVapourFlux]"/>
-		<trace label="Gross" ref="indoors/humidity[grossVapourFlux]" type="symbols"/>
-	</output>
-
-	<output type="plot">
-		<parameter name="title" value ="Time constant"/>
-		<trace label="Days" ref="steps[stepNumber]" divisor="288"/>
-		<trace label="TimeConstant" ref="indoors/humidity[timeConstant]"/>
-	</output>
-	-->
-	
 	<output type="table">
 		<parameter name="filename" value ="vapourflux.txt"/>
-		<parameter name="sample" ref ="calendar[sample]"/>
+		<trace label ="Days" type="time"/>
 		<trace label="Step" ref="steps[stepNumber]"/>
+		<trace label="Day" ref="calendar[dayOfYear]"/>
 		<trace label="TimeConstant" ref="indoors/humidity[timeConstant]"/>
 		<trace label="Gross" ref="indoors/humidity[grossVapourFlux]"/>
 		<trace label="Net" ref="indoors/humidity[netVapourFlux]"/>

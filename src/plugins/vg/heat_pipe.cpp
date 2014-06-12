@@ -23,12 +23,14 @@ PUBLISH(HeatPipe)
  *
  * Inputs
  * ------
- * - _length_ is pipe length per greenhouse area [m/m<SUP>2</SUP>]
+ * - _length_ is pipe length per greenhouse area [m/m<SUP>2</SUP>]. If zero then it is calculated as _totalLength_/_greenhouseArea.
+ * - _totalLength_ is the total length of the pipe [m]. Only used if _length_=0
  * - _diameter_ is the pipe inner diameter [mm]
- * - _flow_ is the flow rate [m<SUP>3</SUP>/h]
+ * - _flowRate_ is the flow rate [m<SUP>3</SUP>/h]
  * - _inflowTemperature_ is the temperature of the water flowing into the pipe [<SUP>o</SUP>C]
  * - _indoorsTemperature_ is the ambient temperature of the greenhouse [<SUP>o</SUP>C]
  * - _timeStep_ is the integration time step [s]
+ * - _greenhouseArea_ is the ground area covered by the greenhouse [m<SUP>2</SUP>]
  *
  * Outputs
  * ------
@@ -37,19 +39,20 @@ PUBLISH(HeatPipe)
 
  * Default dependencies
  * ------------
- * - the nearest _flow_ model with a _state_ port [true/false]
- * - a _shunt_ child model with a _state_ port [<SUP>o</SUP>C]
+ * - a _controllers/heating/temperature_ model wit a _signal_ port [<SUP>o</SUP>C]
  * - an _indoors/temperature_ model with a _value_ port [<SUP>o</SUP>C]
  * - a _calendar_ model with a _timeStepSecs_ port [s]
+ * - a _construction/geometry_ model with a _groundArea_ port [m<SUP>2</SUP>]
  */
 
 HeatPipe::HeatPipe(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, length, 1.);
+    Input(double, totalLength, 0.);
     Input(double, diameter, 51.);
-    InputRef(double, flowRate, ".../flow[state]");
-    InputRef(double, inflowTemperature, "./shunt[state]");
+    Input(double, flowRate, 20.);
+    InputRef(double, inflowTemperature, "controllers/heating/temperature[signal]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
@@ -63,6 +66,8 @@ void HeatPipe::initialize() {
 }
 
 void HeatPipe::reset() {
+    if (length == 0.)
+        length = totalLength/greenhouseArea;
     if (length <= 0.) {
         QString msg {"Pipe length (%1) must be > 0 m"};
         throw Exception(msg.arg(length), this);

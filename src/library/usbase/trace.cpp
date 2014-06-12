@@ -25,7 +25,7 @@ Trace::Trace(QString name, VariableBase *variable_, QObject *parent)
       multiplier(1.), divisor(1.),
       historyCleared(false)
 {
-    InputRef(int, sample, "..[sample]");
+    InputRef(int, sample, "calendar[sample]");
     output = dynamic_cast<OutputBase*>(parent);
 }
 
@@ -111,12 +111,43 @@ void Trace::setType() {
 }
 
 void Trace::reset() {
+    resetTime();
     resetSummary();
     if (!historyCleared || !isSummary())
         _history.clear();
     historyCleared = true;
     sampleCount = 0;
     sampleSum = 0.;
+}
+
+inline Time::Unit suggestedUnit(long secs) {
+    if (secs <= Time(5, Time::Minutes).toSeconds())
+        return Time::Seconds;
+    else if (secs <= Time(5, Time::Hours).toSeconds())
+        return Time::Minutes;
+    else if (secs <= Time(48, Time::Hours).toSeconds())
+        return Time::Hours;
+    else if (secs <= Time(500, Time::Days).toSeconds())
+        return Time::Days;
+    return Time::Years;
+}
+
+void Trace::resetTime() {
+    QVariant v = attribute("type");
+    bool isTime =  v.isValid() && v.toString().toLower()=="time";
+    if (isTime) {
+        Model *steps = seekOne<Model*>("steps");
+        Model *calendar = seekOne<Model*>("calendar");
+        int maxSteps = steps->pullValue<int>("maxSteps");
+        int timeStepSecs = floor(calendar->pullValue<double>("timeStepSecs") + 0.5);
+        long duration = long(maxSteps)*timeStepSecs;
+        Time::Unit unit = Time::Seconds,
+                   newUnit = suggestedUnit(duration);
+        divisor = (newUnit > unit)
+                  ? Time(1,newUnit).toSeconds() / Time(1,unit).toSeconds() // / timeStepSecs
+                  : 1;
+        multiplier = timeStepSecs;
+    }
 }
 
 void Trace::resetSummary() {
@@ -138,49 +169,15 @@ void Trace::resetSummary() {
     }
 }
 
-inline Time::Unit suggestedUnit(long secs) {
-    if (secs <= Time(5, Time::Minutes).toSeconds())
-        return Time::Seconds;
-    else if (secs <= Time(5, Time::Hours).toSeconds())
-        return Time::Minutes;
-    else if (secs <= Time(48, Time::Hours).toSeconds())
-        return Time::Hours;
-    else if (secs <= Time(500, Time::Days).toSeconds())
-        return Time::Days;
-    return Time::Years;
-}
-
-void Trace::initialize() {
-    QVariant v = attribute("type");
-    bool isTime =  v.isValid() && v.toString().toLower()=="time";
-    if (isTime) {
-        Model *steps = seekOne<Model*>("steps");
-        Model *calendar = seekOne<Model*>("calendar");
-        int maxSteps = steps->pullValue<int>("maxSteps");
-        int timeStepSecs = floor(calendar->pullValue<double>("timeStepSecs") + 0.5);
-        long duration = long(maxSteps)*timeStepSecs;
-//        int timeChar = calendar->pullValue<char>("timeUnit");
-//        Time::Unit unit = Time::charToUnit(timeChar),
-//                   newUnit = suggestedUnit(duration);
-//        int timeChar = calendar->pullValue<char>("timeUnit");
-        Time::Unit unit = Time::Seconds,
-                   newUnit = suggestedUnit(duration);
-        divisor = (newUnit > unit)
-                  ? Time(1,newUnit).toSeconds() / Time(1,unit).toSeconds() // / timeStepSecs
-                  : 1;
-        multiplier = timeStepSecs;
-    }
-}
-
 void Trace::update() {
     updateSummary();
     if (!isSummary()) {
         sampleSum += summary() == None ? currentValue() : s.value;
-        if (sampleCount++ == sample) {
-            _history.append(sampleSum/sampleCount);
+        if (sampleCount%sample == 0) {
+            _history.append(sampleSum/sample);
             sampleSum = 0.;
-            sampleCount = 0;
         }
+        ++sampleCount;
     }
 }
 

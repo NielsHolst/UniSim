@@ -25,7 +25,6 @@ public:
     // standard methods
     void amend();
     void reset();
-    void initialize();
     void update();
     void cleanup();
     void debrief();
@@ -51,6 +50,7 @@ private:
     void setThreshold(QString summaryCode);
     bool isSummary() const;
 
+    void resetTime();
     void resetSummary();
     void updateSummary();
 

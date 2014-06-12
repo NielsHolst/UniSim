@@ -3,20 +3,14 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef UNISIM_COMMAND_LINE_H
-#define UNISIM_COMMAND_LINE_H
+#ifndef INSECTICIDE_PUBLISH_H
+#define INSECTICIDE_PUBLISH_H
+//#include <usbase/product_base.h>
+#include <usbase/product.h>
 
-class CommandLine
-{
+namespace insecticide{
 
-public:
-    CommandLine(int argc, char *argv[]);
-    QString input() const;
-private:
-    int argc;
-    char *argv[];
-    QString _input;
-};	
+UniSim::ProductList& productList();
 
-
+} //namespace
 #endif

@@ -19,7 +19,7 @@ public:
 protected:
     // Parameters
     double followSignal, suggestedSignal;
-    bool conditionsOn, periodsOn;
+    bool periodsOn;
 
     // Variable
     double signal;

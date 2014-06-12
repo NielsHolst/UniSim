@@ -30,12 +30,8 @@ MegaFactory::MegaFactory() {
             QPluginLoader loader(filePath);
             FactoryPlugIn *factory = qobject_cast<FactoryPlugIn*>(loader.instance());
             if (factory) {
+//                std::cout << "Loading plugin: " << qPrintable(filename ) << "\n";
                 _factories << factory;
-//                factory->defineProducts();
-//                FactoryPlugIn::Products products_ = products(factory);
-//                QList<Identifier> classNames = products_.keys();
-//                for (int i=0; i<classNames.size(); ++i) {
-//                    Identifier id = classNames[i];
                 for (Identifier id : factory->inventory()) {
                     productIndex[id] = factory;
                     Identifier idWithNamespace = factory->id().label() + "::" + id.label();
@@ -89,37 +85,6 @@ Identifier MegaFactory::adjustedId(Identifier id) {
 const QList<FactoryPlugIn*>& MegaFactory::factories() {
     return me()->_factories;
 }
-
-
-//bool MegaFactory::canCreate(Identifier className)
-//{
-//    return me()->creation.count(className) > 0;
-//}
-
-//Identifiers MegaFactory::selection()
-//{
-//    Identifiers selection;
-//    for (ModelMakers::iterator ma = me()->_modelMakers.begin();
-//                               ma != me()->_modelMakers.end(); ++ma)
-//		selection << ma.key();
-//	return selection;
-//}
-
-//QList<ModelMakerPlugIn*> MegaFactory::plugins() {
-//    QList<ModelMakerPlugIn*> plugins, redundant = me()->_modelMakers.values();
-//    for (int i = 0; i < redundant.size(); ++i) {
-//        ModelMakerPlugIn *next = redundant[i];
-//        if (!plugins.contains(next))
-//            plugins.append(next);
-//    }
-//    return plugins;
-//}
-
-//ModelMakerPlugIn* MegaFactory::find(Identifier modelType)
-//{
-//	ModelMakers::iterator ma = _modelMakers.find(modelType);
-//	return (ma == _modelMakers.end()) ? 0 : ma.value();
-//}
 
 MegaFactory* MegaFactory::me() {
     if (!_me)

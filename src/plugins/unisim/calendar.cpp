@@ -85,13 +85,13 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 
 void Calendar::initialize() {
     connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
-    timeUnit = Time::charToUnit(timeUnitAsChar);
-    timeStepSecs = timeStep*Time::conversionFactor(timeUnit, Time::Seconds);
 }
 
 void Calendar::reset() {
+    timeUnit = Time::charToUnit(timeUnitAsChar);
+    timeStepSecs = timeStep*Time::conversionFactor(timeUnit, Time::Seconds);
     dateTime = QDateTime(initialDate, initialTimeOfDay, Qt::UTC);
-    dateTime = dateTime + Time(timeStep*timeStepOffset, timeUnit);
+    dateTime = dateTime + Time(sample*timeStep*timeStepOffset, timeUnit);
     totalTimeSteps = 0;
     updateDerived();
 }

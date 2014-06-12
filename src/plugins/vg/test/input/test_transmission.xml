@@ -43,7 +43,7 @@
 		</model>
 	</model>
 
-	<model name="effectuators">
+	<model name="actuators">
 		<model name="screens"> 
 			<model name="wholeRoof" type="vg::Screen">
 				<parameter name="position" value ="whole_roof"/>

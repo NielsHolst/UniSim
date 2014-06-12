@@ -13,6 +13,7 @@ HEADERS += \
     air_infiltration.h \
     asymptotic_control.h \
 #    boundary_layer_resistance.h \
+    construction_floor.h \
     construction_geometry.h \
     construction_ventilation.h \
     control_element.h \
@@ -81,6 +82,7 @@ SOURCES += \
     air_infiltration.cpp \
     asymptotic_control.cpp \
 #    boundary_layer_resistance.cpp \
+    construction_floor.cpp \
     construction_geometry.cpp \
     construction_ventilation.cpp \
     control_element.cpp \

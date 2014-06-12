@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<simulation name="Insecticide ecotoxicology">
+
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="10"/> <!-- Corresponding to the number of maize growing season -->
+	</integrator>
+	
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="initialDate" value="01/04/2013"/>
+		<parameter name="latitude" value="60"/> <!-- 28 degrees North -->
+		<parameter name="timestep" value="1"/> 
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="PathumthaniAgromet2013.txt"/><!-- "I" values are estimates, actual values will be collected from TMD/TMA-->
+			<parameter name="imposeInitialDateTime" value="no"/>  <!-- Tell the Records model not to impose its time scale on the calendar -->
+		</model>
+	</model>
+	
+	<!-- growth stages of a crop, e.g. maize -->
+	<model name="maize">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="5"/>
+		</model>
+		<model name="vegetative" type="UniSim::Stage">
+			<parameter name="duration" value="400"/>
+			<parameter name="initialInflow" value="1"/>
+		</model>
+		<model name="flowering" type="UniSim::Stage">
+			<parameter name="duration" value="200"/>
+			<parameter name="inflow" ref="vegetative[outflow]"/>
+		</model>
+		<model name="senescent" type="UniSim::Stage">
+			<parameter name="duration" value="300"/>
+			<parameter name="inflow" ref="flowering[outflow]"/>
+		</model>
+	</model>
+	
+	<!-- application of pesticides -->
+	<model name="applications">
+		<model name="app1" type="insecticide::Application"> <!-- The model is set for multiple appl, so far, other app are set to zero -->
+			<parameter name="day" value="15"/>
+			<parameter name="dosage" value="3.6"/>
+		</model>
+		<model name="app2" type="insecticide::Application">
+			<parameter name="day" value="25"/>
+			<parameter name="dosage" value="0"/>
+		</model>
+		<model name="app3" type="insecticide::Application">
+			<parameter name="day" value="35"/>
+			<parameter name="dosage" value="0"/>
+		</model>
+		<model name="total" type="UniSim::Sum">
+			<parameter name="toAdd" value="(app1[application] app2[application] app3[application])"/>
+		</model>
+	</model>
+
+    	
+	<!-- primary distribution of pesticides -->
+	<model name="Concentration in technosphere">
+	     <model name="glyphosateConcInSoil" type="insecticide::Compartment"> <!-- fraction intercepted = fraction applied -(fraction intercepted + fraction drifted) -->
+		    <parameter name="application" ref="applications/total[value]"/>
+			<parameter name="proportionToTechnosphere" value="0.5"/>
+	    </model>
+
+	    <model name="glyphosateConcInAir" type="insecticide::Compartment"><!-- fraction drifted = will be set to pick-up its value from the drift model -->
+		    <parameter name="application" ref="applications/total[value]"/>
+		    <parameter name="proportionToTechnosphere" value="0.25"/>
+	    </model>
+
+	     <model name="glyphosateConcOnLeaf" type="insecticide::Compartment"><!-- for leaf development, fraction intercepted is 0.25 -->
+		    <parameter name="application" ref="applications/total[value]"/>
+		    <parameter name="proportionToTechnosphere" value="0.25"/>
+	     </model>
+	</model>
+
+	<!-- secondary distribution of pesticides -->
+	
+	<!-- secondary distribution of pesticides on plants/leaf -->
+	<model name="leaf volatilization">
+		<model name="volatilization" type="insecticide::leafvolatilization">
+			<parameter name="inflow" ref="glyphosateConcOnLeaf[concentration]"/>
+			<parameter name="volatilizationrateconstant" value="2.01e-2"/>	<!-- change this to "per day" since our time steps is in "per day" -->		
+		</model>		
+	</model>
+	
+	<model name="leaf uptake">
+		<model name="uptake" type="insecticide::leafuptake">
+			<parameter name="inflow" ref="glyphosateConcOnLeaf[concentration]"/>
+			<parameter name="MV" value="140.83"/>	<!-- change this to "per day" since our time steps is in "per day" -->
+			<parameter name="a" value="0.8"/>
+			<parameter name="b" value="-0.1167"/>
+			<parameter name="T" value="25"/>
+			<parameter name="R" value="8.3145"/>
+		</model>		
+	</model>
+	
+	<model name="Plant and Leaf Volatilization">
+		<model name="glyphosate volatilized" type="insecticide::VolatilizationPlantLeaf">
+		    <parameter name="inflow" ref="glyphosateConcOnLeaf[application]"/>
+		    <parameter name="VP" value="5.73e-8"/>
+			<parameter name="dosage" value="360"/>
+			<parameter name="Ea" value="95"/>
+			<parameter name="R" value="2"/>
+			<parameter name="Tr" value="299"/>
+			<parameter name="Ta" value="400"/>
+		</model>
+	</model>
+	
+	<!-- secondary distribution of pesticides on soils -->
+	<model name="degradation in soil">
+		<model name="glyphosateInSoil" type="insecticide::Substance">
+			<parameter name="inflow" ref="glyphosateConcInSoil[concentration]"/>
+			<parameter name="degradationConstant" value="0.1"/>
+			<parameter name="fractionformation" value="0.995"/>
+		</model>
+		<model name="AMPAinSoil" type="insecticide::Substance">
+			<parameter name="inflow" ref="glyphosateInSoil[outflow]"/>
+			<parameter name="degradationConstant" value="0.01"/>
+			<parameter name="fractionformation" value="1"/>
+		</model>
+	</model>
+	
+	<!-- risk assessment of pesticides on/in soils -->
+	<model name="Hazard Quotient index in soil">
+		<model name="glyphosate HQ in soil" type="insecticide::HazardQuotient">
+		    <parameter name="concentration" ref="glyphosateInSoil[concentration]"/>
+		    <parameter name="lowestAvailableNOAEL" value="0.75"/>
+		</model>
+		<model name="AMPA HQ in soil" type="insecticide::HazardQuotient">
+		    <parameter name="concentration" ref="AMPAinSoil[concentration]"/>
+		    <parameter name="lowestAvailableNOAEL" value="0.75"/>
+		</model>
+		<model name="Reference value" type="insecticide::HazardQuotient">		    
+		    <parameter name="RV" value="1"/>
+		</model>
+	</model>
+	
+	<!-- -->
+	<model name="WindDriftTotal" type="insecticide::WindDriftTOT">
+		<parameter name="inflow" value="100"/>
+	</model>
+	
+	<!-- Output of day length -->
+	<output type="plot">
+		<parameter name="title" value ="Wind drift total"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>		
+		<trace label="Day length" value="calendar[daylength]"/>		
+	</output>
+
+	<!-- Output of total wind drift -->
+	<output type="plot">
+		<parameter name="title" value ="Wind drift total"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>		
+		<trace label="Total" value="WindDriftTotal[totaldrift]"/>		
+	</output>
+
+		<!-- Output of the models in plots and tables -->	
+	<output type="plot">
+		<parameter name="title" value ="Weather"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>		
+		<trace label="Minimum temperature (C)" value="weather/records[Tmin]"/>
+		<trace label="Average temperature (C)" value="weather[Tavg]" type="Symbols"/>
+		<trace label="Maximum temperature (C)" value="weather/records[Tmax]"/>
+		<trace label="Rainfall (mm)" value="weather/records[Rain]"/>
+		<trace label="light intensity (W m-2)" value="weather/records[I]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Maize development"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Vegetative" ref="vegetative[value]"/>
+		<trace label="Flowering" ref="flowering[value]"/>
+		<trace label="Senescent" ref="senescent[value]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value="Pesticide concentration in soil (g/ha)"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Glyphosate (g/ha)" ref="glyphosateInSoil[concentration]" type="Line"/>
+		<trace label="AMPA (g/ha)" ref="AMPAinSoil[concentration]" type="Symbols"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value="insecticide.txt"/>
+		<trace label="Julian" value="calendar[dayOfYear]"/>
+		<trace label="Step" ref="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate" ref="glyphosateInSoil[concentration]" type="Line"/>
+		<trace label="AMPA" ref="AMPAinSoil[concentration]" type="Symbols"/>
+	</output>
+	
+	<output type="table">
+       <parameter name="fileName" value ="Pesticide_concentration_in_soil.txt"/>
+       <trace label="Julian day number" ref="calendar[dayOfYear]"/>
+       <trace label="Glyphosate (g/ha)" ref="glyphosateInSoil[concentration]"/>
+       <trace label="AMPA (g/ha)" ref="AMPAinSoil[concentration]"/>
+    </output>
+	
+	<output type="plot">
+		<parameter name="title" value="Soil risk assessment"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Glyphosate" ref="Glyphosate HQ in soil[HQ]" type="Line"/>
+		<trace label="AMPA" ref="AMPA HQ in soil[HQ]" type="symbols"/>
+		<trace label="Reference line" ref="Reference value[ReferenceValue]"/>		
+	</output>
+	
+	<output type="table">
+       <parameter name="fileName" value ="Soil_risk_assessment.txt"/>
+       <trace label="Julian day number" ref="calendar[dayOfYear]"/>
+       <trace label="Glyphosate" ref="Glyphosate HQ in soil[HQ]"/>
+       <trace label="AMPA" ref="AMPA HQ in soil[HQ]"/>
+    </output>
+	
+	<output type="table">
+       <parameter name="fileName" value ="Pesticide_volatilized_from_leaf.txt"/>
+       <trace label="Julian day number" ref="calendar[dayOfYear]"/>
+       <trace label="Glyphosate loss" ref="glyphosate volatilized[concentration]"/>
+    </output>
+	
+	<output type="plot">
+		<parameter name="title" value="Pesticide volatilized from leaf"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Glyphosate loss" ref="glyphosate volatilized[concentration]"/>	
+	</output>
+	
+	<!-- Output of leafvolatilization -->
+    <output type="plot">
+		<parameter name="title" value="pesticide volatilized from leaf2"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Glyphosate vaporized" ref="volatilization[concentration]"/>	
+	</output>
+    <output type="table">
+		<parameter name="filename" value="pesticide volatilized from leaf2.txt"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Glyphosate vaporized" ref="volatilization[concentration]"/>	
+	</output>
+
+<!-- Output of leafuptake -->
+    <output type="plot">
+		<parameter name="title" value="leaf uptake"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Glyphosate uptake" ref="uptake[concentration]" type="symbols"/>	
+	</output>
+    <output type="table">
+		<parameter name="filename" value="leaf uptake.txt"/>
+		<trace label="Julian day number" value="calendar[dayOfYear]"/>
+		<trace label="Glyphosate uptake" ref="uptake[concentration]"/>	
+	</output>	
+	
+	
+
+</simulation>

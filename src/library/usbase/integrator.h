@@ -22,6 +22,8 @@ public:
     // standard methods
     void initialize();
     void reset();
+    void cleanup();
+    void debrief();
 
     // special methods
     bool nextStep();
@@ -33,14 +35,23 @@ protected:
 	double progress;
 
 private:
-	// variables
+    // inputs
+    enum Indicator {None, Console, Bar};
+    Indicator indicator;
+    int indicatorInt;
+    // variables
     int runNumber;
 	// links
     Model *runIterator;
-    QProgressDialog progressDialog;
-	// methods
+    QProgressDialog *progressDialog;
+    // data
+    double prevProgress;
+    // methods
     virtual bool doNextStep() = 0;
-    void setupProgressDialog();
+    void beginProgress();
+    void showProgress();
+    void endProgress();
+    bool wasCanceled();
 };
 
 } //namespace

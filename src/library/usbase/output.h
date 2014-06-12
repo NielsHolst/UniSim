@@ -34,8 +34,6 @@ public:
     bool hasSummary() const;
     virtual int numXTraces() const = 0;
 protected:
-    // parameters
-    int sample;
     // methods
     int runNumber() const;
 

@@ -21,6 +21,7 @@ private slots:
     void testDayLength();
     void testDaySteps();
     void testHourSteps();
+    void testAngot();
 
 private:
     QDate finalCalendarDate();

@@ -3,9 +3,7 @@
 	
     <integrator name="integrator" type="Steps">
         <parameter name="maxSteps" value="10"/>
-        <sequence>
-            <model name="generations"/>
-        </sequence>
+		<parameter name="indicator" value="0"/>
     </integrator>
 
 	<model name="generations" type="UniSim::Fixed" instances="3">

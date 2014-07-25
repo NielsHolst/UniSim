@@ -73,6 +73,10 @@ void TransmissionBase::initialize() {
     collectInfo();
 }
 
+void TransmissionBase::reset() {
+    update();
+}
+
 namespace {
     bool isRoof(Cover::Position coverPosition) {
         return coverPosition == Cover::Roof1 ||

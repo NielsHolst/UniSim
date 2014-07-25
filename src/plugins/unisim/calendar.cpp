@@ -23,75 +23,97 @@ namespace UniSim{
 
 PUBLISH(Calendar)
 
+/*! \class Calendar
+ * \brief Calendar is ...
+ *
+ * Inputs
+ * ------
+ * - _latitude_ is geographical latitude of the system [-180;180]
+ * - _longitude_ is geographical longitude of the system [-180;180]
+ * - _timeZone_ is time zone in hours relative to GMT, e.g., Copenhagen has_timeZone_ = 1 [-12..12]
+ * - _initialDate_ is the initial date of the simulation; default is 1/1/2000 [DD/MM/YYYY or YYYY/MM/DD]
+ * - _initialTimeOfDay_ is the initial time of the simulation;
+ * default is midnight, i.e. at the beginning of _initialDate_ [HH/MM/SS or HH/MM]
+ * - _timeStep_ is the duration of one integration time step in units determined by _timeUnit_ [1..N]
+ * - _timeUnit_ is the unit of _timeStep_ [s,m,h,d,y]
+ * - _sample_ is the default sampling frequency for output; default is 1 [1..N]. Example: If _timeStep_ = 5 and _timeUnit_ = m
+ * then _sample_ = 12 will yield an output every hour
+ *
+ * Outputs
+ * -------
+ * - _date_ is the current date [QDate]
+ * - _timeOfDay_ is the current time of day [QTime]
+ * - _trueSolarTime_ is the true solar time [QTime]
+ * - _dateTime_ is the current date and time [QDateTime]
+ * - _timeStepSecs_ is the duration of _timeStep_ in seconds [s]
+ * - _totalTimeSteps_ is the total number of time steps performed since beginning (reset) of simulation [0..N]
+ * - _totalTime_ is like _totalTimeSteps_ but in units determined by _timeUnit_ [0..N]
+ * - _totalDays_ is like _totalTimeSteps_ but in days [R]
+ * - _dayOfYear_ is the day number in year, also known as Julian day
+ * - _day_ is the current day of the month [1..31]
+ * - _month_ is the current month of the year [1..12]
+ * - _year_ is the current year [N]
+ * - _hour_ is the current hour of the day [0..23]
+ * - _minute_ is the current minute of the hour [0..59)]
+ * - _second_ is the current second of the minute [0..59]
+ * - _dateAsReal_ is _date:_ as a real number measured in years [R]
+ * - _dayLength_ is day length [h]
+ * - _sinb_ is the sine of sun elevation [-1;1]
+ * - _azimuth_ is th azimuth of the sun relative to north [-180;180]
+ * - _sunrise_ is the time (needs adjustment to local/astronomic time!) of sunrise [QTime]
+ * - _sunset_ is the time (needs adjustment to local/astronomic time!) of sunset [QTime]
+ * - _solarConstant_ is the solar constant, i.e. irradiation at the top of the atmsphere [MJ/m<SUP>2</SUP>/d]
+ * - _angot_ is the Angot value, i.e. the irradiation reaching the Earth surface
+ * under optimal atmospheric conditions [MJ/m<SUP>2</SUP>/d]
+ * - _irradiationCorrection_ is a correction factor on the daily irradiation [MJ/m<SUP>2</SUP>/d]
+ * depending on sun elevation [R]
+ */
+
 Calendar::Calendar(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addParameter<double>(Name(latitude), 52., "Latitude of simulated system (degrees)");
-    addParameter<double>(Name(longitude), 11., "Longitude of simulated system (degrees)");
-
-    addParameter<int>(Name(timeZone), 1,
-    "Time zone in hours relative to GMT, e.g., Copenhagen has @F timeZone = 1");
-
-    addParameter<QDate>(Name(initialDate), QDate(2000,1,1),
-    "Initial date of simulation. "
-    "You should perform a @F deepReset on your @F Calendar object after pushing a new "
-    "value to @F {initialDate}.");
-
-    addParameter<QTime>(Name(initialTimeOfDay), QTime(0,0,0),
-    "Initial time of day of simulation. Default is midnight. "
-    "You should perform a @F deepReset on your @F Calendar object after pushing a new "
-    "value to @F {initialDate}.");
-
-    addParameter<int>(Name(timeStep), 1,
-    "Duration of one integration time step in units determined by @F {timeUnit}");
-
-    addParameter<char>("timeUnit", &timeUnitAsChar, 'd',
-    "Time unit of @F {timeStep}: s)econds, m)inutes, h)ours, d)ays or y)ears.");
-
-    addParameter<int>(Name(timeStepOffset), -1,
-    "The first values are reported to plot and table outputs after one time step. "
-    "With the default value of -1 for @F timeStepOffset, the first output will occur "
-    "at time zero, defined by @F initialDay and @F {initialTimeOfDay}. "
-    "Often this is what is intuitively expected. With a @F timeStepOffset value of zero "
-    "the first output will occur one time step after time zero.");
-
+    Input(double, latitude, 52);
+    Input(double, longitude, 11);
+    Input(int, timeZone, 1);
+    Input(QDate, initialDate, QDate(2000,1,1));
+    Input(QTime, initialTimeOfDay, QTime(0,0,0));
+    Input(int, timeStep, 1);
+    Input2(char, timeUnitAsChar, timeUnit, 'd');
     Input(int, sample, 1);
-
-    addVariable<QDate>(Name(date), "Current date");
-    addVariable<QTime>(Name(timeOfDay), "Current time of day");
-    addVariable<QDateTime>(Name(dateTime), "Current date and time");
-    addVariable<double>(Name(timeStepSecs), "Duration of @F timeStep in seconds");
-    addVariable<int>(Name(totalTimeSteps),
-    "Total number of time steps performed since beginning of simulation");
-    addVariable<int>(Name(totalTime),
-    "Total time, in units determined by @F {timeUnit}. passed since beginning of simulation");
-    addVariable<double>(Name(totalDays),
-    "Total days passed since beginning of simulation");
-    addVariable<int>(Name(dayOfYear), "Day number in year, also known as Julian day");
-    addVariable<int>(Name(day), "Current day in month (1..31)");
-    addVariable<int>(Name(month), "Current month (1..12)");
-    addVariable<int>(Name(year), "Current year");
-    addVariable<int>(Name(hour), "Current hour of the day (0..23)");
-    addVariable<int>(Name(minute), "Current minute of the hour (0..59)");
-    addVariable<int>(Name(second), "Current second of the minute (0..59)");
-
-    addVariable<double>(Name(dateAsReal), "Date as a real number measured in years");
-    addVariable<double>(Name(dayLength), "Current day length (hours)");
-    addVariable<double>(Name(sinb), "Sine of sun elevation, updated by the @F tick event of the @F clock object");
-    addVariable<double>(Name(sinLD), "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
-    addVariable<double>(Name(cosLD), "Intermediate variable in astronomic calculations, updated by the @F tick event of the @F clock object");
-    addVariable<double>(Name(azimuth), "Azimuth of the sun relative to north (degrees)");
+    Output(QDate, date);
+    Output(QTime, timeOfDay);
+    Output(QTime, trueSolarTime);
+    Output(QDateTime, dateTime);
+    Output(double, timeStepSecs);
+    Output(int, totalTimeSteps);
+    Output(int, totalTime);
+    Output(double, totalDays);
+    Output(int, dayOfYear);
+    Output(int, day);
+    Output(int, month);
+    Output(int, year);
+    Output(int, hour);
+    Output(int, minute);
+    Output(int, second);
+    Output(double, dateAsReal);
+    Output(double, dayLength);
+    Output(double, sinb);
+    Output(double, azimuth);
+    Output(QTime, sunrise);
+    Output(QTime, sunset);
+    Output(double, solarConstant);
+    Output(double, angot);
+    Output(double, irradiationCorrection);
 }
 
 void Calendar::initialize() {
-    connect(clock(), SIGNAL(tick(double)), this, SLOT(handleClockTick(double)));
+    if (sample < 1) sample = 1; // To increase user robustness
 }
 
 void Calendar::reset() {
-    timeUnit = Time::charToUnit(timeUnitAsChar);
+    timeUnit = Time::charToUnit(timeUnitAsChar, this);
     timeStepSecs = timeStep*Time::conversionFactor(timeUnit, Time::Seconds);
     dateTime = QDateTime(initialDate, initialTimeOfDay, Qt::UTC);
-    dateTime = dateTime + Time(sample*timeStep*timeStepOffset, timeUnit);
     totalTimeSteps = 0;
     updateDerived();
 }
@@ -100,7 +122,6 @@ void Calendar::update() {
     ++totalTimeSteps;
     dateTime = dateTime + Time(timeStep, timeUnit);
     updateDerived();
-
 }
 
 void Calendar::updateDerived() {
@@ -122,20 +143,46 @@ void Calendar::updateDerived() {
     double secsInYear = date.daysInYear()*24*60*60;
     dateAsReal = double(year) + secsPassed/secsInYear;
 
-    double dec = -asin(sin(23.45*RAD)*cos(2*PI*(dayOfYear+10.)/365.));
-    sinLD = sin(RAD*latitude)*sin(dec);
-    cosLD = cos(RAD*latitude)*cos(dec);
+    updateSun();
+    updateRadiation();
+    updateAzimuth();
+}
+
+void Calendar::updateSun() {
+/* See
+ *  http://www.marsop.info/marsopdoc/metamp/05010401.HTM
+ */
+    double dec = -asin(sin(23.45*RAD)*cos(2*PI*(dayOfYear+10.)/365.)),
+           sinLD = sin(RAD*latitude)*sin(dec),
+           cosLD = cos(RAD*latitude)*cos(dec);
     Q_ASSERT(TestNum::neZero(cosLD));
     double aob = sinLD/cosLD;
+    if (aob > 1) aob = 1.;
     dayLength = 12.*(1. + 2.*asin(aob)/PI);
-    handleClockTick(hour + minute/60. + second/60./60.);
-    updateAzimuth();
+    int halfDay = dayLength/2.*60*60;
+    sunrise = QTime(12,00).addSecs(-halfDay);
+    sunset = QTime(12,00).addSecs(halfDay);
+
+    double h = hour + minute/60. + second/3600.;
+    sinb = sinLD + cosLD*cos(2.*PI*(h + 12.)/24.);
+    if (sinb < 0.) sinb = 0.;
+
+    double dsinb = 3600.*(dayLength*sinLD + 24.*cosLD*sqrt(1. - aob*aob)/PI);
+    double dsinbe = 3600.*(dayLength*(sinLD + 0.4*(sinLD*sinLD + cosLD*cosLD*0.5)) +
+                           12.*cosLD*(2. + 3.*0.4*sinLD)*sqrt(1. - aob*aob)/PI);
+    solarConstant = 1370.*(1. + 0.033*cos(2.*PI*day/365.));
+    angot = solarConstant*dsinb*1e-6;
+    irradiationCorrection = sinb*(1. + 0.4*sinb)/dsinbe;
+}
+
+void Calendar::updateRadiation() {
+
 }
 
 //! Azimuth is 90 at noon, zero at sunset and sunrise, and -90 at midnight
 /* See
-    http://www.esrl.noaa.gov/gmd/grad/solcalc/calcdetails.html
-    http://www.jgiesen.de/astro/suncalc/calculations.htm
+ *  http://www.esrl.noaa.gov/gmd/grad/solcalc/calcdetails.html
+ *  http://www.jgiesen.de/astro/suncalc/calculations.htm
 */
 void Calendar::updateAzimuth() {
     // First, the fractional year y is calculated, in radians.
@@ -156,6 +203,9 @@ void Calendar::updateAzimuth() {
 
     // True solar time
     double tst = hour*60 + + minute + second/60. + timeOffset;
+    trueSolarTime = QTime::fromMSecsSinceStartOfDay(int(tst+0.5)*60*1000);
+    if (!trueSolarTime.isValid())
+        trueSolarTime = QTime(0,0);
 
     // The solar hour angle, in radians, is:
     double ha = (tst/4 - 180)*RAD;
@@ -169,11 +219,6 @@ void Calendar::updateAzimuth() {
     double az1 = -(sin(lat)*cos(phi)-sin(declin))/(cos(lat)*sin(phi));
     double az2 = acos(az1)*DEGREES;
     azimuth = az2-90.;
-}
-
-void Calendar::handleClockTick(double hour) {
-    sinb = sinLD + cosLD*cos(2.*PI*(hour + 12.)/24.);
-    if (sinb < 0.) sinb = 0.;
 }
 
 } //namespace

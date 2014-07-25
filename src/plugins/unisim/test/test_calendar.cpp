@@ -1,8 +1,8 @@
 #include <iostream>
 #include <QDir>
-#include <usbase/clock.h>
 #include <usbase/file_locations.h>
 #include <usbase/model.h>
+#include <usbase/test_num.h>
 #include <usengine/mega_factory.h>
 #include <usengine/simulation_maker.h>
 #include "test_calendar.h"
@@ -149,18 +149,21 @@ void TestCalendar::cleanup() {
 
 void TestCalendar::testSolarElevation() {
     for (int lo = 0; lo < locations.size(); ++lo) {
-        calendar->seekOneChild<Parameter<double>*>("latitude") -> setValue(locations[lo].latitude);
-        calendar->seekOneChild<Parameter<QDate>*>("initialDate") -> setValue(QDate(2010, 1, 1));
-        calendar->deepReset();
+        calendar->pushValue<double>("latitude", locations[lo].latitude);
         for (int da = 0; da < dates.size(); ++da) {
-            while (calendar->pullValue<QDate>("date") < dates[da]) {
-                calendar->update();
-            }
+            calendar->pushValue<QDate>("initialDate", dates[da]);
             for (int ho = 0; ho < hours.size(); ++ho) {
                 double astroHour = hours[ho] - solarNoonDiff[lo][da];
-                UniSim::clock()->doTick(astroHour);
+                int astroSecs = int(astroHour*3600);
+                calendar->pushValue<QTime>("initialTimeOfDay", QTime(0,0,0).addSecs(astroSecs));
+                calendar->reset();
                 double sinb = calendar->pullValue<double>("sinb");
                 double estSolarElev = asin(sinb)/PI*180.;
+//                cout << lo << " "
+//                    << da << " "
+//                    << ho << " "
+//                    << estSolarElev << " "
+//                    << solarElev[lo][da][ho] << "\n";
                 QVERIFY(fabs(estSolarElev - solarElev[lo][da][ho]) < 1.);
             }
         }
@@ -179,24 +182,30 @@ void TestCalendar::testDayLength() {
             }
         double trueDayLength = QTime(0,0,0).secsTo(dayLength[lo][da])/60./60.;
         double estDayLength = calendar->pullValue<double>("dayLength");
-        cout << "Day length deviation (h)" << lo << ": " << (estDayLength - trueDayLength) << "\n";
+//        cout << "Day length deviation (h)" << lo << ": " << (estDayLength - trueDayLength) << "\n";
         QVERIFY(fabs(estDayLength - trueDayLength) < 0.5);
         }
     }
+}
+
+void TestCalendar::testAngot() {
+    calendar->pushValue<double>("latitude", 50.);
+    calendar->pushValue<QDate>("initialDate", QDate(2001,1,30));
+    calendar->reset();
+    double angot = calendar->pullValue<double>("angot");
+    QVERIFY(TestNum::eq(angot, 11.15549)); // From angot.R
 }
 
 
 void TestCalendar::testDaySteps() {
     calendar->deepReset();
     QDate initialDate = calendar->pullValue<QDate>("initialDate");
-    QDate date = calendar->pullValue<QDate>("date");
-    QCOMPARE(initialDate.addDays(-1), date);
 
     const int n = 7;
     for (int i = 0; i < n; ++i){
         calendar->deepUpdate();
     }
-    QCOMPARE(initialDate.addDays(n-1), calendar->pullValue<QDate>("date"));
+    QCOMPARE(initialDate.addDays(n), calendar->pullValue<QDate>("date"));
 }
 
 void TestCalendar::testHourSteps() {
@@ -204,19 +213,14 @@ void TestCalendar::testHourSteps() {
     calendar->seekOneChild<Parameter<char>*>("timeUnit") -> setValue('h');
     calendar->seekOneChild<Parameter<int>*>("timeStep") -> setValue(4);
     calendar->deepReset();
-
     QDate initialDate = calendar->pullValue<QDate>("initialDate");
-    QDate date = calendar->pullValue<QDate>("date");
-    QTime time = calendar->pullValue<QTime>("timeOfDay");
-    QCOMPARE(initialDate, date);
-    QCOMPARE(time, QTime(8,0));
 
     const int n = 8;
     for (int i = 0; i < n; ++i){
         calendar->deepUpdate();
     }
-
+    //Expected: 12h + 8*4h = 44h = 1d 20h
     QCOMPARE(calendar->pullValue<QDate>("date"), initialDate.addDays(1));
-    QCOMPARE(calendar->pullValue<QTime>("timeOfDay"), QTime(16,0));
+    QCOMPARE(calendar->pullValue<QTime>("timeOfDay"), QTime(20,0));
 }
 

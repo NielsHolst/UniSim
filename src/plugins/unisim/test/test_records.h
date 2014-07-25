@@ -18,7 +18,6 @@ private slots:
     void cleanup();
     void testCalendarDateIsFirst();
     void testCalendarDateIsInside();
-    void testImposeDate();
     void testTwiceOpened();
 private:
     void createSimulation(QString filename);

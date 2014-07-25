@@ -2,6 +2,7 @@
 <simulation name="simulation" version="1.0">
 	<integrator type="Steps">
 		<parameter name="maxSteps" value="365"/> 
+		<parameter name="indicator" value="0"/>
 	</integrator>
 	
 	<model name="calendar" type="Calendar"/>

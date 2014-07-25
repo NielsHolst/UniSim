@@ -82,8 +82,10 @@ bool Integrator::wasCanceled() {
 }
 
 void Integrator::cleanup() {
-    progressDialog->setValue(100);
-    progressDialog->reset();
+    if (indicator==Bar) {
+        progressDialog->setValue(100);
+        progressDialog->reset();
+    }
 }
 
 void Integrator::debrief() {

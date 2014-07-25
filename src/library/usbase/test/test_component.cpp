@@ -262,9 +262,9 @@ void TestComponent::testParameterRef() {
     sim->execute();
 
     DataGrid data( outputPath("test_component_parameter_ref.prn") );
-    QCOMPARE(data.cell<int>(0,3), 20);
-    QCOMPARE(data.cell<int>(1,4), 1020);
-    QCOMPARE(data.cell<int>(2,5), 15045);
+    QCOMPARE(data.cell<int>(1,3), 20);
+    QCOMPARE(data.cell<int>(2,4), 1020);
+    QCOMPARE(data.cell<int>(3,5), 15045);
     delete sim;
     sim = 0;
 }

@@ -21,14 +21,9 @@ public:
     void update();
 
 private:
-    // Variables
     bool signal;
-
-    // Links
-    QList<const bool *> timeSwitchesOn, highLightSwitchesOff, lowLightSwitchesOn;
-
-    // Methods
-    bool onPeriod();
+    const bool *periodFlag, *offFlag, *onFlag;
+    const bool * getFlag(QString name);
 };
 } //namespace
 

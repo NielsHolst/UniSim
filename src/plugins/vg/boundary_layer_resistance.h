@@ -23,7 +23,7 @@ private:
     double windSpeed, ventilation;
 
     // Variables
-    double value;
+    double rbH2O, rbCO2;
 
     // Methods
     void updateValue(double windSpeed);

@@ -28,19 +28,18 @@ public:
         double total, diffuse, direct;
     };
 
-private slots:
-    void handleClockTick(double hour);
-
 private:
     // methods
     void updatePar();
 
-    // pull variables (in addition to columns from records file)
+    // inputs
+    double sinb, angot, irradiationCorrection;
+
+    // outputs (in addition to columns from records file)
     double Tavg, Tday, irradiation;
     Par par;
 
     // links
-    UniSim::Calendar *calendar;
     UniSim::Model *records;
 
 };

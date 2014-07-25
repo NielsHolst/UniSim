@@ -2,10 +2,7 @@
 <simulation version="1.0">
 	<integrator type="Steps">
 		<parameter name="maxSteps" value="20"/>
-		<sequence>
-			<model name="calendar"/>
-			<model name="weather"/>
-		</sequence>
+		<parameter name="indicator" value="0"/>
 	</integrator>
 	
 	<model name="calendar" type="unisim::Calendar">	

@@ -214,6 +214,28 @@ double rhFromVpd(double temperature, double vpd) {
     return rhFromVp(temperature, vp);
 }
 
+// CO2
+
+//! Compute ppm CO2 from absolute CO2
+/*!	\param temperature (oC)
+    \param absolute CO2 (kg/m3)
+    \param air pressure (Pa)
+    \return ppm CO2 (micromole/mole)
+ */
+double ppmFromAbsCo2(double temperature, double abs, double P) {
+    return abs*R*(temperature+T0)*1e6/P/MCo2;
+}
+
+//! Compute absolute CO2 from ppm CO2
+/*!	\param temperature (oC)
+    \param ppm CO2 (micromole/mole)
+    \param air pressure (Pa)
+    \return absolute CO2 (kg/m3)
+ */
+double absFromPpmCo2(double temperature, double ppm, double P) {
+    return P*ppm*1e-6/R/(temperature+T0)*MCo2;
+}
+
 // Other
 
 //! Compute dew point temperature from temperature and r.h.

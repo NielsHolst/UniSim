@@ -3,7 +3,9 @@
 	
     <integrator name="integrator" type="Steps">
         <parameter name="maxSteps" value="10"/>
+		<parameter name="indicator" value="0"/>
     </integrator>
+	<model name="calendar" type="UniSim::Calendar"/>
 
 	<model name="landscape" type="UniSim::Fixed">
 		<model type="test::Farm" table="farms.txt">

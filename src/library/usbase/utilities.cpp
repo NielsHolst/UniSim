@@ -260,6 +260,11 @@ namespace local {
         xw->writeAttribute("name", "maxSteps");
 		xw->writeAttribute("value", "365");
 
+        xw->writeStartElement("model");
+        xw->writeAttribute("name", "calendar");
+        xw->writeAttribute("type", "Calendar");
+        xw->writeEndElement();
+
 		xw->writeStartElement("sequence");
 		xw->writeEmptyElement("model");
 		xw->writeAttribute("name", "world");

@@ -2,6 +2,7 @@
 <simulation name="sim">
 	<integrator name="steps" type="UniSim::Steps">
 		<parameter name="maxSteps" value="4380"/>
+		<parameter name="indicator" value="0"/>
 	</integrator>
 
 	<model name="maximum" type="vg::ThresholdValue">

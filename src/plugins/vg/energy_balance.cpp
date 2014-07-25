@@ -32,7 +32,7 @@ PUBLISH(EnergyBalance)
  *
  * Optional dependencies
  * ------------
- * - some (0..n) child modesls with a _flux_ port [W/m<SUP>2</SUP>]
+ * - some (0..n) child models with a _flux_ port [W/m<SUP>2</SUP>]
  */
 
 EnergyBalance::EnergyBalance(Identifier name, QObject *parent)

@@ -2,10 +2,7 @@
 <simulation version="1.0">
     <integrator type="Steps">
         <parameter name="maxSteps" value="10"/>
-        <sequence>
-            <model name="calendar"/>
-            <model name="records"/>
-        </sequence>
+		<parameter name="indicator" value="0"/>
     </integrator>
     <model name="calendar" type="unisim::Calendar">
         <parameter name="initialDate" value="1/1/2010"/>

@@ -23,29 +23,28 @@ public:
 	void reset();
 	void update();
 
-private slots:
-    void handleClockTick(double hour);
-
 private:
-    // methods
-    void updateDerived();
-    void updateAzimuth();
-
-	// parameters
+    // inputs
     double latitude, longitude;
     QDate initialDate;
     QTime initialTimeOfDay;
-    int timeStep, timeStepOffset, timeZone, sample;
+    int timeStep, timeZone, sample;
     char timeUnitAsChar;
     Time::Unit timeUnit;
 
-    // variables
+    // outputs
     QDate date;
-    QTime timeOfDay;
+    QTime timeOfDay, trueSolarTime, sunrise, sunset;
     QDateTime dateTime;
     int day, month, year, hour, minute, second, dayOfYear, totalTime, totalTimeSteps;
-    double timeStepSecs, totalDays, dateAsReal, dayLength, sinb, sinLD, cosLD, azimuth;
+    double timeStepSecs, totalDays, dateAsReal, dayLength,
+        sinb, azimuth, solarConstant, angot, irradiationCorrection;
 
+    // methods
+    void updateDerived();
+    void updateSun();
+    void updateRadiation();
+    void updateAzimuth();
 };
 
 } //namespace

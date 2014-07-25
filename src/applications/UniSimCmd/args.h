@@ -3,7 +3,7 @@
 #include <QDir>
 
 struct Args {
-    QString inputFileName, outputFileName, inputFilePath, outputFilePath;
+    QString inputFilePath, outputFilePath, outputFileName;
     QDir inputDir, outputDir, pluginsDir, tempDir;
     void parse(int argc, char *argv[]);
 } ;

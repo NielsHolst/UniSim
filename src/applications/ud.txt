@@ -20,6 +20,13 @@ PASS   : TestTransmission::testCommonDiffuseTransmissionPartScreen()
 PASS   : TestTransmission::cleanupTestCase()
 Totals: 8 passed, 0 failed, 0 skipped
 ********* Finished testing of TestTransmission *********
+********* Start testing of TestGeneral *********
+Config: Using QtTest library 5.2.1, Qt 5.2.1
+PASS   : TestGeneral::initTestCase()
+PASS   : TestGeneral::testCo2()
+PASS   : TestGeneral::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestGeneral *********
 ********* Start testing of TestConstructionGeometry *********
 Config: Using QtTest library 5.2.1, Qt 5.2.1
 PASS   : TestConstructionGeometry::initTestCase()
@@ -27,18 +34,10 @@ PASS   : TestConstructionGeometry::testConstructionGeometry()
 PASS   : TestConstructionGeometry::cleanupTestCase()
 Totals: 3 passed, 0 failed, 0 skipped
 ********* Finished testing of TestConstructionGeometry *********
-********* Start testing of TestAdjustableSetpoint *********
-Config: Using QtTest library 5.2.1, Qt 5.2.1
-PASS   : TestAdjustableSetpoint::initTestCase()
-PASS   : TestAdjustableSetpoint::testIncrement()
-PASS   : TestAdjustableSetpoint::testDecrement()
-PASS   : TestAdjustableSetpoint::cleanupTestCase()
-Totals: 4 passed, 0 failed, 0 skipped
-********* Finished testing of TestAdjustableSetpoint *********
 ********* Start testing of TestTable *********
 Config: Using QtTest library 5.2.1, Qt 5.2.1
 PASS   : TestTable::initTestCase()
-7077989PASS   : TestTable::test3Levels()
+6226035PASS   : TestTable::test3Levels()
 PASS   : TestTable::cleanupTestCase()
 Totals: 3 passed, 0 failed, 0 skipped
 ********* Finished testing of TestTable *********
@@ -57,6 +56,13 @@ PASS   : TestSum::testSum()
 PASS   : TestSum::cleanupTestCase()
 Totals: 3 passed, 0 failed, 0 skipped
 ********* Finished testing of TestSum *********
+********* Start testing of TestStepsTimeInterval *********
+Config: Using QtTest library 5.2.1, Qt 5.2.1
+PASS   : TestStepsTimeInterval::initTestCase()
+PASS   : TestStepsTimeInterval::testSum()
+PASS   : TestStepsTimeInterval::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped
+********* Finished testing of TestStepsTimeInterval *********
 ********* Start testing of TestStage *********
 Config: Using QtTest library 5.2.1, Qt 5.2.1
 PASS   : TestStage::initTestCase()
@@ -88,10 +94,9 @@ Config: Using QtTest library 5.2.1, Qt 5.2.1
 PASS   : TestRecords::initTestCase()
 PASS   : TestRecords::testCalendarDateIsFirst()
 PASS   : TestRecords::testCalendarDateIsInside()
-PASS   : TestRecords::testImposeDate()
 PASS   : TestRecords::testTwiceOpened()
 PASS   : TestRecords::cleanupTestCase()
-Totals: 6 passed, 0 failed, 0 skipped
+Totals: 5 passed, 0 failed, 0 skipped
 ********* Finished testing of TestRecords *********
 ********* Start testing of TestRange *********
 Config: Using QtTest library 5.2.1, Qt 5.2.1
@@ -190,30 +195,12 @@ Totals: 8 passed, 0 failed, 0 skipped
 Config: Using QtTest library 5.2.1, Qt 5.2.1
 PASS   : TestCalendar::initTestCase()
 PASS   : TestCalendar::testSolarElevation()
-Day length deviation (h)0: -0.217118
-Day length deviation (h)0: -0.244155
-Day length deviation (h)0: -0.152248
-Day length deviation (h)0: -0.248678
-Day length deviation (h)1: -0.115949
-Day length deviation (h)1: -0.0694329
-Day length deviation (h)1: -0.170312
-Day length deviation (h)1: -0.0649395
-Day length deviation (h)2: -0.140682
-Day length deviation (h)2: -0.0685004
-Day length deviation (h)2: -0.144534
-Day length deviation (h)2: -0.0665926
-Day length deviation (h)3: -0.354978
-Day length deviation (h)3: -0.41103
-Day length deviation (h)3: -0.354042
-Day length deviation (h)3: -0.412309
 PASS   : TestCalendar::testDayLength()
 PASS   : TestCalendar::testDaySteps()
-FAIL!  : TestCalendar::testHourSteps() Compared values are not the same
-   Actual   (initialDate): 2000/01/01
-   Expected (date)       : 1999/12/28
-..\..\..\plugins\unisim\test\test_calendar.cpp(211) : failure location
+PASS   : TestCalendar::testHourSteps()
+PASS   : TestCalendar::testAngot()
 PASS   : TestCalendar::cleanupTestCase()
-Totals: 5 passed, 1 failed, 0 skipped
+Totals: 7 passed, 0 failed, 0 skipped
 ********* Finished testing of TestCalendar *********
 ********* Start testing of TestXmlNode *********
 Config: Using QtTest library 5.2.1, Qt 5.2.1
@@ -608,4 +595,4 @@ Totals: 18 passed, 0 failed, 0 skipped
 ********* Finished testing of TestComponent *********
 
 
-One or more tests failed
+All tests passed

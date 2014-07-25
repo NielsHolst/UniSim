@@ -118,6 +118,11 @@ void Trace::reset() {
     historyCleared = true;
     sampleCount = 0;
     sampleSum = 0.;
+    if (!isSummary()) {
+        double value = summary() == None ? currentValue() : s.value;
+        _history.append(value);
+    }
+    hasCalendarParent = variableParent()->id().label().toLower().left(5) == "steps";  // hack
 }
 
 inline Time::Unit suggestedUnit(long secs) {
@@ -172,12 +177,13 @@ void Trace::resetSummary() {
 void Trace::update() {
     updateSummary();
     if (!isSummary()) {
-        sampleSum += summary() == None ? currentValue() : s.value;
+        double value = summary() == None ? currentValue() : s.value;
+        sampleSum += value;
+        ++sampleCount;
         if (sampleCount%sample == 0) {
-            _history.append(sampleSum/sample);
+            _history.append(hasCalendarParent ? value : sampleSum/sample);  // hack to get current not average time
             sampleSum = 0.;
         }
-        ++sampleCount;
     }
 }
 

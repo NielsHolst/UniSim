@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation version="1.0">
+	<integrator name="steps" type="UniSim::StepsTimeInterval">
+		<parameter name="beginDate" value="1/10/2008"/>
+		<parameter name="endDate" value="2/10/2008"/>
+		<parameter name="beginTime" value="0:0"/>
+		<parameter name="endTime" value="16:00"/>
+		<parameter name="timeStep" value="10"/>
+		<parameter name="timeUnit" value="m"/>
+		<parameter name="indicator" value="0"/>
+	</integrator>
+	
+	<model name="calendar" type="UniSim::Calendar">
+		<parameter name="timeStep" ref="calendar[timeStep]"/>
+		<parameter name="timeUnit" ref="calendar[timeUnit]"/>
+		<parameter name="sample" value="3"/>
+	</model>
+
+	<model name="test">
+		<model name="a" type="UniSim::Range">
+			<parameter name="progress" variable="steps[progress]"/>
+			<parameter name="scale" value="linear"/>
+			<parameter name="min" value="0"/>
+			<parameter name="max" value="100"/>
+		</model>
+	</model>
+
+	<output type="table">
+		<parameter name="filename" value="test_steps_time_interval.txt"/>
+		<trace label="x" value="steps[stepNumber]"/>
+		<trace label="max" value="steps[maxSteps]"/>
+		<trace label="y" value="a[value]"/>
+	</output>
+</simulation>

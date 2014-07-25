@@ -3,6 +3,7 @@
 	
     <integrator name="integrator" type="Steps">
         <parameter name="maxSteps" value="10"/>
+		<parameter name="indicator" value="0"/>
     </integrator>
 
 	<model type="test::Farm" table="farms.txt">

@@ -28,17 +28,17 @@ void TestTable::test3Levels() {
     QCOMPARE(all.size(), 1+1+1+4+7+4+16);
 
     DataGrid* table = openOutput("test_3levels_output.txt");
-    QCOMPARE(table->rowNames().size(), 10);
+    QCOMPARE(table->rowNames().size(), 11);
     QCOMPARE(table->columnNames().size(), 3);
-    QCOMPARE(table->cell(0,2).toInt(), 101);
-    QCOMPARE(table->cell(9,2).toInt(), 110);
+    QCOMPARE(table->cell(0,2).toInt(), 100);
+    QCOMPARE(table->cell(10,2).toInt(), 110);
     QStringList expectedColumnNames;
     expectedColumnNames << "time" << "x" << "labour";
     QCOMPARE(table->columnNames(), expectedColumnNames);
     delete table;
 
     table = openOutput("test_3levels_jokers_output.txt");
-    QCOMPARE(table->rowNames().size(), 10);
+    QCOMPARE(table->rowNames().size(), 11);
     QCOMPARE(table->columnNames().size(), 18);
     QStringList colNames = table->columnNames();
     QCOMPARE(colNames[2], QString("A/Oats/Sowing/labour"));

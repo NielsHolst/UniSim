@@ -29,19 +29,11 @@ VapourFlux::VapourFlux(Identifier name, QObject *parent)
     Output(double, conductance);
     Output(double, gain);
     Output(double, vapourFlux);
-//    Output(double, dewDensity);
-//    Output(double, dewThickness);
 }
 
 void VapourFlux::reset() {
     conductance = vapourFlux = gain = 0.;
 }
-
-//void VapourFlux::update() {
-//    yourUpdate();
-//    dewDensity += vapourFlux*timeStep;
-//    dewThickness = dewDensity*1e-6;
-//}
 
 } //namespace
 

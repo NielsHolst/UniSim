@@ -2,7 +2,9 @@
 <simulation name="sim">
 	<integrator name="steps" type="UniSim::Steps">
 		<parameter name="maxSteps" value="4380"/>
+		<parameter name="indicator" value="0"/>
 	</integrator>
+	<model name="calendar" type="UniSim::Calendar"/>
 	<model name="gh" type="vg::ConstructionGeometry">
 		<parameter name="numSpans" value ="3"/>
 		<parameter name="roofPitch" value ="30"/>

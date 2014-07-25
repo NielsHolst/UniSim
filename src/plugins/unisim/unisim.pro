@@ -15,6 +15,7 @@ HEADERS += \
     anonymous.h \
     asymptotic_decreasing.h \
     asymptotic_increasing.h \
+    average.h \
     calendar.h \
     counter.h \
     day_degrees.h \
@@ -59,6 +60,7 @@ HEADERS += \
     stage_demand.h \
     stage_and_phase.h \
     steps.h \
+    steps_time_interval.h \
     sub_steps.h \
     sum.h \
     time_limited.h \
@@ -70,6 +72,7 @@ SOURCES += \
     anonymous.cpp \
     asymptotic_decreasing.cpp \
     asymptotic_increasing.cpp \
+    average.cpp \
     counter.cpp \
     calendar.cpp \
     day_degrees.cpp \
@@ -114,6 +117,7 @@ SOURCES += \
     stage_demand.cpp \
     stage_and_phase.cpp \
     steps.cpp \
+    steps_time_interval.cpp \
     sub_steps.cpp \
     sum.cpp \
     time_limited.cpp \

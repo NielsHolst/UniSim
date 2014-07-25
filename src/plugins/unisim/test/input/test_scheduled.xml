@@ -2,6 +2,7 @@
 <simulation  name="sim" version="1.0">
 	<integrator name="integrator" type="Steps">
 		<parameter name="maxSteps" value="30"/>
+		<parameter name="indicator" value="0"/>
 	</integrator>
 
 	<model name="calendar" type="unisim::Calendar">

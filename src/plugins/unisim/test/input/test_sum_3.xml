@@ -2,7 +2,9 @@
 <simulation version="1.0">
 	<integrator name="steps" type="UniSim::Steps">
 		<parameter name="maxSteps" value="10"/>
+		<parameter name="indicator" value="0"/>
 	</integrator>
+	<model name="calendar" type="UniSim::Calendar"/>
 
 	<model name="test">
 	<model name="a" type="UniSim::Range">

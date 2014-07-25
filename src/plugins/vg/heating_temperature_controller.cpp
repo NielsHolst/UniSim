@@ -53,7 +53,7 @@ HeatingTemperatureController::HeatingTemperatureController(Identifier name, QObj
     InputRef(double, averageHeight, "construction/geometry[averageHeight]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
-    InputRef(double, heatingSetpoint, "setpoints/temperature/heating[setpoint]");
+    InputRef(double, heatingSetpoint, "setpoints/temperature/heating[signal]");
     InputRef(double, balanceEffect, "indoors/energy[value]");
     Output(double, signal);
 }

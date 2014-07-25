@@ -21,13 +21,14 @@ class TransmissionBase : public UniSim::Model
 public:
     TransmissionBase(UniSim::Identifier name, QObject *parent);
     void initialize();
+    void reset();
     void update();
 
 private:
-    // Parameters
+    // Inputs
     QString directTransmissionFile;
     double latitude, azimuth, greenhouseSurfaceArea, greenhouseGroundArea;
-    // Variables
+    // Outputs
     double U, netU, haze, diffuse, directAsDirect, directAsDiffuse, air, area;
     // Methods
     virtual bool applyScreens() const = 0;

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="SHBmodel">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="100"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="mashhad.txt"/>
+		</model>
+	</model>
+
+	<model name="aphid-N0">
+		<model name="nymph">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="3.5"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="150"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="aphid-N0/embryo/number[outflow]"/>
+				<parameter name="initialInflow" value="4"/>
+			</model>
+		</model>
+
+		<model name="adult">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="3.5"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="450"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="4"/>
+				<parameter name="inflow" ref="aphid-N0/nymph/number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="embryo">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="3.5"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="growthRate" value="62.4"/>
+				<parameter name="duration" value="450"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="4"/>
+				<parameter name="inflow" ref="aphid-N0/nymph/number[outflow]"/>
+			</model>
+		</model>
+	</model>
+
+	<model name="aphid-N1">
+		<model name="nymph">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="3.5"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="120"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="4"/>
+			</model>
+		</model>
+
+		<model name="adult">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="3.5"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="400"/>
+				<parameter name="k" value="30"/>
+				<parameter name="initialInflow" value="4"/>
+				<parameter name="inflow" ref="aphid-N1/nymph/number[outflow]"/>
+			</model>
+		</model>
+	</model>
+	
+	<output type="plot">
+		<parameter name="title" value ="Harlingen weather log"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Insect numbers"/>
+		<trace label="Day" value="calendar[totalTime]"/>
+		<trace label="Nymphs N0" value="aphid-N0/nymph/number[value]"/>
+		<trace label="Adults N0" value="aphid-N0/adult/number[value]"/>
+		<trace label="Nymphs N1" value="aphid-N1/nymph/number[value]"/>
+		<trace label="Adults N1" value="aphid-N1/adult/number[value]"/>
+	</output>
+</simulation>

@@ -22,7 +22,7 @@ PUBLISH(ControlElement)
  *
  * Inputs
  * ------
- * - _rate_ is the rate at which _state_ approaches _signal_ [min<SUP>-1</SUP>]
+ * - _rate_ is the rate at which _state_ approaches _signal_ [m<SUP>-1</SUP>]
  *
  * Outputs
  * ------

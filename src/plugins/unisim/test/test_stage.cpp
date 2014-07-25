@@ -80,10 +80,10 @@ void TestStage::test_k_k_1D_1D() {
     // Check proportions
     createOutputGrid(fn);
     double
-        eggDay1 = output->cell(0,1).toDouble(),
-        iEggDay1 = output->cell(0,2).toDouble(),
-        eggDay2 = output->cell(1,1).toDouble(),
-        iEggDay2 = output->cell(1,2).toDouble(),
+        eggDay1 = output->cell(1,1).toDouble(),
+        iEggDay1 = output->cell(1,2).toDouble(),
+        eggDay2 = output->cell(2,1).toDouble(),
+        iEggDay2 = output->cell(2,2).toDouble(),
         proportion = sim->seekOneDescendant<Model*>("egg")->pullValue<double>("phaseOutflowProportion");
 
     QCOMPARE(eggDay1, (1.-proportion)*totalInflow);

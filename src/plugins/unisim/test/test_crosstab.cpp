@@ -41,9 +41,9 @@ void TestCrosstab::testOutput() {
         QCOMPARE(table->columnNames(), farmClass + crops);
         QCOMPARE(table->cell(0,0), QString("A"));
         QCOMPARE(table->cell(2,0), QString("D"));
-        QCOMPARE(table->cell(0,2).toInt(), 31+9*i);
-        QCOMPARE(table->cell(0,3), QString("NA"));
-        QCOMPARE(table->cell(2,1).toInt(), 56+9*i);
+        QCOMPARE(table->cell(1,1).toInt(), 20+9*i);
+        QCOMPARE(table->cell(1,2), QString("NA"));
+        QCOMPARE(table->cell(2,1).toInt(), 55+9*i);
         delete table;
     }
 }
@@ -60,9 +60,9 @@ void TestCrosstab::testOutputTransposed() {
         QCOMPARE(table->columnNames(), cropClass + farms);
         QCOMPARE(table->cell(0,0), QString("Oats"));
         QCOMPARE(table->cell(2,0), QString("WBarley"));
-        QCOMPARE(table->cell(1,1).toInt(), 31+9*i);
+        QCOMPARE(table->cell(1,1).toInt(), 30+9*i);
         QCOMPARE(table->cell(1,2), QString("NA"));
-        QCOMPARE(table->cell(0,3).toInt(), 56+9*i);
+        QCOMPARE(table->cell(0,3).toInt(), 55+9*i);
         delete table;
     }
 

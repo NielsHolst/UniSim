@@ -70,9 +70,13 @@ template<> QDate stringToValue<QDate>(QString s_, QObject *concerning) {
     if (!date.isValid())
         date = QDate::fromString(s, "d.M.yyyy");
     if (!date.isValid())
+        date = QDate::fromString(s, "d-M-yyyy");
+    if (!date.isValid())
         date = QDate::fromString(s, "yyyy/M/d");
     if (!date.isValid())
         date = QDate::fromString(s, "yyyy.M.d");
+    if (!date.isValid())
+        date = QDate::fromString(s, "yyyy-M-d");
     if (!date.isValid()) {
         QString msg = "Cannot convert '" + s + "' to a date";
         throw Exception(msg, concerning);

@@ -28,7 +28,7 @@ const int C_A = 10;
 const int C_B = 11;
 const int C_C = 12;
 const int COLS = 13;
-const int ROWS = 10;
+const int ROWS = 11;
 
 void TestRecords::cleanup() {
     delete sim;
@@ -36,10 +36,7 @@ void TestRecords::cleanup() {
 }
 
 void TestRecords::testCalendarDateIsFirst() {
-    createSimulation("test_records.xml");
-    Model *records = sim->seekOneDescendant<Model*>("records");
-    records->seekOneChild<Parameter<bool>*>("imposeInitialDateTime") -> setValue(false);
-
+    createSimulation("test_records_date_is_first.xml");
     try {
         sim->execute();
     }
@@ -62,92 +59,34 @@ void TestRecords::testCalendarDateIsFirst() {
     QGenericMatrix<COLS,ROWS,double> M(data.data());
 
 
-    // Date = 2 January 2010
-    QCOMPARE(M(0, C_totalTimeSteps), 1.);
-    QCOMPARE(M(0, C_totalTime), 1.);
-    QCOMPARE(M(0, C_dayOfYear), 2.);
-    QCOMPARE(M(0, C_day), 2.);
+    // Date = 3 January 2010
+    QCOMPARE(M(0, C_totalTimeSteps), 0.);
+    QCOMPARE(M(0, C_totalTime), 0.);
+    QCOMPARE(M(0, C_dayOfYear), 3.);
+    QCOMPARE(M(0, C_day), 3.);
     QCOMPARE(M(0, C_month), 1.);
     QCOMPARE(M(0, C_year), 2010.);
-    QVERIFY(TestNum::eq(M(0, C_dateAsReal), 2010. + 1./365.));
+    QVERIFY(TestNum::eq(M(0, C_dateAsReal), 2010. + 2./365.));
 
     // Date = 11 January 2010
-    QCOMPARE(M(9, C_totalTimeSteps), 10.);
-    QCOMPARE(M(9, C_totalTime), 10.);
-    QCOMPARE(M(9, C_dayOfYear), 11.);
-    QCOMPARE(M(9, C_day), 11.);
-    QCOMPARE(M(9, C_month), 1.);
-    QCOMPARE(M(9, C_year), 2010.);
-    QVERIFY(TestNum::eq(M(9, C_dateAsReal), 2010. + 10./365.));
+    QCOMPARE(M(8, C_totalTimeSteps), 8.);
+    QCOMPARE(M(8, C_totalTime), 8.);
+    QCOMPARE(M(8, C_dayOfYear), 11.);
+    QCOMPARE(M(8, C_day), 11.);
+    QCOMPARE(M(8, C_month), 1.);
+    QCOMPARE(M(8, C_year), 2010.);
+    QVERIFY(TestNum::eq(M(8, C_dateAsReal), 2010. + 10./365.));
 
     // Test interpolation
-    QCOMPARE(M(0, C_C), 32.);   // 2 Jan
-    QCOMPARE(M(1, C_C), 32.);   // 3 Jan
-    QCOMPARE(M(2, C_C), 33.);   // 4 Jan
-    QCOMPARE(M(3, C_C), 35.5);  // 5 Jan
-    QCOMPARE(M(9, C_C), 38.);   // 11 Jan
+    QCOMPARE(M(0, C_C), 32.);   // 3 Jan
+    QCOMPARE(M(1, C_C), 33.);   // 4 Jan
+    QCOMPARE(M(2, C_C), 35.5);   // 5 Jan
+    QCOMPARE(M(3, C_C), 38.);  // 6 Jan
+    QCOMPARE(M(9, C_C), 38.);   // 12 Jan
 }
 
 void TestRecords::testCalendarDateIsInside() {
-    createSimulation("test_records.xml");
-    Model *records = sim->seekOneDescendant<Model*>("records");
-    records->seekOneChild<Parameter<bool>*>("imposeInitialDateTime") -> setValue(false);
-
-    Model *calendar = sim->seekOneDescendant<Model*>("calendar");
-    calendar->seekOneChild<Parameter<QDate>*>("initialDate") -> setValue(QDate(2010,1,4));
-
-    try {
-        sim->execute();
-    }
-    catch (Exception &ex) {
-        QString msg = "Could not execute: " + ex.message();
-        QFAIL(qPrintable(msg));
-    }
-
-    openOutputFile("test_records.prn");
-    readLineItems();
-    QCOMPARE(lineItems.size(), COLS);
-    QCOMPARE(lineItems[C_totalTimeSteps], QString("totalTimeSteps"));
-    QCOMPARE(lineItems[C_C], QString("C"));
-
-    QVector<double> data;
-    data.reserve(COLS*ROWS);
-    readData(&data);
-    outputFile.close();
-    QCOMPARE(data.size(), COLS*ROWS);
-    QGenericMatrix<COLS,ROWS,double> M(data.data());
-
-
-    // Date = 5 January 2010
-    QCOMPARE(M(0, C_totalTimeSteps), 1.);
-    QCOMPARE(M(0, C_totalTime), 1.);
-    QCOMPARE(M(0, C_dayOfYear), 5.);
-    QCOMPARE(M(0, C_day), 5.);
-    QCOMPARE(M(0, C_month), 1.);
-    QCOMPARE(M(0, C_year), 2010.);
-    QVERIFY(TestNum::eq(M(0, C_dateAsReal), 2010. + 4./365.));
-
-    // Date = 14 January 2010
-    QCOMPARE(M(9, C_totalTimeSteps), 10.);
-    QCOMPARE(M(9, C_totalTime), 10.);
-    QCOMPARE(M(9, C_dayOfYear), 14.);
-    QCOMPARE(M(9, C_day), 14.);
-    QCOMPARE(M(9, C_month), 1.);
-    QCOMPARE(M(9, C_year), 2010.);
-    QVERIFY(TestNum::eq(M(9, C_dateAsReal), 2010. + 13./365.));
-
-    // Test interpolation
-    QCOMPARE(M(0, C_C), 35.5);   // 5 Jan
-    QCOMPARE(M(1, C_C), 38.);   // 6 Jan
-    QCOMPARE(M(2, C_C), 38.);   // 7 Jan
-    QCOMPARE(M(3, C_C), 38.);  // 8 Jan
-    QCOMPARE(M(9, C_C), 38.);   // 14 Jan
-}
-
-
-
-void TestRecords::testImposeDate() {
-    createSimulation("test_records.xml");
+    createSimulation("test_records_date_is_inside.xml");
     try {
         sim->execute();
     }
@@ -171,8 +110,8 @@ void TestRecords::testImposeDate() {
 
 
     // Date = 4 January 2010
-    QCOMPARE(M(0, C_totalTimeSteps), 1.);
-    QCOMPARE(M(0, C_totalTime), 1.);
+    QCOMPARE(M(0, C_totalTimeSteps), 0.);
+    QCOMPARE(M(0, C_totalTime), 0.);
     QCOMPARE(M(0, C_dayOfYear), 4.);
     QCOMPARE(M(0, C_day), 4.);
     QCOMPARE(M(0, C_month), 1.);
@@ -180,8 +119,8 @@ void TestRecords::testImposeDate() {
     QVERIFY(TestNum::eq(M(0, C_dateAsReal), 2010. + 3./365.));
 
     // Date = 13 January 2010
-    QCOMPARE(M(9, C_totalTimeSteps), 10.);
-    QCOMPARE(M(9, C_totalTime), 10.);
+    QCOMPARE(M(9, C_totalTimeSteps), 9.);
+    QCOMPARE(M(9, C_totalTime), 9.);
     QCOMPARE(M(9, C_dayOfYear), 13.);
     QCOMPARE(M(9, C_day), 13.);
     QCOMPARE(M(9, C_month), 1.);
@@ -189,13 +128,12 @@ void TestRecords::testImposeDate() {
     QVERIFY(TestNum::eq(M(9, C_dateAsReal), 2010. + 12./365.));
 
     // Test interpolation
-    QCOMPARE(M(0, C_C), 33.);   // 4 Jan
-    QCOMPARE(M(1, C_C), 35.5); // 5 Jan
+    QCOMPARE(M(0, C_C), 33.);    // 4 Jan
+    QCOMPARE(M(1, C_C), 35.5);  // 5 Jan
     QCOMPARE(M(2, C_C), 38.);   // 6 Jan
-    QCOMPARE(M(3, C_C), 38.);   // 7 Jan
+    QCOMPARE(M(3, C_C), 38.);  // 7 Jan
     QCOMPARE(M(9, C_C), 38.);   // 13 Jan
 }
-
 
 void TestRecords::testTwiceOpened() {
     createSimulation("test_records2.xml");

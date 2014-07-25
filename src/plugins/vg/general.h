@@ -18,12 +18,14 @@ const double
     T0 = 273.15,        //!< Absolute zero offset (oC)
     Sigma = 5.6704e-8,  //!< Stefan-Boltzmann constant (W/m2/K4)
     Mwater = 18.016e-3, //!< Molar mass of water (kg/mol)
+    MCo2 = 44.01e-3,    //!< Molar mass of CO2 (kg/mol) [mg/umol]
     Mwa = 0.622,        //!< Molar mass of water relative to molar mass of air (-)
     R = 8.314,          //!< Gas constant (J/mol/K)
     P0 = 101325,        //!< Standard atmospheric pressure = 1 atm (Pa)
     CpAir = 1020,       //!< Specific heat capacity of air (J/kg/K)
     CpWater = 4184,     //!< Specific heat capacity of water (J/kg/K)
-    RhoAir = 1.19,      //!< Density of air (kg/m3)
+    RhoAir = 1.19,      //!< Density of air at T0 (kg/m3)
+    RhoCo2 = 1.98,      //!< Density of CO2 at T0 (kg/m3)
     LHe = 2454e3,       //!< Latent heat of vaporisation of water (J/kg)
     Psychr = CpAir*P0/LHe/Mwa;  //!< Psychrometric constant (Pa/K)
 
@@ -57,10 +59,17 @@ double rhFromAdx(double temperature, double adx);
 double rhFromSdx(double temperature, double sdx);
 double rhFromVpd(double temperature, double vpd);
 
-// Other
+// CO2
+double ppmFromAbsCo2(double temperature, double abs, double P = P0);
+double absFromPpmCo2(double temperature, double ppm, double P = P0);
+
+// Other climatic parameters
 double Tdew(double temperature, double rh);
 double virtualTemperatureFromAh(double temperature, double ah);
 
+// Mathematics
+inline int sqr(int x) {return x*x;}
+inline double sqr(double x) {return x*x;}
 
 } //namespace
 

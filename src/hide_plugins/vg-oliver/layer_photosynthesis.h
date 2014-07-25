@@ -1,0 +1,30 @@
+/* Copyright (C) 2013 by Oliver Koerner, AgroTech [oko@agrotech.dk] and
+** Niels Holst, Aarhus University [niels.holst@agrsci.dk].
+** Copyrights reserved.
+** Released under the terms of the GNU General Public License version 3.0 or later.
+** See www.gnu.org/copyleft/gpl.html.
+*/
+#ifndef VG_LAYER_PHOTO_H
+#define VG_LAYER_PHOTO_H
+
+
+#include <usbase/model.h>
+
+namespace vg {
+
+class LayerPhotosynthesis : public UniSim::Model
+{
+public:
+    LayerPhotosynthesis(UniSim::Identifier name, QObject *parent);
+    void reset();
+    void update();
+
+private:
+    double Pnmax,Pgmax, Eff, radiationDif, radiationDir, Kdif, SCV,
+    xGauss, wGauss, LAI, Rd, sinB;
+    double Pg, Pn;
+};
+} //namespace
+
+
+#endif

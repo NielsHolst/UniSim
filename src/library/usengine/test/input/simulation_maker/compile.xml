@@ -2,11 +2,7 @@
 <simulation version="1.0">
     <integrator name="integrator" type="Steps">
         <parameter name="maxSteps" value="365"/>
-        <sequence>
-            <model name="world"/>
-            <model name="wasp"/>
-            <model name="butterfly"/>
-        </sequence>
+		<parameter name="indicator" value="0"/>
     </integrator>
     <model name="world" type="ConstantWorld">
         <parameter name="temperature" value="20"/>

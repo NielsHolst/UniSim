@@ -41,7 +41,7 @@ void runSimulation(QString inputFilePath, QString outputFileName) {
         simulation->execute();
     }
     catch (UniSim::Exception &ex) {
-        cout << qPrintable("Program Error: " + ex.message());
+        throw;
     }
 
     delete maker;
@@ -76,9 +76,8 @@ int main(int argc, char *argv[]) {
     }
     catch (...) {
         cout << "Program Error. Uncaught exception.";
-        result = 2;
+        result = 1;
     }
-
     delete objectPool();
     return result;
 }

@@ -72,6 +72,7 @@ private:
     bool historyCleared;
     int sampleCount;
     double sampleSum;
+    bool hasCalendarParent;
 
     // links
     const OutputBase *output;   //!< Pointer to parent or null

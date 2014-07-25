@@ -42,7 +42,7 @@ void Range::decodeScale() {
 }
 
 void Range::reset() {
-	value = 0.;
+    value = (scale == Log10) ? pow(10, minValue) : minValue;
 }
 
 void Range::update() {

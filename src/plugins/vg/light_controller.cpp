@@ -7,9 +7,6 @@
 #include <QList>
 #include <QMessageBox>
 #include "light_controller.h"
-#include "time_switch.h"
-#include "high_light_switch.h"
-#include "low_light_switch.h"
 #include "publish.h"
 
 using namespace UniSim;
@@ -37,56 +34,39 @@ PUBLISH(LightController)
  *   + _lightOff_ [true,false]
  *   + _lightOn_ [true,false]
  *   + _timeOn_ [true,false]
+ *
+ * To set _signal_ to lamps on or off, the light controller
  */
 
 LightController::LightController(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    addVariable<bool>(Name(signal), "Signal to lamp (0 or 1)");
+    Output(bool, signal);
 }
 
 void LightController::amend() {
-    auto timeSwitches = seekChildren<TimeSwitch*>("*");
-    for (TimeSwitch *sw : timeSwitches) {
-        if (dynamic_cast<HighLightSwitch*>(sw))
-            highLightSwitchesOff << sw->pullValuePtr<bool>("lightOff");
-        else if (dynamic_cast<LowLightSwitch*>(sw))
-            lowLightSwitchesOn << sw->pullValuePtr<bool>("lightOn");
-        else
-            timeSwitchesOn << sw->pullValuePtr<bool>("timeOn");
-    }
+    periodFlag = getFlag("periods");
+    onFlag = getFlag("on");
+    offFlag = getFlag("off");
+}
+
+const bool * LightController::getFlag(QString name) {
+    auto model = seekOneChild<Model*>(name);
+    return model->pullValuePtr<bool>("flag");
 }
 
 void LightController::reset() {
-    signal = false;
+    update();
 }
 
 void LightController::update() {
-    if (!onPeriod()) {
+    if (!*periodFlag)
         signal = false;
-    }
-    else if (signal == 1.) {
-        bool off = true;
-        for (auto switchOff : highLightSwitchesOff)
-            off = off || *switchOff;
-        signal = !off;
-    }
-    else {
-        bool on = true;
-        for (auto switchOn : lowLightSwitchesOn)
-            on = on || *switchOn;
-        signal = on;
-    }
+    else if (signal == 1. && *offFlag)
+        signal = false;
+    else if (signal == 0. && *onFlag)
+        signal = true;
 }
-
-bool LightController::onPeriod() {
-    bool on = true;
-    for (auto switchOn : timeSwitchesOn)
-        on = on || *switchOn;
-    return on;
-}
-
-
 
 } //namespace
 

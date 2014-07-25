@@ -19,14 +19,11 @@ public:
     void update();
 
 private:
-    // Parameters
-    double rh, rbH2O, co2, PgcMol;
-
-    // Variables
-    double value;
+    double rh, rbCO2, co2, Pg,
+        rsH2O, rsCO2;
 
     // Methods
-    void updateValue(double PgcMol);
+    void updateValue(double PgMol);
 };
 } //namespace
 

@@ -24,11 +24,11 @@ void TestRange::testLinear() {
         QFAIL(qPrintable(msg));
     }
 
-    TestDataset data(10,2);
+    TestDataset data(11,2);
     data.read("test_range_linear.txt");;
-    QCOMPARE(data.value(0,1), -34.);
-    QCOMPARE(data.value(4,1), -10.);
-    QCOMPARE(data.value(9,1), 20.);
+    QCOMPARE(data.value(0,1), -40.);
+    QCOMPARE(data.value(4,1), -16.);
+    QCOMPARE(data.value(10,1), 20.);
 }
 
 void TestRange::testLog10() {
@@ -41,11 +41,11 @@ void TestRange::testLog10() {
         QFAIL(qPrintable(msg));
     }
 
-    TestDataset data(10,2);
+    TestDataset data(11,2);
     data.read("test_range_log10.txt");;
-    QVERIFY( TestNum::eq( data.value(0,1), pow(10,-3.4) ) );
-    QCOMPARE(data.value(4,1), 0.1);
-    QCOMPARE(data.value(9,1), 100.);
+    QVERIFY( TestNum::eq( data.value(0,1), pow(10,-4.) ) );
+    QCOMPARE(data.value(5,1), 0.1);
+    QCOMPARE(data.value(10,1), 100.);
 }
 
 

@@ -23,7 +23,7 @@ void TestScheduled::testSchedule() {
         QFAIL(qPrintable(msg));
     }
 
-    TestDataset data(30,3);
+    TestDataset data(31,3);
     try {
         data.read("test_scheduled.prn");;
     }
@@ -43,23 +43,23 @@ void TestScheduled::testSchedule() {
     QCOMPARE(data.value(4,V), 10.);
     QCOMPARE(data.value(4,I), 0.);
 
-    QVERIFY(TestNum::eq(data.value(5,V), 10. + 20./15.));
-    QVERIFY(TestNum::eq(data.value(5,I), 20./15.));
+    QVERIFY(TestNum::eq(data.value(6,V), 10. + 20./15.));
+    QVERIFY(TestNum::eq(data.value(6,I), 20./15.));
 
-    QCOMPARE(data.value(19,V), 30.);
-    QVERIFY(TestNum::eq(data.value(19,I), 20./15.));
+    QCOMPARE(data.value(20,V), 30.);
+    QVERIFY(TestNum::eq(data.value(20,I), 20./15.));
 
-    QVERIFY(TestNum::eq(data.value(23,V), 20.+2. ));
-    QVERIFY(TestNum::eq(data.value(23,I), -2.));
-
-    QCOMPARE(data.value(24,V), 20.);
+    QVERIFY(TestNum::eq(data.value(24,V), 20.+2. ));
     QVERIFY(TestNum::eq(data.value(24,I), -2.));
 
     QCOMPARE(data.value(25,V), 20.);
-    QCOMPARE(data.value(25,I), 0.);
+    QVERIFY(TestNum::eq(data.value(25,I), -2.));
 
-    QCOMPARE(data.value(29,V), 20.);
-    QCOMPARE(data.value(29,I), 0.);
+    QCOMPARE(data.value(26,V), 20.);
+    QCOMPARE(data.value(26,I), 0.);
+
+    QCOMPARE(data.value(30,V), 20.);
+    QCOMPARE(data.value(30,I), 0.);
 }
 
 //

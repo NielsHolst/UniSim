@@ -25,7 +25,27 @@
 	</model>
 	<model name="greenhouse">
 		<model name="construction">
-			<model name="ventilation" type="vg::ConstructionVentilation"/>
+			<model name="ventilation" type="vg::ConstructionVentilation">
+				<parameter name="ventMaxOpening" value="100"/>
+				<parameter name="ventLength" value="1"/>
+				<parameter name="ventWidth" value="1"/>
+				<parameter name="ventDensity" value="0.1"/>
+				<parameter name="efficacy" value="0.9"/>
+			</model>
+			<model name="growthLights">
+				<model type="vg::ConstructionGrowthLight" name="growthLight1">
+					<parameter name="type" value="HPSL"/>
+					<parameter name="capacity" value="45"/>
+					<parameter name="lifeTime" value="12000"/>
+					<parameter name="age" value="0"/>
+				</model>
+				<model type="vg::ConstructionGrowthLight" name="growthLight2">
+					<parameter name="type" value="HPSL"/>
+					<parameter name="capacity" value="0"/>
+					<parameter name="lifeTime" value="12000"/>
+					<parameter name="age" value="0"/>
+				</model>
+			</model>
 			<model name="geometry" type="vg::ConstructionGeometry">
 				<parameter name="spanWidth" value="20"/>
 				<parameter name="numSpans" value="1"/>
@@ -128,13 +148,14 @@
 				<parameter name="rule" value="min"/>
 				<parameter name="signalReset" value="100"/>
 				<model type="vg::DateTimeSignal">
-					<parameter name="signalOutsideDate" value="100"/>
-					<parameter name="signalOutsideTime" value="100"/>
+					<parameter name="signalOutside" value="100"/>
+					<parameter name="signalOutsideTimeOnly" value="100"/>
 					<parameter name="signalInside" value="80"/>
 					<parameter name="beginDay" value="1"/>
 					<parameter name="endDay" value="365"/>
 					<parameter name="beginTime" value="0:0"/>
 					<parameter name="endTime" value="23:59"/>
+					<parameter name="circadian" value="true"/>
 				</model>
 			</model>
 		</model>
@@ -150,8 +171,9 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="8:0"/>
 						<parameter name="endTime" value="18:0"/>
-						<parameter name="signalOutsideDate" value="100"/>
-						<parameter name="signalOutsideTime" value="100"/>
+						<parameter name="circadian" value="true"/>
+						<parameter name="signalOutside" value="100"/>
+						<parameter name="signalOutsideTimeOnly" value="100"/>
 						<parameter name="signalInside" value="22"/>
 					</model>
 					<model type="vg::DateTimeSignal">
@@ -159,8 +181,9 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="0:0"/>
 						<parameter name="endTime" value="7:59"/>
-						<parameter name="signalOutsideDate" value="100"/>
-						<parameter name="signalOutsideTime" value="100"/>
+						<parameter name="circadian" value="true"/>
+						<parameter name="signalOutside" value="100"/>
+						<parameter name="signalOutsideTimeOnly" value="100"/>
 						<parameter name="signalInside" value="22"/>
 					</model>
 					<model type="vg::DateTimeSignal">
@@ -168,8 +191,9 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="18:1"/>
 						<parameter name="endTime" value="23:59"/>
-						<parameter name="signalOutsideDate" value="100"/>
-						<parameter name="signalOutsideTime" value="100"/>
+						<parameter name="circadian" value="true"/>
+						<parameter name="signalOutside" value="100"/>
+						<parameter name="signalOutsideTimeOnly" value="100"/>
 						<parameter name="signalInside" value="22"/>
 					</model>
 				</model>
@@ -181,15 +205,17 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="0:0"/>
 						<parameter name="endTime" value="23:59"/>
-						<parameter name="signalOutsideDate" value="0"/>
-						<parameter name="signalOutsideTime" value="0"/>
+						<parameter name="circadian" value="true"/>
+						<parameter name="signalOutside" value="0"/>
+						<parameter name="signalOutsideTimeOnly" value="0"/>
 						<parameter name="signalInside" ref="./adjustment[signal]"/>
 						<model name="adjustment" type="vg::ProportionalSignal">
 							<parameter name="input" ref="indoors/humidity[rh]"/>
 							<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-							<parameter name="thresholdBand" value="-5"/>
-							<parameter name="signalOutsideBand" value="0"/>
-							<parameter name="signalAtThreshold" value="-2"/>
+							<parameter name="thresholdBand" value="0"/>
+							<parameter name="increasingSignal" value="false"/>
+							<parameter name="minSignal" value="-2"/>
+							<parameter name="maxSignal" value="0"/>
 						</model>
 					</model>
 				</model>
@@ -205,8 +231,9 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="0:0"/>
 						<parameter name="endTime" value="7:59"/>
-						<parameter name="signalOutsideDate" value="0"/>
-						<parameter name="signalOutsideTime" value="0"/>
+						<parameter name="circadian" value="true"/>
+						<parameter name="signalOutside" value="0"/>
+						<parameter name="signalOutsideTimeOnly" value="0"/>
 						<parameter name="signalInside" value="20"/>
 					</model>
 					<model type="vg::DateTimeSignal">
@@ -214,8 +241,9 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="8:0"/>
 						<parameter name="endTime" value="18:0"/>
-						<parameter name="signalOutsideDate" value="0"/>
-						<parameter name="signalOutsideTime" value="0"/>
+						<parameter name="circadian" value="true"/>
+						<parameter name="signalOutside" value="0"/>
+						<parameter name="signalOutsideTimeOnly" value="0"/>
 						<parameter name="signalInside" value="18"/>
 					</model>
 					<model type="vg::DateTimeSignal">
@@ -223,8 +251,9 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="18:1"/>
 						<parameter name="endTime" value="23:59"/>
-						<parameter name="signalOutsideDate" value="0"/>
-						<parameter name="signalOutsideTime" value="0"/>
+						<parameter name="circadian" value="true"/>
+						<parameter name="signalOutside" value="0"/>
+						<parameter name="signalOutsideTimeOnly" value="0"/>
 						<parameter name="signalInside" value="20"/>
 					</model>
 				</model>
@@ -236,16 +265,17 @@
 						<parameter name="endDay" value="365"/>
 						<parameter name="beginTime" value="0:0"/>
 						<parameter name="endTime" value="23:59"/>
+						<parameter name="circadian" value="true"/>
 						<parameter name="signalReset" value="0"/>
-						<parameter name="signalOutsideDate" value="0"/>
-						<parameter name="signalOutsideTime" value="0"/>
+						<parameter name="signalOutside" value="0"/>
+						<parameter name="signalOutsideTimeOnly" value="0"/>
 						<parameter name="signalInside" ref="./adjustment[signal]"/>
 						<model name="adjustment" type="vg::ProportionalSignal">
 							<parameter name="input" ref="indoors/humidity[rh]"/>
-							<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-							<parameter name="thresholdBand" value="-5"/>
-							<parameter name="signalOutsideBand" value="0"/>
-							<parameter name="signalAtThreshold" value="2"/>
+							<parameter name="thresholdBand" value="0"/>
+							<parameter name="increasingSignal" value="true"/>
+							<parameter name="minSignal" value="0"/>
+							<parameter name="maxSignal" value="2"/>
 						</model>
 					</model>
 				</model>
@@ -261,8 +291,9 @@
 					<parameter name="endDay" value="365"/>
 					<parameter name="beginTime" value="0:0"/>
 					<parameter name="endTime" value="23:59"/>
-					<parameter name="signalOutsideDate" value="0"/>
-					<parameter name="signalOutsideTime" value="0"/>
+					<parameter name="circadian" value="true"/>
+					<parameter name="signalOutside" value="0"/>
+					<parameter name="signalOutsideTimeOnly" value="0"/>
 					<parameter name="signalInside" value="200"/>
 				</model>
 			</model>
@@ -274,8 +305,9 @@
 					<parameter name="endDay" value="365"/>
 					<parameter name="beginTime" value="0:0"/>
 					<parameter name="endTime" value="23:59"/>
-					<parameter name="signalOutsideDate" value="2000"/>
-					<parameter name="signalOutsideTime" value="2000"/>
+					<parameter name="circadian" value="true"/>
+					<parameter name="signalOutside" value="0"/>
+					<parameter name="signalOutsideTimeOnly" value="0"/>
 					<parameter name="signalInside" value="800"/>
 				</model>
 			</model>
@@ -287,7 +319,7 @@
 				<parameter name="input" ref="indoors/humidity[rh]"/>
 				<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
 				<parameter name="signalBelow" value="1"/>
-				<parameter name="signalAbove" value="0.95"/>
+				<parameter name="signalAbove" value="1"/>
 			</model>
 			<model name="energy">
 				<model name="light" type="vg::ThresholdSignal">
@@ -308,8 +340,8 @@
 							<parameter name="beginTime" value="0:0"/>
 							<parameter name="endTime" value="0:0"/>
 							<parameter name="signalInside" ref="../../../light[signal]"/>
-							<parameter name="signalOutsideDate" value="0"/>
-							<parameter name="signalOutsideTime" value="0"/>
+							<parameter name="signalOutside" value="0"/>
+							<parameter name="signalOutsideTimeOnly" value="0"/>
 						</model>
 					</model>
 				</model>
@@ -317,7 +349,7 @@
 			<model name="shade">
 				<model name="light" type="vg::ThresholdSignal">
 					<parameter name="input" ref="outdoors[radiation]"/>
-					<parameter name="threshold" value="20"/>
+					<parameter name="threshold" value="550"/>
 					<parameter name="signalBelow" value="0"/>
 					<parameter name="signalAbove" ref="../../maxDrawn[signal]"/>
 				</model>
@@ -333,8 +365,8 @@
 							<parameter name="beginTime" value="0:0"/>
 							<parameter name="endTime" value="0:0"/>
 							<parameter name="signalInside" ref="../../../light[signal]"/>
-							<parameter name="signalOutsideDate" value="0"/>
-							<parameter name="signalOutsideTime" value="0"/>
+							<parameter name="signalOutside" value="0"/>
+							<parameter name="signalOutsideTimeOnly" value="0"/>
 						</model>
 					</model>
 					<model type="vg::FixedSignal">
@@ -358,11 +390,11 @@
 						<model type="vg::DateTimeSignal">
 							<parameter name="beginDay" value="1"/>
 							<parameter name="endDay" value="365"/>
-							<parameter name="beginTime" value="16:00"/>
-							<parameter name="endTime" value="22:00"/>
+							<parameter name="beginTime" value="18:00"/>
+							<parameter name="endTime" value="6:00"/>
 							<parameter name="signalInside" value="1"/>
-							<parameter name="signalOutsideDate" value="0"/>
-							<parameter name="signalOutsideTime" value="0"/>
+							<parameter name="signalOutside" value="0"/>
+							<parameter name="signalOutsideTimeOnly" value="0"/>
 						</model>
 					</model>
 					<model type="vg::FixedSignal">
@@ -372,26 +404,45 @@
 			</model>
 		</model>
 		<model name="ventilation" type="vg::VentilationController">
-			<parameter name="frostThreshold" value="0"/>
-			<model name="humidityMaximum" type="vg::ThresholdSignal">
-				<parameter name="input" ref="outdoors[radiation]"/>
-				<parameter name="threshold" value="0"/>
-				<parameter name="signalBelow" value="80"/>
-				<parameter name="signalAbove" value="100"/>
-			</model>
 			<model name="byTemperature" type="vg::ProportionalSignal">
 				<parameter name="input" ref="indoors/temperature[value]"/>
 				<parameter name="threshold" ref="setpoints/temperature/ventilation[signal]"/>
-				<parameter name="thresholdBand" value="-2"/>
-				<parameter name="signalAtThreshold" value="100"/>
-				<parameter name="signalOutsideBand" value="0"/>
+				<parameter name="thresholdBand" value="2"/>
+				<parameter name="increasingSignal" value="true"/>
+				<parameter name="maxSignal" value="100"/>
+				<parameter name="minSignal" value="0"/>
 			</model>
 			<model name="byHumidity" type="vg::ProportionalSignal">
 				<parameter name="input" ref="indoors/humidity[rh]"/>
 				<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-				<parameter name="thresholdBand" value="-5"/>
-				<parameter name="signalAtThreshold" ref="../humidityMaximum[signal]"/>
-				<parameter name="signalOutsideBand" value="0"/>
+				<parameter name="thresholdBand" value="5"/>
+				<parameter name="increasingSignal" value="true"/>
+				<parameter name="maxSignal" value="10"/>
+				<parameter name="minSignal" value="0"/>
+			</model>
+			<model name="leeFactor" type="vg::ProportionalSignal">
+				<parameter name="input" ref="outdoors[windspeed]"/>
+				<parameter name="threshold" value="15"/>
+				<parameter name="thresholdBand" value="5"/>
+				<parameter name="increasingSignal" value="false"/>
+				<parameter name="maxSignal" value="1"/>
+				<parameter name="minSignal" value="0"/>
+			</model>
+			<model name="windFactor" type="vg::ProportionalSignal">
+				<parameter name="input" ref="outdoors[windspeed]"/>
+				<parameter name="threshold" value="10"/>
+				<parameter name="thresholdBand" value="5"/>
+				<parameter name="increasingSignal" value="false"/>
+				<parameter name="maxSignal" value="1"/>
+				<parameter name="minSignal" value="0"/>
+			</model>
+			<model name="coldFactor" type="vg::ProportionalSignal">
+				<parameter name="input" ref="outdoors[temperature]"/>
+				<parameter name="threshold" value="-2"/>
+				<parameter name="thresholdBand" value="2"/>
+				<parameter name="increasingSignal" value="true"/>
+				<parameter name="maxSignal" value="1"/>
+				<parameter name="minSignal" value="0"/>
 			</model>
 		</model>
 		<model name="heating">
@@ -400,7 +451,7 @@
 				<parameter name="maximumSignal" value="90"/>
 			</model>
 		</model>
-		<model name="light" type="vg::LightController">
+		<model name="growthLight" type="vg::GrowthLightController">
 			<model name="on" type="vg::SignalCollection">
 				<parameter name="rule" value="max"/>
 				<parameter name="signalReset" value="0"/>
@@ -409,9 +460,10 @@
 					<parameter name="endDay" value="365"/>
 					<parameter name="beginTime" value="0:0"/>
 					<parameter name="endTime" value="23:59"/>
+					<parameter name="circadian" value="true"/>
 					<parameter name="signalInside" ref="./on[signal]"/>
-					<parameter name="signalOutsideDate" value="0"/>
-					<parameter name="signalOutsideTime" value="0"/>
+					<parameter name="signalOutside" value="0"/>
+					<parameter name="signalOutsideTimeOnly" value="0"/>
 					<model name="on" type="vg::ThresholdSignal">
 						<parameter name="threshold" value="40"/>
 						<parameter name="input" ref="outdoors[radiation]"/>
@@ -428,9 +480,10 @@
 					<parameter name="endDay" value="365"/>
 					<parameter name="beginTime" value="0:0"/>
 					<parameter name="endTime" value="23:59"/>
+					<parameter name="circadian" value="true"/>
 					<parameter name="signalInside" ref="./off[signal]"/>
-					<parameter name="signalOutsideDate" value="0"/>
-					<parameter name="signalOutsideTime" value="0"/>
+					<parameter name="signalOutside" value="0"/>
+					<parameter name="signalOutsideTimeOnly" value="0"/>
 					<model name="off" type="vg::ThresholdSignal">
 						<parameter name="threshold" value="60"/>
 						<parameter name="input" ref="outdoors[radiation]"/>
@@ -447,18 +500,20 @@
 					<parameter name="endDay" value="120"/>
 					<parameter name="beginTime" value="0:0"/>
 					<parameter name="endTime" value="23:59"/>
+					<parameter name="circadian" value="true"/>
 					<parameter name="signalInside" value="1"/>
-					<parameter name="signalOutsideDate" value="0"/>
-					<parameter name="signalOutsideTime" value="0"/>
+					<parameter name="signalOutside" value="0"/>
+					<parameter name="signalOutsideTimeOnly" value="0"/>
 				</model>
 				<model type="vg::DateTimeSignal">
 					<parameter name="beginDay" value="274"/>
 					<parameter name="endDay" value="365"/>
 					<parameter name="beginTime" value="0:0"/>
 					<parameter name="endTime" value="23:59"/>
+					<parameter name="circadian" value="true"/>
 					<parameter name="signalInside" value="1"/>
-					<parameter name="signalOutsideDate" value="0"/>
-					<parameter name="signalOutsideTime" value="0"/>
+					<parameter name="signalOutside" value="0"/>
+					<parameter name="signalOutsideTimeOnly" value="0"/>
 				</model>
 			</model>
 		</model>
@@ -470,8 +525,8 @@
 				<parameter name="endDay" value="273"/>
 				<parameter name="beginTime" value="0:0"/>
 				<parameter name="endTime" value="23:59"/>
-				<parameter name="signalOutsideDate" value="0"/>
-				<parameter name="signalOutsideTime" value="0"/>
+				<parameter name="circadian" value="false"/>
+				<parameter name="signalOutside" value="0"/>
 				<parameter name="signalInside" value="0"/>
 			</model>
 			<model type="vg::DateTimeSignal">
@@ -479,8 +534,8 @@
 				<parameter name="endDay" value="151"/>
 				<parameter name="beginTime" value="0:0"/>
 				<parameter name="endTime" value="23:59"/>
-				<parameter name="signalOutsideDate" value="0"/>
-				<parameter name="signalOutsideTime" value="0"/>
+				<parameter name="circadian" value="false"/>
+				<parameter name="signalOutside" value="0"/>
 				<parameter name="signalInside" value="0"/>
 			</model>
 			<model type="vg::DateTimeSignal">
@@ -488,8 +543,8 @@
 				<parameter name="endDay" value="365"/>
 				<parameter name="beginTime" value="0:0"/>
 				<parameter name="endTime" value="23:59"/>
-				<parameter name="signalOutsideDate" value="0"/>
-				<parameter name="signalOutsideTime" value="0"/>
+				<parameter name="circadian" value="false"/>
+				<parameter name="signalOutside" value="0"/>
 				<parameter name="signalInside" value="0"/>
 			</model>
 		</model>
@@ -502,44 +557,70 @@
 				<parameter name="lightTransmission" value="0.36"/>
 				<parameter name="airTransmission" value="0.38"/>
 				<parameter name="energyLossReduction" value="0.25"/>
-				<model name="control" type="vg::ControlElement">
+				<model name="control" type="vg::LinearControlElement">
 					<parameter name="signal" ref="controllers/screens/shade/control[signal]"/>
 					<parameter name="rate" value="0.1"/>
 				</model>
 			</model>
 		</model>
 		<model name="vents">
-			<model name="leeside" type="vg::ControlElement">
-				<parameter name="signal" ref="controllers/ventilation[leesideSignal]"/>
-				<parameter name="rate" value="0.05"/>
+			<model name="leeside" type="vg::LinearControlElement">
+				<parameter name="signal" ref="controllers/ventilation[leewardSignal]"/>
+				<parameter name="rate" value="10"/>
 			</model>
-			<model name="windside" type="vg::ControlElement">
-				<parameter name="signal" ref="controllers/ventilation[windsideSignal]"/>
-				<parameter name="rate" value="0.03"/>
+			<model name="windside" type="vg::LinearControlElement">
+				<parameter name="signal" ref="controllers/ventilation[windwardSignal]"/>
+				<parameter name="rate" value="10"/>
 			</model>
 		</model>
 		<model name="heating">
-			<model name="pipes" type="vg::Pipes">
+			<model name="pipes" type="vg::HeatPipes">
 				<model type="vg::HeatPipe" name="pipe1">
 					<parameter name="length" value="0.5"/>
-					<parameter name="totalLength" value="2000"/>
 					<parameter name="diameter" value="41"/>
 					<parameter name="flowRate" value="20"/>
 					<parameter name="inflowTemperature" ref="controllers/heating/temperature[signal]"/>
 				</model>
 				<model type="vg::HeatPipe" name="pipe2">
 					<parameter name="length" value="0.5"/>
-					<parameter name="totalLength" value="2000"/>
 					<parameter name="diameter" value="41"/>
 					<parameter name="flowRate" value="20"/>
 					<parameter name="inflowTemperature" ref="controllers/heating/temperature[signal]"/>
 				</model>
 			</model>
 		</model>
+		<model name="growthLights" type="vg::GrowthLights">
+			<model type="vg::GrowthLight" name="growthLight1">
+				<parameter name="heatEmissionOn" ref="construction/growthLights/growthLight1[heatEmission]"/>
+				<parameter name="longWaveEmissionOn" ref="construction/growthLights/growthLight1[longWaveEmission]"/>
+				<parameter name="shortWaveEmissionOn" ref="construction/growthLights/growthLight1[shortWaveEmission]"/>
+				<parameter name="parEmissionOn" ref="construction/growthLights/growthLight1[parEmission]"/>
+				<parameter name="energyUseOn" ref="construction/growthLights/growthLight1[energyUse]"/>
+				<parameter name="age" ref="construction/growthLights/growthLight1[age]"/>
+				<parameter name="lifeTime" ref="construction/growthLights/growthLight1[lifeTime]"/>
+				<parameter name="minPeriod" ref="construction/growthLights/growthLight1[minPeriod]"/>
+			</model>
+			<model type="vg::GrowthLight" name="growthLight2">
+				<parameter name="heatEmissionOn" ref="construction/growthLights/growthLight2[heatEmission]"/>
+				<parameter name="longWaveEmissionOn" ref="construction/growthLights/growthLight2[longWaveEmission]"/>
+				<parameter name="shortWaveEmissionOn" ref="construction/growthLights/growthLight2[shortWaveEmission]"/>
+				<parameter name="parEmissionOn" ref="construction/growthLights/growthLight2[parEmission]"/>
+				<parameter name="energyUseOn" ref="construction/growthLights/growthLight2[energyUse]"/>
+				<parameter name="age" ref="construction/growthLights/growthLight2[age]"/>
+				<parameter name="lifeTime" ref="construction/growthLights/growthLight2[lifeTime]"/>
+				<parameter name="minPeriod" ref="construction/growthLights/growthLight2[minPeriod]"/>
+			</model>
+		</model>
 	</model>
-	<model name="crop">
-		<model name="LAI"/>
-		<model name="development"/>
+	<!--Roses model-->
+	<model name="crop" type="vg::Crop">
+		<!--Roses periods-->
+		<model name="physTime" type="UniSim::DayDegrees">
+			<parameter name="T" ref="indoors/temperature[value]"/>
+			<parameter name="isTicking" ref="../periods[flag]"/>
+			<parameter name="doReset" ref="../periods[flagDown]"/>
+		</model>
+		<!--Roses lai-->
 		<model name="layers">
 			<model name="top" type="vg::Layer">
 				<parameter name="xGauss" value="0.1127"/>
@@ -581,11 +662,6 @@
 		<model name="temperature" type="Unisim::Average">
 			<parameter name="inputs" value="(layers/top/temperature[value] layers/middle/temperature[value] layers/bottom/temperature[value])"/>
 		</model>
-		<model name="biomass" type="vg::CropBiomass">
-			<model name="Pgc" type="Unisim::Sum">
-				<parameter name="toAdd" value="(layers/top/photosynthesis[Pg] layers/middle/photosynthesis[Pg] layers/bottom/photosynthesis[Pg])"/>
-			</model>
-		</model>
 		<model name="conductance" type="Unisim::Average">
 			<parameter name="inputs" value="(layers/top/transpiration[conductance] layers/middle/transpiration[conductance] layers/bottom/transpiration[conductance])"/>
 		</model>
@@ -595,6 +671,13 @@
 		<model name="gain" type="Unisim::Average">
 			<parameter name="inputs" value="(layers/top/transpiration[gain] layers/middle/transpiration[gain] layers/bottom/transpiration[gain])"/>
 		</model>
+		<model name="growth" type="vg::CropGrowth">
+			<model name="Pgc" type="Unisim::Sum">
+				<parameter name="toAdd" value="(layers/top/photosynthesis[Pg] layers/middle/photosynthesis[Pg] layers/bottom/photosynthesis[Pg])"/>
+			</model>
+		</model>
+		<!--Roses mass-->
+		<!--Roses yield-->
 	</model>
 	<output type="plot" name="plot">
 		<parameter name="title" value="Energy screen"/>
@@ -677,6 +760,7 @@
 		<trace label="Days" type="time"/>
 		<trace label="Irradiation" ref="indoors/energy[irradiation]"/>
 		<trace label="Pipes" ref="indoors/energy[heatPipes]"/>
+		<trace label="Growth light" ref="indoors/energy[growthLight]"/>
 		<trace label="Surface" ref="indoors/energy/surface[flux]"/>
 		<trace label="Floor" ref="indoors/energy/floor[flux]"/>
 		<trace label="Ventilation" ref="indoors/energy/ventilation[flux]"/>
@@ -698,6 +782,13 @@
 		<trace label="Floor" ref="indoors/floor/temperature[value]"/>
 		<trace label="Heating sp" ref="setpoints/temperature/heating[setpoint]"/>
 		<trace label="Vent sp" ref="setpoints/temperature/ventilation[setpoint]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Temperature sp"/>
+		<trace label="Days" type="time"/>
+		<trace label="Indoors" ref="indoors/temperature[value]"/>
+		<trace label="Sp heat" ref="setpoints/temperature/heating[signal]"/>
+		<trace label="Sp vent" ref="setpoints/temperature/ventilation[signal]"/>
 	</output>
 	<output type="plot">
 		<parameter name="title" value="Relative humidity"/>
@@ -722,8 +813,8 @@
 	<output type="plot">
 		<parameter name="title" value="Heating"/>
 		<trace label="Days" type="time"/>
-		<trace label="Tinflow1" ref="pipes/pipe1[inflowTemperature]"/>
-		<trace label="Tpipe1" ref="pipes/pipe1[temperature]"/>
+		<trace label="Tinflow1" ref="heating/pipes/pipe1[inflowTemperature]"/>
+		<trace label="Tpipe1" ref="heating/pipes/pipe1[temperature]"/>
 		<trace label="Max" ref="controllers/heating/temperature[maximumSignal]"/>
 		<trace label="Min" ref="controllers/heating/temperature[minimumSignal]"/>
 	</output>
@@ -778,14 +869,14 @@
 		<trace label="Bottom" ref="Bottom/photosynthesis[Pg]"/>
 	</output>
 	<output type="plot">
-		<parameter name="title" value="Pn (mg CO2/m2 ground/h)"/>
+		<parameter name="title" value="Pn (g CO2/m2 ground/h)"/>
 		<trace label="Days" type="time"/>
 		<trace label="Top" ref="top/photosynthesis[Pn]"/>
 		<trace label="Middle" ref="middle/photosynthesis[Pn]"/>
 		<trace label="Bottom" ref="Bottom/photosynthesis[Pn]"/>
 	</output>
 	<output type="plot">
-		<parameter name="title" value="PgMax (mg CO2/m2 leaf/s)"/>
+		<parameter name="title" value="PgMax (g CO2/m2 leaf/s)"/>
 		<trace label="Days" type="time"/>
 		<trace label="Top" ref="top/photosynthesis/lightResponse[PgMax]"/>
 		<trace label="Middle" ref="middle/photosynthesis/lightResponse[PgMax]"/>
@@ -821,5 +912,34 @@
 		<parameter name="title" value="Vents opening"/>
 		<trace label="Indoors temperature" ref="indoors/temperature[value]"/>
 		<trace label="Leeside" ref="vents/leeside[state]" type="symbols"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Growth light"/>
+		<trace label="Days" type="time"/>
+		<trace label="Rn" ref="actuators/growthLights[shortWaveEmission]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Growing DD"/>
+		<trace label="Days" type="time"/>
+		<trace label="DD" ref="crop/physTime[total]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Crop LAI"/>
+		<trace label="Days" type="time"/>
+		<trace label="DD" ref="crop/lai[lai]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Crop Mass"/>
+		<trace label="Days" type="time"/>
+		<trace label="Fruit" ref="crop/mass[fruit]"/>
+		<trace label="Leaf" ref="crop/mass[leaf]"/>
+		<trace label="Stem" ref="crop/mass[stem]"/>
+		<trace label="Root" ref="crop/mass[root]"/>
+		<trace label="Total" ref="crop/mass[total]"/>
+	</output>
+	<output type="plot">
+		<parameter name="title" value="Yield"/>
+		<trace label="Days" type="time"/>
+		<trace label="Fresh wgt." ref="crop/yield[freshWeight]"/>
 	</output>
 </simulation>

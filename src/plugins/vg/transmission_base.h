@@ -27,7 +27,7 @@ public:
 private:
     // Inputs
     QString directTransmissionFile;
-    double latitude, azimuth, greenhouseSurfaceArea, greenhouseGroundArea;
+    double latitude, azimuth, greenhouseSurfaceArea, greenhouseGroundArea, chalk;
     // Outputs
     double U, netU, haze, diffuse, directAsDirect, directAsDiffuse, air, area;
     // Methods
@@ -57,6 +57,8 @@ private:
     void updateLightTransmission();
     void updateAirTransmission();
     void updateArea();
+    inline double chalked() const {return chalk/100.;}
+    inline double unchalked() const {return 1.-chalked();}
 };
 } //namespace
 

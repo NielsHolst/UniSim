@@ -52,14 +52,12 @@ void EnergyFluxVentilation::reset() {
 }
 
 void EnergyFluxVentilation::update() {
-    double &Vgh(averageHeight),  // m3
-           Cair = Vgh*RhoAir*CpAir, // J/m2/K = m3 * kg/m3 * J/kg/K
-           dTemp = outdoorsTemperature - indoorsTemperature;
-    flux = relativeVentilationRate*Cair*dTemp/timeStep; // W/m2 = 1 * J/m2/K * K / s
-
-//    double indoorsTempIncrement = airTempChangeFromEffect(balance, averageHeight, timeStep);
-//    if (indoorsTemperature + indoorsTempIncrement < outdoorsTemperature)
-//        balance = effectFromAirTempChange(gradient, averageHeight, timeStep);
+    // Partial integration of temperature change caused by ventilation alone
+    double rate = relativeVentilationRate/timeStep,
+           indoorsTemperatureFinal = propIntegral(indoorsTemperature, outdoorsTemperature, rate, timeStep);
+    // Compute flux based on temperature change
+    double Cair = averageHeight*RhoAir*CpAir; // J/m2/K = m * kg/m3 * J/kg/K
+    flux = Cair*(indoorsTemperatureFinal-indoorsTemperature)/timeStep; // W/m2 = J/m2/K * K / s
 }
 
 

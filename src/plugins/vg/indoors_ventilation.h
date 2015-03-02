@@ -4,8 +4,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_VENTILATION_AIR_H
-#define VG_VENTILATION_AIR_H
+#ifndef VG_INDOORS_VENTILATION_H
+#define VG_INDOORS_VENTILATION_H
 
 #include <usbase/model.h>
 
@@ -18,8 +18,8 @@ public:
     void reset();
     void update();
 private:
-    double rateVents, rateInfiltration, timeStep, averageHeight,
-        absolute, relative, rate;
+    double rateVents, rateInfiltration, timeStep, averageHeight, screenAirTransmission,
+        potential, absolute, relative, rate;
 };
 } //namespace
 

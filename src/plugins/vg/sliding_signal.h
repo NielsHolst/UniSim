@@ -18,7 +18,8 @@ public:
     double signal() final;
     virtual double slide(double proportion) = 0;
 protected:
-    double input, threshold, thresholdBand, signalOutsideBand, signalAtThreshold;
+    double input, threshold, thresholdBand, minSignal, maxSignal;
+    bool increasingSignal;
 };
 } //namespace
 

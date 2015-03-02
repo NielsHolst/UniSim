@@ -46,7 +46,7 @@ void SignalCollection::initialize() {
 }
 
 double SignalCollection::signal() {
-    double res;
+    double res{0};
     switch (rule) {
     case Min:
         res = numeric_limits<double>::max();

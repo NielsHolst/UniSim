@@ -30,6 +30,7 @@ PUBLISH(DateTimeSignal)
  * - _signalInside_ is the resulting _signal_ when _day_ and _time_ are inside the day and time intervals [R]
  * - _signalOutsideDate_ is the resulting _signal_ when _day_ is outside the date interval [R]
  * - _signalOutsideTime_ is the resulting _signal_ when _day_ is inside the date interval but _time_ is outside the time interval [R]
+ * - _circadian_ tells whether signal follows a daily rythm. See below. [true,false]
  *
  * Outputs
  * ------
@@ -40,7 +41,24 @@ PUBLISH(DateTimeSignal)
  * - an _calendar_ model with two ports:
  *   + _dayOfYear_ [1..365]
  *   + _timeOfDay_ [hh:mm]
-  */
+ *
+ * The circadian flag tells whether the time interval beginTime to endTime should be interpreted as a circadian (i.e.
+ * daily rythm). This allows the resulting signal to be periodic on a daily basis. Alternatively, when cirdadian is false,
+ * the signal will be specified by one period beginning on beginDay at beginTime and ending on endDay at endTime.
+ * In all cases the intervals are closed, i.e. limit values are considered inside the interval.
+ *
+ * If beginDay-endDay are set to 10/1/2012-20/1/2012 and beginTime-endTime are set to 8:00-16:00, these are the
+ * values that signal will be set to depending on the current date and time:
+ * Date and time | signal
+ * ------------- | ------
+ * 15/01/2012 12:00	| signalInside
+ * 15/01/2012 22:00	| circadian ? signalOutsideTimeOnly : signalOutside
+ * 10/01/2012 12:00	| signalInside
+ * 10/01/2012 06:00	| signalOutside
+ * 20/01/2012 12:00	| signalInside
+ * 20/01/2012 22:00	| signalOutside
+ *
+ */
 
 DateTimeSignal::DateTimeSignal(Identifier name, QObject *parent)
     : BaseSignal(name, parent){
@@ -50,9 +68,14 @@ DateTimeSignal::DateTimeSignal(Identifier name, QObject *parent)
     Input(QTime, endTime, QTime(24,0));
     InputRef(int, day, "calendar[dayOfyear]");
     InputRef(QTime, time, "calendar[timeOfDay]");
-    Input(double, signalOutsideDate, 0.);
-    Input(double, signalOutsideTime, 0.);
+    Input(double, signalOutside, 0.);
+    Input(double, signalOutsideTimeOnly, 0.);
     Input(double, signalInside, 1.);
+    Input(bool, circadian, true);
+}
+
+inline QDate date(int day) {
+    return QDate(2000,12,31).addDays(day);
 }
 
 double DateTimeSignal::signal() {
@@ -62,9 +85,20 @@ double DateTimeSignal::signal() {
     bool nowOnTime = (beginTime < endTime) ?
                 (time >= beginTime) && (time <= endTime) :
                 (time >= beginTime) || (time <= endTime);
-    return nowOnDay ?
-           (nowOnTime ? signalInside : signalOutsideTime)
-           : signalOutsideDate;
+    double result;
+    if (circadian) {
+        result =  nowOnDay ?
+                  (nowOnTime ? signalInside : (signalOutsideTimeOnly))
+                  : signalOutside;
+    }
+    else {
+        QDateTime begin(date(beginDay), beginTime),
+                  end(date(endDay), endTime),
+                  now(date(day), time);
+        result = (now >= begin && now <= end) ?
+                 signalInside : signalOutside;
+    }
+    return result;
 }
 
 } //namespace

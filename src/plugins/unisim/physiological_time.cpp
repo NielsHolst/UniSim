@@ -3,7 +3,6 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/exception.h>
 #include <usbase/ustime.h>
 #include "physiological_time.h"
 
@@ -17,6 +16,8 @@ PhysiologicalTime::PhysiologicalTime(UniSim::Identifier name, QObject *parent)
     new Variable<double>("total", &total, this,
         "Total duration since beginning of simulation (in physiological time units) "
         "or since most recent trigger event (see e.g. @F TriggerByDate)");
+    Input(bool, doReset, false);
+    Input(bool, isTicking, true);
 }
 
 void PhysiologicalTime::initialize() {
@@ -35,12 +36,17 @@ void PhysiologicalTime::reset() {
 }
 
 void PhysiologicalTime::update() {
-    if (*triggered) {
-        step = calcDailyTimeStep()*calendarTimeStep;
-        total += step;
-    }
-    else {
+    if (doReset) {
         step = total = 0.;
+    }
+    if (isTicking) {
+        if (*triggered) {
+            step = calcDailyTimeStep()*calendarTimeStep;
+            total += step;
+        }
+        else {
+            step = total = 0.;
+        }
     }
 }
 

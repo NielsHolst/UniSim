@@ -2,7 +2,8 @@ include(../../config.pri)
 
 TEMPLATE = lib
 DESTDIR = $${US_PLUGINS}
-TARGET = vg_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+#TARGET = vg_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+TARGET = vg
 CONFIG += plugin
 
 include ($${US_BASE}/base.pri)
@@ -11,20 +12,25 @@ include ($${US_ENGINE}/engine.pri)
 HEADERS += \
     air_infiltration.h \
     asymptotic_signal.h \
+    asymptotic_control_element.h \
+    base_control_element.h \
+    base_growth_light.h \
     base_signal.h \
     boundary_layer_resistance.h \
     co2_controller.h \
     construction_floor.h \
     construction_geometry.h \
+    construction_growth_light.h \
     construction_ventilation.h \
-    control_element.h \
-    control_element_asym.h \
-    control_element_base.h \
     cover.h \
     cover_condensation.h \
     cover_temperature.h \
-    crop_biomass.h \
+    crop.h \
+    crop_mass.h \
+    crop_growth.h \
+    crop_lai.h \
     crop_transpiration.h \
+    crop_yield.h \
     date_time_signal.h \
     energy_balance.h \
     energy_screen_balance.h \
@@ -35,22 +41,28 @@ HEADERS += \
     energy_flux_ventilation.h \
     fixed_signal.h \
     floor_temperature.h \
+    fruit_crop_lai.h \
+    fruit_crop_mass.h \
+    fruit_factor.h \
     general.h \
+    growth_light.h \
+    growth_lights.h \
     heat_pipe.h \
+    heat_pipes.h \
     heating_temperature_controller.h \
     indoors_co2.h \
     indoors_humidity.h \
+    indoors_potential_ventilation.h \
     indoors_radiation.h \
     indoors_temperature.h \
     indoors_ventilation.h \
-#    lamp_attributes.h \
     layer.h \
     layer_photosynthesis.h \
     leaf_light_response.h \
     leaf_temperature.h \
     leaf_transpiration.h \
-    light_controller.h \
-    pipes.h \
+    linear_control_element.h \
+    growth_light_controller.h \
     outdoors.h \
     proportional_signal.h \
     publish.h \
@@ -67,6 +79,7 @@ HEADERS += \
     transmission_screens.h \
     variable_collection.h \
     vapour_flux.h \
+    ventilated_latent_heat_converter.h \
     ventilation_vapour.h \
     ventilation_controller.h \
     vents_ventilation.h \
@@ -75,20 +88,25 @@ HEADERS += \
 SOURCES += \
     air_infiltration.cpp \
     asymptotic_signal.cpp \
+    asymptotic_control_element.cpp \
+    base_control_element.cpp \
+    base_growth_light.cpp \
     base_signal.cpp \
     boundary_layer_resistance.cpp \
     co2_controller.cpp \
     construction_floor.cpp \
     construction_geometry.cpp \
+    construction_growth_light.cpp \
     construction_ventilation.cpp \
-    control_element.cpp \
-    control_element_asym.cpp \
-    control_element_base.cpp \
     cover.cpp \
     cover_temperature.cpp \
     cover_condensation.cpp \
-    crop_biomass.cpp \
+    crop.cpp \
+    crop_mass.cpp \
+    crop_growth.cpp \
+    crop_lai.cpp \
     crop_transpiration.cpp \
+    crop_yield.cpp \
     date_time_signal.cpp \
     energy_balance.cpp \
     energy_flux_condensation.cpp \
@@ -99,22 +117,28 @@ SOURCES += \
     energy_screen_balance.cpp \
     fixed_signal.cpp \
     floor_temperature.cpp \
+    fruit_crop_lai.cpp \
+    fruit_crop_mass.cpp \
+    fruit_factor.cpp \
     general.cpp \
+    growth_light.cpp \
+    growth_lights.cpp \
     heat_pipe.cpp \
+    heat_pipes.cpp \
     heating_temperature_controller.cpp \
     indoors_co2.cpp \
     indoors_humidity.cpp \
+    indoors_potential_ventilation.cpp \
     indoors_radiation.cpp \
     indoors_temperature.cpp \
     indoors_ventilation.cpp \
-#    lamp_attributes.cpp \
     layer.cpp \
     layer_photosynthesis.cpp \
     leaf_light_response.cpp \
     leaf_temperature.cpp \
     leaf_transpiration.cpp \
-    light_controller.cpp \
-    pipes.cpp \
+    linear_control_element.cpp \
+    growth_light_controller.cpp \
     outdoors.cpp \
     proportional_signal.cpp \
     publish.cpp \
@@ -130,6 +154,7 @@ SOURCES += \
     transmission_cover.cpp \
     transmission_screens.cpp \
     vapour_flux.cpp \
+    ventilated_latent_heat_converter.cpp \
     ventilation_vapour.cpp \
     ventilation_controller.cpp \
     vents_ventilation.cpp \

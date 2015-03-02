@@ -21,8 +21,10 @@ public:
 
 private:
     // parameters
-    double apparency, resourceDensity, demand;
-    double egestionRatio, respiration;
+    double apparency, resourceDensity, demand,
+        egestionRatio, respiration,
+        conversionCost;
+    bool truncateSupply, costOnRespiration;
 
 
     // variables

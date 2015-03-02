@@ -49,8 +49,8 @@ double Scheduled::interpolateValue(double x) {
     double x0, x1, y0, y1;
     QMapIterator<double, double> sc(schedule);
     sc.next();
-    x1 = sc.key();
-    y1 = sc.value();
+    x0 = x1 = sc.key();
+    y0 = y1 = sc.value();
     if (x < x1)
         return y1;
 

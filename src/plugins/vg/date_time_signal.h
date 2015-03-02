@@ -19,7 +19,8 @@ public:
 private:
     int beginDay, endDay, day;
     QTime beginTime, endTime, time;
-    double signalInside, signalOutsideTime, signalOutsideDate;
+    double signalInside, signalOutsideTimeOnly, signalOutside;
+    bool circadian;
 };
 
 } //namespace

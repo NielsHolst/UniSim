@@ -23,9 +23,12 @@ PUBLISH(VentsVentilation)
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
  * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
  * - _windspeed_ is the outdoors windspeed [m/s]
- * - _ventLength_ is the total lenth of vents [m]
+ * - _ventLength_ is the length of a vents window [m]
+ * - _ventWidth_ is the width of a vents window [m]
  * - _ventMaxOpening_ is the maximum possible opening [0;180]
- * - _ventProportion_ is the proportion of the (roof?) area that is vents [0;1]
+ * - _ventDensity_ is the number of vent windows per greenhouse area [m<SUP>-2</SUP>]
+ * - _ventEfficacy_ is the efficacy of ventilation (can be reduced, for example, by insect net) [0;1]
+ * - _roofPitch_ is the degrees slope of the roof [0;180]
  * - _ventilationLeeSide_ is the opening in the lee side [0;100]
  * - _ventilationWindSide_ is the opening in the wind side [0;100]
  *
@@ -41,9 +44,11 @@ PUBLISH(VentsVentilation)
  *   + _windspeed_ [m/s] [<SUP>o</SUP>C]
  * - a _construction/ventilation_ model with three ports:
  *   + _ventLength_ [m]
+ *   + _ventWidth_ [m]
+ *   + _ventDensity_ [m<SUP>-2</SUP>]
  *   + _ventMaxOpening_ [0;180]
- *   + _ventProportion_ [0;1]
- *   + _groundArea_ [m<SUP>2</SUP>]
+ *   + _efficacy_ [0;1]
+ * - a _construction/geometry_ model with a _roofPitch_ port [0;180]
  * - an _actuators/vents_ model with two child models:
  *   + _leeside_ with a _state_ port [0;100]
  *   + _windside_ with a _state_ port [0;100]
@@ -59,6 +64,7 @@ VentsVentilation::VentsVentilation(Identifier name, QObject *parent)
     InputRef(double, ventWidth, "construction/ventilation[ventWidth]");
     InputRef(double, ventDensity, "construction/ventilation[ventDensity]");
     InputRef(double, ventMaxOpening, "construction/ventilation[ventMaxOpening]");
+    InputRef(double, ventEfficacy, "construction/ventilation[efficacy]");
     InputRef(double, roofPitch, "construction/geometry[roofPitch]");
     InputRef(double, ventilationLeeSide, "actuators/vents/leeSide[state]");
     InputRef(double, ventilationWindSide, "actuators/vents/windSide[state]");
@@ -67,6 +73,7 @@ VentsVentilation::VentsVentilation(Identifier name, QObject *parent)
 
 void VentsVentilation::reset() {
     rate = 0.;
+	ventArea = ventWidth*ventLength;
 }
 
 inline double sind(double degrees) {
@@ -78,39 +85,33 @@ inline double sqr(double x) {
 }
 
 void VentsVentilation::update() {
-//    double a = phiTemp(ventilationLeeSide),
-//           b = phiTemp(ventilationWindSide),
-//           c = phiWindLeeSide(),
-//           d = phiWindWindSide();
     double angleLeeSide = ventilationLeeSide/100*ventMaxOpening,
            angleWindSide = ventilationWindSide/100*ventMaxOpening,
-           sum = sqr(phiTemp(angleLeeSide) + phiTemp(angleWindSide))
-               + sqr(phiWindLeeSide(angleLeeSide) + phiWindWindSide(angleWindSide));
-    rate = 0.5*ventDensity*sqrt(sum)*3600;
+           sum = sqr( (phiTemp(angleLeeSide) + phiTemp(angleWindSide))/2. )
+               + sqr( (phiWindLeeSide(angleLeeSide) + phiWindWindSide(angleWindSide))/2. );
+    rate = ventEfficacy*ventDensity*sqrt(sum)*3600;
 }
 
-// Ventilation rate per window [m3/window/s]
+// Temperature-dependent ventilation rate per window [m3/window/s]
 double VentsVentilation::phiTemp(double angle) {
     double dTemp = fabs(Tindoors - Toutdoors),
            H =	ventWidth*(sind(roofPitch) - sind(roofPitch-angle));
     const double Cf = 0.6,
                  g = 9.82,
                  beta = 1/283.;
-    return Cf*ventLength/3*sqr(fabs(g*beta*dTemp))*pow(H,1.5);
+    return Cf*ventLength/3*sqrt(fabs(g*beta*dTemp))*pow(H,1.5)*ventArea;
 }
 
-// Ventilation rate per window [m3/window/s]
+// Wind-side wind-dependent ventilation rate per window [m3/window/s]
 double VentsVentilation::phiWindWindSide(double angle) {
-    double Gw = 1.2e-3*angle*exp(angle/211),
-           A0 = ventLength*ventWidth;
-    return Gw*A0*windspeed;
+    double Gw = 1.2e-3*angle*exp(angle/211);
+    return Gw*windspeed*ventArea;
 }
 
-// Ventilation rate per window [m3/window/s]
+// Wind-side wind-dependent ventilation rate per window [m3/window/s]
 double VentsVentilation::phiWindLeeSide(double angle) {
-    double Gl = 2.29e-2*(1-exp(-angle/21.1)),
-           A0 = ventLength*ventWidth;
-    return Gl*A0*windspeed;
+    double Gl = 2.29e-2*(1-exp(-angle/21.1));
+    return Gl*windspeed*ventArea;
 }
 
 } //namespace

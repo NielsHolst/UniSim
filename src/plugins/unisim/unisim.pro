@@ -2,7 +2,8 @@ include(../../config.pri)
 
 TEMPLATE = lib
 DESTDIR = $${US_PLUGINS}
-TARGET = unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+#TARGET = unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+TARGET = unisim
 
 CONFIG += plugin
 

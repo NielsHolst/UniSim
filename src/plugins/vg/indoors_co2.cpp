@@ -42,29 +42,34 @@ IndoorsCo2::IndoorsCo2(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     InputRef(double, outdoorsCo2, "outdoors[co2]");
+    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, airExchange, "indoors/ventilation[relative]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     InputRef(double, averageHeight, "construction/geometry[averageHeight]");
     Input(double, assimilationRate, 0);
     Input(double, injectionRate, 0.);
     Output(double, ppm);
+    Output(double, density);
+	Output(double, ventilationLoss);
 }
 
 void IndoorsCo2::reset() {
     ppm = outdoorsCo2;
-    calcDensity();
+	density = ppmToDensity(ppm);
+	ventilationLoss = 0.;
 }
 
 void IndoorsCo2::update() {
+	double ppmBefore = ppm;
     ppm = ppm*(1. - airExchange) + outdoorsCo2*airExchange;
-    calcDensity();
+	ventilationLoss = ppmToDensity(ppmBefore-ppm);
+	ppm += (injectionRate - assimilationRate)*timeStep/3600;
+	density = ppmToDensity(ppm);
 }
 
-void IndoorsCo2::calcDensity() {
-	density = 0.;
-//    density = absFromPpmCo2(ppm)/averageHeight*1000.;  // kg/m3 /m * g/kg
+double IndoorsCo2::ppmToDensity(double ppm) {
+	return absFromPpmCo2(indoorsTemperature, ppm)*averageHeight*1000.;  // g/m2 = kg/m3 * m * g/kg
 }
-
 
 } //namespace
 

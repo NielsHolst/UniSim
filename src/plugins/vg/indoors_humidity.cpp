@@ -21,20 +21,19 @@ PUBLISH(IndoorsHumidity)
  *
  * Inputs
  * ------
- * - _propVent_ is the propotion of air being ventilated during one time step [0;1]
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
- * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
- * - _outdoorsRh_ is the relative humidity outdoors [<SUP>o</SUP>C]
- * - _maxRh_ is the r.h. maximum setpoint [0-100]
- * - _minDeltaX_ is the delta-x minimum setpoint [g/m<SUP>3</SUP>]
+ * - _outdoorsRh_ is the outdoors absolute humidity [kg/m<SUP>3</SUP>]
+ * - _timeStep_ is the integration time step[s]
+ * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
  *
  * Outputs
  * ------
- * - _rhExcess_ is the excess r.h. relative to the setpoint _maxRh_ [% points]");
- * - _wvpdInsufficiency_ is the insufficiency of vapour pressure deficit relative to the setpoint _minDeltaX_ [Pa]");
- * - _highRh_ tells if r.h. is too high for the setpoint _maxRh_ [true,false]
- * - _lowDeltaX_ tells if the vapour pressure deficit is too small for the setpoint _minDeltaX_ [true,false]
- * - _highHumity_ tells if the humidity is too high according to either setpoint [true,false]
+ * - _rh_ is the indoors relative humidity [0;100]
+ * - _ah_ is the indoors absolute humidity [kg/m<SUP>3</SUP>]
+ * - _ahEq_ is the asymptotic (with time) equilibrium absolute humidity [kg/m<SUP>3</SUP>]
+ * - _netVapourFlux_ is the flux of water vapour in our out of the greenhouse [kg/m<SUP>2</SUP>/s]
+ * - _timeConstant_ is the time constant used to integrate _netVapourFlux_ [s<SUP>-1</SUP>]
+ * - _surplusAh_ is an integration inaccuracy that was rounded off [kg/m<SUP>3</SUP>]
  *
  * Default dependencies
  * ------------
@@ -56,7 +55,6 @@ IndoorsHumidity::IndoorsHumidity(Identifier name, QObject *parent)
     Output(double, ah);
     Output(double, ahEq);
     Output(double, netVapourFlux);
-    Output(double, grossVapourFlux);
     Output(double, timeConstant);
     Output(double, surplusAh);
 }
@@ -83,26 +81,17 @@ void IndoorsHumidity::update() {
     timeConstant = averageHeight/gainSum;
     ah = ahEq - (ahEq-ah)*exp(-timeStep/timeConstant);
 
-    netVapourFlux = (ah - prevAh)*averageHeight/timeStep; // kg/m2/s = kg/m3 * m3/m2 / s
-    grossVapourFlux = sumVapourFlux(transpiration)
-                    + sumVapourFlux(evaporation)
-                    - sumVapourFlux(condensation)
-                    - sumVapourFlux(ventilation);
-
     double indoorsSah = sah(indoorsTemperature);
-    surplusAh = max(ah-indoorsSah, 0.);
-    ah = min(ah, indoorsSah);
-    rh = rhFromAh(indoorsTemperature, ah);
+    if (ah > indoorsSah) {
+        ah = indoorsSah;
+        surplusAh = ah - indoorsSah;
+    }
+    else {
+        surplusAh = 0.;
+    }
 
-//    if (surplusAh > 0.) {
-//        double  gc, gv;
-//        double total = grossFlux.condensation + grossFlux.ventilation;
-//        gv = (total>0 &&) ? grossFlux.condensation/total : 0;
-//        gv = 1-gc;
-//        extraCondensation = gc*surplusAh*averageHeight/timeStep,
-//        extraVentilation = gv*surplusAh*averageHeight/timeStep;
-//        ah = sah(indoorsTemperature);
-//    }
+    rh = rhFromAh(indoorsTemperature, ah);
+    netVapourFlux = (ah - prevAh)*averageHeight/timeStep; // kg/m2/s = kg/m3 * m3/m2 / s
 }
 
 void IndoorsHumidity::collectFluxes() {

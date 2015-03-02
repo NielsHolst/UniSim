@@ -42,7 +42,6 @@ IndoorsTemperature::IndoorsTemperature(Identifier name, QObject *parent)
 {
 //    Input(double, Cgreenhouse, 42000);
     Input(double, initValue,21);
-    InputRef(double, relativeVentilationRate, "indoors/ventilation[relative]");
     InputRef(double, heatBalance,"indoors/energy[value]");
     InputRef(double, averageHeight,"construction/geometry[averageHeight]");
     InputRef(double, timeStep,"calendar[timeStepSecs]");
@@ -57,11 +56,13 @@ void IndoorsTemperature::reset() {
 }
 
 void IndoorsTemperature::update() {
-    double &Vgh(averageHeight),  // m3
-           Cair = Vgh*RhoAir*CpAir; // J/m2/K = m3 * kg/m3 * J/kg/K
-//    value += heatBalance*timeStep/(Cgreenhouse + Cair);
+    double Cair = averageHeight*RhoAir*CpAir; // J/m2/K = m * kg/m3 * J/kg/K
     value += heatBalance*timeStep/Cair;
     virtualTemperature = virtualTemperatureFromAh(value, indoorsAh);
+    if (value < -80 || value > 100) {
+        QString msg{"Temperature is outsise reasonable value: %1"};
+        throw Exception(msg.arg(value), this);
+    }
 }
 
 } //namespace

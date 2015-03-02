@@ -16,7 +16,6 @@ class LeafTranspiration : public VapourFlux
 {
 public:
     LeafTranspiration(UniSim::Identifier name, QObject *parent);
-    void reset();
     void update();
 
 private:

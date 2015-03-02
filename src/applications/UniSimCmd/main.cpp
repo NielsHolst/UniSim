@@ -72,11 +72,11 @@ int main(int argc, char *argv[]) {
     }
     catch (Exception &ex) {
         cout << qPrintable("Program Error: " + ex.message());
-        result = 1;
+        result = -1;
     }
     catch (...) {
         cout << "Program Error. Uncaught exception.";
-        result = 1;
+        result = -1;
     }
     delete objectPool();
     return result;

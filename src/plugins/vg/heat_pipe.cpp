@@ -24,7 +24,6 @@ PUBLISH(HeatPipe)
  * Inputs
  * ------
  * - _length_ is pipe length per greenhouse area [m/m<SUP>2</SUP>]. If zero then it is calculated as _totalLength_/_greenhouseArea.
- * - _totalLength_ is the total length of the pipe [m]. Only used if _length_=0
  * - _diameter_ is the pipe inner diameter [mm]
  * - _flowRate_ is the flow rate [m<SUP>3</SUP>/h]
  * - _inflowTemperature_ is the temperature of the water flowing into the pipe [<SUP>o</SUP>C]
@@ -49,7 +48,6 @@ HeatPipe::HeatPipe(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, length, 1.);
-    Input(double, totalLength, 0.);
     Input(double, diameter, 51.);
     Input(double, flowRate, 20.);
     InputRef(double, inflowTemperature, "controllers/heating/temperature[signal]");
@@ -62,16 +60,10 @@ HeatPipe::HeatPipe(Identifier name, QObject *parent)
 
 void HeatPipe::initialize() {
     double x = minMax(26., diameter, 51.);
-    slope = 0.0131*x + 0.105;
+    U = 0.0131*x + 0.105;       // W/m2/K per m pipe
 }
 
 void HeatPipe::reset() {
-    if (length == 0.)
-        length = totalLength/greenhouseArea;
-    if (length <= 0.) {
-        QString msg {"Pipe length (%1) must be > 0 m"};
-        throw Exception(msg.arg(length), this);
-    }
     if (diameter <= 0.) {
         QString msg {"Pipe diameter (%1) must be > 0 mm"};
         throw Exception(msg.arg(diameter), this);
@@ -81,17 +73,18 @@ void HeatPipe::reset() {
     volume = length*PI*r*r*10./100/100; // L/m2
     updateFlow();
     selfTest();
+    Q_ASSERT(volume>0.);
 }
 
 void HeatPipe::update() {
     updateFlow();
-    // W/m2 = W/m * m/m2
-    double inflowEffect = specificEffect(inflowTemperature)*propFlow*length,
-           stagnantEffect = specificEffect(temperature)*(1-propFlow)*length;
-    effect = inflowEffect + stagnantEffect;
+    Effect inflow = specificEffect(inflowTemperature),
+           stagnant = specificEffect(temperature);
+    effect = inflow.effect*propFlow + stagnant.effect*(1-propFlow);
+    temperature = inflow.temperature*propFlow + stagnant.temperature*(1-propFlow);
     // K = W/m2 * s / J/kg/K / kg/m2
-    double tempLoss = effect*timeStep/CpWater/volume;
-    temperature = propFlow*inflowTemperature + (1-propFlow)*temperature - tempLoss;
+//    double tempLoss = effect*timeStep/CpWater/volume;
+//    temperature = propFlow*inflowTemperature + (1-propFlow)*temperature - tempLoss;
 }
 
 void HeatPipe::updateFlow() {
@@ -101,15 +94,27 @@ void HeatPipe::updateFlow() {
 }
 
 //! Compute effect of pipe [W/m] given a certain pipe temperature [<SUP>o</SUP>C]
-double HeatPipe::specificEffect(double Tpipe) {
-    double Tdiff = Tpipe - indoorsTemperature;
-    return (Tdiff < 0.) ? 0. : pow(Tdiff, exponent)*slope;
+HeatPipe::Effect HeatPipe::specificEffect(double Tpipe) {
+//    double Tdiff = Tpipe - indoorsTemperature;
+//    return (Tdiff < 0.) ? 0. : pow(Tdiff, exponent)*slope;
+    if (indoorsTemperature > Tpipe)
+        return Effect{0,0};
+    double Cwater = volume*CpWater, // J/m2/K =  kg/m2 * J/kg/K
+           rate = U*length/Cwater, // s-1
+           TpipeNew = propExpIntegral(Tpipe, indoorsTemperature, rate, timeStep, exponent),
+           effect = Cwater*(Tpipe-TpipeNew)/timeStep; // W/m2 = J/m2/K * K / s
+    return Effect{effect, TpipeNew};
 }
 
 //! Compute pipe temperature [<SUP>o</SUP>C] needed to yield a certain effect [W/m]
 double HeatPipe::pipeTemperature(double specificEffect) {
-    double Tdiff = pow(specificEffect/slope, 1./exponent);
+    double Tdiff = pow(specificEffect/U, 1./exponent);
     return indoorsTemperature + Tdiff;
+//    double Cwater = volume*CpWater, // J/m2/K =  kg/m2 * J/kg/K
+//           rate = U*length/Cwater, // s-1
+//           TpipeNew = temperature - specificEffect*timeStep/Cwater,
+//           Tpipe = invPropExpIntegral(TpipeNew, indoorsTemperature, rate, timeStep, exponent);
+//    return Tpipe;
 }
 
 //! Compute inflow temperature [<SUP>o</SUP>C] needed to yield a certain effect in the greenhouse [W/m<SUP>2</SUP>]
@@ -117,7 +122,7 @@ double HeatPipe::inflowTemperatureNeeded(double effect) {
     // Effect needed per pipe length
     double pipeEffectNeeded = effect/length;                            // W/m
     // Effect provided by proportion of stagnant water
-    double stagnantEffect = specificEffect(temperature)*(1-propFlow);   // W/m
+    double stagnantEffect = specificEffect(temperature).effect*(1-propFlow);   // W/m
     // Effect needed from proportion of incoming water
     double neededInflowEffect = (pipeEffectNeeded - stagnantEffect)/max(propFlow, 1e-6);    // W/m
     //
@@ -125,16 +130,16 @@ double HeatPipe::inflowTemperatureNeeded(double effect) {
 }
 
 void HeatPipe::selfTest() {
-    const double Tpipe1 = 80.;
-    double savePropFlow = propFlow;
-    propFlow = 0.05;
-    double effect1 = specificEffect(Tpipe1);
-    double Tpipe2 = pipeTemperature(effect1);
-    if (TestNum::ne(Tpipe1, Tpipe2)) {
-        QString msg = "Self-test failed, Tpipe1=%1 differs from Tpipe2=%2. Effect=%3.";
-        throw Exception(msg.arg(Tpipe1).arg(Tpipe2).arg(effect1), this);
-    }
-    propFlow = savePropFlow;
+//    const double Tpipe1 = 80.;
+//    double savePropFlow = propFlow;
+//    propFlow = 0.05;
+//    double effect1 = specificEffect(Tpipe1).effect;
+//    double Tpipe2 = pipeTemperature(effect1);
+//    if (TestNum::ne(Tpipe1, Tpipe2)) {
+//        QString msg = "Self-test failed, Tpipe1=%1 differs from Tpipe2=%2. Effect=%3.";
+//        throw Exception(msg.arg(Tpipe1).arg(Tpipe2).arg(effect1), this);
+//    }
+//    propFlow = savePropFlow;
 }
 
 } //namespace

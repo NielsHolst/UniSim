@@ -45,31 +45,25 @@ SlidingSignal::SlidingSignal(Identifier name, QObject *parent)
     Input(double, input, 25.);
     Input(double, threshold, 25.);
     Input(double, thresholdBand, 5.);
-    Input(double, signalOutsideBand, 0.);
-    Input(double, signalAtThreshold, 100.);
+    Input(double, minSignal, 0.);
+    Input(double, maxSignal, 100.);
+    Input(bool, increasingSignal, true);
 }
 
 double SlidingSignal::signal() {
-    if (thresholdBand == 0.) {
-        throw Exception("Input 'thresholdBand' cannot be zero", this);
-    }
-    double gap = input - threshold;
     double res;
-    if (thresholdBand < 0) {
-        if (gap <= thresholdBand)
-            res = signalOutsideBand;
-        else if (gap < 0.)
-            res = signalOutsideBand + slide(gap/thresholdBand)*(signalAtThreshold - signalOutsideBand);
-        else
-            res = signalAtThreshold;
-    }
+    double x0{threshold},
+           x1{threshold + thresholdBand},
+           y0{increasingSignal ? minSignal : maxSignal},
+           y1{increasingSignal ? maxSignal : minSignal};
+    if (input <= x0)
+        res = y0;
+    else if (input >= x1)
+        res = y1;
     else {
-        if (gap >= thresholdBand)
-            res = signalOutsideBand;
-        else if (gap > 0.)
-            res = signalAtThreshold + slide(gap/thresholdBand)*(signalOutsideBand - signalAtThreshold);
-        else
-            res = signalAtThreshold;
+        Q_ASSERT(thresholdBand != 0.);
+        double gap = input - x0;
+        res = y0 + slide(gap/thresholdBand)*(y1 - y0);
     }
     return res;
 }

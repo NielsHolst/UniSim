@@ -24,6 +24,7 @@ PUBLISH(IndoorsVentilation)
  * - _averageHeight_ is the average height of the greenhouse [m]
  * - _rateVents_ is the ventilation rate through vents per greenhouse area [m<SUP>3</SUP>]/m<SUP>2</SUP>/h]
  * - _rateInfiltration_ is the ventilation rate through infiltration per greenhouse area [m<SUP>3</SUP>]/m<SUP>2</SUP>/h]
+ * - _screenAirTransmission_ is the relative proportion of air let through cover and screens [0;1]
  *
  * Outputs
  * ------
@@ -46,6 +47,8 @@ IndoorsVentilation::IndoorsVentilation(Identifier name, QObject *parent)
     InputRef(double, averageHeight, "construction/geometry[averageHeight]");
     InputRef(double, rateVents,"./vents[rate]");
     InputRef(double, rateInfiltration,"./infiltration[rate]");
+    InputRef(double, screenAirTransmission, "indoors/screens/transmission[air]");
+    Output(double, potential);
     Output(double, absolute);
     Output(double, relative);
     Output(double, rate);
@@ -56,10 +59,10 @@ void IndoorsVentilation::reset() {
 }
 
 void IndoorsVentilation::update() {
-    double rate1 = rateVents + rateInfiltration;        // m/h   = m3/m2/h
-    double absolute1 = rate1/3600*timeStep;      // m3/m2 = m/h / s/h * s
-    absolute = averageHeight*(1-exp(-absolute1/averageHeight));
-        // For small values: absolute ~= absolute1
+    double rate1 = screenAirTransmission*(rateVents + rateInfiltration);        // m3/m2/h
+    potential = rate1/3600*timeStep;      // m3/m2 = m3/m2/h / s/h * s
+    absolute = averageHeight*(1-exp(-potential/averageHeight));
+        // For small values: absolute ~= potential
         // For large values: absolute ~= averageHeight
     rate = absolute/timeStep*3600;
     relative = absolute/averageHeight;          // m3/m3 = m3/m2 / m

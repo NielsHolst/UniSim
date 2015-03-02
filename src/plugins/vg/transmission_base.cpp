@@ -28,6 +28,7 @@ namespace vg {
  * - _azimuth_ is the sun azimuth [-90;90]
  * - _greenhouseSurfaceArea_ is the area of the greenhouse surface (walls + roof) [m<SUP>2</SUP>]
  * - _greenhouseGroundArea_ is the grounf area covered by the greenhouse [m<SUP>2</SUP>]
+ * - _chalk_ is the percentage chalk cover of the whole greenhouse surface [0;100]
  *
  * Outputs
  * -------
@@ -37,15 +38,18 @@ namespace vg {
  * - _diffuse_ is the proportion of diffuse light transmitted through the whole greenhouse surface [0;1]
  * - _directAsDirect_ is the proportion of direct light transmitted through the whole greenhouse surface as direct light [0;1]
  * - _directAsDiffuse_ is the proportion of direct light transmitted through the whole greenhouse surface as diffuse light [0;1]
- * - _air_ is the proportion of air transmitted through the whole greenhouse surface [0;1]
- * - _area_ is the total area of screens drawn per greenhouse surface area [m<SUP>2</SUP>/m<SUP>2</SUP>]
+ * -??? _air_ is the proportion of air transmitted through the whole greenhouse surface [0;1]
+ * -??? _area_ is the total area of screens drawn per greenhouse surface area [m<SUP>2</SUP>/m<SUP>2</SUP>]
  *
  * Default dependencies
  * ------------
  * - a _calendar_ model with two ports:
  *   + _latitude_ [-180;180]
  *   + _azimuth_ [-90;90]
- *  - a _construction/geometry_ with a _coverArea_ port [m<SUP>2</SUP>]
+ *  - a _construction/geometry_ with two ports:
+ *   + _coverArea_ [m<SUP>2</SUP>]
+ *   + _groundArea_ [m<SUP>2</SUP>]
+ * - a _controllers/chalk_ model with a _signal_ port [0;100]
  * - many (6) models of type Cover, that are children of the _greenhouse/construction_ model
  * - many (0..6) models of type Screen, that are children of the _actuators/screens_ model
  */
@@ -58,6 +62,7 @@ TransmissionBase::TransmissionBase(Identifier name, QObject *parent)
     InputRef(double, azimuth, "calendar[azimuth]");
     InputRef(double, greenhouseSurfaceArea, "construction/geometry[coverArea]");
     InputRef(double, greenhouseGroundArea, "construction/geometry[groundArea]");
+    InputRef(double, chalk, "controllers/chalk[signal]");
     Output(double, U);
     Output(double, netU);
     Output(double, haze);
@@ -171,6 +176,8 @@ void TransmissionBase::updateLightTransmission() {
     }
     diffuse /= greenhouseSurfaceArea;
     haze /= greenhouseSurfaceArea;
+    // Correct for chalk
+    diffuse *= unchalked();
     // Direct light
     double timeAndPlace = interpolate(*dirTransTable, latitude, azimuth);
     double directTransmission = diffuse*timeAndPlace;

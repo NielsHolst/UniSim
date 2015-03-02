@@ -23,11 +23,10 @@ public:
     virtual double calcDailyTimeStep() = 0;
 
 private:
-    // data
+    bool doReset, isTicking;
     double calendarTimeStep;
-    // pull variables
     double step, total;
-    // links
+    // Links
     UniSim::Model *calendar;
     const bool *triggered;
 };

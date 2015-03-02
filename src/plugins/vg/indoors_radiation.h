@@ -21,7 +21,8 @@ public:
 private:
     // Parameters
     double diffuseTransmission, directTransmissionAsDirect, directTransmissionAsDiffuse,
-        outdoorsDirectRadiation, outdoorsDiffuseRadiation;
+        outdoorsDirectRadiation, outdoorsDiffuseRadiation,
+        growthLightShortWaveRadiation, growthLightPropDirect;
 
     // Variables
     double direct, diffuse, total;

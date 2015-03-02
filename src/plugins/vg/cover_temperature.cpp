@@ -56,6 +56,7 @@ void CoverTemperature::reset() {
 }
 
 void CoverTemperature::update() {
+    /*
     double alfa_o = (windspeed < 4) ?
                 1.2*windspeed + 2.8 //%Bot, 1993
                 : pow(2.5*windspeed, 0.8);
@@ -65,7 +66,7 @@ void CoverTemperature::update() {
                    6*(skyTemperature+T0) +
                    alfa_o*(outdoorsTemperature+T0) + latcov)
             / (12 + alfa_o + alfa_i) - T0;
-
+    */
     value = (indoorsTemperature + outdoorsTemperature + skyTemperature)/3.;
     hasCondensation = sah(value) < indoorsAh;
     virtualTemperature = hasCondensation ?

@@ -3,6 +3,7 @@
 #
 
 UNISIM_VERSION      = 1-49
+#VERSION = 1.49
 
 CONFIG += unisim_development     # Activate this if targets are under development (usually, they are)
 #CONFIG += unisim_deployment     # Or, this if targets will be used to produce an installation file
@@ -54,8 +55,11 @@ greaterThan(QT_MAJOR_VERSION, 4): US_QWT = $${UNISIM_ROOT}/vendor/qwt_qt5
 US_GSL = $${UNISIM_ROOT}/vendor/gsl
 US_TCLAP = $${UNISIM_ROOT}/vendor/tclap
 
-US_BASE_LIB_NAME = base_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
-US_ENGINE_LIB_NAME = engine_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
-US_UNISIM_PLUGIN_LIB_NAME = unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+#US_BASE_LIB_NAME = base_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+#US_ENGINE_LIB_NAME = engine_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+#US_UNISIM_PLUGIN_LIB_NAME = unisim_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+US_BASE_LIB_NAME = usbase
+US_ENGINE_LIB_NAME = usengine
+US_UNISIM_PLUGIN_LIB_NAME = unisim
 
 INCLUDEPATH += "$$(BOOST_ROOT)" "$${UNISIM_ROOT}/src/library" "$${US_PLUGINS}"

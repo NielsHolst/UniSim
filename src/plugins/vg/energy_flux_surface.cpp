@@ -31,6 +31,8 @@ PUBLISH(EnergyFluxSurface)
  * - a _screens/transmission_ model with a _U_ port [W/m<SUP>2</SUP>]/K]
  * - an _indoors/temperature_ model with a _value_ port [<SUP>oC</SUP>C]
  * - an _outdoors_ model with a _temperature_ port [<SUP>oC</SUP>C]
+ * - a _construction/geometry_ model with an _averageHeight_ port [m]
+ * - a _calendar_ model with a _timeStepSecs_ port [s]
  */
 
 EnergyFluxSurface::EnergyFluxSurface(Identifier name, QObject *parent)
@@ -39,6 +41,8 @@ EnergyFluxSurface::EnergyFluxSurface(Identifier name, QObject *parent)
     InputRef(double, netU, "screens/transmission[netU]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
+    InputRef(double, averageHeight,"construction/geometry[averageHeight]");
+    InputRef(double, timeStep, "calendar[timeStepSecs]");
     Output(double, flux);
 }
 
@@ -47,7 +51,14 @@ void EnergyFluxSurface::reset() {
 }
 
 void EnergyFluxSurface::update() {
-    flux = netU*(outdoorsTemperature-indoorsTemperature);
+//    flux = netU*(outdoorsTemperature-indoorsTemperature);
+    // Partial integration of temperature change caused by surface flux alone
+    double Cair = averageHeight*RhoAir*CpAir, // J/m2/K = m * kg/m3 * J/kg/K
+           rate = netU/Cair, // s-1
+           indoorsTemperatureFinal =
+                propIntegral(indoorsTemperature, outdoorsTemperature, rate, timeStep);
+    // Compute flux based on temperature change
+    flux = Cair*(indoorsTemperatureFinal-indoorsTemperature)/timeStep; // W/m2 = J/m2/K * K / s
 }
 
 

@@ -66,8 +66,8 @@ void Args::parse(int argc, char *argv[]) {
         CmdLine cmd("Universal Simulator command line tool.\nHome page: www.ecolmod.org", ' ', "1.48");
 
         ValueArg<string> pluginsDirArg("P","pluginsdir",
-            "Name of directory with plugin DLLs, defaults to the 'plugins' sub-directory of the installation directory",
-            false,"plugins","string", cmd);
+            "Name of directory with plugin DLLs, defaults to  '../bin/plugins'",
+            false,"../bin/plugins","string", cmd);
 
         ValueArg<string> tempDirArg("T","tempdir",
             "Name of directory for temporary files, defaults to the current user temp directory",

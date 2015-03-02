@@ -66,10 +66,15 @@ double absFromPpmCo2(double temperature, double ppm, double P = P0);
 // Other climatic parameters
 double Tdew(double temperature, double rh);
 double virtualTemperatureFromAh(double temperature, double ah);
+//double rhoAir(double temperature) rho_air.m;
 
 // Mathematics
 inline int sqr(int x) {return x*x;}
 inline double sqr(double x) {return x*x;}
+double logistic(double current, double target, double rate, double dt);
+double propIntegral(double current, double target, double rate, double dt);
+double propExpIntegral(double current, double target, double rate, double dt, double exponent);
+double invPropExpIntegral(double integral, double target, double rate, double dt, double exponent);
 
 } //namespace
 

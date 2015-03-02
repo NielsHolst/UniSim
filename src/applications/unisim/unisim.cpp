@@ -24,6 +24,7 @@ using namespace UniSim;
 
 void myMsgHandler(QtMsgType, const QMessageLogContext &, const QString &msg)
 {
+    QMessageBox::information(0, "Program Error", msg);
     throw Exception(QString(msg));
 }
 
@@ -44,8 +45,9 @@ int runGui(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
     qInstallMessageHandler(myMsgHandler);
-    QCoreApplication::setOrganizationName("Aarhus University");
-	QCoreApplication::setOrganizationDomain("www.agrsci.dk");
+    QCoreApplication::setApplicationVersion("1.49");
+    QCoreApplication::setOrganizationName("The Universal Simulator Project");
+    QCoreApplication::setOrganizationDomain("www.ecolmod.org");
     QCoreApplication::setApplicationName("Universal Simulator");
     try {
        runGui(argc, argv);

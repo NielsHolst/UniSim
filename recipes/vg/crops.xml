@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Crops>
+	<Cucumber>
+		<model name="crop" type="vg::Crop">
+			<parameter name="density" value="1.5"/>
+			<parameter name="fractionPlantArea" value="0.9"/>
+		</model>
+		<model name="periods" type="vg::SignalCollection">
+			<model type="vg::DateTimeSignal">
+				<parameter name="beginDay" value="32"/>
+				<parameter name="endDay" value="176"/>
+				<parameter name="beginTime" value="16:00"/>
+				<parameter name="endTime" value="8:00"/>
+				<parameter name="circadian" value="false"/>
+			</model>
+			<model type="vg::DateTimeSignal">
+				<parameter name="beginDay" value="176"/>
+				<parameter name="endDay" value="280"/>
+				<parameter name="beginTime" value="16:00"/>
+				<parameter name="endTime" value="8:00"/>
+				<parameter name="circadian" value="false"/>
+			</model>
+		</model>
+		<model name="lai" type="vg::FruitCropLai">
+			<parameter name="laiStartPerPlant" value="0.343"/>
+			<parameter name="maxLai" value="3.5"/>
+		</model>
+		<model name="mass" type="vg::FruitCropMass">
+			<parameter name="tempSumReproductive" value="975"/>
+			<parameter name="tempMaxReproductive" value="30"/>
+			<parameter name="vegPropRoot" value="0"/>
+			<parameter name="vegPropStem" value="0.4"/>
+			<parameter name="vegPropLeaf" value="0.6"/>
+			<parameter name="vegPropFruit" value="0"/>
+			<parameter name="reproPropRoot" value="0"/>
+			<parameter name="reproPropStem" value="0.1"/>
+			<parameter name="reproPropLeaf" value="0.1"/>
+			<parameter name="reproPropFruit" value="0.8"/>
+			<parameter name="fruitFactor" ref="./fruitFactor[value]"/>
+			<model name="fruitFactor" type="vg::FruitFactor">
+				<parameter name="minDensity" value="1.5"/>
+				<parameter name="maxValue" value="1.044"/>
+			</model>
+		</model>
+		<model name="yield" type="vg::CropYield">
+			<parameter name="fractionDryWeight" value="0.025"/>
+			<parameter name="produceMass" ref="../mass[fruit]"/>
+		</model>
+	</Cucumber>
+	<Tomato>
+		<model name="crop" type="vg::Crop">
+			<parameter name="density" value="3.9"/>
+			<parameter name="fractionPlantArea" value="0.9"/>
+		</model>
+		<model name="periods" type="vg::SignalCollection">
+			<model type="vg::DateTimeSignal">
+				<parameter name="beginDay" value="1"/>
+				<parameter name="endDay" value="365"/>
+				<parameter name="circadian" value="false"/>
+			</model>
+			<model type="vg::DateTimeSignal">
+				<parameter name="beginDay" value="10"/>
+				<parameter name="endDay" value="20"/>
+				<parameter name="circadian" value="false"/>
+			</model>
+		</model>
+		<model name="lai" type="vg::FruitCropLai">
+			<parameter name="laiStartPerPlant" value="0.385"/>
+			<parameter name="maxLai" value="3.5"/>
+		</model>
+		<model name="mass" type="vg::FruitCropMass">
+			<parameter name="tempSumReproductive" value="900"/>
+			<parameter name="tempMaxReproductive" value="45"/>
+			<parameter name="vegPropRoot" value="0"/>
+			<parameter name="vegPropStem" value="0.4"/>
+			<parameter name="vegPropLeaf" value="0.6"/>
+			<parameter name="vegPropFruit" value="0"/>
+			<parameter name="reproPropRoot" value="0"/>
+			<parameter name="reproPropStem" value="0.05"/>
+			<parameter name="reproPropLeaf" value="0.1"/>
+			<parameter name="reproPropFruit" value="0.85"/>
+			<parameter name="fruitFactor" ref="./fruitFactor[value]"/>
+			<model name="fruitFactor" type="vg::FruitFactor">
+				<parameter name="minDensity" value="3.9"/>
+				<parameter name="maxValue" value="1.044"/>
+			</model>
+		</model>
+		<model name="yield" type="vg::CropYield">
+			<parameter name="fractionDryWeight" value="0.045"/>
+			<parameter name="produceMass" ref="../mass[fruit]"/>
+		</model>
+	</Tomato>
+	<SweetPepper>
+		<model name="crop" type="vg::Crop">
+			<parameter name="density" value="1.9"/>
+			<parameter name="fractionPlantArea" value="0.9"/>
+		</model>
+		<model name="periods" type="vg::SignalCollection">
+			<model type="vg::DateTimeSignal">
+				<parameter name="beginDay" value="1"/>
+				<parameter name="endDay" value="184"/>
+				<parameter name="beginTime" value="16:00"/>
+				<parameter name="endTime" value="8:00"/>
+				<parameter name="circadian" value="false"/>
+			</model>
+			<model type="vg::DateTimeSignal">
+				<parameter name="beginDay" value="184"/>
+				<parameter name="endDay" value="340"/>
+				<parameter name="beginTime" value="16:00"/>
+				<parameter name="endTime" value="8:00"/>
+				<parameter name="circadian" value="false"/>
+			</model>
+		</model>
+		<model name="lai" type="vg::FruitCropLai">
+			<parameter name="laiStartPerPlant" value="0.385"/>
+			<parameter name="maxLai" value="4"/>
+		</model>
+		<model name="mass" type="vg::FruitCropMass">
+			<parameter name="tempSumReproductive" value="1200"/>
+			<parameter name="tempMaxReproductive" value="30"/>
+			<parameter name="vegPropRoot" value="0"/>
+			<parameter name="vegPropStem" value="0.4"/>
+			<parameter name="vegPropLeaf" value="0.6"/>
+			<parameter name="vegPropFruit" value="0"/>
+			<parameter name="reproPropRoot" value="0"/>
+			<parameter name="reproPropStem" value="0.1"/>
+			<parameter name="reproPropLeaf" value="0.1"/>
+			<parameter name="reproPropFruit" value="0.8"/>
+			<parameter name="fruitFactor" value="1"/>
+		</model>
+		<model name="yield" type="vg::CropYield">
+			<parameter name="fractionDryWeight" value="0.045"/>
+			<parameter name="produceMass" ref="../mass[fruit]"/>
+		</model>
+	</SweetPepper>
+</Crops>

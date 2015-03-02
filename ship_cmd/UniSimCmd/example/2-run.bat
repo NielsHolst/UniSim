@@ -1,2 +1,2 @@
-..\bin\UniSimCmd -i unisim_vv_0001.xml -o output_0001.txt -I ..\example\unisim_xml -O ..\example\output -P ..\bin\plugins -T ..\example\temp
+..\bin\UniSimCmd -i ..\example\unisim_xml\unisim_vv_0001.xml -o ..\example\output\output_0001.txt 
 pause

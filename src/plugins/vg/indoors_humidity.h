@@ -22,8 +22,7 @@ private:
     // Input / Output
     double indoorsTemperature, timeStep, averageHeight,
         ah, rh, ahEq, outdoorsAh,
-        netVapourFlux, grossVapourFlux,
-        timeConstant, surplusAh,
+        netVapourFlux, timeConstant, surplusAh,
         latentHeatBalance;
 
     // Data

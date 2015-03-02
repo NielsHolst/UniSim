@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<simulation name="fate and transport with crop">	
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="2880"/> <!-- Corresponding to the number of maize growing season i.e. 120 days x 24 hours = 2880-->
+	</integrator>	
+
+	<model name="horz" type="insecticide::horizonthickness"/>
+	
+	<model name="unisim calendar and weather">		
+		<model name="calendar" type="UniSim::Calendar">
+			<parameter name="initialDate" value="01/04/2013"/>
+			<parameter name="timestep" value="1"/>
+			<parameter name="timeunit" value="h"/>
+		</model>
+		<model name="weather" type="UniSim::Weather">
+			<model name="records" type="UniSim::Records">
+				<parameter name="fileName" value="PathumthaniAgromet2013.txt"/> <!-- "I" values are estimates, actual values will be collected from TMD/TMA-->
+				<parameter name="imposeInitialDateTime" value="no"/>  <!-- Tell the Records model not to impose its time scale on the calendar -->
+			</model>
+		</model>
+	</model>	
+	
+	<model name="crop grown">
+		<model name="crop" type="insecticide::Crop"><!-- crop grown, e.g. maize -->
+			<parameter name="day" value="1"/>
+			<parameter name="seeds" value="1"/>
+		</model>
+	</model>
+	
+	<model name="crop development stages" type="insecticide::Crop"><!-- growth stages of a crop, e.g. maize -->		
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="5"/>
+		</model>
+		<model name="leafDevelopment" type="UniSim::Stage">
+			<parameter name="duration" value="300"/>
+			<parameter name="inflow" ref="crop[seedsSown]"/>
+		</model>
+		<model name="tillering" type="UniSim::Stage">
+			<parameter name="duration" value="100"/>
+			<parameter name="inflow" ref="leafDevelopment[outflow]"/>
+		</model>
+		<model name="stemElongation" type="UniSim::Stage">
+			<parameter name="duration" value="150"/>
+			<parameter name="inflow" ref="tillering[outflow]"/>
+		</model>
+		<model name="senescence" type="UniSim::Stage">
+			<parameter name="duration" value="200"/>
+			<parameter name="inflow" ref="stemElongation[outflow]"/>
+		</model>
+	</model>
+		
+	<model name="applications"><!-- application of pesticides -->
+		<model name="first application">
+			<model name="app1" type="insecticide::application"> <!-- The model is set for multiple appl, so far, other app are set to zero -->
+				<parameter name="day" value="10"/>
+				<parameter name="dosage" value="3"/>
+			</model>
+		</model>
+		<model name="second application">
+			<model name="app2" type="insecticide::application">
+				<parameter name="day" value="35"/>
+				<parameter name="dosage" value="0"/>
+			</model>
+		</model>
+		<model name="third application">
+			<model name="app3" type="insecticide::application">
+				<parameter name="day" value="55"/>
+				<parameter name="dosage" value="0"/>
+			</model>
+		</model>		
+		<model name="total" type="UniSim::Sum">
+			<parameter name="toAdd" value="(app1[application] app2[application] app3[application])"/>
+		</model>		
+	</model>	
+	
+	<!-- primary distribution of pesticides -->
+	<model name="distribution">	
+		<model name="primary distribution">
+			<model name="to air">
+				<model name="dose reaching air" type="insecticide::primarydistributiondrifttoair">
+					<parameter name="W" value="100"/>
+					<parameter name="Pnsz" value="0"/>
+					<parameter name="Nd" value="0.1"/>
+					<parameter name="A0" value="39"/>
+					<parameter name="A1" value="0.90"/>
+					<parameter name="B0" value="2.28"/>
+					<parameter name="B1" value="0.147"/>
+					<parameter name="Doseappl" ref="applications/total[value]"/>
+				</model>				
+			</model>
+			<model name="on leaf">
+				 <model name="dose reaching leaf" type="insecticide::primarydistributionleaf">
+					<parameter name="Doseappl" ref="applications/total[value]"/>					
+					<parameter name="Dosedrift" ref="dose reaching air[Dosedrift]"/>
+					<parameter name="stage1" ref="leafDevelopment[value]"/>
+					<parameter name="stage2" ref="tillering[value]"/>
+					<parameter name="stage3" ref="stemElongation[value]"/>
+					<parameter name="stage4" ref="senescence[value]"/>
+				 </model>
+			 </model>			
+			<model name="on soil">
+				 <model name="dose reaching soil" type="insecticide::primarydistributionsoil">
+					<parameter name="Doseappl" ref="applications/total[value]"/>
+					<parameter name="Doserl" ref="dose reaching leaf[Doserl]"/>
+					<parameter name="Dosedrift" ref="dose reaching air[Dosedrift]"/>
+				</model>
+			</model>						
+		</model>	
+			
+
+		<!-- secondary distribution of pesticides -->
+		
+		<!-- secondary distribution of pesticides on plants/leaf -->
+		
+		<model name="secondary distribution">
+			<model name="leaf processes">	
+				<model name="leaf volatilization"><!-- leaf volatilization -->
+					<model name="rate constant of volatilization" type="insecticide::leafvolatilization"><!--klv-->
+						<parameter name="VP" value="2.45e-5"/>
+						<parameter name="Doseappl" value="3.6"/>
+						<parameter name="Ea" value="95"/>
+						<parameter name="R" value="8.3145"/>
+						<parameter name="Tr" value="25"/>
+						<parameter name="Ta" ref="weather[Tavg]"/>
+					</model>
+				</model>		
+				<model name="leaf uptake"><!-- plant leaf uptake -->
+					<model name="rate constant of uptake" type="insecticide::leafuptake"><!--klu-->
+						<parameter name="MV" value="96.61"/>
+						<parameter name="leaftype" value="1"/>
+						<parameter name="R" value="8.3145"/>
+						<parameter name="T" value="25"/>
+					</model>		
+				</model>		
+				<model name="leaf photodegradation"><!-- leaf photodegradation -->
+					<model name="day lengths" type="UniSim::Calendar"><!-- length of the day based on latitude -->
+						<parameter name="initialDate" value="01/04/2013"/>
+						<parameter name="latitude" value="114.0208"/> <!-- 14.0208° N, 100.5247° E Pathum Thani Province, Coordinates -->
+					</model>
+					<model name="rate constant of photodegradation" type="insecticide::leafphotodegradation"><!--kld-->						
+						<parameter name="I" ref="weather/records[I]"/>
+						<parameter name="kOH" value="79e-12"/>
+						<parameter name="dl" ref="Calendar[daylength]"/>
+					</model>		
+				</model>
+				<model name="day lengths"><!-- daily sun shine hours-->
+					<model name="day lengths" type="UniSim::Calendar"><!-- length of the day based on latitude -->
+						<parameter name="initialDate" value="01/04/2013"/>
+						<parameter name="latitude" value="114.0208"/> <!-- 14.0208° N, 100.5247° E Pathum Thani Province, Coordinates -->
+					</model>							
+				</model>
+				<model name="overall rate constant"><!--kov-->
+					<model name="overall rate constant" type="insecticide::leafoverallrateconstant">
+						<parameter name="klv" ref="rate constant of volatilization[klv]"/>
+						<parameter name="klu" ref="rate constant of uptake[klu]"/>
+						<parameter name="kld" ref="rate constant of photodegradation[kld]"/>						
+					</model>		
+				</model>
+				<model name="leaf dose left on beginning rainfall">
+					<model name="leaf dose left on beginning rainfall" type="insecticide::leafdoseleftonbeginningrainfall">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>
+						<parameter name="kov" ref="overall rate constant[kov]"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>	
+					</model>		
+				</model>
+				<model name="leaf sum of dose removed">
+					<model name="leaf sum of dose removed" type="insecticide::leafsumofdoseremoved">
+						<parameter name="kov" ref="overall rate constant[kov]"/>
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>																		
+					</model>		
+				</model>
+				<model name="final dose removed on leaves">
+					<model name="leaf dose photodegraded" type="insecticide::leafdosephotodegraded">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>						
+						<parameter name="kld" ref="rate constant of photodegradation[kld]"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>
+					</model>
+					<model name="leaf dose volatilized" type="insecticide::leafdosevolatilized">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>						
+						<parameter name="klv" ref="rate constant of volatilization[klv]"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>
+					</model>
+					<model name="leaf dose uptaken" type="insecticide::leafdoseuptaken">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>						
+						<parameter name="klu" ref="rate constant of uptake[klu]"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>
+					</model>					
+				</model>				
+			</model>
+			
+			<model name="soil processes"><!-- secondary distribution of pesticides on/in soils -->
+				<model name="other supporting processes">
+					<model name="organiccarbonwaterpartitioning" type="insecticide::organiccarbonwaterpartitioning">
+						<parameter name="Koc" value="20100"/>
+						<parameter name="pH" value="4"/>
+						<parameter name="pKa" value="0.8"/>
+					</model>
+					<model name="field area" type="insecticide::fieldarea"><!--area of the field-->
+						<parameter name="W" value="110"/>
+						<parameter name="L" value="90"/>
+					</model>
+					<model name="zvalues" type="insecticide::zvalues">					
+						<parameter name="VP" value="2.45e-5"/>
+						<parameter name="TrefVP" value="25"/>
+						<parameter name="Psol" value="11.5"/>
+						<parameter name="MW" value="169.07"/>
+						<parameter name="R" value="8.3145"/>
+						<parameter name="foc" value="0.2"/>
+						<parameter name="pb" value="1365"/>
+						<parameter name="Pd" value="0.01"/>
+						<parameter name="fs" value="0.5"/>
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="KocpH" ref="organiccarbonwaterpartitioning[KocpH]"/>
+						<parameter name="Tsa" ref="weather[Tavg]"/>		
+						<parameter name="farea" ref="field area[area]"/>
+						<parameter name="Sp" ref="soil porosity[Sp]"/>
+					</model>			
+					<model name="viscosity" type="insecticide::viscosityofwater">			
+						<parameter name="Tair" ref="weather[Tavg]"/>
+					</model>
+				</model>
+				<model name="dose distribution in the soil">
+					<model name="dose in the soil solids" type="insecticide::topsoildoseinsoilsolidsairandwater">
+						<parameter name="Dosers" ref="dose reaching soil[Dosers]"/>
+						<parameter name="Zs" ref="zvalues[Zs]"/>
+						<parameter name="Vs" ref="zvalues[Vs]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>
+					<model name="dose in the soil air" type="insecticide::topsoildoseinsoilsolidsairandwater">
+						<parameter name="Dosers" ref="dose reaching soil[Dosers]"/>
+						<parameter name="Za" ref="zvalues[Za]"/>
+						<parameter name="Va" ref="zvalues[Va]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>
+					<model name="dose in the soil water" type="insecticide::topsoildoseinsoilsolidsairandwater">
+						<parameter name="Dosers" ref="dose reaching soil[Dosers]"/>
+						<parameter name="Zw" ref="zvalues[Zw]"/>
+						<parameter name="Vw" ref="zvalues[Vw]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>					
+					<model name="fraction in the soil water" type="insecticide::topsoildoseinsoilsolidsairandwater">						
+						<parameter name="Zw" ref="zvalues[Zw]"/>
+						<parameter name="Vw" ref="zvalues[Vw]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>
+					<model name="dose of pesticide susceptible for vaporization" type="insecticide::topsoildoseinsoilairandwater">
+						<parameter name="Dosersa" ref="dose in the soil air[Dosersa]"/>
+						<parameter name="Dosersw" ref="dose in the soil water[Dosersw]"/>
+						
+					</model>
+				</model>
+				
+				
+													
+				<model name="topsoil degradation final"><!-- TOPSOIL DEGRADATION FINAL -->
+					<model name="soil porosity" type="insecticide::soilporosity"><!--soil porosity-->
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+					</model>
+					<model name="parent final" type="insecticide::topsoildegradationfinal">						
+						<parameter name="inflow" ref="dose in the soil solids[Doserss]"/>
+						<parameter name="k" value="9.625e-3"/>
+						<parameter name="ff" value="0.995"/>
+						<parameter name="Tair" ref="weather[Tavg]"/>
+						<parameter name="Tref" value="25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="rf" value="0.7"/>
+						<parameter name="Q" value="2.1"/>
+						<parameter name="Vrsmc" value="0.5"/>
+						<parameter name="threshold" value="1"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="Sp" ref="soil porosity[Sp]"/>						
+					</model>
+					<model name="metabolite final" type="insecticide::topsoildegradationfinal">
+						<parameter name="inflow" ref="parent final[outflow]"/>
+						<parameter name="k" value="3.7993e-4"/>
+						<parameter name="ff" value="1"/>
+						<parameter name="Tair" ref="weather[Tavg]"/>
+						<parameter name="Tref" value="25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="rf" value="0.7"/>
+						<parameter name="Q" value="2.1"/>
+						<parameter name="Vrsmc" value="0.5"/>
+						<parameter name="threshold" value="1"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="Sp" ref="soil porosity[Sp]"/>						
+					</model>						
+					<model name="risk index in soil final">
+						<model name="parent risk in soil final" type="insecticide::riskindex">
+							<parameter name="concentration" ref="parent final[concentration]"/>
+							<parameter name="NOAEL" value="2000e-6"/><!--bobwhite quail-->
+						</model>
+						<model name="metabolite risk in soil final" type="insecticide::riskindex">
+							<parameter name="concentration" ref="metabolite final[concentration]"/>
+							<parameter name="NOAEL" value="2000e-6"/><!--bobwhite quail-->
+						</model>						
+					</model>
+				</model>
+				<model name="topsoil volatilization"><!-- TOPSOIL VOLATILIZATION -->					
+					<model name="ksv" type="insecticide::topsoilvolatilization">						
+						<parameter name="Tsa" value="25"/>
+						<parameter name="MWair" value="28.97"/>
+						<parameter name="MW" value="169.07"/>						
+						<parameter name="Pair" value="1"/>
+						<parameter name="MVair" value="20.1"/>
+						<parameter name="MV" value="96.61"/>
+						<parameter name="BLair" value="0.00475"/>
+						<parameter name="farea" ref="field area[area]"/>						
+						<parameter name="Za" ref="zvalues[Za]"/>
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="viscosity" ref="viscosity[viscosity]"/>
+						<parameter name="Pd" value="0.01"/>						
+						<parameter name="Zw" ref="zvalues[Zw]"/>						
+						<parameter name="VZ" ref="zvalues[VZ]"/>						
+					</model>
+					<model name="topsoil volatilization" type="insecticide::topsoilvolatilizationfinal">												
+						<parameter name="inflow" ref="dose of pesticide susceptible for vaporization[Dosesfv]"/>					
+						<parameter name="ksv" ref="ksv[ksv]"/>
+						<parameter name="Za" ref="zvalues[Za]"/>
+						<parameter name="Va" ref="zvalues[Va]"/>
+						<parameter name="Zw" ref="zvalues[Zw]"/>
+						<parameter name="Vw" ref="zvalues[Vw]"/>						
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+						<parameter name="threshold" value="1"/>
+						<parameter name="P" ref="weather/records[Rain]"/>						
+					</model>					
+					<model name="dose available for leaching runoff and macropore flow" type="insecticide::doseavailableforleachingrunoffandmacroporeflow">							
+						<parameter name="svDoseaflrm" ref="topsoil volatilization[svDoseaflrm]"/>
+						<parameter name="sdDoseaflrm" ref="parent final[sdDoseaflrm]"/>
+					</model>
+				</model>
+				<model name="topsoil runoff">
+					<model name="amount runoff" type="insecticide::runoffamount"><!-- runoff amount-->
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="fsand" value="0.25"/>
+					</model>
+					<model name="fraction of rain runoff" type="insecticide::fractionofrainrunoff"><!-- fraction of rain runoff-->
+						<parameter name="Q" ref="amount runoff[Q]"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+					</model>					
+					<model name="runoff" type="insecticide::topsoilrunoff"><!-- topsoil runoff -->
+						<parameter name="Doseaflrm" ref="dose available for leaching runoff and macropore flow[Doseaflrm]"/>
+						<parameter name="Doseldlobr" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>
+						<parameter name="S" value="0.19"/>
+						<parameter name="wbz" value="5"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="KocpH" ref="organiccarbonwaterpartitioning[KocpH]"/>
+						<parameter name="fom" value="0.09"/>
+						<parameter name="Q" ref="amount runoff[Q]"/>
+					</model>
+					<model name="dose available for leaching and macropore flow" type="insecticide::doseavailableforleachingandmacroporeflow">						
+						<parameter name="Doseaflrm" ref="dose available for leaching runoff and macropore flow[Doseaflrm]"/>
+						<parameter name="Doseldlobr" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>
+						<parameter name="Dosesr" ref="runoff[Dosesr]"/>
+					</model>
+				</model>			
+				<model name="macropore flow"><!-- macropore flow -->					
+					<model name="macropore flow" type="insecticide::macroporeflow">
+						<parameter name="fsand" value="0.25"/>
+						<parameter name="fsilt" value="0.25"/>
+						<parameter name="fclay" value="0.5"/>
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="fmacropore" value="0.3"/>
+						<parameter name="Flowrate" value="0.35"/>
+						<parameter name="tpevent" value="3"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>		
+						<parameter name="frr" ref="fraction of rain runoff[frr]"/>						
+						<parameter name="Tf" value="1"/>
+						<parameter name="frsw" ref="fraction in the soil water[frsw]"/>
+						<parameter name="Doseaflm" ref="dose available for leaching and macropore flow[Doseaflm]"/>
+					</model>
+					<model name="dose available for leaching" type="insecticide::doseavailableforleaching">						
+						<parameter name="Dmacropore" ref="macropore flow[Dmacropore]"/>
+						<parameter name="Doseaflm" ref="dose available for leaching and macropore flow[Doseaflm]"/>
+					</model>
+				</model>
+			</model>
+		</model>
+	</model>
+			
+	
+	<!-- OUTPUTS -->	
+		
+	<!-- weather -->
+	<output type="plot">
+		<parameter name="title" value ="Weather"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>		
+		<trace label="Minimum temperature (C)" value="weather/records[Tmin]"/>
+		<trace label="Average temperature (C)" value="weather[Tavg]"/>
+		<trace label="Maximum temperature (C)" value="weather/records[Tmax]"/>
+		<trace label="Rainfall (mm)" value="weather/records[Rain]"/>
+		<trace label="light intensity (W m-2)" value="weather/records[I]"/>
+	</output>
+	
+	<!--length of the day-->
+	<output type="plot">
+		<parameter name="title" value="length of the day"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="Day length(h)" value="Calendar[daylength]"/>		
+	</output>
+	
+	<!-- maize development -->
+	<output type="plot">
+		<parameter name="title" value="Maize development"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Leaf development" ref="leafDevelopment[value]"/>
+		<trace label="Tillering" ref="tillering[value]"/>
+		<trace label="Stem elongation" ref="stemElongation[value]"/>
+		<trace label="Senescence" ref="senescence[value]"/>
+	</output>
+	
+	<!-- WIND DRIFT/DOSE REACHING AIR, crop/leaf and soil -->	
+	
+    <output type="plot">
+		<parameter name="title" value="primary distribution to air, leaf, and soil"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose taken by wind drift (kg/ha)" ref="dose reaching air[Dosedrift]"/>
+		<trace label="dose reaching leaf" ref="dose reaching leaf[Doserl]"/>
+		<trace label="dose reaching soil" ref="dose reaching soil[Dosers]"/>
+	</output>
+	 <output type="table">
+		<parameter name="filename" value="primary distribution to air, leaf, and soil.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose taken by wind drift" ref="dose reaching air[Dosedrift]"/>
+		<trace label="dose reaching leaf" ref="dose reaching leaf[Doserl]"/>
+		<trace label="dose reaching soil" ref="dose reaching soil[Dosers]"/>	
+	</output>
+					
+	<!-- LEAF DOSE LEFT ON BEGINNING RAINFALL -->	
+    <output type="plot">
+		<parameter name="title" value="leaf dose left on beginning rainfall"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose left on beginning rainfall[concentration]"/>
+		<trace label="dose left on leaf (kg/ha)" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose left on beginning rainfall.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose left on beginning rainfall[concentration]"/>
+		<trace label="dose left on leaf (kg/ha)" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>
+	</output>	
+	
+	
+	<!-- LEAF SUM OF DOSE REMOVED -->	
+    <output type="plot">
+		<parameter name="title" value="leaf sum of dose removed"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="total dose removed on leaf (kg/ha)" ref="leaf sum of dose removed[Doselsodr]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf sum of dose removed.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="total dose removed on leaf (kg/ha)" ref="leaf sum of dose removed[Doselsodr]"/>
+	</output>
+	
+	<!-- LEAF DOSE DEGRADED -->
+	<output type="plot">
+		<parameter name="title" value="leaf dose photodegraded"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose photodegraded[concentration]"/>		
+		<trace label="total dose removed by photodegradation (kg/ha)" ref="leaf dose photodegraded[Doseldrbpd]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose photodegraded.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose photodegraded[concentration]"/>		
+		<trace label="total dose removed by photodegradation (kg/ha)" ref="leaf dose photodegraded[Doseldrbpd]"/>
+	</output>
+	
+	<!-- LEAF DOSE VOLATILIZED -->
+	<output type="plot">
+		<parameter name="title" value="leaf dose volatilized"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose volatilized[concentration]"/>			
+		<trace label="total dose removed by volatilization (kg/ha)" ref="leaf dose volatilized[Doseldv]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose volatilized.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose volatilized[concentration]"/>			
+		<trace label="total dose removed by volatilization (kg/ha)" ref="leaf dose volatilized[Doseldv]"/>
+	</output>
+	
+	<!-- LEAF DOSE UPTAKEN -->
+	<output type="plot">
+		<parameter name="title" value="leaf dose uptaken"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose uptaken[concentration]"/>			
+		<trace label="total dose removed by uptake (kg/ha)" ref="leaf dose uptaken[Doseldu]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose uptaken.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose uptaken[concentration]"/>			
+		<trace label="total dose removed by uptake (kg/ha)" ref="leaf dose uptaken[Doseldu]"/>
+	</output>
+	
+	<!--KLD, KLU AND KLV VALUES-->
+	<output type="table">
+		<parameter name="filename" value="rate constants klv klu kld.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="klv" ref="rate constant of volatilization[klv]"/>
+		<trace label="klu" ref="rate constant of uptake[klu]"/>	
+		<trace label="kld" ref="rate constant of photodegradation[kld]"/>	
+	</output>
+		
+	<!-- DOSE DISTRIBUTION ON TOPSOIL -->
+	<!-- in the soil solids, air and water -->
+    <output type="plot">
+		<parameter name="title" value="dose distribution in the soil solids, air, and water"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose in the soil solids" ref="dose in the soil solids[Doserss]"/>
+		<trace label="dose in the soil air" ref="dose in the soil air[Dosersa]"/>
+		<trace label="dose in the soil water" ref="dose in the soil water[Dosersw]"/>
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose distribution in the soil solids, air, and water.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose in the soil solids" ref="dose in the soil solids[Doserss]"/>
+		<trace label="dose in the soil air" ref="dose in the soil air[Dosersa]"/>
+		<trace label="dose in the soil water" ref="dose in the soil water[Dosersw]"/>
+	</output>	
+			
+	<!-- TOPSOIL DEGRADATION FINAL -->
+	<output type="plot">
+		<parameter name="title" value="topsoil degradation final (kg/ha)"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate (kg/ha)" ref="parent final[concentration]"/>
+		<trace label="AMPA (kg/ha)" ref="metabolite final[concentration]"/>
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil degradation final.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate (kg/ha)" ref="parent final[concentration]"/>
+		<trace label="Glyphosate degraded (kg/ha)" ref="parent final[Dosesd]"/>
+		<trace label="AMPA (kg/ha)" ref="metabolite final[concentration]"/>
+		<trace label="AMPA degraded (kg/ha)" ref="metabolite final[Dosesd]"/>
+	</output>
+	
+	<!-- SOIL RISK ASSESSMENT FINAL-->
+	<output type="plot">
+		<parameter name="title" value="topsoil risk assessment final"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate" ref="parent risk in soil final[HQ]"/>
+		<trace label="AMPA" ref="metabolite risk in soil final[HQ]"/>				
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil risk assessment final.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate" ref="parent risk in soil final[HQ]"/>
+		<trace label="AMPA" ref="metabolite risk in soil final[HQ]"/>				
+	</output>	
+		
+	<!--TOPSOIL VOLATILIZATION FINAL-->
+	<output type="plot">
+		<parameter name="title" value="topsoil volatilization final"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>		
+		<trace label="concentration (kg/ha)" value="topsoil volatilization[concentration]"/>
+		<trace label="dose removed by vaporization (kg/ha)" value="topsoil volatilization[Dosetsv]"/>
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil volatilization final.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>		
+		<trace label="concentration (kg/ha)" value="topsoil volatilization[concentration]"/>
+		<trace label="dose removed by vaporization (kg/ha)" value="topsoil volatilization[Dosetsv]"/>		
+	</output>
+	
+	<!--DOSE AVAILABLE FOR ... leaching runoff and macropore flow-->
+	<output type="plot">
+		<parameter name="title" value="dose available for leaching runoff and macropore flow"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Doseaflrm (kg/ha)" value="dose available for leaching runoff and macropore flow[Doseaflrm]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose available for leaching runoff and macropore flow.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Doseaflrm (kg/ha)" value="dose available for leaching runoff and macropore flow[Doseaflrm]"/>		
+	</output>
+	
+	<!--topsoil runoff-->
+	<output type="plot">
+		<parameter name="title" value="topsoil runoff"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="runoff[Dosesr]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil runoff.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="runoff[Dosesr]"/>		
+	</output>
+	
+	<!--dose available for leaching and macropore flow-->
+	<output type="plot">
+		<parameter name="title" value="dose available for leaching and macropore flow"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching and macropore flow[Doseaflm]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose available for leaching and macropore flow.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching and macropore flow[Doseaflm]"/>		
+	</output>	
+	
+	<!--macropore flow-->
+	<output type="plot">
+		<parameter name="title" value="macropore flow"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="amount macropore" ref="macropore flow[Dmacropore]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="macropore flow.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="amount macropore" ref="macropore flow[Dmacropore]"/>		
+	</output>
+		
+	<!--dose available for leaching-->
+	<output type="plot">
+		<parameter name="title" value="dose available for leaching"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching[Doseafl]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose available for leaching.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching[Doseafl]"/>		
+	</output>
+	
+</simulation>

@@ -20,7 +20,7 @@ public:
     virtual double signal() = 0;
 private:
     double signalReset, _signal;
-    bool flag;
+    bool flag, flagUp, flagDown;
 };
 } //namespace
 

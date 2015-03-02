@@ -19,13 +19,11 @@ public:
     void update();
 
 private:
-    // Parameters
-    double ventLength, ventWidth, ventDensity, ventMaxOpening, roofPitch,
+    double ventLength, ventWidth, ventDensity, ventMaxOpening, ventEfficacy, roofPitch,
         ventilationLeeSide, ventilationWindSide,
-        greenhouseArea, Tindoors, Toutdoors, windspeed;
-
-    // Variables
-    double rate;
+        Tindoors, Toutdoors, windspeed,
+		rate,
+		ventArea;
 
     // Methods
     double phiTemp(double angle);

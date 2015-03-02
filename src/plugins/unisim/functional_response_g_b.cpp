@@ -28,12 +28,19 @@ FunctionalResponseGB::FunctionalResponseGB(Identifier name, QObject *parent)
     new Parameter<double>("egestionRatio", &egestionRatio, 0., this,
         "Egestion fraction of consumption");
     new Parameter<double>("respiration", &respiration, 0., this,
-        "Demand to cover respiration costs");
+        "The finite demand rate to cover respiration costs");
+    new Parameter<double>("conversionCost", &conversionCost, 0., this,
+        "Proportion of the consumption going to conversion cost for converting prey to predator mass");
+    new Parameter<bool>("costOnRespiration", &costOnRespiration, true, this,
+        "Apply conversion cost also on respiration?");
+    new Parameter<bool>("truncateSupply", &truncateSupply, false, this,
+        "If supply gets negative (i.e. too little is consumed to cover respiration) should it be truncated to zero?");
 
     new Variable<double>("supply", &supply, this,
-        "The net supply obtained (net resource consumption, parasitoids infected [0; @F{demand}]");
+        "The net supply obtained (net resource consumption, parasitoids infected). "
+        "This will always be <= demand. If respiration exceeds consumption and truncateSupply is false, then supply will be negative.");
     new Variable<double>("sdRatio", &sdRatio, this,
-        "The supply/demand ratio [0;1]");
+        "The supply/demand ratio [0;1]. This will be zero if supply is negative");
     new Variable<double>("totalDemand", &totalDemand, this,
         "Total demand obtained to cover net supply, egestion and respiration");
     new Variable<double>("totalSupply", &totalSupply, this,
@@ -58,22 +65,36 @@ void FunctionalResponseGB::update() {
         QString msg("Illegal value for egestionRatio (%1)");
         throw Exception(msg.arg(egestionRatio));
     }
-    totalDemand = (demand + respiration)/(1. - egestionRatio);
+    // Compute total supply (i.e., total kill)
+    totalDemand = costOnRespiration ?
+                (demand + respiration)/(1-conversionCost) :
+                demand/(1-conversionCost) + respiration;
+    totalDemand /= (1. - egestionRatio);
     totalSupply = GBFuncResp(totalDemand, apparency*resourceDensity);
-    double netSupply = totalSupply*(1. - egestionRatio);
-    egestion = totalSupply*egestionRatio;
-    if (netSupply <= respiration) {
-        supply = sdRatio = 0;
+    // Allocate total supply
+    supply = totalSupply;
+    egestion = supply*egestionRatio;
+    supply -= egestion;
+    supply -= costOnRespiration ? respiration/(1-conversionCost) : respiration;
+    if (supply < 0.) {
+        sdRatio = 0.;
+        if (truncateSupply) supply = 0.;
     }
     else {
-        supply = netSupply - respiration;
         sdRatio = divBounded(supply, demand, 1.);
         TestNum::snapToZero(sdRatio);
     }
     // Update host-parasitoid variables
-    attacksPerHost = resourceDensity > 0. ? supply/resourceDensity : 0.;
-    propHostsAttacked = 1. - exp(-attacksPerHost);
-    numHostsAttacked = resourceDensity*propHostsAttacked;
+    if (supply > 0) {
+        attacksPerHost = resourceDensity > 0. ? supply/resourceDensity : 0.;
+        propHostsAttacked = 1. - exp(-attacksPerHost);
+        numHostsAttacked = resourceDensity*propHostsAttacked;
+    }
+    else {
+        attacksPerHost =
+        propHostsAttacked =
+        numHostsAttacked = 0.;
+    }
 }
 
 } //namespace

@@ -19,9 +19,9 @@ public:
     void update();
 
 private:
-    double outdoorsCo2, airExchange, assimilationRate, injectionRate, timeStep, averageHeight,
-        ppm, density;
-    void calcDensity();
+    double outdoorsCo2, airExchange, indoorsTemperature, assimilationRate, injectionRate, timeStep, averageHeight,
+        ppm, density, ventilationLoss;
+    double ppmToDensity(double ppm);
 };
 } //namespace
 

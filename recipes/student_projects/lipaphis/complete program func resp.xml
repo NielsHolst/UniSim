@@ -1,0 +1,308 @@
+<simulation name="Lipaphis biocontrol">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="130"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="mashhad.txt"/>
+		</model>
+	</model>
+
+<!-- Canola -->	
+	<model name="canola">
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="4"/>
+		</model>
+		<model name="prePodFilling" type="UniSim::Stage">
+			<parameter name="initialInflow" value="1"/>
+			<parameter name="duration" value="500"/>
+			<parameter name="k" value="100"/>
+		</model>
+		<model name="leafNitrogen" type="lipaphis::LeafNitrogen2">
+			<parameter name="fertilisation" value="225"/>
+			<parameter name="CumuDegree" ref="canola/time [total]"/>
+		</model>
+		<!--
+		<model name="leafNitrogen" type="lipaphis::LeafNitrogen">
+			<parameter name="fertilisation" value="225"/>
+			<parameter name="time" ref="calendar[totalTime]"/>
+		</model>
+		-->
+	</model>o
+	
+<!-- Aphid -->	
+	<model name="aphid">
+		<!-- The AphidPredation mdel takes as input, (1) the supply of the functional response, (2) the number of aphid nymphs and (3) the number of
+		aphid adults. From these inputs is calculates one output (lossRate) which is simply the proportion of the prey population that is killed:
+		lossRate = supply/(no. of nymphs + no. of adults). Remember to check against division by zero. -->
+		<!--
+		<model name="predation" type="Lipaphis::AphidPredation">
+			<parameter name="totalMortality" ref="funcresp[supply]"/>
+			<parameter name="nymphs" ref="../nymph/number[number]"/>
+			<parameter name="adults" ref="../adult/number[number]"/>
+		</model>
+		-->
+		<model name="nymph">
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="1"/>
+				<parameter name="timeStep" ref="aphid/nymph/development[step]"/>
+				<parameter name="inflow" ref="aphid/embryo/number[outflow]"/>
+				<parameter name="instantLossRate" ref="predation[lossRate]"/> <!-- Predation rate applied here -->
+			</model>
+
+			<model name="development" type="lipaphis::WangDevelopment"> <!-- Liu and Meng 2000 -->
+				<parameter name="T" ref="weather[Tavg]"/>
+				<parameter name="Tlow" value="3.5"/>
+				<parameter name="Topt" value="19.6"/>
+				<parameter name="Tmax" value="38.9"/>
+				<parameter name="r" value="0.16953"/>
+				<parameter name="delta" value="4.10313"/>
+				<parameter name="H" value="26.5"/>
+			</model>
+		</model>
+
+		<model name="adult">
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="378"/>  <!-- 18 days at 25 oC -->
+				<parameter name="timeStep" ref="../development[step]"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="./newAdults[value]"/>
+				<parameter name="instantLossRate" ref="predation[lossRate]"/> <!-- Predation rate applied here -->
+				<model name="newAdults" type="UniSim::Sum">
+					<parameter name="toAdd" value="(../../immigration[immigrants] ../../../nymph/number[outflow])"/>
+				</model>
+			</model>
+
+			<model name="immigration" type="lipaphis::SingleImmigration">
+				<parameter name="immigrationDay" value="36"/>
+				<parameter name="Anumber" value="4"/>
+				<parameter name="currentDay" ref="calendar[totalTime]"/>
+			</model>
+			<model name="development" type="UniSim::DayDegrees">
+				<parameter name="T0" value="4"/>
+			</model>
+			
+		</model>
+		
+		<model name="embryo">
+			<model name="time" type="UniSim::DayDegrees">
+				<parameter name="T0" value="3.5"/>
+			</model>
+			<model name="fecundity" type="Lipaphis::AphidFecundity1">
+				<parameter name="Ncontent" ref="canola/leafNitrogen[percentage]"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="growthRate" ref="../fecundity[fecundity]"/>
+				<parameter name="duration" value="450"/>
+				<parameter name="k" value="30"/>
+				<parameter name="inflow" ref="aphid/adult/number[outflow]"/>
+				<parameter name="instantLossRate" ref="predation[lossRate]"/> <!-- Predation rate applied here -->
+			</model>
+		</model>
+		
+		<model name="AphidProtein" type="lipaphis::AphidQuality">
+			<parameter name="Ncontent1" ref="canola/leafNitrogen[percentage]"/>
+		</model>
+	</model>
+	
+<!-- Predator -->	
+	<model name="predator">
+		<model name="egg">
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="35"/> <!-- average of egg daydegrees -->
+				<parameter name="k" value="30"/>
+				<parameter name="timeStep" ref="./development[step]"/>
+				<parameter name="inflow" ref="../../embryo/number[outflow]"/>
+				<model name="development" type="UniSim::DayDegrees">
+					<parameter name="T0" value="10.05"/> <!-- Havelka 1980 -->
+				</model>
+			
+			</model>
+		</model>
+		
+		<model name="larva">
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="100"/>  <!-- average of larva daydegrees -->
+				<parameter name="k" value="30"/>
+				<parameter name="timeStep" ref="./development[step]"/>
+				<parameter name="inflow" ref="../../egg/number[outflow]"/>
+				<model name="development" type="UniSim::DayDegrees">
+					<parameter name="T0" value="4.25"/> <!-- Havelka 1980 -->
+				</model>
+			</model>
+			<!-- New models put here to calculate (1) the demand rate as a function of aphid quality
+			     and (2) the total demand of the larvae = demand rate * no. of larvae * day-degree time step -->
+				 
+			<model name="demand" type="Lipaphis::LipaphisDemand">
+				<model name="rate" type="Lipaphis::LipaphisDemandRate">
+					<parameter name="preyQuality" ref="aphid/aphidProtein[protein]"/>
+				</model>
+				<parameter name="demandRate" ref="./rate[rate]"/>
+				<parameter name="timeStep" ref="../number/development[step]"/>
+				<parameter name="numPredators" ref="../number[number]"/>
+			</model>
+			
+			<model name="funcresp" type="UniSim::FunctionalResponseGB">
+				<model name="prey" type="UniSim::Sum">
+					<parameter name="toAdd" value="(aphid/nymph/number[number] aphid/adult/number[number])"/>
+				</model>
+				<parameter name="apparency" value="0.6"/>  <!-- A number between 0 and 1 which sets how good the predator is at finding its prey-->
+				<parameter name="demand" ref="../demand[totalDemand]"/>     <!-- This changed from the constant value to ../demand[total] -->
+				<parameter name="resourceDensity" ref="./prey[value]"/>  
+			</model>
+		</model>
+		
+		<model name="pupa">
+			<model name="number" type="UniSim::Stage">
+				<parameter name="duration" value="140"/>  <!-- average of pupa daydegrees -->
+				<parameter name="k" value="30"/>
+				<parameter name="timeStep" ref="./development[step]"/>
+				<parameter name="inflow" ref="../../larva/number[outflow]"/>
+				<model name="development" type="UniSim::DayDegrees">
+					<parameter name="T0" value="5.72"/> <!-- Havelka 1980 -->
+				</model>
+			</model>
+			<model name="sexRatio" type="Lipaphis::SexRatio">
+				<parameter name="totalNumber" ref="../number[outflow]"/>
+			</model>
+		</model>
+
+		<model name="adult">
+			<model name="female">
+				<model name="number" type="UniSim::Stage">
+					<parameter name="duration" value="120"/>  <!-- average of female daydegrees -->
+					<parameter name="timeStep" ref="../../development[step]"/>
+					<parameter name="k" value="30"/>
+					<parameter name="inflow" ref="./newAdults[value]"/>
+					<model name="newAdults" type="UniSim::Sum">
+						<parameter name="toAdd" value="(../../../immigration[Fimmigrants] ../../../../pupa/sexRatio[FemaleNumber])"/>
+					</model>
+					
+				</model>
+			</model>
+			
+			<model name="male">
+				<model name="number" type="UniSim::Stage">
+					<parameter name="duration" value="120"/>  <!-- average of female daydegrees -->
+					<parameter name="timeStep" ref="../../development[step]"/>
+					<parameter name="k" value="30"/>
+					<parameter name="inflow" ref="./newAdults[value]"/>
+					<model name="newAdults" type="UniSim::Sum">
+						<parameter name="toAdd" value="(../../../immigration[Mimmigrants] ../../../../pupa/sexRatio[MaleNumber])"/>
+					</model>
+					
+				</model>
+			</model>
+
+			<model name="immigration" type="lipaphis::SingleImmigration">
+				<parameter name="immigrationDay" value="57"/>
+				<parameter name="Pnumber" value="84"/>
+				<parameter name="currentDay" ref="calendar[totalTime]"/>
+			</model>
+			<model name="development" type="UniSim::DayDegrees">
+				<parameter name="T0" value="5.72"/> <!-- Havelka 1980 -->
+			</model>
+			
+		</model>
+		
+		<model name="embryo">
+			<model name="development" type="UniSim::DayDegrees">
+				<parameter name="T0" value="10.05"/> <!-- T0 as egg T0 -->
+			</model>
+			
+			<model name="fecundity" type="Lipaphis::PredatorFecundity">
+				<parameter name="sdRatio" ref="../../larva/funcresp[sdRatio]"/>
+			</model>
+			<model name="number" type="UniSim::Stage">
+				<parameter name="growthRate" ref="../fecundity[fecundity]"/>
+				<parameter name="duration" value="450"/>
+				<parameter name="k" value="30"/>
+				<parameter name="timeStep" ref="../development[step]"/>
+				<parameter name="inflow" ref="predator/adult/female/number[outflow]"/>
+			</model>
+		</model>
+	</model>	
+	
+	
+	
+<!-- Output -->
+<!-- Weather -->
+	<output type="plot">
+		<parameter name="title" value ="Mashhad weather"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="Temperature" ref="weather[Tavg]"/>
+	</output>
+	
+<!-- Canola Growth Stage -->
+	<output type="plot">
+		<parameter name="title" value ="Growth stage"/>
+		<trace label="Day" ref="calendar[totalTime]"/>
+		<trace label="prePodFilling" ref="canola/prePodFilling[number]"/>
+	</output>
+
+<!-- LeafNitrogen -->
+	<output type="plot">
+		<parameter name="title" value ="Leaf nitrogen"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="Leaf N" ref="canola/leafNitrogen[percentage]"/>
+	</output>
+	
+<!-- Aphid -->
+	<output type="plot">
+		<parameter name="title" value ="Aphids"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="Nymph" ref="aphid/nymph/number[value]"/>
+		<trace label="Adult" ref="aphid/adult/number[value]"/>
+	</output>
+	
+<!-- Aphid fecundity -->
+	<output type="plot">
+		<parameter name="title" value ="Aphid fecundity"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="Life time fec" value="aphid/embryo/fecundity[fecundity]"/>
+	</output>
+	
+<!-- Aphid quality -->
+	<output type="plot">
+		<parameter name="title" value ="Aphid quality"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="Aphid quality" value="aphid/AphidProtein[protein]"/>
+	</output>
+	
+<!-- Predator -->
+	<output type="plot">
+		<parameter name="title" value ="Predators"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="Larva" ref="predator/larva/number[value]"/>
+		<trace label="Female" ref="predator/adult/female/number[value]"/>
+	</output>
+
+<!-- Functional response -->
+	<output type="plot">
+		<parameter name="title" value ="Functional response"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="Demand" ref="predator/larva/funcresp[demand]"/>
+		<trace label="Supply" ref="predator/larva/funcresp[supply]"/>
+	</output>
+
+	<output type="plot">
+		<parameter name="title" value ="Supply/Demand ratio"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="S/D" ref="predator/larva/funcresp[sdRatio]"/>
+	</output>
+	
+		<output type="plot">
+		<parameter name="title" value ="PredatorFecundity"/>
+		<trace label="DayDegree" ref="canola/time [total]"/>
+		<trace label="fecundity" ref="predator/embryo/fecundity[fecundity]"/>
+	</output>
+	
+
+	
+
+	
+</simulation>

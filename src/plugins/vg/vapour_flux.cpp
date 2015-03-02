@@ -11,7 +11,7 @@ using namespace UniSim;
 namespace vg {
 
 /*! \class VapourFlux
- * \brief Base class for transpiration, evaporation, condesation and ventilation vapour fluxes
+ * \brief Base class for transpiration, evaporation, condensation and ventilation vapour fluxes
  *
  *
  * Outputs

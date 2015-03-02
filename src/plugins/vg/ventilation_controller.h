@@ -18,15 +18,10 @@ public:
     void reset();
     void update();
 private:
-    // Parameters
-    double windSideProportion,
-        frostThreshold, outdoorsTemperature,
-        maxSignal, byTemperature, byHumidity, byWind;
-    // Variables
-    double leeSideSignal, windSideSignal;
-
-    // Methods
-    bool tooColdOutdoors() const;
+    double frostThreshold,
+        byTemperature, byHumidity,
+        leeFactor, windFactor, coldFactor,
+        leewardSignal, windwardSignal;
 };
 } //namespace
 

@@ -23,23 +23,23 @@ public:
     double inflowTemperatureNeeded(double effect);
 
 private:
-    // Parameters
-    double length, totalLength, diameter, flowRate, greenhouseArea,
+    double length, diameter, flowRate, greenhouseArea,
         inflowTemperature, indoorsTemperature, timeStep;
-
-    // Variables
     double temperature, effect, propFlow;
 
     // Methods
+    struct Effect {
+        double effect, temperature;
+    };
+
     void updateFlow();
-    double specificEffect(double Tpipe);
+    Effect specificEffect(double Tpipe);
     double pipeTemperature(double specificEffect);
     void selfTest();
 
     // Data
     const double exponent{1.25};
-    double slope,
-        volume;   // Volume of pipe water per m2 greenhouse [kg = L]
+    double U, volume;
 };
 } //namespace
 

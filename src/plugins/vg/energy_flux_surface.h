@@ -19,7 +19,7 @@ public:
     void update();
 
 private:
-    double netU, indoorsTemperature, outdoorsTemperature,
+    double netU, indoorsTemperature, outdoorsTemperature, averageHeight, timeStep,
         flux;
 };
 } //namespace

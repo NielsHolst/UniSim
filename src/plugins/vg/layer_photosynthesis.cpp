@@ -58,7 +58,7 @@ LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     InputRef(double, sinB, "calendar[sinB]");
     InputRef(double, radiationDif, "indoors/radiation[diffuse]");
     InputRef(double, radiationDir, "indoors/radiation[direct]");
-    Input(double, lai, 3); //kommer senere fra vækstmodellerne
+    InputRef(double, lai, "crop/lai[lai]");
     InputRef(double, xGauss, "..[xGauss]");
     InputRef(double, wGauss, "..[wGauss]");
     InputRef(double, LUE, "./lightResponse[LUE]");

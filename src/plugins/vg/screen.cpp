@@ -5,7 +5,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
-#include "control_element.h"
+#include "base_control_element.h"
 #include "publish.h"
 #include "screen.h"
 
@@ -84,7 +84,7 @@ void Screen::setStandardLayers() {
 const double *Screen::state() {
     // Lazy pull of state
     if (_state) return _state;
-    auto control = peekOneChild<ControlElement*>("*");
+    auto control = peekOneChild<BaseControlElement*>("*");
     if (!control)
         throw Exception("Screen model must have one child of type 'ControlElement'");
     return _state = control->pullValuePtr<double>("state");

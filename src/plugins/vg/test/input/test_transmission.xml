@@ -50,7 +50,7 @@
 			<model name="wholeRoof" type="vg::Screen">
 				<parameter name="position" value ="whole_roof"/>
 				<parameter name="layer" value ="inner"/>
-				<model name="control" type="vg::ControlElement">
+				<model name="control" type="vg::LinearControlElement">
 					<parameter name="signal" value ="1"/>
 				</model>
 			</model>

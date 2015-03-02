@@ -1,9 +1,9 @@
 include(../../config.pri)
 
 TEMPLATE = app
-# CONFIG += console - Tested how a console app would work
 DESTDIR = $${US_APPLICATIONS}
-TARGET = UniSim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+#TARGET = UniSim-$${UNISIM_VERSION}$${DEBUG_SUFFIX}
+TARGET = unisim
 
 # Load application icon
 RC_FILE = ../../resources/unisim.rc

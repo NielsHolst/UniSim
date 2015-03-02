@@ -18,7 +18,7 @@ public:
     void reset();
     void update();
 private:
-    double timeStep, averageHeight, heatBalance, relativeVentilationRate, indoorsAh,
+    double timeStep, averageHeight, heatBalance, indoorsAh,
         initValue, value, virtualTemperature;
 };
 } //namespace

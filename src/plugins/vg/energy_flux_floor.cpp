@@ -14,7 +14,7 @@ namespace vg {
 
 PUBLISH(EnergyFluxFloor)
 
-/*! \class EnergyFluxSurface
+/*! \class EnergyFluxFloor
  * \brief Flux of energy through greenhouse floor
  * Inputs
  * ------
@@ -24,13 +24,13 @@ PUBLISH(EnergyFluxFloor)
  *
  * Output
  * ------
- * - _flux_ is the flux of energy through the greenhouse surface [W/m<SUP>2</SUP>]
+ * - _flux_ is the energy flux per greenhouse area from the floor [W/m<SUP>2</SUP>]
  *
  * Default dependencies
  * ------------
  * - a _construction/floor_ model with a _U_ port [W/m<SUP>2</SUP>]/K]
  * - an _indoors/temperature_ model with a _value_ port [<SUP>oC</SUP>C]
- * - an _indoors/floor/temperature_ model with a _aue_ port [<SUP>oC</SUP>C]
+ * - an _indoors/floor/temperature_ model with a _vakue_ port [<SUP>oC</SUP>C]
  */
 
 EnergyFluxFloor::EnergyFluxFloor(Identifier name, QObject *parent)

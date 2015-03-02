@@ -21,8 +21,11 @@ public:
     void update();
 
 private:
-    double irradiation, heatPipes, value;
+    double irradiation, heatPipes, growthLight, value, potentialVentilation;
     QVector<const double *> otherFluxes;
+    UniSim::Model *realisedVentilationModel;
+
+    void setVentilation();
 };
 } //namespace
 

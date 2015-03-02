@@ -23,10 +23,12 @@ PUBLISH(IndoorsRadiation)
  * - _diffuseTransmission_ is the proportion of diffuse sunlight transmitted though the greenhouse cover [0;1]
  * - _directTransmissionAsDirect_ is the proportion of direct sunlight transmitted though the greenhouse cover and remaining direct [0;1]
  * - _directTransmissionAsDiffuse_ is the proportion of direct sunlight transmitted though the greenhouse cover and becoming dispersed as diffuse light [0;1]
+ * - _growthLightShortWaveRadiation_ is the short wave radiation (light) emitted by the growth light [W/m<SUP>2</SUP>]
+ * - _growthLightPropDirect_ is the proportion of growth light considered direct light [0;1]
  *
  * Outputs
  * ------
- * - _direct_ is the direct light transmitted directly through the greenhouse construction [W/m<SUP>2</SUP>]
+ * - _direct_ is the direct light transmitted directly through the greenhouse construction plus growth light [W/m<SUP>2</SUP>]
  * - _diffuse_ is the total diffuse light transmitted through and dispersed by the greenhouse construction [W/m<SUP>2</SUP>]
  * - _total_ is the total light transmitted through the greenhouse construction [W/m<SUP>2</SUP>]
  *
@@ -39,6 +41,7 @@ PUBLISH(IndoorsRadiation)
  *   + _diffuse_ [0;1]
  *   + _directAsDirect_ [0;1]
  *   + _directAsDiffuse_ [0;1]
+ * - an _actuators/growthLights_ model with a _shortWaveEmission_ port [W/m<SUP>2</SUP>]
  */
 
 IndoorsRadiation::IndoorsRadiation(Identifier name, QObject *parent)
@@ -49,6 +52,8 @@ IndoorsRadiation::IndoorsRadiation(Identifier name, QObject *parent)
     InputRef(double, diffuseTransmission, "indoors/screens/transmission[diffuse]");
     InputRef(double, directTransmissionAsDirect, "indoors/screens/transmission[directAsDirect]");
     InputRef(double, directTransmissionAsDiffuse, "indoors/screens/transmission[directAsDiffuse]");
+    InputRef(double, growthLightShortWaveRadiation, "actuators/growthLights[shortWaveEmission]");
+    Input(double, growthLightPropDirect, 0.7);
     Output(double, direct);
     Output(double, diffuse);
     Output(double, total);
@@ -59,8 +64,11 @@ void IndoorsRadiation::reset() {
 }
 
 void IndoorsRadiation::update() {
-    diffuse = diffuseTransmission*outdoorsDiffuseRadiation + directTransmissionAsDiffuse*outdoorsDirectRadiation;
-    direct = directTransmissionAsDirect*outdoorsDirectRadiation;
+    diffuse = diffuseTransmission*outdoorsDiffuseRadiation +
+              directTransmissionAsDiffuse*outdoorsDirectRadiation +
+              (1.-growthLightPropDirect)*growthLightPropDirect;
+    direct = directTransmissionAsDirect*outdoorsDirectRadiation +
+             growthLightPropDirect*growthLightPropDirect;
     total = direct + diffuse;
 }
 

@@ -1,5 +1,9 @@
 set UNISIM_SHIP=C:\data\QDev\UniSim\ship_cmd\UniSimCmd
 
+rem create folders
+md UniSimCmd
+md UniSimCmd\bin
+
 rem Set and clean target bin variable
 set UNISIM_BIN=%UNISIM_SHIP%\bin
 del /Q %UNISIM_BIN%\*.*
@@ -15,9 +19,9 @@ copy oleaut32.dll %UNISIM_BIN%
 popd
 
 rem Copy exe and DLL files
-copy ..\src\applications\unisimcmd*.exe %UNISIM_BIN%
-copy ..\src\applications\base*.dll %UNISIM_BIN%
-copy ..\src\applications\engine*.dll %UNISIM_BIN%
+copy ..\src\applications\unisimcmd.exe %UNISIM_BIN%
+copy ..\src\applications\usbase.dll %UNISIM_BIN%
+copy ..\src\applications\usengine.dll %UNISIM_BIN%
 copy ..\vendor\gsl\bin\libgsl*.dll %UNISIM_BIN%
 copy ..\vendor\qwt_qt5\lib\qwt.dll %UNISIM_BIN%
 
@@ -41,6 +45,7 @@ pushd %UNISIM_BIN%
 md accessible 
 md imageformats
 md platforms
+md plugins
 popd
 rem copy Qt plugin folders
 pushd %QT_ROOT%

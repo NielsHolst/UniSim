@@ -24,8 +24,9 @@ PUBLISH(ConstructionVentilation)
  * ------
  * - _ventLength_ is the length of a vents window [m]
  * - _ventWidth_ is the width of a vents window [m]
- * - _ventMaxOpening_ is the maximum possible opening [0;180]
+ * - _ventMaxOpening_ is the maximum possible degrees opening  [0;180]
  * - _ventDensity_ is the number of vent windows per greenhouse area [m<SUP>-2</SUP>]
+ * - _efficacy_ is the efficacy of ventilation (can be reduced, for example, by insect net) [0;1]
  *
  * Outputs
  * -------
@@ -39,10 +40,11 @@ PUBLISH(ConstructionVentilation)
 ConstructionVentilation::ConstructionVentilation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    Input(double, ventLength, 2.85);
-    Input(double, ventWidth, 1.);
+    Input(double, ventLength, 3.5);
+    Input(double, ventWidth, 0.8);
     Input(double, ventMaxOpening, 45.);
     Input(double, ventDensity, 0.078);
+    Input(double, efficacy, 1.);
 }
 
 

@@ -1015,17 +1015,17 @@
           <Constants>
             <Parameters>
               <ParameterID>49</ParameterID>
-              <ParameterName>VentNumber</ParameterName>
-              <Value>0</Value>
+              <ParameterName>VentNumber</ParameterName><!-- No. of vents -->
+              <Value>80</Value>
             </Parameters>
             <Parameters>
               <ParameterID>51</ParameterID>
-              <ParameterName>InsectNetPorosity</ParameterName>
-              <Value>0</Value>
+              <ParameterName>InsectNetPorosity</ParameterName> <!-- % air transmission -->
+              <Value>100</Value>
             </Parameters>
             <Parameters>
               <ParameterID>52</ParameterID>
-              <ParameterName>VentOpenAreaPercent</ParameterName>
+              <ParameterName>VentOpenAreaPercent</ParameterName>   <!-- max opening degrees -->
               <Value>90</Value>
             </Parameters>
             <Parameters>
@@ -1041,7 +1041,7 @@
             <Parameters>
               <ParameterID>419</ParameterID>
               <ParameterName>MaximumOpening</ParameterName>
-              <Value>100</Value>
+              <Value>50</Value>
             </Parameters>
             <Parameters>
               <ParameterID>420</ParameterID>
@@ -1055,7 +1055,7 @@
             </Parameters>
             <Parameters>
               <ParameterID>422</ParameterID>
-              <ParameterName>MinimumOpeningByMaxHumidityDay</ParameterName>
+              <ParameterName>MinimumOpeningByMaxHumidityDay</ParameterName> 
               <Value>5</Value>
             </Parameters>
             <Parameters>
@@ -1090,13 +1090,13 @@
             </Parameters>
             <Parameters>
               <ParameterID>456</ParameterID>
-              <ParameterName>Length</ParameterName>
-              <Value>0</Value>
+              <ParameterName>Length</ParameterName> <!-- Window -->
+              <Value>3.5</Value>
             </Parameters>
             <Parameters>
               <ParameterID>457</ParameterID>
-              <ParameterName>Width</ParameterName>
-              <Value>0</Value>
+              <ParameterName>Width</ParameterName>  <!-- Window -->
+              <Value>0.8</Value>
             </Parameters>
             <Parameters>
               <ParameterID>470</ParameterID>
@@ -1120,7 +1120,7 @@
             </Parameters>
             <Parameters>
               <ParameterID>489</ParameterID>
-              <ParameterName>PBandTemperature</ParameterName>
+              <ParameterName>PBandTemperature</ParameterName> <!-- ventilationController -->
               <Value>0</Value>
             </Parameters>
             <Parameters>
@@ -1135,7 +1135,7 @@
             </Parameters>
             <Parameters>
               <ParameterID>492</ParameterID>
-              <ParameterName>PBandRH</ParameterName>
+              <ParameterName>PBandRH</ParameterName>		<!-- ventilationController -->
               <Value>0</Value>
             </Parameters>
             <Parameters>
@@ -1160,12 +1160,12 @@
             <Parameters>
               <ParameterID>49</ParameterID>
               <ParameterName>VentNumber</ParameterName>
-              <Value>0</Value>
+              <Value>80</Value>
             </Parameters>
             <Parameters>
               <ParameterID>51</ParameterID>
               <ParameterName>InsectNetPorosity</ParameterName>
-              <Value>0</Value>
+              <Value>100</Value>
             </Parameters>
             <Parameters>
               <ParameterID>52</ParameterID>
@@ -1185,7 +1185,7 @@
             <Parameters>
               <ParameterID>419</ParameterID>
               <ParameterName>MaximumOpening</ParameterName>
-              <Value>100</Value>
+              <Value>40</Value>
             </Parameters>
             <Parameters>
               <ParameterID>420</ParameterID>
@@ -1518,11 +1518,11 @@
             </Parameters>
             <Parameters>
               <ParameterID>397</ParameterID>
-              <ParameterName>LifeTime</ParameterName>
+              <ParameterName>LifeTime</ParameterName> 
               <Value>12000</Value>
             </Parameters>
             <Parameters>
-              <ParameterID>398</ParameterID>
+              <ParameterID>398</ParameterID>			
               <ParameterName>UsedHours</ParameterName>
               <Value>0</Value>
             </Parameters>
@@ -1559,12 +1559,116 @@
             <Parameters>
               <ParameterID>533</ParameterID>
               <ParameterName>LightCapacityPerSqm</ParameterName>
-              <Value>0</Value>
+              <Value>40</Value>
             </Parameters>
             <Parameters>
               <ParameterID>575</ParameterID>
               <ParameterName>LampType</ParameterName>
               <Value>1</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>579</ParameterID>
+              <ParameterName>LightAtLampOn</ParameterName>
+              <Value>0</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>580</ParameterID>
+              <ParameterName>LightAtLampOff</ParameterName>
+              <Value>0</Value>
+            </Parameters>
+          </Constants>
+        </Lamp>
+        <Lamp>
+          <Name>Hus 1    </Name>
+          <Id>11049</Id>
+          <Relation>0</Relation>
+          <Position>1</Position>
+          <Type>1</Type>
+          <Constants>
+            <Parameters>
+              <ParameterID>54</ParameterID>
+              <ParameterName>Capacity</ParameterName>
+              <Value>300</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>55</ParameterID>
+              <ParameterName>Power</ParameterName>
+              <Value>436</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>56</ParameterID>
+              <ParameterName>NumberInZone</ParameterName>
+              <Value>500</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>57</ParameterID>
+              <ParameterName>PowerStep1</ParameterName>
+              <Value>30</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>290</ParameterID>
+              <ParameterName>PowerStep2</ParameterName>
+              <Value>436</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>303</ParameterID>
+              <ParameterName>IntensityStep1</ParameterName>
+              <Value>1</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>396</ParameterID>
+              <ParameterName>MicroMolPAR</ParameterName>
+              <Value>670</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>397</ParameterID>
+              <ParameterName>LifeTime</ParameterName> 
+              <Value>12000</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>398</ParameterID>			
+              <ParameterName>UsedHours</ParameterName>
+              <Value>0</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>399</ParameterID>
+              <ParameterName>PowerStep3</ParameterName>
+              <Value>0</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>400</ParameterID>
+              <ParameterName>IntensityStep2</ParameterName>
+              <Value>1</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>401</ParameterID>
+              <ParameterName>IntensityStep3</ParameterName>
+              <Value>1</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>466</ParameterID>
+              <ParameterName>Length</ParameterName>
+              <Value>1</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>467</ParameterID>
+              <ParameterName>Width</ParameterName>
+              <Value>0.15</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>468</ParameterID>
+              <ParameterName>Height</ParameterName>
+              <Value>0.15</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>533</ParameterID>
+              <ParameterName>LightCapacityPerSqm</ParameterName>
+              <Value>30</Value>
+            </Parameters>
+            <Parameters>
+              <ParameterID>575</ParameterID>
+              <ParameterName>LampType</ParameterName>
+              <Value>2</Value>
             </Parameters>
             <Parameters>
               <ParameterID>579</ParameterID>
@@ -1675,7 +1779,7 @@
             <Parameters>
               <ParameterID>535</ParameterID>
               <ParameterName>PipelengthPerSqm</ParameterName>
-              <Value>0</Value>
+              <Value>1.6</Value>
             </Parameters>
             <Parameters>
               <ParameterID>540</ParameterID>
@@ -1779,7 +1883,7 @@
             <Parameters>
               <ParameterID>535</ParameterID>
               <ParameterName>PipelengthPerSqm</ParameterName>
-              <Value>0</Value>
+              <Value>1.6</Value>
             </Parameters>
             <Parameters>
               <ParameterID>540</ParameterID>

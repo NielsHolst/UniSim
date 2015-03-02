@@ -258,5 +258,40 @@ double virtualTemperatureFromAh(double temperature, double ah) {
     return (temperature+T0)*(1+0.608*shFromAh(ah));
 }
 
+//! Logistic growth integral
+/*!
+ * The integral of the logistic growth equation is used to calculate the approach of a variable
+ * towards a target value through time
+ * \param current is the value at the beginning of the time step
+ * \param target is the value approached during the time step
+ * \param rate is the rate of approach [inverse units of time step]
+ * \param dt is the time step
+ * \return the value predicted at the end of the time step
+ */
+double logistic(double current, double target, double rate, double dt) {
+    double L = exp(rate*dt);
+    return target*current*L/(target + current*(L-1));
+}
+
+double propIntegral(double current, double target, double rate, double dt) {
+    double L = exp(rate*dt);
+    return target - (target - current)/L;
+}
+
+double propExpIntegral(double current, double target, double rate, double dt, double exponent) {
+    if (exponent == 1.)
+        return(propIntegral(current, target, rate, dt));
+    double z = (exponent-1)*rate*dt + pow(fabs(target-current), 1-exponent),
+           distance = pow(z, 1/(1-exponent));
+    return (current<target) ? target-distance : target+distance;
+}
+
+double invPropExpIntegral(double integral, double target, double rate, double dt, double exponent) {
+    Q_ASSERT(exponent!=1.);
+    double z =  pow(fabs(target-integral), 1-exponent) - (exponent-1)*rate*dt,
+           distance = pow(z, 1/(1-exponent));
+    return (integral<target) ? target-distance : target+distance;
+}
+
 } //namespace
 

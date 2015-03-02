@@ -28,7 +28,7 @@ PUBLISH(ConstructionGeometry)
  * - _spanWidth_ is the width of a span [m]
  * - _length_  is the length a span [m]
  * - _height_ is the height of the walls [m]
- * - _roofPitch_ is the slope of the roof [degrees]
+ * - _roofPitch_ is the degrees slope of the roof [0;180]
  *
  * Outputs
  * -------

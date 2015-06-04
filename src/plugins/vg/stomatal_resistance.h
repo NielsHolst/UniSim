@@ -21,9 +21,6 @@ public:
 private:
     double rh, rbCO2, co2, Pg,
         rsH2O, rsCO2;
-
-    // Methods
-    void updateValue(double PgMol);
 };
 } //namespace
 

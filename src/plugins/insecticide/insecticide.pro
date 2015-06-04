@@ -6,7 +6,7 @@ TARGET = insecticide_$${UNISIM_VERSION}$${DEBUG_SUFFIX}
 CONFIG += plugin
 
 include ($${US_BASE}/base.pri)
-include ($${US_ENGINE}/engine.pri)      # This allows access to the simulation() object
+include ($${US_ENGINE}/engine.pri)
 
 HEADERS += \
     application.h \
@@ -14,10 +14,9 @@ HEADERS += \
     primarydistributionleaf.h \
     insecticide_factory.h \
     publish.h \
+    topsoildegradation.h \
     riskindex.h \
-    leafvolatilization.h \
-    winddrift.h \
-    winddrifttotal.h \
+    leafvolatilization.h \    
     leafuptake.h \
     leafphotodegradation.h \
     topsoilvolatilization.h \
@@ -35,18 +34,51 @@ HEADERS += \
     leafoverallrateconstant.h \
     leafdoseleftonbeginningrainfall.h \
     leafsumofdoseremoved.h \
+    leaffinaldosevolatilized.h \
+    leaffinaldoseuptake.h \
     leafdosephotodegraded.h \
-    leafdosevolatilized.h \
-    leafdoseuptaken.h \
+    leaffinaldosephotodegraded.h \
     topsoildoseinsoilsolidsairandwater.h \
-    topsoildoseinsoilairandwater.h \
     topsoildegradationfinal.h \
     topsoilvolatilizationfinal.h \
     doseavailableforleachingrunoffandmacroporeflow.h \
     doseavailableforleachingandmacroporeflow.h \
     doseavailableforleaching.h \
-    horizonthickness.h
-#    htc.h
+    totalcorrectionfactor.h \
+    topsoildoseinsoilairandwater.h \
+    soildegradationrateconstant.h \
+    retardationtime.h \
+    retardationfactor.h \
+    porewatervelocity.h \
+    pHcorrectedsorption.h \
+    leafdosevolatilized.h \
+    leafdoseuptaken.h \
+    idealretardationtime.h \
+    horizonthickness.h \
+    fractionleachatereachingnextlayer.h \
+    fractiondrainagedepth.h \
+    filtervelocity.h \
+    fieldcapacity.h \
+    EaEp.h \
+    drainagepresent.h \
+    drainagelosses.h \
+    depthcorrectionperhorizon.h \
+    depthcorrectionat60to100cm.h \
+    depthcorrectionat30to60cm.h \
+    depthcorrectionat0to30cm.h \
+    DemLaxFrnl.h \
+    biodegradationrateperhorizon.h \
+    bioavailabilitycorrection.h \
+    apparentdiffusioncoefficient.h \
+    apparentdiffusionanddispersioncoefficient.h \
+    annualaveragesoiltemperaturefactor.h \
+    frogmortality.h \
+    frogpopulation.h \
+    pesticideinducedmortalityrate.h \
+    taverage.h \
+    frogmalformation.h \
+    frogpopulationmalformed.h \
+    stagesurvivaldensity.h
 
 SOURCES += \
     application.cpp \
@@ -54,10 +86,9 @@ SOURCES += \
     primarydistributionleaf.cpp \
     insecticide_factory.cpp \
     publish.cpp \
+    topsoildegradation.cpp \
     riskindex.cpp \
-    leafvolatilization.cpp \
-    winddrift.cpp \
-    winddrifttotal.cpp \
+    leafvolatilization.cpp \    
     leafuptake.cpp \
     leafphotodegradation.cpp \
     topsoilvolatilization.cpp \
@@ -75,15 +106,48 @@ SOURCES += \
     leafoverallrateconstant.cpp \
     leafdoseleftonbeginningrainfall.cpp \
     leafsumofdoseremoved.cpp \
+    leaffinaldosevolatilized.cpp \
+    leaffinaldoseuptake.cpp \
     leafdosephotodegraded.cpp \
-    leafdosevolatilized.cpp \
-    leafdoseuptaken.cpp \
+    leaffinaldosephotodegraded.cpp \
     topsoildoseinsoilsolidsairandwater.cpp \
-    topsoildoseinsoilairandwater.cpp \
     topsoildegradationfinal.cpp \
     topsoilvolatilizationfinal.cpp \
     doseavailableforleachingrunoffandmacroporeflow.cpp \
     doseavailableforleachingandmacroporeflow.cpp \
     doseavailableforleaching.cpp \
-    horizonthickness.cpp
-#    htc.cpps
+    totalcorrectionfactor.cpp \
+    topsoildoseinsoilairandwater.cpp \
+    soildegradationrateconstant.cpp \
+    retardationtime.cpp \
+    retardationfactor.cpp \
+    porewatervelocity.cpp \
+    pHcorrectedsorption.cpp \
+    leafdosevolatilized.cpp \
+    leafdoseuptaken.cpp \
+    idealretardationtime.cpp \
+    horizonthickness.cpp \
+    fractionleachatereachingnextlayer.cpp \
+    fractiondrainagedepth.cpp \
+    filtervelocity.cpp \
+    fieldcapacity.cpp \
+    EaEp.cpp \
+    drainagepresent.cpp \
+    drainagelosses.cpp \
+    depthcorrectionperhorizon.cpp \
+    depthcorrectionat60to100cm.cpp \
+    depthcorrectionat30to60cm.cpp \
+    depthcorrectionat0to30cm.cpp \
+    DemLaxFrnl.cpp \
+    biodegradationrateperhorizon.cpp \
+    bioavailabilitycorrection.cpp \
+    apparentdiffusioncoefficient.cpp \
+    apparentdiffusionanddispersioncoefficient.cpp \
+    annualaveragesoiltemperaturefactor.cpp \
+    frogmortality.cpp \
+    frogpopulation.cpp \
+    pesticideinducedmortalityrate.cpp \
+    taverage.cpp \
+    frogmalformation.cpp \
+    frogpopulationmalformed.cpp \
+    stagesurvivaldensity.cpp

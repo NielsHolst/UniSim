@@ -28,7 +28,7 @@ macroporeflow::macroporeflow(Identifier name, QObject *parent)
     Input (double, Flowrate, 0.35);
     Input (double, frr, 0.5);           //fractionrainrunoff
     Input (double, tpevent, 5.);        //number of hours precipitation occurs on a rainy day
-    Input (double, P, 25.);
+    Input (double, P, 1.);              //average  daily rainfall per rainfall event in a given month (mm)
     Input (double, frsw, 0.);
     Input (double, Tf, 0.);            //tillage factor
     Input (double, Doseaflm, 0.);

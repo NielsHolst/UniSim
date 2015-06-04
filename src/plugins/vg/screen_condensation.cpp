@@ -16,7 +16,7 @@ namespace vg {
 
 PUBLISH(ScreenCondensation)
 /*! \class ScreenCondensation
- * \brief Condensation on greenhouse screens
+ * \brief Condensation on greenhouse screens (NOT USED)
  *
  * Inputs
  * ------
@@ -38,7 +38,7 @@ PUBLISH(ScreenCondensation)
  */
 
 ScreenCondensation::ScreenCondensation(Identifier name, QObject *parent)
-    : VapourFlux(name, parent)
+    : VapourFluxBase(name, parent)
 {
     InputRef(double, screenArea, "indoors/screens/transmission[area]");
     InputRef(double, screenTemperature, "indoors/screens/temperature[value]");

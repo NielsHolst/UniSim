@@ -16,31 +16,26 @@ class HeatPipe : public UniSim::Model
 {
 public:
     HeatPipe(UniSim::Identifier name, QObject *parent);
-    void initialize();
     void reset();
     void update();
     // Special methods
-    double inflowTemperatureNeeded(double effect);
+    double calcEnergyFluxMin() const;
+    double calcEnergyFluxMax() const;
+    double calcEnergyFlux(double pipeTemperature) const;
+    double calcPipeTemperature(double energyFlux) const;
 
 private:
-    double length, diameter, flowRate, greenhouseArea,
-        inflowTemperature, indoorsTemperature, timeStep;
-    double temperature, effect, propFlow;
+    // Inputs
+    double length, diameter, minTemperature, maxTemperature, indoorsTemperature, energyFlux;
 
-    // Methods
-    struct Effect {
-        double effect, temperature;
-    };
-
-    void updateFlow();
-    Effect specificEffect(double Tpipe);
-    double pipeTemperature(double specificEffect);
-    void selfTest();
+    // Outputs
+    double temperature, minEnergyFlux, maxEnergyFlux;
 
     // Data
     const double exponent{1.25};
-    double U, volume;
+    double slope;
 };
+
 } //namespace
 
 

@@ -8,19 +8,23 @@
 #define VG_LEAF_TRANSPIRATION_H
 
 #include <usbase/model.h>
-#include "vapour_flux.h"
+#include "vapour_flux_base.h"
 
 namespace vg {
 
-class LeafTranspiration : public VapourFlux
+class LeafTranspiration : public VapourFluxBase
 {
 public:
     LeafTranspiration(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
 
 private:
+    // Inputs
     double absorbedRadiation, rsH2O, rbH2O,
         value, indoorsAh, Tleaf, lai, fractionPlantArea, xGauss, wGauss;
+    // Outputs
+    double leafAh;
 };
 } //namespace
 

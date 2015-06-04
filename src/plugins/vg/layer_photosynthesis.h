@@ -4,8 +4,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_LAYER_PHOTO_H
-#define VG_LAYER_PHOTO_H
+#ifndef VG_LAYER_PHOTOSYNTHESIS_H
+#define VG_LAYER_PHOTOSYNTHESIS_H
 
 
 #include <usbase/model.h>

@@ -6,6 +6,8 @@
 */
 #ifndef VG_GENERAL_H
 #define VG_GENERAL_H
+#include <stdlib.h>
+#include <math.h>
 
 /*! \file general.h
  * General physical functions and constants
@@ -16,9 +18,10 @@ namespace vg {
 const double
     PI = 3.14159,       //!< Mathematical PI
     T0 = 273.15,        //!< Absolute zero offset (oC)
+    g = 9.81,           //!< Gravity (m/s2)
     Sigma = 5.6704e-8,  //!< Stefan-Boltzmann constant (W/m2/K4)
     Mwater = 18.016e-3, //!< Molar mass of water (kg/mol)
-    MCo2 = 44.01e-3,    //!< Molar mass of CO2 (kg/mol) [mg/umol]
+    MCo2 = 44.01e-3,    //!< Molar mass of CO2 (kg/mol or mg/umol)
     Mwa = 0.622,        //!< Molar mass of water relative to molar mass of air (-)
     R = 8.314,          //!< Gas constant (J/mol/K)
     P0 = 101325,        //!< Standard atmospheric pressure = 1 atm (Pa)
@@ -71,6 +74,8 @@ double virtualTemperatureFromAh(double temperature, double ah);
 // Mathematics
 inline int sqr(int x) {return x*x;}
 inline double sqr(double x) {return x*x;}
+inline double p4K(double T) { return pow(T+T0, 4.); }
+
 double logistic(double current, double target, double rate, double dt);
 double propIntegral(double current, double target, double rate, double dt);
 double propExpIntegral(double current, double target, double rate, double dt, double exponent);

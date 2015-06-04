@@ -14,7 +14,7 @@ namespace vg {
 /*! \class BaseSignal
  * \brief Base class for models that set a signal
  *
- * Just define the _signal_ function in the derived class.
+ * The _signal_ function in the derived class defines the behaviour.
  *
  * Inputs
  * ------
@@ -31,7 +31,7 @@ namespace vg {
 BaseSignal::BaseSignal(Identifier name, QObject *parent)
     : Model(name, parent){
     Input(double, signalReset, 0.);
-    Output2(double, _signal, "signal");
+    Output2(double, _signal, signal);
     Output(bool, flag);
     Output(bool, flagUp);
     Output(bool, flagDown);
@@ -41,6 +41,7 @@ void BaseSignal::reset() {
     _signal = signalReset;
     flag = (_signal!=0.);
     flagUp = flagDown = false;
+    localReset();
 }
 
 void BaseSignal::update() {

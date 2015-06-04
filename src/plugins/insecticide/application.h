@@ -20,7 +20,7 @@ public:
 private:
     // Input
     int day;
-    double dosage;
+    double ae, ar;//dosage
 
     // Output
     double application;

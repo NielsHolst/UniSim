@@ -20,8 +20,10 @@ public:
     void reset();
     void update();
 private:
-    double timeStep, effect, sumEnergy;
-    QVector<const double*> pipeEffects;
+    // Outputs
+    double maxEnergyFlux;
+    // Data
+    QVector<const double*> maxEnergyFluxes;
 };
 } //namespace
 

@@ -20,13 +20,13 @@ leafdoseleftonbeginningrainfall::leafdoseleftonbeginningrainfall(Identifier name
 {
 
     Input (double, kov, 0.);       //h-1
-    Input (double, P, 25.);          //ranfall (mm)
+    Input (double, Rainfall, 25.);          //rainfall (mm)
     Input (double, threshold, 1.);  // 1 mm
-    Input (double, inflow, 0.);     // = Doserl
+    Input (double, inflow, 0.);     // = Doserl (kg a.i/ha)
 
-    Output (double, Doseldlobr);    //of pesticide applied left on the leaves when the next rainfall event starts
-    Output (double, outflow);
-    Output (double, concentration);
+    Output (double, Doseldlobr);    //of pesticide applied left on the leaves when the next rainfall event starts (kg a.i/ha)
+    Output (double, outflow); //kg a.i/ha
+    Output (double, concentration); //kg a.i/ha
 }
 
 void leafdoseleftonbeginningrainfall::reset() {
@@ -38,7 +38,7 @@ void leafdoseleftonbeginningrainfall::reset() {
 
 void leafdoseleftonbeginningrainfall::update() {
 
-    if (P <= threshold){
+    if (Rainfall <= threshold){
         outflow = concentration*kov;
         concentration += inflow - outflow;
         Doseldlobr = 0.;

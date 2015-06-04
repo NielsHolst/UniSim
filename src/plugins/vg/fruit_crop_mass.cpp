@@ -44,14 +44,6 @@ PUBLISH(FruitCropMass)
  * Output
  * ------
  * See CropMass.
- *
- * Default dependencies
- * ------------
- * - an _indoors/temperature_ model with a _value_ port [<SUP>o</SUP>C]
- * - a _physTime_ sibling model with a _total_ port [d <SUP>o</SUP>C]
- * - an _lai_ sibling model with two ports:
- * + _lai_ [m<SUP>2</SUP>/m<SUP>2</SUP>]
- * + _maxLaiReched_ [true,false]
  */
 
 FruitCropMass::FruitCropMass(Identifier name, QObject *parent)

@@ -7,11 +7,11 @@
 #ifndef VG_ENERGY_FLUX_FLOOR_H
 #define VG_ENERGY_FLUX_FLOOR_H
 
-#include <usbase/model.h>
+#include "energy_flux_base.h"
 
 namespace vg {
 
-class EnergyFluxFloor : public UniSim::Model
+class EnergyFluxFloor : public EnergyFluxBase
 {
 public:
     EnergyFluxFloor(UniSim::Identifier name, QObject *parent);
@@ -19,8 +19,12 @@ public:
     void update();
 
 private:
-    double U, indoorsTemperature, floorTemperature,
-        flux;
+    // Inputs
+    double U, heatCapacity,
+        indoorsTemperature, soilTemperature,
+        averageHeight, timeStep;
+    // Outputs
+    double temperature;
 };
 } //namespace
 

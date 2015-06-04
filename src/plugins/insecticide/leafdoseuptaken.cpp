@@ -20,13 +20,13 @@ leafdoseuptaken::leafdoseuptaken(Identifier name, QObject *parent)
 {
 
     Input (double, klu, 0.);        //rate constant of volatilization process (h-1)
-    Input (double, inflow, 0.);
+    Input (double, inflow, 0.); //kg a.i/ha
     Input (double, threshold, 1.);  //rainfall >1 mm
-    Input (double, P, 0.);          //rainfall (mm)
+    Input (double, Rainfall, 0.);          //rainfall (mm)
 
-    Output (double, Doseldu);
-    Output (double, outflow);
-    Output (double, concentration);
+    Output (double, Doseldu); //kg a.i/ha
+    Output (double, outflow); //kg a.i/ha
+    Output (double, concentration); //kg a.i/ha
 
 }
 
@@ -39,7 +39,7 @@ void leafdoseuptaken::reset() {
 
 void leafdoseuptaken::update() {
 
-    if (P <= threshold){
+    if (Rainfall <= threshold){
         outflow = concentration*klu;
         concentration += inflow - outflow;
         Doseldu += outflow;

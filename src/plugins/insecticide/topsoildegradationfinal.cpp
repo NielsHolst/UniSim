@@ -23,11 +23,11 @@ topsoildegradationfinal::topsoildegradationfinal(Identifier name, QObject *paren
     Input (double, Tref, 25.);      //Reference temperature at which t½ has been determined  in deg C
     Input (double, Sp, 0.);         //soil porosity
     Input (double, Q, 2.1);         //value to calculate the temperature correction factor for soil biodegradation rate (this value ranges from 2-3, in this model the value of 2.1 is adopted)
-    Input (double, Tair, 25.);    
+    Input (double, Tair, 25.);      //Average air temperature in the month of pesticide application
     Input (double, Vrsmc, 0.5);     //reference soil moisture content
     Input (double, rf, 0.7);         //exponential response factor for the influence of moisture content on biodegradation rate
     Input (double, fw, 0.25);       //fraction of water in the soil
-    Input (double, P, 0.);          //rainfall (mm)
+    Input (double, Rainfall, 0.);          //rainfall (mm)
     Input (double, threshold, 1.);  //rainfall even greater than 1 mm
 
     Output (double, concentration);
@@ -62,7 +62,7 @@ void topsoildegradationfinal::update() {
     fsm = (Vrsmc > 0) ? std::pow((Vsmc/Vrsmc),rf) : 0;
     ksd = k*fsdT*fsm;
 
-    if (P <= threshold){
+    if (Rainfall <= threshold){
         outflow = concentration*ff*ksd;
         concentration += inflow - outflow;
         sdDoseaflrm = 0.;

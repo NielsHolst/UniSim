@@ -19,7 +19,8 @@ public:
     void update();
 private:
     // Parameters
-    double indoorsTemperature, coverTemperature, latcov;
+    double U, emissivity, absorption, density, heatCapacity, thickness,
+        indoorsTemperature, cropTemperature, sunlight, heatFluxCondensation;
 
     // Variables
     double value;

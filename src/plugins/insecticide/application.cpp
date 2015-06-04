@@ -16,9 +16,11 @@ Application::Application(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(int, day, 1);            //days
-    Input(double, dosage, 1.);      //kg/ha
+    //Input(double, dosage, 3.);     //kg a.i/ha
+    Input(double, ae, 360.);         //active ingredient, g a.e/L
+    Input(double, ar, 6.25);         //application rate, L/ha
 
-    Output(double, application);    //Take the value dosage on the day, otherwise zero
+    Output(double, application);    //Take the value dosage on the day, otherwise zero (kg a.i/ha)
 }
 
 void Application::reset() {
@@ -28,7 +30,8 @@ void Application::reset() {
 
 void Application::update() {
     ++hoursPassed;
-    application = (hoursPassed == 24*day) ? dosage : 0.;
+    //application = (hoursPassed == 24*day) ? dosage : 0.;
+    application = (hoursPassed == 24*day) ? (ae/0.75 * ar * 0.001) : 0.;
 }
 
 } //namespace

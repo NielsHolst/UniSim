@@ -11,6 +11,8 @@ using namespace UniSim;
 
 namespace vg {
 
+UniSim::StringMap<GrowthLight::Type> GrowthLight::types;
+
 PUBLISH(GrowthLight)
 
 /*! \class GrowthLight
@@ -18,13 +20,9 @@ PUBLISH(GrowthLight)
  *
  * Inputs
  * ------
- * - _on_ tells whether light should be on[true,false]
- * - _heatEmissionOn_ is the convective heat emission when light is on [W/m<SUP>2</SUP>]
- * - _longWaveEmissionOn_ is the long wave emission (thermal radiation, Bn) when light is on [W/m<SUP>2</SUP>]
- * - _shortWaveEmissionOn_ is the short wave emission (visible light, Rn) when light is on [W/m<SUP>2</SUP>]
- * - _parEmissionOn_ is the PAR emision when light is on [W/m<SUP>2</SUP>]
- * - _energyUseOn_ is the energy used when light is on [W/m<SUP>2</SUP>]
- * - _minPeriod_ is the minimum period the lamp must remain switched on [min]
+ * - _lampType_ is the type of growth light[HPSL, LED]
+ * - _intensity_ is the power of installed lamps per greenhouse area [W/m<SUP>2</SUP>]
+ * - _ballastCorrection_ is set to >1 (e.g, 1.15) if capacity includes ballast (>=1)
  * - _age_ is the age of the lamps at simulation start [h]
  * - _lifeTime_ is the age at which light output is reduced to 90% [h]
  * - _timeStep_ is the integration time step [s]
@@ -50,40 +48,67 @@ PUBLISH(GrowthLight)
  */
 
 GrowthLight::GrowthLight(Identifier name, QObject *parent)
-    : BaseGrowthLight(name, parent)
+    : GrowthLightBase(name, parent)
 {
+    Input2(QString, lampTypeStr, type, "HPSL");
+    Input(double, intensity, 40.);
+    Input(double, ballastCorrection, 1.);
+    Input(double, age, 0.);
+    Input(double, lifeTime, 12000.);
     InputRef(bool, on, "controllers/growthLight[signal]");
-    InputRef(double, heatEmissionOn, "construction/growthLight[heatEmission]");
-    InputRef(double, longWaveEmissionOn, "construction/growthLight[longWaveEmission]");
-    InputRef(double, shortWaveEmissionOn, "construction/growthLight[shortWaveEmission]");
-    InputRef(double, parEmissionOn, "construction/growthLight[parEmission]");
-    InputRef(double, energyUseOn, "construction/growthLight[energyUse]");
-    InputRef(double, age, "construction/growthLight[age]");
-    InputRef(double, lifeTime, "construction/growthLight[lifeTime]");
-    InputRef(double, minPeriod, "construction/growthLight[minPeriod]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
+
     Output(double, currentPeriod);
     Output(double, totalPeriod);
+
+    types["hpsl"] = Hpsl;
+    types["led"] = Led;
 }
 
 void GrowthLight::reset() {
+    switch (types.seek(lampTypeStr.toLower(), this)) {
+    case Hpsl:
+        attributes.heatCoef = 0.23;
+        attributes.longWaveCoef = 0.42;
+        attributes.shortWaveCoef = 0.50;
+        attributes.parCoef = 0.31;
+        attributes.minPeriodOn = 30.;
+        break;
+    case Led:
+        attributes.heatCoef = 0.02;
+        attributes.longWaveCoef = 0.05;
+        attributes.shortWaveCoef = 0.82;
+        attributes.parCoef = 0.82;
+        attributes.minPeriodOn = 0.;
+        break;
+    }
+
+    double netCapacity = intensity/ballastCorrection;
+    netAttributes.heatEmission = attributes.heatCoef*netCapacity;
+    netAttributes.longWaveEmission = attributes.longWaveCoef*netCapacity;
+    netAttributes.shortWaveEmission = attributes.shortWaveCoef*netCapacity;
+    netAttributes.parEmission = attributes.parCoef*netCapacity;
+    netAttributes.energyUse = ballastCorrection*intensity;
+    degradationRate = log(0.9)/lifeTime;
+    currentPeriod = 0.;
+    totalPeriod = age;
+    energyUsed = 0.;
     noLight();
-    r = log(0.9)/lifeTime;
-    currentPeriod = totalPeriod = 0.;
 }
 
 void GrowthLight::update() {
-    bool keepOn = currentlyOn && currentPeriod < minPeriod;
-    if (on || keepOn) {
+    currentlyOn = on ||
+                  ( currentlyOn && (currentPeriod < attributes.minPeriodOn) );
+    if (currentlyOn) {
         currentPeriod += timeStep/60.;
         totalPeriod += timeStep/3600.;
-        double f = exp(r*(age+totalPeriod));
-        heatEmission = heatEmissionOn + (1-f)*(longWaveEmissionOn+shortWaveEmissionOn);
-        longWaveEmission = f*longWaveEmissionOn;
-        shortWaveEmission = f*shortWaveEmissionOn;
-        parEmission = f*parEmissionOn;
-        energyUse = energyUseOn;
-        currentlyOn = true;
+        double f = exp(degradationRate*(age+totalPeriod));
+        heatEmission = netAttributes.heatEmission + (1-f)*(netAttributes.longWaveEmission+netAttributes.shortWaveEmission);
+        longWaveEmission = f*netAttributes.longWaveEmission;
+        shortWaveEmission = f*netAttributes.shortWaveEmission;
+        totalEmission = heatEmission + longWaveEmission + shortWaveEmission;
+        parEmission = f*netAttributes.parEmission;
+        energyUsed += netAttributes.energyUse*timeStep/3600.;
     }
     else
         noLight();

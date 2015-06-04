@@ -20,9 +20,9 @@ PUBLISH(IndoorsRadiation)
  * ------
  * - _outdoorsDirectRadiation_ is the direct sunlight irradiation [W/m<SUP>2</SUP>]
  * - _outdoorsDiffuseRadiation_ is the diffuses sunlight irradiation [W/m<SUP>2</SUP>]
- * - _diffuseTransmission_ is the proportion of diffuse sunlight transmitted though the greenhouse cover [0;1]
- * - _directTransmissionAsDirect_ is the proportion of direct sunlight transmitted though the greenhouse cover and remaining direct [0;1]
- * - _directTransmissionAsDiffuse_ is the proportion of direct sunlight transmitted though the greenhouse cover and becoming dispersed as diffuse light [0;1]
+ * - _diffuseTransmission_ is the proportion of diffuse sunlight transmitted though the greenhouse surface [0;1]
+ * - _directTransmissionAsDirect_ is the proportion of direct sunlight transmitted though the greenhouse cover and remaining surface [0;1]
+ * - _directTransmissionAsDiffuse_ is the proportion of direct sunlight transmitted though the greenhouse surface and becoming dispersed as diffuse light [0;1]
  * - _growthLightShortWaveRadiation_ is the short wave radiation (light) emitted by the growth light [W/m<SUP>2</SUP>]
  * - _growthLightPropDirect_ is the proportion of growth light considered direct light [0;1]
  *
@@ -49,9 +49,9 @@ IndoorsRadiation::IndoorsRadiation(Identifier name, QObject *parent)
 {
     InputRef(double, outdoorsDirectRadiation, "outdoors[directRadiation]");
     InputRef(double, outdoorsDiffuseRadiation, "outdoors[diffuseRadiation]");
-    InputRef(double, diffuseTransmission, "indoors/screens/transmission[diffuse]");
-    InputRef(double, directTransmissionAsDirect, "indoors/screens/transmission[directAsDirect]");
-    InputRef(double, directTransmissionAsDiffuse, "indoors/screens/transmission[directAsDiffuse]");
+    InputRef(double, diffuseTransmission, "greenhouseShelter[diffuseLightTransmission]");
+    InputRef(double, directTransmissionAsDirect, "greenhouseShelter[directLightTransmissionAsDirect]");
+    InputRef(double, directTransmissionAsDiffuse, "greenhouseShelter[directLightTransmissionAsDiffuse]");
     InputRef(double, growthLightShortWaveRadiation, "actuators/growthLights[shortWaveEmission]");
     Input(double, growthLightPropDirect, 0.7);
     Output(double, direct);
@@ -66,9 +66,9 @@ void IndoorsRadiation::reset() {
 void IndoorsRadiation::update() {
     diffuse = diffuseTransmission*outdoorsDiffuseRadiation +
               directTransmissionAsDiffuse*outdoorsDirectRadiation +
-              (1.-growthLightPropDirect)*growthLightPropDirect;
+              (1.-growthLightPropDirect)*growthLightShortWaveRadiation;
     direct = directTransmissionAsDirect*outdoorsDirectRadiation +
-             growthLightPropDirect*growthLightPropDirect;
+             growthLightPropDirect*growthLightShortWaveRadiation;
     total = direct + diffuse;
 }
 

@@ -20,7 +20,7 @@ PUBLISH(IndoorsCo2)
  * Inputs
  * ------
  * - _outdoorsCo2_ is the CO<SUB>2</SUB> concentration outside the greenhouse [ppm]
- * - _airExchange_ is the relative exchange of air through ventilation during one time step  [0;1]
+ * - _ventilationRate_ is ventilation rate[m<SUP></SUP>/m<SUP>2</SUP>/s]
  * - _assimilationRate_ is the rate of CO<SUB>2</SUB> uptake by the plants [g/m<SUP>2</SUP>/h]
  * - _injectionRate_ is the rate of CO<SUB>2</SUB> injection [g/m<SUP>2</SUP>/h]
  * - _timeStep_ is the duration of one integration time step [2]
@@ -43,9 +43,9 @@ IndoorsCo2::IndoorsCo2(Identifier name, QObject *parent)
 {
     InputRef(double, outdoorsCo2, "outdoors[co2]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
-    InputRef(double, airExchange, "indoors/ventilation[relative]");
-    InputRef(double, timeStep, "calendar[timeStepSecs]");
+//    InputRef(double, ventilationRate, "indoors/ventilation[rate]");
     InputRef(double, averageHeight, "construction/geometry[averageHeight]");
+    InputRef(double, timeStep, "calendar[timeStepSecs]");
     Input(double, assimilationRate, 0);
     Input(double, injectionRate, 0.);
     Output(double, ppm);
@@ -60,11 +60,14 @@ void IndoorsCo2::reset() {
 }
 
 void IndoorsCo2::update() {
-	double ppmBefore = ppm;
-    ppm = ppm*(1. - airExchange) + outdoorsCo2*airExchange;
+    /*
+    double ppmBefore = ppm,
+        finiteExchangerate = 1 - exp(-ventilationRate*timeStep);
+    ppm = ppm*(1. - finiteExchangerate) + outdoorsCo2*finiteExchangerate;
 	ventilationLoss = ppmToDensity(ppmBefore-ppm);
 	ppm += (injectionRate - assimilationRate)*timeStep/3600;
 	density = ppmToDensity(ppm);
+    */
 }
 
 double IndoorsCo2::ppmToDensity(double ppm) {

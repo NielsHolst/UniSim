@@ -34,7 +34,7 @@ PUBLISH(VentilatedLatentHeatConverter)
  */
 
 VentilatedLatentHeatConverter::VentilatedLatentHeatConverter(Identifier name, QObject *parent)
-    : VapourFlux(name, parent)
+    : VapourFluxBase(name, parent)
 {
     InputRef(double, groundArea, "construction/geometry[groundArea]");
     InputRef(double, indoorsAh, "indoors/humidity[ah]");

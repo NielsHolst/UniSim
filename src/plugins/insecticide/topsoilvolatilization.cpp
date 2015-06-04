@@ -17,7 +17,7 @@ topsoilvolatilization::topsoilvolatilization(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
 
-    Input (double, Tsa, 25.);
+    Input (double, Tsa, 25.);           // degrees celsius
     Input (double, MWair, 28.97);       // g/mol
     Input (double, MVair, 20.1);        // Molar volume air; cm3/mol
     Input (double, MV, 140.83);         //molar volume; density 1.704 g/cm3, molar mass 169.07 g/mol

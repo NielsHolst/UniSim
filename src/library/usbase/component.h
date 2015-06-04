@@ -21,7 +21,7 @@
 #define InputRef2(type, cppname, pubname, ref) addParameterRef<type>(#pubname, & cppname, ref)
 
 #define Output(type, name) (*(new Variable<type>(#name, & name, this, "")))
-#define Output2(type, cppname, pubname) (*(new Variable<type>(pubname, & cppname, this, "")))
+#define Output2(type, cppname, pubname) (*(new Variable<type>(#pubname, & cppname, this, "")))
 
 namespace UniSim{
 

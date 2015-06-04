@@ -15,6 +15,7 @@ class CropLai : public UniSim::Model
 {
 public:
     CropLai(UniSim::Identifier name, QObject *parent);
+    void reset();
 protected:
     double lai, laiStartPerPlant;
 };

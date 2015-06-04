@@ -32,8 +32,8 @@ leafvolatilization::leafvolatilization(Identifier name, QObject *parent)
     Output (double, fv);            //fraction of pesticide emitted in 1 h
     Output (double, fr);            //Fraction remaining on leaf -or-fraction of pesticide reaching the leave still there in 1 hour
     Output (double, klv);           //rate constant of vaporization at actual temperature, (h-1)
-}
 
+}
 
 void leafvolatilization::reset() {
 
@@ -42,7 +42,7 @@ void leafvolatilization::reset() {
     kTr = 0.;
     klv = 0.;
     fv = 0.;
-    fr = 0.;    
+    fr = 0.;
 
 }
 

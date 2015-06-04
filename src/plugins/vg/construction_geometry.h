@@ -16,18 +16,18 @@ class ConstructionGeometry : public UniSim::Model
 {
 public:
     ConstructionGeometry(UniSim::Identifier name, QObject *parent);
-    void initialize();
+    void reset();
     typedef enum{Single, Double, Hortiplus} GlassType;
     typedef enum{HPSL, LED} LampType;
 private:
-    // Parameters
-    double spanWidth, length, height, roofPitch;
+    // Input
+    double spanWidth, length, height, roofPitch, shade;
     int numSpans;
 
-    // Variables
+    // Output
     double width, groundArea, averageHeight,
         coverArea, coverPerGroundArea, sideWallsArea, endWallsArea, roofArea, gablesArea,
-        volumeTotal, volumeBelowRoof, volumeRoof;
+        volume, volumeBelowRoof, volumeRoof;
 };
 } //namespace
 

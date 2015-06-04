@@ -21,18 +21,19 @@ PUBLISH(GrowthLights)
  */
 
 GrowthLights::GrowthLights(Identifier name, QObject *parent)
-    : BaseGrowthLight(name, parent)
+    : GrowthLightBase(name, parent)
 {
 }
 
 void GrowthLights::initialize() {
-    auto lights = seekChildren<BaseGrowthLight*>("*");
+    auto lights = seekChildren<GrowthLightBase*>("*");
     for (auto light : lights) {
         pHeatEmission << light->pullValuePtr<double>("heatEmission");
         pLongWaveEmission << light->pullValuePtr<double>("longWaveEmission");
         pShortWaveEmission << light->pullValuePtr<double>("shortWaveEmission");
+        pTotalEmission << light->pullValuePtr<double>("totalEmission");
         pParEmission << light->pullValuePtr<double>("parEmission");
-        pEnergyUse << light->pullValuePtr<double>("energyUse");
+        pEnergyUsed << light->pullValuePtr<double>("energyUsed");
         pCurrentlyOn << light->pullValuePtr<bool>("currentlyOn");
     }
 }
@@ -49,7 +50,7 @@ namespace {
         return total;
     }
 
-    double unite(QVector<const bool*> &values) {
+    double any(QVector<const bool*> &values) {
         bool total{false};
         for (auto value : values)
             total = total || *value;
@@ -61,8 +62,8 @@ void GrowthLights::update() {
     longWaveEmission = sum(pLongWaveEmission);
     shortWaveEmission = sum(pShortWaveEmission);
     parEmission = sum(pParEmission);
-    energyUse = sum(pEnergyUse);
-    currentlyOn = unite(pCurrentlyOn);
+    energyUsed = sum(pEnergyUsed);
+    currentlyOn = any(pCurrentlyOn);
 }
 
 } //namespace

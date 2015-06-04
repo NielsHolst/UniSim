@@ -21,13 +21,13 @@ leaffinaldosephotodegraded::leaffinaldosephotodegraded(Identifier name, QObject 
 
     Input (double, kld, 0.);        //h-1
     Input (double, kov, 0.);        //h-1
-    Input (double, P, 25.);
-    Input (double, inflow, 0.);
-    Input (double, threshold, 1.);
+    Input (double, P, 25.); //rainfal (mm)
+    Input (double, inflow, 0.); //kg a.i/ha
+    Input (double, threshold, 1.); // rainfall (mm)
 
     Output (double, Doselfdpd);     //final dose removed by volatilization
-    Output (double, outflow);
-    Output (double, concentration);
+    Output (double, outflow); //kg a.i/ha
+    Output (double, concentration); //kg a.i/ha
 
 }
 

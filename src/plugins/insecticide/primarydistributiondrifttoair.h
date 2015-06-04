@@ -22,7 +22,7 @@ public:
 protected:
 
     // Input
-    double Doseappl, Pnsz, Nd, A0, A1, B0, B1, W;
+    double Doseappl, Pnsz, Nd, A0, A1, B0, B1, X0, Y0,W;
 
     // Output
     double fXpass, Xpass, Dosedrift, fd;

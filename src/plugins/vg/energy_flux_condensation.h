@@ -7,22 +7,19 @@
 #ifndef VG_ENERGY_FLUX_CONDENSATION_H
 #define VG_ENERGY_FLUX_CONDENSATION_H
 
-#include <QVector>
-#include <usbase/model.h>
+
+#include "energy_flux_base.h"
 
 namespace vg {
 
-class EnergyFluxCondensation : public UniSim::Model
+class EnergyFluxCondensation : public EnergyFluxBase
 {
 public:
     EnergyFluxCondensation(UniSim::Identifier name, QObject *parent);
-    void reset();
-    void initialize();
     void update();
 
 private:
-    double flux;
-    QVector<const double*> fluxes;
+    double condensation;
 };
 } //namespace
 

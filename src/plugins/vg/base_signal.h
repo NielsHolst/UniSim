@@ -17,6 +17,7 @@ public:
     BaseSignal(UniSim::Identifier name, QObject *parent);
     void reset() final;
     void update() final;
+    virtual void localReset() {}
     virtual double signal() = 0;
 private:
     double signalReset, _signal;

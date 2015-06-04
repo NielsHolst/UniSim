@@ -17,10 +17,10 @@ doseavailableforleachingrunoffandmacroporeflow::doseavailableforleachingrunoffan
 	: Model(name, parent)
 {
 
-    Input (double, sdDoseaflrm, 0.);       //dose remained after soil degradation
-    Input (double, svDoseaflrm, 0.);       //dose remained after soil volatilization
+    Input (double, sdDoseaflrm, 0.);       //dose remained after soil degradation (kg a.i/ha)
+    Input (double, svDoseaflrm, 0.);       //dose remained after soil volatilization (kg a.i/ha)
 
-    Output (double, Doseaflrm); //dose available for leaching, runoff and macropore flow
+    Output (double, Doseaflrm); //dose available for leaching, runoff and macropore flow (kg a.i/ha)
 
 }
 

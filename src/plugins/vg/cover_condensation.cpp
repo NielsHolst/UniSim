@@ -1,10 +1,10 @@
+
 /* Copyright (C) 2013 by Oliver Koerner, AgroTech [oko@agrotech.dk] and
 ** Niels Holst, Aarhus University [niels.holst@agrsci.dk].
 ** Copyrights reserved.
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <stdlib.h>
 #include "cover_condensation.h"
 #include "general.h"
 #include "publish.h"
@@ -28,26 +28,17 @@ PUBLISH(CoverCondensation)
  *
  * Outputs
  * ------
- * - see VapourFlux
- *
- * Default dependencies
- * ------------
- * - a _construction/geometry_ model with two ports:
- *   + _coverArea_ [m<SUP>2</SUP>]
- *   + _groundArea_ [m<SUP>2</SUP>]
- * - an _indoors/temperature_ model with a _value_ port
- * - an _indoors/humidity_ model with an _ah_ port
- * - a _temperature_ sibling model with a _value_ port
+ * - see VapourFluxBase
  */
 
 CoverCondensation::CoverCondensation(Identifier name, QObject *parent)
-    : VapourFlux(name, parent)
+    : VapourFluxBase(name, parent)
 {
-    InputRef(double, coverArea, "construction/geometry[coverArea]");
+    InputRef(double, coverArea, "..[area]");
+    InputRef(double, coverTemperature, "../energyFlux[temperature]");
     InputRef(double, groundArea, "construction/geometry[groundArea]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, indoorsAh, "indoors/humidity[ah]");
-    InputRef(double, coverTemperature, "cover/temperature[value]");
 }
 
 void CoverCondensation::update() {

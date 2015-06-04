@@ -18,7 +18,7 @@ fractionofrainrunoff::fractionofrainrunoff(Identifier name, QObject *parent)
 {
 
     Input (double, Q, 5.);
-    Input (double, P, 25.);
+    Input (double, P, 1.);      //average  daily rainfall per rainfall event in a given month (mm)
 
 
     Output (double, frr);

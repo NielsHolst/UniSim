@@ -74,8 +74,6 @@ call clean_folder ..\..\library\usengine
 @echo .
 
 @rem Copy library files
-call make_tool write_qwt_version
-..\own_tools\write_qwt_version
 pushd ..\..\applications
 call get_libraries
 popd

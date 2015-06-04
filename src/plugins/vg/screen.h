@@ -7,9 +7,6 @@
 #ifndef VG_SCREEN_H
 #define VG_SCREEN_H
 
-
-#include <QPair>
-#include <QMap>
 #include <usbase/model.h>
 #include <usbase/string_map.h>
 
@@ -26,7 +23,6 @@ public:
     // Special methods
     Position pullPosition() const;
     Layer pullLayer() const;
-    const double *state();
 
 private:
     friend class Screens;
@@ -34,13 +30,12 @@ private:
     // Parameters
     QString positionStr, layerStr;
     double lightTransmission, energyLossReduction, haze,
-        airTransmission;
+        airTransmission, state;
     // Data
     typedef UniSim::StringMap<Position> Positions;
     typedef UniSim::StringMap<Layer> Layers;
     static Positions positions;
     static Layers layers;
-    const double *_state;
     // Methods
     void setStandardPositions();
     void setStandardLayers();

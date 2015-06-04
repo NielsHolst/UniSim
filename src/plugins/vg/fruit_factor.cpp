@@ -24,7 +24,7 @@ PUBLISH(FruitFactor)
  *
  * Output
  * ------
- * - _value_ is the value of the factor [R<SUB>+</SUB>]
+ * - _value_ is the value of the factor [>=1]
  *
  * Default dependencies
  * ------------
@@ -39,6 +39,10 @@ FruitFactor::FruitFactor(Identifier name, QObject *parent)
     Input(double, maxValue, 1.);
     InputRef(double, plantDensity, "../..[density]");
     Output(double, value);
+}
+
+void FruitFactor::reset() {
+    value = 1.;
 }
 
 void FruitFactor::update() {

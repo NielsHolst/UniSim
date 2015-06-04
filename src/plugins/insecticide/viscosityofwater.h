@@ -23,6 +23,7 @@ private:
 
     // Output
     double viscosity;
+
 };
 
 } //namespace

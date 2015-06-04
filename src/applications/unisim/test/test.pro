@@ -16,14 +16,14 @@ RESOURCES = ../../../resources/unisim.qrc
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
 include ($${US_QWT}/qwt.pri)
-include ($${US_GSL}/gsl.pri)
+#include ($${US_GSL}/gsl.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \
     $${US_BASE}/test/test_data_grid.h \
     $${US_BASE}/test/test_identifier.h \
     $${US_BASE}/test/test_interpolate.h \
-    $${US_BASE}/test/test_minimiser.h \
+#    $${US_BASE}/test/test_minimiser.h \
     $${US_BASE}/test/test_matrix.h \
     $${US_BASE}/test/test_moments.h \
     $${US_BASE}/test/test_named_object.h \
@@ -32,11 +32,11 @@ HEADERS += \
     $${US_BASE}/test/test_parameter_vector.h \
     $${US_BASE}/test/test_push_variable.h \
     $${US_BASE}/test/test_reference.h \
-    $${US_BASE}/test/test_root_solver.h \
+#    $${US_BASE}/test/test_root_solver.h \
     $${US_BASE}/test/test_strata.h \
     $${US_BASE}/test/test_time.h \
     $${US_BASE}/test/test_utilities.h \
-    $${US_ENGINE}/test/test_ast.h \
+#    $${US_ENGINE}/test/test_ast.h \
     $${US_ENGINE}/test/test_builder.h \
     $${US_ENGINE}/test/test_mega_factory.h \
     $${US_ENGINE}/test/test_simulation.h \
@@ -86,19 +86,19 @@ SOURCES += \
     $${US_BASE}/test/test_identifier.cpp \
     $${US_BASE}/test/test_interpolate.cpp \
     $${US_BASE}/test/test_matrix.cpp \
-    $${US_BASE}/test/test_minimiser.cpp \
+#    $${US_BASE}/test/test_minimiser.cpp \
     $${US_BASE}/test/test_moments.cpp \
     $${US_BASE}/test/test_named_object.cpp \
     $${US_BASE}/test/test_name_list.cpp \
     $${US_BASE}/test/test_parameter.cpp \
     $${US_BASE}/test/test_parameter_vector.cpp \
     $${US_BASE}/test/test_push_variable.cpp \
-    $${US_BASE}/test/test_root_solver.cpp \
+#    $${US_BASE}/test/test_root_solver.cpp \
     $${US_BASE}/test/test_strata.cpp \
     $${US_BASE}/test/test_reference.cpp \
     $${US_BASE}/test/test_time.cpp \
     $${US_BASE}/test/test_utilities.cpp \
-    $${US_ENGINE}/test/test_ast.cpp \
+#    $${US_ENGINE}/test/test_ast.cpp \
     $${US_ENGINE}/test/test_builder.cpp \
     $${US_ENGINE}/test/test_mega_factory.cpp \
     $${US_ENGINE}/test/test_simulation.cpp \

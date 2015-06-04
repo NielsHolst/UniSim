@@ -7,21 +7,18 @@
 #ifndef VG_ENERGY_FLUX_VENTILATION_H
 #define VG_ENERGY_FLUX_VENTILATION_H
 
-#include <usbase/model.h>
+#include "energy_flux_base.h"
 
 namespace vg {
 
-class EnergyFluxVentilation : public UniSim::Model
+class EnergyFluxVentilation : public EnergyFluxBase
 {
 public:
     EnergyFluxVentilation(UniSim::Identifier name, QObject *parent);
-    void reset();
     void update();
-
 private:
-    double relativeVentilationRate, indoorsTemperature, outdoorsTemperature,
-        timeStep, averageHeight,
-        flux;
+    // Inputs
+    double ventilation, indoorsTemperature, outdoorsTemperature, averageHeight;
 };
 } //namespace
 

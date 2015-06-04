@@ -16,7 +16,7 @@ primarydistributionleaf::primarydistributionleaf(Identifier name, QObject *paren
 	: Model(name, parent)
 {
 
-    Input (double, Doseappl, 1.);         //applied dosage kg/ha
+    Input (double, Doseappl, 1.);         //applied dosage kg a.i/ha
     Input (double, Dosedrift, 1.);
     Input(double, stage1, 0.);
     Input(double, stage2, 0.);

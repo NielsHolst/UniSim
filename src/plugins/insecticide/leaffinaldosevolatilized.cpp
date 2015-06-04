@@ -21,13 +21,13 @@ leaffinaldosevolatilized::leaffinaldosevolatilized(Identifier name, QObject *par
 
     Input (double, klv, 0.);        //h-1
     Input (double, kov, 0.);        //h-1
-    Input (double, threshold, 1.);
-    Input (double, P, 25.);
-    Input (double, inflow, 0.);
+    Input (double, threshold, 1.); //rainfall (mm)
+    Input (double, P, 25.); //rainfall (mm)
+    Input (double, inflow, 0.); //kg a.i/ha
 
     Output (double, Doselfdv);      //final dose removed by volatilization
-    Output (double, concentration);
-    Output (double, outflow);
+    Output (double, concentration); //kg a.i/ha
+    Output (double, outflow); //kg a.i/ha
 
 }
 

@@ -6,6 +6,7 @@
 #ifndef UNISIM_NAMED_OBJECT
 #define UNISIM_NAMED_OBJECT
 
+#include <typeinfo>
 #include <QObject>
 #include "exception.h"
 #include "identifier.h"

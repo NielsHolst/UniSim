@@ -3,37 +3,36 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "hazardquotient.h"
-#include "publish.h"
+#include "HazardQuotient.h"
 
 using namespace UniSim;
 
 namespace insecticide {
-
-PUBLISH (hazardquotient)
 	
-hazardquotient::hazardquotient(Identifier name, QObject *parent)
+HazardQuotient::HazardQuotient(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-
-    Input (double, lowestAvailableNOAEL, 0.);   //estimated lowest daily exposure level for animals (g per kg per day)
-    Input (double, concentration, 0.);          //concentration of parent and metabolite per day"
-    Input (double, RV, 1);                      //reference value <1 no risk and >1 there is risk
-    Output (double, HQ);                        //Hazard quotient index (unit)
-    Output (double, ReferenceValue);
+    addParameter<double>(Name(lowestAvailableNOAEL), 0., "estimated lowest daily exposure level for animals (g per kg per day)");
+    addParameter<double>(Name(concentration), 0., "concentration of parent and metabolite per day");
+    addVariable<double>(Name(HQ), "Hazard quotient index (unit)");
+    addVariable<double>(Name(ReferenceValue), "Hazard quotient reference value (unit)");
+    addParameter<double>(Name(RV), 0., "reference value <1 no risk and >1 there is risk");
 
 }
 
-void hazardquotient::reset() {
+void HazardQuotient::reset() {
 
     concentration = 0.;
     HQ = 0.;
 
+
+
 }
 
-void hazardquotient::update() {
+void HazardQuotient::update() {
     HQ = concentration/lowestAvailableNOAEL;
     ReferenceValue = RV;
+
 
 }
 

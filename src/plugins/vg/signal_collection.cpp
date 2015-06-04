@@ -42,6 +42,9 @@ void SignalCollection::initialize() {
         childSignals << child->pullValuePtr<double>("signal");
     }
     setRules();
+}
+
+void SignalCollection::localReset() {
     rule = rules.seek(ruleStr.toLower(), this);
 }
 

@@ -19,21 +19,14 @@ PUBLISH(GrowthLightController)
 /*! \class GrowthLightController
  * \brief Flags whether lights are on or off
  *
- * Inputs
- * ------
- * - None.
- *
  * Outputs
  * ------
  * - _period_ is time lights have been on, or zero if they are switched off  [min]
  * - _signal_ is the on/off signal to lamps [true,false]
  *
- * Default dependencies
+ * Dependencies
  * ------------
- * - zero or more child models named _periods_ with a _flag_ port [true,false]
- * - zero or more child models named _on_ with a _flag_ port [true,false]
- * - zero or more child models named _off_ with a _flag_ port [true,false]
- *
+ * - three child models, named _periods_, _on_ and _off_, all with a _flag_ port [true,false]
  */
 
 GrowthLightController::GrowthLightController(Identifier name, QObject *parent)
@@ -58,13 +51,7 @@ void GrowthLightController::reset() {
 }
 
 void GrowthLightController::update() {
-    signal = *periodFlag && *onFlag && !offFlag;
-//    if (!*periodFlag)
-//        signal = false;
-//    else if (signal && *offFlag)
-//        signal = false;
-//    else if (!signal && *onFlag)
-//        signal = true;
+    signal = *periodFlag && *onFlag && !(*offFlag);
 }
 
 } //namespace

@@ -8,11 +8,11 @@
 #define VG_GROWTH_LIGHTS_H
 
 #include <QVector>
-#include "base_growth_light.h"
+#include "growth_light_base.h"
 
 namespace vg {
 
-class GrowthLights : public BaseGrowthLight
+class GrowthLights : public GrowthLightBase
 {
 public:
     GrowthLights(UniSim::Identifier name, QObject *parent);
@@ -20,7 +20,7 @@ public:
     void reset();
     void update();
 private:
-    QVector<const double*> pHeatEmission, pLongWaveEmission, pShortWaveEmission, pParEmission, pEnergyUse;
+    QVector<const double*> pHeatEmission, pLongWaveEmission, pShortWaveEmission, pTotalEmission, pParEmission, pEnergyUsed;
     QVector<const bool*> pCurrentlyOn;
 };
 } //namespace

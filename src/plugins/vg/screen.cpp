@@ -5,7 +5,6 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
-#include "base_control_element.h"
 #include "publish.h"
 #include "screen.h"
 
@@ -23,13 +22,13 @@ Screen::Layers Screen::layers;
  *
  * Inputs
  * ------
- * - _position_ is one of eight screen positions
- * ["whole_roof", "flat_roof", "roof1", "roof2", "side1", "side2", "end1", "end2"]
+ * - _position_ is one of eight screen positions ["whole_roof", "flat_roof", "roof1", "roof2", "side1", "side2", "end1", "end2"]
  * - _layer_ is one of three layers ["inner", "mid", "outer"]
  * - _lightTransmission_ is the proportion of light transmitted [0;1]
  * - _energyLossReduction_ is the proportion of energy saved by the screen [0;1]
  * - _haze_ is the proportion of direct light becoming dispersed on passage through the material [0;1]
  * - _airTransmission_ is the proportion of air transmitted through the material [0;1]
+ * - _state_ is the state of the screen [0;1], where 0=open and 1= drawn
  *
  * Outputs
  * ------
@@ -41,14 +40,15 @@ Screen::Layers Screen::layers;
  */
 
 Screen::Screen(Identifier name, QObject *parent)
-    : Model(name, parent), _state(0)
+    : Model(name, parent)
 {
     Input2(QString, positionStr, position, "");
     Input2(QString, layerStr, layer, "");
     Input(double, lightTransmission, 0.63);
     Input(double, energyLossReduction, 0.4);
-    Input(double, haze, 1.);
+    Input(double, haze, 0.);  // Guess
     Input(double, airTransmission, 0.8);
+    Input(double, state, 0.);
     setStandardPositions();
     setStandardLayers();
 }
@@ -79,15 +79,6 @@ void Screen::setStandardLayers() {
     layers["inner"] = Inner;
     layers["mid"] = Mid;
     layers["outer"] = Outer;
-}
-
-const double *Screen::state() {
-    // Lazy pull of state
-    if (_state) return _state;
-    auto control = peekOneChild<BaseControlElement*>("*");
-    if (!control)
-        throw Exception("Screen model must have one child of type 'ControlElement'");
-    return _state = control->pullValuePtr<double>("state");
 }
 
 } //namespace

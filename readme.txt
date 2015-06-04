@@ -1,5 +1,5 @@
 --------------------------------------------------------------------
-Copyright (C) 2009-2012 by Niels Holst and co-authors. 
+Copyright (C) 2009-2015 by Niels Holst and co-authors. 
 Released under the terms of the GNU General Public License version 
 3.0 or later. See www.gnu.org/copyleft/gpl.html.
 --------------------------------------------------------------------
@@ -62,6 +62,6 @@ the Downloads sections of www.ecolmod.org.
 
 ---------------------------------------
 Niels Holst, Aarhus University, Denmark
-[niels.holst@agrsci.dk] 
+[niels.holst@agro.au.dk] 
 ---------------------------------------
 

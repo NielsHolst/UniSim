@@ -10,10 +10,10 @@
 
 namespace insecticide {
 
-class Crop : public UniSim::Model
+class crop : public UniSim::Model
 {
 public:
-    Crop(UniSim::Identifier name, QObject *parent);
+    crop(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 

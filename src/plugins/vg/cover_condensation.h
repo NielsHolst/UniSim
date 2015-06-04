@@ -7,11 +7,11 @@
 #ifndef VG_COVER_CONDENSATION_H
 #define VG_COVER_CONDENSATION_H
 
-#include "vapour_flux.h"
+#include "vapour_flux_base.h"
 
 namespace vg {
 
-class CoverCondensation : public VapourFlux
+class CoverCondensation : public VapourFluxBase
 {
 public:
     CoverCondensation(UniSim::Identifier name, QObject *parent);

@@ -1,0 +1,1162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<simulation name="fate and transport with crop">	
+	<integrator name="steps" type="UniSim::Steps">
+		<parameter name="maxSteps" value="2880"/> <!-- Corresponding to the number of maize growing season i.e. 120 days x 24 hours = 2880-->
+		<model name="runIterator" type="RunIteratorFixed">
+			<parameter name="numIterations" value="30"/>
+		</model>
+	</integrator>	
+	
+	<model name="random">
+		<model name="fw" type="UniSim::RandomUniform">
+			<parameter name="minValue" value="0"/>
+			<parameter name="maxValue" value="1"/>
+		</model>
+	</model>	
+	
+	
+	<model name="unisim calendar and weather">		
+		<model name="calendar" type="UniSim::Calendar">
+			<parameter name="initialDate" value="01/04/2013"/>
+			<parameter name="timestep" value="1"/>
+			<parameter name="timeunit" value="h"/>
+		</model>
+		<model name="weather" type="UniSim::Weather">
+			<model name="records" type="UniSim::Records">
+				<parameter name="fileName" value="PathumthaniAgromet2013.txt"/> <!-- "I" values are estimates, actual values will be collected from TMD/TMA-->
+				<parameter name="imposeInitialDateTime" value="no"/>  <!-- Tell the Records model not to impose its time scale on the calendar -->
+			</model>
+		</model>
+	</model>	
+	
+	<model name="crop grown">
+		<model name="crop" type="insecticide::Crop"><!-- crop grown, e.g. maize -->
+			<parameter name="day" value="1"/>
+			<parameter name="seeds" value="1"/>
+		</model>
+	</model>
+	
+	<model name="crop development stages" type="insecticide::Crop"><!-- growth stages of a crop, e.g. maize -->		
+		<model name="time" type="UniSim::DayDegrees">
+			<parameter name="T0" value="5"/>
+		</model>
+		<model name="leafDevelopment" type="UniSim::Stage">
+			<parameter name="duration" value="300"/>
+			<parameter name="inflow" ref="crop[seedsSown]"/>
+		</model>
+		<model name="tillering" type="UniSim::Stage">
+			<parameter name="duration" value="100"/>
+			<parameter name="inflow" ref="leafDevelopment[outflow]"/>
+		</model>
+		<model name="stemElongation" type="UniSim::Stage">
+			<parameter name="duration" value="150"/>
+			<parameter name="inflow" ref="tillering[outflow]"/>
+		</model>
+		<model name="senescence" type="UniSim::Stage">
+			<parameter name="duration" value="200"/>
+			<parameter name="inflow" ref="stemElongation[outflow]"/>
+		</model>
+	</model>
+		
+	<model name="applications"><!-- application of pesticides -->
+		<model name="first application">
+			<model name="app1" type="insecticide::application"> <!-- The model is set for multiple appl, so far, other app are set to zero -->
+				<parameter name="day" value="10"/>
+				<parameter name="dosage" value="3"/>
+			</model>
+		</model>
+		<model name="second application">
+			<model name="app2" type="insecticide::application">
+				<parameter name="day" value="35"/>
+				<parameter name="dosage" value="0"/>
+			</model>
+		</model>
+		<model name="third application">
+			<model name="app3" type="insecticide::application">
+				<parameter name="day" value="55"/>
+				<parameter name="dosage" value="0"/>
+			</model>
+		</model>		
+		<model name="total" type="UniSim::Sum">
+			<parameter name="toAdd" value="(app1[application] app2[application] app3[application])"/>
+		</model>		
+	</model>	
+	
+	<!-- primary distribution of pesticides -->
+	<model name="distribution">	
+		<model name="primary distribution">
+			<model name="to air">
+				<model name="dose reaching air" type="insecticide::primarydistributiondrifttoair">
+					<parameter name="W" value="100"/>
+					<parameter name="Pnsz" value="0"/>
+					<parameter name="Nd" value="0.1"/>
+					<parameter name="A0" value="39"/>
+					<parameter name="A1" value="0.90"/>
+					<parameter name="B0" value="2.28"/>
+					<parameter name="B1" value="0.147"/>
+					<parameter name="Doseappl" ref="applications/total[value]"/>
+				</model>				
+			</model>
+			<model name="on leaf">
+				 <model name="dose reaching leaf" type="insecticide::primarydistributionleaf">
+					<parameter name="Doseappl" ref="applications/total[value]"/>					
+					<parameter name="Dosedrift" ref="dose reaching air[Dosedrift]"/>
+					<parameter name="stage1" ref="leafDevelopment[value]"/>
+					<parameter name="stage2" ref="tillering[value]"/>
+					<parameter name="stage3" ref="stemElongation[value]"/>
+					<parameter name="stage4" ref="senescence[value]"/>
+				 </model>
+			 </model>			
+			<model name="on soil">
+				 <model name="dose reaching soil" type="insecticide::primarydistributionsoil">
+					<parameter name="Doseappl" ref="applications/total[value]"/>
+					<parameter name="Doserl" ref="dose reaching leaf[Doserl]"/>
+					<parameter name="Dosedrift" ref="dose reaching air[Dosedrift]"/>
+				</model>
+			</model>						
+		</model>	
+			
+
+		<!-- secondary distribution of pesticides -->
+		
+		<!-- secondary distribution of pesticides on plants/leaf -->
+		
+		<model name="secondary distribution">
+			<model name="leaf processes">	
+				<model name="leaf volatilization"><!-- leaf volatilization -->
+					<model name="rate constant of volatilization" type="insecticide::leafvolatilization"><!--klv-->
+						<parameter name="VP" value="2.45e-5"/>
+						<parameter name="Doseappl" value="3.6"/>
+						<parameter name="Ea" value="95"/>
+						<parameter name="R" value="8.3145"/>
+						<parameter name="Tr" value="25"/>
+						<parameter name="Ta" ref="weather[Tavg]"/>
+					</model>
+				</model>		
+				<model name="leaf uptake"><!-- plant leaf uptake -->
+					<model name="rate constant of uptake" type="insecticide::leafuptake"><!--klu-->
+						<parameter name="MV" value="96.61"/>
+						<parameter name="leaftype" value="1"/>
+						<parameter name="R" value="8.3145"/>
+						<parameter name="T" value="25"/>
+					</model>		
+				</model>		
+				<model name="leaf photodegradation"><!-- leaf photodegradation -->
+					<model name="day lengths" type="UniSim::Calendar"><!-- length of the day based on latitude -->
+						<parameter name="initialDate" value="01/04/2013"/>
+						<parameter name="latitude" value="114.0208"/> <!-- 14.0208° N, 100.5247° E Pathum Thani Province, Coordinates -->
+					</model>
+					<model name="rate constant of photodegradation" type="insecticide::leafphotodegradation"><!--kld-->						
+						<parameter name="I" ref="weather/records[I]"/>
+						<parameter name="kOH" value="79e-12"/>
+						<parameter name="dl" ref="Calendar[daylength]"/>
+					</model>		
+				</model>
+				<model name="day lengths"><!-- daily sun shine hours-->
+					<model name="day lengths" type="UniSim::Calendar"><!-- length of the day based on latitude -->
+						<parameter name="initialDate" value="01/04/2013"/>
+						<parameter name="latitude" value="114.0208"/> <!-- 14.0208° N, 100.5247° E Pathum Thani Province, Coordinates -->
+					</model>							
+				</model>
+				<model name="overall rate constant"><!--kov-->
+					<model name="overall rate constant" type="insecticide::leafoverallrateconstant">
+						<parameter name="klv" ref="rate constant of volatilization[klv]"/>
+						<parameter name="klu" ref="rate constant of uptake[klu]"/>
+						<parameter name="kld" ref="rate constant of photodegradation[kld]"/>						
+					</model>		
+				</model>
+				<model name="leaf dose left on beginning rainfall">
+					<model name="leaf dose left on beginning rainfall" type="insecticide::leafdoseleftonbeginningrainfall">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>
+						<parameter name="kov" ref="overall rate constant[kov]"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>	
+					</model>		
+				</model>
+				<model name="leaf sum of dose removed">
+					<model name="leaf sum of dose removed" type="insecticide::leafsumofdoseremoved">
+						<parameter name="kov" ref="overall rate constant[kov]"/>
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>																		
+					</model>		
+				</model>
+				<model name="final dose removed on leaves">
+					<model name="leaf dose photodegraded" type="insecticide::leafdosephotodegraded">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>						
+						<parameter name="kld" ref="rate constant of photodegradation[kld]"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>
+					</model>
+					<model name="leaf dose volatilized" type="insecticide::leafdosevolatilized">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>						
+						<parameter name="klv" ref="rate constant of volatilization[klv]"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>
+					</model>
+					<model name="leaf dose uptaken" type="insecticide::leafdoseuptaken">
+						<parameter name="inflow" ref="dose reaching leaf[Doserl]"/>						
+						<parameter name="klu" ref="rate constant of uptake[klu]"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="threshold" value="1"/>
+					</model>					
+				</model>				
+			</model>
+			
+			<model name="soil processes"><!-- secondary distribution of pesticides on/in soils -->
+				<model name="other supporting processes">
+					<model name="organiccarbonwaterpartitioning" type="insecticide::organiccarbonwaterpartitioning">
+						<parameter name="Koc" value="20100"/>
+						<parameter name="pH" value="4"/>
+						<parameter name="pKa" value="0.8"/>
+					</model>
+					<model name="field area" type="insecticide::fieldarea"><!--area of the field-->
+						<parameter name="W" value="110"/>
+						<parameter name="L" value="90"/>
+					</model>
+					<model name="zvalues" type="insecticide::zvalues">					
+						<parameter name="VP" value="2.45e-5"/>
+						<parameter name="TrefVP" value="25"/>
+						<parameter name="Psol" value="11.5"/>
+						<parameter name="MW" value="169.07"/>
+						<parameter name="R" value="8.3145"/>
+						<parameter name="foc" value="0.2"/>
+						<parameter name="pb" value="1.365"/>
+						<parameter name="Pd" value="0.01"/>
+						<parameter name="fs" value="0.5"/>
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="KocpH" ref="organiccarbonwaterpartitioning[KocpH]"/>
+						<parameter name="Tsa" ref="weather[Tavg]"/>		
+						<parameter name="farea" ref="field area[area]"/>
+						<parameter name="Sp" ref="soil porosity[Sp]"/>
+					</model>			
+					<model name="viscosity" type="insecticide::viscosityofwater">			
+						<parameter name="Tair" ref="weather[Tavg]"/>
+					</model>
+				</model>
+				<model name="dose distribution in the soil">
+					<model name="dose in the soil solids" type="insecticide::topsoildoseinsoilsolidsairandwater">
+						<parameter name="Dosers" ref="dose reaching soil[Dosers]"/>
+						<parameter name="Zs" ref="zvalues[Zs]"/>
+						<parameter name="Vs" ref="zvalues[Vs]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>
+					<model name="dose in the soil air" type="insecticide::topsoildoseinsoilsolidsairandwater">
+						<parameter name="Dosers" ref="dose reaching soil[Dosers]"/>
+						<parameter name="Za" ref="zvalues[Za]"/>
+						<parameter name="Va" ref="zvalues[Va]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>
+					<model name="dose in the soil water" type="insecticide::topsoildoseinsoilsolidsairandwater">
+						<parameter name="Dosers" ref="dose reaching soil[Dosers]"/>
+						<parameter name="Zw" ref="zvalues[Zw]"/>
+						<parameter name="Vw" ref="zvalues[Vw]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>					
+					<model name="fraction in the soil water" type="insecticide::topsoildoseinsoilsolidsairandwater">						
+						<parameter name="Zw" ref="zvalues[Zw]"/>
+						<parameter name="Vw" ref="zvalues[Vw]"/>
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+					</model>
+					<model name="dose of pesticide susceptible for vaporization" type="insecticide::topsoildoseinsoilairandwater">
+						<parameter name="Dosersa" ref="dose in the soil air[Dosersa]"/>
+						<parameter name="Dosersw" ref="dose in the soil water[Dosersw]"/>
+						
+					</model>
+				</model>				
+				
+													
+				<model name="topsoil degradation final"><!-- TOPSOIL DEGRADATION FINAL -->
+					<model name="soil porosity" type="insecticide::soilporosity"><!--soil porosity-->
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+					</model>
+					<model name="soil degradation rate constant">
+						<model name="parent" type="insecticide::soildegradationrateconstant">
+							<parameter name="DT50" value="3"/>							
+						</model>
+						<model name="metabolite" type="insecticide::soildegradationrateconstant">
+							<parameter name="DT50" value="76"/>							
+						</model>
+					</model>
+					<model name="parent final" type="insecticide::topsoildegradationfinal">						
+						<parameter name="inflow" ref="dose in the soil solids[Doserss]"/>
+						<parameter name="k" ref="topsoil degradation final/soil degradation rate constant/parent[k]"/>
+						<parameter name="ff" value="0.995"/>
+						<parameter name="Tair" ref="weather[Tavg]"/>
+						<parameter name="Tref" value="25"/>
+						<parameter name="fw" ref="random/fw[value]"/>
+						<parameter name="rf" value="0.7"/>
+						<parameter name="Q" value="2.1"/>
+						<parameter name="Vrsmc" value="0.5"/>
+						<parameter name="threshold" value="1"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="Sp" ref="soil porosity[Sp]"/>						
+					</model>
+					<model name="metabolite final" type="insecticide::topsoildegradationfinal">
+						<parameter name="inflow" ref="parent final[outflow]"/>
+						<parameter name="k" ref="topsoil degradation final/soil degradation rate constant/metabolite[k]"/>
+						<parameter name="ff" value="1"/>
+						<parameter name="Tair" ref="weather[Tavg]"/>
+						<parameter name="Tref" value="25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="rf" value="0.7"/>
+						<parameter name="Q" value="2.1"/>
+						<parameter name="Vrsmc" value="0.5"/>
+						<parameter name="threshold" value="1"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="Sp" ref="soil porosity[Sp]"/>						
+					</model>						
+					<model name="risk index in soil final">
+						<model name="parent risk in soil final" type="insecticide::riskindex">
+							<parameter name="concentration" ref="parent final[concentration]"/>
+							<parameter name="NOAEL" value="2000e-6"/><!--bobwhite quail-->
+						</model>
+						<model name="metabolite risk in soil final" type="insecticide::riskindex">
+							<parameter name="concentration" ref="metabolite final[concentration]"/>
+							<parameter name="NOAEL" value="2000e-6"/><!--bobwhite quail-->
+						</model>						
+					</model>
+				</model>
+				<model name="topsoil volatilization"><!-- TOPSOIL VOLATILIZATION -->					
+					<model name="ksv" type="insecticide::topsoilvolatilization">						
+						<parameter name="Tsa" value="25"/>
+						<parameter name="MWair" value="28.97"/>
+						<parameter name="MW" value="169.07"/>						
+						<parameter name="Pair" value="1"/>
+						<parameter name="MVair" value="20.1"/>
+						<parameter name="MV" value="96.61"/>
+						<parameter name="BLair" value="0.00475"/>
+						<parameter name="farea" ref="field area[area]"/>						
+						<parameter name="Za" ref="zvalues[Za]"/>
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="viscosity" ref="viscosity[viscosity]"/>
+						<parameter name="Pd" value="0.01"/>						
+						<parameter name="Zw" ref="zvalues[Zw]"/>						
+						<parameter name="VZ" ref="zvalues[VZ]"/>						
+					</model>
+					<model name="topsoil volatilization" type="insecticide::topsoilvolatilizationfinal">												
+						<parameter name="inflow" ref="dose of pesticide susceptible for vaporization[Dosesfv]"/>					
+						<parameter name="ksv" ref="ksv[ksv]"/>
+						<parameter name="Za" ref="zvalues[Za]"/>
+						<parameter name="Va" ref="zvalues[Va]"/>
+						<parameter name="Zw" ref="zvalues[Zw]"/>
+						<parameter name="Vw" ref="zvalues[Vw]"/>						
+						<parameter name="VZ" ref="zvalues[VZ]"/>
+						<parameter name="threshold" value="1"/>
+						<parameter name="P" ref="weather/records[Rain]"/>						
+					</model>					
+					<model name="dose available for leaching runoff and macropore flow" type="insecticide::doseavailableforleachingrunoffandmacroporeflow">							
+						<parameter name="svDoseaflrm" ref="topsoil volatilization[svDoseaflrm]"/>
+						<parameter name="sdDoseaflrm" ref="parent final[sdDoseaflrm]"/>
+					</model>
+				</model>
+				<model name="topsoil runoff">
+					<model name="amount runoff" type="insecticide::runoffamount"><!-- runoff amount-->
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="fsand" value="0.25"/>
+					</model>
+					<model name="fraction of rain runoff" type="insecticide::fractionofrainrunoff"><!-- fraction of rain runoff-->
+						<parameter name="Q" ref="amount runoff[Q]"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+					</model>					
+					<model name="runoff" type="insecticide::topsoilrunoff"><!-- topsoil runoff -->
+						<parameter name="Doseaflrm" ref="dose available for leaching runoff and macropore flow[Doseaflrm]"/>
+						<parameter name="Doseldlobr" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>
+						<parameter name="S" value="0.19"/>
+						<parameter name="wbz" value="5"/>
+						<parameter name="P" ref="weather/records[Rain]"/>
+						<parameter name="KocpH" ref="organiccarbonwaterpartitioning[KocpH]"/>
+						<parameter name="fom" value="0.09"/>
+						<parameter name="Q" ref="amount runoff[Q]"/>
+					</model>
+					<model name="dose available for leaching and macropore flow" type="insecticide::doseavailableforleachingandmacroporeflow">						
+						<parameter name="Doseaflrm" ref="dose available for leaching runoff and macropore flow[Doseaflrm]"/>
+						<parameter name="Doseldlobr" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>
+						<parameter name="Dosesr" ref="runoff[Dosesr]"/>
+					</model>
+				</model>			
+				<model name="macropore flow"><!-- macropore flow -->					
+					<model name="macropore flow" type="insecticide::macroporeflow">
+						<parameter name="fsand" value="0.25"/>
+						<parameter name="fsilt" value="0.25"/>
+						<parameter name="fclay" value="0.5"/>
+						<parameter name="fa" value="0.25"/>
+						<parameter name="fw" value="0.25"/>
+						<parameter name="fmacropore" value="0.3"/>
+						<parameter name="Flowrate" value="0.35"/>
+						<parameter name="tpevent" value="3"/>						
+						<parameter name="P" ref="weather/records[Rain]"/>		
+						<parameter name="frr" ref="fraction of rain runoff[frr]"/>						
+						<parameter name="Tf" value="1"/>
+						<parameter name="frsw" ref="fraction in the soil water[frsw]"/>
+						<parameter name="Doseaflm" ref="dose available for leaching and macropore flow[Doseaflm]"/>
+					</model>
+					<model name="dose available for leaching" type="insecticide::doseavailableforleaching">						
+						<parameter name="Dmacropore" ref="macropore flow[Dmacropore]"/>
+						<parameter name="Doseaflm" ref="dose available for leaching and macropore flow[Doseaflm]"/>
+					</model>
+				</model>
+			</model>
+			<model name="subsoil leakage">
+				<model name="horizon thickness" type="insecticide::horizonthickness">
+					<parameter name="startLayer1" value="0"/>
+					<parameter name="startLayer2" value="0.33"/>
+					<parameter name="startLayer3" value="0.55"/>
+					<parameter name="startLayer4" value="0.8"/>
+					<parameter name="startLayer5" value="1"/>
+					<parameter name="startLayer6" value="1"/>
+					<parameter name="startLayer7" value="1"/>
+					<parameter name="startLayer8" value="1"/>
+					<parameter name="startLayer9" value="1"/>						
+					<parameter name="startLayer10" value="1"/>
+					<parameter name="startLayer11" value="1"/>										
+				</model>
+				<model name="field capacity" type="insecticide::fieldcapacity">
+					<parameter name="fsandLayer1" value="0.463681592"/>
+					<parameter name="fsandLayer2" value="0.478521479"/>
+					<parameter name="fsandLayer3" value="0.454183267"/>
+					<parameter name="fsandLayer4" value="0.393606394"/>
+					<parameter name="fsandLayer5" value="0"/>
+					<parameter name="fsandLayer6" value="0"/>
+					<parameter name="fsandLayer7" value="0"/>
+					<parameter name="fsandLayer8" value="0"/>
+					<parameter name="fsandLayer9" value="0"/>						
+					<parameter name="fsandLayer10" value="0"/>
+					<parameter name="Htc1" ref="subsoil leakage/horizon thickness[Htc1]"/>
+					<parameter name="Htc2" ref="subsoil leakage/horizon thickness[Htc2]"/>
+					<parameter name="Htc3" ref="subsoil leakage/horizon thickness[Htc3]"/>
+					<parameter name="Htc4" ref="subsoil leakage/horizon thickness[Htc4]"/>
+					<parameter name="Htc5" ref="subsoil leakage/horizon thickness[Htc5]"/>
+					<parameter name="Htc6" ref="subsoil leakage/horizon thickness[Htc6]"/>
+					<parameter name="Htc7" ref="subsoil leakage/horizon thickness[Htc7]"/>
+					<parameter name="Htc8" ref="subsoil leakage/horizon thickness[Htc8]"/>
+					<parameter name="Htc9" ref="subsoil leakage/horizon thickness[Htc9]"/>
+					<parameter name="Htc10" ref="subsoil leakage/horizon thickness[Htc10]"/>
+				</model>
+				<model name="ratio of actual evaporation and potential evaporation" type="insecticide::EaEp">
+					<parameter name="fw" value="0.25"/>
+					<parameter name="fieldcapacity" ref="subsoil leakage/field capacity[fieldcap]"/>					
+				</model>
+				<model name="filter velocity" type="insecticide::filtervelocity">
+					<parameter name="averageAnnualPrecipitation" value="500"/>
+					<parameter name="averageAnnualIrrigation" value="2"/>
+					<parameter name="potentialAnnualEvaporation" value="1000"/>
+					<parameter name="ratioofactualevaporationandpotentialevaporation" ref="subsoil leakage/ratio of actual evaporation and potential evaporation[ratioofactualevaporationandpotentialevaporation]"/>					
+				</model>
+				<model name="pore water velocity" type="insecticide::porewatervelocity">
+					<parameter name="fw" value="0.25"/>
+					<parameter name="filtervelocity" ref="subsoil leakage/filter velocity[filtervel]"/>					
+				</model>
+				<model name="apparent diffusion coefficient" type="insecticide::apparentdiffusioncoefficient">					
+					<parameter name="Bew" ref="topsoil volatilization/ksv[Bew]"/>					
+				</model>
+				<model name="apparent diffusion and dispersion coefficient" type="insecticide::apparentdiffusionanddispersioncoefficient">					
+					<parameter name="apparentdiffusioncoefficient" ref="subsoil leakage/apparent diffusion coefficient[apparentDiffusionCoeff]"/>
+					<parameter name="porewatervelocity" ref="subsoil leakage/pore water velocity[porewatervel]"/>
+				</model>
+				<model name="ideal retardation time" type="insecticide::idealretardationtime">
+					<parameter name="porewatervelocity" ref="subsoil leakage/pore water velocity[porewatervel]"/>
+					<parameter name="apparentdiffusionanddispersioncoefficient" ref="subsoil leakage/apparent diffusion and dispersion coefficient[apparentDiffusionAndDispersionCoeff]"/>
+					<parameter name="Htc1" ref="subsoil leakage/horizon thickness[Htc1]"/>
+					<parameter name="Htc2" ref="subsoil leakage/horizon thickness[Htc2]"/>
+					<parameter name="Htc3" ref="subsoil leakage/horizon thickness[Htc3]"/>
+					<parameter name="Htc4" ref="subsoil leakage/horizon thickness[Htc4]"/>
+					<parameter name="Htc5" ref="subsoil leakage/horizon thickness[Htc5]"/>
+					<parameter name="Htc6" ref="subsoil leakage/horizon thickness[Htc6]"/>
+					<parameter name="Htc7" ref="subsoil leakage/horizon thickness[Htc7]"/>
+					<parameter name="Htc8" ref="subsoil leakage/horizon thickness[Htc8]"/>
+					<parameter name="Htc9" ref="subsoil leakage/horizon thickness[Htc9]"/>
+					<parameter name="Htc10" ref="subsoil leakage/horizon thickness[Htc10]"/>
+				</model>				
+				<model name="pH corrected sorption" type="insecticide::pHcorrectedsorption">
+					<parameter name="Koc" value="20100"/>
+					<parameter name="pKa" value="0.8"/>
+					<parameter name="focLayer1" value="0.0154"/>
+					<parameter name="focLayer2" value="0.0025"/>
+					<parameter name="focLayer3" value="0.0016"/>
+					<parameter name="focLayer4" value="0.0011"/>
+					<parameter name="focLayer5" value="0"/>
+					<parameter name="focLayer6" value="0"/>
+					<parameter name="focLayer7" value="0"/>
+					<parameter name="focLayer8" value="0"/>
+					<parameter name="focLayer9" value="0"/>
+					<parameter name="focLayer10" value="0"/>
+					<parameter name="pHLayer1" value="4.4"/>
+					<parameter name="pHLayer2" value="3.9"/>
+					<parameter name="pHLayer3" value="3.7"/>
+					<parameter name="pHLayer4" value="3.6"/>
+					<parameter name="pHLayer5" value="0"/>
+					<parameter name="pHLayer6" value="0"/>
+					<parameter name="pHLayer7" value="0"/>
+					<parameter name="pHLayer8" value="0"/>
+					<parameter name="pHLayer9" value="0"/>
+					<parameter name="pHLayer10" value="0"/>					
+				</model>
+				<model name="retardation factor" type="insecticide::retardationfactor">
+					<parameter name="pb" value="1.365"/>
+					<parameter name="fw" value="0.25"/>
+					<parameter name="pHcorrectedSorptionLayer1" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer1]"/>
+					<parameter name="pHcorrectedSorptionLayer2" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer2]"/>
+					<parameter name="pHcorrectedSorptionLayer3" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer3]"/>
+					<parameter name="pHcorrectedSorptionLayer4" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer4]"/>
+					<parameter name="pHcorrectedSorptionLayer5" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer5]"/>
+					<parameter name="pHcorrectedSorptionLayer6" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer6]"/>
+					<parameter name="pHcorrectedSorptionLayer7" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer7]"/>
+					<parameter name="pHcorrectedSorptionLayer8" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer8]"/>
+					<parameter name="pHcorrectedSorptionLayer9" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer9]"/>
+					<parameter name="pHcorrectedSorptionLayer10" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer10]"/>
+				</model>
+				<model name="annual average soil temperature factor" type="insecticide::annualaveragesoiltemperaturefactor">
+					<parameter name="Q" value="2.1"/>
+					<parameter name="Tref" value="25"/>
+					<parameter name="Tsann" value="30"/>					
+				</model>
+				<model name="bioavailability correction" type="insecticide::bioavailabilitycorrection">
+					<parameter name="ps" value="2.65"/>
+					<parameter name="Sp" ref="soil porosity[Sp]"/>
+					<parameter name="pHcorrectedSorptionLayer1" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer1]"/>
+					<parameter name="pHcorrectedSorptionLayer2" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer2]"/>
+					<parameter name="pHcorrectedSorptionLayer3" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer3]"/>
+					<parameter name="pHcorrectedSorptionLayer4" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer4]"/>
+					<parameter name="pHcorrectedSorptionLayer5" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer5]"/>
+					<parameter name="pHcorrectedSorptionLayer6" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer6]"/>
+					<parameter name="pHcorrectedSorptionLayer7" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer7]"/>
+					<parameter name="pHcorrectedSorptionLayer8" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer8]"/>
+					<parameter name="pHcorrectedSorptionLayer9" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer9]"/>
+					<parameter name="pHcorrectedSorptionLayer10" ref="subsoil leakage/pH corrected sorption[pHcorrectedSorptionLayer10]"/>					
+				</model>
+				<model name="depth correction at 0 to 30 cm" type="insecticide::depthcorrectionat0to30cm">
+					<parameter name="startLayer1" value="0"/>
+					<parameter name="startLayer2" value="0.33"/>
+					<parameter name="startLayer3" value="0.55"/>
+					<parameter name="startLayer4" value="0.8"/>
+					<parameter name="startLayer5" value="1"/>
+					<parameter name="startLayer6" value="1"/>
+					<parameter name="startLayer7" value="1"/>
+					<parameter name="startLayer8" value="1"/>
+					<parameter name="startLayer9" value="1"/>						
+					<parameter name="startLayer10" value="1"/>
+					<parameter name="startLayer11" value="1"/>
+					<parameter name="Htc1" ref="subsoil leakage/horizon thickness[Htc1]"/>
+					<parameter name="Htc2" ref="subsoil leakage/horizon thickness[Htc2]"/>
+					<parameter name="Htc3" ref="subsoil leakage/horizon thickness[Htc3]"/>
+					<parameter name="Htc4" ref="subsoil leakage/horizon thickness[Htc4]"/>
+					<parameter name="Htc5" ref="subsoil leakage/horizon thickness[Htc5]"/>
+					<parameter name="Htc6" ref="subsoil leakage/horizon thickness[Htc6]"/>
+					<parameter name="Htc7" ref="subsoil leakage/horizon thickness[Htc7]"/>
+					<parameter name="Htc8" ref="subsoil leakage/horizon thickness[Htc8]"/>
+					<parameter name="Htc9" ref="subsoil leakage/horizon thickness[Htc9]"/>
+					<parameter name="Htc10" ref="subsoil leakage/horizon thickness[Htc10]"/>
+				</model>
+				<model name="depth correction at 30 to 60 cm" type="insecticide::depthcorrectionat30to60cm">
+					<parameter name="startLayer1" value="0"/>
+					<parameter name="startLayer2" value="0.33"/>
+					<parameter name="startLayer3" value="0.55"/>
+					<parameter name="startLayer4" value="0.8"/>
+					<parameter name="startLayer5" value="1"/>
+					<parameter name="startLayer6" value="1"/>
+					<parameter name="startLayer7" value="1"/>
+					<parameter name="startLayer8" value="1"/>
+					<parameter name="startLayer9" value="1"/>						
+					<parameter name="startLayer10" value="1"/>
+					<parameter name="startLayer11" value="1"/>
+					<parameter name="Htc1" ref="subsoil leakage/horizon thickness[Htc1]"/>
+					<parameter name="Htc2" ref="subsoil leakage/horizon thickness[Htc2]"/>
+					<parameter name="Htc3" ref="subsoil leakage/horizon thickness[Htc3]"/>
+					<parameter name="Htc4" ref="subsoil leakage/horizon thickness[Htc4]"/>
+					<parameter name="Htc5" ref="subsoil leakage/horizon thickness[Htc5]"/>
+					<parameter name="Htc6" ref="subsoil leakage/horizon thickness[Htc6]"/>
+					<parameter name="Htc7" ref="subsoil leakage/horizon thickness[Htc7]"/>
+					<parameter name="Htc8" ref="subsoil leakage/horizon thickness[Htc8]"/>
+					<parameter name="Htc9" ref="subsoil leakage/horizon thickness[Htc9]"/>
+					<parameter name="Htc10" ref="subsoil leakage/horizon thickness[Htc10]"/>
+				</model>
+				<model name="depth correction at 60 to 100 cm" type="insecticide::depthcorrectionat60to100cm">
+					<parameter name="startLayer1" value="0"/>
+					<parameter name="startLayer2" value="0.33"/>
+					<parameter name="startLayer3" value="0.55"/>
+					<parameter name="startLayer4" value="0.8"/>
+					<parameter name="startLayer5" value="1"/>
+					<parameter name="startLayer6" value="1"/>
+					<parameter name="startLayer7" value="1"/>
+					<parameter name="startLayer8" value="1"/>
+					<parameter name="startLayer9" value="1"/>						
+					<parameter name="startLayer10" value="1"/>
+					<parameter name="startLayer11" value="1"/>
+					<parameter name="Htc1" ref="subsoil leakage/horizon thickness[Htc1]"/>
+					<parameter name="Htc2" ref="subsoil leakage/horizon thickness[Htc2]"/>
+					<parameter name="Htc3" ref="subsoil leakage/horizon thickness[Htc3]"/>
+					<parameter name="Htc4" ref="subsoil leakage/horizon thickness[Htc4]"/>
+					<parameter name="Htc5" ref="subsoil leakage/horizon thickness[Htc5]"/>
+					<parameter name="Htc6" ref="subsoil leakage/horizon thickness[Htc6]"/>
+					<parameter name="Htc7" ref="subsoil leakage/horizon thickness[Htc7]"/>
+					<parameter name="Htc8" ref="subsoil leakage/horizon thickness[Htc8]"/>
+					<parameter name="Htc9" ref="subsoil leakage/horizon thickness[Htc9]"/>
+					<parameter name="Htc10" ref="subsoil leakage/horizon thickness[Htc10]"/>
+				</model>
+				<model name="depth correction per horizon" type="insecticide::depthcorrectionperhorizon">					
+					<parameter name="depthCorr0to30cm1" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm1]"/>
+					<parameter name="depthCorr0to30cm2" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm2]"/>
+					<parameter name="depthCorr0to30cm3" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm3]"/>
+					<parameter name="depthCorr0to30cm4" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm4]"/>
+					<parameter name="depthCorr0to30cm5" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm5]"/>
+					<parameter name="depthCorr0to30cm6" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm6]"/>
+					<parameter name="depthCorr0to30cm7" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm7]"/>
+					<parameter name="depthCorr0to30cm8" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm8]"/>
+					<parameter name="depthCorr0to30cm9" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm9]"/>
+					<parameter name="depthCorr0to30cm10" ref="subsoil leakage/depth correction at 0 to 30 cm[depthCorr0to30cm10]"/>
+					<parameter name="depthCorr30to60cm1" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm1]"/>
+					<parameter name="depthCorr30to60cm2" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm2]"/>
+					<parameter name="depthCorr30to60cm3" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm3]"/>
+					<parameter name="depthCorr30to60cm4" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm4]"/>
+					<parameter name="depthCorr30to60cm5" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm5]"/>
+					<parameter name="depthCorr30to60cm6" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm6]"/>
+					<parameter name="depthCorr30to60cm7" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm7]"/>
+					<parameter name="depthCorr30to60cm8" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm8]"/>
+					<parameter name="depthCorr30to60cm9" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm9]"/>
+					<parameter name="depthCorr30to60cm10" ref="subsoil leakage/depth correction at 30 to 60 cm[depthCorr30to60cm10]"/>
+					<parameter name="depthCorr60to100cm1" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm1]"/>
+					<parameter name="depthCorr60to100cm2" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm2]"/>	
+					<parameter name="depthCorr60to100cm3" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm3]"/>	
+					<parameter name="depthCorr60to100cm4" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm4]"/>	
+					<parameter name="depthCorr60to100cm5" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm5]"/>	
+					<parameter name="depthCorr60to100cm6" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm6]"/>	
+					<parameter name="depthCorr60to100cm7" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm7]"/>	
+					<parameter name="depthCorr60to100cm8" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm8]"/>	
+					<parameter name="depthCorr60to100cm9" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm9]"/>	
+					<parameter name="depthCorr60to100cm10" ref="subsoil leakage/depth correction at 60 to 100 cm[depthCorr60to100cm10]"/>	
+				</model>
+				<model name="total correction factor" type="insecticide::totalcorrectionfactor">
+					<parameter name="fssdT" ref="subsoil leakage/annual average soil temperature factor[fssdT]"/>
+					<parameter name="fsm" ref="topsoil degradation final/parent final[fsm]"/>
+					<parameter name="fba1" ref="subsoil leakage/bioavailability correction[fba1]"/>
+					<parameter name="fba2" ref="subsoil leakage/bioavailability correction[fba2]"/>
+					<parameter name="fba3" ref="subsoil leakage/bioavailability correction[fba3]"/>
+					<parameter name="fba4" ref="subsoil leakage/bioavailability correction[fba4]"/>
+					<parameter name="fba5" ref="subsoil leakage/bioavailability correction[fba5]"/>
+					<parameter name="fba6" ref="subsoil leakage/bioavailability correction[fba6]"/>
+					<parameter name="fba7" ref="subsoil leakage/bioavailability correction[fba7]"/>
+					<parameter name="fba8" ref="subsoil leakage/bioavailability correction[fba8]"/>
+					<parameter name="fba9" ref="subsoil leakage/bioavailability correction[fba9]"/>
+					<parameter name="fba10" ref="subsoil leakage/bioavailability correction[fba10]"/>
+					<parameter name="depthCorrPerHorizon1" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon1]"/>
+					<parameter name="depthCorrPerHorizon2" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon2]"/>
+					<parameter name="depthCorrPerHorizon3" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon3]"/>
+					<parameter name="depthCorrPerHorizon4" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon4]"/>
+					<parameter name="depthCorrPerHorizon5" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon5]"/>
+					<parameter name="depthCorrPerHorizon6" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon6]"/>
+					<parameter name="depthCorrPerHorizon7" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon7]"/>
+					<parameter name="depthCorrPerHorizon8" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon8]"/>
+					<parameter name="depthCorrPerHorizon9" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon9]"/>
+					<parameter name="depthCorrPerHorizon10" ref="subsoil leakage/depth correction per horizon[depthCorrPerHorizon10]"/>
+				</model>
+				<model name="retardation time" type="insecticide::retardationtime">
+					<parameter name="Irt1" ref="subsoil leakage/ideal retardation time[Irt1]"/>
+					<parameter name="Irt2" ref="subsoil leakage/ideal retardation time[Irt2]"/>
+					<parameter name="Irt3" ref="subsoil leakage/ideal retardation time[Irt3]"/>
+					<parameter name="Irt4" ref="subsoil leakage/ideal retardation time[Irt4]"/>
+					<parameter name="Irt5" ref="subsoil leakage/ideal retardation time[Irt5]"/>
+					<parameter name="Irt6" ref="subsoil leakage/ideal retardation time[Irt6]"/>
+					<parameter name="Irt7" ref="subsoil leakage/ideal retardation time[Irt7]"/>
+					<parameter name="Irt8" ref="subsoil leakage/ideal retardation time[Irt8]"/>
+					<parameter name="Irt9" ref="subsoil leakage/ideal retardation time[Irt9]"/>
+					<parameter name="Irt10" ref="subsoil leakage/ideal retardation time[Irt10]"/>
+					<parameter name="Rf1" ref="subsoil leakage/retardation factor[Rf1]"/>
+					<parameter name="Rf2" ref="subsoil leakage/retardation factor[Rf2]"/>
+					<parameter name="Rf3" ref="subsoil leakage/retardation factor[Rf3]"/>
+					<parameter name="Rf4" ref="subsoil leakage/retardation factor[Rf4]"/>
+					<parameter name="Rf5" ref="subsoil leakage/retardation factor[Rf5]"/>
+					<parameter name="Rf6" ref="subsoil leakage/retardation factor[Rf6]"/>
+					<parameter name="Rf7" ref="subsoil leakage/retardation factor[Rf7]"/>
+					<parameter name="Rf8" ref="subsoil leakage/retardation factor[Rf8]"/>
+					<parameter name="Rf9" ref="subsoil leakage/retardation factor[Rf9]"/>
+					<parameter name="Rf10" ref="subsoil leakage/retardation factor[Rf10]"/>
+				</model>
+				<model name="biodegradation rate per horizon" type="insecticide::biodegradationrateperhorizon">
+					<parameter name="k" ref="topsoil degradation final/soil degradation rate constant/parent[k]"/>
+					<parameter name="tcf1" ref="subsoil leakage/total correction factor[tcf1]"/>
+					<parameter name="tcf2" ref="subsoil leakage/total correction factor[tcf2]"/>
+					<parameter name="tcf3" ref="subsoil leakage/total correction factor[tcf3]"/>
+					<parameter name="tcf4" ref="subsoil leakage/total correction factor[tcf4]"/>
+					<parameter name="tcf5" ref="subsoil leakage/total correction factor[tcf5]"/>
+					<parameter name="tcf6" ref="subsoil leakage/total correction factor[tcf6]"/>
+					<parameter name="tcf7" ref="subsoil leakage/total correction factor[tcf7]"/>
+					<parameter name="tcf8" ref="subsoil leakage/total correction factor[tcf8]"/>
+					<parameter name="tcf9" ref="subsoil leakage/total correction factor[tcf9]"/>
+					<parameter name="tcf10" ref="subsoil leakage/total correction factor[tcf10]"/>
+				</model>
+				<model name="drainage present" type="insecticide::drainagepresent">
+					<parameter name="startLayer1" value="0"/>
+					<parameter name="startLayer2" value="0.33"/>
+					<parameter name="startLayer3" value="0.55"/>
+					<parameter name="startLayer4" value="0.8"/>
+					<parameter name="startLayer5" value="1"/>
+					<parameter name="startLayer6" value="1"/>
+					<parameter name="startLayer7" value="1"/>
+					<parameter name="startLayer8" value="1"/>
+					<parameter name="startLayer9" value="1"/>						
+					<parameter name="startLayer10" value="1"/>
+					<parameter name="startLayer11" value="1"/>
+					<parameter name="Dds" value="0.6"/>					
+				</model>
+				<model name="fraction drainage depth" type="insecticide::fractiondrainagedepth">
+					<parameter name="startLayer1" value="0"/>
+					<parameter name="startLayer2" value="0.33"/>
+					<parameter name="startLayer3" value="0.55"/>
+					<parameter name="startLayer4" value="0.8"/>
+					<parameter name="startLayer5" value="1"/>
+					<parameter name="startLayer6" value="1"/>
+					<parameter name="startLayer7" value="1"/>
+					<parameter name="startLayer8" value="1"/>
+					<parameter name="startLayer9" value="1"/>						
+					<parameter name="startLayer10" value="1"/>
+					<parameter name="startLayer11" value="1"/>
+					<parameter name="Htc1" ref="subsoil leakage/horizon thickness[Htc1]"/>
+					<parameter name="Htc2" ref="subsoil leakage/horizon thickness[Htc2]"/>
+					<parameter name="Htc3" ref="subsoil leakage/horizon thickness[Htc3]"/>
+					<parameter name="Htc4" ref="subsoil leakage/horizon thickness[Htc4]"/>
+					<parameter name="Htc5" ref="subsoil leakage/horizon thickness[Htc5]"/>
+					<parameter name="Htc6" ref="subsoil leakage/horizon thickness[Htc6]"/>
+					<parameter name="Htc7" ref="subsoil leakage/horizon thickness[Htc7]"/>
+					<parameter name="Htc8" ref="subsoil leakage/horizon thickness[Htc8]"/>
+					<parameter name="Htc9" ref="subsoil leakage/horizon thickness[Htc9]"/>
+					<parameter name="Htc10" ref="subsoil leakage/horizon thickness[Htc10]"/>
+					<parameter name="Dds" value="0.6"/>
+					<parameter name="Dp1" ref="subsoil leakage/drainage present[Dp1]"/>
+					<parameter name="Dp2" ref="subsoil leakage/drainage present[Dp2]"/>
+					<parameter name="Dp3" ref="subsoil leakage/drainage present[Dp3]"/>
+					<parameter name="Dp4" ref="subsoil leakage/drainage present[Dp4]"/>
+					<parameter name="Dp5" ref="subsoil leakage/drainage present[Dp5]"/>
+					<parameter name="Dp6" ref="subsoil leakage/drainage present[Dp6]"/>
+					<parameter name="Dp7" ref="subsoil leakage/drainage present[Dp7]"/>
+					<parameter name="Dp8" ref="subsoil leakage/drainage present[Dp8]"/>
+					<parameter name="Dp9" ref="subsoil leakage/drainage present[Dp9]"/>
+					<parameter name="Dp10" ref="subsoil leakage/drainage present[Dp10]"/>					
+				</model>
+				<model name="drainage losses" type="insecticide::drainagelosses">
+					<parameter name="Df" value="0.55"/>					
+					<parameter name="Fdd1" ref="subsoil leakage/fraction drainage depth[Fdd1]"/>
+					<parameter name="Fdd2" ref="subsoil leakage/fraction drainage depth[Fdd2]"/>
+					<parameter name="Fdd3" ref="subsoil leakage/fraction drainage depth[Fdd3]"/>
+					<parameter name="Fdd4" ref="subsoil leakage/fraction drainage depth[Fdd4]"/>
+					<parameter name="Fdd5" ref="subsoil leakage/fraction drainage depth[Fdd5]"/>
+					<parameter name="Fdd6" ref="subsoil leakage/fraction drainage depth[Fdd6]"/>
+					<parameter name="Fdd7" ref="subsoil leakage/fraction drainage depth[Fdd7]"/>
+					<parameter name="Fdd8" ref="subsoil leakage/fraction drainage depth[Fdd8]"/>
+					<parameter name="Fdd9" ref="subsoil leakage/fraction drainage depth[Fdd9]"/>
+					<parameter name="Fdd10" ref="subsoil leakage/fraction drainage depth[Fdd10]"/>
+					<parameter name="k1" ref="subsoil leakage/biodegradation rate per horizon[k1]"/>
+					<parameter name="k2" ref="subsoil leakage/biodegradation rate per horizon[k2]"/>
+					<parameter name="k3" ref="subsoil leakage/biodegradation rate per horizon[k3]"/>
+					<parameter name="k4" ref="subsoil leakage/biodegradation rate per horizon[k4]"/>
+					<parameter name="k5" ref="subsoil leakage/biodegradation rate per horizon[k5]"/>
+					<parameter name="k6" ref="subsoil leakage/biodegradation rate per horizon[k6]"/>
+					<parameter name="k7" ref="subsoil leakage/biodegradation rate per horizon[k7]"/>
+					<parameter name="k8" ref="subsoil leakage/biodegradation rate per horizon[k8]"/>
+					<parameter name="k9" ref="subsoil leakage/biodegradation rate per horizon[k9]"/>
+					<parameter name="k10" ref="subsoil leakage/biodegradation rate per horizon[k10]"/>	
+					<parameter name="Rt1" ref="subsoil leakage/retardation time[Rt1]"/>
+					<parameter name="Rt2" ref="subsoil leakage/retardation time[Rt2]"/>
+					<parameter name="Rt3" ref="subsoil leakage/retardation time[Rt3]"/>
+					<parameter name="Rt4" ref="subsoil leakage/retardation time[Rt4]"/>
+					<parameter name="Rt5" ref="subsoil leakage/retardation time[Rt5]"/>
+					<parameter name="Rt6" ref="subsoil leakage/retardation time[Rt6]"/>
+					<parameter name="Rt7" ref="subsoil leakage/retardation time[Rt7]"/>
+					<parameter name="Rt8" ref="subsoil leakage/retardation time[Rt8]"/>
+					<parameter name="Rt9" ref="subsoil leakage/retardation time[Rt9]"/>
+					<parameter name="Rt10" ref="subsoil leakage/retardation time[Rt10]"/>
+				</model>
+				<model name="fraction leachate reaching next layer" type="insecticide::fractionleachatereachingnextlayer">
+					<parameter name="Df" value="0.55"/>
+					<!--<parameter name="Doseafl" ref="dose available for leaching[Doseafl]"/>-->					
+					<parameter name="Dp1" ref="subsoil leakage/drainage present[Dp1]"/>
+					<parameter name="Dp2" ref="subsoil leakage/drainage present[Dp2]"/>
+					<parameter name="Dp3" ref="subsoil leakage/drainage present[Dp3]"/>
+					<parameter name="Dp4" ref="subsoil leakage/drainage present[Dp4]"/>
+					<parameter name="Dp5" ref="subsoil leakage/drainage present[Dp5]"/>
+					<parameter name="Dp6" ref="subsoil leakage/drainage present[Dp6]"/>
+					<parameter name="Dp7" ref="subsoil leakage/drainage present[Dp7]"/>
+					<parameter name="Dp8" ref="subsoil leakage/drainage present[Dp8]"/>
+					<parameter name="Dp9" ref="subsoil leakage/drainage present[Dp9]"/>
+					<parameter name="Dp10" ref="subsoil leakage/drainage present[Dp10]"/>
+					<parameter name="k1" ref="subsoil leakage/biodegradation rate per horizon[k1]"/>
+					<parameter name="k2" ref="subsoil leakage/biodegradation rate per horizon[k2]"/>
+					<parameter name="k3" ref="subsoil leakage/biodegradation rate per horizon[k3]"/>
+					<parameter name="k4" ref="subsoil leakage/biodegradation rate per horizon[k4]"/>
+					<parameter name="k5" ref="subsoil leakage/biodegradation rate per horizon[k5]"/>
+					<parameter name="k6" ref="subsoil leakage/biodegradation rate per horizon[k6]"/>
+					<parameter name="k7" ref="subsoil leakage/biodegradation rate per horizon[k7]"/>
+					<parameter name="k8" ref="subsoil leakage/biodegradation rate per horizon[k8]"/>
+					<parameter name="k9" ref="subsoil leakage/biodegradation rate per horizon[k9]"/>
+					<parameter name="k10" ref="subsoil leakage/biodegradation rate per horizon[k10]"/>	
+					<parameter name="Rt1" ref="subsoil leakage/retardation time[Rt1]"/>
+					<parameter name="Rt2" ref="subsoil leakage/retardation time[Rt2]"/>
+					<parameter name="Rt3" ref="subsoil leakage/retardation time[Rt3]"/>
+					<parameter name="Rt4" ref="subsoil leakage/retardation time[Rt4]"/>
+					<parameter name="Rt5" ref="subsoil leakage/retardation time[Rt5]"/>
+					<parameter name="Rt6" ref="subsoil leakage/retardation time[Rt6]"/>
+					<parameter name="Rt7" ref="subsoil leakage/retardation time[Rt7]"/>
+					<parameter name="Rt8" ref="subsoil leakage/retardation time[Rt8]"/>
+					<parameter name="Rt9" ref="subsoil leakage/retardation time[Rt9]"/>
+					<parameter name="Rt10" ref="subsoil leakage/retardation time[Rt10]"/>
+				</model>
+				<model name="drainage emission and dose reaching next layer" type="insecticide::DemLaxFrnl">
+					<parameter name="Doseafl" ref="dose available for leaching[Doseafl]"/>					
+					<parameter name="DLosses1" ref="subsoil leakage/drainage losses[DLosses1]"/>
+					<parameter name="DLosses2" ref="subsoil leakage/drainage losses[DLosses2]"/>
+					<parameter name="DLosses3" ref="subsoil leakage/drainage losses[DLosses3]"/>
+					<parameter name="DLosses4" ref="subsoil leakage/drainage losses[DLosses4]"/>
+					<parameter name="DLosses5" ref="subsoil leakage/drainage losses[DLosses5]"/>
+					<parameter name="DLosses6" ref="subsoil leakage/drainage losses[DLosses6]"/>
+					<parameter name="DLosses7" ref="subsoil leakage/drainage losses[DLosses7]"/>
+					<parameter name="DLosses8" ref="subsoil leakage/drainage losses[DLosses8]"/>
+					<parameter name="DLosses9" ref="subsoil leakage/drainage losses[DLosses9]"/>
+					<parameter name="DLosses10" ref="subsoil leakage/drainage losses[DLosses10]"/>					
+					<parameter name="Fn1" ref="subsoil leakage/fraction leachate reaching next layer[Fn1]"/>
+					<parameter name="Fn1" ref="subsoil leakage/fraction leachate reaching next layer[Fn2]"/>
+					<parameter name="Fn2" ref="subsoil leakage/fraction leachate reaching next layer[Fn3]"/>
+					<parameter name="Fn3" ref="subsoil leakage/fraction leachate reaching next layer[Fn4]"/>
+					<parameter name="Fn4" ref="subsoil leakage/fraction leachate reaching next layer[Fn5]"/>
+					<parameter name="Fn5" ref="subsoil leakage/fraction leachate reaching next layer[Fn6]"/>
+					<parameter name="Fn6" ref="subsoil leakage/fraction leachate reaching next layer[Fn7]"/>
+					<parameter name="Fn7" ref="subsoil leakage/fraction leachate reaching next layer[Fn8]"/>
+					<parameter name="Fn8" ref="subsoil leakage/fraction leachate reaching next layer[Fn9]"/>
+					<parameter name="Fn9" ref="subsoil leakage/fraction leachate reaching next layer[Fn10]"/>
+				</model>
+			</model>
+		</model>
+	</model>
+			
+	
+	<!-- OUTPUTS -->	
+		
+	<!-- weather -->
+	<output type="plot">
+		<parameter name="title" value ="Weather"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>		
+		<trace label="Minimum temperature (C)" value="weather/records[Tmin]"/>
+		<trace label="Average temperature (C)" value="weather[Tavg]"/>
+		<trace label="Maximum temperature (C)" value="weather/records[Tmax]"/>
+		<trace label="Rainfall (mm)" value="weather/records[Rain]"/>
+		<trace label="light intensity (W m-2)" value="weather/records[I]"/>
+	</output>
+	
+	<!--length of the day-->
+	<output type="plot">
+		<parameter name="title" value="length of the day"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="Day length(h)" value="Calendar[daylength]"/>		
+	</output>
+	
+	<!-- maize development -->
+	<output type="plot">
+		<parameter name="title" value="Maize development"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Leaf development" ref="leafDevelopment[value]"/>
+		<trace label="Tillering" ref="tillering[value]"/>
+		<trace label="Stem elongation" ref="stemElongation[value]"/>
+		<trace label="Senescence" ref="senescence[value]"/>
+	</output>
+	
+	<!-- WIND DRIFT/DOSE REACHING AIR, crop/leaf and soil -->	
+	
+    <output type="plot">
+		<parameter name="title" value="primary distribution to air, leaf, and soil"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose taken by wind drift (kg/ha)" ref="dose reaching air[Dosedrift]"/>
+		<trace label="dose reaching leaf" ref="dose reaching leaf[Doserl]"/>
+		<trace label="dose reaching soil" ref="dose reaching soil[Dosers]"/>
+	</output>
+	 <output type="table">
+		<parameter name="filename" value="primary distribution to air, leaf, and soil.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose taken by wind drift" ref="dose reaching air[Dosedrift]"/>
+		<trace label="dose reaching leaf" ref="dose reaching leaf[Doserl]"/>
+		<trace label="dose reaching soil" ref="dose reaching soil[Dosers]"/>	
+	</output>
+					
+	<!-- LEAF DOSE LEFT ON BEGINNING RAINFALL -->	
+    <output type="plot">
+		<parameter name="title" value="leaf dose left on beginning rainfall"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose left on beginning rainfall[concentration]"/>
+		<trace label="dose left on leaf (kg/ha)" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose left on beginning rainfall.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose left on beginning rainfall[concentration]"/>
+		<trace label="dose left on leaf (kg/ha)" ref="leaf dose left on beginning rainfall[Doseldlobr]"/>
+	</output>	
+	
+	
+	<!-- LEAF SUM OF DOSE REMOVED -->	
+    <output type="plot">
+		<parameter name="title" value="leaf sum of dose removed"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="total dose removed on leaf (kg/ha)" ref="leaf sum of dose removed[Doselsodr]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf sum of dose removed.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="total dose removed on leaf (kg/ha)" ref="leaf sum of dose removed[Doselsodr]"/>
+	</output>
+	
+	<!-- LEAF DOSE DEGRADED -->
+	<output type="plot">
+		<parameter name="title" value="leaf dose photodegraded"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose photodegraded[concentration]"/>		
+		<trace label="total dose removed by photodegradation (kg/ha)" ref="leaf dose photodegraded[Doseldrbpd]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose photodegraded.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose photodegraded[concentration]"/>		
+		<trace label="total dose removed by photodegradation (kg/ha)" ref="leaf dose photodegraded[Doseldrbpd]"/>
+	</output>
+	
+	<!-- LEAF DOSE VOLATILIZED -->
+	<output type="plot">
+		<parameter name="title" value="leaf dose volatilized"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose volatilized[concentration]"/>			
+		<trace label="total dose removed by volatilization (kg/ha)" ref="leaf dose volatilized[Doseldv]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose volatilized.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose volatilized[concentration]"/>			
+		<trace label="total dose removed by volatilization (kg/ha)" ref="leaf dose volatilized[Doseldv]"/>
+	</output>
+	
+	<!-- LEAF DOSE UPTAKEN -->
+	<output type="plot">
+		<parameter name="title" value="leaf dose uptaken"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose uptaken[concentration]"/>			
+		<trace label="total dose removed by uptake (kg/ha)" ref="leaf dose uptaken[Doseldu]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="leaf dose uptaken.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="concentration (kg/ha)" ref="leaf dose uptaken[concentration]"/>			
+		<trace label="total dose removed by uptake (kg/ha)" ref="leaf dose uptaken[Doseldu]"/>
+	</output>
+	
+	<!--KLD, KLU AND KLV VALUES-->
+	<output type="table">
+		<parameter name="filename" value="rate constants klv klu kld.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="klv" ref="rate constant of volatilization[klv]"/>
+		<trace label="klu" ref="rate constant of uptake[klu]"/>	
+		<trace label="kld" ref="rate constant of photodegradation[kld]"/>	
+	</output>
+		
+	<!-- DOSE DISTRIBUTION ON TOPSOIL -->
+	<!-- in the soil solids, air and water -->
+    <output type="plot">
+		<parameter name="title" value="dose distribution in the soil solids, air, and water"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose in the soil solids" ref="dose in the soil solids[Doserss]"/>
+		<trace label="dose in the soil air" ref="dose in the soil air[Dosersa]"/>
+		<trace label="dose in the soil water" ref="dose in the soil water[Dosersw]"/>
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose distribution in the soil solids, air, and water.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="dose in the soil solids" ref="dose in the soil solids[Doserss]"/>
+		<trace label="dose in the soil air" ref="dose in the soil air[Dosersa]"/>
+		<trace label="dose in the soil water" ref="dose in the soil water[Dosersw]"/>
+	</output>	
+			
+	<!-- TOPSOIL DEGRADATION FINAL -->
+	<output type="plot">
+		<parameter name="title" value="topsoil degradation final (kg/ha)"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate (kg/ha)" ref="parent final[concentration]"/>
+		<trace label="AMPA (kg/ha)" ref="metabolite final[concentration]"/>
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil degradation final.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate (kg/ha)" ref="parent final[concentration]"/>
+		<trace label="Glyphosate degraded (kg/ha)" ref="parent final[Dosesd]"/>
+		<trace label="AMPA (kg/ha)" ref="metabolite final[concentration]"/>
+		<trace label="AMPA degraded (kg/ha)" ref="metabolite final[Dosesd]"/>
+	</output>
+	
+	<!-- SOIL RISK ASSESSMENT FINAL-->
+	<output type="plot">
+		<parameter name="title" value="topsoil risk assessment final"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate" ref="parent risk in soil final[HQ]"/>
+		<trace label="AMPA" ref="metabolite risk in soil final[HQ]"/>				
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil risk assessment final.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Glyphosate" ref="parent risk in soil final[HQ]"/>
+		<trace label="AMPA" ref="metabolite risk in soil final[HQ]"/>				
+	</output>	
+		
+	<!--TOPSOIL VOLATILIZATION FINAL-->
+	<output type="plot">
+		<parameter name="title" value="topsoil volatilization final"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>		
+		<trace label="concentration (kg/ha)" value="topsoil volatilization[concentration]"/>
+		<trace label="dose removed by vaporization (kg/ha)" value="topsoil volatilization[Dosetsv]"/>
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil volatilization final.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>		
+		<trace label="concentration (kg/ha)" value="topsoil volatilization[concentration]"/>
+		<trace label="dose removed by vaporization (kg/ha)" value="topsoil volatilization[Dosetsv]"/>		
+	</output>
+	
+	<!--DOSE AVAILABLE FOR ... leaching runoff and macropore flow-->
+	<output type="plot">
+		<parameter name="title" value="dose available for leaching runoff and macropore flow"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Doseaflrm (kg/ha)" value="dose available for leaching runoff and macropore flow[Doseaflrm]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose available for leaching runoff and macropore flow.txt"/>
+		<trace label="Time step" value="calendar[totalTimeSteps]"/>
+		<trace label="Doseaflrm (kg/ha)" value="dose available for leaching runoff and macropore flow[Doseaflrm]"/>		
+	</output>
+	
+	<!--topsoil runoff-->
+	<output type="plot">
+		<parameter name="title" value="topsoil runoff"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="runoff[Dosesr]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="topsoil runoff.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="runoff[Dosesr]"/>		
+	</output>
+	
+	<!--dose available for leaching and macropore flow-->
+	<output type="plot">
+		<parameter name="title" value="dose available for leaching and macropore flow"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching and macropore flow[Doseaflm]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose available for leaching and macropore flow.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching and macropore flow[Doseaflm]"/>		
+	</output>	
+	
+	<!--macropore flow-->
+	<output type="plot">
+		<parameter name="title" value="macropore flow"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="amount macropore" ref="macropore flow[Dmacropore]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="macropore flow.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="amount macropore" ref="macropore flow[Dmacropore]"/>		
+	</output>
+		
+	<!--dose available for leaching-->
+	<output type="plot">
+		<parameter name="title" value="dose available for leaching"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching[Doseafl]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose available for leaching.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose" ref="dose available for leaching[Doseafl]"/>		
+	</output>	
+		
+	<!--dose of the applied pesticide that reaches drainage pipes-->
+	<output type="plot">
+		<parameter name="title" value="dose of the applied pesticide that reaches drainage pipes"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose (kg/ha)" ref="subsoil leakage/drainage emission and dose reaching next layer[Subsoilfdd]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose of the applied pesticide that reaches drainage pipes.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose (kg/ha)" ref="subsoil leakage/drainage emission and dose reaching next layer[Subsoilfdd]"/>		
+	</output>
+	
+	<!--dose of the pesticide applied that reaches the groundwater via leaching-->
+	<output type="plot">
+		<parameter name="title" value="dose of the pesticide applied that reaches the groundwater via leaching"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose (kg/ha)" ref="subsoil leakage/drainage emission and dose reaching next layer[Subsoilfdrgw]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose of the pesticide applied that reaches the groundwater via leaching.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose (kg/ha)" ref="subsoil leakage/drainage emission and dose reaching next layer[Subsoilfdrgw]"/>		
+	</output>
+	
+	<!--dose of the pesticide applied that is lost through biodegradation in the subsoil-->
+	<output type="plot">
+		<parameter name="title" value="dose of the pesticide applied that is lost through biodegradation in the subsoil"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose (kg/ha)" ref="subsoil leakage/drainage emission and dose reaching next layer[Subsoilfdbd]"/>		
+	</output>
+	<output type="table">
+		<parameter name="filename" value="dose of the pesticide applied that is lost through biodegradation in the subsoil.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="dose (kg/ha)" ref="subsoil leakage/drainage emission and dose reaching next layer[Subsoilfdbd]"/>		
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value="Dem.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="Dem1" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem1]"/>
+		<trace label="Dem2" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem2]"/>
+		<trace label="Dem3" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem3]"/>
+		<trace label="Dem4" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem4]"/>
+		<trace label="Dem5" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem5]"/>
+		<trace label="Dem6" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem6]"/>
+		<trace label="Dem7" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem7]"/>
+		<trace label="Dem8" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem8]"/>
+		<trace label="Dem9" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem9]"/>
+		<trace label="Dem10" ref="subsoil leakage/drainage emission and dose reaching next layer[Dem10]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="filename" value="Lax.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="Lax1" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax1]"/>
+		<trace label="Lax2" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax2]"/>
+		<trace label="Lax3" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax3]"/>
+		<trace label="Lax4" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax4]"/>
+		<trace label="Lax5" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax5]"/>
+		<trace label="Lax6" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax6]"/>
+		<trace label="Lax7" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax7]"/>
+		<trace label="Lax8" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax8]"/>
+		<trace label="Lax9" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax9]"/>
+		<trace label="Lax10" ref="subsoil leakage/drainage emission and dose reaching next layer[Lax10]"/>
+	</output>
+	
+	<output type="table">
+		<parameter name="filename" value="Drnl.txt"/>
+		<trace label="Time step" value="Calendar[totalTimeSteps]"/>
+		<trace label="Drnll" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnll]"/>
+		<trace label="Drnl2" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl2]"/>
+		<trace label="Drnl3" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl3]"/>
+		<trace label="Drnl4" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl4]"/>
+		<trace label="Drnl5" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl5]"/>
+		<trace label="Drnl6" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl6]"/>
+		<trace label="Drnl7" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl7]"/>
+		<trace label="Drnl8" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl8]"/>
+		<trace label="Drnl9" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnl9]"/>
+		<trace label="Drnll0" ref="subsoil leakage/drainage emission and dose reaching next layer[Drnll0]"/>
+	</output>
+</simulation>
+

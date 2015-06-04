@@ -10,9 +10,9 @@ using namespace UniSim;
 
 namespace insecticide {
 
-PUBLISH(Crop)
+PUBLISH(crop)
 	
-Crop::Crop(Identifier name, QObject *parent)
+crop::crop(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(int, day, 1);            // sowing time
@@ -21,12 +21,12 @@ Crop::Crop(Identifier name, QObject *parent)
     Output(double, seedsSown);
 }
 
-void Crop::reset() {
+void crop::reset() {
     hoursPassed = 0;
     seedsSown = 0;
 }
 
-void Crop::update() {
+void crop::update() {
     ++hoursPassed;
     seedsSown = (hoursPassed == 24*day) ? seeds : 0.;
 }

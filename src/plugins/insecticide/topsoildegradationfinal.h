@@ -19,7 +19,7 @@ public:
 
 private:
     // Input
-    double inflow, k, ff, Q, Tref, Tair, P, threshold, timeSinceLastRainEvent,
+    double inflow, k, ff, Q, Tref, Tair, Rainfall, threshold, timeSinceLastRainEvent,
     Vrsmc, rf, fw, Sp;
 
     // Output

@@ -17,11 +17,11 @@ doseavailableforleachingandmacroporeflow::doseavailableforleachingandmacroporefl
 	: Model(name, parent)
 {
 
-    Input (double, Doseaflrm, 0.);       //dose remained in the soil after soil degradation and soil volatilization
-    Input (double, Doseldlobr, 0.);       //dose remained on leaft/washed-off during the first rainfall even
-    Input (double, Dosesr, 0.);         //dose of pesticide runoff
+    Input (double, Doseaflrm, 0.);       //dose remained in the soil after soil degradation and soil volatilization (kg a.i/ha)
+    Input (double, Doseldlobr, 0.);       //dose remained on leaft/washed-off during the first rainfall even (kg a.i/ha)
+    Input (double, Dosesr, 0.);         //dose of pesticide runoff (kg a.i/ha)
 
-    Output (double, Doseaflm); //dose available for leaching, runoff and macropore flow
+    Output (double, Doseaflm); //dose available for leaching, runoff and macropore flow (kg a.i/ha)
 
 }
 

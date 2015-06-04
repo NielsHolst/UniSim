@@ -20,11 +20,10 @@ public:
 
 private:
     // Parameters
-    double leakage, greenhouseVolume, greenhouseArea,
-        windspeed, screensAirTransmission;
+    double leakage, windspeed, screensAirTransmission;
 
     // Variables
-    double rate;
+    double value;
 
 };
 } //namespace

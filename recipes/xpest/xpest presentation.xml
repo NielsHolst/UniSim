@@ -119,7 +119,7 @@
 	<output type="plot">
 		<parameter name="title" value="Growth rate (g/d)"/>
 		<trace label="Day" ref="calendar[dayOfYear]"/>		
-		<trace label="Growth rate" ref="growth[rate]"/>
+		<trace label="Growth rate" ref="growth[gain]"/>
 	</output>
 
 	<output type="plot">

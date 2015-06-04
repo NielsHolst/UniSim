@@ -18,6 +18,7 @@ class SignalCollection : public BaseSignal
 public:
     SignalCollection(UniSim::Identifier name, QObject *parent);
     void initialize();
+    void localReset();
     double signal();
 private:
     QString ruleStr;

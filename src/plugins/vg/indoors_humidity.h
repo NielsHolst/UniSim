@@ -15,30 +15,18 @@ class IndoorsHumidity : public UniSim::Model
 {
 public:
     IndoorsHumidity(UniSim::Identifier name, QObject *parent);
-    void initialize();
     void reset();
     void update();
 private:
-    // Input / Output
-    double indoorsTemperature, timeStep, averageHeight,
-        ah, rh, ahEq, outdoorsAh,
-        netVapourFlux, timeConstant, surplusAh,
-        latentHeatBalance;
+    // Inputs
+    double conductance, gain, vapourFlux,
+        indoorsTemperature, outdoorsAh, timeStep, averageHeight;
+    // Outputs
+    double ah, rh, ahEq,
+           netVapourFlux, timeConstant, surplusAh;
 
     // Data
-    struct FluxPtr {
-        const double *conductance, *gain, *vapourFlux;
-    };
-    typedef QVector<FluxPtr> Fluxes;
-    Fluxes transpiration, evaporation, condensation, ventilation;
-    QVector<const Fluxes*> all;
-
-    // Methods
-    void collectFluxes();
-    Fluxes collectFluxes(QString fluxName);
-    double sumConductance();
-    double sumGain();
-    double sumVapourFlux(const Fluxes &fluxes);
+    int tick;
 };
 
 } //namespace

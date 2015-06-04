@@ -29,6 +29,7 @@ PUBLISH(ConstructionGeometry)
  * - _length_  is the length a span [m]
  * - _height_ is the height of the walls [m]
  * - _roofPitch_ is the degrees slope of the roof [0;180]
+ * - _shade_ is the fraction of light caught by the greenhouse construction [0;1]
  *
  * Outputs
  * -------
@@ -37,17 +38,13 @@ PUBLISH(ConstructionGeometry)
  * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
  * - _coverArea_ is the area of the green house cover (walls + roof) [m<SUP>2</SUP>]
  * - _coverPerGroundArea_ is _coverArea_ divided by _groundArea_ [m<SUP>2</SUP>/[m<SUP>2</SUP>]]
- * - _sideWallsArea_ is the area of the greenhouse side walls (facing the outside) [m<SUP>2</SUP>]
- * - _endWallsArea_ is the area of the greenhouse end walls (excluding the triangular gables) [m<SUP>2</SUP>]
- * - _roofArea_ is the area of the roof (slooping surfaceson top of each span) [m<SUP>2</SUP>]
- * - _gablesArea_ is the area of the triangular gables at the ends of each span [m<SUP>2</SUP>]
- * - _volumeTotal_ is the greenhouse total volume [m<SUP>3</SUP>]
+ * - _roofArea_ is the total area of the roof (the two sloping surfaces on top of each span) [m<SUP>2</SUP>]
+ * - _sideWallsArea_ is the total area of the two greenhouse side walls (facing the outside) [m<SUP>2</SUP>]
+ * - _endWallsArea_ is the total area of the two greenhouse end walls (excluding the triangular gables) [m<SUP>2</SUP>]
+ * - _gablesArea_ is the total area of the two triangular gables at the ends of each span [m<SUP>2</SUP>]
+ * - _volume_ is the greenhouse total volume [m<SUP>3</SUP>]
  * - _volumeBelowRoof_ is the box-shaped volume on top of the ground area and enclosed by the four walls [m<SUP>3</SUP>]
  * - _volumeRoof_ is total of all the the prism-shaped volumes, one for each span, enclosed by roof and gables [m<SUP>3</SUP>]
-
- * Default dependencies
- * ------------
- * - none
  */
 
 ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
@@ -58,6 +55,7 @@ ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
     Input(double, length, 50.);
     Input(double, height, 4.);
     Input(double, roofPitch, 26.);
+    Input(double, shade, 0.1);
     Output(double, groundArea);
     Output(double, averageHeight);
     Output(double, width);
@@ -69,10 +67,10 @@ ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
     Output(double, coverPerGroundArea);
     Output(double, volumeBelowRoof);
     Output(double, volumeRoof);
-    Output(double, volumeTotal);
+    Output(double, volume);
 }
 
-void ConstructionGeometry::initialize() {
+void ConstructionGeometry::reset() {
     double
        roofHeight = tan(roofPitch*PI/180.)*spanWidth/2.,
        roofWidth = hypot(roofHeight, spanWidth/2.);
@@ -88,9 +86,9 @@ void ConstructionGeometry::initialize() {
 
     volumeBelowRoof = groundArea*height;
     volumeRoof = gablesArea*length/2;
-    volumeTotal = volumeBelowRoof + volumeRoof;
+    volume = volumeBelowRoof + volumeRoof;
 
-    averageHeight = volumeTotal/groundArea;
+    averageHeight = volume/groundArea;
 }
 
 } //namespace

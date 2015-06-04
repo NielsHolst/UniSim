@@ -7,11 +7,11 @@
 #ifndef VG_VENTILATED_LATENT_HEAT_CONVERTER_H
 #define VG_VENTILATED_LATENT_HEAT_CONVERTER_H
 
-#include "vapour_flux.h"
+#include "vapour_flux_base.h"
 
 namespace vg {
 
-class VentilatedLatentHeatConverter : public VapourFlux
+class VentilatedLatentHeatConverter : public VapourFluxBase
 {
 public:
     VentilatedLatentHeatConverter(UniSim::Identifier name, QObject *parent);

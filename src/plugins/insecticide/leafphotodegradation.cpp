@@ -21,11 +21,11 @@ leafphotodegradation::leafphotodegradation(Identifier name, QObject *parent)
 
     Input (double, I, 10.);             //Wh m-2 day-1
     Input (double, kOH, 0.0003);        //cm3/(molecules*s)
-    Input (double, dl, 12);
+    Input (double, dl, 12); // hours (h)
 
     Output (double, log_OH);            //log10(OH), log (molecules/cm3)
-    Output (double, kld);
-    Output (double, concentration);
+    Output (double, kld); // h-1
+    Output (double, concentration); //kg a.i/ha
     Output (double, outflow);           //fraction removed by degradation
 }
 

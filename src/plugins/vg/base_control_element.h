@@ -17,11 +17,12 @@ public:
     BaseControlElement(UniSim::Identifier name, QObject *parent);
     void reset() final;
     void update() final;
+    virtual void localReset() {}
 protected:
     double initState, signal, timeStepSecs;
 private:
     enum {Decreasing, Stable, Increasing};
-    double state;
+    double state, fulfilment;
     int course;
     virtual double change(double error) = 0;
 };

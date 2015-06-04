@@ -4,9 +4,10 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "energy_flux_ventilation.h"
+#include <usbase/exception.h>
 #include "general.h"
 #include "publish.h"
+#include "energy_flux_ventilation.h"
 
 using namespace UniSim;
 
@@ -15,51 +16,29 @@ namespace vg {
 PUBLISH(EnergyFluxVentilation)
 
 /*! \class EnergyFluxVentilation
- * \brief Flux of energy caused by  ventilation
+ * \brief Flux of energy lost to ventilation
  *
  * Inputs
  * ------
- * - _relativeVentilationRate_ is the relative exchange of air through ventilation during one time step [0;1]
- * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
- * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
- * - _windspeed_ is the outdoors windspeed [m/s]
- * - _averageHeight_ is the average height of the greenhouse [m]
- * - _timeStep_ is the integration time step [s]
- *
- * Output
- * ------
- * - _flux_ is the (mostly negative) energy flux per greenhouse area caused by ventilation [W/m<SUP>2</SUP>]
- *
- * Default dependencies
- * ------------
- * - a _construction/geometry_ model with an _averageHeight_ port [m]
- * - a _calendar_ model with a _timeStepSecs_ port [s]
+ * - _ventilation_ is the rate of air exchange with the outdoors [h<SUP>-1</SUP>]
+ * - _indoorsTemperature_ the ambient temperature indoors [<SUP>oC</SUP>C]
+ * - _outdoorsTemperature_ the ambient temperature outdoors [<SUP>oC</SUP>C]
+ * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
  */
 
 EnergyFluxVentilation::EnergyFluxVentilation(Identifier name, QObject *parent)
-	: Model(name, parent)
+    : EnergyFluxBase(name, parent)
 {
-    InputRef(double, relativeVentilationRate, "indoors/ventilation[relative]");
+    Input(double, ventilation, 0.);
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     InputRef(double, averageHeight,"construction/geometry[averageHeight]");
-    InputRef(double, timeStep, "calendar[timeStepSecs]");
-    Output(double, flux);
-}
-
-void EnergyFluxVentilation::reset() {
-    flux = 0.;
 }
 
 void EnergyFluxVentilation::update() {
-    // Partial integration of temperature change caused by ventilation alone
-    double rate = relativeVentilationRate/timeStep,
-           indoorsTemperatureFinal = propIntegral(indoorsTemperature, outdoorsTemperature, rate, timeStep);
-    // Compute flux based on temperature change
-    double Cair = averageHeight*RhoAir*CpAir; // J/m2/K = m * kg/m3 * J/kg/K
-    flux = Cair*(indoorsTemperatureFinal-indoorsTemperature)/timeStep; // W/m2 = J/m2/K * K / s
+    double dT = outdoorsTemperature - indoorsTemperature;
+    value = (dT < 0.) ? averageHeight*ventilation/3600*dT*CpAir*RhoAir : 0.; // W/m2 = m * h-1 / (s/h) * K * J/kg/K * kg/m3
 }
-
 
 } //namespace
 

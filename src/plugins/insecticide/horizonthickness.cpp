@@ -23,8 +23,8 @@ horizonthickness::horizonthickness(Identifier name, QObject *parent)
     Input (QString, soilFileName, "Htc.txt");
     Input (QString, soilType, "PestLCI1Tune");
     for (int i=0; i <10; ++i) {
-        QString name = "Htc" + QString::number(i);
-        Output2 (double, Htc[i], name);    // In units of "m"
+        QString name = "Htc" + QString::number(i+1);
+        new Variable<double>(name, &Htc[i], this, "");
     }
 }
 

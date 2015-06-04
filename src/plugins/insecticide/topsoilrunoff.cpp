@@ -20,9 +20,9 @@ topsoilrunoff::topsoilrunoff(Identifier name, QObject *parent)
 
     Input (double, S, 0.01);
     Input (double, wbz, 3.3);
-    Input (double, Doseaflrm, 0.);
+    Input (double, Doseaflrm, 0.);      //kg a.i/ha
     Input (double, Doseldlobr, 0.);     //dose leaft on the leaf on beginning rainfall will be washed to the soil
-    Input (double, P, 25.);
+    Input (double, P, 1.);             //average  daily rainfall per rainfall event in a given month (mm)
     Input (double, KocpH, 5.678e-6);
     Input (double, fom, 0.09);          //organice matter content in the soil
     Input (double, Q, 5.);

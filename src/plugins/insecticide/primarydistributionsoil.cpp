@@ -17,11 +17,11 @@ primarydistributionsoil::primarydistributionsoil(Identifier name, QObject *paren
 	: Model(name, parent)
 {
 
-    Input (double, Doseappl, 0.);     //kg/ha
-    Input (double, Doserl, 0.);
-    Input (double, Dosedrift, 0.);
+    Input (double, Doseappl, 0.);     //kg a.i/ha
+    Input (double, Doserl, 0.); //kg a.i/ha
+    Input (double, Dosedrift, 0.); //kg a.i/ha
 
-    Output (double, Dosers);
+    Output (double, Dosers); //kg a.i/ha
 }
 
 void primarydistributionsoil::reset() {

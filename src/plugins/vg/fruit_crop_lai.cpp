@@ -30,13 +30,6 @@ PUBLISH(FruitCropLai)
  * Output
  * ------
  * - _maxLaiReached_ tells whether the max. LAI has been reached [true, false]
- *
- *
- * Default dependencies
- * ------------
- * - a parent model with a _density_ port [m<SUP>-2</SUP>]
- * - a _physTime_ sibling model with a _total_ port [d <SUP>o</SUP>C]
- * - a _periods_ sibling model with a _flag_ port [true, false]
  */
 
 FruitCropLai::FruitCropLai(Identifier name, QObject *parent)
@@ -52,11 +45,12 @@ FruitCropLai::FruitCropLai(Identifier name, QObject *parent)
 void FruitCropLai::reset() {
     laiStart = laiStartPerPlant*cropDensity;
     lai = 0.;
+    maxLaiReached = (lai>=maxLai);
 }
 
 void FruitCropLai::update() {
     lai = cropPresent ? max(laiStart, laiStart+exp(tempSum/700)-1.) : 0.;
-    maxLaiReached = lai>=maxLai;
+    maxLaiReached = (lai>=maxLai);
     if (maxLaiReached)
         lai = maxLai;
 }

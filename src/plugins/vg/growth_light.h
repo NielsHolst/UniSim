@@ -7,20 +7,31 @@
 #ifndef VG_GROWTH_LIGHT_H
 #define VG_GROWTH_LIGHT_H
 
-#include "base_growth_light.h"
+#include <usbase/string_map.h>
+#include "growth_light_base.h"
 
 namespace vg {
 
-class GrowthLight : public BaseGrowthLight
-{
+class GrowthLight : public GrowthLightBase {
 public:
     GrowthLight(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 private:
+    // Inputs
+    QString lampTypeStr;
     bool on;
-    double heatEmissionOn, longWaveEmissionOn, shortWaveEmissionOn, parEmissionOn, energyUseOn,
-        age, lifeTime, minPeriod, timeStep, r, currentPeriod, totalPeriod;
+    double timeStep, intensity, ballastCorrection, age, lifeTime;
+
+    // Outputs
+    double currentPeriod, totalPeriod;
+
+    // Lamp attributes
+    enum Type {Hpsl, Led};
+    static UniSim::StringMap<Type> types;
+    struct { double heatCoef, longWaveCoef, shortWaveCoef, parCoef, minPeriodOn; } attributes;
+    struct { double heatEmission, longWaveEmission, shortWaveEmission, parEmission, energyUse; } netAttributes;
+    double degradationRate;
 };
 } //namespace
 

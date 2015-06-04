@@ -19,17 +19,16 @@ leafsumofdoseremoved::leafsumofdoseremoved(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
 
-    Input (double, P, 25.);             //rainfall
+    Input (double, Rainfall, 25.);      //rainfall
     Input (double, threshold, 1.);      //rainfall >1 mm
-    Input (double, inflow, 0.);
-    Input (double, kov, 0.);
+    Input (double, inflow, 0.); //kg a.i/ha
+    Input (double, kov, 0.); // per hour (h-1)
 
-    Output (double, outflow);
-    Output (double, concentration);
-    Output (double, Doselsodr);
+    Output (double, outflow); //kg a.i/ha
+    Output (double, concentration); //kg a.i/ha
+    Output (double, Doselsodr); //kg a.i/ha
     //sum of the 3 leaf removal processes, or
     //dose of the pesticides reaching the leaves that are removed from the leaves before the next rain event
-
 }
 
 void leafsumofdoseremoved::reset() {
@@ -39,17 +38,17 @@ void leafsumofdoseremoved::reset() {
     concentration = 0.;
 }
 
-void leafsumofdoseremoved::update() {    
+void leafsumofdoseremoved::update() {
 
-    if (P <= threshold){
-        outflow = concentration*kov;
-        concentration += inflow - outflow;
-        Doselsodr += outflow;
-    }
-    else {
-        concentration = 0;
-        Doselsodr = 0;
-    }
+        if (Rainfall <= threshold){
+            outflow = concentration*kov;
+            concentration += inflow - outflow;
+            Doselsodr += outflow;
+        }
+        else {
+            concentration = 0;
+            Doselsodr = 0;
+        }
 
 }
 

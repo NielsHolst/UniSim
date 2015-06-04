@@ -19,7 +19,7 @@ namespace vg {
  *
  * Output
  * ------
- * - _lai_ is the crp LAI [m<SUP>2</SUP> leaf/m<SUP>2</SUP> planted area]
+ * - _lai_ is the crop LAI [m<SUP>2</SUP> leaf/m<SUP>2</SUP> planted area]
  *
  */
 
@@ -28,6 +28,10 @@ CropLai::CropLai(Identifier name, QObject *parent)
 {
     Input(double, laiStartPerPlant, 0.3);
     Output(double, lai);
+}
+
+void CropLai::reset() {
+    lai = laiStartPerPlant;
 }
 
 } //namespace

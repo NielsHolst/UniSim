@@ -36,17 +36,6 @@ PUBLISH(CropGrowth)
  * ------
  * - _maintenanceRespiration_ is the mass lost to maintenance in this time step [g/m<SUP>2</SUP>]
  * - _grossGrowthRate_ is the mass allocated to growth and growth respiration in this time step [g/m<SUP>2</SUP>]
- *
- * Default dependencies
- * ------------
- * - a _mass_ sibling model with a four ports:
- * + _root_ [g/m<SUP>2</SUP>]
- * + _stem_ [g/m<SUP>2</SUP>]
- * + _leaf_ [g/m<SUP>2</SUP>]
- * + _fruit_ [g/m<SUP>2</SUP>]
- * - a _temperature_ sibling model with a _value_ port [<SUP>o</SUP>C]
- * - an _Pgc_ child model with a _value_ port [g CO<SUB>2</SUB> /m<SUP>2</SUP>/h]
- * - an _calendar_ model with an _timeStepSecs_ port [s]
  */
 
 CropGrowth::CropGrowth(Identifier name, QObject *parent)

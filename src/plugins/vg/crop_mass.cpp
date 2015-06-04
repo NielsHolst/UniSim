@@ -15,6 +15,7 @@ namespace vg {
  *
  * Inputs
  * ------
+ * - _timeStep_ is the duration of one integration time step [s]
  * - _grossGrowthRate_ is the mass allocated to growth and growth respiration in this time step [g/m<SUP>2</SUP>]
  * - _establishCrop_ tells whether the crop has just been established [true, false]
  * - _removeCrop_ tells whether the crop has just been removed [true, false]
@@ -30,22 +31,23 @@ namespace vg {
  *
  * Output
  * ------
- * The densities below all per m<SUP>2</SUP> planted area.
+ * The densities below are all per m<SUP>2</SUP> planted area.
  * - _root_ is root dry mass [g/m<SUP>2</SUP>]
  * - _stem_ is stem dry mass [g/m<SUP>2</SUP>]
  * - _leaf_ is leaf dry mass [g/m<SUP>2</SUP>]
  * - _fruit_ is fruit dry mass [g/m<SUP>2</SUP>]
  * - _total_ is total dry mass [g/m<SUP>2</SUP>]
- *
- * Default dependencies
- * ------------
- * -
- *
+ * - _rootGrowthRate_ is the growth rate of root dry mass [g/m<SUP>2</SUP>/h]
+ * - _stemGrowthRate_ is the growth rate of stem dry mass [g/m<SUP>2</SUP>/h]
+ * - _leafGrowthRate_ is the growth rate of leaf dry mass [g/m<SUP>2</SUP>/h]
+ * - _fruitGrowthRate_ is the growth rate of fruit dry mass [g/m<SUP>2</SUP>/h]
+ * - _totalGrowthRate_ is the growth rate of total dry mass [g/m<SUP>2</SUP>/h]
  */
 
 CropMass::CropMass(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    InputRef(double, timeStep, "calendar[timeStepSecs]");
     InputRef(double, grossGrowthRate, "../growth[grossGrowthRate]");
     InputRef(bool, establishCrop, "../periods[flagUp]");
     InputRef(bool, removeCrop, "../periods[flagDown]");
@@ -64,6 +66,12 @@ CropMass::CropMass(Identifier name, QObject *parent)
     Output(double, leaf);
     Output(double, fruit);
     Output(double, total);
+
+    Output(double, rootGrowthRate);
+    Output(double, stemGrowthRate);
+    Output(double, leafGrowthRate);
+    Output(double, fruitGrowthRate);
+    Output(double, totalGrowthRate);
 }
 
 void CropMass::reset() {
@@ -71,7 +79,8 @@ void CropMass::reset() {
 }
 
 void CropMass::remove() {
-    root = stem = leaf = fruit = total = 0.;
+    root = stem = leaf = fruit = total =
+    rootGrowthRate = stemGrowthRate = leafGrowthRate = fruitGrowthRate = totalGrowthRate = 0.;
 }
 
 void CropMass::update() {
@@ -92,11 +101,24 @@ void CropMass::establish() {
 }
 
 void CropMass::allocate() {
-    root += propRoot*grossGrowthRate/(1+costRoot);
-    stem += propStem*grossGrowthRate/(1+costStem);
-    leaf += propLeaf*grossGrowthRate/(1+costLeaf);
-    fruit += propFruit*grossGrowthRate/(1+costFruit);
-    total = root + stem + leaf + fruit;
+    // Compute growth increments
+    rootGrowthRate = propRoot*grossGrowthRate/(1+costRoot);
+    stemGrowthRate = propStem*grossGrowthRate/(1+costStem);
+    leafGrowthRate = propLeaf*grossGrowthRate/(1+costLeaf);
+    fruitGrowthRate = propFruit*grossGrowthRate/(1+costFruit);
+    totalGrowthRate = rootGrowthRate + stemGrowthRate + leafGrowthRate + fruitGrowthRate;
+    // Add growth increments
+    root += rootGrowthRate;
+    stem += stemGrowthRate;
+    leaf += leafGrowthRate;
+    fruit += fruitGrowthRate;
+    total += totalGrowthRate;
+    // Convert growth increments to rates per hour
+    rootGrowthRate *= 3600/timeStep;
+    stemGrowthRate *= 3600/timeStep;
+    leafGrowthRate *= 3600/timeStep;
+    fruitGrowthRate *= 3600/timeStep;
+    totalGrowthRate *= 3600/timeStep;
 }
 
 } //namespace

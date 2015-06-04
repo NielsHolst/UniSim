@@ -20,13 +20,13 @@ leafdosevolatilized::leafdosevolatilized(Identifier name, QObject *parent)
 {
 
     Input (double, klv, 0.);        //rate constant of volatilization process (h-1)
-    Input (double, inflow, 0.);
+    Input (double, inflow, 0.); //kg a.i/ha
     Input (double, threshold, 1.);  //rainfall >1 mm
-    Input (double, P, 0.);          //rainfall (mm)
+    Input (double, Rainfall, 0.);          //rainfall (mm)
 
-    Output (double, Doseldv);
-    Output (double, outflow);
-    Output (double, concentration);
+    Output (double, Doseldv); //kg a.i/ha
+    Output (double, outflow); //kg a.i/ha
+    Output (double, concentration); //kg a.i/ha
 
 }
 
@@ -39,7 +39,7 @@ void leafdosevolatilized::reset() {
 
 void leafdosevolatilized::update() {
 
-    if (P <= threshold){
+    if (Rainfall <= threshold){
         outflow = concentration*klv;
         concentration += inflow - outflow;
         Doseldv += outflow;

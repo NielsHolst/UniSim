@@ -4,6 +4,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <iostream>
+#include <qmessagebox.h>
 #include <QString>
 #include "component.h"
 #include "exception.h"

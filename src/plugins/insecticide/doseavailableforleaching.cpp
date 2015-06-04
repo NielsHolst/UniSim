@@ -17,10 +17,10 @@ doseavailableforleaching::doseavailableforleaching(Identifier name, QObject *par
 	: Model(name, parent)
 {
 
-    Input (double, Doseaflm, 0.);       //dose remained in the soil after soil degradation and soil volatilization
-    Input (double, Dmacropore, 0.);         //dose of pesticide macropore
+    Input (double, Doseaflm, 0.);       //dose remained in the soil after soil degradation and soil volatilization (kg a.i/ha)
+    Input (double, Dmacropore, 0.);         //dose of pesticide macropore (kg a.i/ha)
 
-    Output (double, Doseafl); //dose available for leaching
+    Output (double, Doseafl); //dose available for leaching (kg a.i/ha)
 
 }
 

@@ -18,7 +18,7 @@ topsoilvolatilizationfinal::topsoilvolatilizationfinal(Identifier name, QObject 
 {
 
     Input (double, ksv, 0.0001);       //volatilization rate constant (h-1)    
-    Input (double, P, 25.);            //rainfall (mm)
+    Input (double, Rainfall, 25.);            //rainfall (mm)
     Input (double, threshold, 1.);     //rainfall even greater than 1 mm
     Input (double, inflow, 0.);        //Dosers
     Input (double, Va, 0.);
@@ -54,7 +54,7 @@ void topsoilvolatilizationfinal::update() {
     frsw = Vw*Zw/VZ;
     fv = frsa + frsw;
 
-    if (P <= threshold){
+    if (Rainfall <= threshold){
         outflow = concentration*ksv;
         //outflow = concentration*fv*ksv;
         concentration += inflow - outflow;

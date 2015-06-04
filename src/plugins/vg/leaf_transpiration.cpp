@@ -46,7 +46,7 @@ PUBLISH(LeafTranspiration)
  */
 
 LeafTranspiration::LeafTranspiration(Identifier name, QObject *parent)
-    : VapourFlux(name, parent)
+    : VapourFluxBase(name, parent)
 {
     InputRef(double, lai, "crop/lai[lai]");
     Input(double, fractionPlantArea, 0.95);
@@ -57,6 +57,11 @@ LeafTranspiration::LeafTranspiration(Identifier name, QObject *parent)
     InputRef(double, Tleaf, "../Temperature[value]");
     InputRef(double, rbH2O, "../rb[rbH2O]");
     InputRef(double, rsH2O, "../rs[rsH2O]");
+    Output(double, leafAh);
+}
+
+void LeafTranspiration::reset() {
+    leafAh = indoorsAh;
 }
 
 void LeafTranspiration::update() {
@@ -64,12 +69,12 @@ void LeafTranspiration::update() {
         conductance = vapourFlux = gain = 0.;
     }
     else {
-        double laiNet = xGauss*lai*fractionPlantArea;
-        conductance = wGauss*2*laiNet/((1 + svpSlope(Tleaf)/Psychr)*rbH2O + rsH2O);
-        double effAh = sah(Tleaf) +
-                       svpSlope(Tleaf)/Psychr*rbH2O/2/laiNet*absorbedRadiation/LHe;
-        vapourFlux = max(conductance*(effAh - indoorsAh), 0.);
-        gain = conductance*effAh;
+        double laiNet = lai*fractionPlantArea,
+               s = svpSlope(Tleaf);
+        conductance = 2*laiNet/((1 + s/Psychr)*rbH2O + rsH2O);
+        leafAh = sah(Tleaf) + s/Psychr*rbH2O/2/laiNet*absorbedRadiation/LHe;
+        vapourFlux = max(conductance*(leafAh - indoorsAh), 0.);
+        gain = conductance*leafAh;
     }
 }
 

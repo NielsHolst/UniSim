@@ -19,19 +19,16 @@ namespace vg {
  *
  * Inputs
  * ------
- * - _initState_ is the initial value of state when control element is reset [any]
+ * - _initState_ is the initial value of state when control element is reset [R]
  * - _timeStepSecs_ is the integration time step [s]
- * - _signal_ is telling the desired state [any]
+ * - _signal_ is telling the desired state [R]
  *
  * Outputs
  * ------
- * - _state_ is the current state according to the time integration of _signal_ [any]
+ * - _state_ is the current state according to the time integration of _signal_ [R]
+ * - _value_ is synonumous with _state_ [R]
  * - _course_ is the current course of the signal [0 (decreasing), 1 (stable), 2 (increasing)]
-
- * Default dependencies
- * ------------
- * - a _calendar_ model with a _timeStepSecs_ port [s]
- * - a parent model with a _signal_ port [any]
+ * - _fulfilment_ is the current _state_:_signal_ ratio [R]
  */
 
 BaseControlElement::BaseControlElement(Identifier name, QObject *parent)
@@ -41,17 +38,22 @@ BaseControlElement::BaseControlElement(Identifier name, QObject *parent)
     InputRef(double, timeStepSecs, "calendar[timeStepSecs]");
     InputRef(double, signal, "..[signal]");
     Output(double, state);
+    Output2(double, state, value);
+    Output(double, fulfilment);
     Output(int, course);
 }
 
 void BaseControlElement::reset() {
+    fulfilment = 1.;
     state = initState;
     course = Stable;
+    localReset();
 }
 
 void BaseControlElement::update() {
     double oldState = state;
     state += change(signal - state);
+    fulfilment = (signal==0.) ? 1. : state/signal;
     if (TestNum::eq(state, oldState))
         course = Stable;
     else

@@ -7,6 +7,12 @@
 
 namespace UniSim {
 
+QString hint(QString s) {
+    return (s.contains('/') || s.contains('/')) ?
+        QString("\nThe string value is a reference. Did you use 'value' in stead of 'ref'?").arg(s) :
+        QString();
+}
+
 template<> QString stringToValue<QString>(QString s_, QObject *) {
     return s_;
 }
@@ -18,7 +24,7 @@ template<> double stringToValue<double>(QString s_, QObject *concerning) {
     bool ok;
     double value = s.toDouble(&ok);
     if (!ok) {
-        QString msg = "Cannot convert '" + s + "' to double";
+        QString msg = "Cannot convert '" + s + "' to double" + hint(s);
         throw Exception(msg, concerning);
     }
     return value;
@@ -31,7 +37,7 @@ template<> int stringToValue<int>(QString s_, QObject *concerning) {
     bool ok;
     int value = s.toInt(&ok);
     if (!ok) {
-        QString msg = "Cannot convert '" + s + "' to int";
+        QString msg = "Cannot convert '" + s + "' to int" + hint(s);
         throw Exception(msg, concerning);
     }
     return value;
@@ -42,7 +48,7 @@ template<> char stringToValue<char>(QString s_, QObject *concerning) {
     if (s == missingValue<QString>())
         return missingValue<char>();
     if (s.size() != 1) {
-        QString msg = "Cannot convert '" + s + "' to char";
+        QString msg = "Cannot convert '" + s + "' to char" + hint(s);
         throw Exception(msg, concerning);
     }
     return s[0].toLatin1();
@@ -56,7 +62,7 @@ template<> bool stringToValue<bool>(QString s_, QObject *concerning) {
     else if (s=="no" || s=="false")
         value = false;
     else {
-        QString msg = "Cannot convert '" + s + "' to bool";
+        QString msg = "Cannot convert '" + s + "' to bool"  + hint(s);
         throw Exception(msg, concerning);
     }
     return value;
@@ -78,7 +84,7 @@ template<> QDate stringToValue<QDate>(QString s_, QObject *concerning) {
     if (!date.isValid())
         date = QDate::fromString(s, "yyyy-M-d");
     if (!date.isValid()) {
-        QString msg = "Cannot convert '" + s + "' to a date";
+        QString msg = "Cannot convert '" + s + "' to a date" + hint(s);
         throw Exception(msg, concerning);
     }
     return date;
@@ -92,7 +98,7 @@ template<> QTime stringToValue<QTime>(QString s_, QObject *concerning) {
     if (!time.isValid())
             time = QTime::fromString(s, "h:m");
     if (!time.isValid()) {
-        QString msg = "Cannot convert '" + s + "' to a time";
+        QString msg = "Cannot convert '" + s + "' to a time" + hint(s);
         throw Exception(msg, concerning);
     }
     return time;

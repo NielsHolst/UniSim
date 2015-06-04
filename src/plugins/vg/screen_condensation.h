@@ -7,11 +7,11 @@
 #ifndef VG_SCREEN_CONDENSATION_H
 #define VG_SCREEN_CONDENSATION_H
 
-#include "vapour_flux.h"
+#include "vapour_flux_base.h"
 
 namespace vg {
 
-class ScreenCondensation : public VapourFlux
+class ScreenCondensation : public VapourFluxBase
 {
 public:
     ScreenCondensation(UniSim::Identifier name, QObject *parent);

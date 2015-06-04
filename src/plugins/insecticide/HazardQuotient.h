@@ -10,18 +10,18 @@
 
 namespace insecticide {
 
-class hazardquotient : public UniSim::Model
+class HazardQuotient : public UniSim::Model
 {
 public:
-    hazardquotient(UniSim::Identifier name, QObject *parent);
+    HazardQuotient(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
 private:
-    // Input
+    // Parameters
     double RV,lowestAvailableNOAEL, concentration;
 
-    // Output
+    // Variables
     double ReferenceValue,HQ;
 };
 

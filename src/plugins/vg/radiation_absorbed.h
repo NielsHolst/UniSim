@@ -4,8 +4,8 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_RADIAION_ABSORBED_H
-#define VG_RADIAION_ABSORBED_H
+#ifndef VG_RADIATION_ABSORBED_H
+#define VG_RADIATION_ABSORBED_H
 
 #include <usbase/model.h>
 

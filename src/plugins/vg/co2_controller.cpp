@@ -51,6 +51,7 @@ Co2Controller::Co2Controller(Identifier name, QObject *parent)
 }
 
 void Co2Controller::reset() {
+    signal = 0.;
 }
 
 void Co2Controller::update() {

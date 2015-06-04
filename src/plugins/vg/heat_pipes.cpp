@@ -15,50 +15,34 @@ PUBLISH(HeatPipes)
 /*! \class HeatPipes
  * \brief Temperature and effect of all pipes
  *
- * Inputs
- * ------
- * - _timeStep_ is the integration time step [s]
- *
  * Outputs
  * ------
- * - _effect_ is the energy emission per greenhouse area [W/m<SUP>2</SUP>]
- * - _sumEnergy_ is the summed energy spent per greenhouse area [MJ/m<SUP>2</SUP>]
+ * - _maxEnergyFlux_ maximum energy that can be supplied from the heat pipes [W/m<SUP>2</SUP>]
  *
- * Default dependencies
- * ------------
- * - a _calendar_ model with a _timeStepSecs_ port [s]
- *
- * Optional dependencies
- * ------------
- * - some (0..n) child models with an _effect_ port [W/m<SUP>2</SUP>]
  */
 
 HeatPipes::HeatPipes(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, timeStep, "calendar[timeStepSecs]");
-    Output(double, effect);
-    Output(double, sumEnergy);
+    Output(double, maxEnergyFlux);
 }
 
 void HeatPipes::initialize() {
-    pipeEffects.clear();
+    maxEnergyFluxes.clear();
     auto pipes = seekChildren<Model*>("*");
     for (auto pipe : pipes) {
-        auto effect = pipe->peekValuePtr<double>("effect");
-        if (effect) pipeEffects << effect;
+        maxEnergyFluxes << pipe->peekValuePtr<double>("maxEnergyFlux");
     }
 }
 
 void HeatPipes::reset() {
-    effect = sumEnergy = 0;
+    update();
 }
 
 void HeatPipes::update() {
-    effect = 0;
-    for (auto eff : pipeEffects)
-        effect += *eff;
-    sumEnergy += effect*timeStep*1e-6;
+    maxEnergyFlux = 0;
+    for (auto flux : maxEnergyFluxes)
+        maxEnergyFlux += *flux;
 }
 
 } //namespace

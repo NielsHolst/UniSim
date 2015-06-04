@@ -18,8 +18,10 @@ public:
     void reset();
     void update();
 protected:
-    double produceMass, fractionPlantArea, fractionDryWeight,
-        freshWeight, dryWeight;
+    // Inputs
+    double produceMass, fractionPlantArea, fractionDryWeight;
+    // Outputs
+    double freshWeight, dryWeight;
 };
 } //namespace
 

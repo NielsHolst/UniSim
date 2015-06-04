@@ -20,26 +20,21 @@ PUBLISH(BoundaryLayerResistance)
  *
  * Inputs
  * ------
- * - _windSpeed_ is outdoors wind speed [m/s]
- * - _ventilation_ is the rate of air exchange through ventilation [m<SUP>3</SUP>]/m<SUP>2</SUP>/h]
+ * - _ventilation_ is the rate of air exchange through ventilation [h<SUP>-1</SUP>]
+ * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
  *
  * Outputs
  * ------
  * - _rbH2O_ is the boundary layer resistance against water vapour [s/m]
  * - _rbCO2_ is the boundary layer resistance against CO<SUB>2</SUB> [s/m]
- *
- * Default dependencies
- * ------------
- * - an _outdoors_ model with a _windspeed_ port [m/s]
- * - an _indoors/ventilation_ model with a _rate_ port [m<SUP>3</SUP>]/m<SUP>2</SUP>/h]
  */
-
 
 BoundaryLayerResistance::BoundaryLayerResistance(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, windSpeed, "outdoors[windspeed]");
-    InputRef(double, ventilation, "indoors/ventilation[rate]");
+    Input(double, leafDimension, 25./1000.);
+    InputRef(double, ventilation, "indoors/total/ventilation[value]");
+    InputRef(double, averageHeight, "construction/geometry[averageHeight]");
     Output(double, rbH2O);
     Output(double, rbCO2);
 }
@@ -49,14 +44,12 @@ void BoundaryLayerResistance::reset() {
 }
 
 void BoundaryLayerResistance::update() {
-    updateValue(0.1*windSpeed/4.*ventilation/3600.);
+    updateValue(0.1*ventilation/averageHeight/3600.);
 }
 
 void BoundaryLayerResistance::updateValue(double windSpeed) {
-    // Characteristic leaf dimension
-    const double L = 25./1000.;
     // (Stanghellini GCC p 146 modified)
-    rbH2O = 200.*sqrt( L/max(0.05,windSpeed) );
+    rbH2O = 200.*sqrt( leafDimension/max(0.05,windSpeed) );
     rbCO2 = rbH2O*1.37;
 }
 

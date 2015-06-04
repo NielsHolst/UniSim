@@ -16,8 +16,6 @@ PUBLISH(DateTimeSignal)
 /*! \class DateTimeSignal
  * \brief Sets a signal according to date and time of day
  *
- * The day and time intervals are closed,
- * i.e. values equal to the beginning or the end interval of an interval are considered inside the interval.
  *
  * Inputs
  * ------
@@ -36,18 +34,12 @@ PUBLISH(DateTimeSignal)
  * ------
  * See BaseSignal
  *
- * Default dependencies
- * ------------
- * - an _calendar_ model with two ports:
- *   + _dayOfYear_ [1..365]
- *   + _timeOfDay_ [hh:mm]
- *
- * The circadian flag tells whether the time interval beginTime to endTime should be interpreted as a circadian (i.e.
- * daily rythm). This allows the resulting signal to be periodic on a daily basis. Alternatively, when cirdadian is false,
- * the signal will be specified by one period beginning on beginDay at beginTime and ending on endDay at endTime.
+ * The _circadian_ flag tells whether the time interval _beginTime_ to _endTime_ should be interpreted as a circadian (i.e.
+ * daily) rythm. This allows the resulting signal to be *periodic* on a daily basis. Alternatively, when _cirdadian_ is false,
+ * the signal will be specified by *one* period beginning on beginDay at beginTime and ending on endDay at endTime.
  * In all cases the intervals are closed, i.e. limit values are considered inside the interval.
  *
- * If beginDay-endDay are set to 10/1/2012-20/1/2012 and beginTime-endTime are set to 8:00-16:00, these are the
+ * If _beginDay_-_endDay_ are set to 10/1/2012-20/1/2012 and _beginTime_-_endTime_ are set to 8:00-16:00, these are the
  * values that signal will be set to depending on the current date and time:
  * Date and time | signal
  * ------------- | ------
@@ -57,7 +49,6 @@ PUBLISH(DateTimeSignal)
  * 10/01/2012 06:00	| signalOutside
  * 20/01/2012 12:00	| signalInside
  * 20/01/2012 22:00	| signalOutside
- *
  */
 
 DateTimeSignal::DateTimeSignal(Identifier name, QObject *parent)

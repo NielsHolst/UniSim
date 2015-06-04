@@ -20,7 +20,7 @@ public:
 
 private:
     // Parameters
-    double windSpeed, ventilation;
+    double leafDimension, windSpeed, ventilation, averageHeight;
 
     // Variables
     double rbH2O, rbCO2;

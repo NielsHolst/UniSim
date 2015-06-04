@@ -18,17 +18,14 @@ PUBLISH(CropYield)
  *
  * Inputs
  * ------
- * - _produceMass_ is the dry mass of the harvestable produce [g/m<SUP>2</SUP> planted area]
- * - _fractionPlanted_ is the fraction of planted area in the greenhouse [0;1]
+ * - _produceMass_ is the accumulated dry mass of the harvestable produce [kg/m<SUP>2</SUP> planted area]
+ * - _fractionPlantArea_ is the fraction of planted area in the greenhouse [0;1]
  * - _fractionDryWeight_ is the fraction of produce dry weight [0;1]
  *
  * Output
  * ------
- * - _freshWeight_ is the fresh weight of harvestable produce [g/m<SUP>2</SUP> greenhouse area]
- * - _dryWeight_ is the dry weight of harvestable produce [g/m<SUP>2</SUP> greenhouse area]
- *
- * Default dependencies
- * ------------
+ * - _freshWeight_ is the accumulated fresh weight of harvestable produce [g/m<SUP>2</SUP> greenhouse area]
+ * - _dryWeight_ is the accumulated dry weight of harvestable produce [g/m<SUP>2</SUP> greenhouse area]
  */
 
 CropYield::CropYield(Identifier name, QObject *parent)
@@ -42,11 +39,11 @@ CropYield::CropYield(Identifier name, QObject *parent)
 }
 
 void CropYield::reset() {
-    freshWeight = dryWeight = 0;
+    freshWeight = dryWeight = 0.;
 }
 
 void CropYield::update() {
-    dryWeight = produceMass*fractionPlantArea;
+    dryWeight = produceMass*fractionPlantArea/1000.;
     freshWeight = dryWeight/fractionDryWeight;
 }
 

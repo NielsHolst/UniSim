@@ -18,8 +18,12 @@ public:
     void reset();
     void update();
 private:
-    double timeStep, averageHeight, heatBalance, indoorsAh,
-        initValue, value, virtualTemperature;
+    // Inputs
+    double baseTemperature, averageHeight, timeStep, energyFlux, initValue;
+    // Output
+    double value, change;
+    // Data
+    int tick;
 };
 } //namespace
 

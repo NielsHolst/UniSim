@@ -7,19 +7,18 @@
 #ifndef VG_ENERGY_FLUX_TRANSPIRATION_H
 #define VG_ENERGY_FLUX_TRANSPIRATION_H
 
-#include <usbase/model.h>
+#include "energy_flux_base.h"
 
 namespace vg {
 
-class EnergyFluxTranspiration : public UniSim::Model
+class EnergyFluxTranspiration : public EnergyFluxBase
 {
 public:
     EnergyFluxTranspiration(UniSim::Identifier name, QObject *parent);
-    void reset();
     void update();
 
 private:
-    double transpiration, flux;
+    double transpiration;
 };
 } //namespace
 

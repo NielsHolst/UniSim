@@ -2,8 +2,8 @@
 <simulation name="Virtual Greenhouse">
 	<integrator name="steps" type="UniSim::StepsTimeInterval">
 		<parameter name="beginDate" value="2001-01-01"/>
-		<parameter name="beginTime" value="00:00"/>
 		<parameter name="endDate" value="2001-12-31"/>
+		<parameter name="beginTime" value="00:00"/>
 		<parameter name="endTime" value="00:00"/>
 		<parameter name="timeStep" value="5"/>
 		<parameter name="timeUnit" value="m"/>
@@ -16,129 +16,316 @@
 		<parameter name="timeUnit" ref="steps[timeUnit]"/>
 		<parameter name="sample" value="12"/>
 		<parameter name="latitude" value="55.5"/>
+		<parameter name="longitude" value="10.5"/>
+		<parameter name="timeZone" value="01"/>
 	</model>
 	<model name="outdoors" type="vg::Outdoors">
+		<parameter name="co2" value="750"/>
 		<model name="records" type="UniSim::Records">
 			<parameter name="fileName" value="sel_dk.txt"/>
 			<parameter name="imposeInitialDateTime" value="false"/>
 		</model>
 	</model>
-	<model name="greenhouse">
-		<model name="construction">
-			<model name="ventilation" type="vg::ConstructionVentilation">
-				<parameter name="ventMaxOpening" value="45"/>
-				<parameter name="ventLength" value="48"/>
-				<parameter name="ventWidth" value="1"/>
-				<parameter name="ventDensity" value="0.00333333333333333"/>
-				<parameter name="efficacy" value="1"/>
-			</model>
-			<model name="growthLights">
-				<model type="vg::ConstructionGrowthLight" name="growthLight1">
-					<parameter name="type" value="HPSL"/>
-					<parameter name="capacity" value="60"/>
-					<parameter name="lifeTime" value="12000"/>
-					<parameter name="age" value="2000"/>
+	<model name="construction">
+		<model name="geometry" type="vg::ConstructionGeometry">
+			<parameter name="spanWidth" value="12"/>
+			<parameter name="numSpans" value="1"/>
+			<parameter name="height" value="2.5"/>
+			<parameter name="length" value="50"/>
+			<parameter name="roofPitch" value="26"/>
+			<parameter name="shade" value="0.2"/>
+		</model>
+		<model name="greenhouseSurface" type="vg::GreenhouseSurface">
+			<model type="vg::Surface" name="roof1">
+				<model name="cover" type="vg::Cover">
+					<parameter name="U4" value="2.7"/>
+					<parameter name="emissivity" value="0.84"/>
+					<parameter name="absorption" value="0.04"/>
+					<parameter name="density" value="2600"/>
+					<parameter name="heatCapacity" value="840"/>
+					<parameter name="thickness" value="4"/>
+					<parameter name="diffuseTransmission" value="0.82"/>
+					<parameter name="haze" value="0"/>
+					<parameter name="antiReflection" value="no"/>
+					<model name="energyFlux" type="vg::EnergyFluxCover"/>
+					<model name="condensation" type="vg::CoverCondensation"/>
+				</model>
+				<model name="screens" type="vg::Screens">
+					<model type="vg::Screen" name="energy">
+						<parameter name="position" value="roof1_roof2_horizontal"/>
+						<parameter name="layer" value="outer"/>
+						<parameter name="lightTransmission" value="0.34"/>
+						<parameter name="airTransmission" value="0.37"/>
+						<parameter name="energyLossReduction" value="0.6"/>
+						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+					</model>
 				</model>
 			</model>
-			<model name="geometry" type="vg::ConstructionGeometry">
-				<parameter name="spanWidth" value="12"/>
-				<parameter name="numSpans" value="1"/>
-				<parameter name="height" value="2.5"/>
-				<parameter name="length" value="50"/>
-				<parameter name="roofPitch" value="26"/>
+			<model type="vg::Surface" name="roof2">
+				<model name="cover" type="vg::Cover">
+					<parameter name="U4" value="2.7"/>
+					<parameter name="emissivity" value="0.84"/>
+					<parameter name="absorption" value="0.04"/>
+					<parameter name="density" value="2600"/>
+					<parameter name="heatCapacity" value="840"/>
+					<parameter name="thickness" value="4"/>
+					<parameter name="diffuseTransmission" value="0.82"/>
+					<parameter name="haze" value="0"/>
+					<parameter name="antiReflection" value="no"/>
+					<model name="energyFlux" type="vg::EnergyFluxCover"/>
+					<model name="condensation" type="vg::CoverCondensation"/>
+				</model>
+				<model name="screens" type="vg::Screens">
+					<model type="vg::Screen" name="energy">
+						<parameter name="position" value="roof1_roof2_horizontal"/>
+						<parameter name="layer" value="outer"/>
+						<parameter name="lightTransmission" value="0.34"/>
+						<parameter name="airTransmission" value="0.37"/>
+						<parameter name="energyLossReduction" value="0.6"/>
+						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+					</model>
+				</model>
 			</model>
-			<model type="vg::Cover" name="roof1">
-				<parameter name="type" value="User-defined"/>
-				<parameter name="diffuseTransmission" value="0.82"/>
-				<parameter name="U" value="2.7"/>
-				<parameter name="haze" value="0"/>
-				<parameter name="antiReflection" value="no"/>
+			<model type="vg::Surface" name="side1">
+				<model name="cover" type="vg::Cover">
+					<parameter name="U4" value="1.84"/>
+					<parameter name="emissivity" value="0.84"/>
+					<parameter name="absorption" value="0.04"/>
+					<parameter name="density" value="2600"/>
+					<parameter name="heatCapacity" value="840"/>
+					<parameter name="thickness" value="4"/>
+					<parameter name="diffuseTransmission" value="0.59"/>
+					<parameter name="haze" value="0"/>
+					<parameter name="antiReflection" value="no"/>
+					<model name="energyFlux" type="vg::EnergyFluxCover"/>
+					<model name="condensation" type="vg::CoverCondensation"/>
+				</model>
+				<model name="screens" type="vg::Screens">
+					<model type="vg::Screen" name="energy">
+						<parameter name="position" value="side1"/>
+						<parameter name="layer" value="outer"/>
+						<parameter name="lightTransmission" value="0.41"/>
+						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="energyLossReduction" value="0.55"/>
+						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+					</model>
+				</model>
 			</model>
-			<model type="vg::Cover" name="roof2">
-				<parameter name="type" value="User-defined"/>
-				<parameter name="diffuseTransmission" value="0.82"/>
-				<parameter name="U" value="2.7"/>
-				<parameter name="haze" value="0"/>
-				<parameter name="antiReflection" value="no"/>
+			<model type="vg::Surface" name="side2">
+				<model name="cover" type="vg::Cover">
+					<parameter name="U4" value="2.7"/>
+					<parameter name="emissivity" value="0.84"/>
+					<parameter name="absorption" value="0.04"/>
+					<parameter name="density" value="2600"/>
+					<parameter name="heatCapacity" value="840"/>
+					<parameter name="thickness" value="4"/>
+					<parameter name="diffuseTransmission" value="0.82"/>
+					<parameter name="haze" value="0"/>
+					<parameter name="antiReflection" value="no"/>
+					<model name="energyFlux" type="vg::EnergyFluxCover"/>
+					<model name="condensation" type="vg::CoverCondensation"/>
+				</model>
+				<model name="screens" type="vg::Screens">
+					<model type="vg::Screen" name="energy">
+						<parameter name="position" value="side2"/>
+						<parameter name="layer" value="outer"/>
+						<parameter name="lightTransmission" value="0.41"/>
+						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="energyLossReduction" value="0.55"/>
+						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+					</model>
+				</model>
 			</model>
-			<model type="vg::Cover" name="side1">
-				<parameter name="type" value="User-defined"/>
-				<parameter name="diffuseTransmission" value="0.59"/>
-				<parameter name="U" value="1.84"/>
-				<parameter name="haze" value="0"/>
-				<parameter name="antiReflection" value="no"/>
+			<model type="vg::Surface" name="end1">
+				<model name="cover" type="vg::Cover">
+					<parameter name="U4" value="0.3"/>
+					<parameter name="emissivity" value="0.84"/>
+					<parameter name="absorption" value="0.04"/>
+					<parameter name="density" value="2600"/>
+					<parameter name="heatCapacity" value="840"/>
+					<parameter name="thickness" value="4"/>
+					<parameter name="diffuseTransmission" value="0"/>
+					<parameter name="haze" value="0"/>
+					<parameter name="antiReflection" value="no"/>
+					<model name="energyFlux" type="vg::EnergyFluxCover"/>
+					<model name="condensation" type="vg::CoverCondensation"/>
+				</model>
+				<model name="screens" type="vg::Screens">
+					<model type="vg::Screen" name="energy">
+						<parameter name="position" value="end1"/>
+						<parameter name="layer" value="outer"/>
+						<parameter name="lightTransmission" value="0.41"/>
+						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="energyLossReduction" value="0.55"/>
+						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+					</model>
+				</model>
 			</model>
-			<model type="vg::Cover" name="side2">
-				<parameter name="type" value="User-defined"/>
-				<parameter name="diffuseTransmission" value="0.82"/>
-				<parameter name="U" value="2.7"/>
-				<parameter name="haze" value="0"/>
-				<parameter name="antiReflection" value="no"/>
+			<model type="vg::Surface" name="end2">
+				<model name="cover" type="vg::Cover">
+					<parameter name="U4" value="2.7"/>
+					<parameter name="emissivity" value="0.84"/>
+					<parameter name="absorption" value="0.04"/>
+					<parameter name="density" value="2600"/>
+					<parameter name="heatCapacity" value="840"/>
+					<parameter name="thickness" value="4"/>
+					<parameter name="diffuseTransmission" value="0.82"/>
+					<parameter name="haze" value="0"/>
+					<parameter name="antiReflection" value="no"/>
+					<model name="energyFlux" type="vg::EnergyFluxCover"/>
+					<model name="condensation" type="vg::CoverCondensation"/>
+				</model>
+				<model name="screens" type="vg::Screens">
+					<model type="vg::Screen" name="energy">
+						<parameter name="position" value="end2"/>
+						<parameter name="layer" value="outer"/>
+						<parameter name="lightTransmission" value="0.41"/>
+						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="energyLossReduction" value="0.55"/>
+						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+					</model>
+				</model>
 			</model>
-			<model type="vg::Cover" name="end1">
-				<parameter name="type" value="User-defined"/>
-				<parameter name="diffuseTransmission" value="0"/>
-				<parameter name="U" value="0.3"/>
-				<parameter name="haze" value="0"/>
-				<parameter name="antiReflection" value="no"/>
+		</model>
+		<model name="vents" type="vg::Vents">
+			<model type="vg::Vent" name="vent1">
+				<parameter name="length" value="48"/>
+				<parameter name="height" value="1"/>
+				<parameter name="number" value="1"/>
+				<parameter name="porosity" value="1"/>
 			</model>
-			<model type="vg::Cover" name="end2">
-				<parameter name="type" value="User-defined"/>
-				<parameter name="diffuseTransmission" value="0.82"/>
-				<parameter name="U" value="2.7"/>
-				<parameter name="haze" value="0"/>
-				<parameter name="antiReflection" value="no"/>
+			<model type="vg::Vent" name="vent2">
+				<parameter name="length" value="48"/>
+				<parameter name="height" value="1"/>
+				<parameter name="number" value="1"/>
+				<parameter name="porosity" value="1"/>
 			</model>
-			<model name="floor" type="vg::ConstructionFloor">
+		</model>
+		<model name="floor">
+			<model name="temperature" type="vg::FloorTemperature">
 				<parameter name="U" value="7.5"/>
+				<parameter name="initValue" value="18"/>
 			</model>
 		</model>
 	</model>
 	<model name="indoors">
-		<model name="floor">
-			<model name="temperature" type="vg::FloorTemperature">
-				<parameter name="initValue" value="17"/>
-			</model>
-		</model>
-		<model name="cover">
-			<model name="transmission" type="vg::TransmissionCover"/>
-			<model name="temperature" type="vg::CoverTemperature"/>
-		</model>
-		<model name="screens">
-			<model name="transmission" type="vg::TransmissionScreens"/>
-			<model name="temperature" type="vg::ScreenTemperature"/>
-		</model>
 		<model name="radiation" type="vg::IndoorsRadiation"/>
-		<model name="temperature" type="vg::IndoorsTemperature"/>
-		<model name="ventilation" type="vg::IndoorsVentilation">
-			<model name="infiltration" type="vg::AirInfiltration">
-				<parameter name="leakage" value="1"/>
+		<model name="passive">
+			<model name="ventilation" type="Unisim::Sum">
+				<parameter name="toAdd" value="(./infiltration[value] ./crack[value])"/>
+				<model name="infiltration" type="vg::AirInfiltration">
+					<parameter name="leakage" value="1"/>
+				</model>
+				<model name="crack" type="vg::PidControlElement">
+					<parameter name="signal" ref="./target[signal]"/>
+					<parameter name="Kprop" value="0.1"/>
+					<model name="target" type="vg::ProportionalSignal">
+						<model name="coldFactor" type="vg::ProportionalSignal">
+							<parameter name="input" ref="outdoors[temperature]"/>
+							<parameter name="threshold" value="-5"/>
+							<parameter name="thresholdBand" value="1"/>
+							<parameter name="increasingSignal" value="true"/>
+							<parameter name="maxSignal" value="1"/>
+							<parameter name="minSignal" value="0"/>
+						</model>
+						<parameter name="input" ref="indoors/humidity[rh]"/>
+						<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+						<parameter name="thresholdBand" value="10"/>
+						<parameter name="increasingSignal" value="true"/>
+						<parameter name="maxSignal" ref="./coldFactor[signal]"/>
+						<parameter name="minSignal" value="0"/>
+					</model>
+				</model>
 			</model>
-			<model name="vents" type="vg::VentsVentilation"/>
+			<model name="vapourFlux" type="vg::VapourFluxSum">
+				<model name="transpiration" type="vg::VapourFluxTranspiration"/>
+				<model name="evaporation" type="vg::VapourFluxSum"/>
+				<model name="condensation" type="vg::VapourFluxSumGreenhouseCondensation"/>
+				<model name="ventilation" type="vg::VapourFluxVentilation">
+					<parameter name="ventilationSupply" ref="indoors/passive/ventilation[value]"/>
+				</model>
+			</model>
+			<model name="energyFlux" type="vg::EnergyFluxSum">
+				<model name="cover" type="vg::EnergyFluxCoverSum"/>
+				<model name="floor" type="vg::EnergyFluxFloor"/>
+				<model name="transpiration" type="vg::EnergyFluxTranspiration"/>
+				<model name="condensation" type="vg::EnergyFluxCondensation"/>
+				<model name="shortWave" type="vg::EnergyFluxShortWave"/>
+				<model name="growthLights" type="vg::PidControlElement">
+					<parameter name="Kprop" value="0.5"/>
+					<parameter name="signal" ref="./growthLights[value]"/>
+					<model name="growthLights" type="vg::EnergyFluxGrowthLights"/>
+				</model>
+				<model name="ventilation" type="vg::EnergyFluxVentilation">
+					<parameter name="ventilation" ref="indoors/passive/ventilation[value]"/>
+				</model>
+			</model>
 		</model>
-		<model name="humidity" type="vg::IndoorsHumidity">
-			<model name="transpiration">
-				<model name="crop" type="vg::CropTranspiration"/>
+		<model name="active">
+			<model name="energyFlux">
+				<model name="heating">
+					<model name="demand" type="vg::EnergyFluxHeatingDemand"/>
+					<model name="supply" type="vg::PidControlElement">
+						<parameter name="Kprop" value="0.6"/>
+						<parameter name="Kint" value="0.01"/>
+						<parameter name="signal" ref="./supply[value]"/>
+						<model name="supply" type="vg::EnergyFluxHeatingSupply">
+							<parameter name="maxHeating" value="10000"/>
+						</model>
+					</model>
+				</model>
+				<model name="temperature" type="vg::IndoorsTemperature">
+					<model name="energyFlux" type="Unisim::Sum">
+						<parameter name="toAdd" value="(passive/energyFlux[value] active/energyFlux/heating/supply[value])"/>
+					</model>
+					<parameter name="energyFlux" ref="./energyFlux[value]"/>
+				</model>
+				<model name="cooling">
+					<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
+					<model name="supply" type="vg::PidControlElement">
+						<parameter name="Kprop" value="0.5"/>
+						<parameter name="signal" ref="./supply[value]"/>
+						<model name="supply" type="vg::EnergyFluxCoolingSupply">
+							<model name="byWind" type="vg::VentilationByWind">
+								<parameter name="baseRate" value="30"/>
+							</model>
+							<model name="byTemp" type="vg::VentilationByTemp"/>
+						</model>
+					</model>
+				</model>
 			</model>
-			<model name="evaporation"/>
-			<model name="condensation">
-				<model name="cover" type="vg::CoverCondensation"/>
-				<model name="screens" type="vg::ScreenCondensation"/>
-			</model>
-			<model name="ventilation">
-				<model name="total" type="vg::VentilationVapour"/>
+			<model name="ventilation" type="vg::VentilationByCooling"/>
+			<model name="vapourFlux" type="vg::VapourFluxVentilation">
+				<parameter name="ventilationSupply" ref="../ventilation[value]"/>
 			</model>
 		</model>
-		<model name="energy" type="vg::EnergyBalance">
-			<model name="surface" type="vg::EnergyFluxSurface"/>
-			<model name="ventilation" type="vg::EnergyFluxVentilation"/>
-			<model name="floor" type="vg::EnergyFluxFloor"/>
-			<model name="transpiration" type="vg::EnergyFluxTranspiration"/>
-			<model name="condensation" type="vg::EnergyFluxCondensation"/>
+		<model name="total">
+			<model name="energyFlux" type="Unisim::Sum">
+				<parameter name="toAdd" value="(passive/energyFlux[value] active/energyFlux/heating/supply[value] active/energyFlux/cooling/supply[value])"/>
+			</model>
+			<model name="ventilation" type="Unisim::Sum">
+				<parameter name="toAdd" value="(passive/ventilation[value] active/ventilation[value])"/>
+			</model>
+			<model name="vapourFlux" type="vg::VapourFluxSum">
+				<parameter name="toAdd" value="(passive/vapourFlux active/vapourFlux)"/>
+			</model>
 		</model>
+		<model name="temperature" type="vg::IndoorsTemperature">
+			<parameter name="initValue" value="18"/>
+			<parameter name="energyFlux" ref="../total/energyFlux[value]"/>
+		</model>
+		<model name="humidity" type="vg::IndoorsHumidity"/>
 		<model name="co2" type="vg::IndoorsCo2"/>
 	</model>
 	<model name="setpoints">
+		<model name="isDay" type="vg::ProportionalSignal">
+			<parameter name="threshold" value="10"/>
+			<parameter name="input" ref="outdoors/records[GlobRad]"/>
+			<parameter name="thresholdBand" value="0"/>
+			<parameter name="increasingSignal" value="true"/>
+			<parameter name="minSignal" value="0"/>
+			<parameter name="maxSignal" value="1"/>
+		</model>
 		<model name="humidity">
 			<model name="maximumRh" type="vg::SignalCollection">
 				<parameter name="rule" value="min"/>
@@ -156,83 +343,102 @@
 			</model>
 		</model>
 		<model name="temperature">
-			<model name="ventilation" type="vg::SignalCollection">
-				<parameter name="rule" value="sum"/>
-				<parameter name="signalReset" value="20"/>
-				<model name="setpoints" type="vg::SignalCollection">
-					<parameter name="rule" value="min"/>
-					<parameter name="signalReset" ref="..[signalReset]"/>
-					<model type="vg::DateTimeSignal">
-						<parameter name="beginDay" value="1"/>
-						<parameter name="endDay" value="365"/>
-						<parameter name="beginTime" value="0:0"/>
-						<parameter name="endTime" value="23:59"/>
-						<parameter name="circadian" value="true"/>
-						<parameter name="signalOutside" value="100"/>
-						<parameter name="signalOutsideTimeOnly" value="100"/>
-						<parameter name="signalInside" value="30"/>
+			<model name="ventilation" type="vg::PidControlElement">
+				<parameter name="initState" ref="./target[signalReset]"/>
+				<parameter name="signal" ref="./target[signal]"/>
+				<parameter name="Kprop" value="0.1"/>
+				<model name="target" type="vg::SignalCollection">
+					<parameter name="rule" value="sum"/>
+					<parameter name="signalReset" value="30"/>
+					<model name="setpoints" type="vg::SignalCollection">
+						<parameter name="rule" value="min"/>
+						<parameter name="signalReset" ref="..[signalReset]"/>
+						<model name="setpoint" type="vg::DateTimeSignal">
+							<parameter name="beginDay" value="1"/>
+							<parameter name="endDay" value="365"/>
+							<parameter name="beginTime" value="0:0"/>
+							<parameter name="endTime" value="23:59"/>
+							<parameter name="circadian" value="true"/>
+							<parameter name="signalOutside" value="100"/>
+							<parameter name="signalOutsideTimeOnly" value="100"/>
+							<parameter name="signalInside" value="30"/>
+						</model>
 					</model>
-				</model>
-				<model name="adjustments" type="vg::SignalCollection">
-					<parameter name="rule" value="min"/>
-					<parameter name="signalReset" value="0"/>
-					<model type="vg::DateTimeSignal">
-						<parameter name="beginDay" value="1"/>
-						<parameter name="endDay" value="365"/>
-						<parameter name="beginTime" value="0:0"/>
-						<parameter name="endTime" value="23:59"/>
-						<parameter name="circadian" value="true"/>
-						<parameter name="signalOutside" value="0"/>
-						<parameter name="signalOutsideTimeOnly" value="0"/>
-						<parameter name="signalInside" ref="./adjustment[signal]"/>
-						<model name="adjustment" type="vg::ProportionalSignal">
-							<parameter name="input" ref="indoors/humidity[rh]"/>
-							<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-							<parameter name="thresholdBand" value="10"/>
-							<parameter name="increasingSignal" value="false"/>
-							<parameter name="minSignal" value="-2"/>
-							<parameter name="maxSignal" value="0"/>
+					<model name="adjustments" type="vg::SignalCollection">
+						<parameter name="rule" value="min"/>
+						<parameter name="signalReset" value="0"/>
+						<model type="vg::DateTimeSignal">
+							<parameter name="beginDay" value="1"/>
+							<parameter name="endDay" value="365"/>
+							<parameter name="beginTime" value="0:0"/>
+							<parameter name="endTime" value="23:59"/>
+							<parameter name="circadian" value="true"/>
+							<parameter name="signalOutside" value="0"/>
+							<parameter name="signalOutsideTimeOnly" value="0"/>
+							<parameter name="signalInside" ref="./adjustment[signal]"/>
+							<model name="adjustment" type="vg::ProportionalSignal">
+								<parameter name="input" ref="indoors/humidity[rh]"/>
+								<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+								<parameter name="thresholdBand" value="5"/>
+								<parameter name="increasingSignal" value="false"/>
+								<parameter name="minSignal" value="-2"/>
+								<parameter name="maxSignal" value="0"/>
+							</model>
 						</model>
 					</model>
 				</model>
 			</model>
-			<model name="heating" type="vg::SignalCollection">
-				<parameter name="rule" value="sum"/>
-				<parameter name="signalReset" value="18"/>
-				<model name="setpoints" type="vg::SignalCollection">
-					<parameter name="rule" value="max"/>
-					<parameter name="signalReset" ref="..[signalReset]"/>
-					<model type="vg::DateTimeSignal">
-						<parameter name="beginDay" value="1"/>
-						<parameter name="endDay" value="365"/>
-						<parameter name="beginTime" value="0:0"/>
-						<parameter name="endTime" value="23:59"/>
-						<parameter name="circadian" value="true"/>
-						<parameter name="signalOutside" value="0"/>
-						<parameter name="signalOutsideTimeOnly" value="0"/>
-						<parameter name="signalInside" value="18"/>
-					</model>
-				</model>
-				<model name="adjustments" type="vg::SignalCollection">
-					<parameter name="signalReset" value="0"/>
-					<parameter name="rule" value="max"/>
-					<model type="vg::DateTimeSignal">
-						<parameter name="beginDay" value="1"/>
-						<parameter name="endDay" value="365"/>
-						<parameter name="beginTime" value="0:0"/>
-						<parameter name="endTime" value="23:59"/>
-						<parameter name="circadian" value="true"/>
-						<parameter name="signalReset" value="0"/>
-						<parameter name="signalOutside" value="0"/>
-						<parameter name="signalOutsideTimeOnly" value="0"/>
-						<parameter name="signalInside" ref="./adjustment[signal]"/>
-						<model name="adjustment" type="vg::ProportionalSignal">
-							<parameter name="input" ref="indoors/humidity[rh]"/>
-							<parameter name="thresholdBand" value="10"/>
-							<parameter name="increasingSignal" value="true"/>
-							<parameter name="minSignal" value="0"/>
-							<parameter name="maxSignal" value="2"/>
+			<model name="heating" type="vg::PidControlElement">
+				<parameter name="initState" ref="./target[signalReset]"/>
+				<parameter name="signal" ref="./target[signal]"/>
+				<parameter name="Kprop" value="0.1"/>
+				<model name="target" type="vg::SignalCollection">
+					<parameter name="rule" value="sum"/>
+					<parameter name="signalReset" value="18"/>
+					<model name="setpoints" type="vg::SignalCollection">
+						<parameter name="rule" value="max"/>
+						<parameter name="signalReset" ref="..[signalReset]"/>
+						<model name="setpoint" type="vg::DateTimeSignal">
+							<parameter name="beginDay" value="1"/>
+							<parameter name="endDay" value="365"/>
+							<parameter name="beginTime" value="0:0"/>
+							<parameter name="endTime" value="23:59"/>
+							<parameter name="circadian" value="true"/>
+							<parameter name="signalOutside" value="0"/>
+							<parameter name="signalOutsideTimeOnly" value="0"/>
+							<parameter name="signalInside" value="18"/>
 						</model>
+					</model>
+					<model name="adjustmentsRh" type="vg::SignalCollection">
+						<parameter name="signalReset" value="0"/>
+						<parameter name="rule" value="max"/>
+						<model type="vg::DateTimeSignal">
+							<parameter name="beginDay" value="1"/>
+							<parameter name="endDay" value="365"/>
+							<parameter name="beginTime" value="0:0"/>
+							<parameter name="endTime" value="23:59"/>
+							<parameter name="circadian" value="true"/>
+							<parameter name="signalReset" value="0"/>
+							<parameter name="signalOutside" value="0"/>
+							<parameter name="signalOutsideTimeOnly" value="0"/>
+							<parameter name="signalInside" ref="./adjustment[signal]"/>
+							<model name="adjustment" type="vg::ProportionalSignal">
+								<parameter name="input" ref="indoors/humidity[rh]"/>
+								<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+								<parameter name="thresholdBand" value="5"/>
+								<parameter name="increasingSignal" value="true"/>
+								<parameter name="minSignal" value="0"/>
+								<parameter name="maxSignal" value="2"/>
+							</model>
+						</model>
+					</model>
+					<model name="adjustmentLight" type="vg::ProportionalSignal">
+						<parameter name="input" ref="outdoors[radiation]"/>
+						<parameter name="threshold" value="300"/>
+						<parameter name="thresholdBand" value="100"/>
+						<parameter name="increasingSignal" value="true"/>
+						<parameter name="minSignal" value="0"/>
+						<parameter name="maxSignal" value="1"/>
 					</model>
 				</model>
 			</model>
@@ -271,62 +477,48 @@
 	</model>
 	<model name="controllers">
 		<model name="screens">
-			<model name="maxDrawn" type="vg::ThresholdSignal">
-				<parameter name="input" ref="indoors/humidity[rh]"/>
-				<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-				<parameter name="signalBelow" value="1"/>
-				<parameter name="signalAbove" value="-9"/>
+			<model name="maxDrawn" type="vg::PidControlElement">
+				<parameter name="initState" value="1"/>
+				<parameter name="signal" ref="./target[signal]"/>
+				<parameter name="Kprop" value="0.1"/>
+				<model name="target" type="vg::ThresholdSignal">
+					<parameter name="input" ref="indoors/humidity[rh]"/>
+					<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+					<parameter name="signalBelow" value="1"/>
+					<parameter name="signalAbove" value="0.9"/>
+				</model>
 			</model>
 			<model name="energy">
-				<model name="light" type="vg::ThresholdSignal">
-					<parameter name="input" ref="outdoors[radiation]"/>
-					<parameter name="threshold" value="10"/>
-					<parameter name="signalBelow" ref="../../maxDrawn[signal]"/>
-					<parameter name="signalAbove" value="0"/>
-				</model>
 				<model name="control" type="vg::SignalCollection">
-					<parameter name="rule" value="max"/>
+					<parameter name="rule" value="min"/>
 					<parameter name="signalReset" value="0"/>
-					<model type="vg::SignalCollection">
-						<parameter name="rule" value="max"/>
-						<parameter name="signalReset" value="0"/>
-						<model type="vg::DateTimeSignal">
-							<parameter name="beginDay" value="1"/>
-							<parameter name="endDay" value="365"/>
-							<parameter name="beginTime" value="0:0"/>
-							<parameter name="endTime" value="0:0"/>
-							<parameter name="signalInside" ref="../../../light[signal]"/>
-							<parameter name="signalOutside" value="0"/>
-							<parameter name="signalOutsideTimeOnly" value="0"/>
-						</model>
+					<model type="vg::ThresholdSignal">
+						<parameter name="input" ref="outdoors[radiation]"/>
+						<parameter name="threshold" value="10"/>
+						<parameter name="signalBelow" ref="controllers/screens/maxDrawn[value]"/>
+						<parameter name="signalAbove" value="0"/>
 					</model>
+					<model type="vg::ThresholdSignal">
+						<parameter name="input" ref="indoors/temperature[value]"/>
+						<parameter name="threshold" ref="setpoints/temperature/ventilation[value]"/>
+						<parameter name="signalBelow" value="1"/>
+						<parameter name="signalAbove" value="0"/>
+					</model>
+					<model type="vg::EnergyScreenBalanceSignal"/>
 				</model>
 			</model>
 			<model name="shade">
-				<model name="light" type="vg::ThresholdSignal">
-					<parameter name="input" ref="outdoors[radiation]"/>
-					<parameter name="threshold" value="550"/>
-					<parameter name="signalBelow" value="0"/>
-					<parameter name="signalAbove" ref="../../maxDrawn[signal]"/>
-				</model>
 				<model name="control" type="vg::SignalCollection">
 					<parameter name="rule" value="max"/>
 					<parameter name="signalReset" value="0"/>
-					<model type="vg::SignalCollection">
-						<parameter name="rule" value="max"/>
-						<parameter name="signalReset" value="0"/>
-						<model type="vg::DateTimeSignal">
-							<parameter name="beginDay" value="1"/>
-							<parameter name="endDay" value="365"/>
-							<parameter name="beginTime" value="0:0"/>
-							<parameter name="endTime" value="0:0"/>
-							<parameter name="signalInside" ref="../../../light[signal]"/>
-							<parameter name="signalOutside" value="0"/>
-							<parameter name="signalOutsideTimeOnly" value="0"/>
-						</model>
+					<model type="vg::ThresholdSignal">
+						<parameter name="input" ref="outdoors[radiation]"/>
+						<parameter name="threshold" value="500"/>
+						<parameter name="signalBelow" value="0"/>
+						<parameter name="signalAbove" ref="controllers/screens/maxDrawn[value]"/>
 					</model>
 					<model type="vg::FixedSignal">
-						<parameter name="input" ref="../../../energy/control[signal]"/>
+						<parameter name="input" ref="controllers/screens/energy/control[signal]"/>
 					</model>
 				</model>
 			</model>
@@ -335,7 +527,7 @@
 					<parameter name="input" ref="outdoors[radiation]"/>
 					<parameter name="threshold" value="0"/>
 					<parameter name="signalBelow" value="0"/>
-					<parameter name="signalAbove" value="1"/>
+					<parameter name="signalAbove" ref="controllers/screens/maxDrawn[value]"/>
 				</model>
 				<model name="control" type="vg::SignalCollection">
 					<parameter name="rule" value="max"/>
@@ -354,57 +546,9 @@
 						</model>
 					</model>
 					<model type="vg::FixedSignal">
-						<parameter name="input" ref="../../../energy/control[signal]"/>
+						<parameter name="input" ref="controllers/screens/energy/control[signal]"/>
 					</model>
 				</model>
-			</model>
-		</model>
-		<model name="ventilation" type="vg::VentilationController">
-			<model name="byTemperature" type="vg::ProportionalSignal">
-				<parameter name="input" ref="indoors/temperature[value]"/>
-				<parameter name="threshold" ref="setpoints/temperature/ventilation[signal]"/>
-				<parameter name="thresholdBand" value="2"/>
-				<parameter name="increasingSignal" value="true"/>
-				<parameter name="maxSignal" value="100"/>
-				<parameter name="minSignal" value="0"/>
-			</model>
-			<model name="byHumidity" type="vg::ProportionalSignal">
-				<parameter name="input" ref="indoors/humidity[rh]"/>
-				<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-				<parameter name="thresholdBand" value="5"/>
-				<parameter name="increasingSignal" value="true"/>
-				<parameter name="maxSignal" value="10"/>
-				<parameter name="minSignal" value="0"/>
-			</model>
-			<model name="leeFactor" type="vg::ProportionalSignal">
-				<parameter name="input" ref="outdoors[windspeed]"/>
-				<parameter name="threshold" value="15"/>
-				<parameter name="thresholdBand" value="5"/>
-				<parameter name="increasingSignal" value="false"/>
-				<parameter name="maxSignal" value="1"/>
-				<parameter name="minSignal" value="0"/>
-			</model>
-			<model name="windFactor" type="vg::ProportionalSignal">
-				<parameter name="input" ref="outdoors[windspeed]"/>
-				<parameter name="threshold" value="10"/>
-				<parameter name="thresholdBand" value="5"/>
-				<parameter name="increasingSignal" value="false"/>
-				<parameter name="maxSignal" value="1"/>
-				<parameter name="minSignal" value="0"/>
-			</model>
-			<model name="coldFactor" type="vg::ProportionalSignal">
-				<parameter name="input" ref="outdoors[temperature]"/>
-				<parameter name="threshold" value="-2"/>
-				<parameter name="thresholdBand" value="2"/>
-				<parameter name="increasingSignal" value="true"/>
-				<parameter name="maxSignal" value="1"/>
-				<parameter name="minSignal" value="0"/>
-			</model>
-		</model>
-		<model name="heating">
-			<model name="temperature" type="vg::HeatingTemperatureController">
-				<parameter name="minimumSignal" value="20"/>
-				<parameter name="maximumSignal" value="90"/>
 			</model>
 		</model>
 		<model name="growthLight" type="vg::GrowthLightController">
@@ -479,98 +623,31 @@
 	</model>
 	<model name="actuators">
 		<model name="screens">
-			<model name="energy" type="vg::Screen">
-				<parameter name="position" value="flat_roof"/>
-				<parameter name="layer" value="outer"/>
-				<parameter name="lightTransmission" value="0.34"/>
-				<parameter name="airTransmission" value="0.37"/>
-				<parameter name="energyLossReduction" value="0.6"/>
-				<model name="control" type="vg::LinearControlElement">
+			<model name="energy">
+				<model name="control" type="vg::PidControlElement">
 					<parameter name="signal" ref="controllers/screens/energy/control[signal]"/>
-					<parameter name="rate" value="0.1"/>
+					<parameter name="Kprop" value="0.3"/>
 				</model>
 			</model>
-			<model name="energy" type="vg::Screen">
-				<parameter name="position" value="side1"/>
-				<parameter name="layer" value="outer"/>
-				<parameter name="lightTransmission" value="0.41"/>
-				<parameter name="airTransmission" value="0.45"/>
-				<parameter name="energyLossReduction" value="0.55"/>
-				<model name="control" type="vg::LinearControlElement">
-					<parameter name="signal" ref="controllers/screens/energy/control[signal]"/>
-					<parameter name="rate" value="0.1"/>
+			<model name="shade">
+				<model name="control" type="vg::PidControlElement">
+					<parameter name="signal" ref="controllers/screens/shade/control[signal]"/>
+					<parameter name="Kprop" value="0.3"/>
 				</model>
 			</model>
-			<model name="energy" type="vg::Screen">
-				<parameter name="position" value="side2"/>
-				<parameter name="layer" value="outer"/>
-				<parameter name="lightTransmission" value="0.41"/>
-				<parameter name="airTransmission" value="0.45"/>
-				<parameter name="energyLossReduction" value="0.55"/>
-				<model name="control" type="vg::LinearControlElement">
-					<parameter name="signal" ref="controllers/screens/energy/control[signal]"/>
-					<parameter name="rate" value="0.1"/>
-				</model>
-			</model>
-			<model name="energy" type="vg::Screen">
-				<parameter name="position" value="end1"/>
-				<parameter name="layer" value="outer"/>
-				<parameter name="lightTransmission" value="0.41"/>
-				<parameter name="airTransmission" value="0.45"/>
-				<parameter name="energyLossReduction" value="0.55"/>
-				<model name="control" type="vg::LinearControlElement">
-					<parameter name="signal" ref="controllers/screens/energy/control[signal]"/>
-					<parameter name="rate" value="0.1"/>
-				</model>
-			</model>
-			<model name="energy" type="vg::Screen">
-				<parameter name="position" value="end2"/>
-				<parameter name="layer" value="outer"/>
-				<parameter name="lightTransmission" value="0.41"/>
-				<parameter name="airTransmission" value="0.45"/>
-				<parameter name="energyLossReduction" value="0.55"/>
-				<model name="control" type="vg::LinearControlElement">
-					<parameter name="signal" ref="controllers/screens/energy/control[signal]"/>
-					<parameter name="rate" value="0.1"/>
-				</model>
-			</model>
-		</model>
-		<model name="vents">
-			<model name="leeside" type="vg::LinearControlElement">
-				<parameter name="signal" ref="controllers/ventilation[leewardSignal]"/>
-				<parameter name="rate" value="10"/>
-			</model>
-			<model name="windside" type="vg::LinearControlElement">
-				<parameter name="signal" ref="controllers/ventilation[windwardSignal]"/>
-				<parameter name="rate" value="10"/>
-			</model>
-		</model>
-		<model name="heating">
-			<model name="pipes" type="vg::HeatPipes">
-				<model type="vg::HeatPipe" name="pipe1">
-					<parameter name="length" value="1.822"/>
-					<parameter name="diameter" value="52"/>
-					<parameter name="flowRate" value="20"/>
-					<parameter name="inflowTemperature" ref="controllers/heating/temperature[signal]"/>
-				</model>
-				<model type="vg::HeatPipe" name="pipe2">
-					<parameter name="length" value="1.822"/>
-					<parameter name="diameter" value="25"/>
-					<parameter name="flowRate" value="20"/>
-					<parameter name="inflowTemperature" ref="controllers/heating/temperature[signal]"/>
+			<model name="blackout">
+				<model name="control" type="vg::PidControlElement">
+					<parameter name="signal" ref="controllers/screens/blackout/control[signal]"/>
+					<parameter name="Kprop" value="0.3"/>
 				</model>
 			</model>
 		</model>
 		<model name="growthLights" type="vg::GrowthLights">
 			<model type="vg::GrowthLight" name="growthLight1">
-				<parameter name="heatEmissionOn" ref="construction/growthLights/growthLight1[heatEmission]"/>
-				<parameter name="longWaveEmissionOn" ref="construction/growthLights/growthLight1[longWaveEmission]"/>
-				<parameter name="shortWaveEmissionOn" ref="construction/growthLights/growthLight1[shortWaveEmission]"/>
-				<parameter name="parEmissionOn" ref="construction/growthLights/growthLight1[parEmission]"/>
-				<parameter name="energyUseOn" ref="construction/growthLights/growthLight1[energyUse]"/>
-				<parameter name="age" ref="construction/growthLights/growthLight1[age]"/>
-				<parameter name="lifeTime" ref="construction/growthLights/growthLight1[lifeTime]"/>
-				<parameter name="minPeriod" ref="construction/growthLights/growthLight1[minPeriod]"/>
+				<parameter name="type" value="HPSL"/>
+				<parameter name="intensity" value="60"/>
+				<parameter name="lifeTime" value="12000"/>
+				<parameter name="age" value="2000"/>
 			</model>
 		</model>
 	</model>
@@ -680,267 +757,48 @@
 			<parameter name="produceMass" ref="../mass[fruit]"/>
 		</model>
 	</model>
-	<output type="plot" name="plot">
-		<parameter name="title" value="Energy screen"/>
-		<trace label="Days" type="time"/>
-		<trace label="Radiation" ref="outdoors[radiation]" divisor="100"/>
-		<trace label="Signal" ref="controllers/screens/energy[signal]"/>
-		<trace label="State" ref="actuators/screens/energy/control[state]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Blackout screen"/>
-		<trace label="Days" type="time"/>
-		<trace label="Radiation" ref="outdoors[radiation]" divisor="100"/>
-		<trace label="Signal" ref="controllers/screens/blackout[signal]"/>
-		<trace label="State" ref="actuators/screens/blackout/control[state]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Shade screen"/>
-		<trace label="Days" type="time"/>
-		<trace label="Radiation" ref="outdoors[radiation]" divisor="100"/>
-		<trace label="Signal" ref="controllers/screens/shade[signal]"/>
-		<trace label="State" ref="actuators/screens/shade/control[state]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Cover transmission"/>
-		<trace label="Days" type="time"/>
-		<trace label="Diffuse" ref="cover/transmission[diffuse]"/>
-		<trace label="DirectDirect" ref="cover/transmission[directAsDirect]"/>
-		<trace label="DirectDiffuse" ref="cover/transmission[directAsDiffuse]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Screens light transmission"/>
-		<trace label="Days" type="time"/>
-		<trace label="Diffuse" ref="screens/transmission[diffuse]"/>
-		<trace label="DirectDirect" ref="screens/transmission[directAsDirect]"/>
-		<trace label="DirectDiffuse" ref="screens/transmission[directAsDiffuse]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Screens air transmission"/>
-		<trace label="Days" type="time"/>
-		<trace label="Air" ref="screens/transmission[air]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Cover and screens U"/>
-		<trace label="Days" type="time"/>
-		<trace label="U" ref="screens/transmission[U]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Indoors radiation"/>
-		<trace label="Days" type="time"/>
-		<trace label="Direct" ref="indoors/radiation[direct]"/>
-		<trace label="Diffuse" ref="indoors/radiation[diffuse]"/>
-		<trace label="Total" ref="indoors/radiation[total]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Outdoors radiation"/>
-		<trace label="Days" type="time"/>
-		<trace label="Direct" ref="outdoors[directRadiation]"/>
-		<trace label="Diffuse" ref="outdoors[diffuseRadiation]"/>
-		<trace label="Total" ref="outdoors[radiation]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Ventilation (m3/h/m2)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Infiltration" ref="indoors/ventilation/infiltration[rate]"/>
-		<trace label="Total" ref="indoors/ventilation[rate]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Relative ventilation"/>
-		<trace label="Days" type="time"/>
-		<trace label="Proportion" ref="indoors/ventilation[relative]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Weather"/>
-		<trace label="Days" type="time"/>
-		<trace label="Temperature" ref="outdoors[temperature]"/>
-		<trace label="Windspeed" ref="outdoors[windspeed]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Heat fluxes (W/m2)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Irradiation" ref="indoors/energy[irradiation]"/>
-		<trace label="Pipes" ref="indoors/energy[heatPipes]"/>
-		<trace label="Growth light" ref="indoors/energy[growthLight]"/>
-		<trace label="Surface" ref="indoors/energy/surface[flux]"/>
-		<trace label="Floor" ref="indoors/energy/floor[flux]"/>
-		<trace label="Ventilation" ref="indoors/energy/ventilation[flux]"/>
-		<trace label="Transpiration" ref="indoors/energy/transpiration[flux]"/>
-		<trace label="Condensation" ref="indoors/energy/condensation[flux]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Heat balance (W/m2)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Balance" ref="indoors/energy[value]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Temperature"/>
-		<trace label="Days" type="time"/>
-		<trace label="Outdoors" ref="outdoors[temperature]"/>
-		<trace label="Indoors" ref="indoors/temperature[value]"/>
-		<trace label="Cover" ref="indoors/cover/temperature[value]"/>
-		<trace label="Screens" ref="indoors/screens/temperature[value]"/>
-		<trace label="Floor" ref="indoors/floor/temperature[value]"/>
-		<trace label="Heating sp" ref="setpoints/temperature/heating[setpoint]"/>
-		<trace label="Vent sp" ref="setpoints/temperature/ventilation[setpoint]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Temperature sp"/>
-		<trace label="Days" type="time"/>
-		<trace label="Indoors" ref="indoors/temperature[value]"/>
-		<trace label="Sp heat" ref="setpoints/temperature/heating[signal]"/>
-		<trace label="Sp vent" ref="setpoints/temperature/ventilation[signal]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Relative humidity"/>
-		<trace label="Days" type="time"/>
-		<trace label="Outdoors" ref="outdoors[rh]"/>
-		<trace label="Indoors" ref="indoors/humidity[rh]"/>
-		<trace label="Vent sp" ref="setpoints/humidity/maximumRh[setpoint]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Absolute humidity"/>
-		<trace label="Days" type="time"/>
-		<trace label="Outdoors" ref="outdoors[ah]"/>
-		<trace label="Indoors" ref="indoors/humidity[ah]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Ventilation"/>
-		<trace label="Days" type="time"/>
-		<trace label="Signal" ref="controllers/ventilation[signal]"/>
-		<trace label="Lee side state" ref="actuators/vents/leeside[state]"/>
-		<trace label="Wind side state" ref="actuators/vents/windside[state]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Heating"/>
-		<trace label="Days" type="time"/>
-		<trace label="Tinflow1" ref="heating/pipes/pipe1[inflowTemperature]"/>
-		<trace label="Tpipe1" ref="heating/pipes/pipe1[temperature]"/>
-		<trace label="Max" ref="controllers/heating/temperature[maximumSignal]"/>
-		<trace label="Min" ref="controllers/heating/temperature[minimumSignal]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Conductances"/>
-		<trace label="Days" type="time"/>
-		<trace label="Plant" ref="transpiration/plant[conductance]"/>
-		<trace label="Cover" ref="condensation/cover[conductance]"/>
-		<trace label="Screen" ref="condensation/screens[conductance]"/>
-		<trace label="Ventilation" ref="ventilation/total[conductance]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Vapour fluxes"/>
-		<trace label="Days" type="time"/>
-		<trace label="Plant" ref="transpiration/plant[vapourFlux]"/>
-		<trace label="Cover" ref="condensation/cover[vapourFlux]"/>
-		<trace label="Screen" ref="condensation/screens[vapourFlux]"/>
-		<trace label="Ventilation" ref="ventilation/total[vapourFlux]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Energy expenditure (MJ/m2)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Sum" ref="actuators/heating/pipes[sumEnergy]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="CO2 (ppm)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Minimum" ref="minCO2[setpoint]"/>
-		<trace label="Indoors" ref="indoors/co2[ppm]"/>
-		<trace label="Outdoors" ref="outdoors[co2]"/>
-	</output>
-	<output type="table">
-		<parameter name="filename" value="co2.txt"/>
-		<trace label="Days" type="time"/>
-		<trace label="Minimum" ref="minCO2[setpoint]"/>
-		<trace label="Indoors" ref="indoors/co2[ppm]"/>
-		<trace label="Outdoors" ref="outdoors[co2]"/>
-		<trace label="Exchange" ref="indoors/ventilation[relative]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Leaf temperature"/>
-		<trace label="Days" type="time"/>
-		<trace label="Top" ref="top/temperature[value]"/>
-		<trace label="Middle" ref="middle/temperature[value]"/>
-		<trace label="Bottom" ref="Bottom/temperature[value]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Pg (mg CO2/m2 ground/h)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Top" ref="top/photosynthesis[Pg]"/>
-		<trace label="Middle" ref="middle/photosynthesis[Pg]"/>
-		<trace label="Bottom" ref="Bottom/photosynthesis[Pg]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Pn (g CO2/m2 ground/h)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Top" ref="top/photosynthesis[Pn]"/>
-		<trace label="Middle" ref="middle/photosynthesis[Pn]"/>
-		<trace label="Bottom" ref="Bottom/photosynthesis[Pn]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="PgMax (g CO2/m2 leaf/s)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Top" ref="top/photosynthesis/lightResponse[PgMax]"/>
-		<trace label="Middle" ref="middle/photosynthesis/lightResponse[PgMax]"/>
-		<trace label="Bottom" ref="Bottom/photosynthesis/lightResponse[PgMax]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="PnMax (mg CO2/m2 leaf/s)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Top" ref="top/photosynthesis/lightResponse[PnMax]"/>
-		<trace label="Middle" ref="middle/photosynthesis/lightResponse[PnMax]"/>
-		<trace label="Bottom" ref="Bottom/photosynthesis/lightResponse[PnMax]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Rd (mg CO2/m2 leaf/s)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Top" ref="top/photosynthesis/lightResponse[Rd]"/>
-		<trace label="Middle" ref="middle/photosynthesis/lightResponse[Rd]"/>
-		<trace label="Bottom" ref="Bottom/photosynthesis/lightResponse[Rd]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="LUE (mg CO2/J)"/>
-		<trace label="Days" type="time"/>
-		<trace label="Top" ref="top/photosynthesis/lightResponse[LUE]"/>
-		<trace label="Middle" ref="middle/photosynthesis/lightResponse[LUE]"/>
-		<trace label="Bottom" ref="Bottom/photosynthesis/lightResponse[LUE]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Effective ventilation"/>
-		<trace label="Indoors temperature" ref="indoors/temperature[value]"/>
-		<trace label="Rel. vent" ref="indoors/ventilation[relative]" type="symbols"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Vents opening"/>
-		<trace label="Indoors temperature" ref="indoors/temperature[value]"/>
-		<trace label="Leeside" ref="vents/leeside[state]" type="symbols"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Growth light"/>
-		<trace label="Days" type="time"/>
-		<trace label="Rn" ref="actuators/growthLights[shortWaveEmission]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Growing DD"/>
-		<trace label="Days" type="time"/>
-		<trace label="DD" ref="crop/physTime[total]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Crop LAI"/>
-		<trace label="Days" type="time"/>
-		<trace label="DD" ref="crop/lai[lai]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Crop Mass"/>
-		<trace label="Days" type="time"/>
-		<trace label="Fruit" ref="crop/mass[fruit]"/>
-		<trace label="Leaf" ref="crop/mass[leaf]"/>
-		<trace label="Stem" ref="crop/mass[stem]"/>
-		<trace label="Root" ref="crop/mass[root]"/>
-		<trace label="Total" ref="crop/mass[total]"/>
-	</output>
-	<output type="plot">
-		<parameter name="title" value="Yield"/>
-		<trace label="Days" type="time"/>
-		<trace label="Fresh wgt." ref="crop/yield[freshWeight]"/>
+	<output name="output" type="table">
+		<parameter name="fileName" value="dvv_unisim_0001.txt"/>
+		<trace label="date" value="calendar[dateAsReal]"/>
+		<trace label="energy_light" value="actuators/growthLights[energyUsed]"/>
+		<trace label="energy_heat" value="active/energyFlux/heating/supply/supply[energyUsed]"/>
+		<trace label="yield_kg_fw" value="crop/yield[dryWeight]"/>
+		<trace label="windspeed" value="outdoors[windspeed]"/>
+		<trace label="outdoors_temp" value="outdoors[temperature]"/>
+		<trace label="floor_temp" value="floor/temperature[value]"/>
+		<trace label="cover_temp" value="greenhouseSurface[temperature]"/>
+		<trace label="indoors_temp" value="indoors/temperature[value]"/>
+		<trace label="indoors_rh" value="indoors/humidity[rh]"/>
+		<trace label="sp_heat" value="setpoints/temperature/heating[value]"/>
+		<trace label="sp_vent" value="setpoints/temperature/ventilation[value]"/>
+		<trace label="sp_rh" value="setpoints/humidity/maximumRh[signal]"/>
+		<trace label="leakage" value="passive/ventilation/infiltration[value]"/>
+		<trace label="crack_vent" value="passive/ventilation/crack[value]"/>
+		<trace label="pass_en_cover" value="passive/energyflux/cover[value]"/>
+		<trace label="pass_en_floor" value="passive/energyflux/floor[value]"/>
+		<trace label="pass_en_trans" value="passive/energyflux/transpiration[value]"/>
+		<trace label="pass_en_cond" value="passive/energyflux/condensation[value]"/>
+		<trace label="pass_en_shwav" value="passive/energyflux/shortwave[value]"/>
+		<trace label="pass_en_lights" value="passive/energyflux/growthlights[value]"/>
+		<trace label="pass_en_vent" value="passive/energyflux/ventilation[value]"/>
+		<trace label="pass_en_total" value="passive/energyFlux[value]"/>
+		<trace label="act_heat_D" value="active/energyFlux/heating/supply/supply[demand]"/>
+		<trace label="act_heat" value="active/energyFlux/heating/supply[state]"/>
+		<trace label="act_heat_I" value="active/energyFlux/heating/supply[errorIntegral]"/>
+		<trace label="act_cool" value="active/energyFlux/cooling/supply[value]"/>
+		<trace label="act_cool_I" value="active/energyFlux/cooling/supply[errorIntegral]"/>
+		<trace label="en_flux_total" value="total/energyFlux/[value]"/>
+		<trace label="scr_max" value="controllers/screens/maxDrawn[value]"/>
+		<trace label="act_scr_en" value="actuators/screens/energy/control[state]"/>
+		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
+		<trace label="act_scr_bl" value="actuators/screens/blackout/control[state]"/>
+		<trace label="light_on" ref="controllers/growthLight[signal]"/>
+		<trace label="LAI" value="crop/lai[lai]"/>
+		<trace label="Pg_top" ref="layers/top/photosynthesis[Pg]"/>
+		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
+		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
+		<trace label="stem" ref="crop/mass[stem]"/>
+		<trace label="leaf" ref="crop/mass[leaf]"/>
+		<trace label="fruit" ref="crop/mass[fruit]"/>
 	</output>
 </simulation>

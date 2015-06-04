@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simulation name="Frog life cycle">
+	<integrator type="Steps">
+		<parameter name="maxSteps" value="120"/>
+	</integrator>
+
+	<model name="calendar" type="Calendar">
+	</model>
+
+	<model name="weather" type="UniSim::Weather">
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="PathumthaniAgromet2013.txt"/>			
+		</model>
+	</model>
+	
+	<model name="Taverage" type="insecticide::taverage">			
+		<model name="records" type="UniSim::Records">
+			<parameter name="fileName" value="Tav.txt"/>
+		</model>
+	</model>
+
+	<model name="Frog life cycle">			
+		<model name="time" type="UniSim::Days">
+		</model>		
+		<model name="Eggs" type="UniSim::Stage">
+			<parameter name="duration" value="7"/>
+			<parameter name="k" value="30"/>
+			<parameter name="initialInflow" value="300"/>
+			<parameter name="inflow" ref="Frog life cycle/eggsToBeLaid[outflow]"/>		
+		</model>
+		<model name="Eggs after mortality" type="insecticide::stagesurvivaldensity">
+			<parameter name="mortalityRate" value="1"/>				
+			<parameter name="inflow" ref="Frog life cycle/Eggs[outflow]"/>
+		</model>		
+
+		<model name="Tadpoles" type="UniSim::Stage">
+			<parameter name="duration" value="21"/>
+			<parameter name="k" value="30"/>
+			<parameter name="inflow" ref="Frog life cycle/Eggs after mortality[outflow]"/>
+		</model>
+		<model name="Tadpoles after mortality" type="insecticide::stagesurvivaldensity">
+			<parameter name="mortalityRate" value="2"/>				
+			<parameter name="inflow" ref="Frog life cycle/Tadpoles[outflow]"/>
+		</model>		
+			
+		<model name="Tadpoles with legs" type="UniSim::Stage">
+			<parameter name="duration" value="1"/>
+			<parameter name="k" value="30"/>
+			<parameter name="inflow" ref="Frog life cycle/Tadpoles after mortality[outflow]"/>
+		</model>
+		<model name="Tadpoles with legs after mortality" type="insecticide::stagesurvivaldensity">
+			<parameter name="mortalityRate" value="3"/>				
+			<parameter name="inflow" ref="Frog life cycle/Tadpoles with legs[outflow]"/>
+		</model>		
+		
+		<model name="Froglets" type="UniSim::Stage">
+			<parameter name="duration" value="1"/>
+			<parameter name="k" value="30"/>
+			<parameter name="inflow" ref="Frog life cycle/Tadpoles with legs after mortality[outflow]"/>
+		</model>
+		<model name="Froglets after mortality" type="insecticide::stagesurvivaldensity">
+			<parameter name="mortalityRate" value="4"/>				
+			<parameter name="inflow" ref="Frog life cycle/Froglets[outflow]"/>
+		</model>		
+		
+		<model name="Adults" type="UniSim::Stage">
+			<parameter name="initialInflow" value="30"/>
+			<parameter name="duration" value="112"/>
+			<parameter name="k" value="10"/>
+			<parameter name="initialInflow" value="30"/>
+			<parameter name="inflow" ref="Frog life cycle/Froglets after mortality[outflow]"/>
+		</model>
+		<model name="Adults after mortality" type="insecticide::stagesurvivaldensity">
+			<parameter name="mortalityRate" value="5"/>				
+			<parameter name="inflow" ref="Frog life cycle/Adults[outflow]"/>
+		</model>		
+		<model name="eggsToBeLaid" type="UniSim::Stage">
+			<parameter name="duration" value="84"/>
+			<parameter name="k" value="20"/>
+			<parameter name="inflow" ref="Frog life cycle/Froglets after mortality[outflow]"/>
+			<parameter name="growthRate" value="60"/> <!-- Life time fecundity corrected for sex ratio -->
+		</model>		
+	</model>	
+		
+	<output type="plot">
+		<parameter name="title" value ="Pathumthani weather log"/>
+		<trace label="Day" value="calendar[totalTimeSteps]"/>
+		<trace label="Temperature" value="weather[Tavg]"/>
+	</output>
+	
+	<output type="plot">
+		<parameter name="title" value ="Frog populationX"/>
+		<trace label="Day" value="calendar[totalTimeSteps]"/>
+		<trace label="Eggs" value="Frog life cycle/Eggs after mortality[outflow]"/>
+		<trace label="Tadpoles" value="Frog life cycle/Tadpoles after mortality[outflow]"/>
+		<trace label="Tadpoles with legs" value="Frog life cycle/Tadpoles with legs after mortality[outflow]"/>
+		<trace label="Froglets" value="Frog life cycle/Froglets after mortality[outflow]"/>
+		<trace label="Adults" value="Frog life cycle/Adults after mortality[outflow]"/>
+	</output>
+
+	<output type="table">
+		<parameter name="fileName" value ="Frog populationX.txt"/>
+		<trace label="Day" value="calendar[totalTimeSteps]"/>
+		<trace label="Eggs" value="Frog life cycle/Eggs after mortality[outflow]"/>
+		<trace label="Tadpoles" value="Frog life cycle/Tadpoles after mortality[outflow]"/>
+		<trace label="Tadpoles with legs" value="Frog life cycle/Tadpoles with legs after mortality[outflow]"/>
+		<trace label="Froglets" value="Frog life cycle/Froglets after mortality[outflow]"/>
+		<trace label="Adults" value="Frog life cycle/Adults after mortality[outflow]"/>
+	</output>
+</simulation>

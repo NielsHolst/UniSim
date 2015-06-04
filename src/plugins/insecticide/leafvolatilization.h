@@ -12,6 +12,7 @@ namespace insecticide {
 
 class leafvolatilization : public UniSim::Model
 {
+
 public:
     leafvolatilization(UniSim::Identifier name, QObject *parent);
     void reset();
@@ -19,7 +20,7 @@ public:
 
 private:
     // Input
-    double VP, Ea, R, Tr, Ta, Doseappl;
+    double VP, Ea, R, Tr, Doseappl, Ta;
 
     // Output
     double ln_ER, ER, fv, fr, kTr, klv;

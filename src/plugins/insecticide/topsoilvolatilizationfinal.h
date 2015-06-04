@@ -19,7 +19,7 @@ public:
 
 private:
     // Input
-    double P, threshold, ksv, inflow, Va, Za, Vw, Zw, VZ;
+    double Rainfall, threshold, ksv, inflow, Va, Za, Vw, Zw, VZ;
 
     // Output
     double  fv, concentration, outflow, frsw, frsa, svDoseaflrm, Dosetsv;

@@ -14,7 +14,7 @@ namespace vg {
 
 PUBLISH(EnergyFluxTranspiration)
 
-/*! \class EnergyFluxSurface
+/*! \class EnergyFluxTranspiration
  * \brief Flux of energy lost to transpiration
  * Inputs
  * ------
@@ -30,18 +30,13 @@ PUBLISH(EnergyFluxTranspiration)
  */
 
 EnergyFluxTranspiration::EnergyFluxTranspiration(Identifier name, QObject *parent)
-	: Model(name, parent)
+    : EnergyFluxBase(name, parent)
 {
-    InputRef(double, transpiration, "transpiration/crop[vapourFlux]");
-    Output(double, flux);
-}
-
-void EnergyFluxTranspiration::reset() {
-    flux = 0.;
+    InputRef(double, transpiration, "passive/vapourFlux/transpiration[vapourFlux]");
 }
 
 void EnergyFluxTranspiration::update() {
-    flux = -transpiration * LHe; // kg/m2/s * J/kg
+    value = -transpiration * LHe; // kg/m2/s * J/kg
 }
 
 } //namespace

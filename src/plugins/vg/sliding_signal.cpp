@@ -56,6 +56,7 @@ double SlidingSignal::signal() {
            x1{threshold + thresholdBand},
            y0{increasingSignal ? minSignal : maxSignal},
            y1{increasingSignal ? maxSignal : minSignal};
+    QString test = fullName();
     if (input <= x0)
         res = y0;
     else if (input >= x1)

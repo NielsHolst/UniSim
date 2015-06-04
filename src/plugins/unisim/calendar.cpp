@@ -104,6 +104,7 @@ Calendar::Calendar(UniSim::Identifier name, QObject *parent)
     Output(double, solarConstant);
     Output(double, angot);
     Output(double, irradiationCorrection);
+    totalTimeSteps = -1; // Will show up in Exception if thrown before reset()
 }
 
 void Calendar::initialize() {
@@ -202,7 +203,7 @@ void Calendar::updateAzimuth() {
     // where eqtime is in minutes, longitude is in degrees, timezone is in hours from UTC
 
     // True solar time
-    double tst = hour*60 + + minute + second/60. + timeOffset;
+    double tst = hour*60 + minute + second/60. + timeOffset;
     trueSolarTime = QTime::fromMSecsSinceStartOfDay(int(tst+0.5)*60*1000);
     if (!trueSolarTime.isValid())
         trueSolarTime = QTime(0,0);

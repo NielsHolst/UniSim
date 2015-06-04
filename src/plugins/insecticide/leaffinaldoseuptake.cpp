@@ -21,13 +21,13 @@ leaffinaldoseuptake::leaffinaldoseuptake(Identifier name, QObject *parent)
 
     Input (double, klu, 0.);                   //h-1
     Input (double, kov, 0.);        //h-1
-    Input (double, P, 25.);
-    Input (double, inflow, 0.);
-    Input (double, threshold, 1.);
+    Input (double, P, 25.);  // rainfall (m)
+    Input (double, inflow, 0.); //kg a.i/ha
+    Input (double, threshold, 1.); //rainfall (mm)
 
     Output (double, Doselfdu);      //final dose removed by uptake process
-    Output (double, outflow);
-    Output (double, concentration);
+    Output (double, outflow); //kg a.i/ha
+    Output (double, concentration); //kg a.i/ha
 
 }
 

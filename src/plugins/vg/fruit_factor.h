@@ -16,6 +16,7 @@ class FruitFactor : public UniSim::Model
 {
 public:
     FruitFactor(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
 private:
     double maxValue, minDensity, plantDensity, value;

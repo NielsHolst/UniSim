@@ -19,7 +19,7 @@ public:
 
 private:
     // Input
-    double klv, inflow, P, threshold;
+    double klv, inflow, Rainfall, threshold;
 
     // Output
     double Doseldv, outflow, concentration;

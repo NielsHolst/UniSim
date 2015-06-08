@@ -3,51 +3,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "mosquito_fecundity.h"
 #include "rvf_factory.h"
-#include "water_level.h"
-#include "sheep_fecundity.h"
-#include "mosquito_demand.h"
-#include "mosquito_infection.h"
-#include "sheep_infection.h"
-#include "egg_time.h"
-#include "interactions.h"
+#include "publish.h"
 
 using namespace UniSim;
 
-namespace rvf{
+namespace rvf {
 
-void RvfFactory::defineProducts() {
-    // Add you own models here...
-    addProduct<MosquitoFecundity>("MosquitoFecundity", this, "Daily egg-laying rate of adult mosquitoes. Depends on water level");
-    addProduct<WaterLevel>("WaterLevel", this, "Water level in the environment.");
-    addProduct<EggTime>("EggTime", this, "Time for activation of eggs");
-    addProduct<SheepFecundity>("SheepFecundity", this, "Daily birth rate of adult sheep. Depends on Carrying Capacity K");
-    addProduct<MosquitoInfection>("MosquitoInfection", this, "Infection transfer from mosquito to sheep given contact rate");
-    addProduct<SheepInfection>("SheepInfection", this, "Infection transfer from sheep to mosquitoes given effective contact rate");
-    addProduct<Interactions>("Interactions", this, "Interactions between vectors and hosts at different phases");
-    addProduct<MosquitoDemand>("MosquitoDemand", this, "Daily demand for bloodmeals");
-
-
-}
-
-UniSim::Identifier RvfFactory::id() const {
+Identifier RvfFactory::id() const {
     return "rvf";
 }
 
-QString RvfFactory::description() const {
-    return
-    "The rvf plugin includes models for the epidemics of Rift Valley Virus (RVF).";
+QList<Identifier> RvfFactory::inventory() {
+    return productList().keys();
 }
 
-QStringList RvfFactory::authors() const {
-    return QStringList()
-        << "Niels";
-    // Add Clement here. But first add to src/resources/authors.xml
-}
-
-QObject* RvfFactory::asQObject() {
-   return this;
+QObject* RvfFactory::create(Identifier className, Identifier objectName, QObject *parent) {
+    ProductList::const_iterator p = productList().find(className);
+    return (p == productList().end())
+            ? 0
+            : p.value()->create(objectName, parent);
 }
 
 } //namespace

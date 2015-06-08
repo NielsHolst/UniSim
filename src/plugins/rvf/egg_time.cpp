@@ -3,22 +3,32 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "../unisim/day_degrees.h"
 #include "egg_time.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace rvf {
 
+PUBLISH(EggTime)
+
 EggTime::EggTime(Identifier name, QObject *parent)
-     : DayDegrees(name, parent)
+     : Model(name, parent)
 {
-    new Parameter<double>("waterLevel", &waterLevel, 0., this, "desc");
-    new Parameter<double>("waterLevelThreshold", &waterLevelThreshold, 0., this, "desc");
+    Input(double, waterLevel, 0.);
+    Input(double, waterLevelThreshold, 0.);
+    InputRef(double, daydegrees, "./daydegrees[step]");
+    Output(double, step);
+    Output(double, total);
 }
 
-double EggTime::calcDailyTimeStep() {
-    return (waterLevel < waterLevelThreshold) ? 0. : DayDegrees::calcDailyTimeStep();
+void EggTime::reset() {
+    step = total = 0.;
+}
+
+void EggTime::update() {
+    step = (waterLevel < waterLevelThreshold) ? 0. : daydegrees;
+    total += step;
 }
 
 } //namespace

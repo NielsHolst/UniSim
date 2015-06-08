@@ -4,11 +4,14 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "infection.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace strawberry {
 	
+PUBLISH(Infection)
+
 Infection::Infection(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

@@ -3,29 +3,31 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
 #include "interactions.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace rvf {
 
+PUBLISH(Interactions)
+
 Interactions::Interactions(Identifier name, QObject *parent)
      : Model(name, parent)
 {
     // Fecundity effects
-    addVariable<double>(Name(susceptibleAedesBloodmeals), "Susceptible Aedes Blood meals to host per day");
-    addVariable<double>(Name (susceptibleCulexBloodmeals), "Susceptible Culex Blood meals to host per day");
-    addVariable<double>(Name (infectiousAedesBloodmeals), "Infectious Aedes Blood meals to host per day");
-    addVariable<double>(Name (infectiousCulexBloodmeals), "Infectious Culex Blood meals to host per day");
+    Output(double, susceptibleAedesBloodmeals); // Susceptible Aedes Blood meals to host per day
+    Output(double, susceptibleCulexBloodmeals); // Susceptible Culex Blood meals to host per day
+    Output(double, infectiousAedesBloodmeals);  // Infectious Aedes Blood meals to host per day
+    Output(double, infectiousCulexBloodmeals);  // Infectious Culex Blood meals to host per day
 
     // Transmission to host effects
-    addVariable<double>(Name(susceptibleLambsAttackedByInfectiousMosquitoesProportion), "Susceptible lambs attack by infectious mosquitoes per day");
-    addVariable<double>(Name(susceptilbeAdultSheepAttackedByInfectiousMosquitoesProportion), "Susceptible adult sheep attack by infectious mosquitoes per day");
+    Output(double, susceptibleLambsAttackedByInfectiousMosquitoesProportion);      // Susceptible lambs attack by infectious mosquitoes per day
+    Output(double, susceptilbeAdultSheepAttackedByInfectiousMosquitoesProportion); // Susceptible adult sheep attack by infectious mosquitoes per day
 
     // Transmission to vector effects
-    addVariable<double>(Name (susceptibleAedesOnInfectiousHostBloodmealsProportion), "Susceptible Aedes Blood meals on infectious host per day");
-    addVariable<double>(Name (susceptibleCulexOnInfectiousHostBloodmealsProportion), "Susceptible Culex Blood meals on infectious host per day");
+    Output(double, susceptibleAedesOnInfectiousHostBloodmealsProportion); // Susceptible Aedes Blood meals on infectious host per day
+    Output(double, susceptibleCulexOnInfectiousHostBloodmealsProportion); // Susceptible Culex Blood meals on infectious host per day
 }
 
 void Interactions::initialize() {

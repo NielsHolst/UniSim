@@ -3,22 +3,24 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-
 #include "mosquito_infection.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace rvf {
 
+PUBLISH(MosquitoInfection)
+
 MosquitoInfection::MosquitoInfection(Identifier name, QObject *parent)
      : Model(name, parent)
 {
-    new Parameter<double>("bloodmeal", &bloodmeal, 0.2, this, "Blood meals per day");
-    new Parameter<double>("transovarial", &transovarial, 0.5, this, "Transovarial transmission in mosquitoes");
-    new Parameter<double>("infectionRate", &infectionRate, 0., this, "Effective contact rate per day");
-    new Parameter<double>("duration", &duration, 0., this, "Infectious period in days");
-    new Parameter<double>("density", &density, 0., this, "Density of adults");
-    new Variable<double>("value", &value,this, "Total demand of the population");
+    Input(double, bloodmeal, 0.2);      // Blood meals per day
+    Input(double, transovarial, 0.5);   // Transovarial transmission in mosquitoes
+    Input(double, infectionRate, 0.);   // Effective contact rate per day
+    Input(double, duration, 0.);        // Infectious period in days
+    Input(double, density, 0.);         // Density of adults
+    Output(double, value);              // Total demand of the population
 }
 void MosquitoInfection::reset() {
     value = 0.;

@@ -1,11 +1,13 @@
 #include <stdlib.h>
-
 #include "damagethreshold.h"
+#include "publish.h"
 
 using namespace std;
 using namespace UniSim;
 
 namespace aphid{
+
+PUBLISH(DamageThreshold)
 
 DamageThreshold::DamageThreshold(Identifier name, QObject *parent)
     :Model(name, parent)

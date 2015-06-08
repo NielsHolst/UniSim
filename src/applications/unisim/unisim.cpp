@@ -15,6 +15,7 @@
 #include <usbase/exception.h>
 #include <usbase/object_pool.h>
 #include <usbase/random.h>
+#include <usbase/version.h>
 #include <usengine/mega_factory.h>
 #include "file_locations_forgiving.h"
 #include "live_simulation.h"
@@ -45,8 +46,8 @@ int runGui(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
     qInstallMessageHandler(myMsgHandler);
-    QCoreApplication::setApplicationVersion("1.49");
-    QCoreApplication::setOrganizationName("The Universal Simulator Project");
+    QCoreApplication::setApplicationVersion(version());
+    QCoreApplication::setOrganizationName("Aarhus University");
     QCoreApplication::setOrganizationDomain("www.ecolmod.org");
     QCoreApplication::setApplicationName("Universal Simulator");
     try {

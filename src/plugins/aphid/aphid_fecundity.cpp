@@ -5,12 +5,15 @@
 */
 #include <stdlib.h>
 #include "aphid_fecundity.h"
+#include "publish.h"
 
 using namespace std;
 using namespace UniSim;
 
 namespace aphid {
-	
+
+PUBLISH(AphidFecundity)
+
 AphidFecundity::AphidFecundity(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

@@ -4,21 +4,24 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <stdlib.h>
+#include "publish.h"
 #include "sheep_fecundity.h"
 
 using namespace UniSim;
 
 namespace rvf {
-	
+
+PUBLISH(SheepFecundity)
+
 SheepFecundity::SheepFecundity(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    new Parameter<double>("adultDensity", &adultDensity, 10., this, "Density of adults sheep per km2");
-    new Parameter<double>("sexRatio", &sexRatio, 0.1, this, "Proportion of females");
-    new Parameter<double>("rate", &rate, 0.001, this, "Number of foestus per year, gestation period per 356 days per 365 days of a year");
-    new Parameter<double>("carryingCapacity", &carryingCapacity, 200., this, "Maximum sheep density per km2");
-    new Variable<double>("value", &value, this, "desc");
-    /// add lamp density and then make carrying capcity equal to lamp density plus adult density!!!
+    Input(double, adultDensity, 10.);      // Density of adults sheep per km2
+    Input(double, sexRatio, 0.1);          // Proportion of females
+    Input(double, rate, 0.001);            // Number of foestus per year, gestation period per 356 days per 365 days of a year
+    Input(double, carryingCapacity, 200.); // Maximum sheep density per km2
+    Output(double, value);
+    /// add lamb density and then make carrying capcity equal to lamb density plus adult density!!!
 }
 
 void SheepFecundity::reset() {
@@ -27,8 +30,8 @@ void SheepFecundity::reset() {
 
 void SheepFecundity::update() {
     value = rate/365*adultDensity*sexRatio*(carryingCapacity - adultDensity)/carryingCapacity;
-    if (value < 0)
-        value = 0;
+    if (value < 0.)
+        value = 0.;
 }
 
 

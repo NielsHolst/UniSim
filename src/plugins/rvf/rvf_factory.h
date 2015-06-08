@@ -3,28 +3,22 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#ifndef RVF_FACTORY_H
+#define RVF_FACTORY_H
 
-#ifndef UNISIM_RVF_FACTORY_H
-#define UNISIM_RVF_FACTORY_H
-
-#include <QObject>
 #include <usbase/factory_plug_in.h>
 
 namespace rvf {
 
 class RvfFactory : public QObject, public UniSim::FactoryPlugIn
 {
-    Q_OBJECT
-    Q_INTERFACES(UniSim::FactoryPlugIn)
-    #if QT_VERSION >= 0x50000
-    Q_PLUGIN_METADATA(IID "org.ecolmod.UniSim")
-    #endif
+Q_OBJECT
+Q_INTERFACES(UniSim::FactoryPlugIn)
+Q_PLUGIN_METADATA(IID "org.ecolmod.UniSim")
 public:
-    void defineProducts();
     UniSim::Identifier id() const;
-    QString description() const;
-    QStringList authors() const;
-    QObject* asQObject();
+    QList<UniSim::Identifier> inventory();
+    QObject* create(UniSim::Identifier className, UniSim::Identifier objectName, QObject *parent);
 };
 
 } //namespace

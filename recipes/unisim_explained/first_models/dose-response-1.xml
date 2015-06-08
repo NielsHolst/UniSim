@@ -4,6 +4,8 @@
 		<parameter name="maxSteps" value="50"/>
 	</integrator>
 
+	<model name="calendar" type="UniSim::Calendar"/>
+	
 	<model name="dose" type="UniSim::Range">
 		<parameter name="progress" variable="steps[progress]"/>
 		<parameter name="scale" value="log10"/>

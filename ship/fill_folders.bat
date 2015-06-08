@@ -1,6 +1,7 @@
 set UNISIM_SHIP=C:\data\QDev\UniSim\ship
 set GV_NAME=Graphviz2.28
 set SOURCE_GV="C:\Program Files\%GV_NAME%"
+set QT_PLUGINS="C:\Qt\5.4\mingw491_32\plugins"
 if not exist bin md bin
 if not exist output md output
 if not exist plugins md plugins
@@ -28,17 +29,17 @@ popd
 
 rem Copy exe and DLL files
 copy ..\src\applications\unisim*.exe bin
-copy ..\src\applications\base*.dll bin
-copy ..\src\applications\engine*.dll bin
+copy ..\src\applications\usbase*.dll bin
+copy ..\src\applications\usengine*.dll bin
+copy ..\src\applications\qwt.dll bin
 copy ..\vendor\gsl\bin\libgsl*.dll bin
-copy ..\vendor\qwt_qt5\lib\qwt.dll bin
 
 rem copy MinGW libraries
 pushd %QT_ROOT%
 copy icu*.dll %UNISIM_BIN%
 copy libwinpthread-1.dll %UNISIM_BIN%
 copy libgcc_s_dw2-1.dll %UNISIM_BIN%
-copy libstd~1.dll %UNISIM_BIN%
+copy libstd*.dll %UNISIM_BIN%
 rem copy Qt libraries
 copy qt5core.dll %UNISIM_BIN%
 copy qt5gui.dll %UNISIM_BIN%
@@ -55,8 +56,7 @@ md imageformats
 md platforms
 popd
 rem copy Qt plugin folders
-pushd C:\Qt\Qt5.1.1\5.1.1\mingw48_32\plugins
-copy accessible %UNISIM_BIN%\accessible
+pushd %QT_PLUGINS%
 copy imageformats %UNISIM_BIN%\imageformats
 copy platforms %UNISIM_BIN%\platforms
 popd
@@ -71,5 +71,4 @@ popd
 rem Copy UniSim plugins
 del /Q plugins\*.*
 copy ..\src\plugins\*.dll plugins
-set UNISIM_BIN=
 pause

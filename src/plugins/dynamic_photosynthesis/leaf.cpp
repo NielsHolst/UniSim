@@ -5,11 +5,14 @@
 */
 #include <usbase/variable.h>
 #include "leaf.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 
 namespace dynamic_photosynthesis {
+
+PUBLISH(Leaf)
 
 Leaf::Leaf(UniSim::Identifier name, QObject *parent)
 	: Model(name, parent) {

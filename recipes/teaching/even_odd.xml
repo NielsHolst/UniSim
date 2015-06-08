@@ -6,6 +6,8 @@
 		<parameter name="maxSteps" value="120"/>
 	</integrator>
 
+	<model name="calendar" type="UniSim::Calendar"/>
+
 	<model name="evenOdd" type="example::EvenOdd">
 		<parameter name="initialValue" value="500"/>
 	</model>

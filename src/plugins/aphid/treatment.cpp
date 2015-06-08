@@ -1,11 +1,13 @@
 #include <stdlib.h>
-
 #include "treatment.h"
+#include "publish.h"
 
 using namespace std;
 using namespace UniSim;
 
 namespace aphid{
+
+PUBLISH(treatment)
 
 treatment::treatment(Identifier name, QObject *parent)
     :Model(name, parent)

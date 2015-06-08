@@ -5,12 +5,14 @@
 */
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
+#include "publish.h"
 #include "weather.h"
 
 using namespace UniSim;
 
-
 namespace conductance {
+
+PUBLISH(Weather)
 
 Weather::Weather(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)

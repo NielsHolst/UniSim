@@ -16,7 +16,7 @@ RESOURCES = ../../../resources/unisim.qrc
 include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
 include ($${US_QWT}/qwt.pri)
-#include ($${US_GSL}/gsl.pri)
+include ($${US_GSL}/gsl.pri)
 
 HEADERS += \
     $${US_BASE}/test/test_component.h \
@@ -71,11 +71,11 @@ HEADERS += \
 #    $${US_PLUGINS}/unisim/test/test_output_plot.h \
 #    $${US_PLUGINS}/unisim/test/test_plot.h \
     $${US_PLUGINS}/unisim/test/test_table.h \
-    $${US_PLUGINS}/vg/general.h \
-    $${US_PLUGINS}/vg/test/create.h \
-    $${US_PLUGINS}/vg/test/test_construction_geometry.h \
-    $${US_PLUGINS}/vg/test/test_general.h \
-    $${US_PLUGINS}/vg/test/test_transmission.h \
+#    $${US_PLUGINS}/vg/general.h \
+#    $${US_PLUGINS}/vg/test/create.h \
+#    $${US_PLUGINS}/vg/test/test_construction_geometry.h \
+#    $${US_PLUGINS}/vg/test/test_general.h \
+#    $${US_PLUGINS}/vg/test/test_transmission.h \
     ../graph_generator.h \
     main_window_stub.h \
     test_numeric_limits.h
@@ -133,11 +133,11 @@ SOURCES += \
 #    $${US_PLUGINS}/unisim/test/test_output_plot.cpp \
 #    $${US_PLUGINS}/unisim/test/test_plot.cpp \
     $${US_PLUGINS}/unisim/test/test_table.cpp \
-    $${US_PLUGINS}/vg/general.cpp \
-    $${US_PLUGINS}/vg/test/create.cpp \
-    $${US_PLUGINS}/vg/test/test_construction_geometry.cpp \
-    $${US_PLUGINS}/vg/test/test_general.cpp \
-    $${US_PLUGINS}/vg/test/test_transmission.cpp \
+#    $${US_PLUGINS}/vg/general.cpp \
+#    $${US_PLUGINS}/vg/test/create.cpp \
+#    $${US_PLUGINS}/vg/test/test_construction_geometry.cpp \
+#    $${US_PLUGINS}/vg/test/test_general.cpp \
+#    $${US_PLUGINS}/vg/test/test_transmission.cpp \
     ../graph_generator.cpp \
     test_numeric_limits.cpp \
     main.cpp

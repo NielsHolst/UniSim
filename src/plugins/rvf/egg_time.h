@@ -7,20 +7,22 @@
 #ifndef RVF_EGG_TIME_H
 #define RVF_EGG_TIME_H
 
-#include "../unisim/day_degrees.h"
+#include <usbase/model.h>
 
 namespace rvf {
 
-class EggTime : public UniSim::DayDegrees
+class EggTime : public UniSim::Model
 {
 public:
     EggTime(UniSim::Identifier name, QObject *parent);
-    double calcDailyTimeStep();
+    void reset();
+    void update();
 
 private:
-    // Parameters
-    double waterLevel, waterLevelThreshold;
-
+    // Inputs
+    double waterLevel, waterLevelThreshold, daydegrees;
+    // Outputs
+    double step, total;
 };
 
 } //namespace

@@ -10,7 +10,7 @@
 
 	<model name="weather" type="UniSim::Weather">
 		<model name="records" type="UniSim::Records">
-			<parameter name="fileName" value="weather all 2010 and 2011.txt"/>
+			<parameter name="fileName" value="flakkebjerg 2009.txt"/>
 			
 		</model>
 	</model>

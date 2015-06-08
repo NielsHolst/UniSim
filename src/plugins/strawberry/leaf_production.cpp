@@ -4,11 +4,13 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include "leaf_production.h"
-
+#include "publish.h"
 using namespace UniSim;
 
 namespace strawberry {
 	
+PUBLISH(LeafProduction)
+
 LeafProduction::LeafProduction(Identifier name, QObject *parent)
 	: Model(name, parent)
 {

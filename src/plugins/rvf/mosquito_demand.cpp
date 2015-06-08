@@ -5,18 +5,21 @@
 */
 #include <stdlib.h>
 #include "mosquito_demand.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace rvf {
 
+PUBLISH(MosquitoDemand)
+
 MosquitoDemand::MosquitoDemand(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("sexRatio", &sexRatio, 0.5, this, "Proportion of females");
-    new Parameter<double>("density", &density, 100., this, "Density of adults");
-    new Parameter<double>("demandRate", &demandRate, 0.2, this, "Demanded number of bloodmeals per female mosquito per day");
-    new Variable<double>("value", &value, this, "Calculated demand for bloodmeals");
+    Input(double, sexRatio, 0.5);   // Proportion of females
+    Input(double, density, 100.);   // Density of adults
+    Input(double, demandRate, 0.2); // Demanded number of bloodmeals per female mosquito per day
+    Output(double, value);          // Calculated demand for bloodmeals
 }
 
 void MosquitoDemand::reset() {

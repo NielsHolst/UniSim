@@ -5,23 +5,26 @@
 */
 #include <stdlib.h>
 #include "mosquito_fecundity.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 namespace rvf {
 
+PUBLISH(MosquitoFecundity)
+
 MosquitoFecundity::MosquitoFecundity(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    new Parameter<double>("waterLevel", &waterLevel, 0., this, "desc");
-    new Parameter<double>("waterLevelThreshold", &waterLevelThreshold, 0., this, "desc");
-    new Parameter<double>("fecundityPerBloodmeal", &fecundityPerBloodmeal, 40., this, "Number of eggs laid per bloodmeal per female");
-    new Parameter<double>("sexRatio", &sexRatio, 0.5, this, "Proportion of females");
-    new Parameter<double>("density", &density, 100., this, "Density of adults");
-    new Parameter<double>("bloodmeal", &bloodmeal, 0.2, this, "Supply of blood meals per day");
-    new Parameter<double>("propInfectedEggs", &propInfectedEggs, 0., this, "Proportion infected eggs");
-    new Variable<double>("infectedEggs", &infectedEggs, this, "Infected Eggs");
-    new Variable<double>("uninfectedEggs", &unInfectedEggs, this, "desc");
+    Input(double, waterLevel, 0.);
+    Input(double, waterLevelThreshold, 0.);
+    Input(double, fecundityPerBloodmeal, 40.); // Number of eggs laid per bloodmeal per female
+    Input(double, sexRatio, 0.5);              // Proportion of females
+    Input(double, density, 100.);              // Density of adults
+    Input(double, bloodmeal, 0.2);             // Supply of blood meals per day
+    Input(double, propInfectedEggs, 0.);      // Proportion infected eggs
+    Output(double, infectedEggs);              // Number of infected eggs laid
+    Output(double, unInfectedEggs);            // Number of uninfected eggs laid
 }
 
 void MosquitoFecundity::reset() {

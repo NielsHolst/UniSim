@@ -82,9 +82,11 @@
 			</model>
 			<model name="egg" type="UniSim::Stage">
 				<model name="time" type="rvf::EggTime"> <!--Egg time work but outputs strange figure!-->
-					<parameter name="T0" value="8"/>
 					<parameter name="waterLevel" ref="water[value]"/>
 					<parameter name="waterLevelThreshold" value="0.005"/>
+					<model name="daydegrees" type="UniSim::DayDegrees">
+						<parameter name="T0" value="8"/>
+					</model>
 				</model>
 				<parameter name="inflow" ref="Aedes/I/toBeLaid[outflow]"/>
 				<parameter name="duration" ref="Aedes/S/egg[duration]"/>

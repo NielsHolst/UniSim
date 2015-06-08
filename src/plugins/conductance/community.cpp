@@ -8,11 +8,14 @@
 #include <usbase/utilities.h>
 #include "community.h"
 #include "plant.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 
 namespace conductance {
+
+PUBLISH(Community)
 
 Community::Community(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)

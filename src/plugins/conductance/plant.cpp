@@ -6,11 +6,14 @@
 #include <usbase/parameter.h>
 #include <usbase/variable.h>
 #include "plant.h"
+#include "publish.h"
 
 using namespace UniSim;
 
 
 namespace conductance {
+
+PUBLISH(Plant)
 
 Plant::Plant(UniSim::Identifier name, QObject *parent)
     : Model(name, parent)

@@ -258,6 +258,10 @@ double virtualTemperatureFromAh(double temperature, double ah) {
     return (temperature+T0)*(1+0.608*shFromAh(ah));
 }
 
+double rhoAir(double T) {
+    return 9.43e-10*p4(T) - 1.51e-7*p3(T) - 2.00e-5*p2(T) - 4.69e-3*T + 1.28;
+}
+
 //! Logistic growth integral
 /*!
  * The integral of the logistic growth equation is used to calculate the approach of a variable

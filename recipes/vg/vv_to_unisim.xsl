@@ -578,49 +578,52 @@
 	</model>
 
 	<model name="indoors">
-		<model name="infiltration" type="vg::AirInfiltration">
-			<parameter name="leakage">
-				<xsl:attribute name="value">
-					<xsl:value-of select="$Leakage"/>
-				</xsl:attribute>
-			</parameter>
-		</model>
-		<model name="crackVentilation" type="vg::PidControlElement">
-			<parameter name="signal" ref="./target[signal]"/>
-			<parameter name="Kprop" value="0.1"/>
-			<model name="target" type="vg::ProportionalSignal">
-				<model name="coldFactor" type="vg::ProportionalSignal"> 
-					<parameter name="input" ref ="outdoors[temperature]"/>
-					<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
-					<parameter name="thresholdBand" value="1"/>
-					<parameter name="increasingSignal" value="true"/>
-					<parameter name="maxSignal">
-						<xsl:attribute name="value">
-							<xsl:value-of select="$MaxCrackVentilation"/>
-						</xsl:attribute>
-					</parameter>
-					<parameter name="minSignal" value="0"/>
-				</model>
-				
-				<parameter name="input" ref="indoors/humidity[rh]"/>
-				<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-				<parameter name="thresholdBand">
+		<model name="airflux">
+			<model name="infiltration" type="vg::AirFluxInfiltration">
+				<parameter name="leakage">
 					<xsl:attribute name="value">
-						<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+						<xsl:value-of select="$Leakage"/>
 					</xsl:attribute>
 				</parameter>
-				<parameter name="increasingSignal" value="true"/>
-				<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
-				<parameter name="minSignal" value="0"/>
 			</model>
+			<model name="crackVentilation" type="vg::PidControlElement">
+				<parameter name="signal" ref="./target[signal]"/>
+				<parameter name="Kprop" value="0.1"/>
+				<model name="target" type="vg::ProportionalSignal">
+					<model name="coldFactor" type="vg::ProportionalSignal"> 
+						<parameter name="input" ref ="outdoors[temperature]"/>
+						<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
+						<parameter name="thresholdBand" value="1"/>
+						<parameter name="increasingSignal" value="true"/>
+						<parameter name="maxSignal">
+							<xsl:attribute name="value">
+								<xsl:value-of select="$MaxCrackVentilation"/>
+							</xsl:attribute>
+						</parameter>
+						<parameter name="minSignal" value="0"/>
+					</model>
+					
+					<parameter name="input" ref="indoors/humidity[rh]"/>
+					<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+					<parameter name="thresholdBand">
+						<xsl:attribute name="value">
+							<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+						</xsl:attribute>
+					</parameter>
+					<parameter name="increasingSignal" value="true"/>
+					<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
+					<parameter name="minSignal" value="0"/>
+				</model>
+			</model>
+			<model name="gravitation" type="vg::AirFluxGravitation"/>
 		</model>
 		
 		<model name="top">
 			<model name="light" type="vg::IndoorsTopLight"/> 
 			<model name="passive"> 
 				<model name="airFlux" type="AirFluxVentilation">
-					<parameter name="infiltration" ref="indoors/infiltration[value]"/>
-					<parameter name="crack" ref="indoors/crackVentilation[value]"/>
+					<parameter name="infiltration" ref="indoors/airFlux/infiltration[value]"/>
+					<parameter name="crack" ref="indoors/airFlux/crackVentilation[value]"/>
 					<parameter name="propOfCrack" ref="horizontal/airTransmission[notTransmitted]"/>
 				</model>
 				<model name="vapourFlux" type="vg::VapourFluxSum"> 
@@ -630,8 +633,14 @@
 					<model name="ventilation"  type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="../../airFlux[value]"/>
 						<parameter name="receiverAh" ref="indoors/humidity[ah]"/> <!-- -->
-						<parameter name="donorAh" ref="outdoors[ah]"/> <!-- -->
-						<parameter name="height" ref="construction/geometry[roofHeight]"/> <!-- -->
+						<parameter name="donorAh" ref="outdoors[ah]"/> 
+						<parameter name="height" ref="construction/geometry[roofHeight]"/>
+					</model>
+					<model name="gravitation"  type="vg::VapourFluxAir">
+						<parameter name="airFlux" ref="indoors/airFlux/gravitation[value]"/>
+						<parameter name="receiverAh" ref="indoors/humidity[ah]"/> <!-- -->
+						<parameter name="donorAh" ref="indoors/humidity[ah]"/> 
+						<parameter name="height" ref="construction/geometry[roofHeight]"/> 
 					</model>
 				</model>
 				<!--
@@ -651,8 +660,8 @@
 
 		<model name="passive"> 
 			<model name="airFlux" type="AirFluxVentilation">
-				<parameter name="infiltration" ref="indoors/infiltration[value]"/>
-				<parameter name="crack" ref="indoors/crackVentilation[value]"/>
+				<parameter name="infiltration" ref="indoors/airFlux/infiltration[value]"/>
+				<parameter name="crack" ref="indoors/airFlux/crackVentilation[value]"/>
 				<parameter name="propOfCrack" ref="horizontal/airTransmission[transmitted]"/>
 			</model>
 			<model name="vapourFlux" type="vg::VapourFluxSum"> 
@@ -662,8 +671,14 @@
 				</model>
 				<model name="ventilation"  type="vg::VapourFluxAir">
 					<parameter name="airFlux" ref="../../airFlux[value]"/>
-					<parameter name="receiverAh" ref="indoors/humidity[ah]"/> <!-- -->
-					<parameter name="donorAh" ref="outdoors[ah]"/> <!-- -->
+					<parameter name="receiverAh" ref="indoors/humidity[ah]"/> 
+					<parameter name="donorAh" ref="outdoors[ah]"/> 
+					<parameter name="height" ref="construction/geometry[height]"/> 
+				</model>
+				<model name="gravitation"  type="vg::VapourFluxAir">
+					<parameter name="airFlux" ref="indoors/airFlux/gravitation[value]"/>
+					<parameter name="receiverAh" ref="indoors/humidity[ah]"/> 
+					<parameter name="donorAh" ref="indoors/humidity[ah]"/> <!-- -->
 					<parameter name="height" ref="construction/geometry[height]"/> 
 				</model>
 			</model>
@@ -1496,8 +1511,9 @@
 		<trace label="sp_heat" value="setpoints/temperature/heating[value]"/>
 		<trace label="sp_vent" value="setpoints/temperature/ventilation[value]"/>
 		<trace label="sp_rh" value="setpoints/humidity/maximumRh[signal]"/>
-		<trace label="leakage" value="passive/ventilation/infiltration[value]"/>
-		<trace label="crack_vent" value="passive/ventilation/crack[value]"/>
+		<trace label="air_infilt" value="indoors/airFlux/infiltration[value]"/>
+		<trace label="air_crack" value="indoors/airFlux/crackVentilation[value]"/>
+		<trace label="air_gravi" value="indoors/airFlux/gravitation[value]"/>
 
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="top_light" value="indoors/top/light[total]"/>

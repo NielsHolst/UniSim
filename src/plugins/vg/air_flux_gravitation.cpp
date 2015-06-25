@@ -4,7 +4,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "air_flux_vertical_gap.h"
+#include "air_flux_gravitation.h"
 #include "general.h"
 #include "publish.h"
 
@@ -12,10 +12,10 @@ using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(AirFluxVerticalGap)
+PUBLISH(AirFluxGravitation)
 
-/*! \class AirFluxVerticalGap
- * \brief The obligatory air flux is leakage plus humidity-controlled ventilation
+/*! \class AirFluxGravitation
+ * \brief Vertical air movement by gravitation through screen gap
  *
  * Inputs
  * ------
@@ -29,26 +29,27 @@ PUBLISH(AirFluxVerticalGap)
  * - _value_ is the proportional air exchange [h<SUP>-1</SUP>]
  */
 
-AirFluxVerticalGap::AirFluxVerticalGap(Identifier name, QObject *parent)
+AirFluxGravitation::AirFluxGravitation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    Input(double, separation, 0.);
-    Input(double, topTemperature, 20.);
-    Input(double, bottomTemperature, 20.);
+    InputRef(double, state, "horizontal/screens[maxState]");
+    Input(double, topTemperature, 15.); // TEST TEST TEST
+    InputRef(double, bottomTemperature, "indoors/temperature[value]");
     InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
+    InputRef(double, volume, "construction/geometry[volumeBelowRoof]");
     Output(double, value);
 }
 
-void AirFluxVerticalGap::reset() {
+void AirFluxGravitation::reset() {
     value = 0.;
 }
 
-void AirFluxVerticalGap::update() {
-    double gapArea = (1. - separation)*greenhouseArea,
+void AirFluxGravitation::update() {
+    double gapArea = (1. - state)*greenhouseArea,
            topRho = rhoAir(topTemperature),
            bottomRho = rhoAir(bottomTemperature);
     value = (bottomTemperature > topTemperature) ?
-            0.06*g*pow(gapArea, 1.5)*sqrt((topRho - bottomRho)/topRho) : 0.;
+            0.06*g*pow(gapArea, 1.5)*sqrt((topRho - bottomRho)/topRho)/volume : 0.;
 }
 
 

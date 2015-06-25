@@ -10,7 +10,8 @@ include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
 
 HEADERS += \
-    air_infiltration.h \
+    air_flux_gravitation.h \
+    air_flux_infiltration.h \
     air_flux_ventilation.h \
     base_control_element.h \
     base_signal.h \
@@ -94,7 +95,8 @@ HEADERS += \
     vg_factory.h
 
 SOURCES += \
-    air_infiltration.cpp \
+    air_flux_gravitation.cpp \
+    air_flux_infiltration.cpp \
     air_flux_ventilation.cpp \
     base_control_element.cpp \
     base_signal.cpp \

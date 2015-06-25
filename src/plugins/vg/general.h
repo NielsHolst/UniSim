@@ -69,11 +69,14 @@ double absFromPpmCo2(double temperature, double ppm, double P = P0);
 // Other climatic parameters
 double Tdew(double temperature, double rh);
 double virtualTemperatureFromAh(double temperature, double ah);
-//double rhoAir(double temperature) rho_air.m;
+double rhoAir(double temperature);
 
 // Mathematics
 inline int sqr(int x) {return x*x;}
 inline double sqr(double x) {return x*x;}
+inline double p2(double x) { return sqr(x); }
+inline double p3(double x) { return pow(x, 3.); }
+inline double p4(double x) { return pow(x, 4.); }
 inline double p4K(double T) { return pow(T+T0, 4.); }
 
 double logistic(double current, double target, double rate, double dt);

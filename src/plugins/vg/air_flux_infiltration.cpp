@@ -4,18 +4,17 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "air_flux_vertical_leak.h"
-#include "general.h"
+#include "air_flux_infiltration.h"
 #include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(AirFluxVerticalLeak)
+PUBLISH(AirFluxInfiltration)
 
-/*! \class AirFluxVerticalLeak
- * \brief The obligatory air flux is leakage plus humidity-controlled ventilation
+/*! \class AirFluxInfiltration
+ * \brief The rate of air entering the greenhouse uncontrolled
  *
  * Inputs
  * ------
@@ -29,22 +28,21 @@ PUBLISH(AirFluxVerticalLeak)
  * - _value_ is the proportional air exchange [h<SUP>-1</SUP>]
  */
 
-AirFluxVerticalLeak::AirFluxVerticalLeak(Identifier name, QObject *parent)
+AirFluxInfiltration::AirFluxInfiltration(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    Input(double, separation, 0.);
-    Input(double, screensAirTransmission, 1.);
-    Input(double, indoorsWindSpeed, 0.05);
-    InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
+    Input(double, leakage, 0.5);
+    InputRef(double, windspeed, "outdoors[windspeed]");
+    InputRef(double, screensAirTransmission, "greenhouseShelter[airTransmission]");
     Output(double, value);
 }
 
-void AirFluxVerticalLeak::reset() {
+void AirFluxInfiltration::reset() {
     value = 0.;
 }
 
-void AirFluxVerticalLeak::update() {
-    value = screensAirTransmission*indoorsWindSpeed*greenhouseArea*3600.; // h-1 = m/s * m2 * s/h
+void AirFluxInfiltration::update() {
+    value = leakage*screensAirTransmission*windspeed/4;
 }
 
 

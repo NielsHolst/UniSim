@@ -47,6 +47,11 @@ plot2 = function(U1,U2,from=0, to=366, cols=NA) {
 U = read_unisim("dvv_unisim_0001.txt")
 windows(14,10)
 plot1(U,1)
+
+# windows(14,10)
+# plot1(U,10,15, c("indoors_temp", "air_gravi","act_scr_en"))
+
+# windows(14,10)
 # plot1(U,10,15, c("outdoors_light", "top_light", "indoors_light", "growth_light", "act_scr_en"))
 
 

@@ -17,17 +17,17 @@ PUBLISH(EnergyFluxShortWave)
  * \brief Flux of shortwave energy from sunlight and growth lights
  * Inputs
  * ------
- * - _indoorsRadiation_ is the total shortwave radiation indoors [W/m<SUP>2</SUP>]
+ * - _indoorsLight_ is the total shortwave radiation indoors [W/m<SUP>2</SUP>]
  */
 
 EnergyFluxShortWave::EnergyFluxShortWave(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, indoorsRadiation, "indoors/radiation[total]");
+    InputRef(double, indoorsLight, "indoors/light[total]");
 }
 
 void EnergyFluxShortWave::update() {
-    value = indoorsRadiation;
+    value = indoorsLight;
 }
 
 } //namespace

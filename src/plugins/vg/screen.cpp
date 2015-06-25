@@ -45,8 +45,9 @@ Screen::Screen(Identifier name, QObject *parent)
     Input2(QString, positionStr, position, "");
     Input2(QString, layerStr, layer, "");
     Input(double, lightTransmission, 0.63);
+    Input(double, U, 1.9);
     Input(double, energyLossReduction, 0.4);
-    Input(double, haze, 0.);  // Guess
+    Input(double, haze, 0.);
     Input(double, airTransmission, 0.8);
     Input(double, state, 0.);
     setStandardPositions();

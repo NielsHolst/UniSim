@@ -21,8 +21,8 @@ PUBLISH(LayerPhotosynthesis)
  * Inputs
  * ------
  * - _sinb_ is the sine of sun elevation [-1;1]
- * - _radiationDif_ is the indoors diffuse radiation [W//m<SUP>2</SUP>]
- * - _radiationDir_ is the indoors direct radiation [W//m<SUP>2</SUP>]
+ * - _lightDif_ is the indoors diffuse light [W//m<SUP>2</SUP>]
+ * - _lightDir_ is the indoors direct light [W//m<SUP>2</SUP>]
  * - _lai_ is leaf area index [m<SUP>2</SUP>/m<SUP>2</SUP>]
  * - _xGauss_ is the LAI coefficient [0;1]
  * - _wGauss_ is weighing coefficient [0;1]
@@ -37,27 +37,14 @@ PUBLISH(LayerPhotosynthesis)
  * ------
  * - _Pn_ is the net assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> ground/h]
  * - _Pg_ is the gross assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> ground/h]
- *
- * Default dependencies
- * ------------
- * - a _calendar_ model with a _sinb_ port [-1;1]
- * - an _indoors/radiation_ mode with two ports:
- *   + _radiationDif_ [W//m<SUP>2</SUP>]
- *   + _radiationDir_  [W//m<SUP>2</SUP>]
- * - a parent model with _xGauss_ and _wGauss_ ports [0;1]
- * - a _lightResponse_ sibling model four ports:
- *   + _LUE_ [mg CO<SUB>2</SUB>/J]
- *   + _Pnmax_ [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
- *   + _Pgmax_ [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
- *   + _Rd_ [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
  */
 
 LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     InputRef(double, sinB, "calendar[sinB]");
-    InputRef(double, radiationDif, "indoors/radiation[diffuse]");
-    InputRef(double, radiationDir, "indoors/radiation[direct]");
+    InputRef(double, lightDif, "indoors/light[diffuse]");
+    InputRef(double, lightDir, "indoors/light[direct]");
     InputRef(double, lai, "crop/lai[lai]");
     InputRef(double, xGauss, "..[xGauss]");
     InputRef(double, wGauss, "..[wGauss]");
@@ -79,8 +66,8 @@ void LayerPhotosynthesis::update() {
     const double xSunGauss[3]={0.1127, 0.5, 0.8873},
     wSunGauss[3]={0.2778, 0.4444, 0.2778};
     double LAIC=lai*xGauss;
-    double PARDIF = 0.47*radiationDif;
-    double PARDIR = 0.47*radiationDir;
+    double PARDIF = 0.47*lightDif;
+    double PARDIR = 0.47*lightDir;
 
     //1)----calculation of reflection of horizontal and spherical leaf angle distribution
         //Intermediate variable SQV

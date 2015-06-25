@@ -17,7 +17,7 @@ PUBLISH(RadiationAbsorbed)
 RadiationAbsorbed::RadiationAbsorbed(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, indoorsRadiation, "indoors/radiation[total]");
+    InputRef(double, indoorsLight, "indoors/light[total]");
     Output(double, Rna);
 }
 
@@ -26,7 +26,7 @@ void RadiationAbsorbed::reset() {
 }
 
 void RadiationAbsorbed::update() {
-    Rna = indoorsRadiation*0.66;
+    Rna = indoorsLight*0.66;
 }
 
 

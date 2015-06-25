@@ -4,16 +4,16 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "indoors_radiation.h"
+#include "indoors_bottom_light.h"
 #include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 	
-PUBLISH(IndoorsRadiation)
+PUBLISH(IndoorsBottomLight)
 
-/*! \class IndoorsRadiation
+/*! \class IndoorsBottomLight
  * \brief Computes indoors diffuse and direct light
  *
  * Inputs
@@ -44,31 +44,28 @@ PUBLISH(IndoorsRadiation)
  * - an _actuators/growthLights_ model with a _shortWaveEmission_ port [W/m<SUP>2</SUP>]
  */
 
-IndoorsRadiation::IndoorsRadiation(Identifier name, QObject *parent)
+IndoorsBottomLight::IndoorsBottomLight(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, outdoorsDirectRadiation, "outdoors[directRadiation]");
-    InputRef(double, outdoorsDiffuseRadiation, "outdoors[diffuseRadiation]");
-    InputRef(double, diffuseTransmission, "greenhouseShelter[diffuseLightTransmission]");
-    InputRef(double, directTransmissionAsDirect, "greenhouseShelter[directLightTransmissionAsDirect]");
-    InputRef(double, directTransmissionAsDiffuse, "greenhouseShelter[directLightTransmissionAsDiffuse]");
-    InputRef(double, growthLightShortWaveRadiation, "actuators/growthLights[shortWaveEmission]");
+    InputRef(double, topDirect, "indoors/top/light[direct]");
+    InputRef(double, topDiffuse, "indoors/top/light[diffuse]");
+    InputRef(double, horizontalTransmissivity, "horizontal/screens[lightTransmission]");
+    InputRef(double, growthLight, "actuators/growthLights[shortWaveEmission]");
     Input(double, growthLightPropDirect, 0.7);
     Output(double, direct);
     Output(double, diffuse);
     Output(double, total);
 }
 
-void IndoorsRadiation::reset() {
+void IndoorsBottomLight::reset() {
     direct = diffuse = total = 0.;
 }
 
-void IndoorsRadiation::update() {
-    diffuse = diffuseTransmission*outdoorsDiffuseRadiation +
-              directTransmissionAsDiffuse*outdoorsDirectRadiation +
-              (1.-growthLightPropDirect)*growthLightShortWaveRadiation;
-    direct = directTransmissionAsDirect*outdoorsDirectRadiation +
-             growthLightPropDirect*growthLightShortWaveRadiation;
+void IndoorsBottomLight::update() {
+    diffuse = horizontalTransmissivity*topDiffuse +
+              (1.-growthLightPropDirect)*growthLight;
+    direct = horizontalTransmissivity*topDirect +
+             growthLightPropDirect*growthLight;
     total = direct + diffuse;
 }
 

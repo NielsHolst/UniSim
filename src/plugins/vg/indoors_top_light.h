@@ -4,22 +4,27 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_RADIATION_ABSORBED_H
-#define VG_RADIATION_ABSORBED_H
+#ifndef VG_INDOORS_TOP_LIGHT_H
+#define VG_INDOORS_TOP_LIGHT_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class RadiationAbsorbed : public UniSim::Model
+class IndoorsTopLight : public UniSim::Model
 {
 public:
-    RadiationAbsorbed(UniSim::Identifier name, QObject *parent);
+    IndoorsTopLight(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
 private:
-    double Rna, indoorsLight;
+    // Parameters
+    double diffuseTransmission, directTransmissionAsDirect, directTransmissionAsDiffuse,
+        outdoorsDirectRadiation, outdoorsDiffuseRadiation;
+
+    // Variables
+    double direct, diffuse, total;
 };
 } //namespace
 

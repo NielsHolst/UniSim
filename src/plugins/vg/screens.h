@@ -21,9 +21,13 @@ public:
     void update();
 private:
     // Outputs
-    double maxState;
+    double maxState, lightTransmission, airTransmission;
     // Data
-    QList<const double*> states;
+    struct ScreenInfo {
+        const double *state, *lightTransmission, *airTransmission;
+    };
+    QVector<ScreenInfo> screenInfos;
+
 };
 } //namespace
 

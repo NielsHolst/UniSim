@@ -43,12 +43,14 @@ void Shelter::initialize() {
     dirTransTable = new DataGrid(simulation()->inputFilePath(directTransmissionFile), this);
     Model *cover = peekOneChild<Model*>("cover");
     if (cover) {
-        pCoverU = cover->pullValuePtr<double>("U");
+        pCoverU = cover->peekValuePtr<double>("U");
         pCoverHaze = cover->pullValuePtr<double>("haze");
-        pCoverDiffuseTransmission = cover->pullValuePtr<double>("transmissivity");
+        pCoverDiffuseTransmission = cover->pullValuePtr<double>("diffuseTransmission");
     }
     else {
-        pCoverU = &infinity;
+        zero = 0.;
+        zero = 1.;
+        pCoverU = &zero;
         pCoverHaze = &zero;
         pCoverDiffuseTransmission = &one;
     }
@@ -79,6 +81,8 @@ void Shelter::updateU() {
         // Consider U as a conductance: Convert U values to resistances, add them and convert back to U
         U += (1-screenState)*U + screenState/(1/U + 1/screenU);
     }
+
+//    U = *pCoverU;
 //    double optimalTransmittance{1}, maxReduction{0};
 //    for (auto screen : screens) {
 //        double reduction = screen->pullValue<double>("state")*screen->pullValue<double>("energyLossReduction");
@@ -106,7 +110,7 @@ void Shelter::updateAirTransmission() {
 void Shelter::updateLightTransmission() {
     diffuseLightTransmission = *pCoverDiffuseTransmission;
     for (auto screen : screens)
-        diffuseLightTransmission *= 1 - screen->pullValue<double>("state")*(1 - screen->pullValue<double>("lightTransmission"));
+        diffuseLightTransmission *= 1 - screen->pullValue<double>("state")*(1 - screen->pullValue<double>("transmission"));
     diffuseLightTransmission *= (1-chalk)*(1-greenhouseShade);
 
     double timeAndPlace = interpolate(*dirTransTable, latitude, azimuth);

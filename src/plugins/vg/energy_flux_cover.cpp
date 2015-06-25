@@ -21,7 +21,7 @@ PUBLISH(EnergyFluxCover)
  * ------
  * - _U_ is the heat transfer coefficient of the material  [W/m<SUP>2</SUP>/K]
  * - _emissivity_ is the effectiveness in emitting energy as thermal radiation [0;1].
- * - _absorption_ is the proportion of light absorbed [0;1]
+ * - _absorptivity_ is the proportion of light absorbed [0;1]
  * - _density_ is cover density [kg/m<SUP>3</SUP>]
  * - _heatCapacity_ is cover heat capacity [J/kg/K]
  * - _thickness_ is cover thickness [mm]
@@ -53,7 +53,7 @@ EnergyFluxCover::EnergyFluxCover(Identifier name, QObject *parent)
 {
     InputRef(double, U, "..[U]");
     InputRef(double, emissivity, "..[emissivity]");
-    InputRef(double, absorption, "..[absorption]");
+    InputRef(double, absorptivity, "..[absorptivity]");
     InputRef(double, density, "..[density]");
     InputRef(double, heatCapacity, "..[heatCapacity]");
     InputRef(double, thickness, "..[thickness]");
@@ -99,7 +99,7 @@ void EnergyFluxCover::update() {
         heatFluxOutside = U*(outdoorsTemperature - temperature);                       // W/m2 = W/m2/K * K =
         heatFluxInside = U*(indoorsTemperature - temperature);
         radiationFluxSky = emissivity*Sigma*(p4K(skyTemperature) - p4K(temperature));    // W/m2 = 1 * W/m2/K4 * K4
-        radiationFluxSun = absorption*sunlight;
+        radiationFluxSun = absorptivity*sunlight;
         radiationFluxScreen = emissivity*Sigma*(p4K(screenTemperature) - p4K(temperature))*(1 - screenState);
         radiationFluxCrop = emissivity*Sigma*(p4K(cropTemperature) - p4K(temperature))*screenState;
         double totalGlassFlux =

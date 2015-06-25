@@ -32,7 +32,7 @@ PUBLISH(EnergyFluxTranspiration)
 EnergyFluxTranspiration::EnergyFluxTranspiration(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, transpiration, "passive/vapourFlux/transpiration[vapourFlux]");
+    InputRef(double, transpiration, "../../vapourFlux/transpiration[vapourFlux]");
 }
 
 void EnergyFluxTranspiration::update() {

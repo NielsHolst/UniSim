@@ -27,9 +27,9 @@ public:
 private:
     friend class Screens;
 
-    // Parameters
+    // Inputs
     QString positionStr, layerStr;
-    double lightTransmission, energyLossReduction, haze,
+    double lightTransmission, energyLossReduction, U, haze,
         airTransmission, state;
     // Data
     typedef UniSim::StringMap<Position> Positions;

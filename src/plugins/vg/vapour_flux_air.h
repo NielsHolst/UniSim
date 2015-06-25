@@ -4,21 +4,21 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_ENERGY_FLUX_SHORT_WAVE_H
-#define VG_ENERGY_FLUX_SHORT_WAVE_H
+#ifndef VG_VAPOUR_FLUX_AIR_H
+#define VG_VAPOUR_FLUX_AIR_H
 
-#include "energy_flux_base.h"
+#include "vapour_flux_base.h"
 
 namespace vg {
 
-class EnergyFluxShortWave : public EnergyFluxBase
+class VapourFluxAir : public VapourFluxBase
 {
 public:
-    EnergyFluxShortWave(UniSim::Identifier name, QObject *parent);
+    VapourFluxAir(UniSim::Identifier name, QObject *parent);
     void update();
-
 private:
-    double indoorsLight;
+    // Inputs
+    double airFlux, donorAh, receiverAh, height;
 };
 } //namespace
 

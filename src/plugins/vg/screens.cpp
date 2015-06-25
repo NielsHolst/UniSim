@@ -29,24 +29,34 @@ Screens::Screens(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     Output(double, maxState);
+    Output(double, lightTransmission);
+    Output(double, airTransmission);
 }
 
 void Screens::initialize() {
     auto screens = seekChildren<Model*>("*");
-    states.clear();
-    for (auto screen : screens) {
-        states << screen->pullValuePtr<double>("state");
+    screenInfos.clear();
+    for (auto screen: screens) {
+        screenInfos << ScreenInfo {
+            screen->pullValuePtr<double>("state"),
+            screen->pullValuePtr<double>("lightTransmission"),
+            screen->pullValuePtr<double>("airTransmission")
+        };
     }
 }
 
 void Screens::reset() {
     maxState = 0;
+    lightTransmission = airTransmission = 1;
 }
 
 void Screens::update() {
     maxState = 0;
-    for (auto state : states) {
-        maxState = max(maxState, *state);
+    lightTransmission = airTransmission = 1;
+    for (auto info: screenInfos) {
+        maxState = max(maxState, *info.state);
+        lightTransmission *= (*info.lightTransmission);
+        airTransmission *= (*info.airTransmission);
     }
 }
 

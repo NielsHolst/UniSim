@@ -39,6 +39,7 @@ PUBLISH(ConstructionGeometry)
  * - _coverArea_ is the area of the green house cover (walls + roof) [m<SUP>2</SUP>]
  * - _coverPerGroundArea_ is _coverArea_ divided by _groundArea_ [m<SUP>2</SUP>/[m<SUP>2</SUP>]]
  * - _roofArea_ is the total area of the roof (the two sloping surfaces on top of each span) [m<SUP>2</SUP>]
+ * - _roofHeight_ is the vertical height of the roof [m]
  * - _sideWallsArea_ is the total area of the two greenhouse side walls (facing the outside) [m<SUP>2</SUP>]
  * - _endWallsArea_ is the total area of the two greenhouse end walls (excluding the triangular gables) [m<SUP>2</SUP>]
  * - _gablesArea_ is the total area of the two triangular gables at the ends of each span [m<SUP>2</SUP>]
@@ -63,6 +64,7 @@ ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
     Output(double, endWallsArea);
     Output(double, gablesArea);
     Output(double, roofArea);
+    Output(double, roofHeight);
     Output(double, coverArea);
     Output(double, coverPerGroundArea);
     Output(double, volumeBelowRoof);
@@ -71,9 +73,8 @@ ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
 }
 
 void ConstructionGeometry::reset() {
-    double
-       roofHeight = tan(roofPitch*PI/180.)*spanWidth/2.,
-       roofWidth = hypot(roofHeight, spanWidth/2.);
+    roofHeight = tan(roofPitch*PI/180.)*spanWidth/2.;
+    double roofWidth = hypot(roofHeight, spanWidth/2.);
     width = numSpans*spanWidth;
     groundArea = width*length;
     sideWallsArea = 2*length*height;

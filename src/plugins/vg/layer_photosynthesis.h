@@ -20,7 +20,7 @@ public:
     void update();
 
 private:
-    double Pnmax,Pgmax, LUE, radiationDif, radiationDir, Kdif, SCV,
+    double Pnmax,Pgmax, LUE, lightDif, lightDir, Kdif, SCV,
     xGauss, wGauss, lai, Rd, sinB;
     double Pg, Pn;
 };

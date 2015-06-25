@@ -25,16 +25,16 @@
 <xsl:variable name="OutdoorsCo2" select="750"/>
 
 <xsl:variable name="CoverEmissitivity" select="0.93"/>  	<!-- [0;1] -->
-<xsl:variable name="CoverAbsorptivity" select="0.04"/>	<!-- [0;1] -->
 <xsl:variable name="CoverHaze" select="0"/>  				<!-- [0;1] -->
 <xsl:variable name="CoverDensity" select="2600"/>			<!-- [kg/m3] -->
-<xsl:variable name="CoverHeatCapacity" select="840"/>	<!-- Specific heat capacity [J/kg/K] -->
+<xsl:variable name="CoverHeatCapacity" select="840"/>		<!-- Specific heat capacity [J/kg/K] -->
 <xsl:variable name="CoverThickness" select="4"/>			<!-- [mm] -->
-<xsl:variable name="ScreenU" select="2"/>					<!-- [W/m2/K] -->
+<xsl:variable name="ScreenU" select="5"/>					<!-- [W/m2/K] -->
 <xsl:variable name="ScreenHaze" select="0"/>				<!-- [0;1] -->
 
-<xsl:variable name="MaxCrackVentilation" select="1"/>		<!-- [h-1] (GCC, p. 148) -->
-<xsl:variable name="Leakage" select="1"/>					<!-- [h-1] -->
+<xsl:variable name="MaxCrackVentilation" select="1"/>				<!-- [h-1] (GCC, p. 148) -->
+<xsl:variable name="FrostProtectionThreshold" select="-5"/>	
+<xsl:variable name="FrostProtectionThresholdBand" select="1"/>	
 
 <xsl:variable name="FloorU" select="7.5"/>	
 <xsl:variable name="FloorHeatCapacity" select="42000."/>	
@@ -254,7 +254,6 @@
 					<xsl:call-template name="extract-screen-parameters">
 						<xsl:with-param name="screen-type" select="$screen-type"/>
 					</xsl:call-template>
-					<!--
 					<model name="temperature" type="vg::ScreenTemperature">
 						<parameter name="innerTemperature">
 							<xsl:attribute name="ref">
@@ -267,14 +266,13 @@
 							</xsl:attribute>
 						</parameter>
 					</model>
-					-->
 				</model>
 			</xsl:if>
 		</xsl:for-each>					
 	</model>
 </xsl:template>
 	
-	
+
 <!-- MAIN -->
 		
 <xsl:template match="/"> <simulation name="Virtual Greenhouse">
@@ -443,11 +441,6 @@
 								<xsl:value-of select="$CoverEmissitivity"/>
 							</xsl:attribute>
 						</parameter>
-						<parameter name="absorptivity">
-							<xsl:attribute name="value">
-								<xsl:value-of select="$CoverAbsorptivity"/>
-							</xsl:attribute>
-						</parameter>
 						<parameter name="density">
 							<xsl:attribute name="value">
 								<xsl:value-of select="$CoverDensity"/>
@@ -468,9 +461,6 @@
 								<xsl:value-of select="$CoverHaze"/>
 							</xsl:attribute>
 						</parameter>
-						<model name="energyFlux" type="vg::EnergyFluxCover"/>
-						<model name="condensation" type="vg::CoverCondensation"/> 
-						<!--
 						<model name="energyFlux" type="vg::EnergyFluxCover">
 							<parameter name="indoorsTemperature">
 								<xsl:attribute name="ref">
@@ -487,11 +477,12 @@
 							</parameter>
 							<parameter name="indoorsAh">
 								<xsl:attribute name="ref">
+									<!--- TEST 
+									<xsl:value-of select="concat('indoors/', $compartment-name, '/humidity[ah]')"/> -->
 									<xsl:value-of select="concat('indoors/', 'top', '/humidity[ah]')"/>
 								</xsl:attribute>
 							</parameter>
 						</model>
-						-->
 					</model>
 					<xsl:call-template name="extract-screens">
 						<xsl:with-param name="shelter-position" select="$shelter-position"/>
@@ -501,31 +492,27 @@
 				</model>
 			</xsl:for-each>		
 
-		</model>
-
-		<model name="horizontal">
-			<xsl:variable name="horizontal-screens-count">
-				<xsl:value-of select="count(/JobDataSet/Greenhouse/zone/Screens//Screen[Position=2])"/>
-			</xsl:variable>
-			<xsl:choose>
-				<xsl:when test="$horizontal-screens-count=0">
-					<model name="screens" type="vg::Screens"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="extract-screens">
-						<xsl:with-param name="shelter-position" select="'horizontal'"/>
-					<xsl:with-param name="outer-temperature" select="'indoors/top/temperature[value]'"/>
-					<xsl:with-param name="inner-temperature" select="'indoors/bottom/temperature[value]'"/>
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
-			<model name="airTransmission" type="vg::ScreenAirTransmission">
-				<parameter name="state" ref ="../screens[maxState]"/>
-				<parameter name="airTransmission" ref ="../screens[airTransmission]"/>
+			<model name="horizontal" type="vg::Shelter">
+				<xsl:variable name="horizontal-screens-count">
+					<xsl:value-of select="count(/JobDataSet/Greenhouse/zone/Screens//Screen[Position=2])"/>
+				</xsl:variable>
+				<xsl:choose>
+					<xsl:when test="$horizontal-screens-count=0">
+						<model name="screens" type="vg::Screens"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="extract-screens">
+							<xsl:with-param name="shelter-position" select="'horizontal'"/>
+						<xsl:with-param name="outer-temperature" select="'indoors/top/temperature[value]'"/>
+						<xsl:with-param name="inner-temperature" select="'indoors/bottom/temperature[value]'"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
 			</model>
 		</model>
 
-	
+
+				
 		<model name="vents" type="vg::Vents">
 			<xsl:for-each select="//JobDataSet/Greenhouse/zone/Vents/Vent">
 				<model type="vg::Vent">
@@ -578,184 +565,186 @@
 	</model>
 
 	<model name="indoors">
-		<model name="infiltration" type="vg::AirInfiltration">
-			<parameter name="leakage">
-				<xsl:attribute name="value">
-					<xsl:value-of select="$Leakage"/>
-				</xsl:attribute>
-			</parameter>
-		</model>
-		<model name="crackVentilation" type="vg::PidControlElement">
-			<parameter name="signal" ref="./target[signal]"/>
-			<parameter name="Kprop" value="0.1"/>
-			<model name="target" type="vg::ProportionalSignal">
-				<model name="coldFactor" type="vg::ProportionalSignal"> 
-					<parameter name="input" ref ="outdoors[temperature]"/>
-					<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
-					<parameter name="thresholdBand" value="1"/>
-					<parameter name="increasingSignal" value="true"/>
-					<parameter name="maxSignal">
+		<model name="airFluxObligatory" type="vg::AirFluxObligatory"> 
+			<model name="leakage" type="vg::AirFluxLeakage">
+				<parameter name="leakage" value="1"/>
+			</model>
+
+			<model name="vents" type="vg::PidControlElement">
+				<parameter name="signal" ref="./airFlux[signal]"/>
+				<parameter name="Kprop" value="0.1"/>
+
+				<model name="airFlux" type="vg::ProportionalSignal">
+					<model name="coldFactor" type="vg::ProportionalSignal"> 
+						<parameter name="input" ref ="outdoors[temperature]"/>
+						<parameter name="threshold">    
+							<xsl:attribute name="value">
+								<xsl:value-of select="$FrostProtectionThreshold"/>
+							</xsl:attribute>
+						</parameter>
+						<parameter name="thresholdBand">    
+							<xsl:attribute name="value">
+								<xsl:value-of select="$FrostProtectionThresholdBand"/>
+							</xsl:attribute>
+						</parameter>
+						<parameter name="increasingSignal" value="true"/>
+						<parameter name="maxSignal">
+							<xsl:attribute name="value">
+								<xsl:value-of select="$MaxCrackVentilation"/>
+							</xsl:attribute>
+						</parameter>
+						<parameter name="minSignal" value="0"/>
+					</model>
+				
+					<parameter name="input" ref="indoors/bottom/humidity[rh]"/>
+					<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+					<parameter name="thresholdBand">
 						<xsl:attribute name="value">
-							<xsl:value-of select="$MaxCrackVentilation"/>
+							<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
 						</xsl:attribute>
 					</parameter>
+					<parameter name="increasingSignal" value="true"/>
+					<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
 					<parameter name="minSignal" value="0"/>
 				</model>
-				
-				<parameter name="input" ref="indoors/humidity[rh]"/>
-				<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-				<parameter name="thresholdBand">
-					<xsl:attribute name="value">
-						<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
-					</xsl:attribute>
-				</parameter>
-				<parameter name="increasingSignal" value="true"/>
-				<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
-				<parameter name="minSignal" value="0"/>
 			</model>
+			<model name="gap" type="vg::AirFluxVerticalGap"/>
 		</model>
-		
-		<model name="top">
-			<model name="light" type="vg::IndoorsTopLight"/> 
-			<model name="passive"> 
-				<model name="airFlux" type="AirFluxVentilation">
-					<parameter name="infiltration" ref="indoors/infiltration[value]"/>
-					<parameter name="crack" ref="indoors/crackVentilation[value]"/>
-					<parameter name="propOfCrack" ref="horizontal/airTransmission[notTransmitted]"/>
-				</model>
-				<model name="vapourFlux" type="vg::VapourFluxSum"> 
-					<model name="condensation" type="vg::VapourFluxSum">
-						<parameter name="toAdd" value="(roof1/cover/condensation roof2/cover/condensation)"/>
-					</model>
-					<model name="ventilation"  type="vg::VapourFluxAir">
-						<parameter name="airFlux" ref="../../airFlux[value]"/>
-						<parameter name="receiverAh" ref="indoors/humidity[ah]"/> <!-- -->
-						<parameter name="donorAh" ref="outdoors[ah]"/> <!-- -->
-						<parameter name="height" ref="construction/geometry[roofHeight]"/> <!-- -->
-					</model>
-				</model>
-				<!--
-				<model name="energyFlux" type="vg::EnergyFluxSum"> 
-					<model name="cover" type="vg::EnergyFluxCoverSum"/> 
-					<model name="condensation" type="vg::EnergyFluxCondensation"/> 
-					<model name="shortWave" type="vg::EnergyFluxShortWave"/> 
-					<model name="ventilation" type="vg::EnergyFluxVentilation"> 
-						<parameter name="ventilation" ref="indoors/passive/airFlux[value]"/>
-					</model>
-				</model>		
-				-->
-			</model>		
-		</model> <!-- top -->
-		
-		<model name="light" type="vg::IndoorsBottomLight"/> 
 
-		<model name="passive"> 
-			<model name="airFlux" type="AirFluxVentilation">
-				<parameter name="infiltration" ref="indoors/infiltration[value]"/>
-				<parameter name="crack" ref="indoors/crackVentilation[value]"/>
-				<parameter name="propOfCrack" ref="horizontal/airTransmission[transmitted]"/>
+		<model name="bottom">
+			<model name="humidityControlled">
+				<model name="vapourFlux" type="vg::VapourFluxSum"> 
+					<model name="transpiration" type="vg::VapourFluxTranspiration"/>
+					<model name="condensation" type="vg::VapourFluxSum">
+						<parameter name="toAdd" value="(side1/cover/condensation side2/cover/condensation end1/cover/condensation end2/cover/condensation)"/>
+					</model>
+					<model name="airfluxLeakage"  type="vg::VapourFluxAir">
+						<parameter name="airFlux" ref="indoors/airFluxObligatory/leakage[bottomValue]"/>
+						<parameter name="receiverAh" ref="bottom/humidity[ah]"/>
+						<parameter name="donorAh" ref="outdoors[ah]"/>
+						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+					</model>
+					<model name="airfluxDraught"  type="vg::VapourFluxAir">
+						<parameter name="airFlux" ref="./draught[value]"/>
+						<parameter name="receiverAh" ref="bottom/humidity[ah]"/>
+						<parameter name="donorAh" ref="outdoors[ah]"/>
+						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+						<model name="draught" type="vg::AirFluxDraught">
+							<parameter name="airFlux" ref="indoors/airFluxObligatory/vents[value]"/>
+						</model>
+					</model>
+					<!--
+					<model name="airfluxGap"  type="vg::VapourFluxAir">
+						<parameter name="airFlux" ref="indoors/airFluxObligatory/gap[value]"/>
+						<parameter name="receiverAh" ref="bottom/humidity[ah]"/>
+						<parameter name="donorAh" ref="top/humidity[ah]"/>
+						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+					</model>
+					-->
+				</model>
+				<model name="radiation" type="vg::IndoorsRadiation"/> 
+
+				<model name="energyFlux" type="vg::EnergyFluxSum"> 
+					<model name="cover" type="UniSim::Sum"> 
+						<parameter name="toAdd" value="(side1/cover/energyFlux[value] side2/cover/energyFlux[value] end1/cover/energyFlux[value] end2/cover/energyFlux[value])"/>
+					</model>
+					<model name="floor" type="UniSim::Sum">
+						<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
+					</model>
+					<model name="transpiration" type="vg::EnergyFluxTranspiration"/> 
+					<model name="condensation" type="vg::EnergyFluxCondensation"/> 
+					<model name="shortWave" type="UniSim::Sum">
+						<parameter name="toAdd" value="(indoors/bottom/radiation[total])"/>
+					</model>
+					<model name="growthLights" type="vg::PidControlElement">
+						<parameter name="Kprop" value="0.5"/>
+						<parameter name="signal" ref="./growthLights[value]"/>
+						<model name="growthLights" type="vg::EnergyFluxGrowthLights"/>
+					</model>
+					<model name="airFlux" type="vg::EnergyFluxByAirFlux">
+						<parameter name="airFlux" ref="indoors/airFluxObligatory[bottomValue]"/>
+						<parameter name="receiverTemperature" ref="indoors/bottom/temperature[value]"/>
+						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
+						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+					</model>
+				</model>
 			</model>
-			<model name="vapourFlux" type="vg::VapourFluxSum"> 
-				<model name="transpiration" type="vg::VapourFluxTranspiration"/>
-				<model name="condensation" type="vg::VapourFluxSum">
-					<parameter name="toAdd" value="(side1/cover/condensation side2/cover/condensation end1/cover/condensation end2/cover/condensation)"/>
-				</model>
-				<model name="ventilation"  type="vg::VapourFluxAir">
-					<parameter name="airFlux" ref="../../airFlux[value]"/>
-					<parameter name="receiverAh" ref="indoors/humidity[ah]"/> <!-- -->
-					<parameter name="donorAh" ref="outdoors[ah]"/> <!-- -->
-					<parameter name="height" ref="construction/geometry[height]"/> 
-				</model>
-			</model>
-			
-			<model name="energyFlux" type="vg::EnergyFluxSum"> 
-				<model name="cover" type="vg::EnergyFluxCoverSum"/> 
-				<model name="floor" type="UniSim::Sum">
-					<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
-				</model>
-				<model name="transpiration" type="vg::EnergyFluxTranspiration"/> 
-				<model name="condensation" type="vg::EnergyFluxCondensation"/> 
-				<model name="shortWave" type="vg::EnergyFluxShortWave"/> 
-				<model name="growthLights" type="vg::PidControlElement">
-					<parameter name="Kprop" value="0.5"/>
-					<parameter name="signal" ref="./growthLights[value]"/>
-					<model name="growthLights" type="vg::EnergyFluxGrowthLights"/>
-				</model>
-				<model name="ventilation" type="vg::EnergyFluxVentilation"> 
-					<parameter name="ventilation" ref="indoors/passive/airFlux[value]"/>
-				</model>
-			</model>		
-			
-		</model>		
-		
-		<model name="active">
-			<model name="energyFlux"> 
-				<model name="heating">
-					<model name="demand" type="vg::EnergyFluxHeatingDemand"/>
-					<model name="supply" type="vg::PidControlElement">
-						<parameter name="Kprop" value="0.6"/>
-						<parameter name="Kint" value="0.01"/>
-						<parameter name="signal" ref="./supply[value]"/>
-						<model name="supply" type="vg::EnergyFluxHeatingSupply">
-							<parameter name="maxHeating" value="10000"/>
+			<model name="temperatureControlled">
+				<model name="energyFlux"> 
+					<model name="heating">
+						<model name="demand" type="vg::EnergyFluxHeatingDemand"/>
+						<model name="supply" type="vg::PidControlElement">
+							<parameter name="Kprop" value="0.6"/>
+							<parameter name="Kint" value="0.01"/>
+							<parameter name="signal" ref="./supply[value]"/>
+							<model name="supply" type="vg::EnergyFluxHeatingSupply">
+								<parameter name="maxHeating" value="10000"/>
+							</model>
+						</model>				
+					</model>		
+					
+					<model name="temperature" type="vg::IndoorsTemperature">
+						<parameter name="baseTemperature" ref="indoors/bottom/temperature[value]"/>
+						<parameter name="energyFlux" ref="./energyFlux[value]"/>
+						<model name="energyFlux" type="Unisim::Sum">
+							<parameter name="toAdd" value="(bottom/passive/energyFlux[value] bottom/active/energyFlux/heating/supply[value])"/>
+						</model>
+					</model>
+
+					<model name="cooling"> 
+						<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
+						<model name="supply" type="vg::PidControlElement">
+							<parameter name="Kprop" value="0.5"/>
+							<parameter name="signal" ref="./supply[value]"/>
+							<model name="supply" type="vg::EnergyFluxCoolingSupply">
+								<parameter name="ventilationDemand" ref="bottom/active/energyFlux/cooling/demand[value]"/>
+								<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/>
+								<parameter name="donorTemperature" ref="outdoors[temperature]"/>
+								<model name="byWind" type="vg::VentilationByWind">
+									<parameter name="baseRate" value="30"/>
+								</model>
+								<model name="byTemp" type="vg::VentilationByTemp"/>
+							</model>
 						</model>
 					</model>				
-				</model>		
-				
-				<model name="temperature" type="vg::IndoorsTemperature">
-					<model name="energyFlux" type="Unisim::Sum">
-						<parameter name="toAdd" value="(passive/energyFlux[value] active/energyFlux/heating/supply[value])"/>
-					</model>
-					<parameter name="energyFlux" ref="./energyFlux[value]"/>
 				</model>
-				
-				<model name="cooling"> 
-					<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
-					<model name="supply" type="vg::PidControlElement">
-						<parameter name="Kprop" value="0.5"/>
-						<parameter name="signal" ref="./supply[value]"/>
-						<model name="supply" type="vg::EnergyFluxCoolingSupply">
-							<model name="byWind" type="vg::VentilationByWind">
-								<parameter name="baseRate" value="30"/>
-							</model>
-							<model name="byTemp" type="vg::VentilationByTemp"/>
-						</model>
-					</model>
-				</model>				
 			</model>
-			<model name="ventilation" type="vg::VentilationByCooling"/>
-			<model name="vapourFlux" type="vg::VapourFluxAir">
-				<parameter name="airFlux" ref="../ventilation[value]"/>
-				<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
-				<parameter name="donorAh" ref="outdoors[ah]"/>
-				<parameter name="height" ref="construction/geometry[height]"/>
+			
+			<model name="total">
+				<model name="energyFlux" type="Unisim::Sum">
+					<parameter name="toAdd" value="(bottom/passive/energyFlux[value] bottom/active/energyFlux/heating/supply[value])"/>
+				</model>
+				<model name="ventilation" type="Unisim::Sum">
+					<parameter name="toAdd" value="(bottom/passive/ventilation[value])"/>
+				</model>
+				<model name="vapourFlux" type="vg::VapourFluxSum">
+					<parameter name="toAdd" value="(bottom/passive/vapourFlux)"/>
+				</model>
 			</model>
-		</model>		
-		
-		<model name="total">
-			<model name="energyFlux" type="Unisim::Sum">
-				<parameter name="toAdd" value="(passive/energyFlux[value] active/energyFlux/heating/supply[value] active/energyFlux/cooling/supply[value])"/>
+			
+			<model name="temperature" type="vg::IndoorsTemperature">
+				<parameter name="energyFlux" ref="../total/energyFlux[value]"/>
+				<parameter name="initValue">
+					<xsl:attribute name="value">
+						<xsl:value-of select="//Setpoint[ParameterId='2']//SetpointValue"/>
+					</xsl:attribute>
+				</parameter> 
 			</model>
-			<model name="ventilation" type="Unisim::Sum">
-				<parameter name="toAdd" value="(indoors/passive/airflux[value] active/ventilation[value])"/>
-			</model>
-			<model name="vapourFlux" type="vg::VapourFluxSum">
-				<parameter name="toAdd" value="(indoors/passive/vapourFlux active/vapourFlux)"/>
-			</model>
-		</model>
+			<model name="humidity" type="vg::IndoorsHumidity"/>
+			<model name="co2" type="vg::IndoorsCo2"/>
+		</model> <!-- bottom -->
 
-		<model name="temperature" type="vg::IndoorsTemperature">
-			<parameter name="initValue">
-				<xsl:attribute name="value">
-					<xsl:value-of select="//Setpoint[ParameterId='2']//SetpointValue"/>
-				</xsl:attribute>
-			</parameter> 
-			<parameter name="energyFlux" ref="../total/energyFlux[value]"/>
-		</model>
-		<model name="humidity" type="vg::IndoorsHumidity"/>
-		<model name="co2" type="vg::IndoorsCo2"/>
+		<model name="top">
+			<model name="temperature" type="Unisim::Sum">
+				<parameter name="toAdd" value="(bottom/temperature[value])"/>
 			</model>
+			<model name="humidityAh" type="Unisim::Sum">
+				<parameter name="toAdd" value="(bottom/humidity[ah])"/>
+			</model>
+		</model> <!-- top -->
 
+	</model> <!-- indoors -->
+	
 	<model name="setpoints">
 		<model name="isDay" type="vg::ProportionalSignal">
 			<parameter name="threshold" >
@@ -839,7 +828,7 @@
 								<parameter name="signalInside" ref="./adjustment[signal]"/>
 					
 								<model name="adjustment" type="vg::ProportionalSignal">
-									<parameter name="input" ref="indoors/humidity[rh]"/>
+									<parameter name="input" ref="indoors/bottom/humidity[rh]"/>
 									<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
 									<parameter name="thresholdBand">
 										<xsl:variable name="user-sp" select="max(//Vents/Vent/Constants/Parameters[ParameterID='489']/Value)"/>
@@ -915,7 +904,7 @@
 								<parameter name="signalInside" ref="./adjustment[signal]"/>
 					
 								<model name="adjustment" type="vg::ProportionalSignal">
-									<parameter name="input" ref="indoors/humidity[rh]"/>
+									<parameter name="input" ref="indoors/bottom/humidity[rh]"/>
 									<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
 									<parameter name="thresholdBand">
 										<xsl:variable name="user-sp" select="max(//Heatpipes/Heatpipe/Constants/Parameters[ParameterID='540']/Value)"/>
@@ -1015,7 +1004,7 @@
 				<parameter name="signal" ref="./target[signal]"/>
 				<parameter name="Kprop" value="0.1"/>
 				<model name="target" type="vg::ThresholdSignal"> 
-					<parameter name="input" ref ="indoors/humidity[rh]"/>
+					<parameter name="input" ref ="indoors/bottom/humidity[rh]"/>
 					<parameter name="threshold" ref ="setpoints/humidity/maximumRh[signal]"/>
 					<parameter name="signalBelow" value ="1"/>
 					<parameter name="signalAbove">
@@ -1045,7 +1034,7 @@
 							</model>
 							<!-- And it is cool inside -->
 							<model type="vg::ThresholdSignal">
-								<parameter name="input" ref ="indoors/temperature[value]"/>
+								<parameter name="input" ref ="indoors/bottom/temperature[value]"/>
 								<parameter name="threshold" ref ="setpoints/temperature/ventilation[value]"/>
 								<parameter name="signalBelow" value ="1"/>
 								<parameter name="signalAbove" value ="0"/>
@@ -1071,7 +1060,7 @@
 							</model>
 							<!-- And it is cool inside -->
 							<model type="vg::ThresholdSignal">
-								<parameter name="input" ref ="indoors/temperature[value]"/>
+								<parameter name="input" ref ="indoors/bottom/temperature[value]"/>
 								<parameter name="threshold" ref ="setpoints/temperature/ventilation[signal]"/>
 								<parameter name="signalBelow" value ="1"/>
 								<parameter name="signalAbove" value ="0"/>
@@ -1403,7 +1392,7 @@
 		</xsl:call-template>
 
 		<model name="physTime" type="UniSim::DayDegrees">
-			<parameter name="T" ref="indoors/temperature[value]"/>
+			<parameter name="T" ref="indoors/bottom/temperature[value]"/>
 			<parameter name="isTicking" ref="../periods[flag]"/>
 			<parameter name="doReset" ref="../periods[flagDown]"/>
 		</model>
@@ -1491,34 +1480,35 @@
 		<trace label="outdoors_temp" value="outdoors[temperature]"/>
 		<trace label="floor_temp" value="floor/temperature[value]"/>
 		<trace label="cover_temp" value="greenhouseShelter[temperature]"/>
-		<trace label="indoors_temp" value="indoors/temperature[value]"/>
-		<trace label="indoors_rh" value="indoors/humidity[rh]"/>
+		<trace label="top_temp" value="indoors/top/temperature[value]"/>
+		<trace label="bottom_temp" value="indoors/bottom/temperature[value]"/>
+		<trace label="top_rh" value="indoors/top/humidity[rh]"/>
+		<trace label="bottom_rh" value="indoors/bottom/humidity[rh]"/>
 		<trace label="sp_heat" value="setpoints/temperature/heating[value]"/>
 		<trace label="sp_vent" value="setpoints/temperature/ventilation[value]"/>
 		<trace label="sp_rh" value="setpoints/humidity/maximumRh[signal]"/>
 		<trace label="leakage" value="passive/ventilation/infiltration[value]"/>
 		<trace label="crack_vent" value="passive/ventilation/crack[value]"/>
 
-		<trace label="outdoors_light" value="outdoors[radiation]"/>
-		<trace label="top_light" value="indoors/top/light[total]"/>
-		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
-		<trace label="indoors_light" value="indoors/light[total]"/>
-
-		<trace label="pass_en_cover" value="passive/energyflux/cover[value]"/>
-		<trace label="pass_en_floor" value="passive/energyflux/floor[value]"/>
-		<trace label="pass_en_trans" value="passive/energyflux/transpiration[value]"/>
-		<trace label="pass_en_cond" value="passive/energyflux/condensation[value]"/>
-		<trace label="pass_en_shwav" value="passive/energyflux/shortwave[value]"/>
-		<trace label="pass_en_lights" value="passive/energyflux/growthlights[value]"/>
-		<trace label="pass_en_vent" value="passive/energyflux/ventilation[value]"/>
-		<trace label="pass_en_total" value="passive/energyFlux[value]"/>
-		<trace label="act_heat_D" value="active/energyFlux/heating/supply/supply[demand]"/>
-		<trace label="act_heat" value="active/energyFlux/heating/supply[state]"/>
-		<trace label="act_heat_I" value="active/energyFlux/heating/supply[errorIntegral]"/>
-		<trace label="act_cool" value="active/energyFlux/cooling/supply[value]"/>
-		<trace label="act_cool_I" value="active/energyFlux/cooling/supply[errorIntegral]"/>
-		<trace label="en_flux_total" value="total/energyFlux/[value]"/>
-		
+		<trace label="top_pass_en_cover" value="top/passive/energyflux/cover[value]"/>
+		<trace label="bottom_pass_en_cover" value="bottom/passive/energyflux/cover[value]"/>
+		<trace label="pass_en_floor" value="bottom/passive/energyflux/floor[value]"/>
+		<trace label="pass_en_trans" value="bottom/passive/energyflux/transpiration[value]"/>
+		<trace label="top_pass_en_cond" value="top/passive/energyflux/condensation[value]"/>
+		<trace label="bottom_pass_en_cond" value="bottom/passive/energyflux/condensation[value]"/>
+		<trace label="pass_en_shwav" value="bottom/passive/energyflux/shortwave[value]"/>
+		<trace label="pass_en_lights" value="bottom/passive/energyflux/growthlights[value]"/>
+		<trace label="pass_en_vent" value="top/passive/energyflux/ventilation[value]"/>
+		<trace label="top_pass_en_total" value="top/passive/energyFlux[value]"/>
+		<trace label="bottom_pass_en_total" value="bottom/passive/energyFlux[value]"/>
+		<trace label="act_heat_D" value="bottom/active/energyFlux/heating/supply/supply[demand]"/>
+		<trace label="act_heat" value="bottom/active/energyFlux/heating/supply[state]"/>
+		<trace label="act_heat_I" value="bottom/active/energyFlux/heating/supply[errorIntegral]"/>
+		<trace label="act_cool" value="top/active/energyFlux/cooling/supply[value]"/>
+		<trace label="act_cool_I" value="top/active/energyFlux/cooling/supply[errorIntegral]"/>
+		<trace label="top_en_flux_total" value="top/total/energyFlux/[value]"/>
+		<trace label="bottom_en_flux_total" value="bottom/total/energyFlux/[value]"/>
+		<!--
 		<trace label="scr_max" value="controllers/screens/maxDrawn[value]"/>
 		<trace label="act_scr_en" value="actuators/screens/energy/control[state]"/>
 		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
@@ -1532,7 +1522,8 @@
 		<trace label="stem" ref="crop/mass[stem]"/>
 		<trace label="leaf" ref="crop/mass[leaf]"/>
 		<trace label="fruit" ref="crop/mass[fruit]"/>
-<!-- 			
+		-->
+		<!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
 		<trace label="top_ah" value="top/transpiration[leafAh]"/>
 		<trace label="top_rad" value="top/transpiration[absorbedRadiation]"/>
@@ -1550,7 +1541,7 @@
 		<trace label="bottom_temp" value="bottom/transpiration[Tleaf]"/>
 		<trace label="bottom_rb" value="bottom/transpiration[rbH2O]"/>
 		<trace label="bottom_rs" value="bottom/transpiration[rsH2O]"/>
- -->
+		-->
 	</output>
 	
 		

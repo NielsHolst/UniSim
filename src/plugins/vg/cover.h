@@ -24,8 +24,8 @@ public:
 private:
     // Inputs
     QString type;
-    double U4, emissivity, absorption, density, heatCapacity, thickness,
-        diffuseTransmission, haze;
+    double U4, emissivity, absorptivity, transmissivity, density, heatCapacity, thickness,
+        haze;
     bool antiReflection;
     double coverAreaRoof, coverAreaSideWalls, coverAreaEndWalls, coverAreaGables,
         windspeed;

@@ -29,7 +29,7 @@ PUBLISH(EnergyFluxCondensation)
 EnergyFluxCondensation::EnergyFluxCondensation(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, condensation, "passive/vapourflux/condensation[vapourFlux]");
+    InputRef(double, condensation, "../../vapourflux/condensation[vapourFlux]");
 }
 
 void EnergyFluxCondensation::update() {

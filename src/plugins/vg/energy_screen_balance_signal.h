@@ -18,7 +18,7 @@ public:
     double signal();
 private:
     // Inputs
-    double indoorsRadiation, indoorsTemperature, outdoorsTemperature, Ucover;
+    double indoorsLight, indoorsTemperature, outdoorsTemperature, Ucover;
 };
 
 } //namespace

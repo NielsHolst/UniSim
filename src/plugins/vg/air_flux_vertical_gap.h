@@ -4,21 +4,27 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_ENERGY_FLUX_SHORT_WAVE_H
-#define VG_ENERGY_FLUX_SHORT_WAVE_H
+#ifndef VG_AIR_FLUX_VERTICAL_GAP_H
+#define VG_AIR_FLUX_VERTICAL_GAP_H
 
-#include "energy_flux_base.h"
+#include <usbase/model.h>
 
 namespace vg {
 
-class EnergyFluxShortWave : public EnergyFluxBase
+class AirFluxVerticalGap : public UniSim::Model
 {
 public:
-    EnergyFluxShortWave(UniSim::Identifier name, QObject *parent);
+    AirFluxVerticalGap(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
 
 private:
-    double indoorsLight;
+    // Parameters
+    double separation, topTemperature, bottomTemperature, greenhouseArea;
+
+    // Outputs
+    double value;
+
 };
 } //namespace
 

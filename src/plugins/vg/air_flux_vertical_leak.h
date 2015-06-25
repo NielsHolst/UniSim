@@ -4,22 +4,28 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_RADIATION_ABSORBED_H
-#define VG_RADIATION_ABSORBED_H
+#ifndef VG_AIR_FLUX_VERTICAL_LEAK_H
+#define VG_AIR_FLUX_VERTICAL_LEAK_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class RadiationAbsorbed : public UniSim::Model
+class AirFluxVerticalLeak : public UniSim::Model
 {
 public:
-    RadiationAbsorbed(UniSim::Identifier name, QObject *parent);
+    AirFluxVerticalLeak(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
 private:
-    double Rna, indoorsLight;
+    // Parameters
+    double separation, screensAirTransmission, topTemperature, bottomTemperature,
+        indoorsWindSpeed, greenhouseArea;
+
+    // Outputs
+    double value;
+
 };
 } //namespace
 

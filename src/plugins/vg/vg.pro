@@ -11,6 +11,7 @@ include ($${US_ENGINE}/engine.pri)
 
 HEADERS += \
     air_infiltration.h \
+    air_flux_ventilation.h \
     base_control_element.h \
     base_signal.h \
     boundary_layer_resistance.h \
@@ -50,9 +51,10 @@ HEADERS += \
     growth_light.h \
     growth_lights.h \
     indoors_co2.h \
+    indoors_bottom_light.h \
     indoors_humidity.h \
-    indoors_radiation.h \
     indoors_temperature.h \
+    indoors_top_light.h \
     layer.h \
     layer_photosynthesis.h \
     leaf_light_response.h \
@@ -67,6 +69,7 @@ HEADERS += \
     running_average.h \
     screen.h \
     screens.h \
+    screen_air_transmission.h \
     screen_condensation.h \
     screen_temperature.h \
     shelter.h \
@@ -76,12 +79,11 @@ HEADERS += \
     stomatal_resistance.h \
     threshold_signal.h \
     variable_collection.h \
+    vapour_flux_air.h \
     vapour_flux_base.h \
     vapour_flux_sum.h \
     vapour_flux_sum_base.h \
-    vapour_flux_sum_greenhouse_condensation.h \
     vapour_flux_transpiration.h \
-    vapour_flux_ventilation.h \
     ventilated_latent_heat_converter.h \
     ventilation_by_cooling.h \
     ventilation_by_temp.h \
@@ -93,6 +95,7 @@ HEADERS += \
 
 SOURCES += \
     air_infiltration.cpp \
+    air_flux_ventilation.cpp \
     base_control_element.cpp \
     base_signal.cpp \
     boundary_layer_resistance.cpp \
@@ -132,9 +135,10 @@ SOURCES += \
     growth_light.cpp \
     growth_lights.cpp \
     indoors_co2.cpp \
+    indoors_bottom_light.cpp \
     indoors_humidity.cpp \
-    indoors_radiation.cpp \
     indoors_temperature.cpp \
+    indoors_top_light.cpp \
     layer.cpp \
     layer_photosynthesis.cpp \
     leaf_light_response.cpp \
@@ -149,6 +153,7 @@ SOURCES += \
     running_average.cpp \
     screen.cpp \
     screens.cpp \
+    screen_air_transmission.cpp \
     screen_condensation.cpp \
     screen_temperature.cpp \
     shelter.cpp \
@@ -157,12 +162,11 @@ SOURCES += \
     sliding_signal.cpp \
     stomatal_resistance.cpp \
     threshold_signal.cpp \
+    vapour_flux_air.cpp \
     vapour_flux_base.cpp \
     vapour_flux_sum.cpp \
     vapour_flux_sum_base.cpp \
-    vapour_flux_sum_greenhouse_condensation.cpp \
     vapour_flux_transpiration.cpp \
-    vapour_flux_ventilation.cpp \
     ventilated_latent_heat_converter.cpp \
     ventilation_by_cooling.cpp \
     ventilation_by_temp.cpp \

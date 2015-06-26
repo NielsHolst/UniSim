@@ -33,6 +33,8 @@ ScreenAirTransmission::ScreenAirTransmission(Identifier name, QObject *parent)
     Input(double, state, 0.);
     Input(double, airTransmission, 1.);
     Input(double, exponent, 4.);
+    InputRef(double, volumeBelowRoof, "construction/geometry[volumeBelowRoof]");
+    InputRef(double, volumeRoof, "construction/geometry[volumeRoof]");
     Output(double, transmitted);
     Output(double, notTransmitted);
 }
@@ -40,10 +42,13 @@ ScreenAirTransmission::ScreenAirTransmission(Identifier name, QObject *parent)
 void ScreenAirTransmission::reset() {
     notTransmitted = 0;
     transmitted = 1.;
+    // The bottom part of the greenhouse cannot get a larger share than its
+    // proportion of the total greenhouse volume
+    bottomProp = volumeBelowRoof/(volumeRoof+volumeBelowRoof);
 }
 
 void ScreenAirTransmission::update() {
-    transmitted = min( pow(1. - state, exponent) + airTransmission, 1. );
+    transmitted = min( pow(1. - state, exponent) + airTransmission, bottomProp );
     notTransmitted = 1. - transmitted;
 }
 

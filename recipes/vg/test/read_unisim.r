@@ -16,8 +16,9 @@ plot1 = function(U,from=0, to=366, cols=NA) {
 	all_columns = any(is.na(cols))
 	cols = if (all_columns) 2:(ncol(U)-2) else c("Day", cols)
 	V = melt(U[U$Day>=from & U$Day<=to, cols], id.vars="Day")
+	line_size = if (all_columns) 1 else 2
 	ggp = ggplot(V) +
-		  geom_line(aes(x=Day, y=value, color=variable))
+		  geom_line(aes(x=Day, y=value, color=variable), size=line_size)
 	if (all_columns) {
 		ggp = ggp +
 		theme(legend.position="none") +
@@ -48,8 +49,8 @@ U = read_unisim("dvv_unisim_0001.txt")
 windows(14,10)
 plot1(U,1)
 
-# windows(14,10)
-# plot1(U,10,15, c("indoors_temp", "air_gravi","act_scr_en"))
+windows(14,10)
+plot1(U,10,15, c("outdoors_temp", "cover_temp", "top_temp", "indoors_temp"))
 
 # windows(14,10)
 # plot1(U,10,15, c("outdoors_light", "top_light", "indoors_light", "growth_light", "act_scr_en"))

@@ -26,6 +26,7 @@ HEADERS += \
     crop_lai.h \
     crop_yield.h \
     date_time_signal.h \
+    energy_flux_air.h \
     energy_flux_base.h \
     energy_flux_condensation.h \
     energy_flux_cooling_demand.h \
@@ -37,10 +38,8 @@ HEADERS += \
     energy_flux_heating_demand.h \
     energy_flux_heating_supply.h \
     energy_flux_shelter.h \
-    energy_flux_short_wave.h \
     energy_flux_sum.h \
     energy_flux_transpiration.h \
-    energy_flux_ventilation.h \
     energy_screen_balance_signal.h \
     fixed_signal.h \
     fruit_crop_lai.h \
@@ -111,6 +110,7 @@ SOURCES += \
     crop_lai.cpp \
     crop_yield.cpp \
     date_time_signal.cpp \
+    energy_flux_air.cpp \
     energy_flux_base.cpp \
     energy_flux_condensation.cpp \
     energy_flux_cooling_demand.cpp \
@@ -122,10 +122,8 @@ SOURCES += \
     energy_flux_heating_demand.cpp \
     energy_flux_heating_supply.cpp \
     energy_flux_shelter.cpp \
-    energy_flux_short_wave.cpp \
     energy_flux_sum.cpp \
     energy_flux_transpiration.cpp \
-    energy_flux_ventilation.cpp \
     energy_screen_balance_signal.cpp \
     fixed_signal.cpp \
     fruit_crop_lai.cpp \

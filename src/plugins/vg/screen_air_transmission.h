@@ -19,11 +19,15 @@ public:
     void update();
 
 private:
-    // Parameters
-    double state, airTransmission, exponent;
+    // Inputs
+    double state, airTransmission, exponent,
+        volumeBelowRoof, volumeRoof;
 
     // Outputs
     double transmitted, notTransmitted;
+
+    // Data
+    double bottomProp;
 
 };
 } //namespace

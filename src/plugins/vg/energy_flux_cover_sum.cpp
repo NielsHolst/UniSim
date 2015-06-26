@@ -4,6 +4,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <usbase/decode_list.h>
 #include "energy_flux_cover_sum.h"
 #include "general.h"
 #include "publish.h"
@@ -21,24 +22,28 @@ PUBLISH(EnergyFluxCoverSum)
 EnergyFluxCoverSum::EnergyFluxCoverSum(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
+    Input(QString, toAdd, "()");
     InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
 }
 
 void EnergyFluxCoverSum::reset() {
-    covers.clear();
-    auto coverModels = seekMany<Model*>("greenhouseShelter/*/cover");
-    for (auto cover : coverModels) {
-        CoverInfo ci;
-        ci.area = cover->pullValuePtr<double>("area");
-        ci.flux = cover->seekOneChild<Model*>("energyFlux")->pullValuePtr<double>("value");
-        covers << ci;
+    QStringList modelNames = decodeList(toAdd, this);
+    coverInfos.clear();
+    for (auto modelName : modelNames) {
+        Model *energyFlux = seekOne<Model*>(modelName),
+              *cover = energyFlux->seekParent<Model*>("*");
+        CoverInfo ci {
+            energyFlux->pullValuePtr<double>("value"),
+            cover->pullValuePtr<double>("area")
+        };
+        coverInfos << ci;
     }
 }
 
 void EnergyFluxCoverSum::update() {
     value = 0;
-    for (auto cover : covers) {
-        value += cover.totalFlux();
+    for (auto ci : coverInfos) {
+        value += ci.totalFlux();
     }
     value /= greenhouseArea;
 }

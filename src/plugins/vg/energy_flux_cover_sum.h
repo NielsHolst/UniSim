@@ -20,13 +20,14 @@ public:
 
 private:
     // Input
+    QString toAdd;
     double greenhouseArea;
     // Data
     struct CoverInfo {
-        const double *area, *flux;
+        const double *flux, *area;
         double totalFlux() const { return *area*(*flux); }
     };
-    QVector<CoverInfo> covers;
+    QVector<CoverInfo> coverInfos;
     // Methods
     void initAreas();
     void initFluxes();

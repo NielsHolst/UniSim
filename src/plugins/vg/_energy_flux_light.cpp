@@ -4,29 +4,29 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "energy_flux_short_wave.h"
+#include "energy_flux_light.h"
 #include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(EnergyFluxShortWave)
+PUBLISH(EnergyFluxLight)
 
-/*! \class EnergyFluxShortWave
+/*! \class EnergyFluxLight
  * \brief Flux of shortwave energy from sunlight and growth lights
  * Inputs
  * ------
  * - _indoorsLight_ is the total shortwave radiation indoors [W/m<SUP>2</SUP>]
  */
 
-EnergyFluxShortWave::EnergyFluxShortWave(Identifier name, QObject *parent)
+EnergyFluxLight::EnergyFluxLight(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
     InputRef(double, indoorsLight, "indoors/light[total]");
 }
 
-void EnergyFluxShortWave::update() {
+void EnergyFluxLight::update() {
     value = indoorsLight;
 }
 

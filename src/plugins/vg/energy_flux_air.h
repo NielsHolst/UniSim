@@ -4,21 +4,21 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_VAPOUR_FLUX_AIR_H
-#define VG_VAPOUR_FLUX_AIR_H
+#ifndef VG_ENERGY_FLUX_AIR_H
+#define VG_ENERGY_FLUX_AIR_H
 
-#include "vapour_flux_base.h"
+#include "energy_flux_base.h"
 
 namespace vg {
 
-class VapourFluxAir : public VapourFluxBase
+class EnergyFluxAir : public EnergyFluxBase
 {
 public:
-    VapourFluxAir(UniSim::Identifier name, QObject *parent);
+    EnergyFluxAir(UniSim::Identifier name, QObject *parent);
     void update();
 private:
     // Inputs
-    double airFlux, donorAh, receiverAh, averageHeight;
+    double airFlux, receiverTemperature, donorTemperature, averageHeight;
 };
 } //namespace
 

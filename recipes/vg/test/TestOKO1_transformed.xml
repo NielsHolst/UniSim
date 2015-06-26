@@ -253,14 +253,41 @@
 						<parameter name="airFlux" ref="../../airFlux[value]"/>
 						<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 						<parameter name="donorAh" ref="outdoors[ah]"/>
-						<parameter name="height" ref="construction/geometry[roofHeight]"/>
+						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
 					</model>
 					<model name="gravitation" type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="indoors/airFlux/gravitation[value]"/>
 						<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 						<parameter name="donorAh" ref="indoors/humidity[ah]"/>
-						<parameter name="height" ref="construction/geometry[roofHeight]"/>
+						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
 					</model>
+				</model>
+				<model name="energyFlux" type="vg::EnergyFluxSum">
+					<model name="condensation" type="vg::EnergyFluxCondensation"/>
+					<model name="ventilation" type="vg::EnergyFluxAir">
+						<parameter name="airFlux" ref="../../airFlux[value]"/>
+						<parameter name="receiverTemperature" ref="top/temperature[value]"/>
+						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
+						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
+					</model>
+					<model name="gravitation" type="vg::EnergyFluxAir">
+						<parameter name="airFlux" ref="indoors/airFlux/gravitation[value]"/>
+						<parameter name="receiverTemperature" ref="top/temperature[value]"/>
+						<parameter name="donorTemperature" ref="indoors/temperature[value]"/>
+						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
+					</model>
+					<model name="cover" type="vg::EnergyFluxCoverSum">
+						<parameter name="toAdd" value="(roof1/cover/energyFlux roof2/cover/energyFlux)"/>
+					</model>
+					<model name="light" type="UniSim::Sum">
+						<parameter name="toAdd" value="(top/light[total])"/>
+					</model>
+				</model>
+				<model name="temperature" type="vg::IndoorsTemperature">
+					<parameter name="initValue" value="18"/>
+					<parameter name="baseTemperature" ref=".[baseTemperature]"/>
+					<parameter name="energyFlux" ref="../energyFlux[value]"/>
+					<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
 				</model>
 			</model>
 		</model>
@@ -280,30 +307,43 @@
 					<parameter name="airFlux" ref="../../airFlux[value]"/>
 					<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 					<parameter name="donorAh" ref="outdoors[ah]"/>
-					<parameter name="height" ref="construction/geometry[height]"/>
+					<parameter name="averageHeight" ref="construction/geometry[height]"/>
 				</model>
 				<model name="gravitation" type="vg::VapourFluxAir">
 					<parameter name="airFlux" ref="indoors/airFlux/gravitation[value]"/>
 					<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 					<parameter name="donorAh" ref="indoors/humidity[ah]"/>
-					<parameter name="height" ref="construction/geometry[height]"/>
+					<parameter name="averageHeight" ref="construction/geometry[height]"/>
 				</model>
 			</model>
 			<model name="energyFlux" type="vg::EnergyFluxSum">
-				<model name="cover" type="vg::EnergyFluxCoverSum"/>
-				<model name="floor" type="UniSim::Sum">
-					<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
-				</model>
 				<model name="transpiration" type="vg::EnergyFluxTranspiration"/>
 				<model name="condensation" type="vg::EnergyFluxCondensation"/>
-				<model name="shortWave" type="vg::EnergyFluxShortWave"/>
 				<model name="growthLights" type="vg::PidControlElement">
 					<parameter name="Kprop" value="0.5"/>
 					<parameter name="signal" ref="./growthLights[value]"/>
 					<model name="growthLights" type="vg::EnergyFluxGrowthLights"/>
 				</model>
-				<model name="ventilation" type="vg::EnergyFluxVentilation">
-					<parameter name="ventilation" ref="indoors/passive/airFlux[value]"/>
+				<model name="ventilation" type="vg::EnergyFluxAir">
+					<parameter name="airFlux" ref="../../airFlux[value]"/>
+					<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
+					<parameter name="donorTemperature" ref="outdoors[temperature]"/>
+					<parameter name="averageHeight" ref="construction/geometry[height]"/>
+				</model>
+				<model name="gravitation" type="vg::EnergyFluxAir">
+					<parameter name="airFlux" ref="indoors/airFlux/gravitation[value]"/>
+					<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
+					<parameter name="donorTemperature" ref="top/temperature[value]"/>
+					<parameter name="averageHeight" ref="construction/geometry[height]"/>
+				</model>
+				<model name="cover" type="vg::EnergyFluxCoverSum">
+					<parameter name="toAdd" value="(side1/cover/energyFlux side2/cover/energyFlux end1/cover/energyFlux end2/cover/energyFlux)"/>
+				</model>
+				<model name="light" type="UniSim::Sum">
+					<parameter name="toAdd" value="(indoors/light[total])"/>
+				</model>
+				<model name="floor" type="UniSim::Sum">
+					<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
 				</model>
 			</model>
 		</model>
@@ -322,9 +362,10 @@
 				</model>
 				<model name="temperature" type="vg::IndoorsTemperature">
 					<model name="energyFlux" type="Unisim::Sum">
-						<parameter name="toAdd" value="(passive/energyFlux[value] active/energyFlux/heating/supply[value])"/>
+						<parameter name="toAdd" value="(indoors/passive/energyFlux[value] active/energyFlux/heating/supply[value])"/>
 					</model>
 					<parameter name="energyFlux" ref="./energyFlux[value]"/>
+					<parameter name="averageHeight" ref="construction/geometry[height]"/>
 				</model>
 				<model name="cooling">
 					<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
@@ -345,12 +386,12 @@
 				<parameter name="airFlux" ref="../ventilation[value]"/>
 				<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 				<parameter name="donorAh" ref="outdoors[ah]"/>
-				<parameter name="height" ref="construction/geometry[height]"/>
+				<parameter name="averageHeight" ref="construction/geometry[height]"/>
 			</model>
 		</model>
 		<model name="total">
 			<model name="energyFlux" type="Unisim::Sum">
-				<parameter name="toAdd" value="(passive/energyFlux[value] active/energyFlux/heating/supply[value] active/energyFlux/cooling/supply[value])"/>
+				<parameter name="toAdd" value="(indoors/passive/energyFlux[value] active/energyFlux/heating/supply[value] active/energyFlux/cooling/supply[value])"/>
 			</model>
 			<model name="ventilation" type="Unisim::Sum">
 				<parameter name="toAdd" value="(indoors/passive/airflux[value] active/ventilation[value])"/>
@@ -362,6 +403,7 @@
 		<model name="temperature" type="vg::IndoorsTemperature">
 			<parameter name="initValue" value="18"/>
 			<parameter name="energyFlux" ref="../total/energyFlux[value]"/>
+			<parameter name="averageHeight" ref="construction/geometry[height]"/>
 		</model>
 		<model name="humidity" type="vg::IndoorsHumidity"/>
 		<model name="co2" type="vg::IndoorsCo2"/>
@@ -826,6 +868,7 @@
 		<trace label="outdoors_temp" value="outdoors[temperature]"/>
 		<trace label="floor_temp" value="floor/temperature[value]"/>
 		<trace label="cover_temp" value="greenhouseShelter[temperature]"/>
+		<trace label="top_temp" value="top/temperature[value]"/>
 		<trace label="indoors_temp" value="indoors/temperature[value]"/>
 		<trace label="indoors_rh" value="indoors/humidity[rh]"/>
 		<trace label="sp_heat" value="setpoints/temperature/heating[value]"/>
@@ -838,14 +881,14 @@
 		<trace label="top_light" value="indoors/top/light[total]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
 		<trace label="indoors_light" value="indoors/light[total]"/>
-		<trace label="pass_en_cover" value="passive/energyflux/cover[value]"/>
-		<trace label="pass_en_floor" value="passive/energyflux/floor[value]"/>
-		<trace label="pass_en_trans" value="passive/energyflux/transpiration[value]"/>
-		<trace label="pass_en_cond" value="passive/energyflux/condensation[value]"/>
-		<trace label="pass_en_shwav" value="passive/energyflux/shortwave[value]"/>
-		<trace label="pass_en_lights" value="passive/energyflux/growthlights[value]"/>
-		<trace label="pass_en_vent" value="passive/energyflux/ventilation[value]"/>
-		<trace label="pass_en_total" value="passive/energyFlux[value]"/>
+		<trace label="pass_en_cover" value="indoors/passive/energyflux/cover[value]"/>
+		<trace label="pass_en_floor" value="indoors/passive/energyflux/floor[value]"/>
+		<trace label="pass_en_trans" value="indoors/passive/energyflux/transpiration[value]"/>
+		<trace label="pass_en_cond" value="indoors/passive/energyflux/condensation[value]"/>
+		<trace label="pass_en_light" value="indoors/passive/energyflux/shortwave[value]"/>
+		<trace label="pass_en_grlight" value="indoors/passive/energyflux/growthlights[value]"/>
+		<trace label="pass_en_vent" value="indoors/passive/energyflux/ventilation[value]"/>
+		<trace label="pass_en_total" value="indoors/passive/energyFlux[value]"/>
 		<trace label="act_heat_D" value="active/energyFlux/heating/supply/supply[demand]"/>
 		<trace label="act_heat" value="active/energyFlux/heating/supply[state]"/>
 		<trace label="act_heat_I" value="active/energyFlux/heating/supply[errorIntegral]"/>

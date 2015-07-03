@@ -4,21 +4,29 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_ENERGY_FLUX_LIGHT_H
-#define VG_ENERGY_FLUX_LIGHT_H
+#ifndef VG_AIR_FLUX_OUTDOORS_H
+#define VG_AIR_FLUX_OUTDOORS_H
 
-#include "energy_flux_base.h"
+#include <usbase/model.h>
 
 namespace vg {
 
-class EnergyFluxLight : public EnergyFluxBase
+class AirFluxOutdoors : public UniSim::Model
 {
 public:
-    EnergyFluxLight(UniSim::Identifier name, QObject *parent);
+    AirFluxOutdoors(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
 
 private:
-    double indoorsLight;
+    // Inputs
+    double infiltration, ventilation, volumeProportion, gap;
+
+    // Outputs
+    double value;
+
+    // Data
+    double bottomProp;
 };
 } //namespace
 

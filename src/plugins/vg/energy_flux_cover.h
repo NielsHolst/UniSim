@@ -20,7 +20,8 @@ public:
 private:
     // Inputs
     double U, emissivity, absorptivity, density, heatCapacity, thickness,
-        timeStep, indoorsTemperature, skyTemperature, outdoorsTemperature, screenTemperature, screenState, cropTemperature,
+        timeStep, averageHeight, indoorsTemperature, skyTemperature, outdoorsTemperature,
+        screenState, cropTemperature,
         sunlight, condensationRate;
 
     // Outputs

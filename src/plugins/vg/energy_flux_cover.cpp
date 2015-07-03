@@ -29,7 +29,6 @@ PUBLISH(EnergyFluxCover)
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
  * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
  * - _skyTemperature_ is the temperature of the sky [<SUP>o</SUP>C]
- * - _screenTemperature_ is the average temperature of the screens inside this cover [<SUP>o</SUP>C]
  * - _screenState_ is the max. state of the screens below this cover [0;1], where 0=Open and 1=Drawn
  * - _cropTemperature_ is the temperature of the top layer of the crop [<SUP>o</SUP>C]
  * - _sunlight_ is the outdoors radiation [W/m<SUP>2</SUP]
@@ -58,10 +57,10 @@ EnergyFluxCover::EnergyFluxCover(Identifier name, QObject *parent)
     InputRef(double, heatCapacity, "..[heatCapacity]");
     InputRef(double, thickness, "..[thickness]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
+    InputRef(double, averageHeight,"construction/geometry[averageHeight]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     InputRef(double, skyTemperature, "outdoors[skyTemperature]");
-    InputRef(double, screenTemperature, "indoors/temperature[value]");  // screen temperature set to indoors temperature
     InputRef(double, screenState, "../../screens[maxState]");
     InputRef(double, cropTemperature, "crop/layers/top/temperature[value]");
     InputRef(double, sunlight, "outdoors[radiation]");
@@ -89,15 +88,18 @@ void EnergyFluxCover::reset() {
 void EnergyFluxCover::update() {
     const int maxTimeStep = 20;     // Use time steps no larger than this [s]
     double heatCapacityPerArea = density*heatCapacity*thickness/1000; // J/m2/K = kg/m3 * J/kg/K * mm * m/mm
+    double Cair = averageHeight*RhoAir*CpAir;
     int n = int(timeStep/maxTimeStep) + 1;
     double dt = timeStep/n;
     value = 0.;
+    double indoorsTemperature2 = indoorsTemperature;
     // All fluxes are signed relative to the cover:
     //  a positive flux means cover is gaining energy
     //  a negative flux means cover is loosing energy
     for (int i=0; i < n; ++i) {
+        double screenTemperature = (temperature + indoorsTemperature2)/2;
         heatFluxOutside = U*(outdoorsTemperature - temperature);                       // W/m2 = W/m2/K * K =
-        heatFluxInside = U*(indoorsTemperature - temperature);
+        heatFluxInside = U*(indoorsTemperature2 - temperature);
         radiationFluxSky = emissivity*Sigma*(p4K(skyTemperature) - p4K(temperature));    // W/m2 = 1 * W/m2/K4 * K4
         radiationFluxSun = absorptivity*sunlight;
         radiationFluxScreen = emissivity*Sigma*(p4K(screenTemperature) - p4K(temperature))*(1 - screenState);
@@ -117,6 +119,7 @@ void EnergyFluxCover::update() {
             condensationRate*LHe;
         value -= totalInsideFlux;
         temperature += totalGlassFlux*dt/heatCapacityPerArea;    // K = W/m2*s / (J/m2/K)
+        indoorsTemperature2 -= totalInsideFlux*dt/Cair;
     }
     value /= n;
 }

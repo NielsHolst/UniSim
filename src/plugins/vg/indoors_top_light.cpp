@@ -47,9 +47,9 @@ IndoorsTopLight::IndoorsTopLight(Identifier name, QObject *parent)
 {
     InputRef(double, outdoorsDirectRadiation, "outdoors[directRadiation]");
     InputRef(double, outdoorsDiffuseRadiation, "outdoors[diffuseRadiation]");
-    InputRef(double, diffuseTransmission, "greenhouseShelter[diffuseLightTransmission]");
-    InputRef(double, directTransmissionAsDirect, "greenhouseShelter[directLightTransmissionAsDirect]");
-    InputRef(double, directTransmissionAsDiffuse, "greenhouseShelter[directLightTransmissionAsDiffuse]");
+    InputRef(double, diffuseTransmission, "greenhouseShelter/top[diffuseLightTransmission]");
+    InputRef(double, directTransmissionAsDirect, "greenhouseShelter/top[directLightTransmissionAsDirect]");
+    InputRef(double, directTransmissionAsDiffuse, "greenhouseShelter/top[directLightTransmissionAsDiffuse]");
     Output(double, direct);
     Output(double, diffuse);
     Output(double, total);

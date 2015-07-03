@@ -20,7 +20,8 @@ public:
 
 private:
     // Inputs
-    double coverArea, groundArea;
+    QString shelters;
+    double groundArea;
 
     // Outputs
     double Ucover, temperature;
@@ -35,6 +36,7 @@ private:
             { return surface->pullValue<double>(output)*area; }
     };
     QVector<ShelterInfo> shelterInfos;
+    double totalArea;
 };
 } //namespace
 

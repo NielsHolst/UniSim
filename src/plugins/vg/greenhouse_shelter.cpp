@@ -5,6 +5,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
+#include <usbase/decode_list.h>
 #include "greenhouse_shelter.h"
 #include "publish.h"
 
@@ -38,25 +39,29 @@ PUBLISH(GreenhouseShelter)
 GreenhouseShelter::GreenhouseShelter(Identifier name, QObject *parent)
     : ShelterOutputs(name, parent)
 {
-    InputRef(double, coverArea, "construction/geometry[coverArea]");
+    Input(QString, shelters, "()");
     InputRef(double, groundArea, "construction/geometry[groundArea]");
     Output(double, Ucover);
     Output(double, temperature);
 }
 
 void GreenhouseShelter::localReset() {
+    QStringList modelNames = decodeList(shelters, this);
+    QVector<Model*> shelterModels;
+    for (auto modelName : modelNames) {
+        auto model = seekOne<Model*>(modelName);
+        shelterModels << model;
+    }
+
     shelterInfos.clear();
-    for (auto shelter : seekChildren<Model*>("*")) {
+    totalArea = 0.;
+    for (Model *shelter : shelterModels) {
         Model *cover = shelter->seekOneChild<Model*>("cover");
         double area = cover->pullValue<double>("area");
         const double *pTemperature = cover->seekOneChild<Model*>("energyFlux")->pullValuePtr<double>("temperature");
         const double *pUcover = cover->pullValuePtr<double>("U");
         shelterInfos << ShelterInfo{shelter, area, pTemperature, pUcover};
-    }
-
-    if (shelterInfos.size() != 6) {
-        QString msg{"The number of greenhouse shelters (%1) must be 6"};
-        throw Exception(msg.arg(shelterInfos.size()), this);
+        totalArea += area;
     }
 
     Ucover = 0.;
@@ -78,17 +83,17 @@ void GreenhouseShelter::update() {
         Ucover += *(shelterInfo.pUcover)*shelterInfo.area;
     }
     // Weighted averages
-    U /= coverArea;
-    airTransmission /= coverArea;
-    haze /= coverArea;
-    diffuseLightTransmission /= coverArea;
-    directLightTransmissionAsDirect /= coverArea;
-    directLightTransmissionAsDiffuse /= coverArea;
-    temperature /= coverArea;
-    Ucover /= coverArea;
+    U /= totalArea;
+    airTransmission /= totalArea;
+    haze /= totalArea;
+    diffuseLightTransmission /= totalArea;
+    directLightTransmissionAsDirect /= totalArea;
+    directLightTransmissionAsDiffuse /= totalArea;
+    temperature /= totalArea;
+    Ucover /= totalArea;
     // From per m2 cover to per m2 ground area
-    U *= groundArea/coverArea;
-    Ucover *= groundArea/coverArea;
+    U *= groundArea/totalArea;
+    Ucover *= groundArea/totalArea;
 }
 
 

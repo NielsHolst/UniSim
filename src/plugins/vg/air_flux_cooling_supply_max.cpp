@@ -5,7 +5,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <stdlib.h>
-#include "energy_flux_cooling_supply.h"
+#include "air_flux_cooling_supply_max.h"
 #include "general.h"
 #include "publish.h"
 
@@ -15,9 +15,9 @@ using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(EnergyFluxCoolingSupply)
+PUBLISH(AirFluxCoolingSupplyMax)
 
-/*! \class EnergyFluxCoolingSupply
+/*! \class AirFluxCoolingSupplyMax
  * \brief Flux of energy supplied to cool the greenhouse down towards the ventilation setpoint
  * Inputs
  * ------
@@ -34,33 +34,20 @@ PUBLISH(EnergyFluxCoolingSupply)
  * - _airFlux_ is the air flux that causes the energy flux [h<SUP>-1</SUP>]
  */
 
-EnergyFluxCoolingSupply::EnergyFluxCoolingSupply(Identifier name, QObject *parent)
+AirFluxCoolingSupplyMax::AirFluxCoolingSupplyMax(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    InputRef(double, airSupplyMax, "cooling/airSupplyMax[value]");
-    InputRef(double, energyDemand, "cooling/demand[value]");
-    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
-    InputRef(double, outdoorsTemperature, "outdoors[temperature]");
-    InputRef(double, averageHeight,"construction/geometry[height]");
-    InputRef(double, airTrans, "horizontalScreen[airTransmission]");
+    InputRef(double, byWind, "./byWind[value]");
+    InputRef(double, byTemp, "./byTemp[value]");
     Output(double, value);
-//    Output(double, airFlux);
 }
 
-void EnergyFluxCoolingSupply::reset() {
-    value = airFlux = 0.;
+void AirFluxCoolingSupplyMax::reset() {
+    value = 0.;
 }
 
-void EnergyFluxCoolingSupply::update() {
-    double dT = outdoorsTemperature - indoorsTemperature;
-    if (dT < 0.) {
-        // W/m2 = m * h-1 / (s/h) * K * J/kg/K * kg/m3
-        double energySupplyMax = averageHeight*airSupplyMax*airTrans/3600*dT*CpAir*RhoAir;
-        value = max(energyDemand, energySupplyMax); // both are negative or zero
-    }
-    else {
-        value = 0.;
-    }
+void AirFluxCoolingSupplyMax::update() {
+    value = sqrt(sqr(byWind) + sqr(byTemp));
 }
 
 } //namespace

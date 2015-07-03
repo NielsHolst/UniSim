@@ -10,9 +10,12 @@ include ($${US_BASE}/base.pri)
 include ($${US_ENGINE}/engine.pri)
 
 HEADERS += \
+    air_flux_cooling_supply.h \
+    air_flux_cooling_supply_max.h \
     air_flux_gravitation.h \
+    air_flux_indoors.h \
     air_flux_infiltration.h \
-    air_flux_ventilation.h \
+    air_flux_outdoors.h \
     base_control_element.h \
     base_signal.h \
     boundary_layer_resistance.h \
@@ -37,6 +40,7 @@ HEADERS += \
     energy_flux_growth_lights.h \
     energy_flux_heating_demand.h \
     energy_flux_heating_supply.h \
+    energy_flux_horizontal.h \
     energy_flux_shelter.h \
     energy_flux_sum.h \
     energy_flux_transpiration.h \
@@ -69,7 +73,6 @@ HEADERS += \
     running_average.h \
     screen.h \
     screens.h \
-    screen_air_transmission.h \
     screen_condensation.h \
     screen_temperature.h \
     shelter.h \
@@ -85,7 +88,6 @@ HEADERS += \
     vapour_flux_sum_base.h \
     vapour_flux_transpiration.h \
     ventilated_latent_heat_converter.h \
-    ventilation_by_cooling.h \
     ventilation_by_temp.h \
     ventilation_by_wind.h \
     ventilation_controller.h \
@@ -94,9 +96,12 @@ HEADERS += \
     vg_factory.h
 
 SOURCES += \
+    air_flux_cooling_supply.cpp \
+    air_flux_cooling_supply_max.cpp \
     air_flux_gravitation.cpp \
+    air_flux_indoors.cpp \
     air_flux_infiltration.cpp \
-    air_flux_ventilation.cpp \
+    air_flux_outdoors.cpp \
     base_control_element.cpp \
     base_signal.cpp \
     boundary_layer_resistance.cpp \
@@ -121,6 +126,7 @@ SOURCES += \
     energy_flux_growth_lights.cpp \
     energy_flux_heating_demand.cpp \
     energy_flux_heating_supply.cpp \
+    energy_flux_horizontal.cpp \
     energy_flux_shelter.cpp \
     energy_flux_sum.cpp \
     energy_flux_transpiration.cpp \
@@ -153,7 +159,6 @@ SOURCES += \
     running_average.cpp \
     screen.cpp \
     screens.cpp \
-    screen_air_transmission.cpp \
     screen_condensation.cpp \
     screen_temperature.cpp \
     shelter.cpp \
@@ -168,7 +173,6 @@ SOURCES += \
     vapour_flux_sum_base.cpp \
     vapour_flux_transpiration.cpp \
     ventilated_latent_heat_converter.cpp \
-    ventilation_by_cooling.cpp \
     ventilation_by_temp.cpp \
     ventilation_by_wind.cpp \
     ventilation_controller.cpp \

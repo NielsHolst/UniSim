@@ -28,7 +28,7 @@ private:
     double width, groundArea, averageHeight,
         coverArea, coverPerGroundArea, sideWallsArea, endWallsArea,
         roofArea, roofHeight, roofAverageHeight, gablesArea,
-        volume, volumeBelowRoof, volumeRoof;
+        volume, volumeIndoors, volumeTop, volumeProportionIndoors, volumeProportionTop;
 };
 } //namespace
 

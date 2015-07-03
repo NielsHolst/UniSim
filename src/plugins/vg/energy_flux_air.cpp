@@ -32,13 +32,36 @@ EnergyFluxAir::EnergyFluxAir(Identifier name, QObject *parent)
     Input(double, airFlux, 0.);
     InputRef(double, receiverTemperature, "indoors/temperature[value]");
     InputRef(double, donorTemperature, "outdoors[temperature]");
-    InputRef(double, averageHeight,"construction/geometry[averageHeight]");
+    InputRef(double, receiverHeight,"construction/geometry[averageHeight]");
+    Input(double, donorHeight, 0.);
+    InputRef(double, timeStep, "calendar[timeStepSecs]");
 }
 
 void EnergyFluxAir::update() {
-    double dT = donorTemperature - receiverTemperature;
-    value = averageHeight*airFlux/3600*dT*CpAir*RhoAir; // W/m2 = m * h-1 / (s/h) * K * J/kg/K * kg/m3
-//    value = (dT < 0.) ? averageHeight*ventilation/3600*dT*CpAir*RhoAir : 0.;
+    const int maxTimeStep = 20;                 // Use time steps no larger than this [s]
+    double Creceiver = receiverHeight*RhoAir*CpAir,   // J/m2/K = m * J/kg/K * kg/m3
+           Cdonor = donorHeight*RhoAir*CpAir ;
+    int n = int(timeStep/maxTimeStep) + 1;
+    double dt = timeStep/n;
+    value = 0.;
+    double receiverTemperature2 = receiverTemperature,
+           donorTemperature2 = donorTemperature;
+    for (int i=0; i < n; ++i) {
+        double dT = donorTemperature2 - receiverTemperature2;
+        // J/m2 = J/m2/K * h-1 / (s/h) * K * s
+        double Ereceiver = Creceiver*airFlux/3600*dT*dt;
+        double dTreceiver = Ereceiver/Creceiver;
+        receiverTemperature2 += dTreceiver;
+
+        if (donorHeight > 0.) {
+            double Edonor = -Ereceiver;
+            double dTdonor = Edonor/Cdonor;
+            donorTemperature2 += dTdonor;
+        }
+
+        value += Ereceiver;
+    }
+    value /= timeStep;
 }
 
 } //namespace

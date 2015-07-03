@@ -20,7 +20,7 @@ public:
 private:
     // Inputs
     double conductance, gain, vapourFlux,
-        indoorsTemperature, outdoorsAh, timeStep, averageHeight;
+        temperature, outdoorsAh, timeStep, averageHeight;
     // Outputs
     double ah, rh, ahEq,
            netVapourFlux, timeConstant, surplusAh;

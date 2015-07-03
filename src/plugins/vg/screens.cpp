@@ -28,9 +28,14 @@ PUBLISH(Screens)
 Screens::Screens(Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    Input(double, airTransmissionExponent, 4.);
     Output(double, maxState);
     Output(double, lightTransmission);
     Output(double, airTransmission);
+    Output(double, airTransmissionNot);
+    Output(double, gap);
+    Output(double, haze);
+    Output(double, U);
 }
 
 void Screens::initialize() {
@@ -40,24 +45,33 @@ void Screens::initialize() {
         screenInfos << ScreenInfo {
             screen->pullValuePtr<double>("state"),
             screen->pullValuePtr<double>("lightTransmission"),
-            screen->pullValuePtr<double>("airTransmission")
+            screen->pullValuePtr<double>("haze"),
+            screen->pullValuePtr<double>("airTransmission"),
+            screen->pullValuePtr<double>("U")
         };
     }
 }
 
 void Screens::reset() {
-    maxState = 0;
+    maxState = airTransmissionNot = U = 0;
     lightTransmission = airTransmission = 1;
 }
 
 void Screens::update() {
     maxState = 0;
     lightTransmission = airTransmission = 1;
+    double resistance{0}, unhazed{1};
     for (auto info: screenInfos) {
         maxState = max(maxState, *info.state);
-        lightTransmission *= (*info.lightTransmission);
-        airTransmission *= (*info.airTransmission);
+        lightTransmission *= info.lightTransmissionTotal();
+        airTransmission *= info.airTransmissionTotal(airTransmissionExponent);
+        unhazed *= info.unhazed();
+        resistance += info.resistance();
     }
+    airTransmissionNot = 1. - airTransmission;
+    gap = pow(1. - maxState, airTransmissionExponent);
+    haze = 1. - unhazed;
+    U = 1./resistance;
 }
 
 

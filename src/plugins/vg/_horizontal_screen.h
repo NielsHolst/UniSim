@@ -4,24 +4,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_VENTILATION_BY_COOLING_H
-#define VG_VENTILATION_BY_COOLING_H
+#ifndef VG_HORIZONTAL_SCREEN_H
+#define VG_HORIZONTAL_SCREEN_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class VentilationByCooling : public UniSim::Model
+class HorizontalScreen : public UniSim::Model
 {
 public:
-    VentilationByCooling(UniSim::Identifier name, QObject *parent);
+    HorizontalScreen(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
+
 private:
-    // Inputs;
-    double energyFlux, indoorsTemperature, outdoorsTemperature, averageHeight;
+    // Inputs
+    double state, exponent, airTransmission;
+
     // Outputs
-    double value;
+    double gap, notGap;
 };
 } //namespace
 

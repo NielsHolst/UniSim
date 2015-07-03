@@ -22,7 +22,7 @@ protected:
     double initState, signal, timeStepSecs;
 private:
     enum {Decreasing, Stable, Increasing};
-    double state, fulfilment;
+    double state, fulfilment, minimum, maximum;
     int course;
     virtual double change(double error) = 0;
 };

@@ -47,12 +47,12 @@ PUBLISH(IndoorsHumidity)
 IndoorsHumidity::IndoorsHumidity(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, conductance, "total/vapourFlux[conductance]");
-    InputRef(double, vapourFlux, "total/vapourFlux[vapourFlux]");
-    InputRef(double, gain, "total/vapourFlux[gain]");
-    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
+    Input(double, conductance, 0.);
+    Input(double, vapourFlux, 0.);
+    Input(double, gain, 0.);
+    Input(double, temperature, 0.);
+    Input(double, averageHeight, 0.);
     InputRef(double, timeStep, "calendar[timeStepSecs]");
-    InputRef(double, averageHeight, "construction/geometry[averageHeight]");
 
     Output(double, rh);
     Output(double, ah);
@@ -65,7 +65,7 @@ IndoorsHumidity::IndoorsHumidity(Identifier name, QObject *parent)
 void IndoorsHumidity::reset() {
     tick = 0;
     rh = 70.;
-    ah = ahEq = ahFromRh(indoorsTemperature, rh);
+    ah = ahEq = ahFromRh(temperature, rh);
     netVapourFlux = timeConstant = surplusAh = 0.;
 }
 
@@ -83,7 +83,7 @@ void IndoorsHumidity::update() {
         timeConstant = 0.;
     }
 
-    double indoorsSah = sah(indoorsTemperature);
+    double indoorsSah = sah(temperature);
     if (ah > indoorsSah) {
         ah = indoorsSah;
         surplusAh = ah - indoorsSah;
@@ -92,7 +92,7 @@ void IndoorsHumidity::update() {
         surplusAh = 0.;
     }
 
-    rh = rhFromAh(indoorsTemperature, ah);
+    rh = rhFromAh(temperature, ah);
     netVapourFlux = (ah - prevAh)*averageHeight/timeStep; // kg/m2/s = kg/m3 * m3/m2 / s
 }
 

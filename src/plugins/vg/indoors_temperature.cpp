@@ -39,7 +39,7 @@ IndoorsTemperature::IndoorsTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, initValue, 20.);
-    InputRef(double, baseTemperature, "indoors/temperature[value]");
+    InputRef(double, baseTemperature, ".[value]");
     Input(double, energyFlux, 0.);
     InputRef(double, averageHeight,"construction/geometry[averageHeight]");
     InputRef(double, timeStep,"calendar[timeStepSecs]");

@@ -7,7 +7,6 @@
 #ifndef VG_SHELTER_H
 #define VG_SHELTER_H
 
-#include <limits>
 #include "shelter_outputs.h"
 
 namespace UniSim {
@@ -30,11 +29,10 @@ private:
     double latitude, azimuth, greenhouseShade, chalk;
 
     // Data
-    QList<UniSim::Model*> screens;
-    const double *pCoverU, *pCoverHaze, *pCoverDiffuseTransmission;
+    const double *pCoverU, *pCoverHaze, *pCoverDiffuseTransmission,
+        *pScreensU, *pScreensAirTransmission, *pScreensLightTransmission, *pScreensHaze;
 
     UniSim::DataGrid *dirTransTable;
-    const double one{1}, zero{0}, infinity{std::numeric_limits<double>::infinity()};
     // Methods
     void updateU();
     void updateHaze();

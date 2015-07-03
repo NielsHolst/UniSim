@@ -4,8 +4,10 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <limits>
 #include <usbase/test_num.h>
 #include "base_control_element.h"
+#include <usbase/utilities.h>
 
 using namespace UniSim;
 
@@ -35,6 +37,8 @@ BaseControlElement::BaseControlElement(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, initState, 0.);
+    Input(double, minimum, -std::numeric_limits<double>::max());
+    Input(double, maximum, std::numeric_limits<double>::max());
     InputRef(double, timeStepSecs, "calendar[timeStepSecs]");
     InputRef(double, signal, "..[signal]");
     Output(double, state);
@@ -53,6 +57,7 @@ void BaseControlElement::reset() {
 void BaseControlElement::update() {
     double oldState = state;
     state += change(signal - state);
+    state = minMax(minimum, state, maximum);
     fulfilment = (signal==0.) ? 1. : state/signal;
     if (TestNum::eq(state, oldState))
         course = Stable;

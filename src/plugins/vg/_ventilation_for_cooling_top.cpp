@@ -7,15 +7,15 @@
 #include <usbase/exception.h>
 #include "general.h"
 #include "publish.h"
-#include "ventilation_by_cooling.h"
+#include "ventilation_for_cooling_top.h"
 
 using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(VentilationByCooling)
+PUBLISH(VentilationForCoolingTop)
 
-/*! \class VentilationByCooling
+/*! \class VentilationForCoolingTop
  * \brief Total air ventilation
  *
  * Inputs
@@ -32,24 +32,21 @@ PUBLISH(VentilationByCooling)
  * - a _construction/geometry_ model with an _averageHeight_ port [m]
  */
 
-VentilationByCooling::VentilationByCooling(Identifier name, QObject *parent)
+VentilationForCoolingTop::VentilationForCoolingTop(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, averageHeight, "construction/geometry[averageHeight]");
-    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
-    InputRef(double, outdoorsTemperature, "outdoors[temperature]");
-    InputRef(double, energyFlux,"indoors/active/energyFlux/cooling/supply[state]");
+    InputRef(double, ventilationForCoolingBottom, "../../bottom/ventilation[value]");
+    InputRef(double, gap, "horizontalScreen[gap]");
     Output(double, value);
 }
 
-void VentilationByCooling::reset() {
+void VentilationForCoolingTop::reset() {
     value = 0;
 }
 
-void VentilationByCooling::update() {
-    double dT = outdoorsTemperature - indoorsTemperature;
-    // h-1 = W/m2 / m / K / (J/kg/K) / (kg/m3) * s/h
-    value = energyFlux/averageHeight/dT/CpAir/RhoAir*3600;
+void VentilationForCoolingTop::update() {
+    Q_ASSERT(gap>0.);
+    value = ventilationForCoolingBottom/gap*(1. - gap);
 }
 
 } //namespace

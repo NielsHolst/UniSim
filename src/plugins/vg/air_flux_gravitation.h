@@ -19,12 +19,14 @@ public:
     void update();
 
 private:
-    // Parameters
-    double state, topTemperature, bottomTemperature, greenhouseArea, volume;
+    // Inputs
+    double state, topTemperature, bottomTemperature, topVolume, bottomVolume, greenhouseArea, timeStep;
 
     // Outputs
     double value;
 
+    // Methods
+    double maxFiniteRate(double finiteRate1) const;
 };
 } //namespace
 

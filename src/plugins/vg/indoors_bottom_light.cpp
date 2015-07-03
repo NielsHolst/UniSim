@@ -49,7 +49,7 @@ IndoorsBottomLight::IndoorsBottomLight(Identifier name, QObject *parent)
 {
     InputRef(double, topDirect, "indoors/top/light[direct]");
     InputRef(double, topDiffuse, "indoors/top/light[diffuse]");
-    InputRef(double, horizontalTransmissivity, "horizontal/screens[lightTransmission]");
+    InputRef(double, horizontalTransmissivity, "horizontalScreen[lightTransmission]");
     InputRef(double, growthLight, "actuators/growthLights[shortWaveEmission]");
     Input(double, growthLightPropDirect, 0.7);
     Output(double, direct);

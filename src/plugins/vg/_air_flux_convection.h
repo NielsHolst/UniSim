@@ -4,17 +4,17 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SCREEN_AIR_TRANSMISSION_H
-#define VG_SCREEN_AIR_TRANSMISSION_H
+#ifndef VG_AIR_FLUX_CONVECTION_H
+#define VG_AIR_FLUX_CONVECTION_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class ScreenAirTransmission : public UniSim::Model
+class AirFluxConvection : public UniSim::Model
 {
 public:
-    ScreenAirTransmission(UniSim::Identifier name, QObject *parent);
+    AirFluxConvection(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
@@ -24,7 +24,7 @@ private:
         volumeBelowRoof, volumeRoof;
 
     // Outputs
-    double transmitted, notTransmitted;
+    double downwards, upwards;
 
     // Data
     double bottomProp;

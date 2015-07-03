@@ -32,16 +32,16 @@ PUBLISH(EnergyFluxHeatingDemand)
 EnergyFluxHeatingDemand::EnergyFluxHeatingDemand(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, passiveEnergyFlux, "indoors/passive/energyFlux[value]");
+    InputRef(double, passiveEnergyFlux, "given/bottom/energyFlux[value]");
     InputRef(double, heatingSetpoint, "setpoints/temperature/heating[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
-    InputRef(double, averageHeight, "construction/geometry[averageHeight]");
+    InputRef(double, averageHeight, "construction/geometry[height]");
     InputRef(double, timeStep,"calendar[timeStepSecs]");
 }
 
 void EnergyFluxHeatingDemand::update() {
     double dT = max(heatingSetpoint - indoorsTemperature, 0.);
-    value = max(dT*CpAir*RhoAir*averageHeight/timeStep - passiveEnergyFlux,0.);
+    value = max(dT*CpAir*RhoAir*averageHeight/timeStep - passiveEnergyFlux, 0.);
 }
 
 } //namespace

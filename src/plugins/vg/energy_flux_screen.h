@@ -4,21 +4,27 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_ENERGY_FLUX_VENTILATION_H
-#define VG_ENERGY_FLUX_VENTILATION_H
+#ifndef VG_ENERGY_FLUX_FLOOR_H
+#define VG_ENERGY_FLUX_FLOOR_H
 
 #include "energy_flux_base.h"
 
 namespace vg {
 
-class EnergyFluxVentilation : public EnergyFluxBase
+class EnergyFluxFloor : public EnergyFluxBase
 {
 public:
-    EnergyFluxVentilation(UniSim::Identifier name, QObject *parent);
+    EnergyFluxFloor(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
+
 private:
     // Inputs
-    double ventilation, indoorsTemperature, outdoorsTemperature, averageHeight;
+    double U, heatCapacity,
+        indoorsTemperature, soilTemperature,
+        averageHeight, timeStep;
+    // Outputs
+    double temperature;
 };
 } //namespace
 

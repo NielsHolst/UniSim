@@ -4,27 +4,21 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_AIR_FLUX_VENTILATION_H
-#define VG_AIR_FLUX_VENTILATION_H
+#ifndef VG_ENERGY_FLUX_HORIZONTAL_H
+#define VG_ENERGY_FLUX_HORIZONTAL_H
 
-#include <usbase/model.h>
+#include "energy_flux_base.h"
 
 namespace vg {
 
-class AirFluxVentilation : public UniSim::Model
+class EnergyFluxHorizontal : public EnergyFluxBase
 {
 public:
-    AirFluxVentilation(UniSim::Identifier name, QObject *parent);
-    void reset();
+    EnergyFluxHorizontal(UniSim::Identifier name, QObject *parent);
     void update();
-
 private:
-    // Parameters
-    double infiltration, crack, propOfCrack;
-
-    // Variables
-    double value;
-
+    // Inputs
+    double U, receiverTemperature, donorTemperature, state;
 };
 } //namespace
 

@@ -4,21 +4,25 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_ENERGY_FLUX_AIR_H
-#define VG_ENERGY_FLUX_AIR_H
+#ifndef VG_AIR_FLUX_COOLING_SUPPLY_MAX_H
+#define VG_AIR_FLUX_COOLING_SUPPLY_MAX_H
 
-#include "energy_flux_base.h"
+#include <usbase/model.h>
 
 namespace vg {
 
-class EnergyFluxAir : public EnergyFluxBase
+class AirFluxCoolingSupplyMax : public UniSim::Model
 {
 public:
-    EnergyFluxAir(UniSim::Identifier name, QObject *parent);
+    AirFluxCoolingSupplyMax(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
+
 private:
     // Inputs
-    double airFlux, receiverTemperature, donorTemperature, receiverHeight, donorHeight, timeStep;
+    double byWind, byTemp;
+    // Output
+    double value;
 };
 } //namespace
 

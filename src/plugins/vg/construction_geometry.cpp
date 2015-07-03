@@ -68,8 +68,10 @@ ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
     Output(double, roofAverageHeight);
     Output(double, coverArea);
     Output(double, coverPerGroundArea);
-    Output(double, volumeBelowRoof);
-    Output(double, volumeRoof);
+    Output(double, volumeIndoors);
+    Output(double, volumeTop);
+    Output(double, volumeProportionIndoors);
+    Output(double, volumeProportionTop);
     Output(double, volume);
 }
 
@@ -86,12 +88,14 @@ void ConstructionGeometry::reset() {
     coverArea = sideWallsArea + endWallsArea + gablesArea + roofArea;
     coverPerGroundArea = coverArea/groundArea;
 
-    volumeBelowRoof = groundArea*height;
-    volumeRoof = gablesArea*length/2;
-    volume = volumeBelowRoof + volumeRoof;
+    volumeIndoors = groundArea*height;
+    volumeTop = gablesArea*length/2;
+    volume = volumeIndoors + volumeTop;
+    volumeProportionIndoors = volumeIndoors/volume;
+    volumeProportionTop = 1. - volumeProportionIndoors;
 
     averageHeight = volume/groundArea;
-    roofAverageHeight = volumeRoof/groundArea;
+    roofAverageHeight = volumeTop/groundArea;
 }
 
 } //namespace

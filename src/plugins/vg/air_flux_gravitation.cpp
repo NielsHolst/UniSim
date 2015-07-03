@@ -4,11 +4,13 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <stdlib.h>
 #include "air_flux_gravitation.h"
 #include "general.h"
 #include "publish.h"
 
 using namespace UniSim;
+using std::min;
 
 namespace vg {
 
@@ -26,17 +28,19 @@ PUBLISH(AirFluxGravitation)
  *
  * Output
  * ------
- * - _value_ is the proportional air exchange [h<SUP>-1</SUP>]
+ * - _value_ is the air exchange rate [m<SUP>3</SUP>/h]
  */
 
 AirFluxGravitation::AirFluxGravitation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, state, "horizontal/screens[maxState]");
-    Input(double, topTemperature, 15.); // TEST TEST TEST
+    InputRef(double, state, "horizontalScreen[maxState]");
+    InputRef(double, topTemperature, "indoors/top/temperature[value]");
     InputRef(double, bottomTemperature, "indoors/temperature[value]");
+    InputRef(double, topVolume, "construction/geometry[volumeTop]");
+    InputRef(double, bottomVolume, "construction/geometry[volumeIndoors]");
     InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
-    InputRef(double, volume, "construction/geometry[volumeBelowRoof]");
+    InputRef(double, timeStep, "calendar[timeStepSecs]");
     Output(double, value);
 }
 
@@ -48,8 +52,31 @@ void AirFluxGravitation::update() {
     double gapArea = (1. - state)*greenhouseArea,
            topRho = rhoAir(topTemperature),
            bottomRho = rhoAir(bottomTemperature);
-    value = (bottomTemperature > topTemperature) ?
-            0.06*g*pow(gapArea, 1.5)*sqrt((topRho - bottomRho)/topRho)/volume : 0.;
+    // m3/h
+    double instantaneousRate =
+           (bottomTemperature > topTemperature) ?
+           0.06*g*pow(gapArea, 1.5)*sqrt((topRho - bottomRho)/topRho) : 0.;
+    // m3
+    double finiteRate = instantaneousRate*timeStep/3600;
+    // m3/h
+    value = maxFiniteRate(finiteRate)/timeStep*3600;
+}
+
+double AirFluxGravitation::maxFiniteRate(double finiteRate1) const {
+    const double volumeStep = 5;
+    double volume = 0,
+           Ttop = topTemperature,
+           Tbottom = bottomTemperature;
+    while (volume < finiteRate1 && Tbottom > Ttop) {
+        double dEtop = (Tbottom - Ttop)*CpAir*rhoAir(Tbottom)*volumeStep,
+               dTtop = dEtop/CpAir/rhoAir(Ttop)/topVolume,
+               dEbottom = (Ttop - Tbottom)*CpAir*rhoAir(Ttop)*volumeStep,
+               dTbottom = dEbottom/CpAir/rhoAir(Tbottom)/bottomVolume;
+        Ttop += dTtop;
+        Tbottom += dTbottom;
+        volume += volumeStep;
+    }
+    return min(finiteRate1, volume);
 }
 
 

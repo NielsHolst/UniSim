@@ -6,16 +6,16 @@
 */
 #include <stdlib.h>
 #include "publish.h"
-#include "screen_air_transmission.h"
+#include "air_flux_convection.h"
 
 using namespace UniSim;
 using std::min;
 
 namespace vg {
 
-PUBLISH(ScreenAirTransmission)
+PUBLISH(AirFluxConvection)
 
-/*! \class ScreenAirTransmission
+/*! \class AirFluxConvection
  * \brief The obligatory air flux is leakage plus humidity-controlled ventilation
  *
  * Inputs
@@ -27,7 +27,7 @@ PUBLISH(ScreenAirTransmission)
  * - _value_ is the transmission of air through screen and screen gap [0;1]
  */
 
-ScreenAirTransmission::ScreenAirTransmission(Identifier name, QObject *parent)
+AirFluxConvection::AirFluxConvection(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, state, 0.);
@@ -35,21 +35,21 @@ ScreenAirTransmission::ScreenAirTransmission(Identifier name, QObject *parent)
     Input(double, exponent, 4.);
     InputRef(double, volumeBelowRoof, "construction/geometry[volumeBelowRoof]");
     InputRef(double, volumeRoof, "construction/geometry[volumeRoof]");
-    Output(double, transmitted);
-    Output(double, notTransmitted);
+    Output(double, downwards);
+    Output(double, upwards);
 }
 
-void ScreenAirTransmission::reset() {
-    notTransmitted = 0;
-    transmitted = 1.;
+void AirFluxConvection::reset() {
     // The bottom part of the greenhouse cannot get a larger share than its
     // proportion of the total greenhouse volume
     bottomProp = volumeBelowRoof/(volumeRoof+volumeBelowRoof);
+    downwards = bottomProp;
+    upwards = 1. - downwards;
 }
 
-void ScreenAirTransmission::update() {
-    transmitted = min( pow(1. - state, exponent) + airTransmission, bottomProp );
-    notTransmitted = 1. - transmitted;
+void AirFluxConvection::update() {
+    downwards = min( pow(1. - state, exponent) + airTransmission, bottomProp );
+    upwards = 1. - downwards;
 }
 
 

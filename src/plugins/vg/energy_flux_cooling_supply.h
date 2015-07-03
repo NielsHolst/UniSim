@@ -20,8 +20,8 @@ public:
 
 private:
     // Inputs
-    double ventilationDemand, byWind, byTemp,
-        indoorsTemperature, outdoorsTemperature, averageHeight;
+    double airSupplyMax, energyDemand,
+        indoorsTemperature, outdoorsTemperature, averageHeight, airTrans;
     // Output
     double value, airFlux;
     // Data

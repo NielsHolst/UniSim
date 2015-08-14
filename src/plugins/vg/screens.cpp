@@ -44,7 +44,7 @@ void Screens::initialize() {
     for (auto screen: screens) {
         screenInfos << ScreenInfo {
             screen->pullValuePtr<double>("state"),
-            screen->pullValuePtr<double>("lightTransmission"),
+            screen->pullValuePtr<double>("lightTransmissivity"),
             screen->pullValuePtr<double>("haze"),
             screen->pullValuePtr<double>("airTransmission"),
             screen->pullValuePtr<double>("U")
@@ -53,8 +53,9 @@ void Screens::initialize() {
 }
 
 void Screens::reset() {
-    maxState = airTransmissionNot = U = 0;
+    maxState = airTransmissionNot = 0;
     lightTransmission = airTransmission = 1;
+    U = numeric_limits<double>::infinity();
 }
 
 void Screens::update() {

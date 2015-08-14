@@ -39,6 +39,13 @@ plot2 = function(U, from, to, cols) {
 		facet_wrap(~Variable, ncol=1, scales="free_y")
 }
 
+freq1 = function(U, cols) {
+	cols = c("Day", cols)
+	V = melt(U[, cols], id.vars="Day", value.name="Value", variable.name="Variable")
+	ggplot(V) +
+		geom_density(aes(x=Value, colour=Variable, fill=Variable), alpha=0.8)
+}
+
 plot3 = function(U,from,to) {
 	light = plot2(U,from,to, c("outdoors_light", "top_light", "growth_light", "indoors_light")) 
 	screen = plot2(U,from,to, c("act_scr_en", "act_scr_sh", "act_scr_bl"))
@@ -61,10 +68,20 @@ plot4 = function(U,from,to) {
 	grid.arrange(top, bottom1, bottom2, ncol=3)
 }
 
-ggplot(U[,c("outdoors_ah", "top_ah", "indoors_ah")]) + 
-	geom_density(aes(x=Value, colour=Variable, fill=Variable), alpha=0.8)
+
+plot5 = function(U) {
+	temperature = freq1(U, c("outdoors_temp", "roof1_temp", "side1_temp", "top_temp", "indoors_temp"))
+	light = freq1(U, c("outdoors_light", "top_light", "growth_light", "indoors_light")) 
+	ah = freq1(U, c("outdoors_ah", "top_ah", "indoors_ah"))
+	rh = freq1(U, c("outdoors_rh", "top_rh", "indoors_rh"))
+	grid.arrange(temperature, light, ah, rh, ncol=2)
+}
 
 U = read_unisim("dvv_unisim_0001.txt")
+windows(14,10)
+plot5(U)
+
+
 windows(14,10)
 plot3(U,30,36)
 windows(14,10)

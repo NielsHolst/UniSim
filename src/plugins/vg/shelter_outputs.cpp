@@ -15,12 +15,12 @@ namespace vg {
  *
  * Outputs
  * ------
- * - _U_ is the heat transfer coefficient of the surface [W/K/m<SUP>2</SUP>]
- * - _airTransmission_ is the proportion of air transmitted through the surface [0;1]
- * - _haze_ is the proportion of direct light becoming dispersed on passage through the surface [0;1]
- * - _diffuseLightTransmission_ is the proportion of diffuse light transmitted through the surface [0;1]
- * - _directLightTransmissionAsDirect_ is the proportion of direct light transmitted through the surface as direct light [0;1]
- * - _directLightTransmissionAsDiffuse_ is the proportion of direct light transmitted through the surface as diffuse light [0;1]
+ * - _U_ is the heat transfer coefficient of the shelter [W/K/m<SUP>2</SUP>]
+ * - _airTransmission_ is the proportion of air transmitted through the shelter [0;1]
+ * - _haze_ is the proportion of direct light becoming dispersed on passage through the shelter [0;1]
+ * - _diffuseLightTransmission_ is the proportion of diffuse light transmitted through the shelter [0;1]
+ * - _directLightTransmissionAsDirect_ is the proportion of direct light transmitted through the shelter as direct light [0;1]
+ * - _directLightTransmissionAsDiffuse_ is the proportion of direct light transmitted through the shelter as diffuse light [0;1]
  */
 
 ShelterOutputs::ShelterOutputs(Identifier name, QObject *parent)

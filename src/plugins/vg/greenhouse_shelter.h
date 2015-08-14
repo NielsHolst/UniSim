@@ -28,12 +28,12 @@ private:
 
     // Data
     struct ShelterInfo {
-        UniSim::Model *surface;
+        UniSim::Model *shelter;
         double area;
         const double *pTemperature;
         const double *pUcover;
         double weightedShelterOutput(QString output)
-            { return surface->pullValue<double>(output)*area; }
+            { return shelter->pullValue<double>(output)*area; }
     };
     QVector<ShelterInfo> shelterInfos;
     double totalArea;

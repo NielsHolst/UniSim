@@ -1,0 +1,948 @@
+Box Virtual Greenhouse {
+	UniSim::Calendar calendar {
+		initialDate: steps[beginDate]
+		initialTimeOfDay: steps[beginTime]
+		timeStep: steps[timeStep]
+		timeUnit: steps[timeUnit]
+		sample: 12
+		latitude: 55.5
+		longitude: 10.5
+		timeZone: 01
+	}
+	vg::Outdoors outdoors {
+		co2: 750
+		UniSim::Records records {
+			fileName: sel_dk.txt
+			imposeInitialDateTime: false
+		}
+	}
+	Box construction {
+		vg::ConstructionGeometry geometry {
+			spanWidth: 12
+			numSpans: 1
+			height: 2.5
+			length: 50
+			roofPitch: 26
+			shade: 0.2
+		}
+		Box greenhouseShelter {
+			vg::GreenhouseShelter top {
+				shelters: (greenhouseShelter/roof1 greenhouseShelter/roof2)
+			}
+			vg::GreenhouseShelter bottom {
+				shelters: (greenhouseShelter/side1 greenhouseShelter/side2 greenhouseShelter/end1 greenhouseShelter/end2)
+			}
+			vg::GreenhouseShelter total {
+				shelters: (greenhouseShelter/roof1 greenhouseShelter/roof2 greenhouseShelter/side1 greenhouseShelter/side2 greenhouseShelter/end1 greenhouseShelter/end2)
+			}
+			vg::Shelter roof1 {
+				vg::Cover cover {
+					U4: 7.5
+					transmissivity: 0.83
+					emissivity: 0.93
+					absorptivity: 0.04
+					density: 2600
+					heatCapacity: 840
+					thickness: 4
+					haze: 0
+					vg::EnergyFluxCover energyFlux {
+						indoorsTemperature: indoors/top/temperature[value]
+						averageHeight: construction/geometry[roofAverageHeight]
+					}
+					vg::CoverCondensation condensation {}
+				}
+				vg::Screens screens {}
+			}
+			vg::Shelter roof2 {
+				vg::Cover cover {
+					U4: 7.5
+					transmissivity: 0.83
+					emissivity: 0.93
+					absorptivity: 0.04
+					density: 2600
+					heatCapacity: 840
+					thickness: 4
+					haze: 0
+					vg::EnergyFluxCover energyFlux {
+						indoorsTemperature: indoors/top/temperature[value]
+						averageHeight: construction/geometry[roofAverageHeight]
+					}
+					vg::CoverCondensation condensation {}
+				}
+				vg::Screens screens {}
+			}
+			vg::Shelter side1 {
+				vg::Cover cover {
+					U4: 7.5
+					transmissivity: 0.83
+					emissivity: 0.93
+					absorptivity: 0.04
+					density: 2600
+					heatCapacity: 840
+					thickness: 4
+					haze: 0
+					vg::EnergyFluxCover energyFlux {
+						indoorsTemperature: indoors/temperature[value]
+						averageHeight: construction/geometry[averageHeight]
+					}
+					vg::CoverCondensation condensation {}
+				}
+				vg::Screens screens {
+					vg::Screen energy {
+						position: side1
+						layer: outer
+						lightTransmissivity: 0.41
+						airTransmission: 0.45
+						energyLossReduction: 0.55
+						U: 2.8
+						haze: 0
+						state: actuators/screens/energy/control[state]
+					}
+				}
+			}
+			vg::Shelter side2 {
+				vg::Cover cover {
+					U4: 7.5
+					transmissivity: 0.83
+					emissivity: 0.93
+					absorptivity: 0.04
+					density: 2600
+					heatCapacity: 840
+					thickness: 4
+					haze: 0
+					vg::EnergyFluxCover energyFlux {
+						indoorsTemperature: indoors/temperature[value]
+						averageHeight: construction/geometry[averageHeight]
+					}
+					vg::CoverCondensation condensation {}
+				}
+				vg::Screens screens {
+					vg::Screen energy {
+						position: side2
+						layer: outer
+						lightTransmissivity: 0.41
+						airTransmission: 0.45
+						energyLossReduction: 0.55
+						U: 2.8
+						haze: 0
+						state: actuators/screens/energy/control[state]
+					}
+				}
+			}
+			vg::Shelter end1 {
+				vg::Cover cover {
+					U4: 7.5
+					transmissivity: 0.83
+					emissivity: 0.93
+					absorptivity: 0.04
+					density: 2600
+					heatCapacity: 840
+					thickness: 4
+					haze: 0
+					vg::EnergyFluxCover energyFlux {
+						indoorsTemperature: indoors/temperature[value]
+						averageHeight: construction/geometry[averageHeight]
+					}
+					vg::CoverCondensation condensation {}
+				}
+				vg::Screens screens {
+					vg::Screen energy {
+						position: end1
+						layer: outer
+						lightTransmissivity: 0.41
+						airTransmission: 0.45
+						energyLossReduction: 0.55
+						U: 2.8
+						haze: 0
+						state: actuators/screens/energy/control[state]
+					}
+				}
+			}
+			vg::Shelter end2 {
+				vg::Cover cover {
+					U4: 7.5
+					transmissivity: 0.83
+					emissivity: 0.93
+					absorptivity: 0.04
+					density: 2600
+					heatCapacity: 840
+					thickness: 4
+					haze: 0
+					vg::EnergyFluxCover energyFlux {
+						indoorsTemperature: indoors/temperature[value]
+						averageHeight: construction/geometry[averageHeight]
+					}
+					vg::CoverCondensation condensation {}
+				}
+				vg::Screens screens {
+					vg::Screen energy {
+						position: end2
+						layer: outer
+						lightTransmissivity: 0.41
+						airTransmission: 0.45
+						energyLossReduction: 0.55
+						U: 2.8
+						haze: 0
+						state: actuators/screens/energy/control[state]
+					}
+				}
+			}
+		}
+		vg::Screens horizontalScreen {
+			vg::Screen energy {
+				position: horizontal
+				layer: outer
+				lightTransmissivity: 0.34
+				airTransmission: 0.37
+				energyLossReduction: 0.6
+				U: 2.8
+				haze: 0
+				state: actuators/screens/energy/control[state]
+			}
+		}
+		vg::Vents vents {
+			vg::Vent vent1 {
+				length: 48
+				height: 1
+				number: 1
+				porosity: 1
+			}
+			vg::Vent vent2 {
+				length: 48
+				height: 1
+				number: 1
+				porosity: 1
+			}
+		}
+		Box floor {
+			vg::EnergyFluxFloor energyFlux {
+				U: 7.5
+				heatCapacity: 42000
+			}
+		}
+	}
+	Box indoors {
+		Box given {
+			Box total {
+				Box airflux {
+					vg::AirFluxInfiltration infiltration {
+						leakage: 1
+					}
+					vg::PidControlElement crackVentilation {
+						signal: ./target[signal]
+						Kprop: 0.1
+						vg::ProportionalSignal target {
+							input: indoors/humidity[rh]
+							threshold: setpoints/humidity/maximumRh[signal]
+							thresholdBand: 10
+							increasingSignal: true
+							maxSignal: ./coldFactor[signal]
+							minSignal: 0
+							vg::ProportionalSignal coldFactor {
+								input: outdoors[temperature]
+								threshold: -5
+								thresholdBand: 1
+								increasingSignal: true
+								maxSignal: 4
+								minSignal: 0
+							}
+						}
+					}
+					vg::AirFluxGravitation gravitation {}
+				}
+			}
+			Box top {
+				Box airFlux {
+					AirFluxOutdoors outdoors {
+						infiltration: total/airFlux/infiltration[value]
+						ventilation: total/airFlux/crackVentilation[value]
+						volumeProportion: construction/geometry[volumeProportionTop]
+						gap: horizontalScreen[airTransmissionNot]
+					}
+					AirFluxIndoors indoors {
+						receiverVolume: construction/geometry[volumeTop]
+					}
+				}
+				vg::VapourFluxSum vapourFlux {
+					vg::VapourFluxSum condensation {
+						toAdd: (roof1/cover/condensation roof2/cover/condensation)
+					}
+					vg::VapourFluxAir airFluxOutdoors {
+						airFlux: ../../airflux/outdoors[value]
+						receiverAh: indoors/top/humidity[ah]
+						donorAh: outdoors[ah]
+						averageHeight: construction/geometry[roofAverageHeight]
+					}
+					vg::VapourFluxAir airFluxIndoors {
+						airFlux: top/airFlux/indoors[value]
+						receiverAh: indoors/top/humidity[ah]
+						donorAh: indoors/humidity[ah]
+						averageHeight: construction/geometry[roofAverageHeight]
+					}
+				}
+				vg::EnergyFluxSum energyFlux {
+					vg::EnergyFluxCondensation condensation {}
+					vg::EnergyFluxAir airFluxOutdoors {
+						airFlux: top/airFlux/outdoors[value]
+						receiverTemperature: indoors/top/temperature[value]
+						donorTemperature: outdoors[temperature]
+						receiverHeight: construction/geometry[roofAverageHeight]
+					}
+					vg::EnergyFluxAir airFluxIndoors {
+						airFlux: top/airFlux/indoors[value]
+						receiverTemperature: indoors/top/temperature[value]
+						donorTemperature: indoors/temperature[value]
+						receiverHeight: construction/geometry[roofAverageHeight]
+						donorHeight: construction/geometry[height]
+					}
+					vg::EnergyFluxHorizontal convection {
+						receiverTemperature: indoors/top/temperature[value]
+						donorTemperature: indoors/temperature[value]
+					}
+					vg::EnergyFluxCoverSum cover {
+						toAdd: (roof1/cover/energyFlux roof2/cover/energyFlux)
+					}
+					UniSim::Sum light {
+						toAdd: (top/light[total])
+					}
+				}
+			}
+			Box bottom {
+				Box airFlux {
+					AirFluxOutdoors outdoors {
+						infiltration: total/airFlux/infiltration[value]
+						ventilation: 0
+						volumeProportion: construction/geometry[volumeProportionIndoors]
+						gap: horizontalScreen[airTransmission]
+					}
+					AirFluxIndoors indoors {
+						receiverVolume: construction/geometry[volumeIndoors]
+					}
+				}
+				vg::VapourFluxSum vapourFlux {
+					vg::VapourFluxTranspiration transpiration {}
+					vg::VapourFluxSum condensation {
+						toAdd: (side1/cover/condensation side2/cover/condensation end1/cover/condensation end2/cover/condensation)
+					}
+					vg::VapourFluxAir airFluxOutdoors {
+						airFlux: bottom/airflux/outdoors[value]
+						receiverAh: indoors/humidity[ah]
+						donorAh: outdoors[ah]
+						averageHeight: construction/geometry[height]
+					}
+					vg::VapourFluxAir airFluxIndoors {
+						airFlux: bottom/airFlux/indoors[value]
+						receiverAh: indoors/humidity[ah]
+						donorAh: indoors/top/humidity[ah]
+						averageHeight: construction/geometry[height]
+					}
+				}
+				vg::EnergyFluxSum energyFlux {
+					vg::EnergyFluxTranspiration transpiration {}
+					vg::EnergyFluxCondensation condensation {}
+					vg::PidControlElement growthLights {
+						Kprop: 0.5
+						signal: ./growthLights[value]
+						vg::EnergyFluxGrowthLights growthLights {}
+					}
+					vg::EnergyFluxAir airFluxOutdoors {
+						airFlux: bottom/airflux/outdoors[value]
+						receiverTemperature: indoors/temperature[value]
+						donorTemperature: outdoors[temperature]
+						receiverHeight: construction/geometry[height]
+					}
+					vg::EnergyFluxAir airFluxIndoors {
+						airFlux: bottom/airFlux/indoors[value]
+						receiverTemperature: indoors/temperature[value]
+						donorTemperature: indoors/top/temperature[value]
+						receiverHeight: construction/geometry[height]
+						donorHeight: construction/geometry[roofAverageHeight]
+					}
+					vg::EnergyFluxHorizontal convection {
+						receiverTemperature: indoors/temperature[value]
+						donorTemperature: indoors/top/temperature[value]
+					}
+					vg::EnergyFluxCoverSum cover {
+						toAdd: (side1/cover/energyFlux side2/cover/energyFlux end1/cover/energyFlux end2/cover/energyFlux)
+					}
+					UniSim::Sum light {
+						toAdd: (indoors/light[total])
+					}
+					UniSim::Sum floor {
+						toAdd: (construction/floor/energyFlux[value])
+					}
+				}
+			}
+		}
+		Box controlled {
+			Box bottom {
+				Box energyFlux {
+					Box heating {
+						vg::EnergyFluxHeatingDemand demand {}
+						vg::PidControlElement supply {
+							Kprop: 0.6
+							Kint: 0.01
+							signal: ./supply[value]
+							vg::EnergyFluxHeatingSupply supply {
+								maxHeating: 10000
+							}
+						}
+					}
+					vg::IndoorsTemperature temperature {
+						energyFlux: ./energyFlux[value]
+						baseTemperature: indoors/temperature[value]
+						averageHeight: construction/geometry[height]
+						Unisim::Sum energyFlux {
+							toAdd: (given/bottom/energyFlux[value] energyFlux/heating/supply[value])
+						}
+					}
+					Box cooling {
+						vg::EnergyFluxCoolingDemand demand {}
+						vg::AirFluxCoolingSupplyMax airSupplyMax {
+							vg::VentilationByWind byWind {
+								baseRate: 30
+							}
+							vg::VentilationByTemp byTemp {}
+						}
+						vg::PidControlElement supply {
+							Kprop: 0.5
+							maximum: 0
+							signal: ./target[value]
+							vg::EnergyFluxCoolingSupply target {
+								airSupplyMax: cooling/airSupplyMax[value]
+							}
+						}
+					}
+				}
+				Box cooling {
+					vg::AirFluxCoolingSupply airFlux {}
+					vg::VapourFluxAir vapourFlux {
+						airFlux: cooling/airFlux[fromOutdoorsToIndoors]
+						receiverAh: indoors/humidity[ah]
+						donorAh: outdoors[ah]
+						averageHeight: construction/geometry[height]
+					}
+					vg::EnergyFluxAir energyFlux {
+						airFlux: cooling/airFlux[fromOutdoorsToIndoors]
+						receiverTemperature: indoors/temperature[value]
+						donorTemperature: outdoors[temperature]
+						receiverHeight: construction/geometry[height]
+					}
+				}
+			}
+			Box top {
+				vg::VapourFluxAir vapourFlux {
+					airFlux: cooling/airFlux[fromOutdoorsToTop]
+					receiverAh: indoors/top/humidity[ah]
+					donorAh: outdoors[ah]
+					averageHeight: construction/geometry[roofAverageHeight]
+				}
+				vg::EnergyFluxAir energyFlux {
+					airFlux: cooling/airFlux[fromOutdoorsToTop]
+					receiverTemperature: indoors/top/temperature[value]
+					donorTemperature: outdoors[temperature]
+					receiverHeight: construction/geometry[roofAverageHeight]
+				}
+			}
+		}
+		Box total {
+			Box bottom {
+				Unisim::Sum airFlux {
+					toAdd: (given/bottom/airFlux/outdoors[value] bottom/cooling/airFlux[fromOutdoorsToIndoors])
+				}
+				vg::VapourFluxSum vapourFlux {
+					toAdd: (given/bottom/vapourFlux bottom/cooling/vapourFlux)
+				}
+				Unisim::Sum energyFlux {
+					toAdd: (given/bottom/energyFlux[value] bottom/energyFlux/heating/supply[value] bottom/cooling/energyFlux[value])
+				}
+			}
+			Box top {
+				Unisim::Sum airFlux {
+					toAdd: (given/top/airFlux/outdoors[value] bottom/cooling/airFlux[fromOutdoorsToTop])
+				}
+				vg::VapourFluxSum vapourFlux {
+					toAdd: (given/top/vapourFlux controlled/top/vapourFlux)
+				}
+				Unisim::Sum energyFlux {
+					toAdd: (given/top/energyFlux[value] controlled/top/energyFlux[value])
+				}
+			}
+		}
+		Box top {
+			vg::IndoorsTopLight light {}
+			vg::IndoorsTemperature temperature {
+				initValue: 18
+				energyFlux: total/top/energyFlux[value]
+				averageHeight: construction/geometry[roofAverageHeight]
+			}
+			vg::IndoorsHumidity humidity {
+				conductance: total/top/vapourFlux[conductance]
+				vapourFlux: total/top/vapourFlux[vapourFlux]
+				gain: total/top/vapourFlux[gain]
+				temperature: ../temperature[value]
+				averageHeight: construction/geometry[roofAverageHeight]
+			}
+			Box co2 {}
+		}
+		vg::IndoorsBottomLight light {}
+		vg::IndoorsTemperature temperature {
+			initValue: 18
+			energyFlux: total/bottom/energyFlux[value]
+			averageHeight: construction/geometry[height]
+		}
+		vg::IndoorsHumidity humidity {
+			conductance: total/bottom/vapourFlux[conductance]
+			vapourFlux: total/bottom/vapourFlux[vapourFlux]
+			gain: total/bottom/vapourFlux[gain]
+			temperature: ../temperature[value]
+			averageHeight: construction/geometry[height]
+		}
+		vg::IndoorsCo2 co2 {}
+	}
+	Box setpoints {
+		vg::ProportionalSignal isDay {
+			threshold: 10
+			input: outdoors/records[GlobRad]
+			thresholdBand: 0
+			increasingSignal: true
+			minSignal: 0
+			maxSignal: 1
+		}
+		Box humidity {
+			vg::SignalCollection maximumRh {
+				rule: min
+				signalReset: 100
+				vg::DateTimeSignal  {
+					signalOutside: 100
+					signalOutsideTimeOnly: 100
+					signalInside: 80
+					beginDay: 1
+					endDay: 365
+					beginTime: 0:0
+					endTime: 23:59
+					circadian: true
+				}
+			}
+		}
+		Box temperature {
+			vg::PidControlElement ventilation {
+				initState: ./target[signalReset]
+				signal: ./target[signal]
+				Kprop: 0.1
+				vg::SignalCollection target {
+					rule: sum
+					signalReset: 20
+					vg::SignalCollection setpoints {
+						rule: min
+						signalReset: ..[signalReset]
+						vg::DateTimeSignal setpoint {
+							beginDay: 1
+							endDay: 365
+							beginTime: 0:0
+							endTime: 23:59
+							circadian: true
+							signalOutside: 100
+							signalOutsideTimeOnly: 100
+							signalInside: 20
+						}
+					}
+					vg::SignalCollection adjustments {
+						rule: min
+						signalReset: 0
+						vg::DateTimeSignal  {
+							beginDay: 1
+							endDay: 365
+							beginTime: 0:0
+							endTime: 23:59
+							circadian: true
+							signalOutside: 0
+							signalOutsideTimeOnly: 0
+							signalInside: ./adjustment[signal]
+							vg::ProportionalSignal adjustment {
+								input: indoors/humidity[rh]
+								threshold: setpoints/humidity/maximumRh[signal]
+								thresholdBand: 5
+								increasingSignal: false
+								minSignal: -2
+								maxSignal: 0
+							}
+						}
+					}
+				}
+			}
+			vg::PidControlElement heating {
+				initState: ./target[signalReset]
+				signal: ./target[signal]
+				Kprop: 0.1
+				vg::SignalCollection target {
+					rule: sum
+					signalReset: 18
+					vg::SignalCollection setpoints {
+						rule: max
+						signalReset: ..[signalReset]
+						vg::DateTimeSignal setpoint {
+							beginDay: 1
+							endDay: 365
+							beginTime: 0:0
+							endTime: 23:59
+							circadian: true
+							signalOutside: 0
+							signalOutsideTimeOnly: 0
+							signalInside: 18
+						}
+					}
+					vg::SignalCollection adjustmentsRh {
+						signalReset: 0
+						rule: max
+						vg::DateTimeSignal  {
+							beginDay: 1
+							endDay: 365
+							beginTime: 0:0
+							endTime: 23:59
+							circadian: true
+							signalReset: 0
+							signalOutside: 0
+							signalOutsideTimeOnly: 0
+							signalInside: ./adjustment[signal]
+							vg::ProportionalSignal adjustment {
+								input: indoors/humidity[rh]
+								threshold: setpoints/humidity/maximumRh[signal]
+								thresholdBand: 5
+								increasingSignal: true
+								minSignal: 0
+								maxSignal: 1
+							}
+						}
+					}
+					vg::ProportionalSignal adjustmentLight {
+						input: outdoors[radiation]
+						threshold: 300
+						thresholdBand: 100
+						increasingSignal: true
+						minSignal: 0
+						maxSignal: 1
+					}
+				}
+			}
+		}
+		Box CO2 {
+			vg::SignalCollection minimum {
+				rule: max
+				signalReset: 0
+				rule: max
+				vg::DateTimeSignal  {
+					beginDay: 1
+					endDay: 365
+					beginTime: 0:0
+					endTime: 23:59
+					circadian: true
+					signalOutside: 0
+					signalOutsideTimeOnly: 0
+					signalInside: 650
+				}
+			}
+			vg::SignalCollection maximum {
+				rule: min
+				signalReset: 2000
+				vg::DateTimeSignal  {
+					beginDay: 1
+					endDay: 365
+					beginTime: 0:0
+					endTime: 23:59
+					circadian: true
+					signalOutside: 0
+					signalOutsideTimeOnly: 0
+					signalInside: 750
+				}
+			}
+		}
+	}
+	Box controllers {
+		Box screens {
+			vg::PidControlElement maxDrawn {
+				initState: 1
+				signal: ./target[signal]
+				Kprop: 0.1
+				vg::ThresholdSignal target {
+					input: indoors/humidity[rh]
+					threshold: setpoints/humidity/maximumRh[signal]
+					signalBelow: 1
+					signalAbove: 0.9
+				}
+			}
+			Box energy {
+				vg::SignalCollection control {
+					rule: min
+					signalReset: 0
+					vg::ThresholdSignal  {
+						input: outdoors[radiation]
+						threshold: 10
+						signalBelow: controllers/screens/maxDrawn[value]
+						signalAbove: 0
+					}
+					vg::ThresholdSignal  {
+						input: indoors/temperature[value]
+						threshold: setpoints/temperature/ventilation[value]
+						signalBelow: 1
+						signalAbove: 0
+					}
+					vg::EnergyScreenBalanceSignal  {}
+				}
+			}
+			Box shade {
+				vg::SignalCollection control {
+					rule: max
+					signalReset: 0
+					vg::ThresholdSignal  {
+						input: outdoors[radiation]
+						threshold: 500
+						signalBelow: 0
+						signalAbove: controllers/screens/maxDrawn[value]
+					}
+					vg::FixedSignal  {
+						input: controllers/screens/energy/control[signal]
+					}
+				}
+			}
+			Box blackout {
+				vg::ThresholdSignal light {
+					input: outdoors[radiation]
+					threshold: 0
+					signalBelow: 0
+					signalAbove: controllers/screens/maxDrawn[value]
+				}
+				vg::SignalCollection control {
+					rule: max
+					signalReset: 0
+					vg::SignalCollection  {
+						rule: max
+						signalReset: 0
+						vg::DateTimeSignal  {
+							beginDay: 1
+							endDay: 365
+							beginTime: 18:00
+							endTime: 6:00
+							signalInside: 1
+							signalOutside: 0
+							signalOutsideTimeOnly: 0
+						}
+					}
+					vg::FixedSignal  {
+						input: controllers/screens/energy/control[signal]
+					}
+				}
+			}
+		}
+		vg::GrowthLightController growthLight {
+			vg::SignalCollection on {
+				rule: max
+				signalReset: 0
+				vg::DateTimeSignal  {
+					beginDay: 1
+					endDay: 365
+					beginTime: 0:0
+					endTime: 23:59
+					circadian: true
+					signalInside: ./on[signal]
+					signalOutside: 0
+					signalOutsideTimeOnly: 0
+					vg::ThresholdSignal on {
+						threshold: 40
+						input: outdoors[radiation]
+						signalBelow: 1
+						signalAbove: 0
+					}
+				}
+			}
+			vg::SignalCollection off {
+				rule: max
+				signalReset: 0
+				vg::DateTimeSignal  {
+					beginDay: 1
+					endDay: 365
+					beginTime: 0:0
+					endTime: 23:59
+					circadian: true
+					signalInside: ./off[signal]
+					signalOutside: 0
+					signalOutsideTimeOnly: 0
+					vg::ThresholdSignal off {
+						threshold: 60
+						input: outdoors[radiation]
+						signalBelow: 0
+						signalAbove: 1
+					}
+				}
+			}
+			vg::SignalCollection periods {
+				rule: max
+				signalReset: 0
+				vg::DateTimeSignal  {
+					beginDay: 1
+					endDay: 59
+					beginTime: 6:1
+					endTime: 21:59
+					circadian: true
+					signalInside: 1
+					signalOutside: 0
+					signalOutsideTimeOnly: 0
+				}
+				vg::DateTimeSignal  {
+					beginDay: 245
+					endDay: 365
+					beginTime: 6:1
+					endTime: 21:59
+					circadian: true
+					signalInside: 1
+					signalOutside: 0
+					signalOutsideTimeOnly: 0
+				}
+			}
+		}
+		vg::SignalCollection chalk {
+			rule: max
+			signalReset: 0
+			vg::DateTimeSignal  {
+				beginDay: 1
+				endDay: 365
+				beginTime: 0:0
+				endTime: 23:59
+				circadian: false
+				signalOutside: 0
+				signalInside: 0
+			}
+		}
+	}
+	Box actuators {
+		Box screens {
+			Box energy {
+				vg::PidControlElement control {
+					signal: controllers/screens/energy/control[signal]
+					Kprop: 0.3
+				}
+			}
+			Box shade {
+				vg::PidControlElement control {
+					signal: controllers/screens/shade/control[signal]
+					Kprop: 0.3
+				}
+			}
+			Box blackout {
+				vg::PidControlElement control {
+					signal: controllers/screens/blackout/control[signal]
+					Kprop: 0.3
+				}
+			}
+		}
+		vg::GrowthLights growthLights {
+			vg::GrowthLight growthLight1 {
+				type: HPSL
+				intensity: 60
+				lifeTime: 12000
+				age: 2000
+			}
+		}
+	}
+	vg::Crop crop {
+		density: 3.9
+		fractionPlantArea: 0.9
+		vg::SignalCollection periods {
+			vg::DateTimeSignal  {
+				beginDay: 1
+				endDay: 365
+				circadian: false
+			}
+			vg::DateTimeSignal  {
+				beginDay: 10
+				endDay: 20
+				circadian: false
+			}
+		}
+		UniSim::DayDegrees physTime {
+			T: indoors/temperature[value]
+			isTicking: ../periods[flag]
+			doReset: ../periods[flagDown]
+		}
+		vg::FruitCropLai lai {
+			laiStartPerPlant: 0.385
+			maxLai: 3.5
+		}
+		Box layers {
+			vg::Layer top {
+				xGauss: 0.1127
+				wGauss: 0.2778
+				vg::StomatalResistance rs {}
+				vg::BoundaryLayerResistance rb {}
+				vg::LeafTranspiration transpiration {}
+				vg::RadiationAbsorbed rna {}
+				vg::LeafTemperature temperature {}
+				vg::LayerPhotosynthesis photosynthesis {
+					vg::LeafLightResponse lightResponse {}
+				}
+			}
+			vg::Layer middle {
+				xGauss: 0.5
+				wGauss: 0.4444
+				vg::StomatalResistance rs {}
+				vg::BoundaryLayerResistance rb {}
+				vg::LeafTranspiration transpiration {}
+				vg::RadiationAbsorbed rna {}
+				vg::LeafTemperature temperature {}
+				vg::LayerPhotosynthesis photosynthesis {
+					vg::LeafLightResponse lightResponse {}
+				}
+			}
+			vg::Layer bottom {
+				xGauss: 0.8873
+				wGauss: 0.2778
+				vg::StomatalResistance rs {}
+				vg::BoundaryLayerResistance rb {}
+				vg::LeafTranspiration transpiration {}
+				vg::RadiationAbsorbed rna {}
+				vg::LeafTemperature temperature {}
+				vg::LayerPhotosynthesis photosynthesis {
+					vg::LeafLightResponse lightResponse {}
+				}
+			}
+		}
+		Unisim::Average temperature {
+			inputs: (layers/top/temperature[value] layers/middle/temperature[value] layers/bottom/temperature[value])
+		}
+		Unisim::Average conductance {
+			inputs: (layers/top/transpiration[conductance] layers/middle/transpiration[conductance] layers/bottom/transpiration[conductance])
+		}
+		Unisim::Average vapourFlux {
+			inputs: (layers/top/transpiration[vapourFlux] layers/middle/transpiration[vapourFlux] layers/bottom/transpiration[vapourFlux])
+		}
+		Unisim::Average gain {
+			inputs: (layers/top/transpiration[gain] layers/middle/transpiration[gain] layers/bottom/transpiration[gain])
+		}
+		vg::CropGrowth growth {
+			Unisim::Sum Pgc {
+				toAdd: (layers/top/photosynthesis[Pg] layers/middle/photosynthesis[Pg] layers/bottom/photosynthesis[Pg])
+			}
+		}
+		vg::FruitCropMass mass {
+			tempSumReproductive: 900
+			tempMaxReproductive: 45
+			vegPropRoot: 0
+			vegPropStem: 0.4
+			vegPropLeaf: 0.6
+			vegPropFruit: 0
+			reproPropRoot: 0
+			reproPropStem: 0.05
+			reproPropLeaf: 0.1
+			reproPropFruit: 0.85
+			fruitFactor: ./fruitFactor[value]
+			vg::FruitFactor fruitFactor {
+				minDensity: 3.9
+				maxValue: 1.044
+			}
+		}
+		vg::CropYield yield {
+			fractionDryWeight: 0.045
+			produceMass: ../mass[fruit]
+		}
+	}
+}

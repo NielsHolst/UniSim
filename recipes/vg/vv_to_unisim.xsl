@@ -34,7 +34,7 @@
 <xsl:variable name="CoverDensity" select="2600"/>			<!-- [kg/m3] -->
 <xsl:variable name="CoverHeatCapacity" select="840"/>	<!-- Specific heat capacity [J/kg/K] -->
 <xsl:variable name="CoverThickness" select="4"/>			<!-- [mm] -->
-<xsl:variable name="ScreenU" select="2.8"/>				<!-- [W/m2/K] -->
+<xsl:variable name="ScreenU50" select="2.5"/>				<!-- [W/m2/K] -->
 <xsl:variable name="ScreenHaze" select="0"/>				<!-- [0;1] -->
 
 <xsl:variable name="MaxCrackVentilation" select="4"/>		<!-- [h-1] (GCC, p. 148) -->
@@ -213,7 +213,7 @@
 			</xsl:call-template>
 		</xsl:attribute>
 	</parameter>
-	<parameter name="lightTransmission">
+	<parameter name="lightTransmissivity">
 		<xsl:attribute name="value">
 			<xsl:value-of select="Constants/Parameters[ParameterID='30']/Value div 100"/>
 		</xsl:attribute>
@@ -228,9 +228,9 @@
 			<xsl:value-of select="Constants/Parameters[ParameterID='33']/Value div 100"/>
 		</xsl:attribute>
 	</parameter>
-	<parameter name="U">
+	<parameter name="U50">
 		<xsl:attribute name="value">
-			<xsl:value-of select="$ScreenU"/>
+			<xsl:value-of select="$ScreenU50"/>
 		</xsl:attribute>
 	</parameter>
 	<parameter name="haze">

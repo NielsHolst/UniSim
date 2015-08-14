@@ -20,6 +20,8 @@ PUBLISH(GreenhouseShelter)
  *
  * Inputs
  * ------
+ * - _shelters_ is a list of the shelters over which to average [string-list]
+ * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
  *
  * Output
  * ------
@@ -31,9 +33,6 @@ PUBLISH(GreenhouseShelter)
  * - _directLightTransmissionAsDirect_ is the average proportion of direct light transmitted through the surface as direct light [0;1]
  * - _directLightTransmissionAsDiffuse_ is the average proportion of direct light transmitted through the surface as diffuse light [0;1]
  * - _temperature_ is the average temperature of the surface [<SUP>o</SUP>C]
- *
- * Default dependencies
- * ------------
  */
 
 GreenhouseShelter::GreenhouseShelter(Identifier name, QObject *parent)

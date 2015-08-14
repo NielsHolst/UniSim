@@ -19,26 +19,18 @@ public:
 
     enum Position {WholeRoof, FlatRoof, Roof1, Roof2, Side1, Side2, End1, End2};
     enum Layer {Inner, Mid, Outer};
-
-    // Special methods
-    Position pullPosition() const;
-    Layer pullLayer() const;
-
+    void reset();
 private:
     friend class Screens;
 
     // Inputs
     QString positionStr, layerStr;
-    double lightTransmission, energyLossReduction, U, haze,
-        airTransmission, state;
-    // Data
-    typedef UniSim::StringMap<Position> Positions;
-    typedef UniSim::StringMap<Layer> Layers;
-    static Positions positions;
-    static Layers layers;
-    // Methods
-    void setStandardPositions();
-    void setStandardLayers();
+    double lightTransmissivity, lightOuterAbsorptivity,
+           irTransmissivity, irOuterEmissivity, irInnerEmissivity,
+            energyLossReduction, U50, haze,
+            airTransmission, state;
+    // Outputs
+    double U;
 };
 } //namespace
 

@@ -48,14 +48,14 @@ void Shelter::initialize() {
 
     Model *screensModel = seekOneChild<Model*>("screens");
     pScreensU = screensModel->pullValuePtr<double>("U");
-    pScreensAirTransmission = screensModel->pullValuePtr<double>("airTransmission");
-    pScreensLightTransmission = screensModel->pullValuePtr<double>("lightTransmission");
+    pScreensAirTransmission = screensModel->pullValuePtr<double>("airTransmissivity");
+    pScreensLightTransmission = screensModel->pullValuePtr<double>("lightTransmissivity");
     pScreensHaze = screensModel->pullValuePtr<double>("haze");;
 }
 
 void Shelter::localReset() {
     U = *pCoverU;
-    airTransmission = 1.;
+    airTransmissivity = 1.;
     haze = *pCoverHaze;
     diffuseLightTransmission = *pCoverDiffuseTransmission;
     directLightTransmissionAsDirect = *pCoverDiffuseTransmission/2;
@@ -80,7 +80,7 @@ void Shelter::updateHaze() {
 }
 
 void Shelter::updateAirTransmission() {
-    airTransmission = *pScreensAirTransmission;
+    airTransmissivity = *pScreensAirTransmission;
 }
 
 void Shelter::updateLightTransmission() {

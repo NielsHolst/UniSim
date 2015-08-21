@@ -12,7 +12,7 @@ Box Virtual Greenhouse {
 	vg::Outdoors outdoors {
 		co2: 750
 		UniSim::Records records {
-			fileName: sel_dk.txt
+			fileName: "sel_dk.txt"
 			imposeInitialDateTime: false
 		}
 	}
@@ -89,8 +89,8 @@ Box Virtual Greenhouse {
 				}
 				vg::Screens screens {
 					vg::Screen energy {
-						position: side1
-						layer: outer
+						position: #side1
+						layer: #outer
 						lightTransmissivity: 0.41
 						airTransmission: 0.45
 						energyLossReduction: 0.55

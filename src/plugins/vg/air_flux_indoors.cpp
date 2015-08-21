@@ -32,7 +32,7 @@ AirFluxIndoors::AirFluxIndoors(Identifier name, QObject *parent)
 {
     InputRef(double, infiltration, "total/airFlux/infiltration[value]");
     InputRef(double, gravitation, "total/airFlux/gravitation[value]");
-    InputRef(double, gap, "horizontalScreen[gap]");
+    InputRef(double, airTransmissivity, "horizontalScreens[airTransmissivity]");
     Input(double, receiverVolume, 0.);
     Output(double, value);
 }
@@ -42,7 +42,7 @@ void AirFluxIndoors::reset() {
 }
 
 void AirFluxIndoors::update() {
-    value = gap*infiltration + gravitation/receiverVolume;
+    value = airTransmissivity*infiltration + gravitation/receiverVolume;
 }
 
 

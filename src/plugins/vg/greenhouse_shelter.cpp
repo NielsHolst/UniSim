@@ -27,7 +27,7 @@ PUBLISH(GreenhouseShelter)
  * ------
  * - _U_ is the average heat transfer coefficient of the surface (cover+screens) per ground area [W/K/m<SUP>2</SUP>]
  * - _Ucover_ is the average heat transfer coefficient of the surface (cover only) per ground area [W/K/m<SUP>2</SUP>]
- * - _airTransmission_ is the average proportion of air transmitted through the surface [0;1]
+ * - _airTransmissivity_ is the average proportion of air transmitted through the surface [0;1]
  * - _haze_ is the average proportion of direct light becoming dispersed on passage through the surface [0;1]
  * - _diffuseLightTransmission_ is the average proportion of diffuse light transmitted through the surface [0;1]
  * - _directLightTransmissionAsDirect_ is the average proportion of direct light transmitted through the surface as direct light [0;1]
@@ -68,12 +68,12 @@ void GreenhouseShelter::localReset() {
 }
 
 void GreenhouseShelter::update() {
-    U = airTransmission = haze =
+    U = airTransmissivity = haze =
     diffuseLightTransmission = directLightTransmissionAsDirect = directLightTransmissionAsDiffuse =
     temperature = Ucover = 0;
     for (auto shelterInfo : shelterInfos) {
         U += shelterInfo.weightedShelterOutput("U");
-        airTransmission += shelterInfo.weightedShelterOutput("airTransmission");
+        airTransmissivity += shelterInfo.weightedShelterOutput("airTransmissivity");
         haze += shelterInfo.weightedShelterOutput("haze");
         diffuseLightTransmission += shelterInfo.weightedShelterOutput("diffuseLightTransmission");
         directLightTransmissionAsDirect += shelterInfo.weightedShelterOutput("directLightTransmissionAsDirect");
@@ -83,7 +83,7 @@ void GreenhouseShelter::update() {
     }
     // Weighted averages
     U /= totalArea;
-    airTransmission /= totalArea;
+    airTransmissivity /= totalArea;
     haze /= totalArea;
     diffuseLightTransmission /= totalArea;
     directLightTransmissionAsDirect /= totalArea;

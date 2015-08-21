@@ -20,7 +20,8 @@ public:
 
 private:
     // Inputs
-    double infiltration, ventilation, volumeProportion, gap;
+    double infiltration, ventilation, volumeProportion, transmissivity;
+    bool useNotTransmitted;
 
     // Outputs
     double value;

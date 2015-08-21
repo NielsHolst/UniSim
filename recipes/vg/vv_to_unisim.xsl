@@ -14,7 +14,7 @@
 
 <!-- Simulation period used when test-mode > 0 -->
 <xsl:variable name="BeginDate" select="'2001-01-01'"/>
-<xsl:variable name="EndDate" select="'2001-12-31'"/>
+<xsl:variable name="EndDate" select="'2001-01-31'"/>
 
 <!-- Parameters missing in DVV Online must be set here -->
 <xsl:variable name="EnergyScreenOption" select="1"/>  <!-- 1: EnergyBalanc or 2: OutsideLight --> 
@@ -199,6 +199,7 @@
 
 <xsl:template name="extract-screen-parameters">
 	<xsl:param name="screen-type"/>
+	<!--
 	<parameter name="position">
 		<xsl:attribute name="value">
 			<xsl:call-template name="screen-position-name">
@@ -213,12 +214,13 @@
 			</xsl:call-template>
 		</xsl:attribute>
 	</parameter>
-	<parameter name="lightTransmissivity">
+	-->
+	<parameter name="transmissivityLight">
 		<xsl:attribute name="value">
 			<xsl:value-of select="Constants/Parameters[ParameterID='30']/Value div 100"/>
 		</xsl:attribute>
 	</parameter>
-	<parameter name="airTransmission">
+	<parameter name="transmissivityAir">
 		<xsl:attribute name="value">
 			<xsl:value-of select="Constants/Parameters[ParameterID='32']/Value div 100"/>
 		</xsl:attribute>
@@ -296,6 +298,9 @@
 				</model>
 			</xsl:if>
 		</xsl:for-each>					
+		<xsl:if test="contains($shelter-position, 'roof')">
+			<parameter name="additionalScreens" value="construction/horizontalScreens"/>
+		</xsl:if>
 	</model>
 </xsl:template>
 	
@@ -558,7 +563,7 @@
 		</model>
 
 		<xsl:call-template name="extract-screens">
-			<xsl:with-param name="model-name" select="'horizontalScreen'"/>
+			<xsl:with-param name="model-name" select="'horizontalScreens'"/>
 			<xsl:with-param name="shelter-position" select="'horizontal'"/>
 			<xsl:with-param name="outer-temperature" select="'indoors/top/temperature[value]'"/>
 			<xsl:with-param name="inner-temperature" select="'indoors/bottom/temperature[value]'"/>
@@ -684,7 +689,8 @@
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" ref="total/airFlux/crackVentilation[value]"/>
 						<parameter name="volumeProportion" ref="construction/geometry[volumeProportionTop]"/>
-						<parameter name="gap" ref="horizontalScreen[airTransmissionNot]"/>
+						<parameter name="transmissivity" ref="horizontalScreens[airTransmissivity]"/>
+						<parameter name="useNotTransmitted" value="yes"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
 						<parameter name="receiverVolume" ref="construction/geometry[volumeTop]"/>
@@ -741,7 +747,7 @@
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" value="0"/>
 						<parameter name="volumeProportion" ref="construction/geometry[volumeProportionIndoors]"/>
-						<parameter name="gap" ref="horizontalScreen[airTransmission]"/>
+						<parameter name="transmissivity" ref="horizontalScreens[airTransmissivity]"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
 						<parameter name="receiverVolume" ref="construction/geometry[volumeIndoors]"/>
@@ -1727,18 +1733,24 @@
 
 		<trace label="cooling_indoors" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 		<trace label="cooling_top" ref="cooling/airFlux[fromOutdoorsToTop]"/>
-		<trace label="horz_air_trans" ref="horizontalScreen[airTransmission]"/>
 
 		<trace label="top_diffuse_trans" ref="greenhouseShelter/top[diffuseLightTransmission]"/>
 		<trace label="top_dir_dir_trans" ref="greenhouseShelter/top[directLightTransmissionAsDirect]"/>
 		<trace label="top_dir_diff_trans" ref="greenhouseShelter/top[directLightTransmissionAsDiffuse]"/>
-		<trace label="horz_light_trans" ref="horizontalScreen[lightTransmission]"/>
+		<trace label="bottom_diffuse_trans" ref="greenhouseShelter/bottom[diffuseLightTransmission]"/>
+		<trace label="bottom_dir_dir_trans" ref="greenhouseShelter/bottom[directLightTransmissionAsDirect]"/>
+		<trace label="bottom_dir_diff_trans" ref="greenhouseShelter/bottom[directLightTransmissionAsDiffuse]"/>
+		<trace label="total_diffuse_trans" ref="greenhouseShelter/total[diffuseLightTransmission]"/>
+		<trace label="total_dir_dir_trans" ref="greenhouseShelter/total[directLightTransmissionAsDirect]"/>
+		<trace label="total_dir_diff_trans" ref="greenhouseShelter/total[directLightTransmissionAsDiffuse]"/>
+		<trace label="horz_light_trans" ref="horizontalScreens[lightTransmissivity]"/>
 		
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
 		<trace label="indoors_light" value="indoors/light[total]"/>
 	
 		<trace label="scr_max" value="controllers/screens/maxDrawn[value]"/>
+		<trace label="test_horz_scr_en" value="horizontalScreens/energy[state]"/>
 		<trace label="act_scr_en" value="actuators/screens/energy/control[state]"/>
 		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
 		<trace label="act_scr_bl" value="actuators/screens/blackout/control[state]"/>

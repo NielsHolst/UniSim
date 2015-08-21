@@ -21,7 +21,7 @@ public:
 private:
     // Inputs
     double airSupplyMax, energyDemand,
-        indoorsTemperature, outdoorsTemperature, averageHeight, airTrans;
+        indoorsTemperature, outdoorsTemperature, averageHeight, airTransmissivity;
     // Output
     double value, airFlux;
     // Data

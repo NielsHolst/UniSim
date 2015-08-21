@@ -32,7 +32,7 @@ EnergyFluxHorizontal::EnergyFluxHorizontal(Identifier name, QObject *parent)
     Input(double, U, 2.8);
     Input(double, receiverTemperature, 0.);
     Input(double, donorTemperature, 0.);
-    InputRef(double, state, "horizontalScreen[maxState]");
+    InputRef(double, state, "horizontalScreens[maxState]");
 }
 
 void EnergyFluxHorizontal::update() {

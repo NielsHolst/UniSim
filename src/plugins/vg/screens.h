@@ -22,30 +22,30 @@ public:
     void update();
 private:
     // Inputs
-    double airTransmissionExponent;
+    QString additionalScreens;
 
     // Outputs
-    double maxState, lightTransmission, airTransmission, haze, airTransmissionNot, gap, U;
+    double lightTransmissivity, irTransmissivity,
+           incomingLightAbsorptivity, incomingLightReflectivity,
+           incomingIrAbsorptivity, incomingIrReflectivity,
+           outgoingLightAbsorptivity, outgoingLightReflectivity,
+           outgoingIrAbsorptivity, outgoingIrReflectivity,
+           maxState, airTransmissivity, haze, U;
     // Data
     struct ScreenInfo {
-        const double *state, *lightTransmission, *haze, *airTransmission, *U;
-        double lightTransmissionTotal() const {
-            return (*state)*(*lightTransmission) + 1.-(*state);
-        }
-        double unhazed() const {
-            return 1. - (*state)*(*haze);
-        }
-        double airTransmissionTotal(double exponent) const {
-            double total = (*state)*(*airTransmission) + pow(1.-(*state), exponent);
-            return std::min(total, 1.);
-        }
-        double resistance() const {
-            return (*state)/(*U);
-        }
+        const double *transmissivityLightNet,
+            *absorptivityIrInnerNet, *absorptivityIrOuterNet,
+            *state,
+            *unhazed, *airTransmissionNet,
+            *resistance;
     };
-    QVector<ScreenInfo> screenInfos;
+    QVector<ScreenInfo> screenInfos, screenInfosPlus;
 
+    // Methods
+    QVector<ScreenInfo> collectScreenInfos(QList<Model*> screenModels);
+    void updateRadiation();
 };
+
 } //namespace
 
 

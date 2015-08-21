@@ -46,19 +46,27 @@ freq1 = function(U, cols) {
 		geom_density(aes(x=Value, colour=Variable, fill=Variable), alpha=0.8)
 }
 
-plot3 = function(U,from,to) {
+plot3 = function(U,from=0, to=366) {
 	light = plot2(U,from,to, c("outdoors_light", "top_light", "growth_light", "indoors_light")) 
+	screen = plot2(U,from,to, c("act_scr_en", "act_scr_sh", "act_scr_bl", "horz_light_trans"))
+	top_trans = plot2(U,from,to, c("top_diffuse_trans", "top_dir_dir_trans", "top_dir_diff_trans"))
+	bottom_trans = plot2(U,from,to, c("bottom_diffuse_trans", "bottom_dir_dir_trans", "bottom_dir_diff_trans"))
+	total_trans = plot2(U,from,to, c("total_diffuse_trans", "total_dir_dir_trans", "total_dir_diff_trans"))
+	air = plot2(U,from,to, c("air_infilt", "air_crack", "air_top", "air_bottom"))
+	grid.arrange(light, screen, air, top_trans, bottom_trans, total_trans, ncol=3)
+}
+
+plot4 = function(U,from=0, to=366) {
 	screen = plot2(U,from,to, c("act_scr_en", "act_scr_sh", "act_scr_bl"))
-	light_trans = plot2(U,from,to, c("top_diffuse_trans", "top_dir_dir_trans", "top_dir_diff_trans", "horz_light_trans"))
 	temperature = plot2(U,from,to, c("outdoors_temp", "roof1_temp", "side1_temp", "top_temp", "indoors_temp"))
 	rh = plot2(U,from,to, c("outdoors_rh", "top_rh", "indoors_rh"))
 	ah = plot2(U,from,to, c("outdoors_ah", "top_ah", "indoors_ah"))
 	setpoint = plot2(U,from,to, c("sp_heat", "sp_vent", "sp_rh"))
 	air = plot2(U,from,to, c("air_infilt", "air_crack", "air_top", "air_bottom"))
-	grid.arrange(light, screen, light_trans, temperature, rh, ah, setpoint, air, ncol=4)
+	grid.arrange(screen, temperature, rh, ah, setpoint, air, ncol=3)
 }
 
-plot4 = function(U,from,to) {
+plot5 = function(U,from=0, to=366) {
 	top = plot2(U,from,to,
 		c("top_energy_total","top_cond","top_air_outdoors1","top_air_outdoors2","top_air_indoors","top_air_conv","top_cover","top_light"))
 	bottom1 = plot2(U,from,to,
@@ -69,7 +77,7 @@ plot4 = function(U,from,to) {
 }
 
 
-plot5 = function(U) {
+plot6 = function(U) {
 	temperature = freq1(U, c("outdoors_temp", "roof1_temp", "side1_temp", "top_temp", "indoors_temp"))
 	light = freq1(U, c("outdoors_light", "top_light", "growth_light", "indoors_light")) 
 	ah = freq1(U, c("outdoors_ah", "top_ah", "indoors_ah"))
@@ -78,18 +86,10 @@ plot5 = function(U) {
 }
 
 U = read_unisim("dvv_unisim_0001.txt")
-windows(14,10)
-plot5(U)
-
 
 windows(14,10)
-plot3(U,30,36)
-windows(14,10)
-plot4(U,30,36)
+plot3(U)
 
-windows(14,10)
-plot1(U,1)
-
-windows(14,10)
-plot1(U,30,36, c("top_light", "indoors_light")) 
+# windows(14,10)
+# plot1(U,30,36, c("top_light", "indoors_light")) 
 

@@ -33,7 +33,7 @@ AirFluxInfiltration::AirFluxInfiltration(Identifier name, QObject *parent)
 {
     Input(double, leakage, 0.5);
     InputRef(double, windspeed, "outdoors[windspeed]");
-    InputRef(double, airTransmission, "greenhouseShelter/total[airTransmission]");
+    InputRef(double, airTransmissivity, "greenhouseShelter/total[airTransmissivity]");
     Output(double, value);
 }
 
@@ -42,7 +42,7 @@ void AirFluxInfiltration::reset() {
 }
 
 void AirFluxInfiltration::update() {
-    value = leakage*airTransmission*windspeed/4;
+    value = leakage*airTransmissivity*windspeed/4;
 }
 
 

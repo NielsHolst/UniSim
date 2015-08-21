@@ -5,9 +5,11 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <stdlib.h>
+#include <QMessageBox>
 #include <usbase/exception.h>
 #include "publish.h"
 #include "screens.h"
+#include "surface_radiation.h"
 
 using std::max;
 using namespace UniSim;
@@ -28,54 +30,90 @@ PUBLISH(Screens)
 Screens::Screens(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    Input(double, airTransmissionExponent, 4.);
+    Input(QString, additionalScreens, QString());
+
+    Output(double, lightTransmissivity);
+    Output(double, irTransmissivity);
+    Output(double, incomingLightAbsorptivity);
+    Output(double, incomingLightReflectivity);
+    Output(double, incomingIrAbsorptivity);
+    Output(double, incomingIrReflectivity);
+    Output(double, outgoingLightAbsorptivity);
+    Output(double, outgoingLightReflectivity);
+    Output(double, outgoingIrAbsorptivity);
+    Output(double, outgoingIrReflectivity);
+
     Output(double, maxState);
-    Output(double, lightTransmission);
-    Output(double, airTransmission);
-    Output(double, airTransmissionNot);
-    Output(double, gap);
+    Output(double, airTransmissivity);
     Output(double, haze);
     Output(double, U);
 }
 
 void Screens::initialize() {
     auto screens = seekChildren<Model*>("*");
-    screenInfos.clear();
-    for (auto screen: screens) {
-        screenInfos << ScreenInfo {
-            screen->pullValuePtr<double>("state"),
-            screen->pullValuePtr<double>("lightTransmissivity"),
-            screen->pullValuePtr<double>("haze"),
-            screen->pullValuePtr<double>("airTransmission"),
-            screen->pullValuePtr<double>("U")
-        };
+    screenInfos = collectScreenInfos(screens);
+    screenInfosPlus.clear();
+    if (!additionalScreens.isEmpty()) {
+        auto additionalScreenModels = seekOne<Model*>(additionalScreens);
+        auto screensPlus = additionalScreenModels->seekChildren<Model*>("*");
+        screenInfosPlus = collectScreenInfos(screensPlus);
     }
 }
 
+QVector<Screens::ScreenInfo> Screens::collectScreenInfos(QList<Model*> screenModels) {
+    QVector<Screens::ScreenInfo> screenInfos;
+    for (auto screen: screenModels) {
+        screenInfos << ScreenInfo {
+            screen->pullValuePtr<double>("transmissivityLightNet"),
+            screen->pullValuePtr<double>("absorptivityIrInnerNet"),
+            screen->pullValuePtr<double>("absorptivityIrOuterNet"),
+            screen->pullValuePtr<double>("state"),
+            screen->pullValuePtr<double>("unhazed"),
+            screen->pullValuePtr<double>("transmissivityAirNet"),
+            screen->pullValuePtr<double>("resistance")
+        };
+    }
+    return screenInfos;
+}
+
 void Screens::reset() {
-    maxState = airTransmissionNot = 0;
-    lightTransmission = airTransmission = 1;
+    maxState = 0;
+    lightTransmissivity = airTransmissivity = 1;
     U = numeric_limits<double>::infinity();
 }
 
 void Screens::update() {
     maxState = 0;
-    lightTransmission = airTransmission = 1;
+    airTransmissivity = 1;
     double resistance{0}, unhazed{1};
-    for (auto info: screenInfos) {
+    for (ScreenInfo info: screenInfos) {
         maxState = max(maxState, *info.state);
-        lightTransmission *= info.lightTransmissionTotal();
-        airTransmission *= info.airTransmissionTotal(airTransmissionExponent);
-        unhazed *= info.unhazed();
-        resistance += info.resistance();
+        airTransmissivity *= *info.airTransmissionNet;
+        unhazed *= *info.unhazed;
+        resistance += *info.resistance;
     }
-    airTransmissionNot = 1. - airTransmission;
-    gap = pow(1. - maxState, airTransmissionExponent);
     haze = 1. - unhazed;
     U = 1./resistance;
+    updateRadiation();
 }
 
 
+void Screens::updateRadiation() {
+    SurfaceRadiation rad;
+    for (ScreenInfo si: screenInfos) {
+        rad *= SurfaceRadiation(*si.transmissivityLightNet, *si.absorptivityIrOuterNet, *si.absorptivityIrInnerNet);
+    }
+    lightTransmissivity = rad.light.tra;
+    irTransmissivity = rad.ir.tra;
+    incomingLightAbsorptivity = rad.light.outer.abs;
+    incomingLightReflectivity = rad.light.outer.ref;
+    incomingIrAbsorptivity = rad.ir.outer.abs;
+    incomingIrReflectivity = rad.ir.outer.ref;
+    outgoingLightAbsorptivity = rad.light.inner.abs;
+    outgoingLightReflectivity = rad.light.inner.ref;
+    outgoingIrAbsorptivity = rad.ir.inner.abs;
+    outgoingIrReflectivity = rad.ir.inner.ref;
+}
 
 } //namespace
 

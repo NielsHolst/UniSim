@@ -33,7 +33,8 @@ AirFluxOutdoors::AirFluxOutdoors(Identifier name, QObject *parent)
     Input(double, infiltration, 0.);
     Input(double, ventilation, 0.);
     Input(double, volumeProportion, 0.);
-    Input(double, gap, 1.);
+    Input(double, transmissivity, 1.);
+    Input(bool, useNotTransmitted, false);
     Output(double, value);
 }
 
@@ -42,7 +43,8 @@ void AirFluxOutdoors::reset() {
 }
 
 void AirFluxOutdoors::update() {
-    value = volumeProportion*infiltration + gap*ventilation;
+    double prop = useNotTransmitted ? 1.-transmissivity : transmissivity;
+    value = volumeProportion*infiltration + prop*ventilation;
 }
 
 

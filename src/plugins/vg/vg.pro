@@ -80,6 +80,7 @@ HEADERS += \
     signal_collection.h \
     sliding_signal.h \
     stomatal_resistance.h \
+    surface_radiation.h \
     threshold_signal.h \
     variable_collection.h \
     vapour_flux_air.h \
@@ -166,6 +167,7 @@ SOURCES += \
     signal_collection.cpp \
     sliding_signal.cpp \
     stomatal_resistance.cpp \
+    surface_radiation.cpp \
     threshold_signal.cpp \
     vapour_flux_air.cpp \
     vapour_flux_base.cpp \

@@ -20,7 +20,7 @@ public:
     virtual void localReset() {}
 protected:
     // Outputs
-    double U, airTransmission, haze,
+    double U, airTransmissivity, haze,
         diffuseLightTransmission, directLightTransmissionAsDirect, directLightTransmissionAsDiffuse;
 };
 } //namespace

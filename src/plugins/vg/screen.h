@@ -16,22 +16,24 @@ class Screen : public UniSim::Model
 {
 public:
     Screen(UniSim::Identifier name, QObject *parent);
-
-    enum Position {WholeRoof, FlatRoof, Roof1, Roof2, Side1, Side2, End1, End2};
-    enum Layer {Inner, Mid, Outer};
     void reset();
+    void update();
 private:
     friend class Screens;
 
     // Inputs
-    QString positionStr, layerStr;
-    double lightTransmissivity, lightOuterAbsorptivity,
-           irTransmissivity, irOuterEmissivity, irInnerEmissivity,
-            energyLossReduction, U50, haze,
-            airTransmission, state;
+    double transmissivityLight,
+           emissivityIrInner, emissivityIrOuter,
+           energyLossReduction, U50, haze,
+           transmissivityAir, transmissivityAirExponent, state;
     // Outputs
-    double U;
+    double
+        transmissivityLightNet,
+        absorptivityIrInnerNet, absorptivityIrOuterNet,
+        unhazed, transmissivityAirNet,
+        U, resistance;
 };
+
 } //namespace
 
 

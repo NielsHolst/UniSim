@@ -2,7 +2,7 @@
 <simulation name="Virtual Greenhouse">
 	<integrator name="steps" type="UniSim::StepsTimeInterval">
 		<parameter name="beginDate" value="2001-01-01"/>
-		<parameter name="endDate" value="2001-12-31"/>
+		<parameter name="endDate" value="2001-01-31"/>
 		<parameter name="beginTime" value="00:00"/>
 		<parameter name="endTime" value="00:00"/>
 		<parameter name="timeStep" value="5"/>
@@ -61,7 +61,9 @@
 					</model>
 					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
-				<model name="screens" type="vg::Screens"/>
+				<model name="screens" type="vg::Screens">
+					<parameter name="additionalScreens" value="construction/horizontalScreens"/>
+				</model>
 			</model>
 			<model name="roof2" type="vg::Shelter">
 				<model name="cover" type="vg::Cover">
@@ -79,7 +81,9 @@
 					</model>
 					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
-				<model name="screens" type="vg::Screens"/>
+				<model name="screens" type="vg::Screens">
+					<parameter name="additionalScreens" value="construction/horizontalScreens"/>
+				</model>
 			</model>
 			<model name="side1" type="vg::Shelter">
 				<model name="cover" type="vg::Cover">
@@ -99,10 +103,8 @@
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
-						<parameter name="position" value="side1"/>
-						<parameter name="layer" value="outer"/>
-						<parameter name="lightTransmissivity" value="0.41"/>
-						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="transmissivityLight" value="0.41"/>
+						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
 						<parameter name="U50" value="2.5"/>
 						<parameter name="haze" value="0"/>
@@ -128,10 +130,8 @@
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
-						<parameter name="position" value="side2"/>
-						<parameter name="layer" value="outer"/>
-						<parameter name="lightTransmissivity" value="0.41"/>
-						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="transmissivityLight" value="0.41"/>
+						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
 						<parameter name="U50" value="2.5"/>
 						<parameter name="haze" value="0"/>
@@ -157,10 +157,8 @@
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
-						<parameter name="position" value="end1"/>
-						<parameter name="layer" value="outer"/>
-						<parameter name="lightTransmissivity" value="0.41"/>
-						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="transmissivityLight" value="0.41"/>
+						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
 						<parameter name="U50" value="2.5"/>
 						<parameter name="haze" value="0"/>
@@ -186,10 +184,8 @@
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
-						<parameter name="position" value="end2"/>
-						<parameter name="layer" value="outer"/>
-						<parameter name="lightTransmissivity" value="0.41"/>
-						<parameter name="airTransmission" value="0.45"/>
+						<parameter name="transmissivityLight" value="0.41"/>
+						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
 						<parameter name="U50" value="2.5"/>
 						<parameter name="haze" value="0"/>
@@ -198,12 +194,10 @@
 				</model>
 			</model>
 		</model>
-		<model name="horizontalScreen" type="vg::Screens">
+		<model name="horizontalScreens" type="vg::Screens">
 			<model name="energy" type="vg::Screen">
-				<parameter name="position" value="horizontal"/>
-				<parameter name="layer" value="outer"/>
-				<parameter name="lightTransmissivity" value="0.34"/>
-				<parameter name="airTransmission" value="0.37"/>
+				<parameter name="transmissivityLight" value="0.34"/>
+				<parameter name="transmissivityAir" value="0.37"/>
 				<parameter name="energyLossReduction" value="0.6"/>
 				<parameter name="U50" value="2.5"/>
 				<parameter name="haze" value="0"/>
@@ -267,7 +261,8 @@
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" ref="total/airFlux/crackVentilation[value]"/>
 						<parameter name="volumeProportion" ref="construction/geometry[volumeProportionTop]"/>
-						<parameter name="gap" ref="horizontalScreen[airTransmissionNot]"/>
+						<parameter name="transmissivity" ref="horizontalScreens[airTransmissivity]"/>
+						<parameter name="useNotTransmitted" value="yes"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
 						<parameter name="receiverVolume" ref="construction/geometry[volumeTop]"/>
@@ -323,7 +318,7 @@
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" value="0"/>
 						<parameter name="volumeProportion" ref="construction/geometry[volumeProportionIndoors]"/>
-						<parameter name="gap" ref="horizontalScreen[airTransmission]"/>
+						<parameter name="transmissivity" ref="horizontalScreens[airTransmissivity]"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
 						<parameter name="receiverVolume" ref="construction/geometry[volumeIndoors]"/>
@@ -1008,15 +1003,21 @@
 		<trace label="bottom_floor" ref="given/bottom/energyFlux/floor[value]"/>
 		<trace label="cooling_indoors" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 		<trace label="cooling_top" ref="cooling/airFlux[fromOutdoorsToTop]"/>
-		<trace label="horz_air_trans" ref="horizontalScreen[airTransmission]"/>
 		<trace label="top_diffuse_trans" ref="greenhouseShelter/top[diffuseLightTransmission]"/>
 		<trace label="top_dir_dir_trans" ref="greenhouseShelter/top[directLightTransmissionAsDirect]"/>
 		<trace label="top_dir_diff_trans" ref="greenhouseShelter/top[directLightTransmissionAsDiffuse]"/>
-		<trace label="horz_light_trans" ref="horizontalScreen[lightTransmission]"/>
+		<trace label="bottom_diffuse_trans" ref="greenhouseShelter/bottom[diffuseLightTransmission]"/>
+		<trace label="bottom_dir_dir_trans" ref="greenhouseShelter/bottom[directLightTransmissionAsDirect]"/>
+		<trace label="bottom_dir_diff_trans" ref="greenhouseShelter/bottom[directLightTransmissionAsDiffuse]"/>
+		<trace label="total_diffuse_trans" ref="greenhouseShelter/total[diffuseLightTransmission]"/>
+		<trace label="total_dir_dir_trans" ref="greenhouseShelter/total[directLightTransmissionAsDirect]"/>
+		<trace label="total_dir_diff_trans" ref="greenhouseShelter/total[directLightTransmissionAsDiffuse]"/>
+		<trace label="horz_light_trans" ref="horizontalScreens[lightTransmissivity]"/>
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
 		<trace label="indoors_light" value="indoors/light[total]"/>
 		<trace label="scr_max" value="controllers/screens/maxDrawn[value]"/>
+		<trace label="test_horz_scr_en" value="horizontalScreens/energy[state]"/>
 		<trace label="act_scr_en" value="actuators/screens/energy/control[state]"/>
 		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
 		<trace label="act_scr_bl" value="actuators/screens/blackout/control[state]"/>

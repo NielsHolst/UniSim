@@ -42,7 +42,7 @@ EnergyFluxCoolingSupply::EnergyFluxCoolingSupply(Identifier name, QObject *paren
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     InputRef(double, averageHeight,"construction/geometry[height]");
-    InputRef(double, airTrans, "horizontalScreen[airTransmission]");
+    InputRef(double, airTransmissivity, "horizontalScreens[airTransmissivity]");
     Output(double, value);
 //    Output(double, airFlux);
 }
@@ -55,7 +55,7 @@ void EnergyFluxCoolingSupply::update() {
     double dT = outdoorsTemperature - indoorsTemperature;
     if (dT < 0.) {
         // W/m2 = m * h-1 / (s/h) * K * J/kg/K * kg/m3
-        double energySupplyMax = averageHeight*airSupplyMax*airTrans/3600*dT*CpAir*RhoAir;
+        double energySupplyMax = averageHeight*airSupplyMax*airTransmissivity/3600*dT*CpAir*RhoAir;
         value = max(energyDemand, energySupplyMax); // both are negative or zero
     }
     else {

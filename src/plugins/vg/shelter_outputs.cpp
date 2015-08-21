@@ -16,7 +16,7 @@ namespace vg {
  * Outputs
  * ------
  * - _U_ is the heat transfer coefficient of the shelter [W/K/m<SUP>2</SUP>]
- * - _airTransmission_ is the proportion of air transmitted through the shelter [0;1]
+ * - _airTransmissivity_ is the proportion of air transmitted through the shelter [0;1]
  * - _haze_ is the proportion of direct light becoming dispersed on passage through the shelter [0;1]
  * - _diffuseLightTransmission_ is the proportion of diffuse light transmitted through the shelter [0;1]
  * - _directLightTransmissionAsDirect_ is the proportion of direct light transmitted through the shelter as direct light [0;1]
@@ -27,7 +27,7 @@ ShelterOutputs::ShelterOutputs(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Output(double, U);
-    Output(double, airTransmission);
+    Output(double, airTransmissivity);
     Output(double, haze);
     Output(double, diffuseLightTransmission);
     Output(double, directLightTransmissionAsDirect);
@@ -36,7 +36,7 @@ ShelterOutputs::ShelterOutputs(Identifier name, QObject *parent)
 
 void ShelterOutputs::reset() {
     U = 0;
-    airTransmission = 1.;
+    airTransmissivity = 1.;
     haze = 0.;
     diffuseLightTransmission =
     directLightTransmissionAsDirect =

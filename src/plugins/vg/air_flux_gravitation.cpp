@@ -34,7 +34,7 @@ PUBLISH(AirFluxGravitation)
 AirFluxGravitation::AirFluxGravitation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, state, "horizontalScreen[maxState]");
+    InputRef(double, state, "horizontalScreens[maxState]");
     InputRef(double, topTemperature, "indoors/top/temperature[value]");
     InputRef(double, bottomTemperature, "indoors/temperature[value]");
     InputRef(double, topVolume, "construction/geometry[volumeTop]");

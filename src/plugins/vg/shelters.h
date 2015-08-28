@@ -4,25 +4,30 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_LEAF_TEMPERATURE_H
-#define VG_LEAF_TEMPERATURE_H
+#ifndef VG_SHELTERS_H
+#define VG_SHELTERS_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class LeafTemperature : public UniSim::Model
+class Shelters : public UniSim::Model
 {
 public:
-    LeafTemperature(UniSim::Identifier name, QObject *parent);
+    Shelters(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 
 private:
-    // Inputs
-    double lightAbsorbed, Tgh, RHgh, rsH2O, rbH2O;
     // Outputs
-    double value;
+    double airTransmissivity, U, area, maxScreenState;
+    // Data
+    struct ShelterInfo {
+        const double *pAirTransmissivity, *pU, *pArea, *pMaxState;
+    };
+
+    QVector<ShelterInfo> infos;
 };
 } //namespace
 

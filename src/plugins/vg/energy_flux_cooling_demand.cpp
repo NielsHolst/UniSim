@@ -36,8 +36,8 @@ EnergyFluxCoolingDemand::EnergyFluxCoolingDemand(Identifier name, QObject *paren
 {
     InputRef(double, heatedTemperature, "../../temperature[value]");
     InputRef(double, setpointTemperature, "setpoints/temperature/ventilation[value]");
-    InputRef(double, volume, "construction/geometry[volumeIndoors]");
-    InputRef(double, area, "construction/geometry[groundArea]");
+    InputRef(double, volume, "geometry[indoorsVolume]");
+    InputRef(double, area, "geometry[groundArea]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     Output(double, value);
 }

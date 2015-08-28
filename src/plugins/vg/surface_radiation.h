@@ -10,8 +10,7 @@
 namespace vg {
 
 struct SurfaceRadiation {
-    SurfaceRadiation() : SurfaceRadiation(1,0,0) {}
-    SurfaceRadiation(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner);
+    SurfaceRadiation();
 
     struct Spectrum {
         Spectrum() : tra(1) {}
@@ -27,8 +26,11 @@ struct SurfaceRadiation {
         } inner, outer;
     } light, ir;
 
-    void updateParameters(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner);
-//    SurfaceRadiation& operator=(const SurfaceRadiation &sr);
+    // Methods
+    SurfaceRadiation& asCover(double transmissivity, double absorptivity, double emissivity);
+    SurfaceRadiation& asScreen(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner);
+
+    // Operators
     SurfaceRadiation& operator*=(const SurfaceRadiation &s2);
 };
 

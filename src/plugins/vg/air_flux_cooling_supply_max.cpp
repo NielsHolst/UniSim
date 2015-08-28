@@ -26,7 +26,6 @@ PUBLISH(AirFluxCoolingSupplyMax)
  * - _byTemp_ is the air exchange rate that can be caused by the outside-inside temperature difference alone [h<SUP>-1</SUP>]
  * - _indoorsTemperature_ is the indoors temperature [<SUP>o</SUP>C]
  * - _outdoorsTemperature_ is the outdoors temperature [<SUP>o</SUP>C]
- * - _averageHeight_ is the average height of the greenhouse [m]
  *
  * Output
  * ------

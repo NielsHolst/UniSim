@@ -49,7 +49,7 @@ PUBLISH(Vents)
  *   + _ventDensity_ [m<SUP>-2</SUP>]
  *   + _ventMaxOpening_ [0;180]
  *   + _efficacy_ [0;1]
- * - a _construction/geometry_ model with a _roofPitch_ port [0;180]
+ * - a _geometry_ model with a _roofPitch_ port [0;180]
  * - an _actuators/vents_ model with two child models:
  *   + _leeside_ with a _state_ port [0;100]
  *   + _windside_ with a _state_ port [0;100]
@@ -58,7 +58,7 @@ PUBLISH(Vents)
 Vents::Vents(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
+    InputRef(double, greenhouseArea, "geometry[groundArea]");
     Output(double, totalLength);
     Output(double, averageHeight);
     Output(double, proportionalEffectiveArea);

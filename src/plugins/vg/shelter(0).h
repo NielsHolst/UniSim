@@ -24,17 +24,15 @@ public:
     void update();
 
 private:
-    // inputs
+    // Inputs
     QString directTransmissionFile;
     double latitude, azimuth, greenhouseShade, chalk;
 
     // Data
-    QList<UniSim::Model*> screens;
-    const double *pCoverU, *pCoverHaze, *pCoverDiffuseTransmission;
-    double zero, one;
+    const double *pCoverU, *pCoverHaze, *pCoverDiffuseTransmission,
+        *pScreensU, *pScreensAirTransmission, *pScreensLightTransmission, *pScreensHaze;
 
     UniSim::DataGrid *dirTransTable;
-
     // Methods
     void updateU();
     void updateHaze();

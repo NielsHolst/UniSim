@@ -13,10 +13,29 @@
 
 namespace vg {
 
-SurfaceRadiation::SurfaceRadiation(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner) {
+SurfaceRadiation::SurfaceRadiation() {
+    asScreen(1,0,0);
+}
+
+SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double absorptivity, double emissivity) {
     light.tra = transmissivity;
     ir.tra = 0.;
-    light.outer.abs = ir.outer.abs = absorptivityIrOuter;
+    light.outer.abs =
+    light.inner.abs = absorptivity;
+    ir.outer.abs =
+    ir.inner.abs = emissivity;
+    light.outer.setRef(light.tra);
+    light.inner.setRef(light.tra);
+    ir.outer.setRef(ir.tra);
+    ir.inner.setRef(ir.tra);
+    return *this;
+}
+
+SurfaceRadiation& SurfaceRadiation::asScreen(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner) {
+    light.tra = transmissivity;
+    ir.tra = 0.;
+    light.outer.abs =
+    ir.outer.abs = absorptivityIrOuter;
     light.outer.setRef(light.tra);
     ir.outer.setRef(ir.tra);
 
@@ -24,6 +43,7 @@ SurfaceRadiation::SurfaceRadiation(double transmissivity, double absorptivityIrO
     ir.inner.setRef(ir.tra);
     light.inner.ref = std::min(ir.inner.ref, 1. - light.tra);
     light.inner.setAbs(light.tra);
+    return *this;
 }
 
 void SurfaceRadiation::Spectrum::Direction::setRef(double tra) {
@@ -43,15 +63,6 @@ void SurfaceRadiation::Spectrum::Direction::setAbs(double tra) {
     }
     Q_ASSERT(abs>=0.);
 }
-
-//SurfaceRadiation& SurfaceRadiation::operator=(const SurfaceRadiation &s2) {
-//    tra = s2.tra;
-//    inner.ref = s2.inner.ref;
-//    outer.abs = s2.outer.abs;
-//    inner.abs = s2.inner.abs;
-//    outer.ref = s2.outer.ref;
-//    return *this;
-//}
 
 SurfaceRadiation::Spectrum& SurfaceRadiation::Spectrum::operator*=(const SurfaceRadiation::Spectrum &s2) {
     double k = 1. - inner.ref*s2.outer.ref,

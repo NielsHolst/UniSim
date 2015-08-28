@@ -21,7 +21,7 @@ public:
 
 private:
     // Inputs
-    double absorbedRadiation, rsH2O, rbH2O,
+    double lightAbsorbed, rsH2O, rbH2O,
         value, indoorsAh, Tleaf, lai, fractionPlantArea, xGauss, wGauss;
     // Outputs
     double leafAh;

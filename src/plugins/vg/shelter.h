@@ -7,7 +7,7 @@
 #ifndef VG_SHELTER_H
 #define VG_SHELTER_H
 
-#include "shelter_outputs.h"
+#include "surface_radiation_outputs.h"
 
 namespace UniSim {
     class DataGrid;
@@ -15,24 +15,33 @@ namespace UniSim {
 
 namespace vg {
 
-class Shelter : public ShelterOutputs
+class Shelter : public SurfaceRadiationOutputs
 {
 public:
     Shelter(UniSim::Identifier name, QObject *parent);
     void initialize();
-    void localReset();
+    void reset();
     void update();
 
 private:
     // Inputs
     QString directTransmissionFile;
-    double latitude, azimuth, greenhouseShade, chalk;
+    double latitude, azimuth, greenhouseShade, chalk,
+    coverAreaRoof, coverAreaSideWalls, coverAreaEndWalls, coverAreaGables,
+    outdoorsDirectRadiation, outdoorsDiffuseRadiation;
+
+    // Outputs
+    double area, diffuseLightTransmitted, directLightTransmitted, totalLightTransmitted,
+        airTransmissivity, haze, U, maxScreenState;
 
     // Data
-    const double *pCoverU, *pCoverHaze, *pCoverDiffuseTransmission,
-        *pScreensU, *pScreensAirTransmission, *pScreensLightTransmission, *pScreensHaze;
-
+    double relativeArea;
+    const double *pLightTransmissivity,
+        *pCoverU, *pCoverHaze, *pCoverDiffuseTransmission,
+        *pScreensU, *pScreensAirTransmission, *pScreensHaze, *pMaxScreenState;
+    const SurfaceRadiation *pCoverSurfaceRadiation, *pScreensSurfaceRadiation;
     UniSim::DataGrid *dirTransTable;
+
     // Methods
     void updateU();
     void updateHaze();

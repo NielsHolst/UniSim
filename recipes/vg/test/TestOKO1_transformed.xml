@@ -35,173 +35,184 @@
 			<parameter name="roofPitch" value="26"/>
 			<parameter name="shade" value="0.2"/>
 		</model>
-		<model name="greenhouseShelter">
-			<model name="top" type="vg::GreenhouseShelter">
-				<parameter name="shelters" value="(greenhouseShelter/roof1 greenhouseShelter/roof2)"/>
-			</model>
-			<model name="bottom" type="vg::GreenhouseShelter">
-				<parameter name="shelters" value="(greenhouseShelter/side1 greenhouseShelter/side2 greenhouseShelter/end1 greenhouseShelter/end2)"/>
-			</model>
-			<model name="total" type="vg::GreenhouseShelter">
-				<parameter name="shelters" value="(greenhouseShelter/roof1 greenhouseShelter/roof2 greenhouseShelter/side1 greenhouseShelter/side2 greenhouseShelter/end1 greenhouseShelter/end2)"/>
-			</model>
-			<model name="roof1" type="vg::Shelter">
-				<model name="cover" type="vg::Cover">
-					<parameter name="U4" value="7.5"/>
-					<parameter name="transmissivity" value="0.83"/>
-					<parameter name="emissivity" value="0.93"/>
-					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="density" value="2600"/>
-					<parameter name="heatCapacity" value="840"/>
-					<parameter name="thickness" value="4"/>
-					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/top/temperature[value]"/>
-						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
-				</model>
-				<model name="screens" type="vg::Screens">
-					<parameter name="additionalScreens" value="construction/horizontalScreens"/>
-				</model>
-			</model>
-			<model name="roof2" type="vg::Shelter">
-				<model name="cover" type="vg::Cover">
-					<parameter name="U4" value="7.5"/>
-					<parameter name="transmissivity" value="0.83"/>
-					<parameter name="emissivity" value="0.93"/>
-					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="density" value="2600"/>
-					<parameter name="heatCapacity" value="840"/>
-					<parameter name="thickness" value="4"/>
-					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/top/temperature[value]"/>
-						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
-				</model>
-				<model name="screens" type="vg::Screens">
-					<parameter name="additionalScreens" value="construction/horizontalScreens"/>
-				</model>
-			</model>
-			<model name="side1" type="vg::Shelter">
-				<model name="cover" type="vg::Cover">
-					<parameter name="U4" value="7.5"/>
-					<parameter name="transmissivity" value="0.83"/>
-					<parameter name="emissivity" value="0.93"/>
-					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="density" value="2600"/>
-					<parameter name="heatCapacity" value="840"/>
-					<parameter name="thickness" value="4"/>
-					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="construction/geometry[averageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
-				</model>
-				<model name="screens" type="vg::Screens">
-					<model name="energy" type="vg::Screen">
-						<parameter name="transmissivityLight" value="0.41"/>
-						<parameter name="transmissivityAir" value="0.45"/>
-						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
+		<model name="shelters" type="vg::Shelters">
+			<model name="roof" type="vg::Shelters">
+				<model name="roof1" type="vg::Shelter">
+					<model name="cover" type="vg::Cover">
+						<parameter name="U4" value="7.5"/>
+						<parameter name="transmissivity" value="0.83"/>
+						<parameter name="emissivity" value="0.93"/>
+						<parameter name="absorptivity" value="0.04"/>
+						<parameter name="heatCapacity" value="8736"/>
 						<parameter name="haze" value="0"/>
-						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						<model name="energyFlux" type="vg::EnergyFluxCover">
+							<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
+							<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
+						</model>
+						<model name="condensation" type="vg::CoverCondensation"/>
+					</model>
+					<model name="screens" type="vg::Screens">
+						<model name="energy" type="vg::Screen">
+							<parameter name="position" value="roof1_roof2_horizontal"/>
+							<parameter name="layer" value="outer"/>
+							<parameter name="emissivityInner" value="0.62"/>
+							<parameter name="emissivityOuter" value="0.06"/>
+							<parameter name="transmissivityLight" value="0.34"/>
+							<parameter name="transmissivityAir" value="0.37"/>
+							<parameter name="energyLossReduction" value="0.6"/>
+							<parameter name="U50" value="2.5"/>
+							<parameter name="haze" value="0"/>
+							<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						</model>
 					</model>
 				</model>
-			</model>
-			<model name="side2" type="vg::Shelter">
-				<model name="cover" type="vg::Cover">
-					<parameter name="U4" value="7.5"/>
-					<parameter name="transmissivity" value="0.83"/>
-					<parameter name="emissivity" value="0.93"/>
-					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="density" value="2600"/>
-					<parameter name="heatCapacity" value="840"/>
-					<parameter name="thickness" value="4"/>
-					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="construction/geometry[averageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
-				</model>
-				<model name="screens" type="vg::Screens">
-					<model name="energy" type="vg::Screen">
-						<parameter name="transmissivityLight" value="0.41"/>
-						<parameter name="transmissivityAir" value="0.45"/>
-						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
+				<model name="roof2" type="vg::Shelter">
+					<model name="cover" type="vg::Cover">
+						<parameter name="U4" value="7.5"/>
+						<parameter name="transmissivity" value="0.83"/>
+						<parameter name="emissivity" value="0.93"/>
+						<parameter name="absorptivity" value="0.04"/>
+						<parameter name="heatCapacity" value="8736"/>
 						<parameter name="haze" value="0"/>
-						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						<model name="energyFlux" type="vg::EnergyFluxCover">
+							<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
+							<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
+						</model>
+						<model name="condensation" type="vg::CoverCondensation"/>
+					</model>
+					<model name="screens" type="vg::Screens">
+						<model name="energy" type="vg::Screen">
+							<parameter name="position" value="roof1_roof2_horizontal"/>
+							<parameter name="layer" value="outer"/>
+							<parameter name="emissivityInner" value="0.62"/>
+							<parameter name="emissivityOuter" value="0.06"/>
+							<parameter name="transmissivityLight" value="0.34"/>
+							<parameter name="transmissivityAir" value="0.37"/>
+							<parameter name="energyLossReduction" value="0.6"/>
+							<parameter name="U50" value="2.5"/>
+							<parameter name="haze" value="0"/>
+							<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						</model>
 					</model>
 				</model>
 			</model>
-			<model name="end1" type="vg::Shelter">
-				<model name="cover" type="vg::Cover">
-					<parameter name="U4" value="7.5"/>
-					<parameter name="transmissivity" value="0.83"/>
-					<parameter name="emissivity" value="0.93"/>
-					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="density" value="2600"/>
-					<parameter name="heatCapacity" value="840"/>
-					<parameter name="thickness" value="4"/>
-					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="construction/geometry[averageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
-				</model>
-				<model name="screens" type="vg::Screens">
-					<model name="energy" type="vg::Screen">
-						<parameter name="transmissivityLight" value="0.41"/>
-						<parameter name="transmissivityAir" value="0.45"/>
-						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
+			<model name="walls" type="vg::Shelters">
+				<model name="side1" type="vg::Shelter">
+					<model name="cover" type="vg::Cover">
+						<parameter name="U4" value="7.5"/>
+						<parameter name="transmissivity" value="0.83"/>
+						<parameter name="emissivity" value="0.93"/>
+						<parameter name="absorptivity" value="0.04"/>
+						<parameter name="heatCapacity" value="8736"/>
 						<parameter name="haze" value="0"/>
-						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						<model name="energyFlux" type="vg::EnergyFluxCover">
+							<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
+							<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
+						</model>
+						<model name="condensation" type="vg::CoverCondensation"/>
+					</model>
+					<model name="screens" type="vg::Screens">
+						<model name="energy" type="vg::Screen">
+							<parameter name="position" value="side1"/>
+							<parameter name="layer" value="outer"/>
+							<parameter name="emissivityInner" value="0.62"/>
+							<parameter name="emissivityOuter" value="0.06"/>
+							<parameter name="transmissivityLight" value="0.41"/>
+							<parameter name="transmissivityAir" value="0.45"/>
+							<parameter name="energyLossReduction" value="0.55"/>
+							<parameter name="U50" value="2.5"/>
+							<parameter name="haze" value="0"/>
+							<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						</model>
 					</model>
 				</model>
-			</model>
-			<model name="end2" type="vg::Shelter">
-				<model name="cover" type="vg::Cover">
-					<parameter name="U4" value="7.5"/>
-					<parameter name="transmissivity" value="0.83"/>
-					<parameter name="emissivity" value="0.93"/>
-					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="density" value="2600"/>
-					<parameter name="heatCapacity" value="840"/>
-					<parameter name="thickness" value="4"/>
-					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="construction/geometry[averageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
-				</model>
-				<model name="screens" type="vg::Screens">
-					<model name="energy" type="vg::Screen">
-						<parameter name="transmissivityLight" value="0.41"/>
-						<parameter name="transmissivityAir" value="0.45"/>
-						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
+				<model name="side2" type="vg::Shelter">
+					<model name="cover" type="vg::Cover">
+						<parameter name="U4" value="7.5"/>
+						<parameter name="transmissivity" value="0.83"/>
+						<parameter name="emissivity" value="0.93"/>
+						<parameter name="absorptivity" value="0.04"/>
+						<parameter name="heatCapacity" value="8736"/>
 						<parameter name="haze" value="0"/>
-						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						<model name="energyFlux" type="vg::EnergyFluxCover">
+							<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
+							<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
+						</model>
+						<model name="condensation" type="vg::CoverCondensation"/>
+					</model>
+					<model name="screens" type="vg::Screens">
+						<model name="energy" type="vg::Screen">
+							<parameter name="position" value="side2"/>
+							<parameter name="layer" value="outer"/>
+							<parameter name="emissivityInner" value="0.62"/>
+							<parameter name="emissivityOuter" value="0.06"/>
+							<parameter name="transmissivityLight" value="0.41"/>
+							<parameter name="transmissivityAir" value="0.45"/>
+							<parameter name="energyLossReduction" value="0.55"/>
+							<parameter name="U50" value="2.5"/>
+							<parameter name="haze" value="0"/>
+							<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						</model>
 					</model>
 				</model>
-			</model>
-		</model>
-		<model name="horizontalScreens" type="vg::Screens">
-			<model name="energy" type="vg::Screen">
-				<parameter name="transmissivityLight" value="0.34"/>
-				<parameter name="transmissivityAir" value="0.37"/>
-				<parameter name="energyLossReduction" value="0.6"/>
-				<parameter name="U50" value="2.5"/>
-				<parameter name="haze" value="0"/>
-				<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+				<model name="end1" type="vg::Shelter">
+					<model name="cover" type="vg::Cover">
+						<parameter name="U4" value="7.5"/>
+						<parameter name="transmissivity" value="0.83"/>
+						<parameter name="emissivity" value="0.93"/>
+						<parameter name="absorptivity" value="0.04"/>
+						<parameter name="heatCapacity" value="8736"/>
+						<parameter name="haze" value="0"/>
+						<model name="energyFlux" type="vg::EnergyFluxCover">
+							<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
+							<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
+						</model>
+						<model name="condensation" type="vg::CoverCondensation"/>
+					</model>
+					<model name="screens" type="vg::Screens">
+						<model name="energy" type="vg::Screen">
+							<parameter name="position" value="end1"/>
+							<parameter name="layer" value="outer"/>
+							<parameter name="emissivityInner" value="0.62"/>
+							<parameter name="emissivityOuter" value="0.06"/>
+							<parameter name="transmissivityLight" value="0.41"/>
+							<parameter name="transmissivityAir" value="0.45"/>
+							<parameter name="energyLossReduction" value="0.55"/>
+							<parameter name="U50" value="2.5"/>
+							<parameter name="haze" value="0"/>
+							<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						</model>
+					</model>
+				</model>
+				<model name="end2" type="vg::Shelter">
+					<model name="cover" type="vg::Cover">
+						<parameter name="U4" value="7.5"/>
+						<parameter name="transmissivity" value="0.83"/>
+						<parameter name="emissivity" value="0.93"/>
+						<parameter name="absorptivity" value="0.04"/>
+						<parameter name="heatCapacity" value="8736"/>
+						<parameter name="haze" value="0"/>
+						<model name="energyFlux" type="vg::EnergyFluxCover">
+							<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
+							<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
+						</model>
+						<model name="condensation" type="vg::CoverCondensation"/>
+					</model>
+					<model name="screens" type="vg::Screens">
+						<model name="energy" type="vg::Screen">
+							<parameter name="position" value="end2"/>
+							<parameter name="layer" value="outer"/>
+							<parameter name="emissivityInner" value="0.62"/>
+							<parameter name="emissivityOuter" value="0.06"/>
+							<parameter name="transmissivityLight" value="0.41"/>
+							<parameter name="transmissivityAir" value="0.45"/>
+							<parameter name="energyLossReduction" value="0.55"/>
+							<parameter name="U50" value="2.5"/>
+							<parameter name="haze" value="0"/>
+							<parameter name="state" ref="actuators/screens/energy/control[state]"/>
+						</model>
+					</model>
+				</model>
 			</model>
 		</model>
 		<model name="vents" type="vg::Vents">
@@ -260,12 +271,12 @@
 					<model name="outdoors" type="AirFluxOutdoors">
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" ref="total/airFlux/crackVentilation[value]"/>
-						<parameter name="volumeProportion" ref="construction/geometry[volumeProportionTop]"/>
-						<parameter name="transmissivity" ref="horizontalScreens[airTransmissivity]"/>
+						<parameter name="volumeProportion" ref="geometry[roofMarginVolumeProportion]"/>
+						<parameter name="transmissivity" ref="construction/shelters/roof[airTransmissivity]"/>
 						<parameter name="useNotTransmitted" value="yes"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
-						<parameter name="receiverVolume" ref="construction/geometry[volumeTop]"/>
+						<parameter name="receiverVolume" ref="geometry[roofMarginVolume]"/>
 					</model>
 				</model>
 				<model name="vapourFlux" type="vg::VapourFluxSum">
@@ -276,13 +287,13 @@
 						<parameter name="airFlux" ref="../../airflux/outdoors[value]"/>
 						<parameter name="receiverAh" ref="indoors/top/humidity[ah]"/>
 						<parameter name="donorAh" ref="outdoors[ah]"/>
-						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
+						<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
 					</model>
 					<model name="airFluxIndoors" type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="top/airFlux/indoors[value]"/>
 						<parameter name="receiverAh" ref="indoors/top/humidity[ah]"/>
 						<parameter name="donorAh" ref="indoors/humidity[ah]"/>
-						<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
+						<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
 					</model>
 				</model>
 				<model name="energyFlux" type="vg::EnergyFluxSum">
@@ -291,14 +302,14 @@
 						<parameter name="airFlux" ref="top/airFlux/outdoors[value]"/>
 						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/>
 						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-						<parameter name="receiverHeight" ref="construction/geometry[roofAverageHeight]"/>
+						<parameter name="receiverHeight" ref="geometry[roofMarginAverageHeight]"/>
 					</model>
 					<model name="airFluxIndoors" type="vg::EnergyFluxAir">
 						<parameter name="airFlux" ref="top/airFlux/indoors[value]"/>
 						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/>
 						<parameter name="donorTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="receiverHeight" ref="construction/geometry[roofAverageHeight]"/>
-						<parameter name="donorHeight" ref="construction/geometry[height]"/>
+						<parameter name="receiverHeight" ref="geometry[roofMarginAverageHeight]"/>
+						<parameter name="donorHeight" ref="geometry[height]"/>
 					</model>
 					<model name="convection" type="vg::EnergyFluxHorizontal">
 						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/>
@@ -307,9 +318,6 @@
 					<model name="cover" type="vg::EnergyFluxCoverSum">
 						<parameter name="toAdd" value="(roof1/cover/energyFlux roof2/cover/energyFlux)"/>
 					</model>
-					<model name="light" type="UniSim::Sum">
-						<parameter name="toAdd" value="(top/light[total])"/>
-					</model>
 				</model>
 			</model>
 			<model name="bottom">
@@ -317,11 +325,11 @@
 					<model name="outdoors" type="AirFluxOutdoors">
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" value="0"/>
-						<parameter name="volumeProportion" ref="construction/geometry[volumeProportionIndoors]"/>
-						<parameter name="transmissivity" ref="horizontalScreens[airTransmissivity]"/>
+						<parameter name="volumeProportion" ref="geometry[roofMarginVolumeProportion]"/>
+						<parameter name="transmissivity" ref="shelters/roof[airTransmissivity]"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
-						<parameter name="receiverVolume" ref="construction/geometry[volumeIndoors]"/>
+						<parameter name="receiverVolume" ref="geometry[indoorsVolume]"/>
 					</model>
 				</model>
 				<model name="vapourFlux" type="vg::VapourFluxSum">
@@ -333,13 +341,13 @@
 						<parameter name="airFlux" ref="bottom/airflux/outdoors[value]"/>
 						<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 						<parameter name="donorAh" ref="outdoors[ah]"/>
-						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 					</model>
 					<model name="airFluxIndoors" type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="bottom/airFlux/indoors[value]"/>
 						<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 						<parameter name="donorAh" ref="indoors/top/humidity[ah]"/>
-						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 					</model>
 				</model>
 				<model name="energyFlux" type="vg::EnergyFluxSum">
@@ -354,14 +362,14 @@
 						<parameter name="airFlux" ref="bottom/airflux/outdoors[value]"/>
 						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
 						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-						<parameter name="receiverHeight" ref="construction/geometry[height]"/>
+						<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
 					</model>
 					<model name="airFluxIndoors" type="vg::EnergyFluxAir">
 						<parameter name="airFlux" ref="bottom/airFlux/indoors[value]"/>
 						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
 						<parameter name="donorTemperature" ref="indoors/top/temperature[value]"/>
-						<parameter name="receiverHeight" ref="construction/geometry[height]"/>
-						<parameter name="donorHeight" ref="construction/geometry[roofAverageHeight]"/>
+						<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
+						<parameter name="donorHeight" ref="geometry[roofMarginAverageHeight]"/>
 					</model>
 					<model name="convection" type="vg::EnergyFluxHorizontal">
 						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
@@ -399,7 +407,7 @@
 						</model>
 						<parameter name="energyFlux" ref="./energyFlux[value]"/>
 						<parameter name="baseTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 					</model>
 					<model name="cooling">
 						<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
@@ -425,13 +433,13 @@
 						<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 						<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 						<parameter name="donorAh" ref="outdoors[ah]"/>
-						<parameter name="averageHeight" ref="construction/geometry[height]"/>
+						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 					</model>
 					<model name="energyFlux" type="vg::EnergyFluxAir">
 						<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
 						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-						<parameter name="receiverHeight" ref="construction/geometry[height]"/>
+						<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
 					</model>
 				</model>
 			</model>
@@ -440,13 +448,13 @@
 					<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToTop]"/>
 					<parameter name="receiverAh" ref="indoors/top/humidity[ah]"/>
 					<parameter name="donorAh" ref="outdoors[ah]"/>
-					<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
+					<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
 				</model>
 				<model name="energyFlux" type="vg::EnergyFluxAir">
 					<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToTop]"/>
 					<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/>
 					<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-					<parameter name="receiverHeight" ref="construction/geometry[roofAverageHeight]"/>
+					<parameter name="receiverHeight" ref="geometry[roofMarginAverageHeight]"/>
 				</model>
 			</model>
 		</model>
@@ -475,33 +483,32 @@
 			</model>
 		</model>
 		<model name="top">
-			<model name="light" type="vg::IndoorsTopLight"/>
 			<model name="temperature" type="vg::IndoorsTemperature">
 				<parameter name="initValue" value="18"/>
 				<parameter name="energyFlux" ref="total/top/energyFlux[value]"/>
-				<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
+				<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
 			</model>
 			<model name="humidity" type="vg::IndoorsHumidity">
 				<parameter name="conductance" ref="total/top/vapourFlux[conductance]"/>
 				<parameter name="vapourFlux" ref="total/top/vapourFlux[vapourFlux]"/>
 				<parameter name="gain" ref="total/top/vapourFlux[gain]"/>
 				<parameter name="temperature" ref="../temperature[value]"/>
-				<parameter name="averageHeight" ref="construction/geometry[roofAverageHeight]"/>
+				<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
 			</model>
 			<model name="co2"/>
 		</model>
-		<model name="light" type="vg::IndoorsBottomLight"/>
+		<model name="light" type="vg::IndoorsLight"/>
 		<model name="temperature" type="vg::IndoorsTemperature">
 			<parameter name="initValue" value="18"/>
 			<parameter name="energyFlux" ref="total/bottom/energyFlux[value]"/>
-			<parameter name="averageHeight" ref="construction/geometry[height]"/>
+			<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 		</model>
 		<model name="humidity" type="vg::IndoorsHumidity">
 			<parameter name="conductance" ref="total/bottom/vapourFlux[conductance]"/>
 			<parameter name="vapourFlux" ref="total/bottom/vapourFlux[vapourFlux]"/>
 			<parameter name="gain" ref="total/bottom/vapourFlux[gain]"/>
 			<parameter name="temperature" ref="../temperature[value]"/>
-			<parameter name="averageHeight" ref="construction/geometry[height]"/>
+			<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 		</model>
 		<model name="co2" type="vg::IndoorsCo2"/>
 	</model>
@@ -876,6 +883,7 @@
 			<parameter name="laiStartPerPlant" value="0.385"/>
 			<parameter name="maxLai" value="3.5"/>
 		</model>
+		<model name="radiation" type="vg::CropRadiation"/>
 		<model name="layers">
 			<model name="top" type="vg::Layer">
 				<parameter name="xGauss" value="0.1127"/>
@@ -883,8 +891,9 @@
 				<model name="rs" type="vg::StomatalResistance"/>
 				<model name="rb" type="vg::BoundaryLayerResistance"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
-				<model name="rna" type="vg::RadiationAbsorbed"/>
 				<model name="temperature" type="vg::LeafTemperature"/>
+				<model name="lightAbsorbed" type="vg::CropLightAbsorbed"/>
+				<model name="irAbsorbed"/>
 				<model name="photosynthesis" type="vg::LayerPhotosynthesis">
 					<model name="lightResponse" type="vg::LeafLightResponse"/>
 				</model>
@@ -895,8 +904,9 @@
 				<model name="rs" type="vg::StomatalResistance"/>
 				<model name="rb" type="vg::BoundaryLayerResistance"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
-				<model name="rna" type="vg::RadiationAbsorbed"/>
 				<model name="temperature" type="vg::LeafTemperature"/>
+				<model name="lightAbsorbed" type="vg::CropLightAbsorbed"/>
+				<model name="irAbsorbed"/>
 				<model name="photosynthesis" type="vg::LayerPhotosynthesis">
 					<model name="lightResponse" type="vg::LeafLightResponse"/>
 				</model>
@@ -907,8 +917,9 @@
 				<model name="rs" type="vg::StomatalResistance"/>
 				<model name="rb" type="vg::BoundaryLayerResistance"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
-				<model name="rna" type="vg::RadiationAbsorbed"/>
 				<model name="temperature" type="vg::LeafTemperature"/>
+				<model name="lightAbsorbed" type="vg::CropLightAbsorbed"/>
+				<model name="irAbsorbed"/>
 				<model name="photosynthesis" type="vg::LayerPhotosynthesis">
 					<model name="lightResponse" type="vg::LeafLightResponse"/>
 				</model>
@@ -1003,16 +1014,12 @@
 		<trace label="bottom_floor" ref="given/bottom/energyFlux/floor[value]"/>
 		<trace label="cooling_indoors" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 		<trace label="cooling_top" ref="cooling/airFlux[fromOutdoorsToTop]"/>
-		<trace label="top_diffuse_trans" ref="greenhouseShelter/top[diffuseLightTransmission]"/>
-		<trace label="top_dir_dir_trans" ref="greenhouseShelter/top[directLightTransmissionAsDirect]"/>
-		<trace label="top_dir_diff_trans" ref="greenhouseShelter/top[directLightTransmissionAsDiffuse]"/>
-		<trace label="bottom_diffuse_trans" ref="greenhouseShelter/bottom[diffuseLightTransmission]"/>
-		<trace label="bottom_dir_dir_trans" ref="greenhouseShelter/bottom[directLightTransmissionAsDirect]"/>
-		<trace label="bottom_dir_diff_trans" ref="greenhouseShelter/bottom[directLightTransmissionAsDiffuse]"/>
-		<trace label="total_diffuse_trans" ref="greenhouseShelter/total[diffuseLightTransmission]"/>
-		<trace label="total_dir_dir_trans" ref="greenhouseShelter/total[directLightTransmissionAsDirect]"/>
-		<trace label="total_dir_diff_trans" ref="greenhouseShelter/total[directLightTransmissionAsDiffuse]"/>
-		<trace label="horz_light_trans" ref="horizontalScreens[lightTransmissivity]"/>
+		<trace label="roof1_light" ref="roof/roof1[totalLightTransmitted]"/>
+		<trace label="roof2_light" ref="roof/roof2[totalLightTransmitted]"/>
+		<trace label="side1_light" ref="walls/side1[totalLightTransmitted]"/>
+		<trace label="side2_light" ref="walls/side2[totalLightTransmitted]"/>
+		<trace label="end1_light" ref="walls/end1[totalLightTransmitted]"/>
+		<trace label="end2_light" ref="walls/end2[totalLightTransmitted]"/>
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
 		<trace label="indoors_light" value="indoors/light[total]"/>
@@ -1022,6 +1029,9 @@
 		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
 		<trace label="act_scr_bl" value="actuators/screens/blackout/control[state]"/>
 		<trace label="LAI" value="crop/lai[lai]"/>
+		<trace label="temp_top" ref="layers/top/temperature[value]"/>
+		<trace label="temp_mid" ref="layers/middle/temperature[value]"/>
+		<trace label="temp_bot" ref="layers/bottom/temperature[value]"/>
 		<trace label="Pg_top" ref="layers/top/photosynthesis[Pg]"/>
 		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
 		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>

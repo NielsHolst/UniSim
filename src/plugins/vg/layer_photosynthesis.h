@@ -7,7 +7,7 @@
 #ifndef VG_LAYER_PHOTOSYNTHESIS_H
 #define VG_LAYER_PHOTOSYNTHESIS_H
 
-
+#include <Qpair>
 #include <usbase/model.h>
 
 namespace vg {
@@ -20,9 +20,22 @@ public:
     void update();
 
 private:
-    double Pnmax,Pgmax, LUE, lightDif, lightDir, Kdif, SCV,
-    xGauss, wGauss, lai, Rd, sinB;
-    double Pg, Pn;
+    // Inputs
+    double
+        kDiffuse, kDirect, kDirectDirect, scattering,
+        diffuseReflectivity, directReflectivity,
+        lightDiffuse, lightDirect, parProportion,
+        Pgmax, LUE,
+        xGauss, wGauss, lai, Rd, sinB;
+    // Outputs
+    double parAbsorbed, Pg, Pn;
+    // Data
+    double laiX, parDiffuse, parDirect;
+    // Methods
+    double absorbedByShadedLeaves() const;
+    QPair<double,double> absorbedBySunlitLeaves(double absorbedShaded) const;
+    double grossAssimilationTotal(double Pgshade, double PgSunlit) const;
+    double grossAssimilation(double absorbed) const;
 };
 } //namespace
 

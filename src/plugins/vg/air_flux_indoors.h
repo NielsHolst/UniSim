@@ -20,7 +20,7 @@ public:
 
 private:
     // Inputs
-    double infiltration, gravitation, airTransmissivity, receiverVolume, volumeIndoors;
+    double infiltration, gravitation, airTransmissivity, receiverVolume;
 
     // Outputs
     double value, indoorsToTop;

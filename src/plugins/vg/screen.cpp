@@ -37,9 +37,11 @@ PUBLISH(Screen)
 Screen::Screen(Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    Input(QString, position, "");
+    Input(QString, layer, "");
     Input(double, transmissivityLight, 0.41);
-    Input(double, emissivityIrInner, 0.62);
-    Input(double, emissivityIrOuter, 0.06);
+    Input(double, emissivityInner, 0.62);
+    Input(double, emissivityOuter, 0.06);
 
     Input(double, U50, 2.5);
     Input(double, energyLossReduction, 0.4);
@@ -48,6 +50,7 @@ Screen::Screen(Identifier name, QObject *parent)
     Input(double, transmissivityAirExponent, 4.);
     Input(double, state, 0.);
 
+    Output(bool, isHorizontal);
     Output(double, transmissivityLightNet);
     Output(double, absorptivityIrInnerNet);
     Output(double, absorptivityIrOuterNet);
@@ -59,14 +62,15 @@ Screen::Screen(Identifier name, QObject *parent)
 }
 
 void Screen::reset() {
+    isHorizontal = position.toLower().contains("horizontal");
     double slope = -U50/50.;
     U = -100*slope + slope*energyLossReduction;
 }
 
 void Screen::update() {
     transmissivityLightNet= 1. - state + state*transmissivityLight;
-    absorptivityIrInnerNet = state*emissivityIrInner;   // Absorptivity = Emissivity for IR
-    absorptivityIrOuterNet = state*emissivityIrOuter;   // do.
+    absorptivityIrInnerNet = state*emissivityInner;   // Absorptivity = Emissivity for IR
+    absorptivityIrOuterNet = state*emissivityOuter;   // do.
     unhazed =  1. - state*haze;
     transmissivityAirNet = std::min( pow(1.-state, transmissivityAirExponent) + state*transmissivityAir, 1. );
     resistance = state/U;

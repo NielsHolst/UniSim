@@ -13,21 +13,12 @@ read_unisim = function(fname) {
 	S
 }
 
-plot1 = function(U,from=0, to=366, cols=NA) {
-	all_columns = any(is.na(cols))
-	cols = if (all_columns) 2:(ncol(U)-2) else c("Day", cols)
+plot1 = function(U, from, to, cols) {
+	cols = c("Day", cols)
 	V = melt(U[U$Day>=from & U$Day<=to, cols], id.vars="Day", value.name="Value", variable.name="Variable")
-	line_size = if (all_columns) 1 else 1.1
-	ggp = ggplot(V) +
-		  geom_line(aes(x=Day, y=Value, color=Variable), size=line_size) 
-	if (all_columns) {
-		ggp = ggp +
-		theme(legend.position="none") +
-		facet_wrap(~Variable, scales="free")
-	}
-	ggp
+	ggplot(V) +
+		geom_line(aes(x=Day, y=Value, color=Variable))
 }
-
 
 plot2 = function(U, from, to, cols) {
 	cols = c("Day", cols)
@@ -47,13 +38,11 @@ freq1 = function(U, cols) {
 }
 
 plot3 = function(U,from=0, to=366) {
-	light = plot2(U,from,to, c("outdoors_light", "top_light", "growth_light", "indoors_light")) 
-	screen = plot2(U,from,to, c("act_scr_en", "act_scr_sh", "act_scr_bl", "horz_light_trans"))
-	top_trans = plot2(U,from,to, c("top_diffuse_trans", "top_dir_dir_trans", "top_dir_diff_trans"))
-	bottom_trans = plot2(U,from,to, c("bottom_diffuse_trans", "bottom_dir_dir_trans", "bottom_dir_diff_trans"))
-	total_trans = plot2(U,from,to, c("total_diffuse_trans", "total_dir_dir_trans", "total_dir_diff_trans"))
+	light = plot2(U,from,to, c("outdoors_light", "growth_light", "indoors_light")) 
+	light2 = plot2(U,from,to, c("roof1_light", "roof2_light" ,"side1_light","side2_light","end1_light", "end2_light")) 
+	screen = plot2(U,from,to, c("act_scr_en", "act_scr_sh", "act_scr_bl"))
 	air = plot2(U,from,to, c("air_infilt", "air_crack", "air_top", "air_bottom"))
-	grid.arrange(light, screen, air, top_trans, bottom_trans, total_trans, ncol=3)
+	grid.arrange(light, light2, screen, air, ncol=2)
 }
 
 plot4 = function(U,from=0, to=366) {
@@ -77,18 +66,22 @@ plot5 = function(U,from=0, to=366) {
 }
 
 
-plot6 = function(U) {
-	temperature = freq1(U, c("outdoors_temp", "roof1_temp", "side1_temp", "top_temp", "indoors_temp"))
-	light = freq1(U, c("outdoors_light", "top_light", "growth_light", "indoors_light")) 
-	ah = freq1(U, c("outdoors_ah", "top_ah", "indoors_ah"))
-	rh = freq1(U, c("outdoors_rh", "top_rh", "indoors_rh"))
-	grid.arrange(temperature, light, ah, rh, ncol=2)
+plot6 = function(U,from=0, to=366) {
+	temperature = plot1(U,from,to, c("indoors_temp", "temp_top", "temp_mid", "temp_bot"))
+	pg = plot1(U,from,to, c("Pg_top", "Pg_mid", "Pg_bot"))
+	grid.arrange(temperature, pg, ncol=2)
 }
 
 U = read_unisim("dvv_unisim_0001.txt")
 
 windows(14,10)
 plot3(U)
+
+windows(14,10)
+plot4(U)
+
+windows(14,10)
+plot6(U)
 
 # windows(14,10)
 # plot1(U,30,36, c("top_light", "indoors_light")) 

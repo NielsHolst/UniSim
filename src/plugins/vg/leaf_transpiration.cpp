@@ -53,7 +53,7 @@ LeafTranspiration::LeafTranspiration(Identifier name, QObject *parent)
     InputRef(double, indoorsAh, "indoors/humidity[ah]");
     InputRef(double, xGauss, "..[xGauss]");
     InputRef(double, wGauss, "..[wGauss]");
-    InputRef(double, absorbedRadiation, "../Rna[Rna]");
+    InputRef(double, lightAbsorbed, "../lightAbsorbed[value]");
     InputRef(double, Tleaf, "../Temperature[value]");
     InputRef(double, rbH2O, "../rb[rbH2O]");
     InputRef(double, rsH2O, "../rs[rsH2O]");
@@ -72,7 +72,7 @@ void LeafTranspiration::update() {
         double laiNet = lai*fractionPlantArea,
                s = svpSlope(Tleaf);
         conductance = 2*laiNet/((1 + s/Psychr)*rbH2O + rsH2O);
-        leafAh = sah(Tleaf) + s/Psychr*rbH2O/2/laiNet*absorbedRadiation/LHe;
+        leafAh = sah(Tleaf) + s/Psychr*rbH2O/2/laiNet*lightAbsorbed/LHe;
         vapourFlux = max(conductance*(leafAh - indoorsAh), 0.);
         gain = conductance*leafAh;
     }

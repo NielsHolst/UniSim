@@ -45,7 +45,7 @@ Co2Controller::Co2Controller(Identifier name, QObject *parent)
     InputRef(double, outdoorsCo2, "outdoors[co2]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
-    InputRef(double, height, "geometry[averageHeight]");
+    InputRef(double, height, "geometry[indoorsAverageHeight]");
     Input(double, maxSignal, 20);
     Output(double, signal);
 }

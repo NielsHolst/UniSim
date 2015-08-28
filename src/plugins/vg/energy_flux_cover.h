@@ -19,7 +19,7 @@ public:
     void update();
 private:
     // Inputs
-    double U, emissivity, absorptivity, density, heatCapacity, thickness,
+    double U, emissivity, absorptivity, heatCapacity,
         timeStep, averageHeight, indoorsTemperature, skyTemperature, outdoorsTemperature,
         screenState, cropTemperature,
         sunlight, condensationRate;

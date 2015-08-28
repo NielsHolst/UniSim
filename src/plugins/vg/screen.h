@@ -22,8 +22,9 @@ private:
     friend class Screens;
 
     // Inputs
+    QString position, layer;
     double transmissivityLight,
-           emissivityIrInner, emissivityIrOuter,
+           emissivityInner, emissivityOuter,
            energyLossReduction, U50, haze,
            transmissivityAir, transmissivityAirExponent, state;
     // Outputs
@@ -32,6 +33,7 @@ private:
         absorptivityIrInnerNet, absorptivityIrOuterNet,
         unhazed, transmissivityAirNet,
         U, resistance;
+    bool isHorizontal;
 };
 
 } //namespace

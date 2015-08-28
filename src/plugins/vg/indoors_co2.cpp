@@ -35,7 +35,7 @@ PUBLISH(IndoorsCo2)
  * ------------
  * - an _outdoors_ model with a _co2_ port [ppm]
  * - an _indoors/ventilation_ model with a _relative_ port [0;1]
- * - an _construction/geometry_ model with an _averageHeight_ port [m]
+ * - an _geometry_ model with an _averageHeight_ port [m]
  */
 
 IndoorsCo2::IndoorsCo2(Identifier name, QObject *parent)
@@ -44,7 +44,7 @@ IndoorsCo2::IndoorsCo2(Identifier name, QObject *parent)
     InputRef(double, outdoorsCo2, "outdoors[co2]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
 //    InputRef(double, ventilationRate, "indoors/ventilation[rate]");
-    InputRef(double, averageHeight, "construction/geometry[averageHeight]");
+    InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     Input(double, assimilationRate, 0);
     Input(double, injectionRate, 0.);

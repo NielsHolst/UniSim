@@ -34,9 +34,9 @@ PUBLISH(CoverCondensation)
 CoverCondensation::CoverCondensation(Identifier name, QObject *parent)
     : VapourFluxBase(name, parent)
 {
-    InputRef(double, coverArea, "..[area]");
+    InputRef(double, coverArea, "../..[area]");
     InputRef(double, coverTemperature, "../energyFlux[temperature]");
-    InputRef(double, groundArea, "construction/geometry[groundArea]");
+    InputRef(double, groundArea, "geometry[groundArea]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, indoorsAh, "indoors/humidity[ah]");
 }

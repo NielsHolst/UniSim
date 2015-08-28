@@ -41,8 +41,8 @@ EnergyFluxCoolingSupply::EnergyFluxCoolingSupply(Identifier name, QObject *paren
     InputRef(double, energyDemand, "cooling/demand[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
-    InputRef(double, averageHeight,"construction/geometry[height]");
-    InputRef(double, airTransmissivity, "horizontalScreens[airTransmissivity]");
+    InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
+    InputRef(double, airTransmissivity, "shelters/roof[airTransmissivity]");
     Output(double, value);
 //    Output(double, airFlux);
 }

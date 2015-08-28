@@ -34,7 +34,7 @@ BoundaryLayerResistance::BoundaryLayerResistance(Identifier name, QObject *paren
 {
     Input(double, leafDimension, 25./1000.);
     InputRef(double, ventilation, "indoors/total/bottom/airflux[value]");
-    InputRef(double, averageHeight, "construction/geometry[height]");
+    InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");
     Output(double, rbH2O);
     Output(double, rbCO2);
 }

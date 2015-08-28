@@ -7,13 +7,11 @@
 #ifndef VG_SCREENS_H
 #define VG_SCREENS_H
 
-#include <stdlib.h>
-#include <QList>
-#include <usbase/model.h>
+#include "surface_radiation_outputs.h"
 
 namespace vg {
 
-class Screens : public UniSim::Model
+class Screens : public vg::SurfaceRadiationOutputs
 {
 public:
     Screens(UniSim::Identifier name, QObject *parent);
@@ -21,25 +19,19 @@ public:
     void reset();
     void update();
 private:
-    // Inputs
-    QString additionalScreens;
-
     // Outputs
-    double lightTransmissivity, irTransmissivity,
-           incomingLightAbsorptivity, incomingLightReflectivity,
-           incomingIrAbsorptivity, incomingIrReflectivity,
-           outgoingLightAbsorptivity, outgoingLightReflectivity,
-           outgoingIrAbsorptivity, outgoingIrReflectivity,
-           maxState, airTransmissivity, haze, U;
+    bool areHorizontal;
+    double maxState, airTransmissivity, haze, U;
     // Data
     struct ScreenInfo {
+        const bool *isHorizontal;
         const double *transmissivityLightNet,
             *absorptivityIrInnerNet, *absorptivityIrOuterNet,
             *state,
             *unhazed, *airTransmissionNet,
             *resistance;
     };
-    QVector<ScreenInfo> screenInfos, screenInfosPlus;
+    QVector<ScreenInfo> screenInfos;
 
     // Methods
     QVector<ScreenInfo> collectScreenInfos(QList<Model*> screenModels);

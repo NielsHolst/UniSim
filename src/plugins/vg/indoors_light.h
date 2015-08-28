@@ -4,24 +4,27 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SHELTER_OUTPUTS_H
-#define VG_SHELTER_OUTPUTS_H
+#ifndef VG_INDOORS_LIGHT_H
+#define VG_INDOORS_LIGHT_H
 
 #include <usbase/model.h>
 
-
 namespace vg {
 
-class ShelterOutputs : public UniSim::Model
+class IndoorsLight : public UniSim::Model
 {
 public:
-    ShelterOutputs(UniSim::Identifier name, QObject *parent);
-    void reset() final;
-    virtual void localReset() {}
-protected:
+    IndoorsLight(UniSim::Identifier name, QObject *parent);
+    void initialize();
+    void reset();
+    void update();
+
+private:
+    // Data
+    QVector<const double*> pDirect, pDiffuse;
+
     // Outputs
-    double U, airTransmissivity, haze,
-        diffuseLightTransmission, directLightTransmissionAsDirect, directLightTransmissionAsDiffuse;
+    double direct, diffuse, total;
 };
 } //namespace
 

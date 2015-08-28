@@ -28,21 +28,9 @@ PUBLISH(Screens)
  */
 
 Screens::Screens(Identifier name, QObject *parent)
-    : Model(name, parent)
+    : SurfaceRadiationOutputs(name, parent)
 {
-    Input(QString, additionalScreens, QString());
-
-    Output(double, lightTransmissivity);
-    Output(double, irTransmissivity);
-    Output(double, incomingLightAbsorptivity);
-    Output(double, incomingLightReflectivity);
-    Output(double, incomingIrAbsorptivity);
-    Output(double, incomingIrReflectivity);
-    Output(double, outgoingLightAbsorptivity);
-    Output(double, outgoingLightReflectivity);
-    Output(double, outgoingIrAbsorptivity);
-    Output(double, outgoingIrReflectivity);
-
+    Output(bool, areHorizontal);
     Output(double, maxState);
     Output(double, airTransmissivity);
     Output(double, haze);
@@ -52,18 +40,13 @@ Screens::Screens(Identifier name, QObject *parent)
 void Screens::initialize() {
     auto screens = seekChildren<Model*>("*");
     screenInfos = collectScreenInfos(screens);
-    screenInfosPlus.clear();
-    if (!additionalScreens.isEmpty()) {
-        auto additionalScreenModels = seekOne<Model*>(additionalScreens);
-        auto screensPlus = additionalScreenModels->seekChildren<Model*>("*");
-        screenInfosPlus = collectScreenInfos(screensPlus);
-    }
 }
 
 QVector<Screens::ScreenInfo> Screens::collectScreenInfos(QList<Model*> screenModels) {
     QVector<Screens::ScreenInfo> screenInfos;
     for (auto screen: screenModels) {
         screenInfos << ScreenInfo {
+            screen->pullValuePtr<bool>("isHorizontal"),
             screen->pullValuePtr<double>("transmissivityLightNet"),
             screen->pullValuePtr<double>("absorptivityIrInnerNet"),
             screen->pullValuePtr<double>("absorptivityIrOuterNet"),
@@ -77,8 +60,12 @@ QVector<Screens::ScreenInfo> Screens::collectScreenInfos(QList<Model*> screenMod
 }
 
 void Screens::reset() {
-    maxState = 0;
-    lightTransmissivity = airTransmissivity = 1;
+    areHorizontal = false;
+    for (ScreenInfo info: screenInfos)
+        areHorizontal = areHorizontal || (*info.isHorizontal);
+    resetRadiationOutputs();
+    maxState = haze = 0;
+    airTransmissivity = 1;
     U = numeric_limits<double>::infinity();
 }
 
@@ -94,25 +81,12 @@ void Screens::update() {
     }
     haze = 1. - unhazed;
     U = 1./resistance;
-    updateRadiation();
-}
 
-
-void Screens::updateRadiation() {
     SurfaceRadiation rad;
     for (ScreenInfo si: screenInfos) {
-        rad *= SurfaceRadiation(*si.transmissivityLightNet, *si.absorptivityIrOuterNet, *si.absorptivityIrInnerNet);
+        rad *= SurfaceRadiation().asScreen(*si.transmissivityLightNet, *si.absorptivityIrOuterNet, *si.absorptivityIrInnerNet);
     }
-    lightTransmissivity = rad.light.tra;
-    irTransmissivity = rad.ir.tra;
-    incomingLightAbsorptivity = rad.light.outer.abs;
-    incomingLightReflectivity = rad.light.outer.ref;
-    incomingIrAbsorptivity = rad.ir.outer.abs;
-    incomingIrReflectivity = rad.ir.outer.ref;
-    outgoingLightAbsorptivity = rad.light.inner.abs;
-    outgoingLightReflectivity = rad.light.inner.ref;
-    outgoingIrAbsorptivity = rad.ir.inner.abs;
-    outgoingIrReflectivity = rad.ir.inner.ref;
+    set(rad);
 }
 
 } //namespace

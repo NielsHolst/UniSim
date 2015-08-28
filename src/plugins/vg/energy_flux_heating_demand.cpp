@@ -35,7 +35,7 @@ EnergyFluxHeatingDemand::EnergyFluxHeatingDemand(Identifier name, QObject *paren
     InputRef(double, passiveEnergyFlux, "given/bottom/energyFlux[value]");
     InputRef(double, heatingSetpoint, "setpoints/temperature/heating[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
-    InputRef(double, averageHeight, "construction/geometry[height]");
+    InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");
     InputRef(double, timeStep,"calendar[timeStepSecs]");
 }
 

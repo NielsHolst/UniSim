@@ -27,6 +27,8 @@ HEADERS += \
     crop_mass.h \
     crop_growth.h \
     crop_lai.h \
+    crop_light_absorbed.h \
+    crop_radiation.h \
     crop_yield.h \
     date_time_signal.h \
     energy_flux_air.h \
@@ -50,15 +52,13 @@ HEADERS += \
     fruit_crop_mass.h \
     fruit_factor.h \
     general.h \
-    greenhouse_shelter.h \
     growth_light_base.h \
     growth_light.h \
     growth_lights.h \
     indoors_co2.h \
-    indoors_bottom_light.h \
     indoors_humidity.h \
+    indoors_light.h \
     indoors_temperature.h \
-    indoors_top_light.h \
     layer.h \
     layer_photosynthesis.h \
     leaf_light_response.h \
@@ -69,18 +69,18 @@ HEADERS += \
     pid_control_element.h \
     proportional_signal.h \
     publish.h \
-    radiation_absorbed.h \
     running_average.h \
     screen.h \
     screens.h \
     screen_condensation.h \
     screen_temperature.h \
     shelter.h \
-    shelter_outputs.h \
+    shelters.h \
     signal_collection.h \
     sliding_signal.h \
     stomatal_resistance.h \
     surface_radiation.h \
+    surface_radiation_outputs.h \
     threshold_signal.h \
     variable_collection.h \
     vapour_flux_air.h \
@@ -114,6 +114,8 @@ SOURCES += \
     crop_mass.cpp \
     crop_growth.cpp \
     crop_lai.cpp \
+    crop_light_absorbed.cpp \
+    crop_radiation.cpp \
     crop_yield.cpp \
     date_time_signal.cpp \
     energy_flux_air.cpp \
@@ -137,15 +139,13 @@ SOURCES += \
     fruit_crop_mass.cpp \
     fruit_factor.cpp \
     general.cpp \
-    greenhouse_shelter.cpp \
     growth_light_base.cpp \
     growth_light.cpp \
     growth_lights.cpp \
     indoors_co2.cpp \
-    indoors_bottom_light.cpp \
     indoors_humidity.cpp \
+    indoors_light.cpp \
     indoors_temperature.cpp \
-    indoors_top_light.cpp \
     layer.cpp \
     layer_photosynthesis.cpp \
     leaf_light_response.cpp \
@@ -156,18 +156,18 @@ SOURCES += \
     pid_control_element.cpp \
     proportional_signal.cpp \
     publish.cpp \
-    radiation_absorbed.cpp \
     running_average.cpp \
     screen.cpp \
     screens.cpp \
     screen_condensation.cpp \
     screen_temperature.cpp \
     shelter.cpp \
-    shelter_outputs.cpp \
+    shelters.cpp \
     signal_collection.cpp \
     sliding_signal.cpp \
     stomatal_resistance.cpp \
     surface_radiation.cpp \
+    surface_radiation_outputs.cpp \
     threshold_signal.cpp \
     vapour_flux_air.cpp \
     vapour_flux_base.cpp \

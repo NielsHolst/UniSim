@@ -7,39 +7,24 @@
 #ifndef VG_COVER_H
 #define VG_COVER_H
 
-#include <QMap>
 #include <usbase/model.h>
-#include <usbase/string_map.h>
+#include "surface_radiation_outputs.h"
 
 namespace vg {
 
-class Cover : public UniSim::Model
+class Cover : public vg::SurfaceRadiationOutputs
 {
 public:
     Cover(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
-    enum Position {Roof1, Roof2, Side1, Side2, End1, End2};
-    Position pullPosition() const;
 private:
     // Inputs
-    QString type;
-    double U4, emissivity, absorptivity, transmissivity, density, heatCapacity, thickness,
-        haze;
+    double U4, windspeed, emissivity, absorptivity, transmissivity, heatCapacity, haze;
     bool antiReflection;
-    double coverAreaRoof, coverAreaSideWalls, coverAreaEndWalls, coverAreaGables,
-        windspeed;
 
     // outputs
-    double area, relativeArea, U;
-
-    // Data
-    typedef UniSim::StringMap<Position> Positions;
-    static Positions positions;
-    Position position;
-
-    // Methods
-    void setStandardPositions();
+    double U;
 };
 } //namespace
 

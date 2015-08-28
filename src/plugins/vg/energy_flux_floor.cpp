@@ -38,7 +38,7 @@ EnergyFluxFloor::EnergyFluxFloor(Identifier name, QObject *parent)
     Input(double, heatCapacity, 42000.);
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, soilTemperature, "outdoors[soilTemperature]");
-    InputRef(double, averageHeight,"construction/geometry[averageHeight]");
+    InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
 }
 

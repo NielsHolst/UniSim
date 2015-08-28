@@ -31,7 +31,7 @@ PUBLISH(IndoorsTemperature)
  *
  * Default dependencies
  * ------------
- * - a _construction/geometry_ model with an _averageHeight_ port [m]
+ * - a _geometry_ model with an _averageHeight_ port [m]
  * - a _calendar_ model with a _timeStepSecs_ port [s]
  */
 
@@ -41,7 +41,7 @@ IndoorsTemperature::IndoorsTemperature(Identifier name, QObject *parent)
     Input(double, initValue, 20.);
     InputRef(double, baseTemperature, ".[value]");
     Input(double, energyFlux, 0.);
-    InputRef(double, averageHeight,"construction/geometry[averageHeight]");
+    InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
     InputRef(double, timeStep,"calendar[timeStepSecs]");
     Output(double, value);
     Output(double, change);

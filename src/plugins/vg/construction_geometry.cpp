@@ -55,47 +55,71 @@ ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
     Input(double, spanWidth, 20.);
     Input(double, length, 50.);
     Input(double, height, 4.);
+    Input(double, margin, 0.15);
     Input(double, roofPitch, 26.);
     Input(double, shade, 0.1);
-    Output(double, groundArea);
-    Output(double, averageHeight);
+    InputRef(bool, hasHorizontalScreens, "construction/shelters/roof/roof1/screens[areHorizontal]");
+
     Output(double, width);
+    Output(double, groundArea);
+
+    Output(double, roofArea);
     Output(double, sideWallsArea);
     Output(double, endWallsArea);
     Output(double, gablesArea);
-    Output(double, roofArea);
-    Output(double, roofHeight);
-    Output(double, roofAverageHeight);
+
     Output(double, coverArea);
     Output(double, coverPerGroundArea);
-    Output(double, volumeIndoors);
-    Output(double, volumeTop);
-    Output(double, volumeProportionIndoors);
-    Output(double, volumeProportionTop);
-    Output(double, volume);
+
+    Output(double, indoorsVolume);
+    Output(double, roofMarginVolume);
+    Output(double, sideMarginVolume);
+    Output(double, endMarginVolume);
+    Output(double, wallsMarginVolume);
+    Output(double, totalVolume);
+
+    Output(double, roofHeight);
+    Output(double, indoorsAverageHeight);
+    Output(double, roofMarginAverageHeight);
+    Output(double, roofMarginVolumeProportion);
+    Output(double, wallsMarginVolumeProportion);
+    Output(double, indoorsVolumeProportion);
+
 }
 
 void ConstructionGeometry::reset() {
-    roofHeight = tan(roofPitch*PI/180.)*spanWidth/2.;
-    double roofWidth = hypot(roofHeight, spanWidth/2.);
     width = numSpans*spanWidth;
     groundArea = width*length;
+
+    roofHeight = tan(roofPitch*PI/180.)*spanWidth/2.;
+    double roofWidth = hypot(roofHeight, spanWidth/2.);
+    roofArea = 2*numSpans*roofWidth*length;
     sideWallsArea = 2*length*height;
     endWallsArea = 2*width*height;
-
     gablesArea = numSpans*roofHeight*spanWidth,
-    roofArea = 2*numSpans*roofWidth*length;
+
     coverArea = sideWallsArea + endWallsArea + gablesArea + roofArea;
     coverPerGroundArea = coverArea/groundArea;
 
-    volumeIndoors = groundArea*height;
-    volumeTop = gablesArea*length/2;
-    volume = volumeIndoors + volumeTop;
-    volumeProportionIndoors = volumeIndoors/volume;
-    volumeProportionTop = 1. - volumeProportionIndoors;
+    double margin2 = margin*margin;
+    sideMarginVolume = sideWallsArea*margin - margin2;
+    endMarginVolume = endWallsArea*margin - margin2;
+    roofMarginVolume  = length*gablesArea/2.;
+    if (!hasHorizontalScreens) {
+        double vertRoofMargin = margin/cos(roofPitch*PI/180.);
+        roofMarginVolume -= numSpans*(roofHeight - vertRoofMargin + margin2)*spanWidth ;
+    }
+    totalVolume = groundArea*height + length*gablesArea/2.;
+    wallsMarginVolume = sideMarginVolume - endMarginVolume;
+    indoorsVolume = totalVolume -  wallsMarginVolume - roofMarginVolume;
 
-    averageHeight = volume/groundArea;
-    roofAverageHeight = volumeTop/groundArea;
+    roofMarginVolumeProportion = roofMarginVolume/totalVolume;
+    wallsMarginVolumeProportion = wallsMarginVolume/totalVolume;
+    indoorsVolumeProportion = indoorsVolume/totalVolume;
+
+    double indoorsArea = (width-margin)*(length-margin);
+    indoorsAverageHeight = indoorsVolume/indoorsArea;
+    roofMarginAverageHeight = roofMarginVolume/indoorsArea;
 }
 
 } //namespace

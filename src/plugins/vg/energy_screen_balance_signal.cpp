@@ -27,7 +27,7 @@ PUBLISH(EnergyScreenBalanceSignal)
 EnergyScreenBalanceSignal::EnergyScreenBalanceSignal(Identifier name, QObject *parent)
     : BaseSignal(name, parent)
 {
-    InputRef(double, Ucover, "greenhouseShelter/total[Ucover]");
+    InputRef(double, Ucover, "construction/shelters[U]");
     InputRef(double, indoorsLight, "indoors/light[total]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");

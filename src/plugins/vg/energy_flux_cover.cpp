@@ -22,9 +22,7 @@ PUBLISH(EnergyFluxCover)
  * - _U_ is the heat transfer coefficient of the material  [W/m<SUP>2</SUP>/K]
  * - _emissivity_ is the effectiveness in emitting energy as thermal radiation [0;1].
  * - _absorptivity_ is the proportion of light absorbed [0;1]
- * - _density_ is cover density [kg/m<SUP>3</SUP>]
- * - _heatCapacity_ is cover heat capacity [J/kg/K]
- * - _thickness_ is cover thickness [mm]
+ * - _heatCapacity_ is cover heat capacity [J/m<SUP>2</SUP>]/K]
  * - _timeStep_ is the integration time step [s]
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
  * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
@@ -53,11 +51,9 @@ EnergyFluxCover::EnergyFluxCover(Identifier name, QObject *parent)
     InputRef(double, U, "..[U]");
     InputRef(double, emissivity, "..[emissivity]");
     InputRef(double, absorptivity, "..[absorptivity]");
-    InputRef(double, density, "..[density]");
     InputRef(double, heatCapacity, "..[heatCapacity]");
-    InputRef(double, thickness, "..[thickness]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
-    InputRef(double, averageHeight,"construction/geometry[averageHeight]");
+    InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     InputRef(double, skyTemperature, "outdoors[skyTemperature]");
@@ -87,7 +83,6 @@ void EnergyFluxCover::reset() {
 
 void EnergyFluxCover::update() {
     const int maxTimeStep = 20;     // Use time steps no larger than this [s]
-    double heatCapacityPerArea = density*heatCapacity*thickness/1000; // J/m2/K = kg/m3 * J/kg/K * mm * m/mm
     double Cair = averageHeight*RhoAir*CpAir;
     int n = int(timeStep/maxTimeStep) + 1;
     double dt = timeStep/n;
@@ -118,7 +113,7 @@ void EnergyFluxCover::update() {
             radiationFluxCrop +
             condensationRate*LHe;
         value -= totalInsideFlux;
-        temperature += totalGlassFlux*dt/heatCapacityPerArea;    // K = W/m2*s / (J/m2/K)
+        temperature += totalGlassFlux*dt/heatCapacity;    // K = W/m2*s / (J/m2/K)
         indoorsTemperature2 -= totalInsideFlux*dt/Cair;
     }
     value /= n;

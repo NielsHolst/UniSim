@@ -32,7 +32,7 @@ PUBLISH(EnergyFluxShelter)
 EnergyFluxShelter::EnergyFluxShelter(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, netU, "greenhouseShelter[U]");
+    InputRef(double, netU, "construction/shelters[U]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
 }

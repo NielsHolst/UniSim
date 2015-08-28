@@ -42,18 +42,26 @@ PUBLISH(LayerPhotosynthesis)
 LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    InputRef(double, kDiffuse, "crop/radiation[kDiffuse]");
+    InputRef(double, kDirect, "crop/radiation[kDirect]");
+    InputRef(double, kDirectDirect, "crop/radiation[kDirectDirect]");
+    InputRef(double, scattering, "crop/radiation[scattering]");
+    InputRef(double, diffuseReflectivity, "crop/radiation[diffuseReflectivity]");
+    InputRef(double, directReflectivity, "crop/radiation[directReflectivity]");
+
     InputRef(double, sinB, "calendar[sinB]");
-    InputRef(double, lightDif, "indoors/light[diffuse]");
-    InputRef(double, lightDir, "indoors/light[direct]");
+    InputRef(double, lightDiffuse, "indoors/light[diffuse]");
+    InputRef(double, lightDirect, "indoors/light[direct]");
     InputRef(double, lai, "crop/lai[lai]");
     InputRef(double, xGauss, "..[xGauss]");
     InputRef(double, wGauss, "..[wGauss]");
     InputRef(double, LUE, "./lightResponse[LUE]");
-    InputRef(double, Pnmax, "./lightResponse[Pnmax]");
+//    InputRef(double, Pnmax, "./lightResponse[Pnmax]");
     InputRef(double, Pgmax, "./lightResponse[Pgmax]");
     InputRef(double, Rd, "./lightResponse[Rd]");
-    Input(double, Kdif, 0.8);
-    Input(double, SCV, 0.15);
+    Input(double, parProportion, 0.47);
+
+    Output(double, parAbsorbed);
     Output(double, Pn);
     Output(double, Pg);
 }
@@ -63,78 +71,70 @@ void LayerPhotosynthesis::reset() {
 }
 
 void LayerPhotosynthesis::update() {
-    const double xSunGauss[3]={0.1127, 0.5, 0.8873},
-    wSunGauss[3]={0.2778, 0.4444, 0.2778};
-    double LAIC=lai*xGauss;
-    double PARDIF = 0.47*lightDif;
-    double PARDIR = 0.47*lightDir;
+    laiX = lai*xGauss,
+    parDiffuse = parProportion*lightDiffuse,
+    parDirect = parProportion*lightDirect;
 
-    //1)----calculation of reflection of horizontal and spherical leaf angle distribution
-        //Intermediate variable SQV
-       double SQV=sqrt(1-SCV);
+    // Compute light absorned and gross assimilation
+    double absorbedShaded = absorbedByShadedLeaves(),           // [J / m2 leaf / s]
+           PgShade = grossAssimilation(absorbedShaded);         // [mg CO2 / m2 leaf / s]
 
-       //reflection of horizontal leaf angle distribution
-       double ReflHorizontal=(1-SQV)/(1+SQV);
+    auto sunlit = absorbedBySunlitLeaves(absorbedShaded);
+    double absorbedSunlit = sunlit.first,                       // [J / m2 leaf / s]
+           PgSunlit = sunlit.second,                            // [mg CO2 / m2 leaf / s]
 
-       //reflection of spherical leaf angle distribution
-       double ReflSpherical=(ReflHorizontal*2)/(1+1.6*sinB);
+           absorbedTotal = absorbedShaded + absorbedSunlit,     // [J / m2 leaf / s]
+           PgTotal = grossAssimilationTotal(PgShade, PgSunlit); // [mg CO2 / m2 leaf / s]
 
-    //2)-----extinction coefficient for direct radiation and total direct flux
+    // Apply integration weight and convert
 
-        //Extinction coefficient for direct component of direct PAR flux (KdirBL)
-       double KdirBL=(sinB==0.) ? 0. : (0.5/sinB)*Kdif/(0.8*SQV);
+    // [J / m2 ground / s] = [J / m2 leaf / s * m2 leaf / m2 ground]
+    parAbsorbed = absorbedTotal*wGauss*lai;
 
-        //Extinction coefficient for total direct PAR flux (Kdirtot)
-       double KdirTot=KdirBL*SQV;
+    // [mg CO2 / m2 ground / s] = [mg CO2 / m2 leaf / s * m2 leaf / m2 ground]
+    Pg = PgTotal*wGauss*lai;
+    Pn = Pg - Rd*wGauss*lai;
 
-    //1. absorbed diffuse flux	 (VISdif)[J*m-2 leaf s-1]
-   double VISdif=(1-ReflHorizontal)*PARDIF*Kdif*exp(-Kdif*LAIC);
-
-    //2. absorbed total direct flux (VIStot)[J*m-2 leaf s-1]
-   double VIStot=(1-ReflSpherical)*PARDIR*KdirTot*exp(-KdirTot*LAIC);
-
-   //3. absorbed direct component of direct flux (VISdir)[J*m-2 leaf s-1]
-   double VISdir=(1-SCV)*PARDIR*KdirBL*exp(-KdirBL*LAIC);
-
-//5)------assimilation of shaded leaves results in a 3-culumn matrix
-
-    //absorbed flux of shaded leaves (VISshd)[J/m2/leaf/s]
-   double VISshd=VISdif+VIStot-VISdir;
-
-   //gross assimilation of shaded leaves for three leaf layers [mg CO2in*m-2 leaf s-1]
-   double Pgshade=(Pgmax==0)?0:Pgmax*(1-exp(-VISshd*LUE/Pgmax));
-
-//6)-------assimilation of sunlit leaf area results in a 3-culumn matrix
-
-    //direct flux absorbed by leaves perpendicular on direct beam (VISpp)[J*m-2 leaf s-1]
-    double VISpp=(sinB==0)?0:(1-SCV)*PARDIR/(sinB);
-
-    double Pgsun=0;
-    for(int i=0; i<3; ++i)
-    {
-        //Total absorbed flux of sunlit leaves [J*m-2 leaf s-1]
-    double VISsun=VISshd+VISpp*xSunGauss[i];
-
-    //Gross assimilation of sunlit leaves for three leaf layers [mg CO2in*m-2 leaf s-1]
-    Pgsun+=(Pgmax==0)?0:wSunGauss[i]*Pgmax*(1-exp(-VISsun*LUE/Pgmax));
-    }
-
-//7)--------local assimilation rate for three leaf layers
-
-    //fraction sunlit leaf area (FSLLA)
-    double FSLLA=exp(-KdirBL*LAIC);
-
-   //local assimilation rate Pgl [mg CO2in m-2 leaf s-1 layer-1]
-    double Pgl=FSLLA*Pgsun+(1-FSLLA)*Pgshade;
-
-    Pg = Pgl*wGauss*lai;
-    Pn = Pg + Rd*wGauss*lai;
-
-    //g CO2 m-2 h-1
-    Pg*=3.6;
-    Pn*=3.6;
+    // Convert to [g CO2 m-2 h-1]
+    Pg *= 3.6;
+    Pn *= 3.6;
 }
 
+double LayerPhotosynthesis::absorbedByShadedLeaves() const {
+    double absorbedDiffuse = (1-diffuseReflectivity)*parDiffuse*kDiffuse*exp(-kDiffuse*laiX),
+           absorbedTotal = (1-directReflectivity)*parDirect*kDirect*exp(-kDirect*laiX),
+           absorbedDirect = (1-scattering)*parDirect*kDirectDirect*exp(-kDirectDirect*laiX);
+    return absorbedDiffuse + absorbedTotal - absorbedDirect; // [J/m2/leaf/s]
+}
+
+QPair<double, double> LayerPhotosynthesis::absorbedBySunlitLeaves(double absorbedShaded) const {
+    const double xGauss[3] = {0.1127, 0.5, 0.8873},
+                 wGauss[3] = {0.2778, 0.4444, 0.2778};
+    if (Pgmax==0 || sinB==0) return qMakePair(0.,0.);
+
+    // Direct flux absorbed by leaves perpendicular on direct beam (VISpp)[J*m-2 leaf s-1]
+    double absorbedPerpendicular = (1-scattering)*parDirect/(sinB);
+    // Integration over all leaf angles
+    double assimilationSum{0}, absorbedSum{0};
+    for(int i=0; i<3; ++i) {
+        // Total absorbed flux of sunlit leaves [J*m-2 leaf s-1]
+        double absorbedSunlit = absorbedShaded + absorbedPerpendicular*xGauss[i];
+        absorbedSum += wGauss[i]*absorbedSunlit;
+        // Gross assimilation of sunlit leaves [mg CO2in*m-2 leaf s-1]
+        assimilationSum += wGauss[i]*grossAssimilation(absorbedSunlit);
+    }
+    return qMakePair(absorbedSum, assimilationSum);
+}
+
+double LayerPhotosynthesis::grossAssimilationTotal(double Pgshade, double PgSunlit) const {
+    // Proportion sunlit leaf area
+    double propSunlit = exp(-kDirectDirect*laiX);
+    return propSunlit*PgSunlit + (1-propSunlit)*Pgshade;
+}
+
+double LayerPhotosynthesis::grossAssimilation(double absorbed) const {
+    return (Pgmax==0) ? 0 : Pgmax*(1-exp(-absorbed*LUE/Pgmax));
+}
 
 } //namespace
 

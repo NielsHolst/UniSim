@@ -23,7 +23,7 @@ EnergyFluxCoverSum::EnergyFluxCoverSum(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
     Input(QString, toAdd, "()");
-    InputRef(double, greenhouseArea, "construction/geometry[groundArea]");
+    InputRef(double, greenhouseArea, "geometry[groundArea]");
 }
 
 void EnergyFluxCoverSum::reset() {
@@ -31,10 +31,11 @@ void EnergyFluxCoverSum::reset() {
     coverInfos.clear();
     for (auto modelName : modelNames) {
         Model *energyFlux = seekOne<Model*>(modelName),
-              *cover = energyFlux->seekParent<Model*>("*");
+              *cover = energyFlux->seekParent<Model*>("*"),
+              *shelter = cover->seekParent<Model*>("*");
         CoverInfo ci {
             energyFlux->pullValuePtr<double>("value"),
-            cover->pullValuePtr<double>("area")
+            shelter->pullValuePtr<double>("area")
         };
         coverInfos << ci;
     }

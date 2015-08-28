@@ -32,7 +32,7 @@ EnergyFluxAir::EnergyFluxAir(Identifier name, QObject *parent)
     Input(double, airFlux, 0.);
     InputRef(double, receiverTemperature, "indoors/temperature[value]");
     InputRef(double, donorTemperature, "outdoors[temperature]");
-    InputRef(double, receiverHeight,"construction/geometry[averageHeight]");
+    InputRef(double, receiverHeight,"geometry[indoorsAverageHeight]");
     Input(double, donorHeight, 0.);
     InputRef(double, timeStep, "calendar[timeStepSecs]");
 }

@@ -21,14 +21,18 @@ public:
     typedef enum{HPSL, LED} LampType;
 private:
     // Input
-    double spanWidth, length, height, roofPitch, shade;
+    double spanWidth, length, height, margin, roofPitch, shade;
     int numSpans;
+    bool hasHorizontalScreens;
 
     // Output
-    double width, groundArea, averageHeight,
-        coverArea, coverPerGroundArea, sideWallsArea, endWallsArea,
-        roofArea, roofHeight, roofAverageHeight, gablesArea,
-        volume, volumeIndoors, volumeTop, volumeProportionIndoors, volumeProportionTop;
+    double width, groundArea,
+        roofArea, sideWallsArea, endWallsArea, gablesArea,
+        coverArea, coverPerGroundArea,
+        indoorsVolume, roofMarginVolume, sideMarginVolume, endMarginVolume,
+        wallsMarginVolume, totalVolume,
+        roofHeight, roofMarginAverageHeight, indoorsAverageHeight,
+        indoorsVolumeProportion, roofMarginVolumeProportion, wallsMarginVolumeProportion;
 };
 } //namespace
 

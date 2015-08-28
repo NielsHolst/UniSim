@@ -31,7 +31,7 @@ PUBLISH(AirFluxCoolingSupply)
  *
  * Default dependencies
  * ------------
- * - a _construction/geometry_ model with an _averageHeight_ port [m]
+ * - a _geometry_ model with an _averageHeight_ port [m]
  */
 
 AirFluxCoolingSupply::AirFluxCoolingSupply(Identifier name, QObject *parent)
@@ -39,8 +39,8 @@ AirFluxCoolingSupply::AirFluxCoolingSupply(Identifier name, QObject *parent)
 {
     InputRef(double, energyFlux, "energyFlux/cooling/supply[state]");
     InputRef(double, airSupplyMax, "cooling/airSupplyMax[value]");
-    InputRef(double, bottomHeight, "construction/geometry[height]");
-    InputRef(double, topHeight, "construction/geometry[roofAverageHeight]");
+    InputRef(double, bottomHeight, "geometry[indoorsAverageHeight]");
+    InputRef(double, topHeight, "geometry[roofMarginAverageHeight]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     Output(double, fromOutdoorsToIndoors);

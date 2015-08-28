@@ -33,7 +33,7 @@ PUBLISH(VentilationByWind)
  * ------------
  * - an _passive/temperature_ model with a _value_ port [<SUP>oC</SUP>C]
  * - a _setpoints/temperature/heating_ model with a _signal_ port [<SUP>oC</SUP>C]
- * - a _construction/geometry_ model with an _averageHeight_ port [m]
+ * - a _geometry_ model with an _averageHeight_ port [m]
  * - a _calendar_ model with a _timeStepSecs_ port [s]
  */
 

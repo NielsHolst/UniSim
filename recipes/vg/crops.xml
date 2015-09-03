@@ -58,11 +58,6 @@
 				<parameter name="endDay" value="365"/>
 				<parameter name="circadian" value="false"/>
 			</model>
-			<model type="vg::DateTimeSignal">
-				<parameter name="beginDay" value="10"/>
-				<parameter name="endDay" value="20"/>
-				<parameter name="circadian" value="false"/>
-			</model>
 		</model>
 		<model name="lai" type="vg::FruitCropLai">
 			<parameter name="laiStartPerPlant" value="0.385"/>
@@ -91,6 +86,7 @@
 		</model>
 	</Tomato>
 	<SweetPepper>
+	
 		<model name="crop" type="vg::Crop">
 			<parameter name="density" value="1.9"/>
 			<parameter name="fractionPlantArea" value="0.9"/>
@@ -133,4 +129,9 @@
 			<parameter name="produceMass" ref="../mass[fruit]"/>
 		</model>
 	</SweetPepper>
+	<CutChrysanthemum/>
+	<PotRose/>
+	<Lettuce/>
+	<PotPlant/>
+	<Viola/>
 </Crops>

@@ -72,6 +72,7 @@ double virtualTemperatureFromAh(double temperature, double ah);
 double rhoAir(double temperature);
 
 // Mathematics
+inline double div0(double a, double b) {return b==0 ? 0. : a/b;}
 inline int sqr(int x) {return x*x;}
 inline double sqr(double x) {return x*x;}
 inline double p2(double x) { return sqr(x); }

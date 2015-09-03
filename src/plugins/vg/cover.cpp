@@ -5,7 +5,10 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <QMap>
+#include <usbase/data_grid.h>
 #include <usbase/exception.h>
+#include <usbase/interpolate.h>
+#include <usengine/simulation.h>
 #include "cover.h"
 #include "publish.h"
 
@@ -48,6 +51,10 @@ PUBLISH(Cover)
 Cover::Cover(Identifier name, QObject *parent)
     : SurfaceRadiationOutputs(name, parent)
 {
+    Input(QString, directTransmissionFile, "direct_transmission_single.txt");
+    InputRef(double, latitude, "calendar[latitude]");
+    InputRef(double, azimuth, "calendar[azimuth]");
+
     Input(double, U4, 7.5);
     Input(double, emissivity, 0.84);
     Input(double, absorptivity, 0.04);
@@ -60,13 +67,18 @@ Cover::Cover(Identifier name, QObject *parent)
     Output(double, U);
 }
 
+void Cover::initialize() {
+    dirTransTable = new DataGrid(simulation()->inputFilePath(directTransmissionFile), this);
+}
+
 void Cover::reset() {
     resetRadiationOutputs();
     U = U4;
 }
 
 void Cover::update() {
-    set( SurfaceRadiation().asCover(transmissivity, absorptivity, emissivity) );
+    double directLightfactor = interpolate(*dirTransTable, latitude, azimuth);
+    set( SurfaceRadiation().asCover(transmissivity, transmissivity*directLightfactor, absorptivity, emissivity) );
     double k = (windspeed <= 4) ? (2.8 + 1.2*windspeed)/7.6 : pow(windspeed,0.8)/pow(4.,0.8);
     U = k*U4;
 }

@@ -9,10 +9,6 @@
 
 #include "surface_radiation_outputs.h"
 
-namespace UniSim {
-    class DataGrid;
-}
-
 namespace vg {
 
 class Shelter : public SurfaceRadiationOutputs
@@ -25,22 +21,32 @@ public:
 
 private:
     // Inputs
-    QString directTransmissionFile;
-    double latitude, azimuth, greenhouseShade, chalk,
+    double greenhouseShade, chalk,
     coverAreaRoof, coverAreaSideWalls, coverAreaEndWalls, coverAreaGables,
     outdoorsDirectRadiation, outdoorsDiffuseRadiation;
 
     // Outputs
     double area, diffuseLightTransmitted, directLightTransmitted, totalLightTransmitted,
+        lightAbsorbedCover, lightAbsorbedScreens,
         airTransmissivity, haze, U, maxScreenState;
 
     // Data
     double relativeArea;
-    const double *pLightTransmissivity,
-        *pCoverU, *pCoverHaze, *pCoverDiffuseTransmission,
-        *pScreensU, *pScreensAirTransmission, *pScreensHaze, *pMaxScreenState;
+    const double
+        *pCoverU, *pCoverHaze,
+        *pScreensU, *pScreensHaze,
+        *pScreensAirTransmission,
+        *pMaxScreenState;
+
+    struct Light {
+        struct {
+            const double *tra, *abs;
+        } diffuse, direct;
+        void fetch(UniSim::Model *model);
+    };
+    Light shelter, cover, screens;
+
     const SurfaceRadiation *pCoverSurfaceRadiation, *pScreensSurfaceRadiation;
-    UniSim::DataGrid *dirTransTable;
 
     // Methods
     void updateU();

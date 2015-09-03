@@ -19,14 +19,15 @@ public:
     void update();
 private:
     // Inputs
-    double kDiffuse, scattering, sinB, lai;
+    double kDiffuse, scattering, sinB,
+        lightDiffuse, lightDirect,
+        absorptivityTop, absorptivityMiddle, absorptivityBottom;
 
     // Outputs
     double
         kDirect, kDirectDirect,
-        diffuseReflectivity, directReflectivity, irReflectivity,
-        diffuseAbsorptivity, directAbsorptivity, irAbsorptivity,
-        diffuseTransmissivity, directTransmissivity, irTransmissivity;
+        diffuseReflectivity, directReflectivity,
+        reflectivity, transmissivity;
 };
 } //namespace
 

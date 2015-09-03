@@ -17,15 +17,22 @@ SurfaceRadiation::SurfaceRadiation() {
     asScreen(1,0,0);
 }
 
-SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double absorptivity, double emissivity) {
+SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double directTransmissivity, double absorptivity, double emissivity) {
     light.tra = transmissivity;
+    directLight.tra = directTransmissivity;
     ir.tra = 0.;
+
     light.outer.abs =
-    light.inner.abs = absorptivity;
+    light.inner.abs =
+    directLight.outer.abs =
+    directLight.inner.abs = absorptivity;
     ir.outer.abs =
     ir.inner.abs = emissivity;
+
     light.outer.setRef(light.tra);
     light.inner.setRef(light.tra);
+    directLight.outer.setRef(directLight.tra);
+    directLight.inner.setRef(directLight.tra);
     ir.outer.setRef(ir.tra);
     ir.inner.setRef(ir.tra);
     return *this;
@@ -43,6 +50,8 @@ SurfaceRadiation& SurfaceRadiation::asScreen(double transmissivity, double absor
     ir.inner.setRef(ir.tra);
     light.inner.ref = std::min(ir.inner.ref, 1. - light.tra);
     light.inner.setAbs(light.tra);
+
+    directLight = light;
     return *this;
 }
 
@@ -82,6 +91,7 @@ SurfaceRadiation::Spectrum& SurfaceRadiation::Spectrum::operator*=(const Surface
 
 SurfaceRadiation& SurfaceRadiation::operator*=(const SurfaceRadiation &s2) {
     light *= s2.light;
+    directLight *= s2.directLight;
     ir *= s2.ir;
     return *this;
 }

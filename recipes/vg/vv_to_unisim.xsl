@@ -14,7 +14,7 @@
 
 <!-- Simulation period used when test-mode > 0 -->
 <xsl:variable name="BeginDate" select="'2001-01-01'"/>
-<xsl:variable name="EndDate" select="'2001-01-31'"/>
+<xsl:variable name="EndDate" select="'2001-12-31'"/>
 
 <!-- Parameters missing in DVV Online must be set here -->
 <xsl:variable name="EnergyScreenOption" select="1"/>  		<!-- 1: EnergyBalanc or 2: OutsideLight --> 
@@ -518,6 +518,10 @@
 		</model>
 
 		<model name="shelters" type="vg::Shelters">
+			<xsl:for-each select="JobDataSet/Greenhouse/zone/Panes//Pane[Position &lt; 7]">
+				<xsl:call-template name="extract-shelter"/>
+			</xsl:for-each>		
+			<!--
 			<model name="roof" type="vg::Shelters">
 				<xsl:for-each select="JobDataSet/Greenhouse/zone/Panes//Pane[Position &lt; 3]">
 					<xsl:call-template name="extract-shelter"/>
@@ -528,6 +532,7 @@
 					<xsl:call-template name="extract-shelter"/>
 				</xsl:for-each>		
 			</model>
+			-->
 		</model>
 
 
@@ -582,6 +587,8 @@
 		</model>
 	</model>
 
+	<model name="energetics" type="vg::Energetics"/>
+	
 	<model name="indoors">
 		<model name="given">
 			<model name="total">
@@ -632,7 +639,7 @@
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" ref="total/airFlux/crackVentilation[value]"/>
 						<parameter name="volumeProportion" ref="geometry[roofMarginVolumeProportion]"/>
-						<parameter name="transmissivity" ref="construction/shelters/roof[airTransmissivity]"/>
+						<parameter name="transmissivity" ref="construction/shelters[airTransmissivity]"/>
 						<parameter name="useNotTransmitted" value="yes"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
@@ -687,7 +694,7 @@
 						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
 						<parameter name="ventilation" value="0"/>
 						<parameter name="volumeProportion" ref="geometry[roofMarginVolumeProportion]"/>
-						<parameter name="transmissivity" ref="shelters/roof[airTransmissivity]"/>
+						<parameter name="transmissivity" ref="construction/shelters[airTransmissivity]"/>
 					</model>
 					<model name="indoors" type="AirFluxIndoors">
 						<parameter name="receiverVolume" ref="geometry[indoorsVolume]"/>
@@ -1548,10 +1555,9 @@
 			<xsl:with-param name="modelName">lai</xsl:with-param>
 		</xsl:call-template>
 
-		<model name="radiation" type="vg::CropRadiation"/>
 		<model name="layers">
 			<model name="top" type="vg::Layer">
-				<parameter name="xGauss"  value="0.1127"/>
+				<parameter name="xGauss"  value="0.8873"/>
 				<parameter name="wGauss"  value="0.2778"/>
 				<xsl:call-template name="crop-layer"/>
 			</model>
@@ -1561,12 +1567,14 @@
 				<xsl:call-template name="crop-layer"/>
 			</model>
 			<model name="bottom" type="vg::Layer">
-				<parameter name="xGauss"  value="0.8873"/>
+				<parameter name="xGauss"  value="0.1127"/>
 				<parameter name="wGauss"  value="0.2778"/>
 				<xsl:call-template name="crop-layer"/>
 			</model>
 		</model>
 		
+		<model name="radiation" type="vg::CropRadiation"/>
+
 		<model name="temperature" type="Unisim::Average">
 			<parameter name="inputs"  value="(layers/top/temperature[value] layers/middle/temperature[value] layers/bottom/temperature[value])"/> 
 		</model>	
@@ -1653,12 +1661,35 @@
 		<trace label="cooling_indoors" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 		<trace label="cooling_top" ref="cooling/airFlux[fromOutdoorsToTop]"/>
 
-		<trace label="roof1_light" ref="roof/roof1[totalLightTransmitted]"/>
-		<trace label="roof2_light" ref="roof/roof2[totalLightTransmitted]"/>
-		<trace label="side1_light" ref="walls/side1[totalLightTransmitted]"/>
-		<trace label="side2_light" ref="walls/side2[totalLightTransmitted]"/>
-		<trace label="end1_light" ref="walls/end1[totalLightTransmitted]"/>
-		<trace label="end2_light" ref="walls/end2[totalLightTransmitted]"/>
+		<trace label="roof1_light" ref="roof1[totalLightTransmitted]"/>
+		<trace label="roof2_light" ref="roof2[totalLightTransmitted]"/>
+		<trace label="side1_light" ref="side1[totalLightTransmitted]"/>
+		<trace label="side2_light" ref="side2[totalLightTransmitted]"/>
+		<trace label="end1_light" ref="end1[totalLightTransmitted]"/>
+		<trace label="end2_light" ref="end2[totalLightTransmitted]"/>
+		
+		<trace label="abs_light_co" ref="energetics[lightAbsorbedCover]"/>
+		<trace label="abs_light_sc" ref="energetics[lightAbsorbedScreens]"/>
+		<trace label="ind_light_dir" ref="indoors/light[direct]"/>
+		<trace label="ind_light_dif" ref="indoors/light[diffuse]"/>
+
+		<trace label="abs_top" ref="crop/radiation[absorptivityTop]"/>
+		<trace label="abs_mid" ref="crop/radiation[absorptivityMiddle]"/>
+		<trace label="abs_bot" ref="crop/radiation[absorptivityBottom]"/>
+		<trace label="ref_can" ref="crop/radiation[reflectivity]"/>
+		<trace label="tra_can" ref="crop/radiation[transmissivity]"/>
+
+		<trace label="test" ref="crop/radiation[test]"/>
+		<trace label="test2" ref="crop/radiation[test2]"/>
+
+		
+		<trace label="abs_li_top" ref="layers/top/photosynthesis[parAbsorbed]"/>
+		<trace label="abs_li_mid" ref="layers/middle/photosynthesis[parAbsorbed]"/>
+		<trace label="abs_li_bot" ref="layers/bottom/photosynthesis[parAbsorbed]"/>
+		<trace label="Pg_top" ref="layers/top/photosynthesis[Pg]"/>
+		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
+		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
+
 		
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
@@ -1674,9 +1705,6 @@
 		<trace label="temp_top" ref="layers/top/temperature[value]"/>
 		<trace label="temp_mid" ref="layers/middle/temperature[value]"/>
 		<trace label="temp_bot" ref="layers/bottom/temperature[value]"/>
-		<trace label="Pg_top" ref="layers/top/photosynthesis[Pg]"/>
-		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
-		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
 		<trace label="stem" ref="crop/mass[stem]"/>
 		<trace label="leaf" ref="crop/mass[leaf]"/>
 		<trace label="fruit" ref="crop/mass[fruit]"/>

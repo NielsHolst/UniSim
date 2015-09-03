@@ -58,7 +58,7 @@ ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)
     Input(double, margin, 0.15);
     Input(double, roofPitch, 26.);
     Input(double, shade, 0.1);
-    InputRef(bool, hasHorizontalScreens, "construction/shelters/roof/roof1/screens[areHorizontal]");
+    InputRef(bool, hasHorizontalScreens, "construction/shelters/roof1/screens[areHorizontal]");
 
     Output(double, width);
     Output(double, groundArea);

@@ -32,7 +32,7 @@ AirFluxIndoors::AirFluxIndoors(Identifier name, QObject *parent)
 {
     InputRef(double, infiltration, "total/airFlux/infiltration[value]");
     InputRef(double, gravitation, "total/airFlux/gravitation[value]");
-    InputRef(double, airTransmissivity, "shelters/roof[airTransmissivity]");
+    InputRef(double, airTransmissivity, "construction/shelters[airTransmissivity]");
     Input(double, receiverVolume, 0.);
     Output(double, value);
 }

@@ -4,10 +4,9 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <usbase/data_grid.h>
-#include <usbase/interpolate.h>
-#include <usengine/simulation.h>
+#include <QMessageBox>
 #include "cover.h"
+#include "general.h"
 #include "publish.h"
 #include "screens.h"
 #include "shelter.h"
@@ -34,9 +33,6 @@ PUBLISH(Shelter)
 Shelter::Shelter(Identifier name, QObject *parent)
     : SurfaceRadiationOutputs(name, parent)
 {
-    Input(QString, directTransmissionFile, "direct_transmission_single.txt");
-    InputRef(double, latitude, "calendar[latitude]");
-    InputRef(double, azimuth, "calendar[azimuth]");
     InputRef(double, greenhouseShade, "geometry[shade]");
     InputRef(double, chalk, "controllers/chalk[signal]");
 
@@ -52,34 +48,45 @@ Shelter::Shelter(Identifier name, QObject *parent)
     Output(double, diffuseLightTransmitted);
     Output(double, directLightTransmitted);
     Output(double, totalLightTransmitted);
+    Output(double, lightAbsorbedCover);
+    Output(double, lightAbsorbedScreens);
     Output(double, airTransmissivity);
     Output(double, haze);
     Output(double, U);
     Output(double, area);
+    Output(double, relativeArea);
     Output(double, maxScreenState);
 }
 
 void Shelter::initialize() {
-    pLightTransmissivity = pullValuePtr<double>("lightTransmissivity");
+    shelter.fetch(this);
 
-    dirTransTable = new DataGrid(simulation()->inputFilePath(directTransmissionFile), this);
-    Cover *cover = seekOneChild<Cover*>("cover");
-    pCoverU = cover->pullValuePtr<double>("U");
-    pCoverHaze = cover->pullValuePtr<double>("haze");
-    pCoverDiffuseTransmission = cover->pullValuePtr<double>("transmissivity");
-    pCoverSurfaceRadiation = cover->surfaceRadiation();
+    Cover *coverM = seekOneChild<Cover*>("cover");
+    pCoverU = coverM->pullValuePtr<double>("U");
+    pCoverHaze = coverM->pullValuePtr<double>("haze");
+    cover.fetch(coverM);
+    pCoverSurfaceRadiation = coverM->surfaceRadiation();
 
-    Screens *screensModel = seekOneChild<Screens*>("screens");
-    pScreensU = screensModel->pullValuePtr<double>("U");
-    pScreensAirTransmission = screensModel->pullValuePtr<double>("airTransmissivity");
-    pScreensHaze = screensModel->pullValuePtr<double>("haze");
-    pMaxScreenState = screensModel->pullValuePtr<double>("maxState");
-    pScreensSurfaceRadiation = screensModel->surfaceRadiation();
+    Screens *screensM = seekOneChild<Screens*>("screens");
+    pScreensU = screensM->pullValuePtr<double>("U");
+    pScreensHaze = screensM->pullValuePtr<double>("haze");
+    screens.fetch(screensM);
+    pScreensSurfaceRadiation = screensM->surfaceRadiation();
+    pMaxScreenState = screensM->pullValuePtr<double>("maxState");
+    pScreensAirTransmission = screensM->pullValuePtr<double>("airTransmissivity");
+}
+
+void Shelter::Light::fetch(UniSim::Model *model) {
+    diffuse.tra = model->pullValuePtr<double>("lightTransmissivity");
+    direct.tra = model->pullValuePtr<double>("directLightTransmissivity");
+    diffuse.abs = model->pullValuePtr<double>("incomingLightAbsorptivity");
+    direct.abs = model->pullValuePtr<double>("incomingDirectLightAbsorptivity");
 }
 
 void Shelter::reset() {
     resetRadiationOutputs();
-    diffuseLightTransmitted = directLightTransmitted = totalLightTransmitted = 0.;
+    diffuseLightTransmitted = directLightTransmitted = totalLightTransmitted =
+    lightAbsorbedCover = lightAbsorbedScreens = 0.;
     U = *pCoverU;
     airTransmissivity = 1.;
     haze = *pCoverHaze;
@@ -101,7 +108,7 @@ void Shelter::reset() {
 
 void Shelter::update() {
     double transmissivity = (1-chalk) * (1-greenhouseShade);
-    SurfaceRadiation rad = SurfaceRadiation().asCover(transmissivity, 0., 0.);
+    SurfaceRadiation rad = SurfaceRadiation().asCover(transmissivity, transmissivity, 0., 0.);
     rad *= (*pCoverSurfaceRadiation);
     rad *= (*pScreensSurfaceRadiation);
     set(rad);
@@ -127,12 +134,20 @@ void Shelter::updateAirTransmission() {
 }
 
 void Shelter::updateLightTransmission() {
-    diffuseLightTransmitted = relativeArea*outdoorsDiffuseRadiation * (*pLightTransmissivity);
-    double directLightTransmissivity = interpolate(*dirTransTable, latitude, azimuth) * (*pLightTransmissivity);
-    double directLightTransmittedTotal = relativeArea*outdoorsDirectRadiation*directLightTransmissivity;
+    diffuseLightTransmitted = relativeArea*outdoorsDiffuseRadiation * (*shelter.diffuse.tra);
+    double directLightTransmittedTotal = relativeArea*outdoorsDirectRadiation * (*shelter.direct.tra);
     directLightTransmitted = directLightTransmittedTotal*(1-haze);
     diffuseLightTransmitted += directLightTransmittedTotal*haze;
     totalLightTransmitted = diffuseLightTransmitted + directLightTransmitted;
+
+    double diffuseLightAbsorbedTotal =  relativeArea*outdoorsDiffuseRadiation * (*shelter.diffuse.abs);
+    double directLightAbsorbedTotal =  relativeArea*outdoorsDirectRadiation * (*shelter.direct.abs);
+    double diffuseAbsSum = (*cover.diffuse.abs) + (*screens.diffuse.abs);
+    double directAbsSum = (*cover.direct.abs) + (*screens.direct.abs);
+    lightAbsorbedCover = div0(*cover.diffuse.abs, diffuseAbsSum) * diffuseLightAbsorbedTotal +
+                         div0(*cover.direct.abs, directAbsSum) * directLightAbsorbedTotal;
+    lightAbsorbedScreens = div0(*screens.diffuse.abs, diffuseAbsSum) * diffuseLightAbsorbedTotal +
+                           div0(*screens.direct.abs, directAbsSum) * directLightAbsorbedTotal;
 }
 
 } //namespace

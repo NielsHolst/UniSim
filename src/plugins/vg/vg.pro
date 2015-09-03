@@ -31,6 +31,7 @@ HEADERS += \
     crop_radiation.h \
     crop_yield.h \
     date_time_signal.h \
+    energetics.h \
     energy_flux_air.h \
     energy_flux_base.h \
     energy_flux_condensation.h \
@@ -118,6 +119,7 @@ SOURCES += \
     crop_radiation.cpp \
     crop_yield.cpp \
     date_time_signal.cpp \
+    energetics.cpp \
     energy_flux_air.cpp \
     energy_flux_base.cpp \
     energy_flux_condensation.cpp \

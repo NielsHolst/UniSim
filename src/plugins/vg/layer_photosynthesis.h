@@ -27,14 +27,21 @@ private:
         lightDiffuse, lightDirect, parProportion,
         Pgmax, LUE,
         xGauss, wGauss, lai, Rd, sinB;
+
+    // Test
+    double lat;
+    int day, hour, minute;
+
     // Outputs
-    double parAbsorbed, Pg, Pn;
+    double absorptivity, parAbsorbed, Pg, Pn;
     // Data
-    double laiX, parDiffuse, parDirect;
+    double parDiffuse, parDirect;
     // Methods
+    double lad() const;
+    double laic() const;
+
     double absorbedByShadedLeaves() const;
     QPair<double,double> absorbedBySunlitLeaves(double absorbedShaded) const;
-    double grossAssimilationTotal(double Pgshade, double PgSunlit) const;
     double grossAssimilation(double absorbed) const;
 };
 } //namespace

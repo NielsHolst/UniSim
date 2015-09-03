@@ -54,12 +54,12 @@ void LeafTemperature::reset() {
 }
 
 void LeafTemperature::update() {
-    double rna = lightAbsorbed,
+    double radiationAbsorbed = lightAbsorbed,
                  s = svpSlope(Tgh),
                  psatu = svp(Tgh),
                  pgh = vpFromRh(Tgh, RHgh),
                  Tgh3 = p3(Tgh+T0);
-    value = (1/RhoAir/CpAir*(rsH2O+rbH2O)*rna - 1/Psychr*(psatu-pgh))
+    value = (1/RhoAir/CpAir*(rsH2O+rbH2O)*radiationAbsorbed - 1/Psychr*(psatu-pgh))
             /
             (1+(s/Psychr+ rsH2O/rbH2O+ 1/(RhoAir*CpAir/4/Sigma*Tgh3)*(rsH2O+rbH2O)))
             + Tgh;

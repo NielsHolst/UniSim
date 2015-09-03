@@ -10,21 +10,31 @@
 #include <usbase/model.h>
 #include "surface_radiation_outputs.h"
 
+namespace UniSim {
+    class DataGrid;
+}
+
 namespace vg {
 
 class Cover : public vg::SurfaceRadiationOutputs
 {
 public:
     Cover(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 private:
     // Inputs
-    double U4, windspeed, emissivity, absorptivity, transmissivity, heatCapacity, haze;
+    QString directTransmissionFile;
+    double latitude, azimuth,
+        U4, windspeed, emissivity, absorptivity, transmissivity, heatCapacity, haze;
     bool antiReflection;
 
-    // outputs
+    // Outputs
     double U;
+
+    // Data
+    UniSim::DataGrid *dirTransTable;
 };
 } //namespace
 

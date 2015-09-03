@@ -24,10 +24,10 @@ struct SurfaceRadiation {
             void setAbs(double tra);
             double abs, ref;
         } inner, outer;
-    } light, ir;
+    } light, directLight, ir;
 
     // Methods
-    SurfaceRadiation& asCover(double transmissivity, double absorptivity, double emissivity);
+    SurfaceRadiation& asCover(double transmissivity, double directTransmissivity, double absorptivity, double emissivity);
     SurfaceRadiation& asScreen(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner);
 
     // Operators

@@ -22,13 +22,18 @@ SurfaceRadiationOutputs::SurfaceRadiationOutputs(Identifier name, QObject *paren
 	: Model(name, parent)
 {
     Output(double, lightTransmissivity);
+    Output(double, directLightTransmissivity);
     Output(double, irTransmissivity);
     Output(double, incomingLightAbsorptivity);
     Output(double, incomingLightReflectivity);
+    Output(double, incomingDirectLightAbsorptivity);
+    Output(double, incomingDirectLightReflectivity);
     Output(double, incomingIrAbsorptivity);
     Output(double, incomingIrReflectivity);
     Output(double, outgoingLightAbsorptivity);
     Output(double, outgoingLightReflectivity);
+    Output(double, outgoingDirectLightAbsorptivity);
+    Output(double, outgoingDirectLightReflectivity);
     Output(double, outgoingIrAbsorptivity);
     Output(double, outgoingIrReflectivity);
 }
@@ -40,13 +45,18 @@ void SurfaceRadiationOutputs::resetRadiationOutputs() {
 void SurfaceRadiationOutputs::set(const SurfaceRadiation &rad_) {
     rad = rad_;
     lightTransmissivity = rad.light.tra;
+    directLightTransmissivity = rad.directLight.tra;
     irTransmissivity = rad.ir.tra;
     incomingLightAbsorptivity = rad.light.outer.abs;
     incomingLightReflectivity = rad.light.outer.ref;
+    incomingDirectLightAbsorptivity = rad.directLight.outer.abs;
+    incomingDirectLightReflectivity = rad.directLight.outer.ref;
     incomingIrAbsorptivity = rad.ir.outer.abs;
     incomingIrReflectivity = rad.ir.outer.ref;
-    outgoingLightAbsorptivity = rad.light.inner.abs;
-    outgoingLightReflectivity = rad.light.inner.ref;
+    incomingLightAbsorptivity = rad.light.outer.abs;
+    incomingLightReflectivity = rad.light.outer.ref;
+    incomingDirectLightAbsorptivity = rad.directLight.outer.abs;
+    incomingDirectLightReflectivity = rad.directLight.outer.ref;
     outgoingIrAbsorptivity = rad.ir.inner.abs;
     outgoingIrReflectivity = rad.ir.inner.ref;
 }

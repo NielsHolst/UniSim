@@ -5,6 +5,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <stdlib.h>
+#include "general.h"
 #include "layer_photosynthesis.h"
 #include "publish.h"
 
@@ -39,6 +40,18 @@ PUBLISH(LayerPhotosynthesis)
  * - _Pg_ is the gross assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> ground/h]
  */
 
+const double H{2};
+
+double LayerPhotosynthesis::lad() const {
+    double h = xGauss*H;
+    return lai*6*h*(H-h)/p3(H);
+}
+
+double LayerPhotosynthesis::laic() const {
+    double h = xGauss*H;
+    return lai*( 1 - 1/p3(H)*p2(h)*(3*H - 2*h) );
+}
+
 LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     : Model(name, parent)
 {
@@ -61,18 +74,23 @@ LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     InputRef(double, Rd, "./lightResponse[Rd]");
     Input(double, parProportion, 0.47);
 
+    InputRef(double, lat, "calendar[latitude]");
+    InputRef(int, day, "calendar[dayOfYear]");
+    InputRef(int, hour, "calendar[hour]");
+    InputRef(int, minute, "calendar[minute]");
+
+    Output(double, absorptivity);
     Output(double, parAbsorbed);
     Output(double, Pn);
     Output(double, Pg);
 }
 
 void LayerPhotosynthesis::reset() {
-    Pn = Pg = 0;
+    absorptivity = parAbsorbed = Pn = Pg = 0;
 }
 
 void LayerPhotosynthesis::update() {
-    laiX = lai*xGauss,
-    parDiffuse = parProportion*lightDiffuse,
+    parDiffuse = parProportion*lightDiffuse;
     parDirect = parProportion*lightDirect;
 
     // Compute light absorned and gross assimilation
@@ -82,18 +100,21 @@ void LayerPhotosynthesis::update() {
     auto sunlit = absorbedBySunlitLeaves(absorbedShaded);
     double absorbedSunlit = sunlit.first,                       // [J / m2 leaf / s]
            PgSunlit = sunlit.second,                            // [mg CO2 / m2 leaf / s]
-
-           absorbedTotal = absorbedShaded + absorbedSunlit,     // [J / m2 leaf / s]
-           PgTotal = grossAssimilationTotal(PgShade, PgSunlit); // [mg CO2 / m2 leaf / s]
+           propSunlit = exp(-kDirectDirect*laic()),
+           absorbedTotal = (propSunlit*absorbedSunlit + (1-propSunlit)*absorbedShaded),
+           PgTotal = propSunlit*PgSunlit + (1-propSunlit)*PgShade,
+           integrationWeight = lad()*wGauss*H;
 
     // Apply integration weight and convert
 
     // [J / m2 ground / s] = [J / m2 leaf / s * m2 leaf / m2 ground]
-    parAbsorbed = absorbedTotal*wGauss*lai;
+//    parAbsorbed = absorbedTotal*wGauss*lai;
+    parAbsorbed = absorbedTotal*integrationWeight;
+    absorptivity = div0(parAbsorbed, parDiffuse + parDirect);
 
     // [mg CO2 / m2 ground / s] = [mg CO2 / m2 leaf / s * m2 leaf / m2 ground]
-    Pg = PgTotal*wGauss*lai;
-    Pn = Pg - Rd*wGauss*lai;
+    Pg = PgTotal*integrationWeight;
+    Pn = Pg - Rd*integrationWeight;
 
     // Convert to [g CO2 m-2 h-1]
     Pg *= 3.6;
@@ -101,9 +122,10 @@ void LayerPhotosynthesis::update() {
 }
 
 double LayerPhotosynthesis::absorbedByShadedLeaves() const {
-    double absorbedDiffuse = (1-diffuseReflectivity)*parDiffuse*kDiffuse*exp(-kDiffuse*laiX),
-           absorbedTotal = (1-directReflectivity)*parDirect*kDirect*exp(-kDirect*laiX),
-           absorbedDirect = (1-scattering)*parDirect*kDirectDirect*exp(-kDirectDirect*laiX);
+    double laic_ = laic();
+    double absorbedDiffuse = (1-diffuseReflectivity)*parDiffuse*kDiffuse*exp(-kDiffuse*laic_),
+           absorbedTotal = (1-directReflectivity)*parDirect*kDirect*exp(-kDirect*laic_),
+           absorbedDirect = (1-scattering)*parDirect*kDirectDirect*exp(-kDirectDirect*laic_);
     return absorbedDiffuse + absorbedTotal - absorbedDirect; // [J/m2/leaf/s]
 }
 
@@ -113,7 +135,9 @@ QPair<double, double> LayerPhotosynthesis::absorbedBySunlitLeaves(double absorbe
     if (Pgmax==0 || sinB==0) return qMakePair(0.,0.);
 
     // Direct flux absorbed by leaves perpendicular on direct beam (VISpp)[J*m-2 leaf s-1]
-    double absorbedPerpendicular = (1-scattering)*parDirect/(sinB);
+    // Original eq. changed to guard against sinB->0 yielding absorptivity>1
+    double absorptivity = min((1-scattering)/sinB, 1.);
+    double absorbedPerpendicular = absorptivity*parDirect;
     // Integration over all leaf angles
     double assimilationSum{0}, absorbedSum{0};
     for(int i=0; i<3; ++i) {
@@ -126,11 +150,6 @@ QPair<double, double> LayerPhotosynthesis::absorbedBySunlitLeaves(double absorbe
     return qMakePair(absorbedSum, assimilationSum);
 }
 
-double LayerPhotosynthesis::grossAssimilationTotal(double Pgshade, double PgSunlit) const {
-    // Proportion sunlit leaf area
-    double propSunlit = exp(-kDirectDirect*laiX);
-    return propSunlit*PgSunlit + (1-propSunlit)*Pgshade;
-}
 
 double LayerPhotosynthesis::grossAssimilation(double absorbed) const {
     return (Pgmax==0) ? 0 : Pgmax*(1-exp(-absorbed*LUE/Pgmax));

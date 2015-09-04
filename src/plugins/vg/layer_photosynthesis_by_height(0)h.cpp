@@ -43,15 +43,13 @@ PUBLISH(LayerPhotosynthesis)
 const double H{2};
 
 double LayerPhotosynthesis::lad() const {
-//    double h = xGauss*H;
-//    return lai*6*h*(H-h)/p3(H);
-    return lai/H;
+    double h = xGauss*H;
+    return lai*6*h*(H-h)/p3(H);
 }
 
 double LayerPhotosynthesis::laic() const {
-//    double h = xGauss*H;
-//    return lai*( 1 - 1/p3(H)*p2(h)*(3*H - 2*h) );
-    return lai*xGauss;
+    double h = xGauss*H;
+    return lai*( 1 - 1/p3(H)*p2(h)*(3*H - 2*h) );
 }
 
 LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)

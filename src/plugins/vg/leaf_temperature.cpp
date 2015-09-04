@@ -41,20 +41,24 @@ PUBLISH(LeafTemperature)
 LeafTemperature::LeafTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, lightAbsorbed, "../lightAbsorbed[value]");
     InputRef(double, Tgh, "indoors/temperature[value]");
     InputRef(double, RHgh, "indoors/humidity[rh]");
     InputRef(double, rsH2O, "../rs[rsH2O]");
     InputRef(double, rbH2O, "../rb[rbH2O]");
+    InputRef(double, indoorsLight, "indoors/light[total]");
+    InputRef(double, absorptivity, "../photosynthesis[absorptivity]");
+    InputRef(double, lai, "crop/lai[lai]");
     Output(double, value);
+    Output(double, value2);
+    Output(double, energyFlux);
 }
 
 void LeafTemperature::reset() {
-    value = Tgh;
+    value = value2 = Tgh;
 }
 
 void LeafTemperature::update() {
-    double radiationAbsorbed = lightAbsorbed,
+    double radiationAbsorbed = indoorsLight*absorptivity,
                  s = svpSlope(Tgh),
                  psatu = svp(Tgh),
                  pgh = vpFromRh(Tgh, RHgh),
@@ -63,6 +67,8 @@ void LeafTemperature::update() {
             /
             (1+(s/Psychr+ rsH2O/rbH2O+ 1/(RhoAir*CpAir/4/Sigma*Tgh3)*(rsH2O+rbH2O)))
             + Tgh;
+
+    energyFlux = (value - Tgh)*CpAir/rbH2O*lai;
 }
 
 

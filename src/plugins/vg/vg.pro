@@ -27,7 +27,6 @@ HEADERS += \
     crop_mass.h \
     crop_growth.h \
     crop_lai.h \
-    crop_light_absorbed.h \
     crop_radiation.h \
     crop_yield.h \
     date_time_signal.h \
@@ -115,7 +114,6 @@ SOURCES += \
     crop_mass.cpp \
     crop_growth.cpp \
     crop_lai.cpp \
-    crop_light_absorbed.cpp \
     crop_radiation.cpp \
     crop_yield.cpp \
     date_time_signal.cpp \

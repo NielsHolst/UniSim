@@ -720,7 +720,9 @@
 				</model>
 				
 				<model name="energyFlux" type="vg::EnergyFluxSum"> 
+					<!--
 					<model name="transpiration" type="vg::EnergyFluxTranspiration"/> 
+					-->
 					<model name="condensation" type="vg::EnergyFluxCondensation"/> 
 					<model name="growthLights" type="vg::PidControlElement">
 						<parameter name="Kprop" value="0.5"/>
@@ -747,9 +749,15 @@
 					<model name="cover" type="vg::EnergyFluxCoverSum"> 
 						<parameter name="toAdd" value="(side1/cover/energyFlux side2/cover/energyFlux end1/cover/energyFlux end2/cover/energyFlux)"/>
 					</model>					
+					<model name="crop" type="UniSim::Sum">
+						<parameter name="toAdd" value="(crop/energyFlux[value])"/>
+					</model>					
+					<!-- NB! growth lights -->
+					<!--
 					<model name="light" type="UniSim::Sum">
 						<parameter name="toAdd" value="(indoors/light[total])"/>
 					</model>					
+					-->
 					<model name="floor" type="UniSim::Sum">
 						<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
 					</model>
@@ -1557,7 +1565,7 @@
 
 		<model name="layers">
 			<model name="top" type="vg::Layer">
-				<parameter name="xGauss"  value="0.8873"/>
+				<parameter name="xGauss"  value="0.1127"/>
 				<parameter name="wGauss"  value="0.2778"/>
 				<xsl:call-template name="crop-layer"/>
 			</model>
@@ -1567,7 +1575,7 @@
 				<xsl:call-template name="crop-layer"/>
 			</model>
 			<model name="bottom" type="vg::Layer">
-				<parameter name="xGauss"  value="0.1127"/>
+				<parameter name="xGauss"  value="0.8873"/>
 				<parameter name="wGauss"  value="0.2778"/>
 				<xsl:call-template name="crop-layer"/>
 			</model>
@@ -1578,6 +1586,10 @@
 		<model name="temperature" type="Unisim::Average">
 			<parameter name="inputs"  value="(layers/top/temperature[value] layers/middle/temperature[value] layers/bottom/temperature[value])"/> 
 		</model>	
+
+		<model name="energyFlux" type="Unisim::Sum">
+			<parameter name="toAdd" value="(layers/top/temperature[energyFlux] layers/middle/temperature[energyFlux] layers/bottom/temperature[energyFlux])"/>
+		</model>
 		
 		<model name="conductance" type="Unisim::Average">
 			<parameter name="inputs"  value="(layers/top/transpiration[conductance] layers/middle/transpiration[conductance] layers/bottom/transpiration[conductance])"/> 
@@ -1705,6 +1717,12 @@
 		<trace label="temp_top" ref="layers/top/temperature[value]"/>
 		<trace label="temp_mid" ref="layers/middle/temperature[value]"/>
 		<trace label="temp_bot" ref="layers/bottom/temperature[value]"/>
+		<trace label="temp2_top" ref="layers/top/temperature[value2]"/>
+		<trace label="temp2_mid" ref="layers/middle/temperature[value2]"/>
+		<trace label="temp2_bot" ref="layers/bottom/temperature[value2]"/>
+		<trace label="flux_top" ref="layers/top/temperature[energyFlux]"/>
+		<trace label="flux_mid" ref="layers/middle/temperature[energyFlux]"/>
+		<trace label="flux_bot" ref="layers/bottom/temperature[energyFlux]"/>
 		<trace label="stem" ref="crop/mass[stem]"/>
 		<trace label="leaf" ref="crop/mass[leaf]"/>
 		<trace label="fruit" ref="crop/mass[fruit]"/>

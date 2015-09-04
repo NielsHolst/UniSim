@@ -71,19 +71,20 @@ plot6 = function(U,from=0, to=366) {
 	pg = plot1(U,from,to, c("Pg_top", "Pg_mid", "Pg_bot"))
 	grid.arrange(temperature, pg, ncol=2)
 }
+
+plot7 = function(U,from=0, to=366) {
+	p1 = plot2(U, from, to, c("temp_top","temp_mid","temp_bot"))
+	p2 = plot2(U, from, to, c("temp2_top","temp2_mid","temp2_bot"))
+	p3 = plot2(U, from, to, c("flux_top","flux_mid","flux_bot"))
+	p4 = plot2(U, from, to, c("abs_li_top","abs_li_mid","abs_li_bot"))
+	p5 = plot2(U, from, to, c("Pg_top","Pg_mid","Pg_bot"))
+	p6 = plot2(U, from, to, c("abs_top","abs_mid","abs_bot","ref_can","tra_can"))
+	p7 = plot2(U, from, to, c("indoors_temp"))
+	grid.arrange(p1,p2,p3,p4,p5,p6,p7, ncol=4)
+}
  
 U = read_unisim("dvv_unisim_0001.txt")
 
-# windows(14,10)
-# plot3(U)
-
-
-# windows(14,10)
-# plot4(U)
-
 windows(14,10)
 plot7(U)
-
-# windows(14,10)
-# plot1(U,30,36, c("top_light", "indoors_light")) 
 

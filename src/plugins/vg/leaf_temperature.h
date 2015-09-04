@@ -20,9 +20,10 @@ public:
 
 private:
     // Inputs
-    double lightAbsorbed, Tgh, RHgh, rsH2O, rbH2O;
+    double lightAbsorbed, Tgh, RHgh, rsH2O, rbH2O,
+        indoorsLight, absorptivity, lai;
     // Outputs
-    double value;
+    double value, value2, energyFlux;
 };
 } //namespace
 

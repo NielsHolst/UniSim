@@ -67,14 +67,14 @@ LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     InputRef(double, sinB, "calendar[sinB]");
     InputRef(double, lightDiffuse, "indoors/light[diffuse]");
     InputRef(double, lightDirect, "indoors/light[direct]");
+    Input(double, parProportion, 0.47);
+    InputRef(double, growthLightPar, "growthLights[parEmission]");
     InputRef(double, lai, "crop/lai[lai]");
-    InputRef(double, xGauss, "..[xGauss]");
-    InputRef(double, wGauss, "..[wGauss]");
+    InputRef(double, xGauss, "..[xGaussUpperside]");
+    InputRef(double, wGauss, "..[wGaussUpperside]");
     InputRef(double, LUE, "./lightResponse[LUE]");
-//    InputRef(double, Pnmax, "./lightResponse[Pnmax]");
     InputRef(double, Pgmax, "./lightResponse[Pgmax]");
     InputRef(double, Rd, "./lightResponse[Rd]");
-    Input(double, parProportion, 0.47);
 
     InputRef(double, lat, "calendar[latitude]");
     InputRef(int, day, "calendar[dayOfYear]");
@@ -93,7 +93,7 @@ void LayerPhotosynthesis::reset() {
 
 void LayerPhotosynthesis::update() {
     parDiffuse = parProportion*lightDiffuse;
-    parDirect = parProportion*lightDirect;
+    parDirect = parProportion*lightDirect + growthLightPar;
 
     // Compute light absorned and gross assimilation
     double absorbedShaded = absorbedByShadedLeaves(),           // [J / m2 leaf / s]
@@ -132,8 +132,6 @@ double LayerPhotosynthesis::absorbedByShadedLeaves() const {
 }
 
 QPair<double, double> LayerPhotosynthesis::absorbedBySunlitLeaves(double absorbedShaded) const {
-    const double xGauss[3] = {0.1127, 0.5, 0.8873},
-                 wGauss[3] = {0.2778, 0.4444, 0.2778};
     if (Pgmax==0 || sinB==0) return qMakePair(0.,0.);
 
     // Direct flux absorbed by leaves perpendicular on direct beam (VISpp)[J*m-2 leaf s-1]
@@ -144,10 +142,10 @@ QPair<double, double> LayerPhotosynthesis::absorbedBySunlitLeaves(double absorbe
     double assimilationSum{0}, absorbedSum{0};
     for(int i=0; i<3; ++i) {
         // Total absorbed flux of sunlit leaves [J*m-2 leaf s-1]
-        double absorbedSunlit = absorbedShaded + absorbedPerpendicular*xGauss[i];
-        absorbedSum += wGauss[i]*absorbedSunlit;
+        double absorbedSunlit = absorbedShaded + absorbedPerpendicular*xGauss3[i];
+        absorbedSum += wGauss3[i]*absorbedSunlit;
         // Gross assimilation of sunlit leaves [mg CO2in*m-2 leaf s-1]
-        assimilationSum += wGauss[i]*grossAssimilation(absorbedSunlit);
+        assimilationSum += wGauss3[i]*grossAssimilation(absorbedSunlit);
     }
     return qMakePair(absorbedSum, assimilationSum);
 }

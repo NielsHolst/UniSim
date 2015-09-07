@@ -22,16 +22,16 @@ public:
 private:
     // Inputs
     double greenhouseShade, chalk,
-    coverAreaRoof, coverAreaSideWalls, coverAreaEndWalls, coverAreaGables,
+    coverAreaRoof, coverAreaSideWalls, coverAreaEndWalls, coverAreaGables, groundArea,
     outdoorsDirectRadiation, outdoorsDiffuseRadiation;
 
     // Outputs
-    double area, diffuseLightTransmitted, directLightTransmitted, totalLightTransmitted,
+    double area, relativeArea, areaPerGround,
+        diffuseLightTransmitted, directLightTransmitted, totalLightTransmitted,
         lightAbsorbedCover, lightAbsorbedScreens,
         airTransmissivity, haze, U, maxScreenState;
 
     // Data
-    double relativeArea;
     const double
         *pCoverU, *pCoverHaze,
         *pScreensU, *pScreensHaze,

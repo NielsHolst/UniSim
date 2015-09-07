@@ -32,6 +32,9 @@ const double
     LHe = 2454e3,       //!< Latent heat of vaporisation of water (J/kg)
     Psychr = CpAir*P0/LHe/Mwa;  //!< Psychrometric constant (Pa/K)
 
+const double xGauss3[3] = {0.1127, 0.5, 0.8873},
+             wGauss3[3] = {0.2778, 0.4444, 0.2778};
+
 // Amount of water vapour
 double ahFromSh(double sh);
 double ahFromVp(double temperature, double vp);

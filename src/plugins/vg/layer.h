@@ -17,7 +17,8 @@ public:
     Layer(UniSim::Identifier name, QObject *parent);
 
 private:
-    double xGauss, wGauss;
+    double xGaussUpperside, wGaussUpperside,
+        xGaussLowerside, wGaussLowerside;
 };
 } //namespace
 

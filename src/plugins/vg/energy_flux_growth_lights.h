@@ -18,7 +18,7 @@ public:
     void update();
 
 private:
-    double heatEmission, longWaveEmission;
+    double heatEmission;
 };
 } //namespace
 

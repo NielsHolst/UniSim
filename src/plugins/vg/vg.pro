@@ -18,6 +18,7 @@ HEADERS += \
     air_flux_outdoors.h \
     base_control_element.h \
     base_signal.h \
+    budget.h \
     boundary_layer_resistance.h \
     co2_controller.h \
     construction_geometry.h \
@@ -62,6 +63,7 @@ HEADERS += \
     layer.h \
     layer_photosynthesis.h \
     leaf_light_response.h \
+    leaf_radiation_absorbed.h \
     leaf_temperature.h \
     leaf_transpiration.h \
     growth_light_controller.h \
@@ -106,6 +108,7 @@ SOURCES += \
     base_control_element.cpp \
     base_signal.cpp \
     boundary_layer_resistance.cpp \
+    budget.cpp \
     co2_controller.cpp \
     construction_geometry.cpp \
     cover.cpp \
@@ -149,6 +152,7 @@ SOURCES += \
     layer.cpp \
     layer_photosynthesis.cpp \
     leaf_light_response.cpp \
+    leaf_radiation_absorbed.cpp \
     leaf_temperature.cpp \
     leaf_transpiration.cpp \
     growth_light_controller.cpp \

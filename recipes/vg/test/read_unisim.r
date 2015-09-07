@@ -74,17 +74,36 @@ plot6 = function(U,from=0, to=366) {
 
 plot7 = function(U,from=0, to=366) {
 	p1 = plot2(U, from, to, c("temp_top","temp_mid","temp_bot"))
-	p2 = plot2(U, from, to, c("temp2_top","temp2_mid","temp2_bot"))
-	p3 = plot2(U, from, to, c("flux_top","flux_mid","flux_bot"))
+	p2 = plot2(U, from, to, c("flux_top","flux_mid","flux_bot"))
+	p3 = plot2(U, from, to, c("abs_par_top","abs_par_mid","abs_par_bot"))
 	p4 = plot2(U, from, to, c("abs_li_top","abs_li_mid","abs_li_bot"))
-	p5 = plot2(U, from, to, c("Pg_top","Pg_mid","Pg_bot"))
-	p6 = plot2(U, from, to, c("abs_top","abs_mid","abs_bot","ref_can","tra_can"))
+	p5 = plot2(U, from, to, c("abs_ir_top","abs_ir_mid","abs_ir_bot"))
+	p6 = plot2(U, from, to, c("Pg_top","Pg_mid","Pg_bot"))
+	p7 = plot2(U, from, to, c("indoors_temp", "energy_heat"))
+	p8 = plot2(U, from, to, c("abs_top","abs_mid","abs_bot","ref_can","tra_can"))
+	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8, ncol=4)
+}
+
+plot8 = function(U,from=0, to=366) {
+	p1 = plot1(U, from, to, c("temp_top","temp_mid","temp_bot"))
+	p2 = plot2(U, from, to, c("heat_flux", "heat_sum"))
+	p3 = plot2(U, from, to, c("yield_kg_fw"))
+	grid.arrange(p1,p2,p3, ncol=2)
+}
+
+plot9 = function(U,from=0, to=366) {
+	p1 = plot2(U, from, to, c("roof1_temp", "temp_top","temp_mid","temp_bot"))
+	p2 = plot2(U, from, to, c("abs_li_top","abs_li_mid","abs_li_bot"))
+	p3 = plot2(U, from, to, c("abs_heat_top","abs_heat_mid","abs_heat_bot"))
+	p4 = plot2(U, from, to, c("abs_gr_li_top","abs_gr_li_mid","abs_gr_li_bot"))
+	p5 = plot2(U, from, to, c("lost_cover_top","lost_cover_mid","lost_cover_bot"))
+	p6 = plot2(U, from, to, c("abs_tot_top","abs_tot_mid","abs_tot_bot"))
 	p7 = plot2(U, from, to, c("indoors_temp"))
-	grid.arrange(p1,p2,p3,p4,p5,p6,p7, ncol=4)
+	p8 = plot2(U, from, to, c("heat_flux", "heat_sum"))
+	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8, ncol=4)
 }
  
 U = read_unisim("dvv_unisim_0001.txt")
-
 windows(14,10)
-plot7(U)
+plot9(U)
 

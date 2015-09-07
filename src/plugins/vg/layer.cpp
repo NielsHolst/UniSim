@@ -26,8 +26,10 @@ PUBLISH(Layer)
 Layer::Layer(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    Input(double, xGauss, 1);
-    Input(double, wGauss, 1);
+    Input(double, xGaussUpperside, 1);
+    Input(double, wGaussUpperside, 1);
+    Input(double, xGaussLowerside, 1);
+    Input(double, wGaussLowerside, 1);
 }
 
 

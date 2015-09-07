@@ -21,13 +21,16 @@ private:
     // Inputs
     double kDiffuse, scattering, sinB,
         lightDiffuse, lightDirect,
-        absorptivityTop, absorptivityMiddle, absorptivityBottom;
+        absorptivityTop, absorptivityMiddle, absorptivityBottom,
+        lai;
 
     // Outputs
     double
         kDirect, kDirectDirect,
         diffuseReflectivity, directReflectivity,
-        reflectivity, transmissivity;
+        reflectivity, transmissivity,
+        absorptivityIrTop, absorptivityIrMiddle, absorptivityIrBottom,
+        transmissivityIr;
 };
 } //namespace
 

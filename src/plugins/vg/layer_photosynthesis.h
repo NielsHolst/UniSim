@@ -25,6 +25,7 @@ private:
         kDiffuse, kDirect, kDirectDirect, scattering,
         diffuseReflectivity, directReflectivity,
         lightDiffuse, lightDirect, parProportion,
+        growthLightPar,
         Pgmax, LUE,
         xGauss, wGauss, lai, Rd, sinB;
 

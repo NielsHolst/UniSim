@@ -40,6 +40,7 @@ Shelter::Shelter(Identifier name, QObject *parent)
     InputRef(double, coverAreaSideWalls, "geometry[sideWallsArea]");
     InputRef(double, coverAreaEndWalls, "geometry[endWallsArea]");
     InputRef(double, coverAreaGables, "geometry[gablesArea]");
+    InputRef(double, groundArea, "geometry[groundArea]");
 
     InputRef(double, outdoorsDirectRadiation, "outdoors[directRadiation]");
     InputRef(double, outdoorsDiffuseRadiation, "outdoors[diffuseRadiation]");
@@ -55,6 +56,7 @@ Shelter::Shelter(Identifier name, QObject *parent)
     Output(double, U);
     Output(double, area);
     Output(double, relativeArea);
+    Output(double, areaPerGround);
     Output(double, maxScreenState);
 }
 
@@ -104,6 +106,7 @@ void Shelter::reset() {
         throw Exception(msg.arg(name));
     }
     relativeArea = area/(coverAreaRoof + coverAreaSideWalls + coverAreaEndWalls);
+    areaPerGround = area/groundArea;
 }
 
 void Shelter::update() {

@@ -41,12 +41,12 @@ PUBLISH(LeafTemperature)
 LeafTemperature::LeafTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    Input(double, fractionPlantArea, 0.95);
     InputRef(double, Tgh, "indoors/temperature[value]");
     InputRef(double, RHgh, "indoors/humidity[rh]");
     InputRef(double, rsH2O, "../rs[rsH2O]");
     InputRef(double, rbH2O, "../rb[rbH2O]");
-    InputRef(double, indoorsLight, "indoors/light[total]");
-    InputRef(double, absorptivity, "../photosynthesis[absorptivity]");
+    InputRef(double, radiationAbsorbed, "../radiationAbsorbed[value]");
     InputRef(double, lai, "crop/lai[lai]");
     Output(double, value);
     Output(double, value2);
@@ -58,17 +58,25 @@ void LeafTemperature::reset() {
 }
 
 void LeafTemperature::update() {
-    double radiationAbsorbed = indoorsLight*absorptivity,
-                 s = svpSlope(Tgh),
-                 psatu = svp(Tgh),
-                 pgh = vpFromRh(Tgh, RHgh),
-                 Tgh3 = p3(Tgh+T0);
+    double s = svpSlope(Tgh),
+           psatu = svp(Tgh),
+           pgh = vpFromRh(Tgh, RHgh),
+           Tgh3 = p3(Tgh+T0);
+
     value = (1/RhoAir/CpAir*(rsH2O+rbH2O)*radiationAbsorbed - 1/Psychr*(psatu-pgh))
             /
             (1+(s/Psychr+ rsH2O/rbH2O+ 1/(RhoAir*CpAir/4/Sigma*Tgh3)*(rsH2O+rbH2O)))
             + Tgh;
+    /*
+    double he = RhoAir*CpAir/Psychr/(rsH2O+rbH2O),  // Water vapour transfer coefficient
+           ht = RhoAir*CpAir/rbH2O,                 // Heat transfer coefficient
+           emissivity = 0.95;
 
-    energyFlux = (value - Tgh)*CpAir/rbH2O*lai;
+    value2 = Tgh + ( radiationAbsorbed - emissivity*Sigma*p4(Tgh+T0) - he*(svp(Tgh) - pgh) ) /
+                   (4*emissivity*Sigma*p3(Tgh+T0) + ht + he*s);
+    value = value2;
+    */
+    energyFlux = (value - Tgh)*CpAir/rbH2O*lai*fractionPlantArea;
 }
 
 

@@ -363,10 +363,9 @@
 <xsl:template name="crop-layer">
 	<model name="rs" type="vg::StomatalResistance"/>
 	<model name="rb" type="vg::BoundaryLayerResistance"/>
+	<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 	<model name="transpiration" type="vg::LeafTranspiration"/>
 	<model name="temperature" type="vg::LeafTemperature"/>
-	<model name="lightAbsorbed" type="vg::CropLightAbsorbed"/>
-	<model name="irAbsorbed"/>
 	<model name="photosynthesis" type="vg::LayerPhotosynthesis">
 		<model name="lightResponse" type="vg::LeafLightResponse"/>	
 	</model>
@@ -1565,18 +1564,24 @@
 
 		<model name="layers">
 			<model name="top" type="vg::Layer">
-				<parameter name="xGauss"  value="0.1127"/>
-				<parameter name="wGauss"  value="0.2778"/>
+				<parameter name="xGaussUpperside"  value="0.1127"/>
+				<parameter name="wGaussUpperside"  value="0.2778"/>
+				<parameter name="xGaussLowerside"  value="0.8873"/>
+				<parameter name="wGaussLowerside"  value="0.2778"/>
 				<xsl:call-template name="crop-layer"/>
 			</model>
 			<model name="middle" type="vg::Layer">
-				<parameter name="xGauss"  value="0.5"/>
-				<parameter name="wGauss"  value="0.4444"/>
+				<parameter name="xGaussUpperside"  value="0.5"/>
+				<parameter name="wGaussUpperside"  value="0.4444"/>
+				<parameter name="xGaussLowerside"  value="0.5"/>
+				<parameter name="wGaussLowerside"  value="0.4444"/>
 				<xsl:call-template name="crop-layer"/>
 			</model>
 			<model name="bottom" type="vg::Layer">
-				<parameter name="xGauss"  value="0.8873"/>
-				<parameter name="wGauss"  value="0.2778"/>
+				<parameter name="xGaussUpperside"  value="0.8873"/>
+				<parameter name="wGaussUpperside"  value="0.2778"/>
+				<parameter name="xGaussLowerside"  value="0.1127"/>
+				<parameter name="wGaussLowerside"  value="0.2778"/>
 				<xsl:call-template name="crop-layer"/>
 			</model>
 		</model>
@@ -1586,6 +1591,10 @@
 		<model name="temperature" type="Unisim::Average">
 			<parameter name="inputs"  value="(layers/top/temperature[value] layers/middle/temperature[value] layers/bottom/temperature[value])"/> 
 		</model>	
+
+		<model name="heatingAbsorbed" type="Unisim::Sum">
+			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[heatingAbsorbed] layers/middle/radiationAbsorbed[heatingAbsorbed] layers/bottom/radiationAbsorbed[heatingAbsorbed])"/>
+		</model>
 
 		<model name="energyFlux" type="Unisim::Sum">
 			<parameter name="toAdd" value="(layers/top/temperature[energyFlux] layers/middle/temperature[energyFlux] layers/bottom/temperature[energyFlux])"/>
@@ -1615,12 +1624,15 @@
 
 	</model> <!-- crop -->
 
+	<model name="budget" type="vg::Budget"/>
+	
 	<output name="output" type="table">
 		<parameter name="fileName" value="dvv_unisim_0001.txt"/>
 
 		<trace label="date" value="calendar[dateAsReal]"/>
 		<trace label="energy_light" value="actuators/growthLights[energyUsed]"/>
-		<trace label="energy_heat" value="energyFlux/heating/supply/supply[energyUsed]"/>
+		<trace label="heat_flux" value="budget[energyHeatingFlux]"/>
+		<trace label="heat_sum" value="budget[energyHeatingTotal]"/>
 		<trace label="yield_kg_fw" value="crop/yield[dryWeight]"/>
 		
 		<trace label="windspeed" value="outdoors[windspeed]"/>
@@ -1673,13 +1685,7 @@
 		<trace label="cooling_indoors" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 		<trace label="cooling_top" ref="cooling/airFlux[fromOutdoorsToTop]"/>
 
-		<trace label="roof1_light" ref="roof1[totalLightTransmitted]"/>
-		<trace label="roof2_light" ref="roof2[totalLightTransmitted]"/>
-		<trace label="side1_light" ref="side1[totalLightTransmitted]"/>
-		<trace label="side2_light" ref="side2[totalLightTransmitted]"/>
-		<trace label="end1_light" ref="end1[totalLightTransmitted]"/>
-		<trace label="end2_light" ref="end2[totalLightTransmitted]"/>
-		
+	
 		<trace label="abs_light_co" ref="energetics[lightAbsorbedCover]"/>
 		<trace label="abs_light_sc" ref="energetics[lightAbsorbedScreens]"/>
 		<trace label="ind_light_dir" ref="indoors/light[direct]"/>
@@ -1691,17 +1697,40 @@
 		<trace label="ref_can" ref="crop/radiation[reflectivity]"/>
 		<trace label="tra_can" ref="crop/radiation[transmissivity]"/>
 
-		<trace label="test" ref="crop/radiation[test]"/>
-		<trace label="test2" ref="crop/radiation[test2]"/>
-
+		<trace label="absy_ir_top" ref="crop/radiation[absorptivityIrTop]"/>
+		<trace label="absy_ir_mid" ref="crop/radiation[absorptivityIrMiddle]"/>
+		<trace label="absy_ir_bot" ref="crop/radiation[absorptivityIrBottom]"/>
+		<trace label="tray_ir_can" ref="crop/radiation[transmissivityIr]"/>
 		
-		<trace label="abs_li_top" ref="layers/top/photosynthesis[parAbsorbed]"/>
-		<trace label="abs_li_mid" ref="layers/middle/photosynthesis[parAbsorbed]"/>
-		<trace label="abs_li_bot" ref="layers/bottom/photosynthesis[parAbsorbed]"/>
+		<trace label="abs_par_top" ref="layers/top/photosynthesis[parAbsorbed]"/>
+		<trace label="abs_par_mid" ref="layers/middle/photosynthesis[parAbsorbed]"/>
+		<trace label="abs_par_bot" ref="layers/bottom/photosynthesis[parAbsorbed]"/>
+		
+		<trace label="abs_li_top" ref="layers/top/radiationAbsorbed[lightAbsorbed]"/>
+		<trace label="abs_li_mid" ref="layers/middle/radiationAbsorbed[lightAbsorbed]"/>
+		<trace label="abs_li_bot" ref="layers/bottom/radiationAbsorbed[lightAbsorbed]"/>
+	
+		<trace label="abs_heat_top" ref="layers/top/radiationAbsorbed[heatingAbsorbed]"/>
+		<trace label="abs_heat_mid" ref="layers/middle/radiationAbsorbed[heatingAbsorbed]"/>
+		<trace label="abs_heat_bot" ref="layers/bottom/radiationAbsorbed[heatingAbsorbed]"/>
+
+		<trace label="abs_gr_li_top" ref="layers/top/radiationAbsorbed[growthLightIrAbsorbed]"/>
+		<trace label="abs_gr_li_mid" ref="layers/middle/radiationAbsorbed[growthLightIrAbsorbed]"/>
+		<trace label="abs_gr_li_bot" ref="layers/bottom/radiationAbsorbed[growthLightIrAbsorbed]"/>
+
+		<trace label="lost_cover_top" ref="layers/top/radiationAbsorbed[coverLoss]"/>
+		<trace label="lost_cover_mid" ref="layers/middle/radiationAbsorbed[coverLoss]"/>
+		<trace label="lost_cover_bot" ref="layers/bottom/radiationAbsorbed[coverLoss]"/>
+		
+		<trace label="abs_tot_top" ref="layers/top/radiationAbsorbed[value]"/>
+		<trace label="abs_tot_mid" ref="layers/middle/radiationAbsorbed[value]"/>
+		<trace label="abs_tot_bot" ref="layers/bottom/radiationAbsorbed[value]"/>
+		
 		<trace label="Pg_top" ref="layers/top/photosynthesis[Pg]"/>
 		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
 		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
 
+		
 		
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
@@ -1717,9 +1746,6 @@
 		<trace label="temp_top" ref="layers/top/temperature[value]"/>
 		<trace label="temp_mid" ref="layers/middle/temperature[value]"/>
 		<trace label="temp_bot" ref="layers/bottom/temperature[value]"/>
-		<trace label="temp2_top" ref="layers/top/temperature[value2]"/>
-		<trace label="temp2_mid" ref="layers/middle/temperature[value2]"/>
-		<trace label="temp2_bot" ref="layers/bottom/temperature[value2]"/>
 		<trace label="flux_top" ref="layers/top/temperature[energyFlux]"/>
 		<trace label="flux_mid" ref="layers/middle/temperature[energyFlux]"/>
 		<trace label="flux_bot" ref="layers/bottom/temperature[energyFlux]"/>

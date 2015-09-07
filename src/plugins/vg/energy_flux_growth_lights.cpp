@@ -29,11 +29,10 @@ EnergyFluxGrowthLights::EnergyFluxGrowthLights(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
     InputRef(double, heatEmission, "actuators/growthlights[heatEmission]");
-    InputRef(double, longWaveEmission, "actuators/growthlights[longWaveEmission]");
 }
 
 void EnergyFluxGrowthLights::update() {
-    value = heatEmission + longWaveEmission;
+    value = heatEmission;
 }
 
 } //namespace

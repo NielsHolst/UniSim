@@ -74,6 +74,9 @@ double Tdew(double temperature, double rh);
 double virtualTemperatureFromAh(double temperature, double ah);
 double rhoAir(double temperature);
 
+// Radiation
+double jointEmissivity(double em1, double em2);
+
 // Mathematics
 inline double div0(double a, double b) {return b==0 ? 0. : a/b;}
 inline int sqr(int x) {return x*x;}

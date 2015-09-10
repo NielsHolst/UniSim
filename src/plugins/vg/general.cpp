@@ -262,6 +262,20 @@ double rhoAir(double T) {
     return 9.43e-10*p4(T) - 1.51e-7*p3(T) - 2.00e-5*p2(T) - 4.69e-3*T + 1.28;
 }
 
+//! Joint of two emissivities
+/*!
+ * \brief Joint emmisivity of two opposing surfaces
+ * \param em1 is the emmisivity of the one surface
+ * \param em2 is the emmisivity of the other surface
+ * \return joint emmisivity of the two
+ */
+
+double jointEmissivity(double em1, double em2) {
+    return (em1==0 || em2==0) ? 0. :
+           1/(1/em1 + 1/em2 - 1);
+
+}
+
 //! Logistic growth integral
 /*!
  * The integral of the logistic growth equation is used to calculate the approach of a variable

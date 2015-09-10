@@ -20,8 +20,9 @@ public:
     void update();
 private:
     // Outputs
+    double U, heatCapacity, haze, airTransmissivity, maxState;
     bool areHorizontal;
-    double maxState, airTransmissivity, haze, U;
+
     // Data
     struct ScreenInfo {
         const bool *isHorizontal;
@@ -29,7 +30,7 @@ private:
             *absorptivityIrInnerNet, *absorptivityIrOuterNet,
             *state,
             *unhazed, *airTransmissionNet,
-            *resistance;
+            *resistance, *heatCapacity;
     };
     QVector<ScreenInfo> screenInfos;
 

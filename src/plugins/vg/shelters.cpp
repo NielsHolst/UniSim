@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include "publish.h"
 #include "shelters.h"
+#include "surface_radiation.h"
 
 using std::max;
 using namespace UniSim;
@@ -17,54 +18,76 @@ PUBLISH(Shelters)
 
 /*! \class Shelters
  * \brief Collection of all greenhouse shelters
- *
- * Inputs
- * ------
- * - _directTransmissionFile_ is a table with transmission values [0;1]
- * according to latitude (rows) and sun azimuth (columns)
- * - _latitude_ is the geographical latitude of the greenhouse [-180;180]
- * - _azimuth_ is the sun azimuth [-90;90]
- * - _greenhouseShade_ is the fraction of light caught by the greenhouse construction [0;1]
- * - _chalk_ is the chalk efficacy [0;1]
  */
 
 Shelters::Shelters(Identifier name, QObject *parent)
-    : Model(name, parent)
+    : ShelterBase(name, parent)
 {
-    Output(double, airTransmissivity);
-    Output(double, U);
-    Output(double, area);
-    Output(double, maxScreenState);
 }
+
+#define Pull(p) si.p = shelter->pullValuePtr<double>(#p)
 
 void Shelters::initialize() {
     infos.clear();
-    auto shelters = seekChildren<Model*>("*");
-    for (auto shelter : shelters) {
-        infos <<
-            ShelterInfo {
-                shelter->pullValuePtr<double>("airTransmissivity"),
-                shelter->pullValuePtr<double>("U"),
-                shelter->pullValuePtr<double>("area"),
-                shelter->pullValuePtr<double>("maxScreenState")
-            };
+    auto shelters = seekChildren<ShelterBase*>("*");
+    for (ShelterBase* shelter : shelters) {
+        ShelterInfo si;
+        si.sr = shelter->surfaceRadiation();
+        Pull(diffuseLightTransmitted);
+        Pull(directLightTransmitted);
+        Pull(totalLightTransmitted);
+        Pull(lightAbsorbedCover);
+        Pull(lightAbsorbedScreens);
+        Pull(haze);
+        Pull(U);
+        Pull(airTransmissivity);
+        Pull(relativeArea);
+        infos << si;
     }
 }
 
 void Shelters::reset() {
-    update();
+    ShelterBase::reset();
 }
 
+#define Accumulate(p) p += (*info.p);
+#define AccumulateWeighted(p) p += (*info.p) * (*info.relativeArea);
+#define AccumulateSr(p) sr.p += info.sr->p * (*info.relativeArea)
+
 void Shelters::update() {
-    airTransmissivity = U = area = maxScreenState = 0.;
+    SurfaceRadiation sr;
+    diffuseLightTransmitted =
+    directLightTransmitted =
+    totalLightTransmitted =
+    lightAbsorbedCover =
+    lightAbsorbedScreens = 0.;
     for (ShelterInfo info : infos) {
-        airTransmissivity += (*info.pArea) * (*info.pAirTransmissivity);
-        U += (*info.pArea) * (*info.pU);
-        area += (*info.pArea);
-        maxScreenState = max(maxScreenState, *info.pMaxState);
+        AccumulateSr(light.inner.abs);
+        AccumulateSr(light.inner.ref);
+        AccumulateSr(light.outer.abs);
+        AccumulateSr(light.outer.ref);
+        AccumulateSr(light.tra);
+        AccumulateSr(directLight.inner.abs);
+        AccumulateSr(directLight.inner.ref);
+        AccumulateSr(directLight.outer.abs);
+        AccumulateSr(directLight.outer.ref);
+        AccumulateSr(directLight.tra);
+        AccumulateSr(ir.inner.abs);
+        AccumulateSr(ir.inner.ref);
+        AccumulateSr(ir.outer.abs);
+        AccumulateSr(ir.outer.ref);
+        AccumulateSr(ir.tra);
+
+        Accumulate(diffuseLightTransmitted);
+        Accumulate(directLightTransmitted);
+        Accumulate(totalLightTransmitted);
+        Accumulate(lightAbsorbedCover);
+        Accumulate(lightAbsorbedScreens);
+        AccumulateWeighted(haze);
+        AccumulateWeighted(U);
+        AccumulateWeighted(airTransmissivity);
     }
-    airTransmissivity /= area;
-    U /= area;
+    set(sr);
 }
 
 } //namespace

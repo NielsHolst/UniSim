@@ -302,6 +302,7 @@
 		<xsl:attribute name="type">
 			<xsl:value-of select="'vg::Shelter'"/>
 		</xsl:attribute>
+<!--		<model name="energyFlux" type="vg::EnergyFluxShelter"/> -->
 		<model name="cover" type="vg::Cover">
 			<parameter name="U4">
 				<xsl:attribute name="value">

@@ -7,11 +7,11 @@
 #ifndef VG_SHELTER_H
 #define VG_SHELTER_H
 
-#include "surface_radiation_outputs.h"
+#include "shelter_base.h"
 
 namespace vg {
 
-class Shelter : public SurfaceRadiationOutputs
+class Shelter : public ShelterBase
 {
 public:
     Shelter(UniSim::Identifier name, QObject *parent);
@@ -22,21 +22,17 @@ public:
 private:
     // Inputs
     double greenhouseShade, chalk,
-    coverAreaRoof, coverAreaSideWalls, coverAreaEndWalls, coverAreaGables, groundArea,
+    roofArea, sideWallsArea, endWallsArea, gablesArea, groundArea,
     outdoorsDirectRadiation, outdoorsDiffuseRadiation;
 
     // Outputs
-    double area, relativeArea, areaPerGround,
-        diffuseLightTransmitted, directLightTransmitted, totalLightTransmitted,
-        lightAbsorbedCover, lightAbsorbedScreens,
-        airTransmissivity, haze, U, maxScreenState;
+    double area, relativeArea, areaPerGround;
 
     // Data
     const double
         *pCoverU, *pCoverHaze,
         *pScreensU, *pScreensHaze,
-        *pScreensAirTransmission,
-        *pMaxScreenState;
+        *pScreensAirTransmission;
 
     struct Light {
         struct {

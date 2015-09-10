@@ -7,11 +7,13 @@
 #ifndef VG_SHELTERS_H
 #define VG_SHELTERS_H
 
-#include <usbase/model.h>
+#include "shelter_base.h"
 
 namespace vg {
 
-class Shelters : public UniSim::Model
+class SurfaceRadiation;
+
+class Shelters : public ShelterBase
 {
 public:
     Shelters(UniSim::Identifier name, QObject *parent);
@@ -20,11 +22,14 @@ public:
     void update();
 
 private:
-    // Outputs
-    double airTransmissivity, U, area, maxScreenState;
     // Data
     struct ShelterInfo {
-        const double *pAirTransmissivity, *pU, *pArea, *pMaxState;
+        const SurfaceRadiation *sr;
+        const double *diffuseLightTransmitted, *directLightTransmitted, *totalLightTransmitted,
+            *lightAbsorbedCover, *lightAbsorbedScreens,
+            *haze, *U,
+            *airTransmissivity,
+            *relativeArea;
     };
 
     QVector<ShelterInfo> infos;

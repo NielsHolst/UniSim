@@ -31,7 +31,7 @@ PUBLISH(Outdoors)
  *
  * Outputs
  * -------
- * - _directRadiation_ is the diffuse component of sunlight irradiation [W/m<SUP>2</SUP>]
+ * - _directRadiation_ is the direct component of sunlight irradiation [W/m<SUP>2</SUP>]
  *
  * Default dependencies
  * ------------

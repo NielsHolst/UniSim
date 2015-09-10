@@ -44,7 +44,7 @@ HEADERS += \
     energy_flux_heating_demand.h \
     energy_flux_heating_supply.h \
     energy_flux_horizontal.h \
-    energy_flux_shelter.h \
+#    energy_flux_shelter.h \
     energy_flux_sum.h \
     energy_flux_transpiration.h \
     energy_screen_balance_signal.h \
@@ -77,6 +77,7 @@ HEADERS += \
     screen_condensation.h \
     screen_temperature.h \
     shelter.h \
+    shelter_base.h \
     shelters.h \
     signal_collection.h \
     sliding_signal.h \
@@ -133,7 +134,7 @@ SOURCES += \
     energy_flux_heating_demand.cpp \
     energy_flux_heating_supply.cpp \
     energy_flux_horizontal.cpp \
-    energy_flux_shelter.cpp \
+#    energy_flux_shelter.cpp \
     energy_flux_sum.cpp \
     energy_flux_transpiration.cpp \
     energy_screen_balance_signal.cpp \
@@ -166,6 +167,7 @@ SOURCES += \
     screen_condensation.cpp \
     screen_temperature.cpp \
     shelter.cpp \
+    shelter_base.cpp \
     shelters.cpp \
     signal_collection.cpp \
     sliding_signal.cpp \

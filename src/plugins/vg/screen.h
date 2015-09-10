@@ -25,6 +25,7 @@ private:
     QString position, layer;
     double transmissivityLight,
            emissivityInner, emissivityOuter,
+           heatCapacity,
            energyLossReduction, U50, haze,
            transmissivityAir, transmissivityAirExponent, state;
     // Outputs
@@ -32,8 +33,10 @@ private:
         transmissivityLightNet,
         absorptivityIrInnerNet, absorptivityIrOuterNet,
         unhazed, transmissivityAirNet,
-        U, resistance;
+        resistance;
     bool isHorizontal;
+    // Data
+    double U;
 };
 
 } //namespace

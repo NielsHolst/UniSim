@@ -56,11 +56,12 @@ void LeafRadiationAbsorbed::initialize() {
     auto shelters = seekMany<Model*>("construction/shelters/*");
     for (Model *shelter : shelters) {
         Model *cover = shelter->seekOneChild<Model*>("cover"),
+              *screens = shelter->seekOneChild<Model*>("screens"),
               *temperature = cover->seekOneChild<Model*>("energyFlux");
         shelterInfos <<
             ShelterInfo {
                 shelter->pullValuePtr<double>("areaPerGround"),
-                shelter->pullValuePtr<double>("maxScreenState"),
+                screens->pullValuePtr<double>("maxState"),
                 temperature->pullValuePtr<double>("temperature"),
                 cover->pullValuePtr<double>("outgoingIrAbsorptivity")
             };
@@ -88,7 +89,7 @@ void LeafRadiationAbsorbed::update() {
 void LeafRadiationAbsorbed::computeCoverLoss() {
     coverLoss = 0.;
     for (ShelterInfo si : shelterInfos) {
-        double em = 1/(1/irAbsorptivityUpperside + 1/(*si.emissivity) - 1);
+        double em = jointEmissivity(irAbsorptivityUpperside, *si.emissivity);
         coverLoss += Sigma*em*(p4K(temperature) - p4K(*si.temperature))*(*si.areaPerGround)*(1-(*si.maxState));
     }
 }

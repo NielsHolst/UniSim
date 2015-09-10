@@ -32,7 +32,7 @@ EnergyFluxHorizontal::EnergyFluxHorizontal(Identifier name, QObject *parent)
     Input(double, U, 2.8);
     Input(double, receiverTemperature, 0.);
     Input(double, donorTemperature, 0.);
-    InputRef(double, state, "construction/shelters[maxScreenState]");   // HACK
+    InputRef(double, state, "construction/shelters/roof1/screens[maxState]");
 }
 
 void EnergyFluxHorizontal::update() {

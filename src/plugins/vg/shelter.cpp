@@ -22,42 +22,41 @@ PUBLISH(Shelter)
  *
  * Inputs
  * ------
- * - _directTransmissionFile_ is a table with transmission values [0;1]
- * according to latitude (rows) and sun azimuth (columns)
- * - _latitude_ is the geographical latitude of the greenhouse [-180;180]
- * - _azimuth_ is the sun azimuth [-90;90]
  * - _greenhouseShade_ is the fraction of light caught by the greenhouse construction [0;1]
  * - _chalk_ is the chalk efficacy [0;1]
+ * - _roofArea_ is the total area of the roof (the two sloping surfaces on top of each span) [m<SUP>2</SUP>]
+ * - _sideWallsArea_ is the total area of the two greenhouse side walls (facing the outside) [m<SUP>2</SUP>]
+ * - _endWallsArea_ is the total area of the two greenhouse end walls (excluding the triangular gables) [m<SUP>2</SUP>]
+ * - _gablesArea_ is the total area of the two triangular gables at the ends of each span [m<SUP>2</SUP>]
+ * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
+ * - _outdoorsDirectRadiation_ is the direct component of sunlight irradiation [W/m<SUP>2</SUP>]
+ * - _outdoorsDiffuseRadiation_ is the diffuse component of sunlight irradiation [W/m<SUP>2</SUP>]
+ *
+ * Outputs
+ * -------
+ * - _area_ is the surface area [m<SUP>2</SUP>]
+ * - _relativeArea_ is the proportion of this surface out of the total surface area [0;1]
+ * - _areaPerGround_ is the surface area relative to the ground area [m<SUP>2</SUP> shelter/m<SUP>2</SUP> ground]
  */
 
 Shelter::Shelter(Identifier name, QObject *parent)
-    : SurfaceRadiationOutputs(name, parent)
+    : ShelterBase(name, parent)
 {
     InputRef(double, greenhouseShade, "geometry[shade]");
     InputRef(double, chalk, "controllers/chalk[signal]");
 
-    InputRef(double, coverAreaRoof, "geometry[roofArea]");
-    InputRef(double, coverAreaSideWalls, "geometry[sideWallsArea]");
-    InputRef(double, coverAreaEndWalls, "geometry[endWallsArea]");
-    InputRef(double, coverAreaGables, "geometry[gablesArea]");
+    InputRef(double, roofArea, "geometry[roofArea]");
+    InputRef(double, sideWallsArea, "geometry[sideWallsArea]");
+    InputRef(double, endWallsArea, "geometry[endWallsArea]");
+    InputRef(double, gablesArea, "geometry[gablesArea]");
     InputRef(double, groundArea, "geometry[groundArea]");
 
     InputRef(double, outdoorsDirectRadiation, "outdoors[directRadiation]");
     InputRef(double, outdoorsDiffuseRadiation, "outdoors[diffuseRadiation]");
 
-
-    Output(double, diffuseLightTransmitted);
-    Output(double, directLightTransmitted);
-    Output(double, totalLightTransmitted);
-    Output(double, lightAbsorbedCover);
-    Output(double, lightAbsorbedScreens);
-    Output(double, airTransmissivity);
-    Output(double, haze);
-    Output(double, U);
     Output(double, area);
     Output(double, relativeArea);
     Output(double, areaPerGround);
-    Output(double, maxScreenState);
 }
 
 void Shelter::initialize() {
@@ -74,7 +73,6 @@ void Shelter::initialize() {
     pScreensHaze = screensM->pullValuePtr<double>("haze");
     screens.fetch(screensM);
     pScreensSurfaceRadiation = screensM->surfaceRadiation();
-    pMaxScreenState = screensM->pullValuePtr<double>("maxState");
     pScreensAirTransmission = screensM->pullValuePtr<double>("airTransmissivity");
 }
 
@@ -86,26 +84,20 @@ void Shelter::Light::fetch(UniSim::Model *model) {
 }
 
 void Shelter::reset() {
-    resetRadiationOutputs();
-    diffuseLightTransmitted = directLightTransmitted = totalLightTransmitted =
-    lightAbsorbedCover = lightAbsorbedScreens = 0.;
-    U = *pCoverU;
-    airTransmissivity = 1.;
-    haze = *pCoverHaze;
-    maxScreenState = 0.;
+    ShelterBase::reset();
 
     QString name = id().label();
     if (name.toLower().contains("roof"))
-        area = coverAreaRoof/2;
+        area = roofArea/2;
     else if (name.toLower().contains("side"))
-        area = coverAreaSideWalls/2;
+        area = sideWallsArea/2;
     else if (name.toLower().contains("end"))
-        area = coverAreaEndWalls/2;
+        area = endWallsArea/2;
     else {
         QString msg{"Cover name is '%1' but it must contain 'roof', 'side' or 'end'"};
         throw Exception(msg.arg(name));
     }
-    relativeArea = area/(coverAreaRoof + coverAreaSideWalls + coverAreaEndWalls);
+    relativeArea = area/(roofArea + sideWallsArea + endWallsArea);
     areaPerGround = area/groundArea;
 }
 
@@ -119,7 +111,6 @@ void Shelter::update() {
     updateHaze();
     updateAirTransmission();
     updateLightTransmission();
-    maxScreenState = *pMaxScreenState;
 }
 
 void Shelter::updateU() {

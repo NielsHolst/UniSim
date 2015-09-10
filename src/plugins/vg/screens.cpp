@@ -24,7 +24,12 @@ PUBLISH(Screens)
  *
  * Outputs
  * ------
- * - _maxState_ is the maximum value of the screen states [0;1]
+ * - _U_ is the combined U-value of all screens [W/m<SUP>2</SUP>/K]
+ * - _heatCapacity_ is area-specific heat capacity summed for all screens [J/m<SUP>2</SUP>]/K]
+ * - _haze_ is the proportion of direct light becoming dispersed on passage through the screens [0;1]
+ * - _transmissivityAir_ is the proportion of air transmitted through the screens [0;1]
+ * - _maxState_ is the maximum screen state [0;1]
+ * - _isHorizontal_ is any the screen in horizontal position ?
  */
 
 Screens::Screens(Identifier name, QObject *parent)
@@ -35,6 +40,7 @@ Screens::Screens(Identifier name, QObject *parent)
     Output(double, airTransmissivity);
     Output(double, haze);
     Output(double, U);
+    Output(double, heatCapacity);
 }
 
 void Screens::initialize() {
@@ -53,7 +59,9 @@ QVector<Screens::ScreenInfo> Screens::collectScreenInfos(QList<Model*> screenMod
             screen->pullValuePtr<double>("state"),
             screen->pullValuePtr<double>("unhazed"),
             screen->pullValuePtr<double>("transmissivityAirNet"),
-            screen->pullValuePtr<double>("resistance")
+            screen->pullValuePtr<double>("resistance"),
+            screen->pullValuePtr<double>("heatCapacity")
+
         };
     }
     return screenInfos;
@@ -67,17 +75,20 @@ void Screens::reset() {
     maxState = haze = 0;
     airTransmissivity = 1;
     U = numeric_limits<double>::infinity();
+    heatCapacity = 0.;
 }
 
 void Screens::update() {
     maxState = 0;
     airTransmissivity = 1;
+    heatCapacity = 0;
     double resistance{0}, unhazed{1};
     for (ScreenInfo info: screenInfos) {
         maxState = max(maxState, *info.state);
         airTransmissivity *= *info.airTransmissionNet;
         unhazed *= *info.unhazed;
         resistance += *info.resistance;
+        heatCapacity += *info.heatCapacity;
     }
     haze = 1. - unhazed;
     U = 1./resistance;

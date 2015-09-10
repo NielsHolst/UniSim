@@ -42,6 +42,7 @@ LeafTemperature::LeafTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, fractionPlantArea, 0.95);
+    InputRef(double, wGauss, "..[wGaussUpperside]");
     InputRef(double, Tgh, "indoors/temperature[value]");
     InputRef(double, RHgh, "indoors/humidity[rh]");
     InputRef(double, rsH2O, "../rs[rsH2O]");
@@ -49,12 +50,12 @@ LeafTemperature::LeafTemperature(Identifier name, QObject *parent)
     InputRef(double, radiationAbsorbed, "../radiationAbsorbed[value]");
     InputRef(double, lai, "crop/lai[lai]");
     Output(double, value);
-    Output(double, value2);
-    Output(double, energyFlux);
+    Output(double, heatFlux);
 }
 
 void LeafTemperature::reset() {
-    value = value2 = Tgh;
+    value = Tgh;
+    heatFlux = 0.;
 }
 
 void LeafTemperature::update() {
@@ -67,10 +68,7 @@ void LeafTemperature::update() {
             /
             (1+(s/Psychr+ rsH2O/rbH2O+ 1/(RhoAir*CpAir/4/Sigma*Tgh3)*(rsH2O+rbH2O)))
             + Tgh;
-
-    energyFlux = (value - Tgh)*CpAir/rbH2O*lai*fractionPlantArea;
-    // Divide equally among canopy layers
-    energyFlux /= 3;
+    heatFlux = (value - Tgh)*CpAir/rbH2O*wGauss*lai*fractionPlantArea;
 
     /* Thermal storage was neglible, max 1-2 W/m2
     double dt = 300,

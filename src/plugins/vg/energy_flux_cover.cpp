@@ -113,6 +113,7 @@ void EnergyFluxCover::update() {
             radiationFluxCrop +
             condensationRate*LHe;
         value -= totalInsideFlux;
+        heatCapacity = 8000.;
         temperature += totalGlassFlux*dt/heatCapacity;    // K = W/m2*s / (J/m2/K)
         indoorsTemperature2 -= totalInsideFlux*dt/Cair;
     }

@@ -4,7 +4,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "energy_flux_shelter.h"
+#include "energy_flux_shelters.h"
 #include "general.h"
 #include "publish.h"
 
@@ -12,10 +12,10 @@ using namespace UniSim;
 
 namespace vg {
 	
-PUBLISH(EnergyFluxShelter)
+PUBLISH(EnergyFluxShelters)
 
-/*! \class EnergyFluxShelter
- * \brief Energy fluxes and temperature of a greenhouse shelter
+/*! \class EnergyFluxShelters
+ * \brief Pooled energy fluxes and temperature of greenhouse shelters
  *
  * Inputs
  * ------
@@ -45,7 +45,7 @@ PUBLISH(EnergyFluxShelter)
  * - _value_ is the net energy flux from cover to greenhouse air  [W/m<SUP>2</SUP>]
 
  */
-EnergyFluxShelter::EnergyFluxShelter(Identifier name, QObject *parent)
+EnergyFluxShelters::EnergyFluxShelters(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
     InputRef(double, U, "..[U]");
@@ -87,7 +87,7 @@ EnergyFluxShelter::EnergyFluxShelter(Identifier name, QObject *parent)
     Output(double, screensTemperature);
 }
 
-void EnergyFluxShelter::reset() {
+void EnergyFluxShelters::reset() {
     EnergyFluxBase::reset();
     heatFluxOutside =
     heatFluxInside =
@@ -100,7 +100,7 @@ void EnergyFluxShelter::reset() {
     coverTemperature = screensTemperature = 12.;
 }
 
-void EnergyFluxShelter::update() {
+void EnergyFluxShelters::update() {
     const int maxTimeStep = 20;     // Use time steps no larger than this [s]
     double Cair = averageHeight*RhoAir*CpAir;
     int n = int(timeStep/maxTimeStep) + 1;
@@ -123,7 +123,7 @@ void EnergyFluxShelter::update() {
         radiationFluxCropBottom = radiationFluxCrop(cropTemperatureBottom);
 
         double radiationFluxCropTotal =
-            radiationFluxCropTop + radiationFluxCropMiddle + radiationFluxBottom;
+            radiationFluxCropTop + radiationFluxCropMiddle + radiationFluxCropBottom;
         double fluxCoverProp =
             outgoingIrAbsorptivityCover/(outgoingIrAbsorptivityCover+outgoingIrAbsorptivityScreens);
         double emCoverScreens =
@@ -152,10 +152,10 @@ void EnergyFluxShelter::update() {
     value /= n;
 }
 
-double EnergyFluxShelter::radiationFluxCrop(double cropTemperature) const {
+double EnergyFluxShelters::radiationFluxCrop(double cropTemperature) const {
     return outgoingIrAbsorptivity*(
-            Sigma*(p4K(cropTemperature) - p4K(screensTemperature))*screenState +
-            Sigma*(p4K(cropTemperature) - p4K(coverTemperature))*(1-screenState);
+            Sigma*(p4K(cropTemperature) - p4K(screensTemperature))*maxState +
+            Sigma*(p4K(cropTemperature) - p4K(coverTemperature))*(1-maxState)
            )*coverPerGroundArea*relativeShelterArea;
 }
 

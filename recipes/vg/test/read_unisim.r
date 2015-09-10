@@ -101,7 +101,9 @@ plot9 = function(U,from=0, to=366) {
 	p7 = plot2(U, from, to, c("abs_tot_top","abs_tot_mid","abs_tot_bot"))
 	p8 = plot2(U, from, to, c("indoors_temp"))
 	p9 = plot2(U, from, to, c("heat_flux", "heat_sum"))
-	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol=5)
+	p10 = plot2(U, from, to, c("shl_tra_dir", "shl_tra_dif", "shl_tra_tot", "shl_abs_cov", "shl_abs_scr", "shl_haze", "shl_U", "shl_tra_air", "shl_cp_cov", "shl_cp_scr"))
+	p11 = plot2(U, from, to, c("shl_abs_cov", "shl_abs_scr", "shl_cp_cov", "shl_cp_scr"))
+	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11, ncol=6)
 }
  
 U = read_unisim("dvv_unisim_0001.txt")

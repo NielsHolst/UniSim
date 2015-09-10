@@ -37,14 +37,13 @@ PUBLISH(Cover)
  * - _heatCapacity_ is area-specific heat capacity [J/m<SUP>2</SUP>]/K]
  * - _haze_ is the proportion of direct light becoming dispersed on passage through the material [0;1]
  * - _antiReflection_ flags whether the material is anti-reflecting [true/false]
- * - _heatCapacity_ is the area-specific heat capacity [J/m<SUP>2</SUP> cover/K]
+ * - _specificHeatCapacity_ is the area-specific heat capacity [J/m<SUP>2</SUP> cover/K]
  * - _windSpeed_ is the average wind speed [m/s]
 
  * Output
  * ------
- * - _area_ is the area of this cover [m<SUP>2</SUP>]
- * - _relativeArea_ is the proportional cover of this area out of the total cover [0;1]
  * - _U_ is the wind-corrected heat transfer coefficient of the material [W/m<SUP>2</SUP>/K]
+ * - _heatCapacity_ is the heat capacity [J/K]
  */
 
 Cover::Cover(Identifier name, QObject *parent)
@@ -53,6 +52,7 @@ Cover::Cover(Identifier name, QObject *parent)
     Input(QString, directTransmissionFile, "direct_transmission_single.txt");
     InputRef(double, latitude, "calendar[latitude]");
     InputRef(double, azimuth, "calendar[azimuth]");
+    InputRef(double, area, "..[area]");
     InputRef(double, windspeed, "outdoors[windspeed]");
     Input(double, U4, 7.5);
     Input(double, emissivity, 0.84);
@@ -60,10 +60,10 @@ Cover::Cover(Identifier name, QObject *parent)
     Input(double, transmissivity, 1.);
     Input(double, haze, 0.);
     Input(bool, antiReflection, false);
-    Input(double, heatCapacity, 840.);
-
+    Input(double, specificHeatCapacity, 840.);
 
     Output(double, U);
+    Output(double, heatCapacity);
 }
 
 void Cover::initialize() {
@@ -80,6 +80,7 @@ void Cover::update() {
     set( SurfaceRadiation().asCover(transmissivity, transmissivity*directLightfactor, absorptivity, emissivity) );
     double k = (windspeed <= 4) ? (2.8 + 1.2*windspeed)/7.6 : pow(windspeed,0.8)/pow(4.,0.8);
     U = k*U4;
+    heatCapacity = specificHeatCapacity*area;
 }
 
 } //namespace

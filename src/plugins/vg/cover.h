@@ -26,12 +26,12 @@ public:
 private:
     // Inputs
     QString directTransmissionFile;
-    double latitude, azimuth,
-        U4, windspeed, emissivity, absorptivity, transmissivity, heatCapacity, haze;
+    double latitude, azimuth, area,
+        U4, windspeed, emissivity, absorptivity, transmissivity, specificHeatCapacity, haze;
     bool antiReflection;
 
     // Outputs
-    double U;
+    double U, heatCapacity;
 
     // Data
     UniSim::DataGrid *dirTransTable;

@@ -324,7 +324,7 @@
 					<xsl:value-of select="$CoverAbsorptivity"/>
 				</xsl:attribute>
 			</parameter>
-			<parameter name="heatCapacity">
+			<parameter name="specificHeatCapacity">
 				<xsl:attribute name="value">
 					<xsl:value-of select="$CoverHeatCapacity"/>
 				</xsl:attribute>
@@ -521,6 +521,9 @@
 			<xsl:for-each select="JobDataSet/Greenhouse/zone/Panes//Pane[Position &lt; 7]">
 				<xsl:call-template name="extract-shelter"/>
 			</xsl:for-each>		
+			<!--
+			<model name="energyFlux" type="vg::EnergyFluxShelters"/>
+			-->
 			<!--
 			<model name="roof" type="vg::Shelters">
 				<xsl:for-each select="JobDataSet/Greenhouse/zone/Panes//Pane[Position &lt; 3]">
@@ -1753,7 +1756,18 @@
 		<trace label="stem" ref="crop/mass[stem]"/>
 		<trace label="leaf" ref="crop/mass[leaf]"/>
 		<trace label="fruit" ref="crop/mass[fruit]"/>
-	
+
+		
+		<trace label="shl_tra_dir" ref="shelters[diffuseLightTransmitted]"/>
+		<trace label="shl_tra_dif" ref="shelters[directLightTransmitted]"/>
+		<trace label="shl_tra_tot" ref="shelters[totalLightTransmitted]"/>
+		<trace label="shl_abs_cov" ref="shelters[lightAbsorbedCover]"/>
+		<trace label="shl_abs_scr" ref="shelters[lightAbsorbedScreens]"/>
+		<trace label="shl_haze" ref="shelters[haze]"/>
+		<trace label="shl_U" ref="shelters[U]"/>
+		<trace label="shl_cp_cov" ref="shelters[heatCapacityCoversPerGround]"/>
+		<trace label="shl_cp_scr" ref="shelters[heatCapacityScreensPerGround]"/>
+		<trace label="shl_tra_air" ref="shelters[airTransmissivity]"/>
 <!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
 		<trace label="top_ah" value="top/transpiration[leafAh]"/>

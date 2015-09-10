@@ -11,10 +11,10 @@
 
 namespace vg {
 
-class EnergyFluxShelter : public EnergyFluxBase
+class EnergyFluxShelters : public EnergyFluxBase
 {
 public:
-    EnergyFluxShelter(UniSim::Identifier name, QObject *parent);
+    EnergyFluxShelters(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 private:

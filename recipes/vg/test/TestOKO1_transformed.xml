@@ -2,7 +2,7 @@
 <simulation name="Virtual Greenhouse">
 	<integrator name="steps" type="UniSim::StepsTimeInterval">
 		<parameter name="beginDate" value="2001-01-01"/>
-		<parameter name="endDate" value="2001-12-31"/>
+		<parameter name="endDate" value="2001-01-31"/>
 		<parameter name="beginTime" value="00:00"/>
 		<parameter name="endTime" value="00:00"/>
 		<parameter name="timeStep" value="5"/>
@@ -42,7 +42,7 @@
 					<parameter name="transmissivity" value="0.83"/>
 					<parameter name="emissivity" value="0.93"/>
 					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="heatCapacity" value="8736"/>
+					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
 					<model name="energyFlux" type="vg::EnergyFluxCover">
 						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
@@ -71,7 +71,7 @@
 					<parameter name="transmissivity" value="0.83"/>
 					<parameter name="emissivity" value="0.93"/>
 					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="heatCapacity" value="8736"/>
+					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
 					<model name="energyFlux" type="vg::EnergyFluxCover">
 						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
@@ -100,7 +100,7 @@
 					<parameter name="transmissivity" value="0.83"/>
 					<parameter name="emissivity" value="0.93"/>
 					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="heatCapacity" value="8736"/>
+					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
 					<model name="energyFlux" type="vg::EnergyFluxCover">
 						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
@@ -129,7 +129,7 @@
 					<parameter name="transmissivity" value="0.83"/>
 					<parameter name="emissivity" value="0.93"/>
 					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="heatCapacity" value="8736"/>
+					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
 					<model name="energyFlux" type="vg::EnergyFluxCover">
 						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
@@ -158,7 +158,7 @@
 					<parameter name="transmissivity" value="0.83"/>
 					<parameter name="emissivity" value="0.93"/>
 					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="heatCapacity" value="8736"/>
+					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
 					<model name="energyFlux" type="vg::EnergyFluxCover">
 						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
@@ -187,7 +187,7 @@
 					<parameter name="transmissivity" value="0.83"/>
 					<parameter name="emissivity" value="0.93"/>
 					<parameter name="absorptivity" value="0.04"/>
-					<parameter name="heatCapacity" value="8736"/>
+					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
 					<model name="energyFlux" type="vg::EnergyFluxCover">
 						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
@@ -1068,5 +1068,15 @@
 		<trace label="stem" ref="crop/mass[stem]"/>
 		<trace label="leaf" ref="crop/mass[leaf]"/>
 		<trace label="fruit" ref="crop/mass[fruit]"/>
+		<trace label="shl_tra_dir" ref="shelters[diffuseLightTransmitted]"/>
+		<trace label="shl_tra_dif" ref="shelters[directLightTransmitted]"/>
+		<trace label="shl_tra_tot" ref="shelters[totalLightTransmitted]"/>
+		<trace label="shl_abs_cov" ref="shelters[lightAbsorbedCover]"/>
+		<trace label="shl_abs_scr" ref="shelters[lightAbsorbedScreens]"/>
+		<trace label="shl_haze" ref="shelters[haze]"/>
+		<trace label="shl_U" ref="shelters[U]"/>
+		<trace label="shl_cp_cov" ref="shelters[heatCapacityCoversPerGround]"/>
+		<trace label="shl_cp_scr" ref="shelters[heatCapacityScreensPerGround]"/>
+		<trace label="shl_tra_air" ref="shelters[airTransmissivity]"/>
 	</output>
 </simulation>

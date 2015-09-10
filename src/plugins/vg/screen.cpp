@@ -27,7 +27,7 @@ PUBLISH(Screen)
  * - _U50_ is the U-value corresponding to an _energyLossReduction_ of 0.5 [W/m<SUP>2</SUP>/K]
  * - _energyLossReduction_ is the proportion of energy saved by the screen [0;1]
  * - _haze_ is the proportion of direct light becoming dispersed on passage through the material [0;1]
- * - _heatCapacity_ is the area-specific heat capacity [J/m<SUP>2</SUP> cover/K]
+ * - _specificHeatCapacity_ is the area-specific heat capacity [J/m<SUP>2</SUP> cover/K]
  * - _transmissivityAir_ is the proportion of air transmitted through the material [0;1]
  * - _transmissivityAirExponent_ corrects for non-linearity of air transmissivity to _state_ [-]
  * - _state_ is the state of the screen [0;1], where 0=open and 1=drawn
@@ -39,6 +39,7 @@ PUBLISH(Screen)
  * - _absorptivityIrOuterNet_ is the absorptivity (=emissivity) for thermal radiation on the outwards side corrected for _state_ [0;1]
  * - _unhazed_ is the proportion of direct light passing remaining direct after passage corrected for _state_ [0;1]
  * - _resistance_ is the inverse the U-value corrected for _state_ [K m<SUP>2</SUP>/J]
+ * - _heatCapacity_ is the heat capacity [J/K]
  * - _transmissivityAirNet_ is the proportion of air transmitted, non-linearly correct for _state_ [0;1]
  * - _isHorizontal_ is the screen in horizontal position ?
  */
@@ -46,6 +47,7 @@ PUBLISH(Screen)
 Screen::Screen(Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    InputRef(double, area, "../..[area]");
     Input(QString, position, "");
     Input(QString, layer, "");
     Input(double, transmissivityLight, 0.41);
@@ -54,7 +56,7 @@ Screen::Screen(Identifier name, QObject *parent)
     Input(double, U50, 2.5);
     Input(double, energyLossReduction, 0.4);
     Input(double, haze, 0.);
-    Input(double, heatCapacity, 840.);
+    Input(double, specificHeatCapacity, 840.);
     Input(double, transmissivityAir, 0.8);
     Input(double, transmissivityAirExponent, 4.);
     Input(double, state, 0.);
@@ -64,6 +66,7 @@ Screen::Screen(Identifier name, QObject *parent)
     Output(double, absorptivityIrOuterNet);
     Output(double, unhazed);
     Output(double, resistance);
+    Output(double, heatCapacity);
     Output(double, transmissivityAirNet);
     Output(bool, isHorizontal);
 }
@@ -81,6 +84,8 @@ void Screen::update() {
     unhazed =  1. - state*haze;
     transmissivityAirNet = std::min( pow(1.-state, transmissivityAirExponent) + state*transmissivityAir, 1. );
     resistance = state/U;
+    heatCapacity = specificHeatCapacity*area*state;
+
 }
 
 } //namespace

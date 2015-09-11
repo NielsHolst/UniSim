@@ -26,7 +26,9 @@ public:
 private:
     // Inputs
     QString directTransmissionFile;
-    double latitude, azimuth, area,
+    double
+        greenhouseShade, chalk,
+        latitude, azimuth, area,
         U4, windspeed, emissivity, absorptivity, transmissivity, specificHeatCapacity, haze;
     bool antiReflection;
 

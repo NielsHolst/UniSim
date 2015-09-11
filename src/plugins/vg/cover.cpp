@@ -28,6 +28,8 @@ PUBLISH(Cover)
  *
  * Inputs
  * ------
+ * - _greenhouseShade_ is the fraction of light caught by the greenhouse construction [0;1]
+ * - _chalk_ is the chalk efficacy [0;1]
  * - _directTransmissionFile_ is the name of a file with coefficients correcting the transmissivity for direct light,
  * according to latitude (rows) and sun azimuth (columns)
  * - _U4_ is the heat transfer coefficient of the material at a windspeed of 4 m/s [W/m<SUP>2</SUP>/K]
@@ -49,6 +51,8 @@ PUBLISH(Cover)
 Cover::Cover(Identifier name, QObject *parent)
     : SurfaceRadiationOutputs(name, parent)
 {
+    InputRef(double, greenhouseShade, "geometry[shade]");
+    InputRef(double, chalk, "controllers/chalk[signal]");
     Input(QString, directTransmissionFile, "direct_transmission_single.txt");
     InputRef(double, latitude, "calendar[latitude]");
     InputRef(double, azimuth, "calendar[azimuth]");
@@ -76,8 +80,9 @@ void Cover::reset() {
 }
 
 void Cover::update() {
-    double directLightfactor = interpolate(*dirTransTable, latitude, azimuth);
-    set( SurfaceRadiation().asCover(transmissivity, transmissivity*directLightfactor, absorptivity, emissivity) );
+    double directLightfactor = interpolate(*dirTransTable, latitude, azimuth),
+           tr = (1-greenhouseShade)*(1-chalk);
+    set( SurfaceRadiation().asCover(tr*transmissivity, tr*transmissivity*directLightfactor, absorptivity, emissivity) );
     double k = (windspeed <= 4) ? (2.8 + 1.2*windspeed)/7.6 : pow(windspeed,0.8)/pow(4.,0.8);
     U = k*U4;
     heatCapacity = specificHeatCapacity*area;

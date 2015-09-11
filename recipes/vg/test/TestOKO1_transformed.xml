@@ -2,7 +2,7 @@
 <simulation name="Virtual Greenhouse">
 	<integrator name="steps" type="UniSim::StepsTimeInterval">
 		<parameter name="beginDate" value="2001-01-01"/>
-		<parameter name="endDate" value="2001-01-31"/>
+		<parameter name="endDate" value="2001-12-31"/>
 		<parameter name="beginTime" value="00:00"/>
 		<parameter name="endTime" value="00:00"/>
 		<parameter name="timeStep" value="5"/>
@@ -231,6 +231,7 @@
 				<parameter name="heatCapacity" value="42000"/>
 			</model>
 		</model>
+		<model name="energyFlux" type="vg::EnergyFluxShelters"/>
 	</model>
 	<model name="energetics" type="vg::Energetics"/>
 	<model name="indoors">
@@ -1078,5 +1079,21 @@
 		<trace label="shl_cp_cov" ref="shelters[heatCapacityCoversPerGround]"/>
 		<trace label="shl_cp_scr" ref="shelters[heatCapacityScreensPerGround]"/>
 		<trace label="shl_tra_air" ref="shelters[airTransmissivity]"/>
+		<trace label="shl_in_ir_abs" ref="construction/energyFlux[incomingIrAbsorptivity]"/>
+		<trace label="shl_out_ir_abs" ref="construction/energyFlux[outgoingIrAbsorptivity]"/>
+		<trace label="shl_heat_out" ref="construction/energyFlux[heatFluxOutside]"/>
+		<trace label="shl_heat_in" ref="construction/energyFlux[heatFluxInside]"/>
+		<trace label="shl_heat_sky" ref="construction/energyFlux[radiationFluxSky]"/>
+		<trace label="shl_sun_cover" ref="construction/energyFlux[radiationFluxSunCover]"/>
+		<trace label="shl_sun_scr" ref="construction/energyFlux[radiationFluxSunScreens]"/>
+		<trace label="shl_crop_top" ref="construction/energyFlux[radiationFluxCropTop]"/>
+		<trace label="shl_crop_mid" ref="construction/energyFlux[radiationFluxCropMiddle]"/>
+		<trace label="shl_crop_bot" ref="construction/energyFlux[radiationFluxCropBottom]"/>
+		<trace label="shl_cov_temp" ref="construction/energyFlux[coverTemperature]"/>
+		<trace label="shl_scr_temp" ref="construction/energyFlux[screensTemperature]"/>
+		<trace label="shl_in_ir_abs_enscr" ref="roof1/screens/energy[incomingIrAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_screens" ref="roof1/screens[incomingIrAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingIrAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingIrAbsorptivity]"/>
 	</output>
 </simulation>

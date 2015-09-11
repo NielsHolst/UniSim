@@ -22,8 +22,6 @@ PUBLISH(Shelter)
  *
  * Inputs
  * ------
- * - _greenhouseShade_ is the fraction of light caught by the greenhouse construction [0;1]
- * - _chalk_ is the chalk efficacy [0;1]
  * - _roofArea_ is the total area of the roof (the two sloping surfaces on top of each span) [m<SUP>2</SUP>]
  * - _sideWallsArea_ is the total area of the two greenhouse side walls (facing the outside) [m<SUP>2</SUP>]
  * - _endWallsArea_ is the total area of the two greenhouse end walls (excluding the triangular gables) [m<SUP>2</SUP>]
@@ -42,9 +40,6 @@ PUBLISH(Shelter)
 Shelter::Shelter(Identifier name, QObject *parent)
     : ShelterBase(name, parent)
 {
-    InputRef(double, greenhouseShade, "geometry[shade]");
-    InputRef(double, chalk, "controllers/chalk[signal]");
-
     InputRef(double, roofArea, "geometry[roofArea]");
     InputRef(double, sideWallsArea, "geometry[sideWallsArea]");
     InputRef(double, endWallsArea, "geometry[endWallsArea]");
@@ -102,9 +97,7 @@ void Shelter::reset() {
 }
 
 void Shelter::update() {
-    double transmissivity = (1-chalk) * (1-greenhouseShade);
-    SurfaceRadiation rad = SurfaceRadiation().asCover(transmissivity, transmissivity, 0., 0.);
-    rad *= (*pCoverSurfaceRadiation);
+    SurfaceRadiation rad = (*pCoverSurfaceRadiation);
     rad *= (*pScreensSurfaceRadiation);
     set(rad);
     updateU();

@@ -19,15 +19,18 @@ public:
     void update();
 private:
     // Inputs
-    double U, incomingIrAbsorptivity, incomingIrAbsorptivityScreens,
-        outgoingIrAbsorptivity, outgoingIrAbsorptivityCover, outgoingIrAbsorptivityScreens,
+    double U, incomingIrAbsorptivity,
+//        incomingIrAbsorptivityScreens,
+        outgoingIrAbsorptivity,
+//        outgoingIrAbsorptivityCover, outgoingIrAbsorptivityScreens,
         lightAbsorbedCover, lightAbsorbedScreens,
         heatCapacityCover, heatCapacityScreens,
-        timeStep, averageHeight, coverPerGroundArea, relativeShelterArea,
+        timeStep, averageHeight,
+//     coverPerGroundArea, relativeShelterArea,
         indoorsTemperature, skyTemperature, outdoorsTemperature,
-        maxState,
-        cropTemperatureTop, cropTemperatureMiddle, cropTemperatureBottom,
-        sunlight, condensationRateCover;
+//        maxState,
+        cropTemperatureTop, cropTemperatureMiddle, cropTemperatureBottom;
+//        condensationRateCover;
 
     // Outputs
     double coverTemperature, screensTemperature,

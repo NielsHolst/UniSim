@@ -4,17 +4,23 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
+#include <math.h>
 #include <qglobal.h>
 #include <QMessageBox>
 #include <QString>
+#include <usbase/exception.h>
 #include <usbase/test_num.h>
 #include "general.h"
 #include "surface_radiation.h"
 
+using namespace UniSim;
+
 namespace vg {
 
 SurfaceRadiation::SurfaceRadiation() {
-    asScreen(1,0,0);
+    light =
+    directLight =
+    ir = Spectrum(1);
 }
 
 SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double directTransmissivity, double absorptivity, double emissivity) {
@@ -55,6 +61,12 @@ SurfaceRadiation& SurfaceRadiation::asScreen(double transmissivity, double absor
     return *this;
 }
 
+void SurfaceRadiation::setToZero() {
+    light =
+    directLight =
+    ir = Spectrum(0);
+}
+
 void SurfaceRadiation::Spectrum::Direction::setRef(double tra) {
     ref = 1. - abs - tra;
     TestNum::snapToZero(ref);
@@ -81,6 +93,9 @@ SurfaceRadiation::Spectrum& SurfaceRadiation::Spectrum::operator*=(const Surface
 
            r12_inner = s2.inner.ref + sqr(s2.tra)*inner.ref,
            a12_inner = 1. - r12_inner - t12;
+    if (k==0) {
+        throw Exception("Two facing surfaces cannot both have 100% reflection");
+    }
     tra = t12;
     inner.abs = a12_inner;
     inner.ref = r12_inner;
@@ -94,6 +109,10 @@ SurfaceRadiation& SurfaceRadiation::operator*=(const SurfaceRadiation &s2) {
     directLight *= s2.directLight;
     ir *= s2.ir;
     return *this;
+}
+
+bool SurfaceRadiation::isOk() {
+    return !( std::isnan(ir.inner.abs) || std::isnan(ir.inner.ref) );
 }
 
 } //namespace

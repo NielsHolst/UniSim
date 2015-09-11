@@ -99,14 +99,25 @@ plot9 = function(U,from=0, to=366) {
 	p5 = plot2(U, from, to, c("abs_gr_li_top","abs_gr_li_mid","abs_gr_li_bot"))
 	p6 = plot2(U, from, to, c("lost_cover_top","lost_cover_mid","lost_cover_bot"))
 	p7 = plot2(U, from, to, c("abs_tot_top","abs_tot_mid","abs_tot_bot"))
-	p8 = plot2(U, from, to, c("indoors_temp"))
+	p8 = plot2(U, from, to, c("outdoors_temp", "indoors_temp", "roof1_temp"))
 	p9 = plot2(U, from, to, c("heat_flux", "heat_sum"))
 	p10 = plot2(U, from, to, c("shl_tra_dir", "shl_tra_dif", "shl_tra_tot", "shl_abs_cov", "shl_abs_scr", "shl_haze", "shl_U", "shl_tra_air", "shl_cp_cov", "shl_cp_scr"))
-	p11 = plot2(U, from, to, c("shl_abs_cov", "shl_abs_scr", "shl_cp_cov", "shl_cp_scr"))
-	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11, ncol=6)
+	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=5)
+}
+
+plot10 = function(U,from=0, to=366) {
+	p1 = plot2(U, from, to, c("shl_in_ir_abs_screens", "shl_in_ir_abs_cover", "shl_in_ir_abs_shelter", "shl_in_ir_abs", "shl_out_ir_abs"))
+	p2 = plot2(U, from, to, c("shl_heat_out", "shl_heat_in", "shl_heat_sky"))
+	p3 = plot2(U, from, to, c("shl_sun_cover", "shl_sun_scr"))
+	p4 = plot2(U, from, to, c("shl_crop_top", "shl_crop_mid", "shl_crop_bot"))
+	p5 = plot2(U, from, to, c("shl_cov_temp", "roof1_temp", "indoors_temp"))
+	p6 = plot2(U, from, to, c("shl_abs_cov", "shl_abs_scr", "shl_cp_cov", "shl_cp_scr"))
+	grid.arrange(p1,p2,p3,p4,p5,p6, ncol=3)
 }
  
 U = read_unisim("dvv_unisim_0001.txt")
 windows(14,10)
-plot9(U)
+plot10(U)
 
+windows(14,10)
+plot9(U)

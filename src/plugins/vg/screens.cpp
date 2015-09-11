@@ -11,6 +11,7 @@
 #include "screens.h"
 #include "surface_radiation.h"
 
+
 using std::max;
 using namespace UniSim;
 
@@ -95,7 +96,8 @@ void Screens::update() {
 
     SurfaceRadiation rad;
     for (ScreenInfo si: screenInfos) {
-        rad *= SurfaceRadiation().asScreen(*si.transmissivityLightNet, *si.absorptivityIrOuterNet, *si.absorptivityIrInnerNet);
+        SurfaceRadiation &screenRad( SurfaceRadiation().asScreen(*si.transmissivityLightNet, *si.absorptivityIrOuterNet, *si.absorptivityIrInnerNet) );
+        rad *= screenRad;
     }
     set(rad);
 }

@@ -13,7 +13,7 @@ struct SurfaceRadiation {
     SurfaceRadiation();
 
     struct Spectrum {
-        Spectrum() : tra(1) {}
+        Spectrum(double tra_=1) : tra(tra_) {}
         Spectrum& operator*=(const Spectrum &s2);
 
         double tra;
@@ -27,8 +27,10 @@ struct SurfaceRadiation {
     } light, directLight, ir;
 
     // Methods
+    void setToZero();
     SurfaceRadiation& asCover(double transmissivity, double directTransmissivity, double absorptivity, double emissivity);
     SurfaceRadiation& asScreen(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner);
+    bool isOk();
 
     // Operators
     SurfaceRadiation& operator*=(const SurfaceRadiation &s2);

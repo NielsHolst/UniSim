@@ -21,9 +21,9 @@ public:
 
 private:
     // Inputs
-    double greenhouseShade, chalk,
-    roofArea, sideWallsArea, endWallsArea, gablesArea, groundArea,
-    outdoorsDirectRadiation, outdoorsDiffuseRadiation;
+    double
+        roofArea, sideWallsArea, endWallsArea, gablesArea, groundArea,
+        outdoorsDirectRadiation, outdoorsDiffuseRadiation;
 
     // Outputs
     double area, relativeArea, areaPerGround;

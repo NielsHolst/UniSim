@@ -14,7 +14,7 @@
 
 <!-- Simulation period used when test-mode > 0 -->
 <xsl:variable name="BeginDate" select="'2001-01-01'"/>
-<xsl:variable name="EndDate" select="'2001-12-31'"/>
+<xsl:variable name="EndDate" select="'2001-01-31'"/>
 
 <!-- Parameters missing in DVV Online must be set here -->
 <xsl:variable name="EnergyScreenOption" select="1"/>  		<!-- 1: EnergyBalanc or 2: OutsideLight --> 
@@ -522,9 +522,6 @@
 				<xsl:call-template name="extract-shelter"/>
 			</xsl:for-each>		
 			<!--
-			<model name="energyFlux" type="vg::EnergyFluxShelters"/>
-			-->
-			<!--
 			<model name="roof" type="vg::Shelters">
 				<xsl:for-each select="JobDataSet/Greenhouse/zone/Panes//Pane[Position &lt; 3]">
 					<xsl:call-template name="extract-shelter"/>
@@ -588,6 +585,7 @@
 				</parameter>
 			</model>
 		</model>
+		<model name="energyFlux" type="vg::EnergyFluxShelters"/>
 	</model>
 
 	<model name="energetics" type="vg::Energetics"/>
@@ -1768,6 +1766,26 @@
 		<trace label="shl_cp_cov" ref="shelters[heatCapacityCoversPerGround]"/>
 		<trace label="shl_cp_scr" ref="shelters[heatCapacityScreensPerGround]"/>
 		<trace label="shl_tra_air" ref="shelters[airTransmissivity]"/>
+
+		<trace label="shl_in_ir_abs" ref="construction/energyFlux[incomingIrAbsorptivity]"/>
+		<trace label="shl_out_ir_abs" ref="construction/energyFlux[outgoingIrAbsorptivity]"/>
+		<trace label="shl_heat_out" ref="construction/energyFlux[heatFluxOutside]"/>
+		<trace label="shl_heat_in" ref="construction/energyFlux[heatFluxInside]"/>
+		<trace label="shl_heat_sky" ref="construction/energyFlux[radiationFluxSky]"/>
+		<trace label="shl_sun_cover" ref="construction/energyFlux[radiationFluxSunCover]"/>
+		<trace label="shl_sun_scr" ref="construction/energyFlux[radiationFluxSunScreens]"/>
+		<trace label="shl_crop_top" ref="construction/energyFlux[radiationFluxCropTop]"/>
+		<trace label="shl_crop_mid" ref="construction/energyFlux[radiationFluxCropMiddle]"/>
+		<trace label="shl_crop_bot" ref="construction/energyFlux[radiationFluxCropBottom]"/>
+		<trace label="shl_cov_temp" ref="construction/energyFlux[coverTemperature]"/>
+		<trace label="shl_scr_temp" ref="construction/energyFlux[screensTemperature]"/>
+		
+		
+		<trace label="shl_in_ir_abs_screens" ref="roof1/screens[incomingIrAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingIrAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingIrAbsorptivity]"/>
+		
+		
 <!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
 		<trace label="top_ah" value="top/transpiration[leafAh]"/>

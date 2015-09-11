@@ -64,7 +64,7 @@ void Shelters::reset() {
 
 void Shelters::update() {
     SurfaceRadiation sr;
-    sr.light.tra = sr.directLight.tra = sr.ir.tra = 0.;
+    sr.setToZero();
     diffuseLightTransmitted =
     directLightTransmitted =
     totalLightTransmitted =

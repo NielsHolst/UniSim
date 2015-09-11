@@ -44,11 +44,6 @@
 					<parameter name="absorptivity" value="0.04"/>
 					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
@@ -73,11 +68,6 @@
 					<parameter name="absorptivity" value="0.04"/>
 					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
@@ -102,11 +92,6 @@
 					<parameter name="absorptivity" value="0.04"/>
 					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
@@ -131,11 +116,6 @@
 					<parameter name="absorptivity" value="0.04"/>
 					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
@@ -160,11 +140,6 @@
 					<parameter name="absorptivity" value="0.04"/>
 					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
@@ -189,11 +164,6 @@
 					<parameter name="absorptivity" value="0.04"/>
 					<parameter name="specificHeatCapacity" value="8736"/>
 					<parameter name="haze" value="0"/>
-					<model name="energyFlux" type="vg::EnergyFluxCover">
-						<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="condensation" type="vg::CoverCondensation"/>
 				</model>
 				<model name="screens" type="vg::Screens">
 					<model name="energy" type="vg::Screen">
@@ -231,7 +201,12 @@
 				<parameter name="heatCapacity" value="42000"/>
 			</model>
 		</model>
-		<model name="energyFlux" type="vg::EnergyFluxShelters"/>
+		<model name="energyFlux" type="vg::EnergyFluxShelters">
+			<model name="coverCondensation" type="vg::CoverCondensation">
+				<parameter name="coverArea" ref="geometry[coverArea]"/>
+				<parameter name="coverTemperature" ref="..[coverTemperature]"/>
+			</model>
+		</model>
 	</model>
 	<model name="energetics" type="vg::Energetics"/>
 	<model name="indoors">
@@ -279,7 +254,7 @@
 				</model>
 				<model name="vapourFlux" type="vg::VapourFluxSum">
 					<model name="condensation" type="vg::VapourFluxSum">
-						<parameter name="toAdd" value="(roof1/cover/condensation roof2/cover/condensation)"/>
+						<parameter name="toAdd" value="()"/>
 					</model>
 					<model name="airFluxOutdoors" type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="../../airflux/outdoors[value]"/>
@@ -313,9 +288,6 @@
 						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/>
 						<parameter name="donorTemperature" ref="indoors/temperature[value]"/>
 					</model>
-					<model name="cover" type="vg::EnergyFluxCoverSum">
-						<parameter name="toAdd" value="(roof1/cover/energyFlux roof2/cover/energyFlux)"/>
-					</model>
 				</model>
 			</model>
 			<model name="bottom">
@@ -333,7 +305,7 @@
 				<model name="vapourFlux" type="vg::VapourFluxSum">
 					<model name="transpiration" type="vg::VapourFluxTranspiration"/>
 					<model name="condensation" type="vg::VapourFluxSum">
-						<parameter name="toAdd" value="(side1/cover/condensation side2/cover/condensation end1/cover/condensation end2/cover/condensation)"/>
+						<parameter name="toAdd" value="(construction/energyflux/coverCondensation)"/>
 					</model>
 					<model name="airFluxOutdoors" type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="bottom/airflux/outdoors[value]"/>
@@ -372,8 +344,8 @@
 						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
 						<parameter name="donorTemperature" ref="indoors/top/temperature[value]"/>
 					</model>
-					<model name="cover" type="vg::EnergyFluxCoverSum">
-						<parameter name="toAdd" value="(side1/cover/energyFlux side2/cover/energyFlux end1/cover/energyFlux end2/cover/energyFlux)"/>
+					<model name="cover" type="UniSim::Sum">
+						<parameter name="toAdd" value="(construction/energyFlux[value])"/>
 					</model>
 					<model name="crop" type="UniSim::Sum">
 						<parameter name="toAdd" value="(crop/energyFlux[value])"/>
@@ -1091,7 +1063,6 @@
 		<trace label="shl_crop_bot" ref="construction/energyFlux[radiationFluxCropBottom]"/>
 		<trace label="shl_cov_temp" ref="construction/energyFlux[coverTemperature]"/>
 		<trace label="shl_scr_temp" ref="construction/energyFlux[screensTemperature]"/>
-		<trace label="shl_in_ir_abs_enscr" ref="roof1/screens/energy[incomingIrAbsorptivity]"/>
 		<trace label="shl_in_ir_abs_screens" ref="roof1/screens[incomingIrAbsorptivity]"/>
 		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingIrAbsorptivity]"/>
 		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingIrAbsorptivity]"/>

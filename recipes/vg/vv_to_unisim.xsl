@@ -14,7 +14,7 @@
 
 <!-- Simulation period used when test-mode > 0 -->
 <xsl:variable name="BeginDate" select="'2001-01-01'"/>
-<xsl:variable name="EndDate" select="'2001-01-31'"/>
+<xsl:variable name="EndDate" select="'2001-12-31'"/>
 
 <!-- Parameters missing in DVV Online must be set here -->
 <xsl:variable name="EnergyScreenOption" select="1"/>  		<!-- 1: EnergyBalanc or 2: OutsideLight --> 
@@ -302,7 +302,7 @@
 		<xsl:attribute name="type">
 			<xsl:value-of select="'vg::Shelter'"/>
 		</xsl:attribute>
-<!--		<model name="energyFlux" type="vg::EnergyFluxShelter"/> -->
+
 		<model name="cover" type="vg::Cover">
 			<parameter name="U4">
 				<xsl:attribute name="value">
@@ -334,24 +334,12 @@
 					<xsl:value-of select="$CoverHaze"/>
 				</xsl:attribute>
 			</parameter>
+			<!--
 			<model name="energyFlux" type="vg::EnergyFluxCover">
 				<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
 				<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 			</model>
 			<model name="condensation" type="vg::CoverCondensation"/>
-			<!--
-			<model name="condensation" type="vg::CoverCondensation"> 
-				<parameter name="indoorsTemperature">
-					<xsl:attribute name="ref">
-						<xsl:value-of select="concat($compartment-name, '/temperature[value]')"/>
-					</xsl:attribute>
-				</parameter>
-				<parameter name="indoorsAh">
-					<xsl:attribute name="ref">
-						<xsl:value-of select="concat($compartment-name, '/humidity[ah]')"/>
-					</xsl:attribute>
-				</parameter>
-			</model>
 			-->
 		</model> <!-- cover -->
 
@@ -585,7 +573,12 @@
 				</parameter>
 			</model>
 		</model>
-		<model name="energyFlux" type="vg::EnergyFluxShelters"/>
+		<model name="energyFlux" type="vg::EnergyFluxShelters">
+			<model name="coverCondensation" type="vg::CoverCondensation">
+				<parameter name="coverArea" ref ="geometry[coverArea]"/>
+				<parameter name="coverTemperature" ref ="..[coverTemperature]"/>
+			</model>
+		</model>
 	</model>
 
 	<model name="energetics" type="vg::Energetics"/>
@@ -649,7 +642,10 @@
 				</model>
 				<model name="vapourFlux" type="vg::VapourFluxSum"> 
 					<model name="condensation" type="vg::VapourFluxSum">
+						<!--
 						<parameter name="toAdd" value="(roof1/cover/condensation roof2/cover/condensation)"/>
+						-->
+						<parameter name="toAdd" value="()"/>
 					</model>
 					<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="../../airflux/outdoors[value]"/>
@@ -683,9 +679,11 @@
 						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/> 
 						<parameter name="donorTemperature" ref="indoors/temperature[value]"/>
 					</model>
+					<!--
 					<model name="cover" type="vg::EnergyFluxCoverSum"> 
 						<parameter name="toAdd" value="(roof1/cover/energyFlux roof2/cover/energyFlux)"/>
 					</model>					
+					-->
 				</model>		
 			</model> <!-- top -->
 			
@@ -704,7 +702,10 @@
 				<model name="vapourFlux" type="vg::VapourFluxSum"> 
 					<model name="transpiration" type="vg::VapourFluxTranspiration"/>
 					<model name="condensation" type="vg::VapourFluxSum">
+						<!--
 						<parameter name="toAdd" value="(side1/cover/condensation side2/cover/condensation end1/cover/condensation end2/cover/condensation)"/>
+						-->
+						<parameter name="toAdd" value="(construction/energyflux/coverCondensation)"/>
 					</model>
 					<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
 						<parameter name="airFlux" ref="bottom/airflux/outdoors[value]"/>
@@ -747,9 +748,14 @@
 						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/> 
 						<parameter name="donorTemperature" ref="indoors/top/temperature[value]"/>
 					</model>
+					<model name="cover" type="UniSim::Sum"> 
+						<parameter name="toAdd" value="(construction/energyFlux[value])"/>
+					</model>					
+					<!--
 					<model name="cover" type="vg::EnergyFluxCoverSum"> 
 						<parameter name="toAdd" value="(side1/cover/energyFlux side2/cover/energyFlux end1/cover/energyFlux end2/cover/energyFlux)"/>
 					</model>					
+					-->
 					<model name="crop" type="UniSim::Sum">
 						<parameter name="toAdd" value="(crop/energyFlux[value])"/>
 					</model>					

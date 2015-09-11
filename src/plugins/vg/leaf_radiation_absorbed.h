@@ -15,7 +15,6 @@ class LeafRadiationAbsorbed : public UniSim::Model
 {
 public:
     LeafRadiationAbsorbed(UniSim::Identifier name, QObject *parent);
-    void initialize();
     void reset();
     void update();
 private:
@@ -26,23 +25,12 @@ private:
         kIr, lai, indoorsLight, heating,
         lightAbsorptivity,
         growthLightLight, growthLightIr,
-        temperature;
+        temperature,
+        radiationFluxCropTop, radiationFluxCropMiddle, radiationFluxCropBottom;
 
     // Outputs
     double value, lightAbsorbed, heatingAbsorbed,
-        growthLightIrAbsorbed,
-        coverLoss;
-
-    // Data
-    struct ShelterInfo {
-        const double *areaPerGround, *maxState, *temperature, *emissivity;
-    };
-    QVector<ShelterInfo> shelterInfos;
-
-    double irAbsorptivityLowerside, irAbsorptivityUpperside;
-
-    // Methods
-    void computeCoverLoss();
+        growthLightIrAbsorbed;
 };
 
 } //namespace

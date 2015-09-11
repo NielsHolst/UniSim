@@ -91,18 +91,21 @@ plot8 = function(U,from=0, to=366) {
 	grid.arrange(p1,p2,p3, ncol=2)
 }
 
+miss = function(x) {
+	setdiff(x, intersect(x, colnames(U)))
+}
+
 plot9 = function(U,from=0, to=366) {
-	p1 = plot2(U, from, to, c("roof1_temp", "temp_top","temp_mid","temp_bot"))
+	p1 = plot2(U, from, to, c("shl_cov_temp", "temp_top","temp_mid","temp_bot"))
 	p2 = plot2(U, from, to, c("abs_li_top","abs_li_mid","abs_li_bot"))
 	p3 = plot2(U, from, to, c("abs_heat_top","abs_heat_mid","abs_heat_bot"))
 	p4 = plot2(U, from, to, c("flux_top","flux_mid","flux_bot"))
 	p5 = plot2(U, from, to, c("abs_gr_li_top","abs_gr_li_mid","abs_gr_li_bot"))
-	p6 = plot2(U, from, to, c("lost_cover_top","lost_cover_mid","lost_cover_bot"))
-	p7 = plot2(U, from, to, c("abs_tot_top","abs_tot_mid","abs_tot_bot"))
-	p8 = plot2(U, from, to, c("outdoors_temp", "indoors_temp", "roof1_temp"))
-	p9 = plot2(U, from, to, c("heat_flux", "heat_sum"))
-	p10 = plot2(U, from, to, c("shl_tra_dir", "shl_tra_dif", "shl_tra_tot", "shl_abs_cov", "shl_abs_scr", "shl_haze", "shl_U", "shl_tra_air", "shl_cp_cov", "shl_cp_scr"))
-	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=5)
+	p6 = plot2(U, from, to, c("abs_tot_top","abs_tot_mid","abs_tot_bot"))
+	p7 = plot2(U, from, to, c("outdoors_temp", "indoors_temp"))
+	p8 = plot2(U, from, to, c("heat_flux", "heat_sum"))
+	p9 = plot2(U, from, to, c("shl_tra_dir", "shl_tra_dif", "shl_tra_tot", "shl_abs_cov", "shl_abs_scr", "shl_haze", "shl_U", "shl_tra_air", "shl_cp_cov", "shl_cp_scr"))
+	grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol=5)
 }
 
 plot10 = function(U,from=0, to=366) {
@@ -110,7 +113,7 @@ plot10 = function(U,from=0, to=366) {
 	p2 = plot2(U, from, to, c("shl_heat_out", "shl_heat_in", "shl_heat_sky"))
 	p3 = plot2(U, from, to, c("shl_sun_cover", "shl_sun_scr"))
 	p4 = plot2(U, from, to, c("shl_crop_top", "shl_crop_mid", "shl_crop_bot"))
-	p5 = plot2(U, from, to, c("shl_cov_temp", "roof1_temp", "indoors_temp"))
+	p5 = plot2(U, from, to, c("shl_cov_temp", "indoors_temp", "sp_heat", "sp_vent"))
 	p6 = plot2(U, from, to, c("shl_abs_cov", "shl_abs_scr", "shl_cp_cov", "shl_cp_scr"))
 	grid.arrange(p1,p2,p3,p4,p5,p6, ncol=3)
 }

@@ -36,6 +36,7 @@ PUBLISH(Cover)
  * - _emissivity_ is the effectiveness in emitting energy as thermal radiation [0;1].
  * - _absorptivity_ is the proportion of light absorbed [0;1]
  * - _transmissivity_ is the proportion of diffuse light transmitted through the material [0;1]
+ * - _propDirectRadiation is the proportion of the direct component of the total sunlight [0;1]
  * - _heatCapacity_ is area-specific heat capacity [J/m<SUP>2</SUP>]/K]
  * - _haze_ is the proportion of direct light becoming dispersed on passage through the material [0;1]
  * - _antiReflection_ flags whether the material is anti-reflecting [true/false]
@@ -82,7 +83,8 @@ void Cover::reset() {
 void Cover::update() {
     double directLightfactor = interpolate(*dirTransTable, latitude, azimuth),
            tr = (1-greenhouseShade)*(1-chalk);
-    set( SurfaceRadiation().asCover(tr*transmissivity, tr*transmissivity*directLightfactor, absorptivity, emissivity) );
+    set( SurfaceRadiation().asCover(tr*transmissivity, tr*transmissivity*directLightfactor,
+                                    absorptivity, emissivity) );
     double k = (windspeed <= 4) ? (2.8 + 1.2*windspeed)/7.6 : pow(windspeed,0.8)/pow(4.,0.8);
     U = k*U4;
     heatCapacity = specificHeatCapacity*area;

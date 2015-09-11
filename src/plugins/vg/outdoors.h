@@ -23,7 +23,7 @@ private:
     radiation, diffuseRadiation, co2, soilTemperature;
 
     // Variables
-    double directRadiation, ah, sh;
+    double directRadiation, propDirectRadiation, ah, sh;
 
 };
 } //namespace

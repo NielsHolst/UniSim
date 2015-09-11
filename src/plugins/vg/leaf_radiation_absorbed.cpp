@@ -45,53 +45,32 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, growthLightIr, "actuators/growthlights[longWaveEmission]");
     InputRef(double, temperature, "../temperature[value]");
 
+    InputRef(double, radiationFluxCropTop, "construction/energyFlux[radiationFluxCropTop]");
+    InputRef(double, radiationFluxCropMiddle, "construction/energyFlux[radiationFluxCropMiddle]");
+    InputRef(double, radiationFluxCropBottom, "construction/energyFlux[radiationFluxCropBottom]");
+
     Output(double, lightAbsorbed);
     Output(double, heatingAbsorbed);
     Output(double, growthLightIrAbsorbed);
-    Output(double, coverLoss);
     Output(double, value);
-}
-
-void LeafRadiationAbsorbed::initialize() {
-    auto shelters = seekMany<Model*>("construction/shelters/*");
-    for (Model *shelter : shelters) {
-        Model *cover = shelter->seekOneChild<Model*>("cover"),
-              *screens = shelter->seekOneChild<Model*>("screens"),
-              *temperature = cover->seekOneChild<Model*>("energyFlux");
-        shelterInfos <<
-            ShelterInfo {
-                shelter->pullValuePtr<double>("areaPerGround"),
-                screens->pullValuePtr<double>("maxState"),
-                temperature->pullValuePtr<double>("temperature"),
-                cover->pullValuePtr<double>("outgoingIrAbsorptivity")
-            };
-    }
 }
 
 void LeafRadiationAbsorbed::reset() {
     lightAbsorbed =
     heatingAbsorbed =
     growthLightIrAbsorbed =
-    coverLoss =
     value = 0.;
 }
 
 void LeafRadiationAbsorbed::update() {
-    irAbsorptivityLowerside = kIr*exp(-kIr*lai*xGaussLowerside)*wGaussLowerside*lai,
-    irAbsorptivityUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai;
+    double
+        irAbsorptivityLowerside = kIr*exp(-kIr*lai*xGaussLowerside)*wGaussLowerside*lai,
+        irAbsorptivityUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai;
     lightAbsorbed = lightAbsorptivity*(indoorsLight + growthLightLight);
     heatingAbsorbed = heating*irAbsorptivityLowerside;
     growthLightIrAbsorbed = growthLightIr*irAbsorptivityUpperside;
-    computeCoverLoss();
-    value = lightAbsorbed + heatingAbsorbed + growthLightIrAbsorbed - coverLoss;
-}
-
-void LeafRadiationAbsorbed::computeCoverLoss() {
-    coverLoss = 0.;
-    for (ShelterInfo si : shelterInfos) {
-        double em = jointEmissivity(irAbsorptivityUpperside, *si.emissivity);
-        coverLoss += Sigma*em*(p4K(temperature) - p4K(*si.temperature))*(*si.areaPerGround)*(1-(*si.maxState));
-    }
+    value = lightAbsorbed + heatingAbsorbed + growthLightIrAbsorbed -
+            radiationFluxCropTop - radiationFluxCropMiddle - radiationFluxCropBottom;
 }
 
 } //namespace

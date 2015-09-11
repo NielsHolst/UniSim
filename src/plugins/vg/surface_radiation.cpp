@@ -23,7 +23,8 @@ SurfaceRadiation::SurfaceRadiation() {
     ir = Spectrum(1);
 }
 
-SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double directTransmissivity, double absorptivity, double emissivity) {
+SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double directTransmissivity,
+                                            double absorptivity, double emissivity) {
     light.tra = transmissivity;
     directLight.tra = directTransmissivity;
     ir.tra = 0.;

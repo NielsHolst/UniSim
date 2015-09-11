@@ -32,6 +32,7 @@ PUBLISH(Outdoors)
  * Outputs
  * -------
  * - _directRadiation_ is the direct component of sunlight irradiation [W/m<SUP>2</SUP>]
+ * - _propDirectRadiation is the proportion of the direct component of the total sunlight [0;1]
  *
  * Default dependencies
  * ------------
@@ -56,6 +57,7 @@ Outdoors::Outdoors(Identifier name, QObject *parent)
     InputRef(double, windSpeed, "./records[WindSpeed]");
     InputRef(double, skyTemperature, "./records[Tsky]");
     Output(double, directRadiation);
+    Output(double, propDirectRadiation);
     Output(double, ah);
     Output(double, sh);
 }
@@ -67,6 +69,7 @@ void Outdoors::reset() {
 
 void Outdoors::update() {
     directRadiation = radiation - diffuseRadiation;
+    propDirectRadiation = div0(directRadiation, radiation);
     ah = ahFromRh(temperature, rh);
     sh = shFromRh(temperature, rh);
 }

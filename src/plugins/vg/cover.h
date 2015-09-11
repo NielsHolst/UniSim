@@ -29,7 +29,8 @@ private:
     double
         greenhouseShade, chalk,
         latitude, azimuth, area,
-        U4, windspeed, emissivity, absorptivity, transmissivity, specificHeatCapacity, haze;
+        U4, windspeed, emissivity, absorptivity, transmissivity,
+        specificHeatCapacity, haze;
     bool antiReflection;
 
     // Outputs

@@ -37,8 +37,6 @@ HEADERS += \
     energy_flux_condensation.h \
     energy_flux_cooling_demand.h \
     energy_flux_cooling_supply.h \
-    energy_flux_cover.h \
-    energy_flux_cover_sum.h \
     energy_flux_floor.h \
     energy_flux_growth_lights.h \
     energy_flux_heating_demand.h \
@@ -127,8 +125,6 @@ SOURCES += \
     energy_flux_condensation.cpp \
     energy_flux_cooling_demand.cpp \
     energy_flux_cooling_supply.cpp \
-    energy_flux_cover.cpp \
-    energy_flux_cover_sum.cpp \
     energy_flux_floor.cpp \
     energy_flux_growth_lights.cpp \
     energy_flux_heating_demand.cpp \

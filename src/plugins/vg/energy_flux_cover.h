@@ -22,7 +22,7 @@ private:
     double U, emissivity, absorptivity, heatCapacity,
         timeStep, averageHeight, indoorsTemperature, skyTemperature, outdoorsTemperature,
         screenState, cropTemperature,
-        sunlight, condensationRate;
+        sunlight, condensationRate, relativeShelterArea;
 
     // Outputs
     double temperature, heatFluxOutside, heatFluxInside,

@@ -117,10 +117,15 @@ plot10 = function(U,from=0, to=366) {
 	p6 = plot2(U, from, to, c("shl_abs_cov", "shl_abs_scr", "shl_cp_cov", "shl_cp_scr"))
 	grid.arrange(p1,p2,p3,p4,p5,p6, ncol=3)
 }
+
+plot11 = function(U,from=0, to=366) {
+	p1 = plot2(U, from, to, c("giv_eflux_sum", "giv_eflux_cond", "giv_eflux_lamp", "giv_eflux_out", "giv_eflux_cover", "giv_eflux_crop", "giv_eflux_floor"))
+	p2 = plot2(U, from, to, c("outdoors_temp", "indoors_temp"))
+	p3 = plot2(U, from, to, c("heat_flux", "heat_sum"))
+	p4 = plot2(U, from, to, c("shl_U"))
+	grid.arrange(p1,p2,p3,p4, ncol=2)	
+}
  
 U = read_unisim("dvv_unisim_0001.txt")
 windows(14,10)
-plot10(U)
-
-windows(14,10)
-plot9(U)
+plot11(U)

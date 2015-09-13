@@ -585,314 +585,158 @@
 	
 	<model name="indoors">
 		<model name="given">
-			<model name="total">
-				<model name="airflux">
-					<model name="infiltration" type="vg::AirFluxInfiltration">
-						<parameter name="leakage">
-							<xsl:attribute name="value">
-								<xsl:value-of select="$Leakage"/>
-							</xsl:attribute>
-						</parameter>
-					</model>
-					<model name="crackVentilation" type="vg::PidControlElement">
-						<parameter name="signal" ref="./target[signal]"/>
-						<parameter name="Kprop" value="0.1"/>
-						<model name="target" type="vg::ProportionalSignal">
-							<model name="coldFactor" type="vg::ProportionalSignal"> 
-								<parameter name="input" ref ="outdoors[temperature]"/>
-								<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
-								<parameter name="thresholdBand" value="1"/>
-								<parameter name="increasingSignal" value="true"/>
-								<parameter name="maxSignal">
-									<xsl:attribute name="value">
-										<xsl:value-of select="$MaxCrackVentilation"/>
-									</xsl:attribute>
-								</parameter>
-								<parameter name="minSignal" value="0"/>
-							</model>
-							
-							<parameter name="input" ref="indoors/humidity[rh]"/>
-							<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-							<parameter name="thresholdBand">
+			<model name="airflux">
+				<model name="infiltration" type="vg::AirFluxInfiltration">
+					<parameter name="leakage">
+						<xsl:attribute name="value">
+							<xsl:value-of select="$Leakage"/>
+						</xsl:attribute>
+					</parameter>
+				</model>
+				<model name="crackVentilation" type="vg::PidControlElement">
+					<parameter name="signal" ref="./target[signal]"/>
+					<parameter name="Kprop" value="0.1"/>
+					<model name="target" type="vg::ProportionalSignal">
+						<model name="coldFactor" type="vg::ProportionalSignal"> 
+							<parameter name="input" ref ="outdoors[temperature]"/>
+							<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
+							<parameter name="thresholdBand" value="1"/>
+							<parameter name="increasingSignal" value="true"/>
+							<parameter name="maxSignal">
 								<xsl:attribute name="value">
-									<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+									<xsl:value-of select="$MaxCrackVentilation"/>
 								</xsl:attribute>
 							</parameter>
-							<parameter name="increasingSignal" value="true"/>
-							<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
 							<parameter name="minSignal" value="0"/>
 						</model>
+						
+						<parameter name="input" ref="indoors/humidity[rh]"/>
+						<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+						<parameter name="thresholdBand">
+							<xsl:attribute name="value">
+								<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+							</xsl:attribute>
+						</parameter>
+						<parameter name="increasingSignal" value="true"/>
+						<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
+						<parameter name="minSignal" value="0"/>
 					</model>
-					<model name="gravitation" type="vg::AirFluxGravitation"/>
-				</model> <!-- airflux -->
+				</model>
+				<model name="outdoors" type="AirFluxOutdoors">
+					<parameter name="infiltration" ref="../infiltration[value]"/>
+					<parameter name="ventilation" ref="../crackVentilation[value]"/>
+					<parameter name="transmissivity" ref="construction/shelters[airTransmissivity]"/>
+				</model>
+			</model> <!-- airflux -->
+
+			<model name="vapourFlux" type="vg::VapourFluxSum"> 
+				<model name="transpiration" type="vg::VapourFluxTranspiration"/>
+				<model name="condensation" type="vg::VapourFluxSum">
+					<parameter name="toAdd" value="(construction/energyflux/coverCondensation)"/>
+				</model>
+				<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
+					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
+					<parameter name="receiverAh" ref="indoors/humidity[ah]"/> 
+					<parameter name="donorAh" ref="outdoors[ah]"/> 
+					<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
+				</model>
 			</model>
-		
-			<model name="top">
-				<model name="airFlux">
-					<model name="outdoors" type="AirFluxOutdoors">
-						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
-						<parameter name="ventilation" ref="total/airFlux/crackVentilation[value]"/>
-						<parameter name="volumeProportion" ref="geometry[roofMarginVolumeProportion]"/>
-						<parameter name="transmissivity" ref="construction/shelters[airTransmissivity]"/>
-						<parameter name="useNotTransmitted" value="yes"/>
-					</model>
-					<model name="indoors" type="AirFluxIndoors">
-						<parameter name="receiverVolume" ref="geometry[roofMarginVolume]"/>
-					</model>
-				</model>
-				<model name="vapourFlux" type="vg::VapourFluxSum"> 
-					<model name="condensation" type="vg::VapourFluxSum">
-						<!--
-						<parameter name="toAdd" value="(roof1/cover/condensation roof2/cover/condensation)"/>
-						-->
-						<parameter name="toAdd" value="()"/>
-					</model>
-					<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
-						<parameter name="airFlux" ref="../../airflux/outdoors[value]"/>
-						<parameter name="receiverAh" ref="indoors/top/humidity[ah]"/> 
-						<parameter name="donorAh" ref="outdoors[ah]"/> 
-						<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
-					</model>
-					<model name="airFluxIndoors"  type="vg::VapourFluxAir">
-						<parameter name="airFlux" ref="top/airFlux/indoors[value]"/>
-						<parameter name="receiverAh" ref="indoors/top/humidity[ah]"/> 
-						<parameter name="donorAh" ref="indoors/humidity[ah]"/> 
-						<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
-					</model>
-				</model>
-				<model name="energyFlux" type="vg::EnergyFluxSum"> 
-					<model name="condensation" type="vg::EnergyFluxCondensation"/> 
-					<model name="airFluxOutdoors" type="vg::EnergyFluxAir">
-						<parameter name="airFlux" ref="top/airFlux/outdoors[value]"/>
-						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/> 
-						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-						<parameter name="receiverHeight" ref="geometry[roofMarginAverageHeight]"/>
-					</model>
-					<model name="airFluxIndoors" type="vg::EnergyFluxAir">
-						<parameter name="airFlux" ref="top/airFlux/indoors[value]"/>
-						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/> 
-						<parameter name="donorTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="receiverHeight" ref="geometry[roofMarginAverageHeight]"/>
-						<parameter name="donorHeight" ref="geometry[height]"/>
-					</model>
-					<model name="convection" type="vg::EnergyFluxHorizontal">
-						<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/> 
-						<parameter name="donorTemperature" ref="indoors/temperature[value]"/>
-					</model>
-					<!--
-					<model name="cover" type="vg::EnergyFluxCoverSum"> 
-						<parameter name="toAdd" value="(roof1/cover/energyFlux roof2/cover/energyFlux)"/>
-					</model>					
-					-->
-				</model>		
-			</model> <!-- top -->
 			
-			<model name="bottom"> 
-				<model name="airFlux">
-					<model name="outdoors" type="AirFluxOutdoors">
-						<parameter name="infiltration" ref="total/airFlux/infiltration[value]"/>
-						<parameter name="ventilation" value="0"/>
-						<parameter name="volumeProportion" ref="geometry[roofMarginVolumeProportion]"/>
-						<parameter name="transmissivity" ref="construction/shelters[airTransmissivity]"/>
-					</model>
-					<model name="indoors" type="AirFluxIndoors">
-						<parameter name="receiverVolume" ref="geometry[indoorsVolume]"/>
-					</model>
+			<model name="energyFlux" type="vg::EnergyFluxSum"> 
+				<model name="condensation" type="vg::EnergyFluxCondensation"/> 
+				<model name="growthLights" type="vg::PidControlElement">
+					<parameter name="Kprop" value="0.5"/>
+					<parameter name="signal" ref="./growthLights[value]"/>
+					<model name="growthLights" type="vg::EnergyFluxGrowthLights"/>
 				</model>
-				<model name="vapourFlux" type="vg::VapourFluxSum"> 
-					<model name="transpiration" type="vg::VapourFluxTranspiration"/>
-					<model name="condensation" type="vg::VapourFluxSum">
-						<!--
-						<parameter name="toAdd" value="(side1/cover/condensation side2/cover/condensation end1/cover/condensation end2/cover/condensation)"/>
-						-->
-						<parameter name="toAdd" value="(construction/energyflux/coverCondensation)"/>
-					</model>
-					<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
-						<parameter name="airFlux" ref="bottom/airflux/outdoors[value]"/>
-						<parameter name="receiverAh" ref="indoors/humidity[ah]"/> 
-						<parameter name="donorAh" ref="outdoors[ah]"/> 
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="airFluxIndoors"  type="vg::VapourFluxAir">
-						<parameter name="airFlux" ref="bottom/airFlux/indoors[value]"/>
-						<parameter name="receiverAh" ref="indoors/humidity[ah]"/> 
-						<parameter name="donorAh" ref="indoors/top/humidity[ah]"/> 
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
+				<model name="airFluxOutdoors" type="vg::EnergyFluxAir">
+					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
+					<parameter name="receiverTemperature" ref="indoors/temperature[value]"/> 
+					<parameter name="donorTemperature" ref="outdoors[temperature]"/>
+					<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
 				</model>
-				
-				<model name="energyFlux" type="vg::EnergyFluxSum"> 
-					<!--
-					<model name="transpiration" type="vg::EnergyFluxTranspiration"/> 
-					-->
-					<model name="condensation" type="vg::EnergyFluxCondensation"/> 
-					<model name="growthLights" type="vg::PidControlElement">
-						<parameter name="Kprop" value="0.5"/>
-						<parameter name="signal" ref="./growthLights[value]"/>
-						<model name="growthLights" type="vg::EnergyFluxGrowthLights"/>
-					</model>
-					<model name="airFluxOutdoors" type="vg::EnergyFluxAir">
-						<parameter name="airFlux" ref="bottom/airflux/outdoors[value]"/>
-						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/> 
-						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-						<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="airFluxIndoors" type="vg::EnergyFluxAir">
-						<parameter name="airFlux" ref="bottom/airFlux/indoors[value]"/>
-						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/> 
-						<parameter name="donorTemperature" ref="indoors/top/temperature[value]"/>
-						<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
-						<parameter name="donorHeight" ref="geometry[roofMarginAverageHeight]"/>
-					</model>
-					<model name="convection" type="vg::EnergyFluxHorizontal">
-						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/> 
-						<parameter name="donorTemperature" ref="indoors/top/temperature[value]"/>
-					</model>
-					<model name="cover" type="UniSim::Sum"> 
-						<parameter name="toAdd" value="(construction/energyFlux[value])"/>
-					</model>					
-					<!--
-					<model name="cover" type="vg::EnergyFluxCoverSum"> 
-						<parameter name="toAdd" value="(side1/cover/energyFlux side2/cover/energyFlux end1/cover/energyFlux end2/cover/energyFlux)"/>
-					</model>					
-					-->
-					<model name="crop" type="UniSim::Sum">
-						<parameter name="toAdd" value="(crop/energyFlux[value])"/>
-					</model>					
-					<!-- NB! growth lights -->
-					<!--
-					<model name="light" type="UniSim::Sum">
-						<parameter name="toAdd" value="(indoors/light[total])"/>
-					</model>					
-					-->
-					<model name="floor" type="UniSim::Sum">
-						<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
-					</model>
-				</model>		
-			</model>
+				<model name="cover" type="UniSim::Sum"> 
+					<parameter name="toAdd" value="(construction/energyFlux[value])"/>
+				</model>					
+				<model name="crop" type="UniSim::Sum">
+					<parameter name="toAdd" value="(crop/energyFlux[value])"/>
+				</model>					
+				<model name="floor" type="UniSim::Sum">
+					<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
+				</model>
+			</model>		
 		</model> <!-- given -->		
 
 		<model name="controlled">
-			<model name="bottom">
-				<model name="energyFlux"> 
-					<model name="heating">
-						<model name="demand" type="vg::EnergyFluxHeatingDemand"/>
-						<model name="supply" type="vg::PidControlElement">
-							<parameter name="Kprop" value="0.6"/>
-							<parameter name="Kint" value="0.01"/>
-							<parameter name="signal" ref="./supply[value]"/>
-							<model name="supply" type="vg::EnergyFluxHeatingSupply">
-								<parameter name="maxHeating" value="10000"/>
-							</model>
-						</model>				
-					</model>		
-					
-					<model name="temperature" type="vg::IndoorsTemperature">
-						<model name="energyFlux" type="Unisim::Sum">
-							<parameter name="toAdd" value="(given/bottom/energyFlux[value] energyFlux/heating/supply[value])"/>
+			<model name="energyFlux"> 
+				<model name="heating">
+					<model name="demand" type="vg::EnergyFluxHeatingDemand"/>
+					<model name="supply" type="vg::PidControlElement">
+						<parameter name="Kprop" value="0.6"/>
+						<parameter name="Kint" value="0.01"/>
+						<parameter name="signal" ref="./supply[value]"/>
+						<model name="supply" type="vg::EnergyFluxHeatingSupply">
+							<parameter name="maxHeating" value="10000"/>
 						</model>
-						<parameter name="energyFlux" ref="./energyFlux[value]"/>
-						<parameter name="baseTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/> 
+					</model>				
+				</model>		
+				
+				<model name="temperature" type="vg::IndoorsTemperature">
+					<model name="energyFlux" type="Unisim::Sum">
+						<parameter name="toAdd" value="(given/energyFlux[value] energyFlux/heating/supply[value])"/>
 					</model>
+					<parameter name="energyFlux" ref="./energyFlux[value]"/>
+					<parameter name="baseTemperature" ref="indoors/temperature[value]"/>
+					<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/> 
+				</model>
 
-					<model name="cooling"> 
-						<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
-						<model name="airSupplyMax" type="vg::AirFluxCoolingSupplyMax">
-							<model name="byWind" type="vg::VentilationByWind">
-								<parameter name="baseRate" value="30"/>
-							</model>
-							<model name="byTemp" type="vg::VentilationByTemp"/>
+				<model name="cooling"> 
+					<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
+					<model name="airSupplyMax" type="vg::AirFluxCoolingSupplyMax">
+						<model name="byWind" type="vg::VentilationByWind">
+							<parameter name="baseRate" value="30"/>
 						</model>
-						<model name="supply" type="vg::PidControlElement">
-							<parameter name="Kprop" value="0.5"/>
-							<parameter name="maximum" value="0"/>
-							<parameter name="signal" ref="./target[value]"/>
-							<model name="target" type="vg::EnergyFluxCoolingSupply">
-								<parameter name="airSupplyMax" ref="cooling/airSupplyMax[value]"/>
-							</model>
+						<model name="byTemp" type="vg::VentilationByTemp"/>
+					</model>
+					<model name="supply" type="vg::PidControlElement">
+						<parameter name="Kprop" value="0.5"/>
+						<parameter name="maximum" value="0"/>
+						<parameter name="signal" ref="./target[value]"/>
+						<model name="target" type="vg::EnergyFluxCoolingSupply">
+							<parameter name="airSupplyMax" ref="cooling/airSupplyMax[value]"/>
 						</model>
-					</model>
-					
-				</model> <!-- energyFlux -->
-
-				<model name="cooling">
-					<model name="airFlux" type="vg::AirFluxCoolingSupply"/>
-					<model name="vapourFlux" type="vg::VapourFluxAir">
-						<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
-						<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
-						<parameter name="donorAh" ref="outdoors[ah]"/>
-						<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-					</model>
-					<model name="energyFlux" type="vg::EnergyFluxAir">
-						<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
-						<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
-						<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-						<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
 					</model>
 				</model>
-			</model> <!-- bottom -->
-			
-			<model name="top">
+			</model> <!-- energyFlux -->
+
+			<model name="cooling">
+				<model name="airFlux" type="vg::AirFluxCoolingSupply"/>
 				<model name="vapourFlux" type="vg::VapourFluxAir">
-					<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToTop]"/>
-					<parameter name="receiverAh" ref="indoors/top/humidity[ah]"/>
+					<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
+					<parameter name="receiverAh" ref="indoors/humidity[ah]"/>
 					<parameter name="donorAh" ref="outdoors[ah]"/>
-					<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
+					<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 				</model>
 				<model name="energyFlux" type="vg::EnergyFluxAir">
-					<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToTop]"/>
-					<parameter name="receiverTemperature" ref="indoors/top/temperature[value]"/>
+					<parameter name="airFlux" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
+					<parameter name="receiverTemperature" ref="indoors/temperature[value]"/>
 					<parameter name="donorTemperature" ref="outdoors[temperature]"/>
-					<parameter name="receiverHeight" ref="geometry[roofMarginAverageHeight]"/>
+					<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
 				</model>
-			</model> <!-- top -->
+			</model>
 		</model> <!-- controlled -->
 		
 		<model name="total">
-			<model name="bottom">
-				<model name="airFlux" type="Unisim::Sum">
-					<parameter name="toAdd" value="(given/bottom/airFlux/outdoors[value] bottom/cooling/airFlux[fromOutdoorsToIndoors])"/>
-				</model>
-				<model name="vapourFlux" type="vg::VapourFluxSum">
-					<parameter name="toAdd" value="(given/bottom/vapourFlux bottom/cooling/vapourFlux)"/>
-				</model>
-				<model name="energyFlux" type="Unisim::Sum">
-					<parameter name="toAdd" value="(given/bottom/energyFlux[value] bottom/energyFlux/heating/supply[value] bottom/cooling/energyFlux[value])"/>
-				</model>
+			<model name="airFlux" type="Unisim::Sum">
+				<parameter name="toAdd" value="(given/airFlux/outdoors[value] cooling/airFlux[fromOutdoorsToIndoors])"/>
 			</model>
-			<model name="top">
-				<model name="airFlux" type="Unisim::Sum">
-					<parameter name="toAdd" value="(given/top/airFlux/outdoors[value] bottom/cooling/airFlux[fromOutdoorsToTop])"/>
-				</model>
-				<model name="vapourFlux" type="vg::VapourFluxSum">
-					<parameter name="toAdd" value="(given/top/vapourFlux controlled/top/vapourFlux)"/>
-				</model>
-				<model name="energyFlux" type="Unisim::Sum">
-					<parameter name="toAdd" value="(given/top/energyFlux[value] controlled/top/energyFlux[value])"/>
-				</model>
+			<model name="vapourFlux" type="vg::VapourFluxSum">
+				<parameter name="toAdd" value="(given/vapourFlux cooling/vapourFlux)"/>
+			</model>
+			<model name="energyFlux" type="Unisim::Sum">
+				<parameter name="toAdd" value="(given/energyFlux[value] energyFlux/heating/supply[value] cooling/energyFlux[value])"/>
 			</model>
 		</model> <!-- total -->
-
-		<model name="top">
-			<model name="temperature" type="vg::IndoorsTemperature">
-				<parameter name="initValue">
-					<xsl:attribute name="value">
-						<xsl:value-of select="//Setpoint[ParameterId='2']//SetpointValue"/>
-					</xsl:attribute>
-				</parameter> 
-				<parameter name="energyFlux" ref="total/top/energyFlux[value]"/> <!-- FIX -->
-				<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
-			</model>
-			<model name="humidity" type="vg::IndoorsHumidity">
-				<parameter name="conductance" ref="total/top/vapourFlux[conductance]"/>
-				<parameter name="vapourFlux" ref="total/top/vapourFlux[vapourFlux]"/>
-				<parameter name="gain" ref="total/top/vapourFlux[gain]"/>
-				<parameter name="temperature" ref="../temperature[value]"/>
-				<parameter name="averageHeight" ref="geometry[roofMarginAverageHeight]"/>
-			</model>
-			<model name="co2"/>
-		</model> <!-- top -->
 
 		<model name="light" type="vg::IndoorsLight"/> 
 		<model name="temperature" type="vg::IndoorsTemperature">
@@ -901,13 +745,13 @@
 					<xsl:value-of select="//Setpoint[ParameterId='2']//SetpointValue"/>
 				</xsl:attribute>
 			</parameter> 
-			<parameter name="energyFlux" ref="total/bottom/energyFlux[value]"/>
+			<parameter name="energyFlux" ref="total/energyFlux[value]"/>
 			<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/> 
 		</model>
 		<model name="humidity" type="vg::IndoorsHumidity">
-			<parameter name="conductance" ref="total/bottom/vapourFlux[conductance]"/>
-			<parameter name="vapourFlux" ref="total/bottom/vapourFlux[vapourFlux]"/>
-			<parameter name="gain" ref="total/bottom/vapourFlux[gain]"/>
+			<parameter name="conductance" ref="total/vapourFlux[conductance]"/>
+			<parameter name="vapourFlux" ref="total/vapourFlux[vapourFlux]"/>
+			<parameter name="gain" ref="total/vapourFlux[gain]"/>
 			<parameter name="temperature" ref="../temperature[value]"/>
 			<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 		</model>
@@ -1668,27 +1512,13 @@
 		<trace label="air_bottom" value="total/bottom/airFlux[value]"/>
 		<trace label="air_gravi" value="airFlux/gravitation[value]"/>
 
-		<trace label="top_energy_total" ref="total/top/energyFlux[value]"/>
-		<trace label="top_cond" ref="given/top/energyFlux/condensation[value]"/>
-		<trace label="top_air_outdoors1" ref="given/top/energyFlux/airFluxOutdoors[value]"/>
-		<trace label="top_air_outdoors2" ref="controlled/top/energyFlux[value]"/>
-		<trace label="top_air_indoors" ref="given/top/energyFlux/airFluxIndoors[value]"/>
-		<trace label="top_air_conv" ref="given/top/energyFlux/convection[value]"/>
-		<trace label="top_cover" ref="given/top/energyFlux/cover[value]"/>
-		<trace label="top_light" ref="given/top/energyFlux/light[value]"/>
-
-		<trace label="bottom_energy_total" ref="total/bottom/energyFlux[value]"/>
-		<trace label="bottom_cond" ref="given/bottom/energyFlux/condensation[value]"/>
-		<trace label="bottom_air_outdoors1" ref="given/bottom/energyFlux/airFluxOutdoors[value]"/>
-		<trace label="bottom_air_outdoors2" ref="bottom/cooling/energyFlux[value]"/>
-		<trace label="bottom_air_indoors" ref="given/bottom/energyFlux/airFluxIndoors[value]"/>
-		<trace label="bottom_conv" ref="given/bottom/energyFlux/convection[value]"/>
-		<trace label="bottom_cover" ref="given/bottom/energyFlux/cover[value]"/>
-		<trace label="bottom_light" ref="given/bottom/energyFlux/light[value]"/>
-
-		<trace label="bottom_trans" ref="given/bottom/energyFlux/transpiration[value]"/>
-		<trace label="bottom_heat" ref="bottom/energyFlux/heating/supply[value]"/>
-		<trace label="bottom_floor" ref="given/bottom/energyFlux/floor[value]"/>
+		<trace label="giv_eflux_sum" ref="total/energyFlux[value]"/>
+		<trace label="giv_eflux_cond" ref="given/energyFlux/condensation[value]"/>
+		<trace label="giv_eflux_lamp" ref="given/energyFlux/growthLights[value]"/>
+		<trace label="giv_eflux_out" ref="given/energyFlux/airFluxOutdoors[value]"/>
+		<trace label="giv_eflux_cover" ref="given/energyFlux/cover[value]"/>
+		<trace label="giv_eflux_crop" ref="given/energyFlux/crop[value]"/>
+		<trace label="giv_eflux_floor" ref="given/energyFlux/floor[value]"/>
 
 		<trace label="cooling_indoors" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
 		<trace label="cooling_top" ref="cooling/airFlux[fromOutdoorsToTop]"/>

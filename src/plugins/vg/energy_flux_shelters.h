@@ -26,7 +26,7 @@ private:
         lightAbsorbedCover, lightAbsorbedScreens,
         heatCapacityCover, heatCapacityScreens,
         timeStep, averageHeight,
-//     coverPerGroundArea, relativeShelterArea,
+        coverPerGroundArea,
         indoorsTemperature, skyTemperature, outdoorsTemperature,
 //        maxState,
         cropTemperatureTop, cropTemperatureMiddle, cropTemperatureBottom;

@@ -20,14 +20,10 @@ public:
 
 private:
     // Inputs
-    double infiltration, ventilation, volumeProportion, transmissivity;
-    bool useNotTransmitted;
+    double infiltration, ventilation, transmissivity;
 
     // Outputs
     double value;
-
-    // Data
-    double bottomProp;
 };
 } //namespace
 

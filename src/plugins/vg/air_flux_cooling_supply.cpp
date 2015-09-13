@@ -40,15 +40,13 @@ AirFluxCoolingSupply::AirFluxCoolingSupply(Identifier name, QObject *parent)
     InputRef(double, energyFlux, "energyFlux/cooling/supply[state]");
     InputRef(double, airSupplyMax, "cooling/airSupplyMax[value]");
     InputRef(double, bottomHeight, "geometry[indoorsAverageHeight]");
-    InputRef(double, topHeight, "geometry[roofMarginAverageHeight]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     Output(double, fromOutdoorsToIndoors);
-    Output(double, fromOutdoorsToTop);
 }
 
 void AirFluxCoolingSupply::reset() {
-    fromOutdoorsToIndoors = fromOutdoorsToTop = 0;
+    fromOutdoorsToIndoors =  0;
 }
 
 void AirFluxCoolingSupply::update() {
@@ -59,10 +57,9 @@ void AirFluxCoolingSupply::update() {
         // h-1 = W/m2 / (W*h/m2/K) / K = W/m2 * K*m2/(W*h) / K
         fromOutdoorsToIndoors = min(energyFlux/C/dT, airSupplyMax);
         Q_ASSERT(fromOutdoorsToIndoors >= 0.);
-        fromOutdoorsToTop = fromOutdoorsToIndoors;
     }
     else {
-        fromOutdoorsToIndoors = fromOutdoorsToTop = 0;
+        fromOutdoorsToIndoors = 0;
     }
 }
 

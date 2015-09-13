@@ -32,7 +32,7 @@ PUBLISH(EnergyFluxHeatingDemand)
 EnergyFluxHeatingDemand::EnergyFluxHeatingDemand(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, passiveEnergyFlux, "given/bottom/energyFlux[value]");
+    InputRef(double, passiveEnergyFlux, "given/energyFlux[value]");
     InputRef(double, heatingSetpoint, "setpoints/temperature/heating[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");

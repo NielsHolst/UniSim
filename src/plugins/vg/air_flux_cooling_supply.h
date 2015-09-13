@@ -19,9 +19,9 @@ public:
     void update();
 private:
     // Inputs;
-    double energyFlux, airSupplyMax, indoorsTemperature, outdoorsTemperature, bottomHeight, topHeight;
+    double energyFlux, airSupplyMax, indoorsTemperature, outdoorsTemperature, bottomHeight;
     // Outputs
-    double fromOutdoorsToIndoors, fromOutdoorsToTop;
+    double fromOutdoorsToIndoors;
 };
 } //namespace
 

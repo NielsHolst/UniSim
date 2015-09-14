@@ -4,30 +4,27 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_ENERGY_FLUX_FLOOR_H
-#define VG_ENERGY_FLUX_FLOOR_H
+#ifndef VG_FLOOR_RADIATION_ABSORBED_H
+#define VG_FLOOR_RADIATION_ABSORBED_H
 
-#include "energy_flux_base.h"
+#include <usbase/model.h>
 
 namespace vg {
 
-class EnergyFluxFloor : public EnergyFluxBase
+class FloorRadiationAbsorbed : public UniSim::Model
 {
 public:
-    EnergyFluxFloor(UniSim::Identifier name, QObject *parent);
+    FloorRadiationAbsorbed(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
-
 private:
     // Inputs
-    double U, heatCapacity,
-        radiationAbsorbed,
-        indoorsTemperature, soilTemperature,
-        averageHeight, timeStep;
-    // Outputs
-    double temperature;
-};
-} //namespace
+    double outdoorsRadiation, cropRadiationAbsorbed;
 
+    // Outputs
+    double value;
+};
+
+} //namespace
 
 #endif

@@ -128,6 +128,11 @@ plot11 = function(U,from=0, to=366) {
 		ncol=3
 	)	
 }
+
+# windows(14,10)
+# V = transform(U, d_heat_flux=c(diff(U$heat_flux, differences=2), NA, NA))
+# freq1(V, "d_heat_flux")
+
  
 U = read_unisim("dvv_unisim_0001.txt")
 windows(14,10)

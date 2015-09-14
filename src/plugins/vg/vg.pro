@@ -31,7 +31,6 @@ HEADERS += \
     crop_radiation.h \
     crop_yield.h \
     date_time_signal.h \
-    energetics.h \
     energy_flux_air.h \
     energy_flux_base.h \
     energy_flux_condensation.h \
@@ -48,6 +47,7 @@ HEADERS += \
     energy_flux_transpiration.h \
     energy_screen_balance_signal.h \
     fixed_signal.h \
+    floor_radiation_absorbed.h \
     fruit_crop_lai.h \
     fruit_crop_mass.h \
     fruit_factor.h \
@@ -120,7 +120,6 @@ SOURCES += \
     crop_radiation.cpp \
     crop_yield.cpp \
     date_time_signal.cpp \
-    energetics.cpp \
     energy_flux_air.cpp \
     energy_flux_base.cpp \
     energy_flux_condensation.cpp \
@@ -137,6 +136,7 @@ SOURCES += \
     energy_flux_transpiration.cpp \
     energy_screen_balance_signal.cpp \
     fixed_signal.cpp \
+    floor_radiation_absorbed.cpp \
     fruit_crop_lai.cpp \
     fruit_crop_mass.cpp \
     fruit_factor.cpp \

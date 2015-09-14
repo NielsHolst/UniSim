@@ -559,24 +559,7 @@
 				</model>
 			</xsl:for-each>
 		</model>
-		
-		<model name="floor">
-			<model name="energyFlux" type="vg::EnergyFluxFloor"> 
-				<parameter name="U">
-					<xsl:attribute name="value">
-						<xsl:value-of select="$FloorU"/>
-					</xsl:attribute>
-				</parameter>
-				<parameter name="heatCapacity">
-					<xsl:attribute name="value">
-						<xsl:value-of select="$FloorHeatCapacity"/>
-					</xsl:attribute>
-				</parameter>
-			</model>
-		</model>
 	</model>
-
-	<model name="energetics" type="vg::Energetics"/>
 	
 	<model name="indoors">
 		<model name="given">
@@ -657,8 +640,18 @@
 				</model>
 				<model name="shelter" type="vg::EnergyFluxShelters"/>
 				<model name="crop" type="vg::EnergyFluxCrop"/>
-				<model name="floor" type="UniSim::Sum">
-					<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
+				<model name="floor" type="vg::EnergyFluxFloor"> 
+					<model name="radiationAbsorbed" type="vg::FloorRadiationAbsorbed"/>
+					<parameter name="U">
+						<xsl:attribute name="value">
+							<xsl:value-of select="$FloorU"/>
+						</xsl:attribute>
+					</parameter>
+					<parameter name="heatCapacity">
+						<xsl:attribute name="value">
+							<xsl:value-of select="$FloorHeatCapacity"/>
+						</xsl:attribute>
+					</parameter>
 				</model>
 			</model>		
 		</model> <!-- given -->		
@@ -1444,7 +1437,7 @@
 			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[heatingAbsorbed] layers/middle/radiationAbsorbed[heatingAbsorbed] layers/bottom/radiationAbsorbed[heatingAbsorbed])"/>
 		</model>
 
-		<model name="lightAbsorbed" type="Unisim::Sum">
+		<model name="radiationAbsorbed" type="Unisim::Sum">
 			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[lightAbsorbed] layers/middle/radiationAbsorbed[lightAbsorbed] layers/bottom/radiationAbsorbed[lightAbsorbed])"/>
 		</model>
 

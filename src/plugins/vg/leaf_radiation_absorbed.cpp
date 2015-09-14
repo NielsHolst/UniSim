@@ -37,40 +37,46 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, wGaussLowerside, "..[wGaussLowerside]");
     InputRef(double, xGaussUpperside, "..[xGaussUpperside]");
     InputRef(double, wGaussUpperside, "..[wGaussUpperside]");
-    InputRef(double, lai, "crop/lai[lai]");
+    InputRef(double, lai, "crop/lai[value]");
     InputRef(double, indoorsLight, "indoors/light[total]");
     InputRef(double, lightAbsorptivity, "../photosynthesis[absorptivity]");
     InputRef(double, heating, "heating/supply[value]");
     InputRef(double, growthLightLight, "actuators/growthlights[shortWaveEmission]");
     InputRef(double, growthLightIr, "actuators/growthlights[longWaveEmission]");
-    InputRef(double, temperature, "../temperature[value]");
-
-    InputRef(double, radiationFluxCropTop, "construction/energyFlux[radiationFluxCropTop]");
-    InputRef(double, radiationFluxCropMiddle, "construction/energyFlux[radiationFluxCropMiddle]");
-    InputRef(double, radiationFluxCropBottom, "construction/energyFlux[radiationFluxCropBottom]");
+    InputRef(double, leafTemperature, "../temperature[value]");
+    InputRef(double, coverTemperature, "given/energyFlux/shelter[coverTemperature]");
+    InputRef(double, screensTemperature, "given/energyFlux/shelter[screensTemperature]");
+    InputRef(double, screensMaxState, "construction/shelters[screensMaxState]");
+    InputRef(double, shelterOutgoingIrAbsorptivity, "construction/shelters[outgoingIrAbsorptivity]");
+    InputRef(double, coverPerGroundArea, "construction/geometry[coverPerGroundArea]");
 
     Output(double, lightAbsorbed);
     Output(double, heatingAbsorbed);
     Output(double, growthLightIrAbsorbed);
+    Output(double, shelterLoss);
     Output(double, value);
 }
-
 void LeafRadiationAbsorbed::reset() {
     lightAbsorbed =
     heatingAbsorbed =
     growthLightIrAbsorbed =
+    shelterLoss =
     value = 0.;
 }
 
 void LeafRadiationAbsorbed::update() {
     double
         irAbsorptivityLowerside = kIr*exp(-kIr*lai*xGaussLowerside)*wGaussLowerside*lai,
-        irAbsorptivityUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai;
+        irAbsorptivityUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai,
+        em = jointEmissivity(shelterOutgoingIrAbsorptivity, irAbsorptivityUpperside),
+        shelterTemperature = screensTemperature*screensMaxState + coverTemperature*(1-screensMaxState);
+
     lightAbsorbed = lightAbsorptivity*(indoorsLight + growthLightLight);
     heatingAbsorbed = heating*irAbsorptivityLowerside;
     growthLightIrAbsorbed = growthLightIr*irAbsorptivityUpperside;
-    value = lightAbsorbed + heatingAbsorbed + growthLightIrAbsorbed -
-            radiationFluxCropTop - radiationFluxCropMiddle - radiationFluxCropBottom;
+    shelterLoss = Sigma*em*(p4K(leafTemperature) - p4K(shelterTemperature))*coverPerGroundArea;
+
+    value = lightAbsorbed + heatingAbsorbed + growthLightIrAbsorbed - shelterLoss;
 }
 
 } //namespace

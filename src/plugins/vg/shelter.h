@@ -25,13 +25,17 @@ private:
         roofArea, sideWallsArea, endWallsArea, gablesArea, groundArea,
         outdoorsDirectRadiation, outdoorsDiffuseRadiation;
 
+    // Inputs = Outputs
+    double screensMaxState;
+
     // Outputs
     double area, relativeArea, areaPerGround;
 
     // Data
     const double
         *pCoverU, *pCoverHaze,
-        *pScreensU, *pScreensHaze,
+//        *pScreensU,
+        *pScreensHaze,
         *pScreensAirTransmission;
 
     struct Light {

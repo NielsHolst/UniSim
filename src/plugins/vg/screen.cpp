@@ -5,6 +5,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <usbase/exception.h>
+#include "general.h"
 #include "publish.h"
 #include "screen.h"
 
@@ -53,7 +54,7 @@ Screen::Screen(Identifier name, QObject *parent)
     Input(double, transmissivityLight, 0.41);
     Input(double, emissivityInner, 0.62);
     Input(double, emissivityOuter, 0.06);
-    Input(double, U50, 2.5);
+    Input(double, U50, infinity());
     Input(double, energyLossReduction, 0.4);
     Input(double, haze, 0.);
     Input(double, specificHeatCapacity, 840.);

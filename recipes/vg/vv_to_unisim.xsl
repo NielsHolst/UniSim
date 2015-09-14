@@ -33,8 +33,7 @@
 <xsl:variable name="CoverHaze" select="0"/>  					<!-- [0;1] -->
 <xsl:variable name="CoverHeatCapacity" select="8736"/>		<!-- Heat capacity [J/m2/K] -->
 																<!-- density*specHeatCapacity*thickness/1000  = 2600 kg/m3 * 840 J/kg/K * 4 mm *m/mm  -->
-<xsl:variable name="ScreenU50" select="2.5"/>					<!-- [W/m2/K] -->
-<xsl:variable name="ScreenHaze" select="0"/>					<!-- [0;1] -->
+<xsl:variable name="ScreenHaze" select="0.8"/>				<!-- [0;1] -->
 <xsl:variable name="ScreenEmissivityInner" select="0.62"/>	<!-- [0;1] -->
 <xsl:variable name="ScreenEmissivityOuter" select="0.06"/>	<!-- [0;1] -->
 
@@ -241,11 +240,13 @@
 			<xsl:value-of select="Constants/Parameters[ParameterID='33']/Value div 100"/>
 		</xsl:attribute>
 	</parameter>
+	<!-- Use default value
 	<parameter name="U50">
 		<xsl:attribute name="value">
 			<xsl:value-of select="$ScreenU50"/>
 		</xsl:attribute>
 	</parameter>
+	-->
 	<parameter name="haze">
 		<xsl:attribute name="value">
 			<xsl:value-of select="$ScreenHaze"/>
@@ -573,12 +574,6 @@
 				</parameter>
 			</model>
 		</model>
-		<model name="energyFlux" type="vg::EnergyFluxShelters">
-			<model name="coverCondensation" type="vg::CoverCondensation">
-				<parameter name="coverArea" ref ="geometry[coverArea]"/>
-				<parameter name="coverTemperature" ref ="..[coverTemperature]"/>
-			</model>
-		</model>
 	</model>
 
 	<model name="energetics" type="vg::Energetics"/>
@@ -631,8 +626,9 @@
 
 			<model name="vapourFlux" type="vg::VapourFluxSum"> 
 				<model name="transpiration" type="vg::VapourFluxTranspiration"/>
-				<model name="condensation" type="vg::VapourFluxSum">
-					<parameter name="toAdd" value="(construction/energyflux/coverCondensation)"/>
+				<model name="condensation" type="vg::CoverCondensation">
+					<parameter name="coverArea" ref ="geometry[coverArea]"/>
+					<parameter name="coverTemperature" ref ="energyFlux/shelter[coverTemperature]"/>
 				</model>
 				<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
 					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
@@ -643,7 +639,11 @@
 			</model>
 			
 			<model name="energyFlux" type="vg::EnergyFluxSum"> 
-				<model name="condensation" type="vg::EnergyFluxCondensation"/> 
+				<!-- Transpiration energy flux is already included as it is part of the leaf energy budget (see LeafTemperature). 
+					 If included it causes a 6-fold increase in yearly heating energy expenditure.
+				<model name="transpiration" type="vg::EnergyFluxTranspiration"/> 
+				-->
+				<model name="condensation" type="vg::EnergyFluxCondensation"/>
 				<model name="growthLights" type="vg::PidControlElement">
 					<parameter name="Kprop" value="0.5"/>
 					<parameter name="signal" ref="./growthLights[value]"/>
@@ -655,12 +655,8 @@
 					<parameter name="donorTemperature" ref="outdoors[temperature]"/>
 					<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
 				</model>
-				<model name="cover" type="UniSim::Sum"> 
-					<parameter name="toAdd" value="(construction/energyFlux[value])"/>
-				</model>					
-				<model name="crop" type="UniSim::Sum">
-					<parameter name="toAdd" value="(crop/energyFlux[value])"/>
-				</model>					
+				<model name="shelter" type="vg::EnergyFluxShelters"/>
+				<model name="crop" type="vg::EnergyFluxCrop"/>
 				<model name="floor" type="UniSim::Sum">
 					<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
 				</model>
@@ -1448,10 +1444,10 @@
 			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[heatingAbsorbed] layers/middle/radiationAbsorbed[heatingAbsorbed] layers/bottom/radiationAbsorbed[heatingAbsorbed])"/>
 		</model>
 
-		<model name="energyFlux" type="Unisim::Sum">
-			<parameter name="toAdd" value="(layers/top/temperature[energyFlux] layers/middle/temperature[energyFlux] layers/bottom/temperature[energyFlux])"/>
+		<model name="lightAbsorbed" type="Unisim::Sum">
+			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[lightAbsorbed] layers/middle/radiationAbsorbed[lightAbsorbed] layers/bottom/radiationAbsorbed[lightAbsorbed])"/>
 		</model>
-		
+
 		<model name="conductance" type="Unisim::Average">
 			<parameter name="inputs"  value="(layers/top/transpiration[conductance] layers/middle/transpiration[conductance] layers/bottom/transpiration[conductance])"/> 
 		</model>	
@@ -1512,11 +1508,11 @@
 		<trace label="air_bottom" value="total/bottom/airFlux[value]"/>
 		<trace label="air_gravi" value="airFlux/gravitation[value]"/>
 
-		<trace label="giv_eflux_sum" ref="total/energyFlux[value]"/>
+		<trace label="giv_eflux_sum" ref="given/energyFlux[value]"/>
 		<trace label="giv_eflux_cond" ref="given/energyFlux/condensation[value]"/>
 		<trace label="giv_eflux_lamp" ref="given/energyFlux/growthLights[value]"/>
 		<trace label="giv_eflux_out" ref="given/energyFlux/airFluxOutdoors[value]"/>
-		<trace label="giv_eflux_cover" ref="given/energyFlux/cover[value]"/>
+		<trace label="giv_eflux_shelter" ref="given/energyFlux/shelter[value]"/>
 		<trace label="giv_eflux_crop" ref="given/energyFlux/crop[value]"/>
 		<trace label="giv_eflux_floor" ref="given/energyFlux/floor[value]"/>
 
@@ -1580,7 +1576,7 @@
 		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
 		<trace label="act_scr_bl" value="actuators/screens/blackout/control[state]"/>
 
-		<trace label="LAI" value="crop/lai[lai]"/>
+		<trace label="LAI" value="crop/lai[value]"/>
 		<trace label="temp_top" ref="layers/top/temperature[value]"/>
 		<trace label="temp_mid" ref="layers/middle/temperature[value]"/>
 		<trace label="temp_bot" ref="layers/bottom/temperature[value]"/>

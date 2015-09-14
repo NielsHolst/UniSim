@@ -17,7 +17,10 @@ public:
     CropLai(UniSim::Identifier name, QObject *parent);
     void reset();
 protected:
-    double lai, laiStartPerPlant;
+    // Inputs
+    double laiStartPerPlant, fractionPlantArea;
+    // Outputs
+    double value;
 };
 } //namespace
 

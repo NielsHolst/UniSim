@@ -54,8 +54,7 @@
 						<parameter name="transmissivityLight" value="0.34"/>
 						<parameter name="transmissivityAir" value="0.37"/>
 						<parameter name="energyLossReduction" value="0.6"/>
-						<parameter name="U50" value="2.5"/>
-						<parameter name="haze" value="0"/>
+						<parameter name="haze" value="0.8"/>
 						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
 					</model>
 				</model>
@@ -78,8 +77,7 @@
 						<parameter name="transmissivityLight" value="0.34"/>
 						<parameter name="transmissivityAir" value="0.37"/>
 						<parameter name="energyLossReduction" value="0.6"/>
-						<parameter name="U50" value="2.5"/>
-						<parameter name="haze" value="0"/>
+						<parameter name="haze" value="0.8"/>
 						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
 					</model>
 				</model>
@@ -102,8 +100,7 @@
 						<parameter name="transmissivityLight" value="0.41"/>
 						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
-						<parameter name="haze" value="0"/>
+						<parameter name="haze" value="0.8"/>
 						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
 					</model>
 				</model>
@@ -126,8 +123,7 @@
 						<parameter name="transmissivityLight" value="0.41"/>
 						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
-						<parameter name="haze" value="0"/>
+						<parameter name="haze" value="0.8"/>
 						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
 					</model>
 				</model>
@@ -150,8 +146,7 @@
 						<parameter name="transmissivityLight" value="0.41"/>
 						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
-						<parameter name="haze" value="0"/>
+						<parameter name="haze" value="0.8"/>
 						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
 					</model>
 				</model>
@@ -174,8 +169,7 @@
 						<parameter name="transmissivityLight" value="0.41"/>
 						<parameter name="transmissivityAir" value="0.45"/>
 						<parameter name="energyLossReduction" value="0.55"/>
-						<parameter name="U50" value="2.5"/>
-						<parameter name="haze" value="0"/>
+						<parameter name="haze" value="0.8"/>
 						<parameter name="state" ref="actuators/screens/energy/control[state]"/>
 					</model>
 				</model>
@@ -199,12 +193,6 @@
 			<model name="energyFlux" type="vg::EnergyFluxFloor">
 				<parameter name="U" value="7.5"/>
 				<parameter name="heatCapacity" value="42000"/>
-			</model>
-		</model>
-		<model name="energyFlux" type="vg::EnergyFluxShelters">
-			<model name="coverCondensation" type="vg::CoverCondensation">
-				<parameter name="coverArea" ref="geometry[coverArea]"/>
-				<parameter name="coverTemperature" ref="..[coverTemperature]"/>
 			</model>
 		</model>
 	</model>
@@ -243,8 +231,9 @@
 			</model>
 			<model name="vapourFlux" type="vg::VapourFluxSum">
 				<model name="transpiration" type="vg::VapourFluxTranspiration"/>
-				<model name="condensation" type="vg::VapourFluxSum">
-					<parameter name="toAdd" value="(construction/energyflux/coverCondensation)"/>
+				<model name="condensation" type="vg::CoverCondensation">
+					<parameter name="coverArea" ref="geometry[coverArea]"/>
+					<parameter name="coverTemperature" ref="energyFlux/shelter[coverTemperature]"/>
 				</model>
 				<model name="airFluxOutdoors" type="vg::VapourFluxAir">
 					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
@@ -266,12 +255,8 @@
 					<parameter name="donorTemperature" ref="outdoors[temperature]"/>
 					<parameter name="receiverHeight" ref="geometry[indoorsAverageHeight]"/>
 				</model>
-				<model name="cover" type="UniSim::Sum">
-					<parameter name="toAdd" value="(construction/energyFlux[value])"/>
-				</model>
-				<model name="crop" type="UniSim::Sum">
-					<parameter name="toAdd" value="(crop/energyFlux[value])"/>
-				</model>
+				<model name="shelter" type="vg::EnergyFluxShelters"/>
+				<model name="crop" type="vg::EnergyFluxCrop"/>
 				<model name="floor" type="UniSim::Sum">
 					<parameter name="toAdd" value="(construction/floor/energyFlux[value])"/>
 				</model>
@@ -705,7 +690,6 @@
 	<!--Tomato model-->
 	<model name="crop" type="vg::Crop">
 		<parameter name="density" value="3.9"/>
-		<parameter name="fractionPlantArea" value="0.9"/>
 		<!--Tomato periods-->
 		<model name="periods" type="vg::SignalCollection">
 			<model type="vg::DateTimeSignal">
@@ -723,6 +707,7 @@
 		<model name="lai" type="vg::FruitCropLai">
 			<parameter name="laiStartPerPlant" value="0.385"/>
 			<parameter name="maxLai" value="3.5"/>
+			<parameter name="fractionPlantArea" value="0.9"/>
 		</model>
 		<model name="layers">
 			<model name="top" type="vg::Layer">
@@ -774,9 +759,6 @@
 		</model>
 		<model name="heatingAbsorbed" type="Unisim::Sum">
 			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[heatingAbsorbed] layers/middle/radiationAbsorbed[heatingAbsorbed] layers/bottom/radiationAbsorbed[heatingAbsorbed])"/>
-		</model>
-		<model name="energyFlux" type="Unisim::Sum">
-			<parameter name="toAdd" value="(layers/top/temperature[energyFlux] layers/middle/temperature[energyFlux] layers/bottom/temperature[energyFlux])"/>
 		</model>
 		<model name="conductance" type="Unisim::Average">
 			<parameter name="inputs" value="(layers/top/transpiration[conductance] layers/middle/transpiration[conductance] layers/bottom/transpiration[conductance])"/>
@@ -845,11 +827,11 @@
 		<trace label="air_top" value="total/top/airFlux[value]"/>
 		<trace label="air_bottom" value="total/bottom/airFlux[value]"/>
 		<trace label="air_gravi" value="airFlux/gravitation[value]"/>
-		<trace label="giv_eflux_sum" ref="total/energyFlux[value]"/>
+		<trace label="giv_eflux_sum" ref="given/energyFlux[value]"/>
 		<trace label="giv_eflux_cond" ref="given/energyFlux/condensation[value]"/>
 		<trace label="giv_eflux_lamp" ref="given/energyFlux/growthLights[value]"/>
 		<trace label="giv_eflux_out" ref="given/energyFlux/airFluxOutdoors[value]"/>
-		<trace label="giv_eflux_cover" ref="given/energyFlux/cover[value]"/>
+		<trace label="giv_eflux_shelter" ref="given/energyFlux/shelter[value]"/>
 		<trace label="giv_eflux_crop" ref="given/energyFlux/crop[value]"/>
 		<trace label="giv_eflux_floor" ref="given/energyFlux/floor[value]"/>
 		<trace label="cooling_indoors" ref="cooling/airFlux[fromOutdoorsToIndoors]"/>
@@ -896,7 +878,7 @@
 		<trace label="act_scr_en" value="actuators/screens/energy/control[state]"/>
 		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
 		<trace label="act_scr_bl" value="actuators/screens/blackout/control[state]"/>
-		<trace label="LAI" value="crop/lai[lai]"/>
+		<trace label="LAI" value="crop/lai[value]"/>
 		<trace label="temp_top" ref="layers/top/temperature[value]"/>
 		<trace label="temp_mid" ref="layers/middle/temperature[value]"/>
 		<trace label="temp_bot" ref="layers/bottom/temperature[value]"/>

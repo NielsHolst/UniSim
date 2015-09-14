@@ -25,12 +25,14 @@ private:
         kIr, lai, indoorsLight, heating,
         lightAbsorptivity,
         growthLightLight, growthLightIr,
-        temperature,
-        radiationFluxCropTop, radiationFluxCropMiddle, radiationFluxCropBottom;
+        leafTemperature, coverTemperature, screensTemperature, screensMaxState,
+        shelterOutgoingIrAbsorptivity,
+        coverPerGroundArea;
 
     // Outputs
     double value, lightAbsorbed, heatingAbsorbed,
-        growthLightIrAbsorbed;
+        growthLightIrAbsorbed,
+        shelterLoss;
 };
 
 } //namespace

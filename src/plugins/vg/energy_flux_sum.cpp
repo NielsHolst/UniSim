@@ -34,12 +34,9 @@ EnergyFluxSum::EnergyFluxSum(Identifier name, QObject *parent)
 
 void EnergyFluxSum::initialize() {
     fluxes.clear();
-    auto models = seekChildren<EnergyFluxBase*>("*");
-    for (auto model : models) {
-        auto flux = model->peekValuePtr<double>("value");
-        if (flux)
-            fluxes << flux;
-    }
+    auto children = seekChildren<Model*>("*");
+    for (Model *model : children)
+        fluxes << model->peekValuePtr<double>("value");;
 }
 
 void EnergyFluxSum::update() {

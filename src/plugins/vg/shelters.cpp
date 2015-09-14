@@ -26,6 +26,7 @@ Shelters::Shelters(Identifier name, QObject *parent)
     InputRef(double, groundArea, "geometry[groundArea]");
     Output(double, heatCapacityCoversPerGround);
     Output(double, heatCapacityScreensPerGround);
+    Output(double, screensMaxState);
 }
 
 #define Pull(p) si.p = shelter->pullValuePtr<double>(#p)
@@ -44,6 +45,7 @@ void Shelters::initialize() {
         Pull(haze);
         Pull(U);
         Pull(airTransmissivity);
+        Pull(screensMaxState);
         Pull(area);
         Pull(relativeArea);
         Model *cover = shelter->seekOneChild<Model*>("cover"),
@@ -71,7 +73,8 @@ void Shelters::update() {
     lightAbsorbedCover =
     lightAbsorbedScreens =
     U =
-    airTransmissivity = 0;
+    airTransmissivity =
+    screensMaxState = 0;
     double heatCapacityCover{0},
            heatCapacityScreens{0};
     for (ShelterInfo info : infos) {
@@ -101,6 +104,8 @@ void Shelters::update() {
         AccumulateWeighted(airTransmissivity);
         Accumulate(heatCapacityCover);
         Accumulate(heatCapacityScreens);
+        if (*info.screensMaxState > screensMaxState)
+            screensMaxState = (*info.screensMaxState);
     }
     heatCapacityCoversPerGround = heatCapacityCover/groundArea;
     heatCapacityScreensPerGround = heatCapacityScreens/groundArea;

@@ -4,24 +4,24 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_VENTILATION_FOR_COOLING_TOP_H
-#define VG_VENTILATION_FOR_COOLING_TOP_H
+#ifndef VG_ENERGY_FLUX_CROP_H
+#define VG_ENERGY_FLUX_CROP_H
 
-#include <usbase/model.h>
+#include "energy_flux_base.h"
 
 namespace vg {
 
-class VentilationForCoolingTop : public UniSim::Model
+class EnergyFluxCrop : public EnergyFluxBase
 {
 public:
-    VentilationForCoolingTop(UniSim::Identifier name, QObject *parent);
-    void reset();
+    EnergyFluxCrop(UniSim::Identifier name, QObject *parent);
     void update();
+
 private:
-    // Inputs;
-    double ventilationForCoolingBottom, gap;
-    // Outputs
-    double value;
+    // Inputs
+    double cropTemperature, indoorsTemperature,
+           rbH2O, lai, fractionPlantArea,
+           averageHeight, timeStep;
 };
 } //namespace
 

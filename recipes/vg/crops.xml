@@ -3,7 +3,6 @@
 	<Cucumber>
 		<model name="crop" type="vg::Crop">
 			<parameter name="density" value="1.5"/>
-			<parameter name="fractionPlantArea" value="0.9"/>
 		</model>
 		<model name="periods" type="vg::SignalCollection">
 			<model type="vg::DateTimeSignal">
@@ -24,6 +23,7 @@
 		<model name="lai" type="vg::FruitCropLai">
 			<parameter name="laiStartPerPlant" value="0.343"/>
 			<parameter name="maxLai" value="3.5"/>
+			<parameter name="fractionPlantArea" value="0.9"/>
 		</model>
 		<model name="mass" type="vg::FruitCropMass">
 			<parameter name="tempSumReproductive" value="975"/>
@@ -50,7 +50,6 @@
 	<Tomato>
 		<model name="crop" type="vg::Crop">
 			<parameter name="density" value="3.9"/>
-			<parameter name="fractionPlantArea" value="0.9"/>
 		</model>
 		<model name="periods" type="vg::SignalCollection">
 			<model type="vg::DateTimeSignal">
@@ -62,6 +61,7 @@
 		<model name="lai" type="vg::FruitCropLai">
 			<parameter name="laiStartPerPlant" value="0.385"/>
 			<parameter name="maxLai" value="3.5"/>
+			<parameter name="fractionPlantArea" value="0.9"/>
 		</model>
 		<model name="mass" type="vg::FruitCropMass">
 			<parameter name="tempSumReproductive" value="900"/>
@@ -86,10 +86,8 @@
 		</model>
 	</Tomato>
 	<SweetPepper>
-	
 		<model name="crop" type="vg::Crop">
 			<parameter name="density" value="1.9"/>
-			<parameter name="fractionPlantArea" value="0.9"/>
 		</model>
 		<model name="periods" type="vg::SignalCollection">
 			<model type="vg::DateTimeSignal">
@@ -110,6 +108,7 @@
 		<model name="lai" type="vg::FruitCropLai">
 			<parameter name="laiStartPerPlant" value="0.385"/>
 			<parameter name="maxLai" value="4"/>
+			<parameter name="fractionPlantArea" value="0.9"/>
 		</model>
 		<model name="mass" type="vg::FruitCropMass">
 			<parameter name="tempSumReproductive" value="1200"/>

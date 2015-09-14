@@ -120,9 +120,16 @@ void Trace::reset() {
     sampleSum = 0.;
     if (!isSummary()) {
         double value = summary() == None ? currentValue() : s.value;
-        _history.append(value);
+        appendValue(value);
     }
     hasCalendarParent = variableParent()->id().label().toLower().left(5) == "steps";  // hack
+}
+
+void Trace::appendValue(double value) {
+    if (std::isnan(value)) {
+        throw Exception("Trace is not a number", this);
+    }
+    _history.append(value);
 }
 
 inline Time::Unit suggestedUnit(long secs) {
@@ -181,7 +188,7 @@ void Trace::update() {
         sampleSum += value;
         ++sampleCount;
         if (sampleCount%sample == 0) {
-            _history.append(hasCalendarParent ? value : sampleSum/sample);  // hack to get current not average time
+            appendValue(hasCalendarParent ? value : sampleSum/sample);  // hack to get current not average time
             sampleSum = 0.;
         }
     }
@@ -244,7 +251,7 @@ void Trace::updateSummary() {
 
 void Trace::cleanup() {
     if (isSummary())
-        _history.append(s.value);
+        appendValue(s.value);
 }
 
 void Trace::debrief() {

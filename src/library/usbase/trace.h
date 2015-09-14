@@ -55,6 +55,7 @@ private:
     void updateSummary();
 
     double currentValue();
+    void appendValue(double value);
 
     // data
     VariableBase *variable;

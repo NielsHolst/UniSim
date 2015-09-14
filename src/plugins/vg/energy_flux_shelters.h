@@ -20,29 +20,19 @@ public:
 private:
     // Inputs
     double U, incomingIrAbsorptivity,
-//        incomingIrAbsorptivityScreens,
         outgoingIrAbsorptivity,
-//        outgoingIrAbsorptivityCover, outgoingIrAbsorptivityScreens,
         lightAbsorbedCover, lightAbsorbedScreens,
         heatCapacityCover, heatCapacityScreens,
         timeStep, averageHeight,
         coverPerGroundArea,
         indoorsTemperature, skyTemperature, outdoorsTemperature,
-//        maxState,
-        cropTemperatureTop, cropTemperatureMiddle, cropTemperatureBottom;
-//        condensationRateCover;
+        radiationFluxCropTop, radiationFluxCropMiddle, radiationFluxCropBottom;
 
     // Outputs
     double coverTemperature, screensTemperature,
-        heatFluxOutside, heatFluxInside,
-        radiationFluxSky,
-        radiationFluxSunCover, radiationFluxSunScreens,
-        radiationFluxCropTop, radiationFluxCropMiddle, radiationFluxCropBottom;
-
-    // Methods
-    void doUpdate();
-    double radiationFluxCrop(double cropTemperature) const;
-
+        heatFluxOutsideToCover, heatFluxInsideToCover,
+        radiationFluxSkyToCover,
+        radiationFluxSunToCover, radiationFluxSunToScreens;
 
 };
 } //namespace

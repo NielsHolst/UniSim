@@ -48,6 +48,7 @@ Shelter::Shelter(Identifier name, QObject *parent)
 
     InputRef(double, outdoorsDirectRadiation, "outdoors[directRadiation]");
     InputRef(double, outdoorsDiffuseRadiation, "outdoors[diffuseRadiation]");
+    InputRef(double, screensMaxState, "./screens[maxState]");
 
     Output(double, area);
     Output(double, relativeArea);
@@ -64,7 +65,7 @@ void Shelter::initialize() {
     pCoverSurfaceRadiation = coverM->surfaceRadiation();
 
     Screens *screensM = seekOneChild<Screens*>("screens");
-    pScreensU = screensM->pullValuePtr<double>("U");
+//    pScreensU = screensM->pullValuePtr<double>("U");
     pScreensHaze = screensM->pullValuePtr<double>("haze");
     screens.fetch(screensM);
     pScreensSurfaceRadiation = screensM->surfaceRadiation();
@@ -107,8 +108,9 @@ void Shelter::update() {
 }
 
 void Shelter::updateU() {
-    double resistance = 1./(*pCoverU) + 1./(*pScreensU);
-    U = 1./resistance;
+//    double resistance = 1./(*pCoverU) + 1./(*pScreensU);
+//    U = 1./resistance;
+    U = (*pCoverU);
 }
 
 void Shelter::updateHaze() {

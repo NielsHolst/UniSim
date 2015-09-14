@@ -69,7 +69,7 @@ LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     InputRef(double, lightDirect, "indoors/light[direct]");
     Input(double, parProportion, 0.47);
     InputRef(double, growthLightPar, "growthLights[parEmission]");
-    InputRef(double, lai, "crop/lai[lai]");
+    InputRef(double, lai, "crop/lai[value]");
     InputRef(double, xGauss, "..[xGaussUpperside]");
     InputRef(double, wGauss, "..[wGaussUpperside]");
     InputRef(double, LUE, "./lightResponse[LUE]");

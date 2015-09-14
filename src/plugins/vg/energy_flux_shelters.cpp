@@ -52,10 +52,7 @@ EnergyFluxShelters::EnergyFluxShelters(Identifier name, QObject *parent)
 {
     InputRef(double, U, "construction/shelters[U]");
     InputRef(double, incomingIrAbsorptivity, "construction/shelters[incomingIrAbsorptivity]");
-//    InputRef(double, incomingIrAbsorptivityScreens, "../screens[incomingIrAbsorptivityScreens]");
     InputRef(double, outgoingIrAbsorptivity, "construction/shelters[outgoingIrAbsorptivity]");
-//    InputRef(double, outgoingIrAbsorptivityCover, "../cover[outgoingIrAbsorptivity]");
-//    InputRef(double, outgoingIrAbsorptivityScreens, "../screens[outgoingIrAbsorptivity]");
 
     InputRef(double, lightAbsorbedCover, "construction/shelters[lightAbsorbedCover]");
     InputRef(double, lightAbsorbedScreens, "construction/shelters[lightAbsorbedScreens]");
@@ -70,34 +67,26 @@ EnergyFluxShelters::EnergyFluxShelters(Identifier name, QObject *parent)
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     InputRef(double, skyTemperature, "outdoors[skyTemperature]");
-//    InputRef(double, maxState, "../../screens[maxState]");
-    InputRef(double, cropTemperatureTop, "crop/layers/top/temperature[value]");
-    InputRef(double, cropTemperatureMiddle, "crop/layers/middle/temperature[value]");
-    InputRef(double, cropTemperatureBottom, "crop/layers/bottom/temperature[value]");
-//    InputRef(double, condensationRateCover, "../cover/condensation[vapourFlux]");
+    InputRef(double, radiationFluxCropTop, "crop/layers/top/radiationAbsorbed[shelterLoss]");
+    InputRef(double, radiationFluxCropMiddle, "crop/layers/middle/radiationAbsorbed[shelterLoss]");
+    InputRef(double, radiationFluxCropBottom, "crop/layers/bottom/radiationAbsorbed[shelterLoss]");
 
-    Output(double, heatFluxOutside);
-    Output(double, heatFluxInside);
-    Output(double, radiationFluxSky);
-    Output(double, radiationFluxSunCover);
-    Output(double, radiationFluxSunScreens);
-    Output(double, radiationFluxCropTop);
-    Output(double, radiationFluxCropMiddle);
-    Output(double, radiationFluxCropBottom);
+    Output(double, heatFluxOutsideToCover);
+    Output(double, heatFluxInsideToCover);
+    Output(double, radiationFluxSkyToCover);
+    Output(double, radiationFluxSunToCover);
+    Output(double, radiationFluxSunToScreens);
     Output(double, coverTemperature);
     Output(double, screensTemperature);
 }
 
 void EnergyFluxShelters::reset() {
     EnergyFluxBase::reset();
-    heatFluxOutside =
-    heatFluxInside =
-    radiationFluxSky =
-    radiationFluxSunCover =
-    radiationFluxSunScreens =
-    radiationFluxCropTop =
-    radiationFluxCropMiddle =
-    radiationFluxCropBottom = 0.;
+    heatFluxOutsideToCover =
+    heatFluxInsideToCover =
+    radiationFluxSkyToCover =
+    radiationFluxSunToCover =
+    radiationFluxSunToScreens = 0.;
     coverTemperature = screensTemperature = 12.;
 }
 
@@ -114,53 +103,32 @@ void EnergyFluxShelters::update() {
     for (int i=0; i < n; ++i) {
         screensTemperature = (coverTemperature + indoorsTemperature2)/2;
         // W/m2 ground = W/m2 cover * m2 cover / m2 ground
-        heatFluxOutside = U*(outdoorsTemperature - coverTemperature)*coverPerGroundArea;;
-        heatFluxInside = U*(indoorsTemperature2 - coverTemperature)*coverPerGroundArea;;
-        radiationFluxSky = incomingIrAbsorptivity*Sigma*(p4K(skyTemperature) - p4K(coverTemperature))*coverPerGroundArea;
+        heatFluxOutsideToCover = U*(outdoorsTemperature - coverTemperature)*coverPerGroundArea;;
+        heatFluxInsideToCover = U*(indoorsTemperature2 - coverTemperature)*coverPerGroundArea;;
+        radiationFluxSkyToCover = incomingIrAbsorptivity*Sigma*(p4K(skyTemperature) - p4K(coverTemperature))*coverPerGroundArea;
 
 
-        radiationFluxSunCover = lightAbsorbedCover;
-        radiationFluxSunScreens = lightAbsorbedScreens;
+        radiationFluxSunToCover = lightAbsorbedCover;
+        radiationFluxSunToScreens = lightAbsorbedScreens;
 
-        radiationFluxCropTop = radiationFluxCrop(cropTemperatureTop);
-        radiationFluxCropMiddle = radiationFluxCrop(cropTemperatureMiddle);
-        radiationFluxCropBottom = radiationFluxCrop(cropTemperatureBottom);
-
-        double radiationFluxCropTotal =
+        double radiationFluxCropToShelter =
             radiationFluxCropTop + radiationFluxCropMiddle + radiationFluxCropBottom;
-        double radiationFluxShelter =
-                heatFluxOutside +
-                heatFluxInside +
-                radiationFluxSky +
-                radiationFluxSunCover +
-                radiationFluxSunScreens +
-                radiationFluxCropTotal +
-                heatFluxInside;
-        double radiationFluxInside =
-                heatFluxOutside +
-                radiationFluxCropTotal;
+        double radiationFluxToShelter =
+                heatFluxOutsideToCover +
+                heatFluxInsideToCover +
+                radiationFluxSkyToCover +
+                radiationFluxSunToCover +
+                radiationFluxSunToScreens +
+                radiationFluxCropToShelter;
+        double radiationFluxToInside =
+                -heatFluxInsideToCover;
 
-        value = -radiationFluxInside;
-        coverTemperature += radiationFluxShelter*dt/(heatCapacityCover+heatCapacityScreens);
-        indoorsTemperature2 -= radiationFluxInside*dt/Cair;
+        value += radiationFluxToInside;
+        coverTemperature += radiationFluxToShelter*dt/(heatCapacityCover+heatCapacityScreens);
+        indoorsTemperature2 += radiationFluxToInside*dt/Cair;
     }
     value /= n;
 }
-
-double EnergyFluxShelters::radiationFluxCrop(double cropTemperature) const {
-    return outgoingIrAbsorptivity*Sigma*(p4K(cropTemperature) - p4K(coverTemperature));
-//    return outgoingIrAbsorptivity*(
-//            Sigma*(p4K(cropTemperature) - p4K(screensTemperature))*maxState +
-//            Sigma*(p4K(cropTemperature) - p4K(coverTemperature))*(1-maxState));
-}
-
-//        double fluxCoverProp{0.5}, outgoingIrAbsorptivityCover{0};
-//        double fluxCoverProp =
-//            outgoingIrAbsorptivityCover/(outgoingIrAbsorptivityCover+outgoingIrAbsorptivityScreens);
-//        double emCoverScreens =
-//            jointEmissivity(outgoingIrAbsorptivityCover, outgoingIrAbsorptivityScreens);
-//        double radiationFluxCoverToScreens =
-//            emCoverScreens*Sigma*(p4K(coverTemperature) - p4K(screensTemperature));
 
 } //namespace
 

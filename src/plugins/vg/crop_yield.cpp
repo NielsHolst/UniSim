@@ -32,7 +32,7 @@ CropYield::CropYield(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     InputRef(double, produceMass, "../mass[fruit]");
-    InputRef(double, fractionPlantArea, "..[fractionPlantArea]");
+    InputRef(double, fractionPlantArea, "crop/lai[fractionPlantArea]");
     Input(double, fractionDryWeight, 0.03);
     Output(double, freshWeight);
     Output(double, dryWeight);

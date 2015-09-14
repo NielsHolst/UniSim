@@ -25,7 +25,8 @@ private:
     // Inputs
     double groundArea;
     // Outputs
-    double heatCapacityCoversPerGround, heatCapacityScreensPerGround;
+    double heatCapacityCoversPerGround, heatCapacityScreensPerGround,
+        screensMaxState;
     // Data
     struct ShelterInfo {
         const SurfaceRadiation *sr;
@@ -34,7 +35,8 @@ private:
             *haze, *U,
             *airTransmissivity,
             *area, *relativeArea,
-            *heatCapacityCover, *heatCapacityScreens;
+            *heatCapacityCover, *heatCapacityScreens,
+            *screensMaxState;
     };
 
     QVector<ShelterInfo> infos;

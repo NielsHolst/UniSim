@@ -44,15 +44,15 @@ FruitCropLai::FruitCropLai(Identifier name, QObject *parent)
 
 void FruitCropLai::reset() {
     laiStart = laiStartPerPlant*cropDensity;
-    lai = 0.;
-    maxLaiReached = (lai>=maxLai);
+    value = 0.;
+    maxLaiReached = (value>=maxLai);
 }
 
 void FruitCropLai::update() {
-    lai = cropPresent ? max(laiStart, laiStart+exp(tempSum/700)-1.) : 0.;
-    maxLaiReached = (lai>=maxLai);
+    value = cropPresent ? max(laiStart, laiStart+exp(tempSum/700)-1.) : 0.;
+    maxLaiReached = (value>=maxLai);
     if (maxLaiReached)
-        lai = maxLai;
+        value = maxLai;
 }
 
 

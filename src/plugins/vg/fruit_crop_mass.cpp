@@ -62,7 +62,7 @@ FruitCropMass::FruitCropMass(Identifier name, QObject *parent)
     Input(double, fruitFactor, 1.);
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, tempSum, "../physTime[total]");
-    InputRef(double, lai, "../lai[lai]");
+    InputRef(double, lai, "../lai[value]");
     InputRef(bool, maxLaiReached, "../lai[maxLaiReached]");
 }
 

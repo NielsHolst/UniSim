@@ -17,7 +17,7 @@ public:
     Crop(UniSim::Identifier name, QObject *parent);
 
 private:
-    double density, fractionPlantArea, fractionDryweight;
+    double density;
 };
 } //namespace
 

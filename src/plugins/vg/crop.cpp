@@ -19,7 +19,6 @@ PUBLISH(Crop)
  * Inputs
  * ------
  * - _density_ is the number of plants per ground area [m<SUP>-2</SUP>]
- * - _fractionPlantArea_ is the fraction of ground area covered by the crop [0;1]
  *
  * Output
  * ------
@@ -32,7 +31,6 @@ Crop::Crop(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, density, 1.);
-    Input(double, fractionPlantArea, 1.);
 }
 
 

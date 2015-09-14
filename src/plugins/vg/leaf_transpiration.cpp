@@ -48,8 +48,8 @@ PUBLISH(LeafTranspiration)
 LeafTranspiration::LeafTranspiration(Identifier name, QObject *parent)
     : VapourFluxBase(name, parent)
 {
-    InputRef(double, lai, "crop/lai[lai]");
-    Input(double, fractionPlantArea, 0.95);
+    InputRef(double, lai, "crop/lai[value]");
+    InputRef(double, fractionPlantArea, "crop/lai[fractionPlantArea]");
     InputRef(double, indoorsAh, "indoors/humidity[ah]");
     InputRef(double, radiationAbsorbed, "../radiationAbsorbed[value]");
     InputRef(double, Tleaf, "../Temperature[value]");

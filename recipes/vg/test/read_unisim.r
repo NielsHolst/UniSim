@@ -119,11 +119,14 @@ plot10 = function(U,from=0, to=366) {
 }
 
 plot11 = function(U,from=0, to=366) {
-	p1 = plot2(U, from, to, c("giv_eflux_sum", "giv_eflux_cond", "giv_eflux_lamp", "giv_eflux_out", "giv_eflux_cover", "giv_eflux_crop", "giv_eflux_floor"))
-	p2 = plot2(U, from, to, c("outdoors_temp", "indoors_temp"))
-	p3 = plot2(U, from, to, c("heat_flux", "heat_sum"))
-	p4 = plot2(U, from, to, c("shl_U"))
-	grid.arrange(p1,p2,p3,p4, ncol=2)	
+	grid.arrange(
+		plot2(U, from, to, c("giv_eflux_sum", "giv_eflux_cond", "giv_eflux_lamp", "giv_eflux_out", "giv_eflux_shelter",  "giv_eflux_crop", "giv_eflux_floor")),
+		plot2(U, from, to, c("outdoors_temp", "indoors_temp")),
+		plot2(U, from, to, c("heat_flux", "heat_sum")),
+		plot2(U, from, to, c("shl_U")),
+		plot2(U, from, to, c("outdoors_temp", "windspeed")),
+		ncol=3
+	)	
 }
  
 U = read_unisim("dvv_unisim_0001.txt")

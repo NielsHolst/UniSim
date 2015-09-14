@@ -7,6 +7,7 @@
 #ifndef VG_GENERAL_H
 #define VG_GENERAL_H
 #include <stdlib.h>
+#include <limits>
 #include <math.h>
 
 /*! \file general.h
@@ -78,6 +79,7 @@ double rhoAir(double temperature);
 double jointEmissivity(double em1, double em2);
 
 // Mathematics
+inline double infinity() { return std::numeric_limits<double>::infinity(); }
 inline double div0(double a, double b) {return b==0 ? 0. : a/b;}
 inline int sqr(int x) {return x*x;}
 inline double sqr(double x) {return x*x;}

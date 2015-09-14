@@ -21,9 +21,9 @@ public:
 private:
     // Inputs
     double lightAbsorbed, Tgh, RHgh, rsH2O, rbH2O,
-        radiationAbsorbed, lai, fractionPlantArea;
+        radiationAbsorbed;
     // Outputs
-    double value, value2, energyFlux;
+    double value;
 };
 } //namespace
 

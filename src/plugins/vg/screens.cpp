@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include "general.h"
 #include "publish.h"
 #include "screens.h"
 #include "surface_radiation.h"
@@ -75,7 +76,7 @@ void Screens::reset() {
     resetRadiationOutputs();
     maxState = haze = 0;
     airTransmissivity = 1;
-    U = numeric_limits<double>::infinity();
+    U = infinity();
     heatCapacity = 0.;
 }
 

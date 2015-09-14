@@ -20,7 +20,7 @@ public:
 
 private:
     // Inputs
-    double state, topTemperature, indoorsTemperature, indoorsVolume, groundArea;
+    double state, topTemperature, bottomTemperature, topVolume, bottomVolume, greenhouseArea, timeStep;
 
     // Outputs
     double value;

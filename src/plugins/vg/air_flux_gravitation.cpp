@@ -34,13 +34,11 @@ PUBLISH(AirFluxGravitation)
 AirFluxGravitation::AirFluxGravitation(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, state, "roof1/screens[maxState]");
-    InputRef(double, topTemperature, "indoors/top/temperature[value]");
-    InputRef(double, bottomTemperature, "indoors/temperature[value]");
-    InputRef(double, topVolume, "geometry[roofMarginVolume]");
-    InputRef(double, bottomVolume, "geometry[indoorsVolume]");
-    InputRef(double, greenhouseArea, "geometry[groundArea]");
-    InputRef(double, timeStep, "calendar[timeStepSecs]");
+    InputRef(double, state, "construction/shelters[screensMaxState]");
+    InputRef(double, topTemperature, "outdoors[temperature]");
+    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
+    InputRef(double, indoorsVolume, "geometry[indoorsVolume]");
+    InputRef(double, groundArea, "geometry[groundArea]");
     Output(double, value);
 }
 
@@ -49,36 +47,14 @@ void AirFluxGravitation::reset() {
 }
 
 void AirFluxGravitation::update() {
-    double gapArea = (1. - state)*greenhouseArea,
+    double gapArea = (1. - state)*groundArea,
            topRho = rhoAir(topTemperature),
-           bottomRho = rhoAir(bottomTemperature);
-    // m3/h
-    double instantaneousRate =
-           (bottomTemperature > topTemperature) ?
-           0.06*g*pow(gapArea, 1.5)*sqrt((topRho - bottomRho)/topRho) : 0.;
-    // m3
-    double finiteRate = instantaneousRate*timeStep/3600;
-    // m3/h
-    value = maxFiniteRate(finiteRate)/timeStep*3600;
-}
+           bottomRho = rhoAir(indoorsTemperature),
+           flowRate = (indoorsTemperature > topTemperature) ?  // m3/h
+                      0.06*g*pow(gapArea, 1.5)*sqrt((topRho - bottomRho)/topRho)*state*2 : 0.;
 
-double AirFluxGravitation::maxFiniteRate(double finiteRate1) const {
-    const double volumeStep = 5;
-    double volume = 0,
-           Ttop = topTemperature,
-           Tbottom = bottomTemperature;
-    while (volume < finiteRate1 && Tbottom > Ttop) {
-        double dEtop = (Tbottom - Ttop)*CpAir*rhoAir(Tbottom)*volumeStep,
-               dTtop = dEtop/CpAir/rhoAir(Ttop)/topVolume,
-               dEbottom = (Ttop - Tbottom)*CpAir*rhoAir(Ttop)*volumeStep,
-               dTbottom = dEbottom/CpAir/rhoAir(Tbottom)/bottomVolume;
-        Ttop += dTtop;
-        Tbottom += dTbottom;
-        volume += volumeStep;
-    }
-    return min(finiteRate1, volume);
+    value = flowRate/indoorsVolume;
 }
-
 
 } //namespace
 

@@ -564,46 +564,46 @@
 	<model name="indoors">
 		<model name="given">
 			<model name="airflux">
-				<model name="infiltration" type="vg::AirFluxInfiltration">
-					<parameter name="leakage">
-						<xsl:attribute name="value">
-							<xsl:value-of select="$Leakage"/>
-						</xsl:attribute>
-					</parameter>
-				</model>
-				<model name="crackVentilation" type="vg::PidControlElement">
-					<parameter name="signal" ref="./target[signal]"/>
-					<parameter name="Kprop" value="0.1"/>
-					<model name="target" type="vg::ProportionalSignal">
-						<model name="coldFactor" type="vg::ProportionalSignal"> 
-							<parameter name="input" ref ="outdoors[temperature]"/>
-							<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
-							<parameter name="thresholdBand" value="1"/>
-							<parameter name="increasingSignal" value="true"/>
-							<parameter name="maxSignal">
-								<xsl:attribute name="value">
-									<xsl:value-of select="$MaxCrackVentilation"/>
-								</xsl:attribute>
-							</parameter>
-							<parameter name="minSignal" value="0"/>
-						</model>
-						
-						<parameter name="input" ref="indoors/humidity[rh]"/>
-						<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-						<parameter name="thresholdBand">
+				<model name="outdoors" type="AirFluxOutdoors">
+					<model name="infiltration" type="vg::AirFluxInfiltration">
+						<parameter name="leakage">
 							<xsl:attribute name="value">
-								<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+								<xsl:value-of select="$Leakage"/>
 							</xsl:attribute>
 						</parameter>
-						<parameter name="increasingSignal" value="true"/>
-						<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
-						<parameter name="minSignal" value="0"/>
 					</model>
-				</model>
-				<model name="outdoors" type="AirFluxOutdoors">
-					<parameter name="infiltration" ref="../infiltration[value]"/>
-					<parameter name="ventilation" ref="../crackVentilation[value]"/>
-					<parameter name="transmissivity" ref="construction/shelters[airTransmissivity]"/>
+					
+					<model name="crackVentilation" type="vg::PidControlElement">
+						<parameter name="signal" ref="./target[signal]"/>
+						<parameter name="Kprop" value="0.1"/>
+						<model name="target" type="vg::ProportionalSignal">
+							<model name="coldFactor" type="vg::ProportionalSignal"> 
+								<parameter name="input" ref ="outdoors[temperature]"/>
+								<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
+								<parameter name="thresholdBand" value="1"/>
+								<parameter name="increasingSignal" value="true"/>
+								<parameter name="maxSignal">
+									<xsl:attribute name="value">
+										<xsl:value-of select="$MaxCrackVentilation"/>
+									</xsl:attribute>
+								</parameter>
+								<parameter name="minSignal" value="0"/>
+							</model>
+							
+							<parameter name="input" ref="indoors/humidity[rh]"/>
+							<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+							<parameter name="thresholdBand">
+								<xsl:attribute name="value">
+									<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+								</xsl:attribute>
+							</parameter>
+							<parameter name="increasingSignal" value="true"/>
+							<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
+							<parameter name="minSignal" value="0"/>
+						</model>
+					</model>
+					
+					<model name="gravitation" type="AirFluxGravitation"/>
 				</model>
 			</model> <!-- airflux -->
 
@@ -1495,12 +1495,6 @@
 		<trace label="sp_vent" value="setpoints/temperature/ventilation[value]"/>
 		<trace label="sp_rh" value="setpoints/humidity/maximumRh[signal]"/>
 
-		<trace label="air_infilt" value="airFlux/infiltration[value]"/>
-		<trace label="air_crack" value="airFlux/crackVentilation[value]"/>
-		<trace label="air_top" value="total/top/airFlux[value]"/>
-		<trace label="air_bottom" value="total/bottom/airFlux[value]"/>
-		<trace label="air_gravi" value="airFlux/gravitation[value]"/>
-
 		<trace label="giv_eflux_sum" ref="given/energyFlux[value]"/>
 		<trace label="giv_eflux_cond" ref="given/energyFlux/condensation[value]"/>
 		<trace label="giv_eflux_lamp" ref="given/energyFlux/growthLights[value]"/>
@@ -1610,6 +1604,11 @@
 		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingIrAbsorptivity]"/>
 		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingIrAbsorptivity]"/>
 		
+		<trace label="air_giv_infilt" value="given/airFlux/outdoors/infiltration[value]"/>
+		<trace label="air_giv_crack" value="given/airFlux/outdoors/crackVentilation[value]"/>
+		<trace label="air_giv_grav" value="given/airFlux/outdoors/gravitation[value]"/>
+		<trace label="air_giv_tot" value="given/airFlux/outdoors/[value]"/>
+		<trace label="max_state" value="construction/shelters[screensMaxState]"/>
 		
 <!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>

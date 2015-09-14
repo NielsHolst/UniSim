@@ -30,9 +30,10 @@ PUBLISH(AirFluxOutdoors)
 AirFluxOutdoors::AirFluxOutdoors(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    Input(double, infiltration, 0.);
-    Input(double, ventilation, 0.);
-    Input(double, transmissivity, 1.);
+    InputRef(double, infiltration, "./infiltration[value]");
+    InputRef(double, ventilation, "./crackVentilation[value]");
+    InputRef(double, gravitation, "./gravitation[value]");
+    InputRef(double, transmissivity, "construction/shelters[airTransmissivity]");
     Output(double, value);
 }
 
@@ -41,7 +42,7 @@ void AirFluxOutdoors::reset() {
 }
 
 void AirFluxOutdoors::update() {
-    value = infiltration + transmissivity*ventilation;
+    value = infiltration + transmissivity*ventilation + gravitation;
 }
 
 

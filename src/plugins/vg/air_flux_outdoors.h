@@ -20,7 +20,7 @@ public:
 
 private:
     // Inputs
-    double infiltration, ventilation, transmissivity;
+    double infiltration, ventilation, gravitation, transmissivity;
 
     // Outputs
     double value;

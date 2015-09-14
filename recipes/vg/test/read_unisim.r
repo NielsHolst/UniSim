@@ -125,6 +125,7 @@ plot11 = function(U,from=0, to=366) {
 		plot2(U, from, to, c("heat_flux", "heat_sum")),
 		plot2(U, from, to, c("shl_U")),
 		plot2(U, from, to, c("outdoors_temp", "windspeed")),
+		plot2(U, from, to, c("air_giv_infilt", "air_giv_crack", "air_giv_grav", "air_giv_tot", "max_state")),
 		ncol=3
 	)	
 }

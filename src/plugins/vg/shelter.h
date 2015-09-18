@@ -34,7 +34,7 @@ private:
     // Data
     const double
         *pCoverU, *pCoverHaze,
-//        *pScreensU,
+        *pScreensU,
         *pScreensHaze,
         *pScreensAirTransmission;
 

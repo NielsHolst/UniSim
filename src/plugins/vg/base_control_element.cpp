@@ -6,8 +6,9 @@
 */
 #include <limits>
 #include <usbase/test_num.h>
-#include "base_control_element.h"
 #include <usbase/utilities.h>
+#include "base_control_element.h"
+#include "general.h"
 
 using namespace UniSim;
 
@@ -29,6 +30,7 @@ namespace vg {
  * ------
  * - _state_ is the current state according to the time integration of _signal_ [R]
  * - _value_ is synonumous with _state_ [R]
+ * - _rateOfChange_ is the rate of change in _state_ during this time step [s<SUP>-1</SUP>]
  * - _course_ is the current course of the signal [0 (decreasing), 1 (stable), 2 (increasing)]
  * - _fulfilment_ is the current _state_:_signal_ ratio [R]
  */
@@ -39,30 +41,40 @@ BaseControlElement::BaseControlElement(Identifier name, QObject *parent)
     Input(double, initState, 0.);
     Input(double, minimum, -std::numeric_limits<double>::max());
     Input(double, maximum, std::numeric_limits<double>::max());
+    Input(double, minSlope, -std::numeric_limits<double>::max());
+    Input(double, maxSlope, std::numeric_limits<double>::max());
     InputRef(double, timeStepSecs, "calendar[timeStepSecs]");
     InputRef(double, signal, "..[signal]");
     Output(double, state);
     Output2(double, state, value);
-    Output(double, fulfilment);
-    Output(int, course);
+    Output(double, slope);
+    Output(double, predicted);
 }
 
 void BaseControlElement::reset() {
-    fulfilment = 1.;
-    state = initState;
-    course = Stable;
+    state = state0 = state1 = predicted = initState;
+    slope = 0;
+    tick = 0;
     localReset();
 }
 
 void BaseControlElement::update() {
-    double oldState = state;
+    state0 = state1;
+    state1 = state2;
+    state2 = state;
     state += change(signal - state);
     state = minMax(minimum, state, maximum);
-    fulfilment = (signal==0.) ? 1. : state/signal;
-    if (TestNum::eq(state, oldState))
-        course = Stable;
-    else
-        course = (state < oldState) ? Decreasing : Increasing;
+    slope = fitSlopePPP(state1, state2, state);
+    if (tick++>10) {
+        if (slope < minSlope) {
+            state = fitPointPPS(state1, state2, minSlope);
+            slope = minSlope;
+        }
+        else if (slope > maxSlope) {
+            state = fitPointPPS(state1, state2, maxSlope);
+            slope = maxSlope;
+        }
+    }
 }
 
 } //namespace

@@ -18,7 +18,7 @@ public:
     void update();
 private:
     // Inputs
-    double airFlux, donorAh, receiverAh, averageHeight;
+    double airFlux, outdoorsAh, indoorsAh, height;
 };
 } //namespace
 

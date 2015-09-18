@@ -20,7 +20,6 @@ PUBLISH(EnergyFluxFloor)
  * ------
  * - _U_ is the U-value from greenhouse air to floor [W/m<SUP>2</SUP>]/K]
  * - _heatCapacity_ is the heat capacity of the floor [J/m<SUP>2</SUP>]/K]
- * - _radiationAbsorbed_ is the sunlight not absorbed by the crop [W/m<SUP>2</SUP>]
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>oC</SUP>C]
  * - _soilTemperature_ is the outside soil temperature  [<SUP>oC</SUP>C]
  * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
@@ -37,7 +36,6 @@ EnergyFluxFloor::EnergyFluxFloor(Identifier name, QObject *parent)
 {
     Input(double, U, 7.5);
     Input(double, heatCapacity, 42000.);
-    InputRef(double, radiationAbsorbed, "./radiationAbsorbed[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, soilTemperature, "outdoors[soilTemperature]");
     InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
@@ -58,7 +56,6 @@ void EnergyFluxFloor::update() {
            Cair = averageHeight*RhoAir*CpAir;               // J/m2/K = m * kg/m3 * J/kg/K
 
     value = 0.;
-    temperature += radiationAbsorbed*dt/heatCapacity;
     for (int i=0; i<n; ++i) {
         double fluxFloorToSoil = U*(temperature-soilTemperature),
                fluxFloorToAir = U*(temperature-Tin);

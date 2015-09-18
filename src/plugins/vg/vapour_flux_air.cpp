@@ -39,15 +39,15 @@ VapourFluxAir::VapourFluxAir(Identifier name, QObject *parent)
     : VapourFluxBase(name, parent)
 {
     Input(double, airFlux, 0.);
-    Input(double, receiverAh, 0.);
-    Input(double, donorAh, 0.);
-    Input(double, averageHeight, 0.);
+    InputRef(double, indoorsAh, "indoors/humidity[ah]");
+    InputRef(double, outdoorsAh, "outdoors[ah]");
+    InputRef(double, height, "geometry[indoorsAverageHeight]");
 }
 
 void VapourFluxAir::update() {
-    conductance = averageHeight*airFlux/3600; // m/s = m3/m2 * m3/m3/h / (s/h)
-    vapourFlux = conductance*(donorAh-receiverAh);    // kg/m2/s = m/s * kg/m3
-    gain = conductance*donorAh;                      // kg/m2/s = m/s * kg/m3
+    conductance = height*airFlux/3600; // m/s = m3/m2 * m3/m3/h / (s/h)
+    vapourFlux = conductance*(outdoorsAh-indoorsAh);    // kg/m2/s = m/s * kg/m3
+    gain = conductance*outdoorsAh;                      // kg/m2/s = m/s * kg/m3
 }
 
 } //namespace

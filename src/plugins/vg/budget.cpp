@@ -26,10 +26,8 @@ PUBLISH(Budget)
 Budget::Budget(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, convectionToAir, "heating/supply[value]");
-    InputRef(double, radiationToCrop, "crop/heatingAbsorbed[value]");
+    InputRef(double, energyHeatingFlux, "heating/supply[value]");
     InputRef(double, dt, "calendar[timeStepSecs]");
-    Output(double, energyHeatingFlux);
     Output(double, energyHeatingTotal);
 }
 
@@ -38,7 +36,6 @@ void Budget::reset() {
 }
 
 void Budget::update() {
-    energyHeatingFlux = convectionToAir + radiationToCrop;      // W/m2
     energyHeatingTotal += energyHeatingFlux*dt/3600./1000.;     // kWh/m2
 }
 

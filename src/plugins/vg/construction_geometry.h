@@ -17,11 +17,10 @@ class ConstructionGeometry : public UniSim::Model
 public:
     ConstructionGeometry(UniSim::Identifier name, QObject *parent);
     void reset();
-    typedef enum{Single, Double, Hortiplus} GlassType;
-    typedef enum{HPSL, LED} LampType;
+    void update();
 private:
     // Input
-    double spanWidth, length, height, margin, roofPitch, shade;
+    double spanWidth, length, height, margin, roofPitch, shade, screensMaxState;
     int numSpans;
     bool hasHorizontalScreens;
 
@@ -29,11 +28,12 @@ private:
     double width, groundArea,
         roofArea, sideWallsArea, endWallsArea, gablesArea,
         coverArea, coverPerGroundArea,
-        indoorsVolume, roofMarginVolume, sideMarginVolume, endMarginVolume,
-        wallsMarginVolume, totalVolume,
-        roofHeight, roofMarginAverageHeight, indoorsAverageHeight,
-        indoorsVolumeProportion, roofMarginVolumeProportion, wallsMarginVolumeProportion;
+        indoorsVolume, indoorsAverageHeight;
+
+    // Data
+    double roofVolume;
 };
+
 } //namespace
 
 

@@ -20,7 +20,7 @@ public:
     void reset();
     void update();
 private:
-    QVector<const double*> pHeatEmission, pLongWaveEmission, pShortWaveEmission, pTotalEmission, pParEmission, pEnergyUsed;
+    QVector<const double*> pHeatEmission, pLongWaveEmission, pShortWaveEmission, pTotalEmission, pParEmission, pEnergyFlux, pEnergyUsed;
     QVector<const bool*> pCurrentlyOn;
 };
 } //namespace

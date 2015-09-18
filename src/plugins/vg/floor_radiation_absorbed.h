@@ -19,7 +19,8 @@ public:
     void update();
 private:
     // Inputs
-    double outdoorsRadiation, cropRadiationAbsorbed;
+    double indoorsLight, growthLightLight, lightAbsorbedByCrop,
+        growthLightIr, growthLightIrAbsorbedByCrop;
 
     // Outputs
     double value;

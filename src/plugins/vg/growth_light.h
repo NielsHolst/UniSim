@@ -30,7 +30,7 @@ private:
     enum Type {Hpsl, Led};
     static UniSim::StringMap<Type> types;
     struct { double heatCoef, longWaveCoef, shortWaveCoef, parCoef, minPeriodOn; } attributes;
-    struct { double heatEmission, longWaveEmission, shortWaveEmission, parEmission, energyUse; } netAttributes;
+    struct { double heatEmission, longWaveEmission, shortWaveEmission, parEmission, energyFlux; } netAttributes;
     double degradationRate;
 };
 } //namespace

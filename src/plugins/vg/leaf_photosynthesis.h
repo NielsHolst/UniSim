@@ -4,18 +4,18 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_LAYER_PHOTOSYNTHESIS_H
-#define VG_LAYER_PHOTOSYNTHESIS_H
+#ifndef VG_LEAF_PHOTOSYNTHESIS_H
+#define VG_LEAF_PHOTOSYNTHESIS_H
 
 #include <Qpair>
 #include <usbase/model.h>
 
 namespace vg {
 
-class LayerPhotosynthesis : public UniSim::Model
+class LeafPhotosynthesis : public UniSim::Model
 {
 public:
-    LayerPhotosynthesis(UniSim::Identifier name, QObject *parent);
+    LeafPhotosynthesis(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 

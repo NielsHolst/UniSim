@@ -8,6 +8,7 @@
 #include "floor_radiation_absorbed.h"
 #include "publish.h"
 
+using std::max;
 using namespace UniSim;
 
 namespace vg {
@@ -29,8 +30,10 @@ PUBLISH(FloorRadiationAbsorbed)
 FloorRadiationAbsorbed::FloorRadiationAbsorbed(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    InputRef(double, outdoorsRadiation, "outdoors[radiation]");
-    InputRef(double, cropRadiationAbsorbed, "crop/radiationAbsorbed[value]");
+    InputRef(double, indoorsLight, "indoors/light[total]");
+    InputRef(double, growthLightLight, "actuators/growthlights[shortWaveEmission]");
+    InputRef(double, lightAbsorbedByCrop, "crop/lightAbsorbed[value]");
+    InputRef(double, growthLightIrAbsorbedByCrop, "crop/growthLightIrAbsorbed[value]");
     Output(double, value);
 }
 
@@ -39,7 +42,8 @@ void FloorRadiationAbsorbed::reset() {
 }
 
 void FloorRadiationAbsorbed::update() {
-    value = std::max(outdoorsRadiation - cropRadiationAbsorbed, 0.);
+    value = max(indoorsLight + growthLightLight - lightAbsorbedByCrop, 0.) +
+            max(growthLightIr - growthLightIrAbsorbedByCrop, 0.);
 }
 
 } //namespace

@@ -64,11 +64,6 @@ void LeafTemperature::update() {
             (1+(s/Psychr+ rsH2O/rbH2O+ 1/(RhoAir*CpAir/4/Sigma*Tgh3)*(rsH2O+rbH2O)))
             + Tgh;
 
-    /* Should sensible heat transfer be added to air energy budget?
-    energyFlux = (value - Tgh)*CpAir/rbH2O*lai*fractionPlantArea;
-    energyFlux /= 3;
-    */
-
     /* Thermal storage was neglible, max 1-2 W/m2
     double dt = 300,
             sla = 30,

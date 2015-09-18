@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <QMessageBox>
 #include <usbase/exception.h>
+#include <usbase/test_num.h>
 #include "general.h"
 #include "publish.h"
 #include "screens.h"
@@ -92,6 +93,7 @@ void Screens::update() {
         resistance += *info.resistance;
         heatCapacity += *info.heatCapacity;
     }
+    TestNum::snapToZero(maxState);
     haze = 1. - unhazed;
     U = 1./resistance;
 

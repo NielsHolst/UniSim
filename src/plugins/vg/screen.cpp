@@ -54,7 +54,7 @@ Screen::Screen(Identifier name, QObject *parent)
     Input(double, transmissivityLight, 0.41);
     Input(double, emissivityInner, 0.62);
     Input(double, emissivityOuter, 0.06);
-    Input(double, U50, infinity());
+    Input(double, U, infinity());
     Input(double, energyLossReduction, 0.4);
     Input(double, haze, 0.);
     Input(double, specificHeatCapacity, 840.);
@@ -74,8 +74,8 @@ Screen::Screen(Identifier name, QObject *parent)
 
 void Screen::reset() {
     isHorizontal = position.toLower().contains("horizontal");
-    double slope = -U50/50.;
-    U = -100*slope + slope*energyLossReduction;
+//    double slope = -U50/50.;
+//    U = -100*slope + slope*energyLossReduction;
 }
 
 void Screen::update() {

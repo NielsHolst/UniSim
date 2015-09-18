@@ -21,7 +21,7 @@ private:
     // Inputs;
     double energyFlux, airSupplyMax, indoorsTemperature, outdoorsTemperature, bottomHeight;
     // Outputs
-    double fromOutdoorsToIndoors;
+    double value;
 };
 } //namespace
 

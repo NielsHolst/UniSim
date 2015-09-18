@@ -16,7 +16,8 @@ class GrowthLightBase : public UniSim::Model
 public:
     GrowthLightBase(UniSim::Identifier name, QObject *parent);
 protected:
-    double heatEmission, longWaveEmission, shortWaveEmission, totalEmission, parEmission, energyUsed;
+    double heatEmission, longWaveEmission, shortWaveEmission, totalEmission, parEmission,
+        energyFlux, energyUsed;
     bool currentlyOn;
     void noLight();
 };

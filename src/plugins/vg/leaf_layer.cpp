@@ -4,16 +4,16 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "layer.h"
+#include "leaf_layer.h"
 #include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(Layer)
+PUBLISH(LeafLayer)
 
-/*! \class Layer
+/*! \class LeafLayer
  * \brief Contains coefficients for Gaussian integration through crop canopy
  *
  * Inputs
@@ -23,7 +23,7 @@ PUBLISH(Layer)
  *
  */
 
-Layer::Layer(Identifier name, QObject *parent)
+LeafLayer::LeafLayer(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     Input(double, xGaussUpperside, 1);

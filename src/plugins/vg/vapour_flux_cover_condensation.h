@@ -4,24 +4,20 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_ENERGY_FLUX_CROP_H
-#define VG_ENERGY_FLUX_CROP_H
+#ifndef VG_VAPOUR_FLUX_COVER_CONDENSATION_H
+#define VG_VAPOUR_FLUX_COVER_CONDENSATION_H
 
-#include "energy_flux_base.h"
+#include "vapour_flux_base.h"
 
 namespace vg {
 
-class EnergyFluxCrop : public EnergyFluxBase
+class VapourFluxCoverCondensation : public VapourFluxBase
 {
 public:
-    EnergyFluxCrop(UniSim::Identifier name, QObject *parent);
+    VapourFluxCoverCondensation(UniSim::Identifier name, QObject *parent);
     void update();
-
 private:
-    // Inputs
-    double cropTemperature, indoorsTemperature,
-           rbH2O, lai, fractionPlantArea,
-           averageHeight, timeStep;
+    double coverTemperature, indoorsTemperature, indoorsAh, coverAreaPerGroundArea;
 };
 } //namespace
 

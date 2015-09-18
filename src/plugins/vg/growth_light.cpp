@@ -88,7 +88,7 @@ void GrowthLight::reset() {
     netAttributes.longWaveEmission = attributes.longWaveCoef*netCapacity;
     netAttributes.shortWaveEmission = attributes.shortWaveCoef*netCapacity;
     netAttributes.parEmission = attributes.parCoef*netCapacity;
-    netAttributes.energyUse = ballastCorrection*intensity;
+    netAttributes.energyFlux = ballastCorrection*intensity;
     degradationRate = log(0.9)/lifeTime;
     currentPeriod = 0.;
     totalPeriod = age;
@@ -108,7 +108,8 @@ void GrowthLight::update() {
         shortWaveEmission = f*netAttributes.shortWaveEmission;
         totalEmission = heatEmission + longWaveEmission + shortWaveEmission;
         parEmission = f*netAttributes.parEmission;
-        energyUsed += netAttributes.energyUse*timeStep/3600.;
+        energyFlux = netAttributes.energyFlux;
+        energyUsed += netAttributes.energyFlux*timeStep/3600./1000.;  // W/m2 * s / (s/h) / k
     }
     else
         noLight();

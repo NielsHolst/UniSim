@@ -120,21 +120,41 @@ plot10 = function(U,from=0, to=366) {
 
 plot11 = function(U,from=0, to=366) {
 	grid.arrange(
-		plot2(U, from, to, c("giv_eflux_sum", "giv_eflux_cond", "giv_eflux_lamp", "giv_eflux_out", "giv_eflux_shelter",  "giv_eflux_crop", "giv_eflux_floor")),
-		plot2(U, from, to, c("outdoors_temp", "indoors_temp")),
+		plot2(U, from, to, c("giv_eflux_sum", "giv_eflux_trans", "giv_eflux_cond")),
+		plot2(U, from, to, c("giv_eflux_lamp", "giv_eflux_shelter", "giv_eflux_floor")),
+		plot2(U, from, to, c("outdoors_temp", "indoors_temp", "indoors_rh")),
+		plot2(U, from, to, c("heated_temp", "sp_heat", "sp_vent")),
 		plot2(U, from, to, c("heat_flux", "heat_sum")),
-		plot2(U, from, to, c("shl_U")),
-		plot2(U, from, to, c("outdoors_temp", "windspeed")),
-		plot2(U, from, to, c("air_giv_infilt", "air_giv_crack", "air_giv_grav", "air_giv_tot", "max_state")),
-		ncol=3
+		plot2(U, from, to, c("air_giv_infilt", "air_giv_crack", "air_giv_grav", "air_giv_tot")),
+		# plot2(U, from, to, c("leaf_tra_cond_top", "leaf_tra_cond_mid", "leaf_tra_cond_bot")),
+		# plot2(U, from, to, c("leaf_tra_lah_top", "leaf_tra_lah_mid", "leaf_tra_lah_bot")),
+		# plot2(U, from, to, c("leaf_tra_iah_top", "leaf_tra_iah_mid", "leaf_tra_iah_bot")),
+		plot2(U, from, to, c("en_cool_demand", "en_cool_air_sup_max", "air_cooling", "en_cool_air_sup")),
+        plot2(U, from, to, c("contr_cool_air", "contr_cool_en")),
+		plot2(U, from, to, c("abs_tot_top", "abs_tot_mid", "abs_tot_bot")),
+		plot2(U, from, to, c("temp_top", "temp_mid", "temp_bot")),
+		ncol=5
 	)	
 }
 
-# windows(14,10)
-# V = transform(U, d_heat_flux=c(diff(U$heat_flux, differences=2), NA, NA))
-# freq1(V, "d_heat_flux")
 
+plot12 = function(U,from=0, to=366) {
+	grid.arrange(
+		plot2(U, from, to, c("outdoors_temp", "indoors_temp", "indoors_rh")),
+		plot2(U, from, to, c("heat_flux", "heat_sum")),
+		plot2(U, from, to, c("heated_temp", "sp_heat", "sp_vent")),
+		plot2(U, from, to, c("heating_supply", "heating_pred", "heating_slope")),
+		ggplot(U[U$Day>1,], aes(x=heating_supply, y=heating_slope, colour=outdoors_temp)) + geom_point(),
+		ncol=3
+	)	
+}
  
 U = read_unisim("dvv_unisim_0001.txt")
 windows(14,10)
 plot11(U)
+
+
+
+
+
+ 

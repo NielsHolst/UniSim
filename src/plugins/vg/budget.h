@@ -20,10 +20,10 @@ public:
 
 private:
     // Inputs
-    double convectionToAir, radiationToCrop, airTransmissivity, dt;
+    double energyHeatingFlux, airTransmissivity, dt;
 
     // Outputs
-    double energyHeatingFlux, energyHeatingTotal;
+    double energyHeatingTotal;
 
 };
 } //namespace

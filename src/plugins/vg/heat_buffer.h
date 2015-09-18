@@ -4,22 +4,27 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_INDOORS_TEMPERATURE_H
-#define VG_INDOORS_TEMPERATURE_H
+#ifndef VG_HEAT_BUFFER_H
+#define VG_HEAT_BUFFER_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class IndoorsTemperature : public UniSim::Model
+class HeatBuffer : public UniSim::Model
 {
 public:
-    IndoorsTemperature(UniSim::Identifier name, QObject *parent);
+    HeatBuffer(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
+
 private:
-    double timeStep, averageHeight, heatBalance, indoorsAh, heatingSetpoint,
-        initValue, value, virtualTemperature;
+    // Inputs
+    double volume, minTemperature, maxTemperature, U, heatingEnergyFlux, indoorsTemperature, timeStep;
+
+    // Outputs
+    double temperature, energyFlux, energyFluxLag;
+
 };
 } //namespace
 

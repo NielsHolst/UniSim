@@ -5,7 +5,7 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "cover_condensation.h"
+#include "vapour_flux_cover_condensation.h"
 #include "general.h"
 #include "publish.h"
 
@@ -14,8 +14,9 @@ using std::max;
 
 namespace vg {
 
-PUBLISH(CoverCondensation)
-/*! \class CoverCondensation
+PUBLISH(VapourFluxCoverCondensation)
+
+/*! \class VapourFluxCoverCondensation
  * \brief Condensation on greenhouse cover
  *
  * Inputs
@@ -31,20 +32,19 @@ PUBLISH(CoverCondensation)
  * - see VapourFluxBase
  */
 
-CoverCondensation::CoverCondensation(Identifier name, QObject *parent)
+VapourFluxCoverCondensation::VapourFluxCoverCondensation(Identifier name, QObject *parent)
     : VapourFluxBase(name, parent)
 {
-    InputRef(double, coverArea, "../..[area]");
-    InputRef(double, coverTemperature, "../energyFlux[temperature]");
-    InputRef(double, groundArea, "geometry[groundArea]");
+    InputRef(double, coverAreaPerGroundArea, "geometry[coverPerGroundArea]");
+    InputRef(double, coverTemperature, "energyFlux/shelter[coverTemperature]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, indoorsAh, "indoors/humidity[ah]");
 }
 
-void CoverCondensation::update() {
+void VapourFluxCoverCondensation::update() {
     double dTemp = indoorsTemperature - coverTemperature;
     conductance = dTemp > 0
-                  ? coverArea/groundArea*1.64e-3*pow(dTemp, 1/3.) // GCC, p.147
+                  ? coverAreaPerGroundArea*1.64e-3*pow(dTemp, 1/3.) // GCC, p.147
                   : 0.;
 	double coverSah = sah(coverTemperature);
     vapourFlux = max(conductance*(indoorsAh - coverSah), 0.);

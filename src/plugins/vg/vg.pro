@@ -23,7 +23,6 @@ HEADERS += \
     co2_controller.h \
     construction_geometry.h \
     cover.h \
-    cover_condensation.h \
     crop.h \
     crop_mass.h \
     crop_growth.h \
@@ -36,7 +35,6 @@ HEADERS += \
     energy_flux_condensation.h \
     energy_flux_cooling_demand.h \
     energy_flux_cooling_supply.h \
-    energy_flux_crop.h \
     energy_flux_floor.h \
     energy_flux_growth_lights.h \
     energy_flux_heating_demand.h \
@@ -55,13 +53,14 @@ HEADERS += \
     growth_light_base.h \
     growth_light.h \
     growth_lights.h \
+    heat_buffer.h \
     indoors_co2.h \
     indoors_humidity.h \
     indoors_light.h \
     indoors_temperature.h \
-    layer.h \
-    layer_photosynthesis.h \
+    leaf_layer.h \
     leaf_light_response.h \
+    leaf_photosynthesis.h \
     leaf_radiation_absorbed.h \
     leaf_temperature.h \
     leaf_transpiration.h \
@@ -87,6 +86,7 @@ HEADERS += \
     variable_collection.h \
     vapour_flux_air.h \
     vapour_flux_base.h \
+    vapour_flux_cover_condensation.h \
     vapour_flux_sum.h \
     vapour_flux_sum_base.h \
     vapour_flux_transpiration.h \
@@ -112,7 +112,6 @@ SOURCES += \
     co2_controller.cpp \
     construction_geometry.cpp \
     cover.cpp \
-    cover_condensation.cpp \
     crop.cpp \
     crop_mass.cpp \
     crop_growth.cpp \
@@ -125,7 +124,6 @@ SOURCES += \
     energy_flux_condensation.cpp \
     energy_flux_cooling_demand.cpp \
     energy_flux_cooling_supply.cpp \
-    energy_flux_crop.cpp \
     energy_flux_floor.cpp \
     energy_flux_growth_lights.cpp \
     energy_flux_heating_demand.cpp \
@@ -144,13 +142,14 @@ SOURCES += \
     growth_light_base.cpp \
     growth_light.cpp \
     growth_lights.cpp \
+    heat_buffer.cpp \
     indoors_co2.cpp \
     indoors_humidity.cpp \
     indoors_light.cpp \
     indoors_temperature.cpp \
-    layer.cpp \
-    layer_photosynthesis.cpp \
+    leaf_layer.cpp \
     leaf_light_response.cpp \
+    leaf_photosynthesis.cpp \
     leaf_radiation_absorbed.cpp \
     leaf_temperature.cpp \
     leaf_transpiration.cpp \
@@ -175,6 +174,7 @@ SOURCES += \
     threshold_signal.cpp \
     vapour_flux_air.cpp \
     vapour_flux_base.cpp \
+    vapour_flux_cover_condensation.cpp \
     vapour_flux_sum.cpp \
     vapour_flux_sum_base.cpp \
     vapour_flux_transpiration.cpp \

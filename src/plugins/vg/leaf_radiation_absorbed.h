@@ -23,7 +23,7 @@ private:
         xGaussLowerside, wGaussLowerside,
         xGaussUpperside, wGaussUpperside,
         kIr, lai, indoorsLight, heating,
-        lightAbsorptivity,
+        lightAbsorptivity, emissivity,
         growthLightLight, growthLightIr,
         leafTemperature, coverTemperature, screensTemperature, screensMaxState,
         shelterOutgoingIrAbsorptivity,

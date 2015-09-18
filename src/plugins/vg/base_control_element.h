@@ -18,12 +18,21 @@ public:
     void reset() final;
     void update() final;
     virtual void localReset() {}
+
+    // Inputs
 protected:
     double initState, signal, timeStepSecs;
 private:
-    enum {Decreasing, Stable, Increasing};
-    double state, fulfilment, minimum, maximum;
-    int course;
+    double minimum, maximum, minSlope, maxSlope;
+
+    // Outputs
+    double state, predicted, slope;
+
+    // Data
+    double state0, state1, state2;
+    int tick;
+
+    // Methods
     virtual double change(double error) = 0;
 };
 } //namespace

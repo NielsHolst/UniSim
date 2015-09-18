@@ -311,5 +311,51 @@ double invPropExpIntegral(double integral, double target, double rate, double dt
     return (integral<target) ? target-distance : target+distance;
 }
 
+//! Fit parabolic curve (3 points)
+/*!
+ * \brief A parabolic curve is fitted by difference interpolation for three points (0,y0), (1,y1), (2, y2)
+  * \param y0 is the first y-value fitted to a parabolic curve
+ * \param y1 is the second y-value fitted to a parabolic curve
+ * \param y2 is the third y-value fitted to a parabolic curve
+ * \return coefficients of the paracola
+ */
+Parabola fitParabola(double y0, double y1, double y2) {
+    double a = (y2 - 2*y1 + y0)/2;
+    return
+        Parabola {
+            a,
+            y1 - y0 - a,
+            y0
+        };
+}
+
+//! Extrapolate parabolic curve (2 points and 1 slope)
+/*!
+ * \brief A parabolic curve is fitted by two points (y0,y1) and the slope in the third point (y2_slope)
+ * located equidistant on the x-axis. The y-value of the third point is returned
+ * \param y0 is the first y-value fitted to a parabolic curve
+ * \param y1 is the second y-value fitted to a parabolic curve
+ * \param y2_slope is the slope at the third y-value fitted to a parabolic curve
+ * \return predicted y at third x-point
+ */
+double fitPointPPS(double y0, double y1, double y2_slope) {
+    // x-values at 0,1,2
+    double
+        a = (y2_slope - y1 + y0)/3,
+        b = y2_slope - 4./3.*(y2_slope - y1 + y0),
+        c = y0;
+    return a*4 + b*2 + c; // ax2 + bx + c for x = 2
+}
+
+double fitSlopePPP(double y0, double y1, double y2) {
+    // x-values at 0,1,2
+    // y = ax2 + bx + c
+    double
+        a = (y2 - 2*y1 + y0)/2,
+        b = y1 - y0 - a;
+    // 2ax + b for x = 3
+    return a*4 + b;
+}
+
 } //namespace
 

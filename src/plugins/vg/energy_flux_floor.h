@@ -21,7 +21,6 @@ public:
 private:
     // Inputs
     double U, heatCapacity,
-        radiationAbsorbed,
         indoorsTemperature, soilTemperature,
         averageHeight, timeStep;
     // Outputs

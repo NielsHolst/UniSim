@@ -6,7 +6,7 @@
 */
 #include <stdlib.h>
 #include "general.h"
-#include "layer_photosynthesis.h"
+#include "leaf_photosynthesis.h"
 #include "publish.h"
 
 using namespace UniSim;
@@ -14,9 +14,9 @@ using namespace std;
 
 namespace vg {
 	
-PUBLISH(LayerPhotosynthesis)
+PUBLISH(LeafPhotosynthesis)
 
-/*! \class LayerPhotosynthesis
+/*! \class LeafPhotosynthesis
  * \brief Assimilation of a canopy layer
  *
  * Inputs
@@ -42,19 +42,19 @@ PUBLISH(LayerPhotosynthesis)
 
 const double H{2};
 
-double LayerPhotosynthesis::lad() const {
+double LeafPhotosynthesis::lad() const {
 //    double h = xGauss*H;
 //    return lai*6*h*(H-h)/p3(H);
     return lai/H;
 }
 
-double LayerPhotosynthesis::laic() const {
+double LeafPhotosynthesis::laic() const {
 //    double h = xGauss*H;
 //    return lai*( 1 - 1/p3(H)*p2(h)*(3*H - 2*h) );
     return lai*xGauss;
 }
 
-LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
+LeafPhotosynthesis::LeafPhotosynthesis(Identifier name, QObject *parent)
     : Model(name, parent)
 {
     InputRef(double, kDiffuse, "crop/radiation[kDiffuse]");
@@ -87,11 +87,11 @@ LayerPhotosynthesis::LayerPhotosynthesis(Identifier name, QObject *parent)
     Output(double, Pg);
 }
 
-void LayerPhotosynthesis::reset() {
+void LeafPhotosynthesis::reset() {
     absorptivity = parAbsorbed = Pn = Pg = 0;
 }
 
-void LayerPhotosynthesis::update() {
+void LeafPhotosynthesis::update() {
     parDiffuse = parProportion*lightDiffuse;
     parDirect = parProportion*lightDirect + growthLightPar;
 
@@ -123,7 +123,7 @@ void LayerPhotosynthesis::update() {
     Pn *= 3.6;
 }
 
-double LayerPhotosynthesis::absorbedByShadedLeaves() const {
+double LeafPhotosynthesis::absorbedByShadedLeaves() const {
     double laic_ = laic();
     double absorbedDiffuse = (1-diffuseReflectivity)*parDiffuse*kDiffuse*exp(-kDiffuse*laic_),
            absorbedTotal = (1-directReflectivity)*parDirect*kDirect*exp(-kDirect*laic_),
@@ -131,7 +131,7 @@ double LayerPhotosynthesis::absorbedByShadedLeaves() const {
     return absorbedDiffuse + absorbedTotal - absorbedDirect; // [J/m2/leaf/s]
 }
 
-QPair<double, double> LayerPhotosynthesis::absorbedBySunlitLeaves(double absorbedShaded) const {
+QPair<double, double> LeafPhotosynthesis::absorbedBySunlitLeaves(double absorbedShaded) const {
     if (Pgmax==0 || sinB==0) return qMakePair(0.,0.);
 
     // Direct flux absorbed by leaves perpendicular on direct beam (VISpp)[J*m-2 leaf s-1]
@@ -151,7 +151,7 @@ QPair<double, double> LayerPhotosynthesis::absorbedBySunlitLeaves(double absorbe
 }
 
 
-double LayerPhotosynthesis::grossAssimilation(double absorbed) const {
+double LeafPhotosynthesis::grossAssimilation(double absorbed) const {
     return (Pgmax==0) ? 0 : Pgmax*(1-exp(-absorbed*LUE/Pgmax));
 }
 

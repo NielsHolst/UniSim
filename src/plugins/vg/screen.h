@@ -27,7 +27,7 @@ private:
            transmissivityLight,
            emissivityInner, emissivityOuter,
            specificHeatCapacity,
-           energyLossReduction, U50, haze,
+           energyLossReduction, U, haze,
            transmissivityAir, transmissivityAirExponent, state;
     // Outputs
     double
@@ -36,8 +36,6 @@ private:
         unhazed, transmissivityAirNet,
         resistance, heatCapacity;
     bool isHorizontal;
-    // Data
-    double U;
 };
 
 } //namespace

@@ -41,14 +41,15 @@ PUBLISH(Screen)
  * - _unhazed_ is the proportion of direct light passing remaining direct after passage corrected for _state_ [0;1]
  * - _resistance_ is the inverse the U-value corrected for _state_ [K m<SUP>2</SUP>/J]
  * - _heatCapacity_ is the heat capacity [J/K]
- * - _transmissivityAirNet_ is the proportion of air transmitted, non-linearly correct for _state_ [0;1]
+ * - _transmissivityAirNet_ is the proportion of air transmitted, non-linearly corrected for _state_ [0;1]
+ * - _effectiveArea_ is the screen max area corrected for _state_ [m<SUP>2</SUP>]
  * - _isHorizontal_ is the screen in horizontal position ?
  */
 
 Screen::Screen(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    InputRef(double, area, "../..[area]");
+    InputRef(double, shelterArea, "../..[area]");
     Input(QString, position, "");
     Input(QString, layer, "");
     Input(double, transmissivityLight, 0.41);
@@ -69,24 +70,30 @@ Screen::Screen(Identifier name, QObject *parent)
     Output(double, resistance);
     Output(double, heatCapacity);
     Output(double, transmissivityAirNet);
+    Output(double, effectiveArea);
     Output(bool, isHorizontal);
 }
 
 void Screen::reset() {
+    updateByState(0);
     isHorizontal = position.toLower().contains("horizontal");
 //    double slope = -U50/50.;
 //    U = -100*slope + slope*energyLossReduction;
 }
 
 void Screen::update() {
+    updateByState(state);
+}
+
+void Screen::updateByState(double state) {
     transmissivityLightNet= 1. - state + state*transmissivityLight;
     absorptivityIrInnerNet = state*emissivityInner;   // Absorptivity = Emissivity for IR
     absorptivityIrOuterNet = state*emissivityOuter;   // do.
     unhazed =  1. - state*haze;
     transmissivityAirNet = std::min( pow(1.-state, transmissivityAirExponent) + state*transmissivityAir, 1. );
     resistance = state/U;
-    heatCapacity = specificHeatCapacity*area*state;
-
+    effectiveArea = shelterArea*state;
+    heatCapacity = specificHeatCapacity*effectiveArea;
 }
 
 } //namespace

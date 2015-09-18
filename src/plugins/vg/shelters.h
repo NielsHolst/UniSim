@@ -26,7 +26,7 @@ private:
     double groundArea;
     // Outputs
     double heatCapacityCoversPerGround, heatCapacityScreensPerGround,
-        screensMaxState;
+        screensEffectiveArea, screensPerGroundArea, screensMaxState;
     // Data
     struct ShelterInfo {
         const SurfaceRadiation *sr;
@@ -34,7 +34,7 @@ private:
             *lightAbsorbedCover, *lightAbsorbedScreens,
             *haze, *U,
             *airTransmissivity,
-            *area, *relativeArea,
+            *area, *relativeArea, *screensEffectiveArea,
             *heatCapacityCover, *heatCapacityScreens,
             *screensMaxState;
     };

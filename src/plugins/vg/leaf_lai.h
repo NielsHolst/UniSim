@@ -4,22 +4,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_SCREEN_CONDENSATION_H
-#define VG_SCREEN_CONDENSATION_H
+#ifndef VG_LEAF_RADIATION_ABSORBED_H
+#define VG_LEAF_RADIATION_ABSORBED_H
 
-#include "vapour_flux_base.h"
+#include <usbase/model.h>
 
 namespace vg {
 
-class ScreenCondensation : public VapourFluxBase
+class LeafLai : public UniSim::Model
 {
 public:
-    ScreenCondensation(UniSim::Identifier name, QObject *parent);
+    LeafLai(UniSim::Identifier name, QObject *parent);
+    void reset();
     void update();
 private:
-    double screenTemperature, indoorsTemperature, indoorsAh, screenArea;
+    // Inputs
+    double xGaussUpperside, wGaussUpperside, lai;
+    // Outputs
+    double value;
 };
-} //namespace
 
+} //namespace
 
 #endif

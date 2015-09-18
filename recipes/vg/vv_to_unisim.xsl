@@ -336,13 +336,6 @@
 					<xsl:value-of select="$CoverHaze"/>
 				</xsl:attribute>
 			</parameter>
-			<!--
-			<model name="energyFlux" type="vg::EnergyFluxCover">
-				<parameter name="indoorsTemperature" ref="indoors/temperature[value]"/>
-				<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-			</model>
-			<model name="condensation" type="vg::CoverCondensation"/>
-			-->
 		</model> <!-- cover -->
 
 		<xsl:call-template name="extract-screens">
@@ -356,6 +349,16 @@
 	<model name="rb" type="vg::BoundaryLayerResistance"/>
 	<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 	<model name="transpiration" type="vg::LeafTranspiration"/>
+	<model name="condensation">
+		<model name="vapourFlux" type="vg::VapourFluxCondensation">
+			<parameter name="surfaceAreaPerGroundArea" ref="./lai[value]"/>
+			<parameter name="surfaceTemperature" ref="../../temperature[value]"/>
+			<model name="lai" type="vg::LeafLai"/>
+		</model>
+		<model name="energyFlux" type="vg::EnergyFluxCondensation">
+			<parameter name="vapourFlux" ref="../vapourflux[vapourFlux]"/>
+		</model>
+	</model>
 	<model name="temperature" type="vg::LeafTemperature"/>
 	<model name="photosynthesis" type="vg::LeafPhotosynthesis">
 		<model name="lightResponse" type="vg::LeafLightResponse"/>	
@@ -610,7 +613,14 @@
 
 			<model name="vapourFlux" type="vg::VapourFluxSum"> 
 				<model name="transpiration" type="vg::VapourFluxTranspiration"/>
-				<model name="condensation" type="vg::VapourFluxCoverCondensation"/>
+				<model name="condensationCover" type="vg::VapourFluxCondensation">
+					<parameter name="surfaceAreaPerGroundArea" ref="geometry[coverPerGroundArea]"/>
+					<parameter name="surfaceTemperature" ref="energyFlux/shelter[coverTemperature]"/>
+				</model>
+				<model name="condensationScreens" type="vg::VapourFluxCondensation">
+					<parameter name="surfaceAreaPerGroundArea" ref="construction/shelters[screensPerGroundArea]"/>
+					<parameter name="surfaceTemperature" ref="energyFlux/shelter[screensTemperature]"/>
+				</model>
 				<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
 					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
 				</model>
@@ -620,7 +630,12 @@
 				<model name="light" type="UniSim::Sum">
 					<parameter name="toAdd" value="(indoors/light[total])"/>
 				</model>
-				<model name="condensation" type="vg::EnergyFluxCondensation"/>
+				<model name="condensationCover" type="vg::EnergyFluxCondensation">
+					<parameter name="vapourFlux" ref="../../vapourflux/condensationCover[vapourFlux]"/>
+				</model>
+				<model name="condensationScreens" type="vg::EnergyFluxCondensation">
+					<parameter name="vapourFlux" ref="../../vapourflux/condensationScreens[vapourFlux]"/>
+				</model>
 				<model name="airFlux" type="vg::EnergyFluxAir">
 					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
 				</model>
@@ -1469,7 +1484,7 @@
 
 		<trace label="date" value="calendar[dateAsReal]"/>
 		<trace label="energy_light" value="actuators/growthLights[energyUsed]"/>
-		<trace label="heat_flux" value="budget[energyHeatingFlux]"/>
+		<trace label="heat_flux" value="heating/supply[value]"/>
 		<trace label="heat_sum" value="budget[energyHeatingTotal]"/>
 		<trace label="yield_kg_fw" value="crop/yield[dryWeight]"/>
 		
@@ -1496,7 +1511,8 @@
 
 		<trace label="giv_eflux_sum" ref="given/energyFlux[value]"/>
 		<trace label="giv_eflux_trans" ref="given/energyFlux/transpiration[value]"/>
-		<trace label="giv_eflux_cond" ref="given/energyFlux/condensation[value]"/>
+		<trace label="giv_eflux_cond_cov" ref="given/energyFlux/condensationCover[value]"/>
+		<trace label="giv_eflux_cond_scr" ref="given/energyFlux/condensationScreens[value]"/>
 		<trace label="giv_eflux_lamp" ref="given/energyFlux/growthLights[value]"/>
 		<trace label="giv_eflux_out" ref="given/energyFlux/airFluxOutdoors[value]"/>
 		<trace label="giv_eflux_shelter" ref="given/energyFlux/shelter[value]"/>
@@ -1620,6 +1636,10 @@
 		<trace label="leaf_tra_lah_bot" value="layers/bottom/transpiration[leafAh]"/>
 		<trace label="leaf_tra_iah_bot" value="layers/bottom/transpiration[indoorsAh]"/>
 
+		<trace label="leaf_cond_top" value="layers/top/condensation/energyFlux[value]"/>
+		<trace label="leaf_cond_mid" value="layers/middle/condensation/energyFlux[value]"/>
+		<trace label="leaf_cond_bot" value="layers/bottom/condensation/energyFlux[value]"/>
+
 		<trace label="en_cool_demand" value="energyflux/cooling/demand[value]"/>
 		<trace label="en_cool_air_sup_max" value="energyflux/cooling/airSupplyMax[value]"/>
 		<trace label="en_cool_air_sup" value="energyflux/cooling/supply[value]"/>
@@ -1627,6 +1647,8 @@
 
 		<trace label="contr_cool_air" value="controlled/cooling/airflux[value]"/>
 		<trace label="contr_cool_en" value="controlled/cooling/energyflux[value]"/>
+
+		<trace label="scr_ground_area" value="construction/shelters[screensPerGroundArea]"/>
 		
 <!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>

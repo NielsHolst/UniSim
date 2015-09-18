@@ -44,6 +44,7 @@ Screens::Screens(Identifier name, QObject *parent)
     Output(double, haze);
     Output(double, U);
     Output(double, heatCapacity);
+    Output(double, effectiveArea);
 }
 
 void Screens::initialize() {
@@ -63,8 +64,8 @@ QVector<Screens::ScreenInfo> Screens::collectScreenInfos(QList<Model*> screenMod
             screen->pullValuePtr<double>("unhazed"),
             screen->pullValuePtr<double>("transmissivityAirNet"),
             screen->pullValuePtr<double>("resistance"),
-            screen->pullValuePtr<double>("heatCapacity")
-
+            screen->pullValuePtr<double>("heatCapacity"),
+            screen->pullValuePtr<double>("effectiveArea")
         };
     }
     return screenInfos;
@@ -78,13 +79,14 @@ void Screens::reset() {
     maxState = haze = 0;
     airTransmissivity = 1;
     U = infinity();
-    heatCapacity = 0.;
+    heatCapacity = effectiveArea = 0.;
 }
 
 void Screens::update() {
     maxState = 0;
     airTransmissivity = 1;
-    heatCapacity = 0;
+    heatCapacity =
+    effectiveArea  = 0;
     double resistance{0}, unhazed{1};
     for (ScreenInfo info: screenInfos) {
         maxState = max(maxState, *info.state);
@@ -92,6 +94,7 @@ void Screens::update() {
         unhazed *= *info.unhazed;
         resistance += *info.resistance;
         heatCapacity += *info.heatCapacity;
+        effectiveArea += *info.effectiveArea;
     }
     TestNum::snapToZero(maxState);
     haze = 1. - unhazed;

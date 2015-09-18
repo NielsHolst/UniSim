@@ -120,7 +120,7 @@ plot10 = function(U,from=0, to=366) {
 
 plot11 = function(U,from=0, to=366) {
 	grid.arrange(
-		plot2(U, from, to, c("giv_eflux_sum", "giv_eflux_trans", "giv_eflux_cond")),
+		plot2(U, from, to, c("giv_eflux_sum", "giv_eflux_trans", "giv_eflux_cond_cov", "giv_eflux_cond_scr")),
 		plot2(U, from, to, c("giv_eflux_lamp", "giv_eflux_shelter", "giv_eflux_floor")),
 		plot2(U, from, to, c("outdoors_temp", "indoors_temp", "indoors_rh")),
 		plot2(U, from, to, c("heated_temp", "sp_heat", "sp_vent")),
@@ -144,6 +144,7 @@ plot12 = function(U,from=0, to=366) {
 		plot2(U, from, to, c("heat_flux", "heat_sum")),
 		plot2(U, from, to, c("heated_temp", "sp_heat", "sp_vent")),
 		plot2(U, from, to, c("heating_supply", "heating_pred", "heating_slope")),
+		plot2(U, from, to, c("scr_ground_area")),
 		ggplot(U[U$Day>1,], aes(x=heating_supply, y=heating_slope, colour=outdoors_temp)) + geom_point(),
 		ncol=3
 	)	

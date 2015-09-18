@@ -23,7 +23,7 @@ private:
 
     // Inputs
     QString position, layer;
-    double area,
+    double shelterArea,
            transmissivityLight,
            emissivityInner, emissivityOuter,
            specificHeatCapacity,
@@ -33,9 +33,11 @@ private:
     double
         transmissivityLightNet,
         absorptivityIrInnerNet, absorptivityIrOuterNet,
-        unhazed, transmissivityAirNet,
+        unhazed, transmissivityAirNet, effectiveArea,
         resistance, heatCapacity;
     bool isHorizontal;
+    // Methods
+    void updateByState(double state);
 };
 
 } //namespace

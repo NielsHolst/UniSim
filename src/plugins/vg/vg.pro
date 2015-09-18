@@ -58,6 +58,7 @@ HEADERS += \
     indoors_humidity.h \
     indoors_light.h \
     indoors_temperature.h \
+    leaf_lai.h \
     leaf_layer.h \
     leaf_light_response.h \
     leaf_photosynthesis.h \
@@ -72,8 +73,6 @@ HEADERS += \
     running_average.h \
     screen.h \
     screens.h \
-    screen_condensation.h \
-    screen_temperature.h \
     shelter.h \
     shelter_base.h \
     shelters.h \
@@ -86,7 +85,7 @@ HEADERS += \
     variable_collection.h \
     vapour_flux_air.h \
     vapour_flux_base.h \
-    vapour_flux_cover_condensation.h \
+    vapour_flux_condensation.h \
     vapour_flux_sum.h \
     vapour_flux_sum_base.h \
     vapour_flux_transpiration.h \
@@ -147,6 +146,7 @@ SOURCES += \
     indoors_humidity.cpp \
     indoors_light.cpp \
     indoors_temperature.cpp \
+    leaf_lai.cpp \
     leaf_layer.cpp \
     leaf_light_response.cpp \
     leaf_photosynthesis.cpp \
@@ -161,8 +161,6 @@ SOURCES += \
     running_average.cpp \
     screen.cpp \
     screens.cpp \
-    screen_condensation.cpp \
-    screen_temperature.cpp \
     shelter.cpp \
     shelter_base.cpp \
     shelters.cpp \
@@ -174,7 +172,7 @@ SOURCES += \
     threshold_signal.cpp \
     vapour_flux_air.cpp \
     vapour_flux_base.cpp \
-    vapour_flux_cover_condensation.cpp \
+    vapour_flux_condensation.cpp \
     vapour_flux_sum.cpp \
     vapour_flux_sum_base.cpp \
     vapour_flux_transpiration.cpp \

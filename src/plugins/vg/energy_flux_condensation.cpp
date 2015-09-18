@@ -29,11 +29,11 @@ PUBLISH(EnergyFluxCondensation)
 EnergyFluxCondensation::EnergyFluxCondensation(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, condensation, "../../vapourflux/condensation[vapourFlux]");
+    Input(double, vapourFlux, 0);
 }
 
 void EnergyFluxCondensation::update() {
-    value = condensation*LHe; // W/m2 = kg/m2/s * J/kg
+    value = vapourFlux*LHe; // W/m2 = kg/m2/s * J/kg
 }
 
 } //namespace

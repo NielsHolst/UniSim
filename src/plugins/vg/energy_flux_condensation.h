@@ -19,7 +19,7 @@ public:
     void update();
 
 private:
-    double condensation;
+    double vapourFlux;
 };
 } //namespace
 

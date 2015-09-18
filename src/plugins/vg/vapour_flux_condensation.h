@@ -11,13 +11,13 @@
 
 namespace vg {
 
-class VapourFluxCoverCondensation : public VapourFluxBase
+class VapourFluxCondensation : public VapourFluxBase
 {
 public:
-    VapourFluxCoverCondensation(UniSim::Identifier name, QObject *parent);
+    VapourFluxCondensation(UniSim::Identifier name, QObject *parent);
     void update();
 private:
-    double coverTemperature, indoorsTemperature, indoorsAh, coverAreaPerGroundArea;
+    double surfaceTemperature, indoorsTemperature, indoorsAh, surfaceAreaPerGroundArea;
 };
 } //namespace
 

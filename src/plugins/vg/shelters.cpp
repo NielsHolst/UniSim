@@ -26,6 +26,8 @@ Shelters::Shelters(Identifier name, QObject *parent)
     InputRef(double, groundArea, "geometry[groundArea]");
     Output(double, heatCapacityCoversPerGround);
     Output(double, heatCapacityScreensPerGround);
+    Output(double, screensEffectiveArea);
+    Output(double, screensPerGroundArea);
     Output(double, screensMaxState);
 }
 
@@ -52,6 +54,7 @@ void Shelters::initialize() {
               *screens = shelter->seekOneChild<Model*>("screens");
         si.heatCapacityCover = cover->pullValuePtr<double>("heatCapacity");
         si.heatCapacityScreens = screens->pullValuePtr<double>("heatCapacity");
+        si.screensEffectiveArea = screens->pullValuePtr<double>("effectiveArea");
         infos << si;
     }
 }
@@ -62,6 +65,11 @@ void Shelters::initialize() {
 
 void Shelters::reset() {
     ShelterBase::reset();
+    heatCapacityCoversPerGround =
+    heatCapacityScreensPerGround =
+    screensEffectiveArea =
+    screensPerGroundArea =
+    screensMaxState = 0.;
 }
 
 void Shelters::update() {
@@ -74,6 +82,7 @@ void Shelters::update() {
     lightAbsorbedScreens =
     U =
     airTransmissivity =
+    screensEffectiveArea =
     screensMaxState = 0;
     double heatCapacityCover{0},
            heatCapacityScreens{0};
@@ -104,11 +113,13 @@ void Shelters::update() {
         AccumulateWeighted(airTransmissivity);
         Accumulate(heatCapacityCover);
         Accumulate(heatCapacityScreens);
+        Accumulate(screensEffectiveArea);
         if (*info.screensMaxState > screensMaxState)
             screensMaxState = (*info.screensMaxState);
     }
     heatCapacityCoversPerGround = heatCapacityCover/groundArea;
     heatCapacityScreensPerGround = heatCapacityScreens/groundArea;
+    screensPerGroundArea = screensEffectiveArea/groundArea;
     set(sr);
 }
 

@@ -20,7 +20,7 @@ public:
     void update();
 private:
     // Outputs
-    double U, heatCapacity, haze, airTransmissivity, maxState;
+    double U, heatCapacity, haze, airTransmissivity, effectiveArea, maxState;
     bool areHorizontal;
 
     // Data
@@ -30,7 +30,7 @@ private:
             *absorptivityIrInnerNet, *absorptivityIrOuterNet,
             *state,
             *unhazed, *airTransmissionNet,
-            *resistance, *heatCapacity;
+            *resistance, *heatCapacity, *effectiveArea;
     };
     QVector<ScreenInfo> screenInfos;
 

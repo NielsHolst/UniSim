@@ -20,58 +20,56 @@ PUBLISH(IndoorsCo2)
  * Inputs
  * ------
  * - _outdoorsCo2_ is the CO<SUB>2</SUB> concentration outside the greenhouse [ppm]
- * - _ventilationRate_ is ventilation rate[m<SUP></SUP>/m<SUP>2</SUP>/s]
- * - _assimilationRate_ is the rate of CO<SUB>2</SUB> uptake by the plants [g/m<SUP>2</SUP>/h]
+ * - _airFlux_ is ventilation rate[h<SUP>-1</SUP>]
  * - _injectionRate_ is the rate of CO<SUB>2</SUB> injection [g/m<SUP>2</SUP>/h]
- * - _timeStep_ is the duration of one integration time step [2]
+ * - _assimilation_ is the rate of CO<SUB>2</SUB> uptake by the plants [g/m<SUP>2</SUP>/h]
  * - _averageHeight_ is the average height of the greenhouse [m]
+ * - _timeStep_ is the duration of one integration time step [2]
  *
  * Output
  * ------
- * - _ppm_ is the CO<SUB>2</SUB> concentration inside the greenhouse [ppm]
- * - _density_ is the density of CO<SUB>2</SUB> per greenhouse area [g/m<SUP>2</SUP>]
+ * - _value_ is the CO<SUB>2</SUB> concentration inside the greenhouse [ppm]
  *
- * Default dependencies
- * ------------
- * - an _outdoors_ model with a _co2_ port [ppm]
- * - an _indoors/ventilation_ model with a _relative_ port [0;1]
- * - an _geometry_ model with an _averageHeight_ port [m]
  */
 
 IndoorsCo2::IndoorsCo2(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     InputRef(double, outdoorsCo2, "outdoors[co2]");
-    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
-//    InputRef(double, ventilationRate, "indoors/ventilation[rate]");
+    InputRef(double, airFlux, "total/airflux[value]");
+    InputRef(double, injectionRate, "controllers/co2[signal]");
+    InputRef(double, assimilation, "crop/growth/Pgc[value]");
     InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
-    Input(double, assimilationRate, 0);
-    Input(double, injectionRate, 0.);
-    Output(double, ppm);
-    Output(double, density);
-	Output(double, ventilationLoss);
+    Output(double, value);
 }
 
 void IndoorsCo2::reset() {
-    ppm = outdoorsCo2;
-	density = ppmToDensity(ppm);
-	ventilationLoss = 0.;
+    value = outdoorsCo2;
+}
+
+namespace {
+    double integrate(double a,  // injection rate - assimilation rate
+                     double b,  // ventilation rate)
+                     double c,  // outdoors CO2
+                     double y0, // initial indoors CO2
+                     double dt) // time step
+    {
+        if (b==0)
+            return a*dt;
+        else
+            return exp(-b*dt)*( (exp(b*dt)-1)*(a/b+c)+y0 );
+    }
 }
 
 void IndoorsCo2::update() {
-    /*
-    double ppmBefore = ppm,
-        finiteExchangerate = 1 - exp(-ventilationRate*timeStep);
-    ppm = ppm*(1. - finiteExchangerate) + outdoorsCo2*finiteExchangerate;
-	ventilationLoss = ppmToDensity(ppmBefore-ppm);
-	ppm += (injectionRate - assimilationRate)*timeStep/3600;
-	density = ppmToDensity(ppm);
-    */
-}
-
-double IndoorsCo2::ppmToDensity(double ppm) {
-	return absFromPpmCo2(indoorsTemperature, ppm)*averageHeight*1000.;  // g/m2 = kg/m3 * m * g/kg
+    value = integrate(
+                (injectionRate-assimilation)/averageHeight/1.83e-3,   // ppm/h = g/m2/h / m / (g/m3/ppm)
+                airFlux,
+                outdoorsCo2,
+                value,
+                timeStep/3600.
+                );
 }
 
 } //namespace

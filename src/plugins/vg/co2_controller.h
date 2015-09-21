@@ -17,9 +17,12 @@ public:
     void reset();
     void update();
 private:
-    double assimilation, ventilation, minCo2, indoorsCo2, outdoorsCo2, indoorsTemperature,
-        timeStep, height, maxSignal,
-        signal;
+    // Inputs
+    double minCo2, maxCo2, indoorsCo2, injectionRate, timeStep;
+    // Outputs
+    double signal, sum;
+    // Data
+    bool on;
 };
 } //namespace
 

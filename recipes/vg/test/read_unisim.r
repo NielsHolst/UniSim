@@ -130,9 +130,10 @@ plot11 = function(U,from=0, to=366) {
 		# plot2(U, from, to, c("leaf_tra_lah_top", "leaf_tra_lah_mid", "leaf_tra_lah_bot")),
 		# plot2(U, from, to, c("leaf_tra_iah_top", "leaf_tra_iah_mid", "leaf_tra_iah_bot")),
 		plot2(U, from, to, c("en_cool_demand", "en_cool_air_sup_max", "air_cooling", "en_cool_air_sup")),
-        plot2(U, from, to, c("contr_cool_air", "contr_cool_en")),
-		plot2(U, from, to, c("abs_tot_top", "abs_tot_mid", "abs_tot_bot")),
+        plot2(U, from, to, c("Pg_top", "Pg_mid", "Pg_bot")),
+		# plot2(U, from, to, c("abs_tot_top", "abs_tot_mid", "abs_tot_bot")),
 		plot2(U, from, to, c("temp_top", "temp_mid", "temp_bot")),
+		plot2(U, from, to, c("co2_ppm", "co2_assim", "co2_inject", "co2_inject_sum")),
 		ncol=5
 	)	
 }
@@ -144,7 +145,7 @@ plot12 = function(U,from=0, to=366) {
 		plot2(U, from, to, c("heat_flux", "heat_sum")),
 		plot2(U, from, to, c("heated_temp", "sp_heat", "sp_vent")),
 		plot2(U, from, to, c("heating_supply", "heating_pred", "heating_slope")),
-		plot2(U, from, to, c("scr_ground_area")),
+		plot2(U, from, to, c("leaf_cond_top", "leaf_cond_mid", "leaf_cond_bot")),
 		ggplot(U[U$Day>1,], aes(x=heating_supply, y=heating_slope, colour=outdoors_temp)) + geom_point(),
 		ncol=3
 	)	
@@ -153,9 +154,5 @@ plot12 = function(U,from=0, to=366) {
 U = read_unisim("dvv_unisim_0001.txt")
 windows(14,10)
 plot11(U)
-
-
-
-
 
  

@@ -53,7 +53,7 @@ LeafLightResponse::LeafLightResponse(Identifier name, QObject *parent)
     InputRef(double, rsCO2, "../../rs[rsCO2]");
     InputRef(double, rbCO2, "../../rb[rbCO2]");
     InputRef(double, Tleaf, "../../temperature[value]");
-    InputRef(double, co2Air, "indoors/co2[ppm]");
+    InputRef(double, co2Air, "indoors/co2[value]");
     Input(double, rhoChl, 0.45);
     Input(double, theta, 0.7);
     Input(double, frParAbs, 0.3);

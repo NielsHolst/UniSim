@@ -488,7 +488,7 @@
 			</model>
 			<model name="maximum" type="vg::SignalCollection">
 				<parameter name="rule" value="min"/>
-				<parameter name="signalReset" value="2000"/>
+				<parameter name="signalReset" value="1500"/>
 				<model type="vg::DateTimeSignal">
 					<parameter name="beginDay" value="1"/>
 					<parameter name="endDay" value="365"/>
@@ -655,6 +655,17 @@
 				<parameter name="circadian" value="false"/>
 				<parameter name="signalOutside" value="0"/>
 				<parameter name="signalInside" value="0"/>
+			</model>
+		</model>
+		<model name="CO2" type="vg::CO2Controller">
+			<parameter name="injectionRate" ref="./injectionRate[signal]"/>
+			<model name="injectionRate" type="vg::ProportionalSignal">
+				<parameter name="input" ref="indoors/total/airFlux[value]"/>
+				<parameter name="threshold" value="6"/>
+				<parameter name="thresholdBand" value="1"/>
+				<parameter name="increasingSignal" value="false"/>
+				<parameter name="minSignal" value="0"/>
+				<parameter name="maxSignal" value="4.5"/>
 			</model>
 		</model>
 	</model>
@@ -850,6 +861,8 @@
 		<trace label="outdoors_temp" value="outdoors[temperature]"/>
 		<trace label="floor_temp" value="floor/temperature[value]"/>
 		<trace label="indoors_temp" value="indoors/temperature[value]"/>
+		<trace label="cover_temp" value="given/energyFlux/shelter[coverTemperature]"/>
+		<trace label="screen_temp" value="given/energyFlux/shelter[screensTemperature]"/>
 		<trace label="outdoors_rh" value="outdoors[rh]"/>
 		<trace label="top_rh" value="indoors/top/humidity[rh]"/>
 		<trace label="indoors_rh" value="indoors/humidity[rh]"/>
@@ -909,6 +922,10 @@
 		<trace label="Pg_top" ref="layers/top/photosynthesis[Pg]"/>
 		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
 		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
+		<trace label="co2_ppm" ref="indoors/co2[value]"/>
+		<trace label="co2_assim" ref="indoors/co2[assimilation]"/>
+		<trace label="co2_inject" ref="controllers/co2[signal]"/>
+		<trace label="co2_inject_sum" ref="controllers/co2[sum]"/>
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
 		<trace label="indoors_light" value="indoors/light[total]"/>

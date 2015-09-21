@@ -27,6 +27,9 @@
 <xsl:variable name="HeatingLightAdjustmentThresholdBand" select="100"/>
 <xsl:variable name="HeatingLightAdjustment" select="1"/>
 <xsl:variable name="OutdoorsCo2" select="750"/>
+<xsl:variable name="Co2MaxSupply" select="4.5"/>				<!-- g/m2/h -->
+<xsl:variable name="Co2VentilationThreshold" select="6"/>	<!-- h-1 -->
+<xsl:variable name="Co2VentilationThresholdBand" select="1"/> <!-- h-1 -->
 
 <xsl:variable name="CoverEmissitivity" select="0.93"/>  		<!-- [0;1] -->
 <xsl:variable name="CoverAbsorptivity" select="0.04"/>		<!-- [0;1] -->
@@ -982,7 +985,7 @@
 
 			<model name="maximum" type="vg::SignalCollection">
 				<parameter name="rule" value="min"/>
-				<parameter name="signalReset" value="2000"/>
+				<parameter name="signalReset" value="1500"/>
 				<xsl:for-each select="//CultureStep/Setpoints/Setpoint[ParameterId='27']/SetpointTimes//SetpointTime">
 					<model type="vg::DateTimeSignal">
 						<xsl:call-template name="extract-period">
@@ -1286,6 +1289,29 @@
 			</xsl:for-each>
 		</model>
 		
+		<model name="CO2" type="vg::CO2Controller">
+			<parameter name="injectionRate" ref="./injectionRate[signal]"/>
+			<model name="injectionRate" type="vg::ProportionalSignal">
+				<parameter name="input" ref="indoors/total/airFlux[value]"/>
+				<parameter name="threshold">
+					<xsl:attribute name="value">
+						<xsl:value-of select="$Co2VentilationThreshold"/>
+					</xsl:attribute>
+				</parameter>
+				<parameter name="thresholdBand">
+					<xsl:attribute name="value">
+						<xsl:value-of select="$Co2VentilationThresholdBand"/>
+					</xsl:attribute>
+				</parameter>
+				<parameter name="increasingSignal" value="false"/>
+				<parameter name="minSignal" value="0"/>
+				<parameter name="maxSignal">
+					<xsl:attribute name="value">
+						<xsl:value-of select="$Co2MaxSupply"/>
+					</xsl:attribute>
+				</parameter>
+			</model>
+	</model>
 	</model>
 
 	<model name="actuators">
@@ -1492,6 +1518,8 @@
 		<trace label="outdoors_temp" value="outdoors[temperature]"/>
 		<trace label="floor_temp" value="floor/temperature[value]"/>
 		<trace label="indoors_temp" value="indoors/temperature[value]"/>
+		<trace label="cover_temp" value="given/energyFlux/shelter[coverTemperature]"/>
+		<trace label="screen_temp" value="given/energyFlux/shelter[screensTemperature]"/>
 
 		<trace label="outdoors_rh" value="outdoors[rh]"/>
 		<trace label="top_rh" value="indoors/top/humidity[rh]"/>
@@ -1568,7 +1596,10 @@
 		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
 		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
 
-		
+		<trace label="co2_ppm" ref="indoors/co2[value]"/>
+		<trace label="co2_assim" ref="indoors/co2[assimilation]"/>
+		<trace label="co2_inject" ref="controllers/co2[signal]"/>
+		<trace label="co2_inject_sum" ref="controllers/co2[sum]"/>
 		
 		<trace label="outdoors_light" value="outdoors[radiation]"/>
 		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>

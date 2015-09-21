@@ -40,7 +40,7 @@ PUBLISH(StomatalResistance)
 StomatalResistance::StomatalResistance(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, co2, "indoors/co2[ppm]");
+    InputRef(double, co2, "indoors/co2[value]");
     InputRef(double, rh, "indoors/humidity[rh]");
     InputRef(double, Pg, "../photosynthesis[Pg]");
     InputRef(double, rbCO2, "../rb[rbCO2]");

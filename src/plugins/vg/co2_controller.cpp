@@ -39,25 +39,27 @@ PUBLISH(Co2Controller)
 Co2Controller::Co2Controller(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, assimilation, "co2Uptake[signal]");       //Dummy model
-    InputRef(double, minCo2, "setpoints/minCo2[setpoint]");
-    InputRef(double, indoorsCo2, "indoors/co2[ppm]");
-    InputRef(double, outdoorsCo2, "outdoors[co2]");
-    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
+    InputRef(double, minCo2, "setpoints/co2/minimum[signal]");
+    InputRef(double, maxCo2, "setpoints/co2/maximum[signal]");
+    InputRef(double, indoorsCo2, "indoors/co2[value]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
-    InputRef(double, height, "geometry[indoorsAverageHeight]");
-    Input(double, maxSignal, 20);
+    Input(double, injectionRate, 4.5);
     Output(double, signal);
+    Output(double, sum);
 }
 
 void Co2Controller::reset() {
-    signal = 0.;
+    signal = sum = 0.;
+    on = false;
 }
 
 void Co2Controller::update() {
-    double ventilationBalance = (indoorsCo2*(1-ventilation) + outdoorsCo2*ventilation)*timeStep/3600 - minCo2;  // ppm
-    double demand = assimilation - absFromPpmCo2(indoorsTemperature,ventilationBalance)/timeStep*3600*height; // g/m2/h
-    signal = min(demand, maxSignal);
+    if (indoorsCo2 > maxCo2)
+        on = false;
+    else if (indoorsCo2 < minCo2)
+        on = true;
+    signal = on ? injectionRate : 0.;
+    sum += signal*timeStep/3600./1000.;
 }
 
 } //namespace

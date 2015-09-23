@@ -498,7 +498,7 @@
 					<parameter name="circadian" value="true"/>
 					<parameter name="signalOutside" value="0"/>
 					<parameter name="signalOutsideTimeOnly" value="0"/>
-					<parameter name="signalInside" value="1500"/>
+					<parameter name="signalInside" value="750"/>
 				</model>
 			</model>
 		</model>

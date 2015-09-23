@@ -185,7 +185,7 @@ photosynthesis = function(U,from=0, to=366) {
 }
  
 U = read_unisim("dvv_unisim_0001.txt")
-production(U,1)
-photosynthesis(U,1)
+production(U)
+photosynthesis(U)
 
  

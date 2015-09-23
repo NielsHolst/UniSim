@@ -49,22 +49,26 @@ StomatalResistance::StomatalResistance(Identifier name, QObject *parent)
 }
 
 void StomatalResistance::reset() {
-    rsH2O = 2000.; // At night,  GCC, p. 145
-    rsCO2 = rsH2O*1.6;
+    updateFromPg(0.);
 }
 
 void StomatalResistance::update() {
+    updateFromPg(Pg);
+}
+
+void StomatalResistance::updateFromPg(double Pg) {
     const double b = 0.0960;
     const double ms = 10.055;
     double PgMol = Pg/44/1e-6/3600; // micromole m-2 s-1
-    // Atmospheric pressure MPa
-    double Pa = P0/1e6;
+    // Atmospheric pressure
+    double Pa = P0/1e5; // bar
     // Internal resistance acc. Kim Lieth is in mol m-2 s-1 and recalc. with 0.025 (Jones, p. 56)
     double cs = co2 - PgMol*(rbCO2*0.025)*Pa;
     double giH2O = b + ms*PgMol*rh/100/(cs/Pa);
     rsH2O = 1./giH2O/0.025;
     rsCO2 = rsH2O*1.6;
 }
+
 
 } //namespace
 

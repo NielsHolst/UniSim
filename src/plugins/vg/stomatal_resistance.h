@@ -19,8 +19,12 @@ public:
     void update();
 
 private:
-    double rh, rbCO2, co2, Pg,
-        rsH2O, rsCO2;
+    // Inputs
+    double rh, rbCO2, co2, Pg;
+    // Outputs
+    double rsH2O, rsCO2;
+    // Methods
+    void updateFromPg(double Pg);
 };
 } //namespace
 

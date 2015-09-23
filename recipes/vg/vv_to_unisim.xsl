@@ -1733,7 +1733,8 @@
 		<trace label="bot_Rd" ref="bottom/photosynthesis/lightResponse[Rd]"/>
 
 		<trace label="indoorsRh" ref="indoors/humidity[rh]"/>
-<!-- 			
+		<trace label="airFluxTotal" ref="indoors/total/airflux[value]"/>
+	<!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
 		<trace label="top_ah" value="top/transpiration[leafAh]"/>
 		<trace label="top_rad" value="top/transpiration[absorbedRadiation]"/>

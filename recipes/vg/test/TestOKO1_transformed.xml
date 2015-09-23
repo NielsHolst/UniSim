@@ -498,7 +498,7 @@
 					<parameter name="circadian" value="true"/>
 					<parameter name="signalOutside" value="0"/>
 					<parameter name="signalOutsideTimeOnly" value="0"/>
-					<parameter name="signalInside" value="750"/>
+					<parameter name="signalInside" value="1500"/>
 				</model>
 			</model>
 		</model>
@@ -1021,5 +1021,6 @@
 		<trace label="mid_Rd" ref="middle/photosynthesis/lightResponse[Rd]"/>
 		<trace label="bot_Rd" ref="bottom/photosynthesis/lightResponse[Rd]"/>
 		<trace label="indoorsRh" ref="indoors/humidity[rh]"/>
+		<trace label="airFluxTotal" ref="indoors/total/airflux[value]"/>
 	</output>
 </simulation>

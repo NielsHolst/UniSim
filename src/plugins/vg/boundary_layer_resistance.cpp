@@ -34,7 +34,7 @@ BoundaryLayerResistance::BoundaryLayerResistance(Identifier name, QObject *paren
 {
     Input(double, leafDimension, 25./1000.);
     InputRef(double, ventilation, "indoors/total/airflux[value]");
-    InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");
+    InputRef(double, constructionWidth, "geometry[width]");
     Output(double, rbH2O);
     Output(double, rbCO2);
 }
@@ -44,12 +44,15 @@ void BoundaryLayerResistance::reset() {
 }
 
 void BoundaryLayerResistance::update() {
-    updateValue(0.1*ventilation/averageHeight/3600.);
+    updateValue(ventilation*constructionWidth/3600.); // m/s = h-1 * m *  h/s
+    // volume/(length*height) = width
+    // See Wang et al. (2000)
 }
 
 void BoundaryLayerResistance::updateValue(double windSpeed) {
     // (Stanghellini GCC p 146 modified)
-    rbH2O = 200.*sqrt( leafDimension/max(0.05,windSpeed) );
+    const double windSpeedMinimum = 0.05;
+    rbH2O = 200.*sqrt( leafDimension/max(windSpeedMinimum, windSpeed) );
     rbCO2 = rbH2O*1.37;
 }
 

@@ -179,7 +179,7 @@ photosynthesis = function(U,from=0, to=366) {
 		plot2(U, from, to, c("top_LUE", "mid_LUE", "bot_LUE")),
 		plot2(U, from, to, c("top_Pnmax", "mid_Pnmax", "bot_Pnmax")),
 		plot2(U, from, to, c("top_Pgmax", "mid_Pgmax", "bot_Pgmax")),
-		plot2(U, from, to, c("indoorsTemperature", "indoorsRh", "indoorsCo2")),
+		plot2(U, from, to, c("indoorsTemperature", "indoorsRh", "indoorsCo2", "airFluxTotal")),
 		ncol=5
 	)	
 }

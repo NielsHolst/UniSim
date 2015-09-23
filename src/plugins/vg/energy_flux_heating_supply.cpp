@@ -35,44 +35,11 @@ EnergyFluxHeatingSupply::EnergyFluxHeatingSupply(Identifier name, QObject *paren
 {
     Input(double, maxHeating, 10000.);
     InputRef(double, demand, "heating/demand[value]");
-    InputRef(double, timeStep, "calendar[timeStepSecs]");
-    Output(double, energyUsed);
-}
-
-void EnergyFluxHeatingSupply::reset() {
-    EnergyFluxBase::reset();
-    energyUsed = 0.;
 }
 
 void EnergyFluxHeatingSupply::update() {
     value = min(demand, maxHeating);
-    energyUsed += value*timeStep/3600./1e6;
 }
-
-
-//void EnergyFluxHeatingSupply::initialize() {
-//    pipes = seekMany<HeatPipe*>("actuators/heating/pipes/*");
-//}
-
-//void EnergyFluxHeatingSupply::setHeatPipes() {
-//    double energyFluxSum{0};
-//    // Set all pipes at minimum temperature
-//    for (auto pipe : pipes) {
-//        double pipeEnergyFluxMin = pipe->calcEnergyFluxMin();
-//        energyFluxSum += pipeEnergyFluxMin;
-//        pipe->pushValue<double>("energyFlux", pipeEnergyFluxMin);
-//    }
-//    // Turn on one pipe at a time until demand is satisfied
-//    bool satisfied = (energyFluxSum >= value);
-//    for (auto pipe : pipes) {
-//        if (satisfied) break;
-//        energyFluxSum -= pipe->calcEnergyFluxMin();
-//        double pipeEnergyFluxMax = pipe->calcEnergyFluxMax();
-//        satisfied = (energyFluxSum + pipeEnergyFluxMax >= value);
-//        double pipeEnergyFlux = satisfied ? value - energyFluxSum : pipeEnergyFluxMax;
-//        pipe->pushValue<double>("energyFlux", pipeEnergyFlux);
-//    }
-//}
 
 } //namespace
 

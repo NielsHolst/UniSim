@@ -92,7 +92,6 @@ void GrowthLight::reset() {
     degradationRate = log(0.9)/lifeTime;
     currentPeriod = 0.;
     totalPeriod = age;
-    energyUsed = 0.;
     noLight();
 }
 
@@ -109,7 +108,6 @@ void GrowthLight::update() {
         totalEmission = heatEmission + longWaveEmission + shortWaveEmission;
         parEmission = f*netAttributes.parEmission;
         energyFlux = netAttributes.energyFlux;
-        energyUsed += netAttributes.energyFlux*timeStep/3600./1000.;  // W/m2 * s / (s/h) / k
     }
     else
         noLight();

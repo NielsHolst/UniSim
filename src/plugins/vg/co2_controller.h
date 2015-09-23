@@ -20,7 +20,7 @@ private:
     // Inputs
     double minCo2, maxCo2, indoorsCo2, injectionRate, timeStep;
     // Outputs
-    double signal, sum;
+    double signal;
     // Data
     bool on;
 };

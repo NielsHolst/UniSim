@@ -18,14 +18,14 @@ PUBLISH(CropYield)
  *
  * Inputs
  * ------
- * - _produceMass_ is the accumulated dry mass of the harvestable produce [kg/m<SUP>2</SUP> planted area]
+ * - _produceMass_ is the accumulated dry mass of the harvestable produce [g/m<SUP>2</SUP> planted area]
  * - _fractionPlantArea_ is the fraction of planted area in the greenhouse [0;1]
  * - _fractionDryWeight_ is the fraction of produce dry weight [0;1]
  *
  * Output
  * ------
- * - _freshWeight_ is the accumulated fresh weight of harvestable produce [g/m<SUP>2</SUP> greenhouse area]
- * - _dryWeight_ is the accumulated dry weight of harvestable produce [g/m<SUP>2</SUP> greenhouse area]
+ * - _freshWeight_ is the accumulated fresh weight of harvestable produce [kg/m<SUP>2</SUP> greenhouse area]
+ * - _dryWeight_ is the accumulated dry weight of harvestable produce [kg/m<SUP>2</SUP> greenhouse area]
  */
 
 CropYield::CropYield(Identifier name, QObject *parent)

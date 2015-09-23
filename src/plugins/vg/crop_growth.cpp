@@ -30,7 +30,7 @@ PUBLISH(CropGrowth)
  * - _massFruit_ is fruit dry mass [g/m<SUP>2</SUP>]
  * - _timeStep_ is the integration time step [s]
  * - _Tcrop_ is crop temperature [<SUP>o</SUP>C]
- * - _Pgc_ is crop assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP>/h]
+ * - _Pg_ is crop assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP>/h]
  *
  * Output
  * ------
@@ -50,7 +50,7 @@ CropGrowth::CropGrowth(Identifier name, QObject *parent)
     InputRef(double, massLeaf, "../mass[leaf]");
     InputRef(double, massFruit, "../mass[fruit]");
     InputRef(double, Tcrop, "../temperature[value]");
-    InputRef(double, Pgc, "./Pgc[value]");
+    InputRef(double, Pg, "./Pg[value]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
 
     Output(double, maintenanceRespiration);
@@ -65,7 +65,7 @@ void CropGrowth::update() {
     const double Q10 = 2.;
     double dt = timeStep/3600; // [h]
     maintenanceRespiration = maintenanceRespirationRate()*dt*pow(Q10, 0.1*(Tcrop-25.));
-    grossGrowthRate = max(Pgc*dt*30./44. - maintenanceRespiration, 0.);
+    grossGrowthRate = max(Pg*dt*30./44. - maintenanceRespiration, 0.);
 }
 
 double CropGrowth::maintenanceRespirationRate() {

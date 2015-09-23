@@ -38,7 +38,7 @@ IndoorsCo2::IndoorsCo2(Identifier name, QObject *parent)
     InputRef(double, outdoorsCo2, "outdoors[co2]");
     InputRef(double, airFlux, "total/airflux[value]");
     InputRef(double, injectionRate, "controllers/co2[signal]");
-    InputRef(double, assimilation, "crop/growth/Pgc[value]");
+    InputRef(double, assimilation, "crop/growth/Pg[value]");
     InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     Output(double, value);

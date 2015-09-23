@@ -13,6 +13,14 @@ read_unisim = function(fname) {
 	S
 }
 
+check = function(U,x) {
+	missing_cols = setdiff(x, intersect(x, colnames(U)))
+	if (length(missing_cols>0)) {
+		msg = paste("Missing columns:", paste(missing_cols, collapse=" "))
+		stop(msg)
+	} 
+}
+
 plot1 = function(U, from, to, cols) {
 	cols = c("Day", cols)
 	V = melt(U[U$Day>=from & U$Day<=to, cols], id.vars="Day", value.name="Value", variable.name="Variable")
@@ -22,6 +30,7 @@ plot1 = function(U, from, to, cols) {
 
 plot2 = function(U, from, to, cols) {
 	cols = c("Day", cols)
+	check(U,cols)
 	V = melt(U[U$Day>=from & U$Day<=to, cols], id.vars="Day", value.name="Value", variable.name="Variable")
 	ggplot(V) +
 		geom_line(aes(x=Day, y=Value, color=Variable), size=1.1) +
@@ -91,10 +100,6 @@ plot8 = function(U,from=0, to=366) {
 	grid.arrange(p1,p2,p3, ncol=2)
 }
 
-miss = function(x) {
-	setdiff(x, intersect(x, colnames(U)))
-}
-
 plot9 = function(U,from=0, to=366) {
 	p1 = plot2(U, from, to, c("shl_cov_temp", "temp_top","temp_mid","temp_bot"))
 	p2 = plot2(U, from, to, c("abs_li_top","abs_li_mid","abs_li_bot"))
@@ -131,28 +136,56 @@ plot11 = function(U,from=0, to=366) {
 		# plot2(U, from, to, c("leaf_tra_iah_top", "leaf_tra_iah_mid", "leaf_tra_iah_bot")),
 		plot2(U, from, to, c("en_cool_demand", "en_cool_air_sup_max", "air_cooling", "en_cool_air_sup")),
         plot2(U, from, to, c("Pg_top", "Pg_mid", "Pg_bot")),
-		# plot2(U, from, to, c("abs_tot_top", "abs_tot_mid", "abs_tot_bot")),
+		plot2(U, from, to, c("abs_tot_top", "abs_tot_mid", "abs_tot_bot")),
 		plot2(U, from, to, c("temp_top", "temp_mid", "temp_bot")),
-		plot2(U, from, to, c("co2_ppm", "co2_assim", "co2_inject", "co2_inject_sum")),
+		# plot2(U, from, to, c("co2_ppm", "co2_assim", "co2_inject", "co2_inject_sum")),
 		ncol=5
 	)	
 }
 
 
 plot12 = function(U,from=0, to=366) {
+	windows(14,10)
 	grid.arrange(
-		plot2(U, from, to, c("outdoors_temp", "indoors_temp", "indoors_rh")),
-		plot2(U, from, to, c("heat_flux", "heat_sum")),
-		plot2(U, from, to, c("heated_temp", "sp_heat", "sp_vent")),
+		plot2(U, from, to, c("indoorsTemperature", "indoors_rh")),
+		plot2(U, from, to, c("heatingEnergyFlux", "heatingEnergyTotal")),
+			plot2(U, from, to, c("heated_temp", "sp_heat", "sp_vent")),
 		plot2(U, from, to, c("heating_supply", "heating_pred", "heating_slope")),
 		plot2(U, from, to, c("leaf_cond_top", "leaf_cond_mid", "leaf_cond_bot")),
-		ggplot(U[U$Day>1,], aes(x=heating_supply, y=heating_slope, colour=outdoors_temp)) + geom_point(),
 		ncol=3
+	)	
+}
+
+production = function(U,from=0, to=366) {
+	windows(14,10)
+	grid.arrange( 
+		plot2(U, from, to, c("heatingEnergyFlux", "heatingEnergyTotal", "indoorsTemperature")),
+		plot2(U, from, to, c("growthLightsEnergyFlux", "growthLightsEnergyTotal", "growthLightsPar")),
+		plot2(U, from, to, c("co2Flux", "co2Total", "indoorsCo2")),
+		plot2(U, from, to, c("assimilation", "fruitGrowthRate", "yieldFreshWeight")),
+		ncol=2
+	)	
+}
+
+photosynthesis = function(U,from=0, to=366) {
+	windows(14,10)
+	grid.arrange( 
+		plot2(U, from, to, c("top_Pn", "mid_Pn", "bot_Pn")),
+		plot2(U, from, to, c("top_Pg", "mid_Pg", "bot_Pg")),
+		plot2(U, from, to, c("top_rb_H2o", "mid_rb_H2o", "bot_rb_H2o")),
+		plot2(U, from, to, c("top_rb_Co2", "mid_rb_Co2", "bot_rb_Co2")),
+		plot2(U, from, to, c("top_rs_H2o", "mid_rs_H2o", "bot_rs_H2o")),
+		plot2(U, from, to, c("top_rs_Co2", "mid_rs_Co2", "bot_rs_Co2")),
+		plot2(U, from, to, c("top_LUE", "mid_LUE", "bot_LUE")),
+		plot2(U, from, to, c("top_Pnmax", "mid_Pnmax", "bot_Pnmax")),
+		plot2(U, from, to, c("top_Pgmax", "mid_Pgmax", "bot_Pgmax")),
+		plot2(U, from, to, c("indoorsTemperature", "indoorsRh", "indoorsCo2")),
+		ncol=5
 	)	
 }
  
 U = read_unisim("dvv_unisim_0001.txt")
-windows(14,10)
-plot11(U)
+production(U,1)
+photosynthesis(U,1)
 
  

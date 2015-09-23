@@ -34,7 +34,6 @@ void GrowthLights::initialize() {
         pTotalEmission << light->pullValuePtr<double>("totalEmission");
         pParEmission << light->pullValuePtr<double>("parEmission");
         pEnergyFlux << light->pullValuePtr<double>("energyFlux");
-        pEnergyUsed << light->pullValuePtr<double>("energyUsed");
         pCurrentlyOn << light->pullValuePtr<bool>("currentlyOn");
     }
 }
@@ -64,7 +63,6 @@ void GrowthLights::update() {
     shortWaveEmission = sum(pShortWaveEmission);
     parEmission = sum(pParEmission);
     energyFlux = sum(pEnergyFlux);
-    energyUsed = sum(pEnergyUsed);
     currentlyOn = any(pCurrentlyOn);
 }
 

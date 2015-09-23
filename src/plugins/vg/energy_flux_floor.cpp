@@ -34,7 +34,8 @@ PUBLISH(EnergyFluxFloor)
 EnergyFluxFloor::EnergyFluxFloor(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    Input(double, U, 7.5);
+    Input(double, Uindoors, 7.5);
+    Input(double, Usoil, 7.5);
     Input(double, heatCapacity, 42000.);
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, soilTemperature, "outdoors[soilTemperature]");
@@ -57,8 +58,8 @@ void EnergyFluxFloor::update() {
 
     value = 0.;
     for (int i=0; i<n; ++i) {
-        double fluxFloorToSoil = U*(temperature-soilTemperature),
-               fluxFloorToAir = U*(temperature-Tin);
+        double fluxFloorToSoil = Usoil*(temperature-soilTemperature),
+               fluxFloorToAir = Uindoors*(temperature-Tin);
         temperature -= (fluxFloorToSoil + fluxFloorToAir)*dt/heatCapacity;
         Tin += fluxFloorToAir*dt/Cair;
         value += fluxFloorToAir;

@@ -20,7 +20,7 @@ public:
 
 private:
     // Inputs
-    double U, heatCapacity,
+    double Uindoors, Usoil, heatCapacity,
         indoorsTemperature, soilTemperature,
         averageHeight, timeStep;
     // Outputs

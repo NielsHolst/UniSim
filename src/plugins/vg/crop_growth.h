@@ -19,7 +19,7 @@ public:
     void update();
 
 private:
-    double Tcrop, Pgc, timeStep,
+    double Tcrop, Pg, timeStep,
         massRoot, massStem, massLeaf, massFruit, massTotal,
         respRoot, respStem, respLeaf, respFruit,
         grossGrowthRate, maintenanceRespiration;

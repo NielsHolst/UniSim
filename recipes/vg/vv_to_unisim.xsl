@@ -44,7 +44,8 @@
 <xsl:variable name="MaxCrackVentilation" select="4"/>			<!-- [h-1] (GCC, p. 148) -->
 <xsl:variable name="Leakage" select="1"/>						<!-- [h-1] -->
 
-<xsl:variable name="FloorU" select="7.5"/>	
+<xsl:variable name="FloorUindoors" select="7.5"/>	
+<xsl:variable name="FloorUsoil" select="4"/>	
 <xsl:variable name="FloorHeatCapacity" select="42000."/>	
 
 		
@@ -65,10 +66,13 @@
 		<xsl:when test="$cropType=2">Chrysanthemum</xsl:when>
 		<xsl:when test="$cropType=3">Pansy</xsl:when>
 		<xsl:when test="$cropType=4">Tomato</xsl:when>
+		<xsl:when test="$cropType=22">TomatoYearRound</xsl:when>
 		<xsl:when test="$cropType=5">Cucumber</xsl:when>
 		<xsl:when test="$cropType=6">SweetPepper</xsl:when>
 		<xsl:when test="$cropType=7">Lettuce</xsl:when>
-		<xsl:otherwise>Tomato</xsl:otherwise>
+		<xsl:when test="$cropType=8">PotPlant</xsl:when>
+		<xsl:when test="$cropType=24">Euphorbia</xsl:when>
+		<xsl:otherwise>PotPlant</xsl:otherwise>
 	</xsl:choose>
 </xsl:variable>
 
@@ -650,9 +654,14 @@
 				<model name="shelter" type="vg::EnergyFluxShelters"/>
 				<model name="floor" type="vg::EnergyFluxFloor"> 
 					<model name="radiationAbsorbed" type="vg::FloorRadiationAbsorbed"/>
-					<parameter name="U">
+					<parameter name="Uindoors">
 						<xsl:attribute name="value">
-							<xsl:value-of select="$FloorU"/>
+							<xsl:value-of select="$FloorUindoors"/>
+						</xsl:attribute>
+					</parameter>
+					<parameter name="Usoil">
+						<xsl:attribute name="value">
+							<xsl:value-of select="$FloorUsoil"/>
 						</xsl:attribute>
 					</parameter>
 					<parameter name="heatCapacity">
@@ -1490,7 +1499,7 @@
 		</model>
 
 		<model name="growth" type="vg::CropGrowth">
-			<model name="Pgc" type="Unisim::Sum">
+			<model name="Pg" type="Unisim::Sum">
 				<parameter name="toAdd"  value="(layers/top/photosynthesis[Pg] layers/middle/photosynthesis[Pg] layers/bottom/photosynthesis[Pg])"/>
 			</model>
 		</model>
@@ -1509,23 +1518,15 @@
 		<parameter name="fileName" value="dvv_unisim_0001.txt"/>
 
 		<trace label="date" value="calendar[dateAsReal]"/>
-		<trace label="energy_light" value="actuators/growthLights[energyUsed]"/>
-		<trace label="heat_flux" value="heating/supply[value]"/>
-		<trace label="heat_sum" value="budget[energyHeatingTotal]"/>
-		<trace label="yield_kg_fw" value="crop/yield[dryWeight]"/>
 		
 		<trace label="windspeed" value="outdoors[windspeed]"/>
-		<trace label="outdoors_temp" value="outdoors[temperature]"/>
 		<trace label="floor_temp" value="floor/temperature[value]"/>
-		<trace label="indoors_temp" value="indoors/temperature[value]"/>
 		<trace label="cover_temp" value="given/energyFlux/shelter[coverTemperature]"/>
 		<trace label="screen_temp" value="given/energyFlux/shelter[screensTemperature]"/>
 
 		<trace label="outdoors_rh" value="outdoors[rh]"/>
-		<trace label="top_rh" value="indoors/top/humidity[rh]"/>
 		<trace label="indoors_rh" value="indoors/humidity[rh]"/>
 		<trace label="outdoors_ah" value="outdoors[ah]"/>
-		<trace label="top_ah" value="indoors/top/humidity[ah]"/>
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
 
 		<trace label="sp_heat" value="setpoints/temperature/heating[value]"/>
@@ -1596,15 +1597,7 @@
 		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
 		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
 
-		<trace label="co2_ppm" ref="indoors/co2[value]"/>
-		<trace label="co2_assim" ref="indoors/co2[assimilation]"/>
-		<trace label="co2_inject" ref="controllers/co2[signal]"/>
-		<trace label="co2_inject_sum" ref="controllers/co2[sum]"/>
 		
-		<trace label="outdoors_light" value="outdoors[radiation]"/>
-		<trace label="growth_light" value="actuators/growthLights[shortWaveEmission]"/>
-		<trace label="indoors_light" value="indoors/light[total]"/>
-	
 		<trace label="scr_max" value="controllers/screens/maxDrawn[value]"/>
 		<trace label="test_horz_scr_en" value="horizontalScreens/energy[state]"/>
 		<trace label="act_scr_en" value="actuators/screens/energy/control[state]"/>
@@ -1680,7 +1673,66 @@
 		<trace label="contr_cool_en" value="controlled/cooling/energyflux[value]"/>
 
 		<trace label="scr_ground_area" value="construction/shelters[screensPerGroundArea]"/>
+
+		<!-- Production -->
+		<trace label="heatingEnergyFlux" value="budget[heatingEnergyFlux]"/>
+		<trace label="heatingEnergyTotal" value="budget[heatingEnergyTotal]"/>
+		<trace label="indoorsTemperature" value="indoors/temperature[value]"/>
+	
+		<trace label="growthLightsEnergyFlux" value="budget[growthLightsEnergyFlux]"/>
+		<trace label="growthLightsEnergyTotal" value="budget[growthLightsEnergyTotal]"/>
+		<trace label="growthLightsPar" value="growthLights[parEmission]"/>
+
+		<trace label="co2Flux" ref="budget[co2Flux]"/>
+		<trace label="co2Total" ref="budget[co2Total]"/>
+		<trace label="indoorsCo2" ref="indoors/co2[value]"/>
+
+		<trace label="assimilation" ref="crop/growth/Pg[value]"/>
+		<trace label="fruitGrowthRate" value="crop/mass[fruitGrowthRate]"/>
+		<trace label="yieldFreshWeight" value="crop/yield[freshWeight]"/>
+
+		<!-- Photosynthesis -->
+		<trace label="top_Pn" ref="top/photosynthesis[Pn]"/>
+		<trace label="mid_Pn" ref="middle/photosynthesis[Pn]"/>
+		<trace label="bot_Pn" ref="bottom/photosynthesis[Pn]"/>
+
+		<trace label="top_Pg" ref="top/photosynthesis[Pg]"/>
+		<trace label="mid_Pg" ref="middle/photosynthesis[Pg]"/>
+		<trace label="bot_Pg" ref="bottom/photosynthesis[Pg]"/>
+
+		<trace label="top_rb_H2o" ref="top/rb[rbH2o]"/>
+		<trace label="mid_rb_H2o" ref="middle/rb[rbH2o]"/>
+		<trace label="bot_rb_H2o" ref="bottom/rb[rbH2o]"/>
+
+		<trace label="top_rb_Co2" ref="top/rb[rbCo2]"/>
+		<trace label="mid_rb_Co2" ref="middle/rb[rbCo2]"/>
+		<trace label="bot_rb_Co2" ref="bottom/rb[rbCo2]"/>
+
+		<trace label="top_rs_H2o" ref="top/rs[rsH2o]"/>
+		<trace label="mid_rs_H2o" ref="middle/rs[rsH2o]"/>
+		<trace label="bot_rs_H2o" ref="bottom/rs[rsH2o]"/>
+
+		<trace label="top_rs_Co2" ref="top/rs[rsCo2]"/>
+		<trace label="mid_rs_Co2" ref="middle/rs[rsCo2]"/>
+		<trace label="bot_rs_Co2" ref="bottom/rs[rsCo2]"/>
 		
+		<trace label="top_LUE" ref="top/photosynthesis/lightResponse[LUE]"/>
+		<trace label="mid_LUE" ref="middle/photosynthesis/lightResponse[LUE]"/>
+		<trace label="bot_LUE" ref="bottom/photosynthesis/lightResponse[LUE]"/>
+
+		<trace label="top_Pnmax" ref="top/photosynthesis/lightResponse[Pnmax]"/>
+		<trace label="mid_Pnmax" ref="middle/photosynthesis/lightResponse[Pnmax]"/>
+		<trace label="bot_Pnmax" ref="bottom/photosynthesis/lightResponse[Pnmax]"/>
+
+		<trace label="top_Pgmax" ref="top/photosynthesis/lightResponse[Pgmax]"/>
+		<trace label="mid_Pgmax" ref="middle/photosynthesis/lightResponse[Pgmax]"/>
+		<trace label="bot_Pgmax" ref="bottom/photosynthesis/lightResponse[Pgmax]"/>
+
+		<trace label="top_Rd" ref="top/photosynthesis/lightResponse[Rd]"/>
+		<trace label="mid_Rd" ref="middle/photosynthesis/lightResponse[Rd]"/>
+		<trace label="bot_Rd" ref="bottom/photosynthesis/lightResponse[Rd]"/>
+
+		<trace label="indoorsRh" ref="indoors/humidity[rh]"/>
 <!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
 		<trace label="top_ah" value="top/transpiration[leafAh]"/>

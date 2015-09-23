@@ -17,14 +17,11 @@ class EnergyFluxHeatingSupply : public EnergyFluxBase
 {
 public:
     EnergyFluxHeatingSupply(UniSim::Identifier name, QObject *parent);
-    void reset();
     void update();
 
 private:
     // Inputs
-    double maxHeating, demand, timeStep;
-    // Output
-    double energyUsed;
+    double maxHeating, demand;
 };
 
 } //namespace

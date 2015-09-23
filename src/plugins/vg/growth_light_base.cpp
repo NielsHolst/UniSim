@@ -23,7 +23,7 @@ PUBLISH(GrowthLightBase)
  * - _shortWaveEmission_ is the short wave emission (visible light, Rn) [W/m<SUP>2</SUP>]
  * - _totalEmission_ is the total of _heatEmission_+_longWaveEmission_+_shortWaveEmission_  [W/m<SUP>2</SUP>]
  * - _parEmission_ is the PAR emision [W/m<SUP>2</SUP>]
- * - _energyUsed_ is the accumulated energy used [kWh/m<SUP>2</SUP>]
+ * - _energyFlux_ is the energy used for growth lights [W/m<SUP>2</SUP>]
  * - _currentlyOn_ tells whether light is on [true/false]
  */
 
@@ -36,7 +36,6 @@ GrowthLightBase::GrowthLightBase(Identifier name, QObject *parent)
     Output(double, totalEmission);
     Output(double, parEmission);
     Output(double, energyFlux);
-    Output(double, energyUsed);
     Output(bool, currentlyOn);
 }
 

@@ -45,11 +45,10 @@ Co2Controller::Co2Controller(Identifier name, QObject *parent)
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     Input(double, injectionRate, 4.5);
     Output(double, signal);
-    Output(double, sum);
 }
 
 void Co2Controller::reset() {
-    signal = sum = 0.;
+    signal = 0.;
     on = false;
 }
 
@@ -59,7 +58,6 @@ void Co2Controller::update() {
     else if (indoorsCo2 < minCo2)
         on = true;
     signal = on ? injectionRate : 0.;
-    sum += signal*timeStep/3600./1000.;
 }
 
 } //namespace

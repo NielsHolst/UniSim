@@ -42,6 +42,7 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, indoorsLight, "indoors/light[total]");
     InputRef(double, lightAbsorptivity, "../photosynthesis[absorptivity]");
     InputRef(double, heating, "heating/supply[value]");
+//    InputRef(double, floorTemperature, "energyFlux/floor[temperature]");
     InputRef(double, growthLightLight, "actuators/growthlights[shortWaveEmission]");
     InputRef(double, growthLightIr, "actuators/growthlights[longWaveEmission]");
     InputRef(double, leafTemperature, "../temperature[value]");
@@ -72,6 +73,9 @@ void LeafRadiationAbsorbed::update() {
         emUpperside = jointEmissivity(shelterOutgoingIrAbsorptivity, emissivity),
         shelterTemperature = screensTemperature*screensMaxState + coverTemperature*(1-screensMaxState);
 
+//    Q_ASSERT(irTransmissionLowerside<=1.);
+    Q_ASSERT(irTransmissionUpperside<=1.);
+//    heatingAbsorbed = Sigma*emissivity*(p4K(leafTemperature) - p4K(floorTemperature))*irTransmissionLowerside;
     lightAbsorbed = lightAbsorptivity*(indoorsLight + growthLightLight);
 //    double heatingBalance = heating*irTransmissionLowerside - Sigma*p4K(leafTemperature);
 //    heatingAbsorbed = max(emissivity*heatingBalance, 0.);

@@ -26,17 +26,25 @@ PUBLISH(Budget)
 Budget::Budget(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, energyHeatingFlux, "heating/supply[value]");
+    InputRef(double, heatingEnergyFlux, "heating/supply[value]");
+    InputRef(double, growthLightsEnergyFlux, "actuators/growthLights[energyFlux]");
+    InputRef(double, co2Flux, "controllers/co2[signal]");
     InputRef(double, dt, "calendar[timeStepSecs]");
-    Output(double, energyHeatingTotal);
+    Output(double, heatingEnergyTotal);
+    Output(double, growthLightsEnergyTotal);
+    Output(double, co2Total);
 }
 
 void Budget::reset() {
-    energyHeatingFlux = energyHeatingTotal = 0.;
+    heatingEnergyFlux = heatingEnergyTotal =
+    growthLightsEnergyFlux = growthLightsEnergyTotal =
+    co2Flux = co2Total = 0.;
 }
 
 void Budget::update() {
-    energyHeatingTotal += energyHeatingFlux*dt/3600./1000.;     // kWh/m2
+    heatingEnergyTotal += heatingEnergyFlux*dt/3600./1000.;             // kWh/m2
+    growthLightsEnergyTotal += growthLightsEnergyFlux*dt/3600./1000.;   // kWh/m2
+    co2Total += co2Flux*dt/3600./1000.;                                 // kg/m2
 }
 
 

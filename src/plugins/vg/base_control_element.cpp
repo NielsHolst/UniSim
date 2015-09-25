@@ -63,7 +63,6 @@ void BaseControlElement::update() {
     state1 = state2;
     state2 = state;
     state += change(signal - state);
-    state = minMax(minimum, state, maximum);
     slope = fitSlopePPP(state1, state2, state);
     if (tick++>10) {
         if (slope < minSlope) {
@@ -75,6 +74,7 @@ void BaseControlElement::update() {
             slope = maxSlope;
         }
     }
+    state = minMax(minimum, state, maximum);
 }
 
 } //namespace

@@ -4,27 +4,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_STOMATAL_RESISTANCE_H
-#define VG_STOMATAL_RESISTANCE_H
+#ifndef VG_STOMATAL_RESISTANCE_BASE_H
+#define VG_STOMATAL_RESISTANCE_BASE_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class StomatalResistance : public UniSim::Model
+class StomatalResistanceBase : public UniSim::Model
 {
 public:
-    StomatalResistance(UniSim::Identifier name, QObject *parent);
-    void reset();
-    void update();
+    StomatalResistanceBase(UniSim::Identifier name, QObject *parent);
+    void reset() final;
+    void update() final;
 
 private:
-    // Inputs
-    double rh, rbCO2, co2, Pn, lai;
     // Outputs
     double rsH2O, rsCO2;
     // Methods
-    void updateFromPhosyntheticRate(double A);
+    virtual double resetRsH2O() = 0;
+    virtual double updateRsH2O() = 0;
 };
 } //namespace
 

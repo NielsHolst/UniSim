@@ -7,16 +7,16 @@
 #include <stdlib.h>
 #include "general.h"
 #include "publish.h"
-#include "stomatal_resistance.h"
+#include "stomatal_resistance_rose.h"
 
 using std::max;
 using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(StomatalResistance)
+PUBLISH(StomatalResistanceRose)
 
-/*! \class StomatalResistance
+/*! \class StomatalResistanceRose
  * \brief Stomatal resistance against H<SUB>2</SUB>O and CO<SUB>2</SUB>
  *
  * Inputs
@@ -39,38 +39,35 @@ PUBLISH(StomatalResistance)
  * - an _rb_ sibling model with an _rbCO2_ port [s/m]
  */
 
-StomatalResistance::StomatalResistance(Identifier name, QObject *parent)
-	: Model(name, parent)
+StomatalResistanceRose::StomatalResistanceRose(Identifier name, QObject *parent)
+    : StomatalResistanceBase(name, parent)
 {
     InputRef(double, co2, "indoors/co2[value]");
     InputRef(double, rh, "indoors/humidity[rh]");
     InputRef(double, Pn, "../photosynthesis[Pn]");
     InputRef(double, rbCO2, "../rb[rbCO2]");
     InputRef(double, lai, "crop/lai[value]");
-    Output(double, rsH2O);
-    Output(double, rsCO2);
 }
 
-void StomatalResistance::reset() {
-    updateFromPhosyntheticRate(0.);
+double StomatalResistanceRose::resetRsH2O() {
+    return calcRsH2O(0);
 }
 
-void StomatalResistance::update() {
-    updateFromPhosyntheticRate(Pn);
+double StomatalResistanceRose::updateRsH2O() {
+    return calcRsH2O(Pn);
 }
 
-void StomatalResistance::updateFromPhosyntheticRate(double A) {
+double StomatalResistanceRose::calcRsH2O(double A) {
     const double b = 0.0960;
     const double m = 10.055;
-    const double Pa = P0/1e5; // 1 bar
-
     double Am = max(A/44/1e-6/3600, 0.); // micromole m-2 s-1
-    Am *= lai;                           // convert from m2 ground to m2 leaf area
+    Am *= lai;     // convert from m2 ground to m2 leaf area
+    // Atmospheric pressure
+    double Pa = P0/1e5; // bar
     // Internal resistance acc. Kim Lieth is in mol m-2 s-1 and recalc. with 0.025 (Jones, p. 56)
-    double cs = co2 - Am*(rbCO2*0.025)*Pa;
+    double cs = max(co2 - Am*(rbCO2*0.025)*Pa, 0.);
     double giH2O = b + m*Am*rh/100/(cs/Pa);
-    rsH2O = 1./giH2O/0.025;
-    rsCO2 = rsH2O*1.6;
+    return 1./giH2O/0.025;
 }
 
 

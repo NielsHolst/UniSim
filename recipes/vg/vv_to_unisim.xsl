@@ -26,7 +26,7 @@
 <xsl:variable name="HeatingLightAdjustmentThreshold" select="300"/>
 <xsl:variable name="HeatingLightAdjustmentThresholdBand" select="100"/>
 <xsl:variable name="HeatingLightAdjustment" select="1"/>
-<xsl:variable name="OutdoorsCo2" select="750"/>
+<xsl:variable name="OutdoorsCo2" select="400"/>
 <xsl:variable name="Co2MaxSupply" select="4.5"/>				<!-- g/m2/h -->
 <xsl:variable name="Co2VentilationThreshold" select="6"/>	<!-- h-1 -->
 <xsl:variable name="Co2VentilationThresholdBand" select="1"/> <!-- h-1 -->
@@ -352,7 +352,11 @@
 </xsl:template>
 
 <xsl:template name="crop-layer">
-	<model name="rs" type="vg::StomatalResistance"/>
+<!--	<model name="rs" type="vg::StomatalResistance"/> -->
+	<xsl:call-template name="extract-crop-model">
+		<xsl:with-param name="modelName">rs</xsl:with-param>
+	</xsl:call-template>
+
 	<model name="rb" type="vg::BoundaryLayerResistance"/>
 	<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 	<model name="transpiration" type="vg::LeafTranspiration"/>
@@ -680,6 +684,7 @@
 				<model name="heating">
 					<model name="demand" type="vg::EnergyFluxHeatingDemand"/>
 					<model name="supply" type="vg::PidControlElement">
+						<parameter name="minimum" value="0"/>
 						<parameter name="minSlope" value="-20"/>
 						<parameter name="maxSlope" value="30"/>
 						<parameter name="Kprop" value="0.6"/>
@@ -760,6 +765,7 @@
 			<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
 		</model>
 		<model name="co2" type="vg::IndoorsCo2"/>
+		<model name="windSpeed" type="vg::IndoorsWindSpeed"/>
 	</model> <!-- indoors -->
 
 	<model name="setpoints">
@@ -1355,16 +1361,20 @@
 				<parameter name="rate" value="10"/>
 			</model>
 		</model>
+		-->
 		<model name="heating">
-			<model name="pipes" type="vg::HeatPipes"> 
+			<model name="pipes"> 
 				<xsl:for-each select="JobDataSet/Greenhouse/zone/Heatpipes/Heatpipe">
-					<model type="vg::HeatPipe">
+					<model>
 						<xsl:attribute name="name">
 							<xsl:value-of select="concat('pipe', position())"/>
 						</xsl:attribute>
+						<xsl:attribute name="type">
+							<xsl:value-of select="'vg::Pipe'"/>
+						</xsl:attribute>
 						<parameter name="length">
 							<xsl:attribute name="value">
-							<xsl:value-of select="Constants/Parameters[ParameterID='535']/Value"/>
+								<xsl:value-of select="Constants/Parameters[ParameterID='535']/Value"/>
 							</xsl:attribute>
 						</parameter>
 						<parameter name="diameter">
@@ -1386,7 +1396,6 @@
 				</xsl:for-each>
 			</model>
 		</model>
-		-->
 		<model name="growthLights" type="vg::GrowthLights">
 			<xsl:for-each select="JobDataSet/Greenhouse/zone/Lamps/Lamp">
 				<model type="vg::GrowthLight">
@@ -1518,26 +1527,7 @@
 		<parameter name="fileName" value="dvv_unisim_0001.txt"/>
 
 		<trace label="date" value="calendar[dateAsReal]"/>
-		
-		<trace label="windspeed" value="outdoors[windspeed]"/>
-		<trace label="floor_temp" value="floor/temperature[value]"/>
-		<trace label="cover_temp" value="given/energyFlux/shelter[coverTemperature]"/>
-		<trace label="screen_temp" value="given/energyFlux/shelter[screensTemperature]"/>
-
-		<trace label="outdoors_rh" value="outdoors[rh]"/>
-		<trace label="indoors_rh" value="indoors/humidity[rh]"/>
-		<trace label="outdoors_ah" value="outdoors[ah]"/>
-		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
-
-		<trace label="sp_heat" value="setpoints/temperature/heating[value]"/>
-		<trace label="sp_vent" value="setpoints/temperature/ventilation[value]"/>
-		<trace label="sp_rh" value="setpoints/humidity/maximumRh[signal]"/>
-
-		<trace label="heated_temp" ref="controlled/energyflux/temperature[value]"/>
-		<trace label="temp_top" ref="layers/top/temperature[value]"/>
-		<trace label="temp_mid" ref="layers/middle/temperature[value]"/>
-		<trace label="temp_bot" ref="layers/bottom/temperature[value]"/>
-
+			
 		<trace label="giv_eflux_sum" ref="given/energyFlux[value]"/>
 		<trace label="giv_eflux_trans" ref="given/energyFlux/transpiration[value]"/>
 		<trace label="giv_eflux_cond_cov" ref="given/energyFlux/condensationCover[value]"/>
@@ -1547,12 +1537,7 @@
 		<trace label="giv_eflux_shelter" ref="given/energyFlux/shelter[value]"/>
 		<trace label="giv_eflux_crop" ref="given/energyFlux/crop[value]"/>
 		<trace label="giv_eflux_floor" ref="given/energyFlux/floor[value]"/>
-
-		<trace label="heating_supply" ref="heating/supply[value]"/>
-		<trace label="heating_pred" ref="heating/supply[predicted]"/>
-		<trace label="heating_slope" ref="heating/supply[slope]"/>
-
-		
+			
 		<trace label="abs_light_co" ref="energetics[lightAbsorbedCover]"/>
 		<trace label="abs_light_sc" ref="energetics[lightAbsorbedScreens]"/>
 		<trace label="ind_light_dir" ref="indoors/light[direct]"/>
@@ -1642,12 +1627,6 @@
 		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingIrAbsorptivity]"/>
 		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingIrAbsorptivity]"/>
 		
-		<trace label="air_giv_infilt" value="given/airFlux/outdoors/infiltration[value]"/>
-		<trace label="air_giv_crack" value="given/airFlux/outdoors/crackVentilation[value]"/>
-		<trace label="air_giv_grav" value="given/airFlux/outdoors/gravitation[value]"/>
-		<trace label="air_giv_tot" value="given/airFlux/outdoors/[value]"/>
-		<trace label="air_cooling" ref="cooling/airFlux[value]"/>
-		<trace label="air_cooling_max" ref="cooling/airSupplyMax[value]"/>
 		<trace label="max_state" value="construction/shelters[screensMaxState]"/>
 		
 		<trace label="leaf_tra_cond_top" value="layers/top/transpiration[conductance]"/>
@@ -1664,20 +1643,50 @@
 		<trace label="leaf_cond_mid" value="layers/middle/condensation/energyFlux[value]"/>
 		<trace label="leaf_cond_bot" value="layers/bottom/condensation/energyFlux[value]"/>
 
-		<trace label="en_cool_demand" value="energyflux/cooling/demand[value]"/>
-		<trace label="en_cool_air_sup_max" value="energyflux/cooling/airSupplyMax[value]"/>
-		<trace label="en_cool_air_sup" value="energyflux/cooling/supply[value]"/>
-		<trace label="en_cool_air_sup_target" value="energyflux/cooling/supply/target[value]"/>
 
 		<trace label="contr_cool_air" value="controlled/cooling/airflux[value]"/>
 		<trace label="contr_cool_en" value="controlled/cooling/energyflux[value]"/>
 
 		<trace label="scr_ground_area" value="construction/shelters[screensPerGroundArea]"/>
 
+		<!-- Climate -->
+		<trace label="outdoorsWindspeed" value="outdoors[windspeed]"/>
+		<trace label="indoorsWindspeed" value="indoors/windspeed[value]"/>
+		<trace label="indoorsCo2" ref="indoors/co2[value]"/>
+		
+		<trace label="outdoorsRh" value="outdoors[rh]"/>
+		<trace label="indoorsRh" value="indoors/humidity[rh]"/>
+		<trace label="outdoorsAh" value="outdoors[ah]"/>
+		<trace label="indoorsAh" value="indoors/humidity[ah]"/>
+
+		<trace label="indoorsTemperature" value="indoors/temperature[value]"/>
+		<trace label="coverTemperature" value="given/energyFlux/shelter[coverTemperature]"/>
+		<trace label="screenTemperature" value="given/energyFlux/shelter[screensTemperature]"/>
+		<trace label="floorTemperature" value="energyFlux/floor[temperature]"/>
+
+		<trace label="topTemperature" ref="layers/top/temperature[value]"/>
+		<trace label="midTemperature" ref="layers/middle/temperature[value]"/>
+		<trace label="botTemperature" ref="layers/bottom/temperature[value]"/>
+
+		<!-- Controlled -->
+		<trace label="airInfiltration" value="given/airFlux/outdoors/infiltration[value]"/>
+		<trace label="airHumCrack" value="given/airFlux/outdoors/crackVentilation[value]"/>
+		<trace label="airGravity" value="given/airFlux/outdoors/gravitation[value]"/>
+		<trace label="airGiven" value="given/airFlux/outdoors/[value]"/>
+
+		<trace label="energyCoolingDemand" value="energyflux/cooling/demand[value]"/>
+		<trace label="airCoolingMax" ref="cooling/airSupplyMax[value]"/>
+		<trace label="airCoolingSupply" ref="cooling/airFlux[value]"/>
+		<trace label="energyCoolingSupply" value="energyflux/cooling/supply[value]"/>
+
+		<trace label="spHeating" value="setpoints/temperature/heating[value]"/>
+		<trace label="spVentilation" value="setpoints/temperature/ventilation[value]"/>
+		<trace label="spRh" value="setpoints/humidity/maximumRh[signal]"/>
+		<trace label="heatingSupply" ref="heating/supply[value]"/>
+
 		<!-- Production -->
 		<trace label="heatingEnergyFlux" value="budget[heatingEnergyFlux]"/>
 		<trace label="heatingEnergyTotal" value="budget[heatingEnergyTotal]"/>
-		<trace label="indoorsTemperature" value="indoors/temperature[value]"/>
 	
 		<trace label="growthLightsEnergyFlux" value="budget[growthLightsEnergyFlux]"/>
 		<trace label="growthLightsEnergyTotal" value="budget[growthLightsEnergyTotal]"/>
@@ -1685,11 +1694,21 @@
 
 		<trace label="co2Flux" ref="budget[co2Flux]"/>
 		<trace label="co2Total" ref="budget[co2Total]"/>
-		<trace label="indoorsCo2" ref="indoors/co2[value]"/>
 
 		<trace label="assimilation" ref="crop/growth/Pg[value]"/>
 		<trace label="fruitGrowthRate" value="crop/mass[fruitGrowthRate]"/>
 		<trace label="yieldFreshWeight" value="crop/yield[freshWeight]"/>
+
+		<trace label="pipe1Temperature" value="pipes/pipe1[temperature]"/>
+		<trace label="pipe2Temperature" value="pipes/pipe2[temperature]"/>
+		<trace label="pipe1NextTempMin" value="pipes/pipe1[nextTemperatureMin]"/>
+		<trace label="pipe2NextTempMin" value="pipes/pipe2[nextTemperatureMin]"/>
+		<trace label="pipe1NextTempMax" value="pipes/pipe1[nextTemperatureMax]"/>
+		<trace label="pipe2NextTempMax" value="pipes/pipe2[nextTemperatureMax]"/>
+		<trace label="pipe1NextEnergyMin" value="pipes/pipe1[nextEnergyFluxMin]"/>
+		<trace label="pipe2NextEnergyMin" value="pipes/pipe2[nextEnergyFluxMin]"/>
+		<trace label="pipe1NextEnergyMax" value="pipes/pipe1[nextEnergyFluxMax]"/>
+		<trace label="pipe2NextEnergyMax" value="pipes/pipe2[nextEnergyFluxMax]"/>
 
 		<!-- Photosynthesis -->
 		<trace label="top_Pn" ref="top/photosynthesis[Pn]"/>
@@ -1732,7 +1751,6 @@
 		<trace label="mid_Rd" ref="middle/photosynthesis/lightResponse[Rd]"/>
 		<trace label="bot_Rd" ref="bottom/photosynthesis/lightResponse[Rd]"/>
 
-		<trace label="indoorsRh" ref="indoors/humidity[rh]"/>
 		<trace label="airFluxTotal" ref="indoors/total/airflux[value]"/>
 	<!-- 			
 		<trace label="indoors_ah" value="indoors/humidity[ah]"/>

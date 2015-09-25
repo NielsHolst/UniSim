@@ -11,8 +11,6 @@
 
 namespace vg {
 
-class HeatPipe;
-
 class EnergyFluxHeatingSupply : public EnergyFluxBase
 {
 public:

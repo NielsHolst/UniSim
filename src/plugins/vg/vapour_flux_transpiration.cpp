@@ -43,6 +43,10 @@ VapourFluxTranspiration::VapourFluxTranspiration(Identifier name, QObject *paren
     InputRef(double, gainIn, "crop/gain[value]");
 }
 
+void VapourFluxTranspiration::reset() {
+    VapourFluxBase::reset();
+}
+
 void VapourFluxTranspiration::update() {
     conductance = conductanceIn;
     vapourFlux = vapourFluxIn;

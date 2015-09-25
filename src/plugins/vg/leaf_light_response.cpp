@@ -65,8 +65,8 @@ LeafLightResponse::LeafLightResponse(Identifier name, QObject *parent)
 }
 
 void LeafLightResponse::reset() {
-    LUE = 0.014;
-    Pnmax = 0.45;
+    LUE = 0.0155;
+    Pnmax = 0.8;
     Rd = 0.015;
     Pgmax = Pnmax + Rd;
 }

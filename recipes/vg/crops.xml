@@ -46,6 +46,7 @@
 			<parameter name="fractionDryWeight" value="0.025"/>
 			<parameter name="produceMass" ref="../mass[fruit]"/>
 		</model>
+		<model name="rs" type="vg::StomatalResistanceRose"/>
 	</Cucumber>
 	<Tomato>
 		<model name="crop" type="vg::Crop">
@@ -84,6 +85,7 @@
 			<parameter name="fractionDryWeight" value="0.045"/>
 			<parameter name="produceMass" ref="../mass[fruit]"/>
 		</model>
+		<model name="rs" type="vg::StomatalResistanceRose"/>
 	</Tomato>
 	<SweetPepper>
 		<model name="crop" type="vg::Crop">
@@ -127,9 +129,12 @@
 			<parameter name="fractionDryWeight" value="0.045"/>
 			<parameter name="produceMass" ref="../mass[fruit]"/>
 		</model>
+		<model name="rs" type="vg::StomatalResistanceRose"/>
 	</SweetPepper>
 	<CutChrysanthemum/>
-	<PotRose/>
+	<PotRose>
+		<model name="rs" type="vg::StomatalResistanceRose"/>
+	</PotRose>
 	<Lettuce/>
 	<PotPlant/>
 	<Viola/>

@@ -42,12 +42,14 @@ PUBLISH(LeafPhotosynthesis)
 
 const double H{2};
 
+// Leaf area density (m2/m3) at the Gausian point; constant for a uniform vertival LAI distribution
 double LeafPhotosynthesis::lad() const {
 //    double h = xGauss*H;
 //    return lai*6*h*(H-h)/p3(H);
     return lai/H;
 }
 
+// LAI above the Gaussian point (xGauss)
 double LeafPhotosynthesis::laic() const {
 //    double h = xGauss*H;
 //    return lai*( 1 - 1/p3(H)*p2(h)*(3*H - 2*h) );

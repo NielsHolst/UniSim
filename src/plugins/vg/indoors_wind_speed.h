@@ -4,24 +4,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_VAPOUR_FLUX_TRANSPIRATION_H
-#define VG_VAPOUR_FLUX_TRANSPIRATION_H
+#ifndef VG_INDOORS_WIND_SPEED_H
+#define VG_INDOORS_WIND_SPEED_H
 
 #include <usbase/model.h>
-#include "vapour_flux_base.h"
 
 namespace vg {
 
-class VapourFluxTranspiration : public VapourFluxBase
+class IndoorsWindSpeed : public UniSim::Model
 {
 public:
-    VapourFluxTranspiration(UniSim::Identifier name, QObject *parent);
+    IndoorsWindSpeed(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
 private:
-    double conductanceIn, vapourFluxIn, gainIn;
+    // Parameters
+    double constructionWidth, ventilation;
 
+    // Variables
+    double value;
 };
 } //namespace
 

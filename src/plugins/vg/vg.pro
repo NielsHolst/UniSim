@@ -58,6 +58,7 @@ HEADERS += \
     indoors_humidity.h \
     indoors_light.h \
     indoors_temperature.h \
+    indoors_wind_speed.h \
     leaf_lai.h \
     leaf_layer.h \
     leaf_light_response.h \
@@ -68,6 +69,7 @@ HEADERS += \
     growth_light_controller.h \
     outdoors.h \
     pid_control_element.h \
+    pipe.h \
     proportional_signal.h \
     publish.h \
     running_average.h \
@@ -78,7 +80,9 @@ HEADERS += \
     shelters.h \
     signal_collection.h \
     sliding_signal.h \
-    stomatal_resistance.h \
+    stomatal_resistance_base.h \
+    stomatal_resistance_rose.h \
+    stomatal_resistance_tomato.h \
     surface_radiation.h \
     surface_radiation_outputs.h \
     threshold_signal.h \
@@ -146,6 +150,7 @@ SOURCES += \
     indoors_humidity.cpp \
     indoors_light.cpp \
     indoors_temperature.cpp \
+    indoors_wind_speed.cpp \
     leaf_lai.cpp \
     leaf_layer.cpp \
     leaf_light_response.cpp \
@@ -156,6 +161,7 @@ SOURCES += \
     growth_light_controller.cpp \
     outdoors.cpp \
     pid_control_element.cpp \
+    pipe.cpp \
     proportional_signal.cpp \
     publish.cpp \
     running_average.cpp \
@@ -166,7 +172,9 @@ SOURCES += \
     shelters.cpp \
     signal_collection.cpp \
     sliding_signal.cpp \
-    stomatal_resistance.cpp \
+    stomatal_resistance_base.cpp \
+    stomatal_resistance_rose.cpp \
+    stomatal_resistance_tomato.cpp \
     surface_radiation.cpp \
     surface_radiation_outputs.cpp \
     threshold_signal.cpp \

@@ -23,6 +23,7 @@ check = function(U,x) {
 
 plot1 = function(U, from, to, cols) {
 	cols = c("Day", cols)
+	check(U,cols)
 	V = melt(U[U$Day>=from & U$Day<=to, cols], id.vars="Day", value.name="Value", variable.name="Variable")
 	ggplot(V) +
 		geom_line(aes(x=Day, y=Value, color=Variable))
@@ -156,6 +157,38 @@ plot12 = function(U,from=0, to=366) {
 	)	
 }
 
+climate = function(U,from=0, to=366) {
+	windows(14,10)
+	grid.arrange( 
+		plot2(U, from, to, c("outdoorsWindspeed", "indoorsWindspeed", "indoorsCo2")),
+		plot2(U, from, to, c("outdoorsRh", "indoorsRh", "outdoorsAh", "indoorsAh")),
+		plot2(U, from, to, c("indoorsTemperature", "coverTemperature", "screenTemperature", "floorTemperature")),
+		plot2(U, from, to, c("topTemperature", "midTemperature", "botTemperature")),
+		ncol=2
+	)	
+}
+
+controlled = function(U,from=0, to=366) {
+	windows(14,10)
+	grid.arrange( 
+		plot2(U, from, to, c("airInfiltration", "airHumCrack", "airGravity", "airGiven")),
+		plot2(U, from, to, c("energyCoolingDemand", "airCoolingMax", "airCoolingSupply", "energyCoolingSupply")),
+		plot2(U, from, to, c("spHeating", "spVentilation", "spRh", "heatingSupply")),
+		plot2(U, from, to, c("indoorsTemperature", "indoorsRh", "indoorsCo2", "airFluxTotal")),
+		plot2(U, from, to, c("pipe1Temperature", "pipe2Temperature")),
+		ncol=3
+	)	
+}
+
+check_pipes = function(U,from=0, to=366) {
+	windows(14,10)
+	grid.arrange( 
+		plot1(U, from, to, c("pipe1NextTempMin", "pipe1Temperature", "pipe1NextTempMax")),
+		plot1(U, from, to, c("pipe2NextTempMin", "pipe2Temperature", "pipe2NextTempMax")),
+		ncol=1
+	)
+}
+
 production = function(U,from=0, to=366) {
 	windows(14,10)
 	grid.arrange( 
@@ -185,7 +218,19 @@ photosynthesis = function(U,from=0, to=366) {
 }
  
 U = read_unisim("dvv_unisim_0001.txt")
-production(U)
-photosynthesis(U)
+# climate(U)
+controlled(U)
+# production(U)
+# photosynthesis(U)
+# hist(U$pipe1NextTempMax-)
+
+# grid.arrange( 
+	# ggplot(data=data.frame(cbind(U1=U1$top_rs_H2o, U=U$top_rs_H2o)), aes(x=U1,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
+	# ggplot(data=data.frame(cbind(U1=U1$mid_rs_H2o, U=U$mid_rs_H2o)), aes(x=U1,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
+	# ggplot(data=data.frame(cbind(U1=U1$bot_rs_H2o, U=U$bot_rs_H2o)), aes(x=U1,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
+	# ncol=2
+# )	
+
+
 
  

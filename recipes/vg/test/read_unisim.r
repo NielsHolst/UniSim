@@ -163,8 +163,12 @@ climate = function(U,from=0, to=366) {
 		plot2(U, from, to, c("outdoorsWindspeed", "indoorsWindspeed", "indoorsCo2")),
 		plot2(U, from, to, c("outdoorsRh", "indoorsRh", "outdoorsAh", "indoorsAh")),
 		plot2(U, from, to, c("indoorsTemperature", "coverTemperature", "screenTemperature", "floorTemperature")),
-		plot2(U, from, to, c("topTemperature", "midTemperature", "botTemperature")),
-		ncol=2
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "Temperature")),
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "LightAbsorbed")),
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "GrowthLightLwAbsorbed")),
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "ShelterLoss")),
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "HeatingAbsorbed")),
+		ncol=4
 	)	
 }
 
@@ -218,18 +222,19 @@ photosynthesis = function(U,from=0, to=366) {
 }
  
 U = read_unisim("dvv_unisim_0001.txt")
-# climate(U)
+climate(U)
 controlled(U)
 # production(U)
 # photosynthesis(U)
 # hist(U$pipe1NextTempMax-)
 
-# grid.arrange( 
-	# ggplot(data=data.frame(cbind(U1=U1$top_rs_H2o, U=U$top_rs_H2o)), aes(x=U1,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
-	# ggplot(data=data.frame(cbind(U1=U1$mid_rs_H2o, U=U$mid_rs_H2o)), aes(x=U1,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
-	# ggplot(data=data.frame(cbind(U1=U1$bot_rs_H2o, U=U$bot_rs_H2o)), aes(x=U1,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
-	# ncol=2
-# )	
+windows(14,10)
+grid.arrange( 
+	ggplot(data=data.frame(cbind(U0=U0$topTemperature, U=U$topTemperature)), aes(x=U0,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
+	ggplot(data=data.frame(cbind(U0=U0$midTemperature, U=U$midTemperature)), aes(x=U0,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
+	ggplot(data=data.frame(cbind(U0=U0$botTemperature, U=U$botTemperature)), aes(x=U0,y=U)) + geom_point() + geom_abline(size=1.5, color="red"),
+	ncol=2
+)	
 
 
 

@@ -44,7 +44,8 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, heating, "heating/supply[value]");
 //    InputRef(double, floorTemperature, "energyFlux/floor[temperature]");
     InputRef(double, growthLightLight, "actuators/growthlights[shortWaveEmission]");
-    InputRef(double, growthLightIr, "actuators/growthlights[longWaveEmission]");
+    InputRef(double, growthLightLw, "actuators/growthlights[longWaveEmission]");
+    Input(double, growthLightViewFactor, 1.);
     InputRef(double, leafTemperature, "../temperature[value]");
     InputRef(double, coverTemperature, "given/energyFlux/shelter[coverTemperature]");
     InputRef(double, screensTemperature, "given/energyFlux/shelter[screensTemperature]");
@@ -54,57 +55,69 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
 
     Output(double, lightAbsorbed);
     Output(double, heatingAbsorbed);
-    Output(double, growthLightIrAbsorbed);
+    Output(double, growthLightLwAbsorbed);
     Output(double, shelterLoss);
     Output(double, value);
 }
+
+void LeafRadiationAbsorbed::initialize() {
+    auto pipes = seekMany<Model*>("actuators/heating/pipes/*");
+    for (Model *pipe : pipes) {
+        pipeInfos << PipeInfo {
+                        pipe->pullValuePtr<double>("length"),
+                        pipe->pullValuePtr<double>("diameter"),
+                        pipe->pullValuePtr<double>("temperature"),
+                        pipe->pullValuePtr<double>("emissivity")
+                     };
+    }
+}
+
 void LeafRadiationAbsorbed::reset() {
     lightAbsorbed =
     heatingAbsorbed =
-    growthLightIrAbsorbed =
+    growthLightLwAbsorbed =
     shelterLoss =
     value = 0.;
 }
 
 void LeafRadiationAbsorbed::update() {
-    double
-//        irTransmissionLowerside = kIr*exp(-kIr*lai*xGaussLowerside)*wGaussLowerside*lai,
-        irTransmissionUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai,
-        emUpperside = jointEmissivity(shelterOutgoingIrAbsorptivity, emissivity),
-        shelterTemperature = screensTemperature*screensMaxState + coverTemperature*(1-screensMaxState);
-
-//    Q_ASSERT(irTransmissionLowerside<=1.);
-    Q_ASSERT(irTransmissionUpperside<=1.);
-//    heatingAbsorbed = Sigma*emissivity*(p4K(leafTemperature) - p4K(floorTemperature))*irTransmissionLowerside;
-    lightAbsorbed = lightAbsorptivity*(indoorsLight + growthLightLight);
-//    double heatingBalance = heating*irTransmissionLowerside - Sigma*p4K(leafTemperature);
-//    heatingAbsorbed = max(emissivity*heatingBalance, 0.);
-    /*  Heating absorbed removed. At a leaf temperature of e.g 17C, the heat emission from leaves is 400 W/m2.
-        To heat the leaves above 17C by long-wave radiation, we would thus need a heat source yielding more than 400 W/m2.
-        The heating of leaves must therefore be due to convection and conduction.
-    */
-//    growthLightIrAbsorbed = growthLightIr*irTransmissionUpperside*emissivity;
-    /* Skipped for the same reason as above
-     */
-    shelterLoss = Sigma*emUpperside*(p4K(leafTemperature) - p4K(shelterTemperature))*coverPerGroundArea*irTransmissionUpperside;
-
-    value = lightAbsorbed + heatingAbsorbed + growthLightIrAbsorbed - shelterLoss;
+    irTransmissionLowerside = kIr*exp(-kIr*lai*xGaussLowerside)*wGaussLowerside*lai;
+    irTransmissionUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai;
+    setLightAbsorbed();
+    setGrowthLightLwAbsorbed();
+    setShelterLoss();
+    setHeatingAbsorbed();
+    value = lightAbsorbed + heatingAbsorbed + growthLightLwAbsorbed - shelterLoss;
 }
 
-//void LeafRadiationAbsorbed::update() {
-//    double
-//        irAbsorptivityLowerside = kIr*exp(-kIr*lai*xGaussLowerside)*wGaussLowerside*lai,
-//        irAbsorptivityUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai,
-//        em = jointEmissivity(shelterOutgoingIrAbsorptivity, irAbsorptivityUpperside),
-//        shelterTemperature = screensTemperature*screensMaxState + coverTemperature*(1-screensMaxState);
+void LeafRadiationAbsorbed::setLightAbsorbed() {
+    lightAbsorbed = lightAbsorptivity*(indoorsLight + growthLightLight);
+}
 
-//    lightAbsorbed = lightAbsorptivity*(indoorsLight + growthLightLight);
-//    heatingAbsorbed = heating*irAbsorptivityLowerside;
-//    growthLightIrAbsorbed = growthLightIr*irAbsorptivityUpperside;
-//    shelterLoss = Sigma*em*(p4K(leafTemperature) - p4K(shelterTemperature))*coverPerGroundArea;
+void LeafRadiationAbsorbed::setGrowthLightLwAbsorbed() {
+    // This is a shortcut. We should know the temperature and area of the lamps.
+    growthLightLwAbsorbed = growthLightViewFactor*growthLightLw*irTransmissionUpperside*emissivity;
+}
 
-//    value = lightAbsorbed + heatingAbsorbed + growthLightIrAbsorbed - shelterLoss;
-//}
+void LeafRadiationAbsorbed::setShelterLoss() {
+    double
+        em = jointEmissivity(emissivity, shelterOutgoingIrAbsorptivity),
+        screensDiff = p4K(leafTemperature) - p4K(screensTemperature),
+        coverDiff = p4K(leafTemperature) - p4K(coverTemperature);
+    shelterLoss = Sigma*em*coverPerGroundArea*irTransmissionUpperside*
+                  (screensDiff*screensMaxState + coverDiff*(1-screensMaxState));
+}
+
+void LeafRadiationAbsorbed::setHeatingAbsorbed() {
+    heatingAbsorbed = 0;
+    for (PipeInfo pi : pipeInfos) {
+        if (*pi.temperature > leafTemperature) {
+            double em = jointEmissivity(emissivity, *pi.emissivity);
+            heatingAbsorbed += Sigma*em*(p4K(*pi.temperature) - p4K(leafTemperature))*irTransmissionLowerside*pi.area();
+        }
+    }
+}
+
 
 } //namespace
 

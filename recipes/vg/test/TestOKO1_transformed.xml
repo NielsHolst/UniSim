@@ -987,6 +987,18 @@
 		<trace label="topTemperature" ref="layers/top/temperature[value]"/>
 		<trace label="midTemperature" ref="layers/middle/temperature[value]"/>
 		<trace label="botTemperature" ref="layers/bottom/temperature[value]"/>
+		<trace label="topLightAbsorbed" ref="layers/top/radiationAbsorbed[lightAbsorbed]"/>
+		<trace label="midLightAbsorbed" ref="layers/middle/radiationAbsorbed[lightAbsorbed]"/>
+		<trace label="botLightAbsorbed" ref="layers/bottom/radiationAbsorbed[lightAbsorbed]"/>
+		<trace label="topGrowthLightLwAbsorbed" ref="layers/top/radiationAbsorbed[growthLightLwAbsorbed]"/>
+		<trace label="midGrowthLightLwAbsorbed" ref="layers/middle/radiationAbsorbed[growthLightLwAbsorbed]"/>
+		<trace label="botGrowthLightLwAbsorbed" ref="layers/bottom/radiationAbsorbed[growthLightLwAbsorbed]"/>
+		<trace label="topShelterLoss" ref="layers/top/radiationAbsorbed[shelterLoss]"/>
+		<trace label="midShelterLoss" ref="layers/middle/radiationAbsorbed[shelterLoss]"/>
+		<trace label="botShelterLoss" ref="layers/bottom/radiationAbsorbed[shelterLoss]"/>
+		<trace label="topHeatingAbsorbed" ref="layers/top/radiationAbsorbed[heatingAbsorbed]"/>
+		<trace label="midHeatingAbsorbed" ref="layers/middle/radiationAbsorbed[heatingAbsorbed]"/>
+		<trace label="botHeatingAbsorbed" ref="layers/bottom/radiationAbsorbed[heatingAbsorbed]"/>
 		<trace label="airInfiltration" value="given/airFlux/outdoors/infiltration[value]"/>
 		<trace label="airHumCrack" value="given/airFlux/outdoors/crackVentilation[value]"/>
 		<trace label="airGravity" value="given/airFlux/outdoors/gravitation[value]"/>

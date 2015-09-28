@@ -20,7 +20,7 @@ public:
     void update();
 private:
     // Inputs
-    double length, diameter, minTemperature, maxTemperature, maxTemperatureIncreaseRate,
+    double length, diameter, minTemperature, maxTemperature, maxTemperatureIncreaseRate, emissivity,
         energyFluxTotal, indoorsTemperature, timeStep;
     // Outputs
     double temperature, energyFlux,

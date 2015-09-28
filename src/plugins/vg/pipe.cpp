@@ -54,6 +54,7 @@ Pipe::Pipe(Identifier name, QObject *parent)
     Input(double, minTemperature, 20.);
     Input(double, maxTemperature, 80.);
     Input(double, maxTemperatureIncreaseRate, 2.); // K/min
+    Input(double, emissivity, 0.9);
     InputRef(double, energyFluxTotal, "heating/supply[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");

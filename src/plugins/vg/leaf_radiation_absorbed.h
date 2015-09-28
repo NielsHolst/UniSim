@@ -15,6 +15,7 @@ class LeafRadiationAbsorbed : public UniSim::Model
 {
 public:
     LeafRadiationAbsorbed(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
 private:
@@ -24,15 +25,30 @@ private:
         xGaussUpperside, wGaussUpperside,
         kIr, lai, indoorsLight, heating,
         lightAbsorptivity, emissivity,
-        growthLightLight, growthLightIr,
+        growthLightLight, growthLightLw, growthLightViewFactor,
         leafTemperature, coverTemperature, screensTemperature, screensMaxState,
         shelterOutgoingIrAbsorptivity,
         coverPerGroundArea;
 
     // Outputs
     double value, lightAbsorbed, heatingAbsorbed,
-        growthLightIrAbsorbed,
+        growthLightLwAbsorbed,
         shelterLoss;
+
+    // Data
+    double irTransmissionLowerside, irTransmissionUpperside;
+
+    struct PipeInfo {
+        const double *length, *diameter, *temperature, *emissivity;
+        double area() {return (*length)*(*diameter)/1000./2; }  // Only half of the area faces upwards
+    };
+    QVector<PipeInfo> pipeInfos;
+
+    // Methods
+    void setLightAbsorbed();
+    void setGrowthLightLwAbsorbed();
+    void setShelterLoss();
+    void setHeatingAbsorbed();
 };
 
 } //namespace

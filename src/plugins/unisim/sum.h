@@ -28,7 +28,7 @@ private:
     double value;
 
     // Links
-    QVector<const VariableBase*> values;
+    QList<VariableBase*> values;
 };
 
 } //namespace

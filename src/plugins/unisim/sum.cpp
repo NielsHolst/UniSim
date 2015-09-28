@@ -27,7 +27,7 @@ void Sum::initialize() {
     int n = items.size();
     values.clear();
     for (int i = 0; i < n; ++i) {
-        VariableBase *var = seekOne<Model*,VariableBase*>(items[i]);
+        QList<VariableBase*> var = seekMany<Model*,VariableBase*>(items[i]);
         values << var;
     }
 }
@@ -39,8 +39,12 @@ void Sum::reset() {
 void Sum::update() {
     bool ok = true;
     value = 0;
-    for (int i = 0; ok && i < values.size(); ++i)
-        value += values.at(i)->toVariant().toDouble(&ok);
+//    for (int i = 0; ok && i < values.size(); ++i)
+//        value += values.at(i)->toVariant().toDouble(&ok);
+    for (auto v : values) {
+        value += v->toVariant().toDouble(&ok);
+        if (!ok) break;
+    }
     if (!ok)
         throw Exception("One of the variables to be added cannot be converted to a number", this);
 }

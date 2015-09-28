@@ -15,24 +15,29 @@ class Pipe : public UniSim::Model
 {
 public:
     Pipe(UniSim::Identifier name, QObject *parent);
+    void initialize();
     void reset();
     void update();
-
-    double calcEnergyFlux(double temperatureDifference) const;
-    double calcTemperatureDifference(double energyFlux) const;
-    double minEnergyFlux() const;
 private:
     // Inputs
     double length, diameter, minTemperature, maxTemperature, maxTemperatureIncreaseRate,
-        energyFlux, indoorsTemperature, timeStep;
+        energyFluxTotal, indoorsTemperature, timeStep;
     // Outputs
-    double temperature,
+    double temperature, energyFlux,
         nextTemperatureMin, nextTemperatureMax,
         nextEnergyFluxMin, nextEnergyFluxMax;
 
     // Data
     const double exponent{1.25};
     double slope;
+    QVector<const double*> energyFluxFromPreceedingPipes;
+
+    // Methods
+    QList<UniSim::Model*> seekPrecedingSiblings();
+    double calcEnergyFlux(double temperatureDifference) const;
+    double calcTemperatureDifference(double energyFluxTotal) const;
+    void setNextTemperatureMin();
+    double energyFluxFromPreceedingPipesSum();
 };
 
 } //namespace

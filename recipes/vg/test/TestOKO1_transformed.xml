@@ -271,17 +271,19 @@
 		<model name="controlled">
 			<model name="energyFlux">
 				<model name="heating">
+					<model name="minSupply" type="Unisim::Sum">
+						<parameter name="toAdd" value="(actuators/heating/pipes/*[nextEnergyFluxMin])"/>
+					</model>
+					<model name="maxSupply" type="Unisim::Sum">
+						<parameter name="toAdd" value="(actuators/heating/pipes/*[nextEnergyFluxMax])"/>
+					</model>
 					<model name="demand" type="vg::EnergyFluxHeatingDemand"/>
 					<model name="supply" type="vg::PidControlElement">
-						<parameter name="minimum" value="0"/>
-						<parameter name="minSlope" value="-20"/>
-						<parameter name="maxSlope" value="30"/>
 						<parameter name="Kprop" value="0.6"/>
 						<parameter name="Kint" value="0.01"/>
-						<parameter name="signal" ref="./supply[value]"/>
-						<model name="supply" type="vg::EnergyFluxHeatingSupply">
-							<parameter name="maxHeating" value="10000"/>
-						</model>
+						<parameter name="minimum" ref="../minSupply[value]"/>
+						<parameter name="maximum" ref="../maxSupply[value]"/>
+						<parameter name="signal" ref="../demand[value]"/>
 					</model>
 				</model>
 				<model name="temperature" type="vg::IndoorsTemperature">

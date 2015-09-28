@@ -54,30 +54,52 @@ Pipe::Pipe(Identifier name, QObject *parent)
     Input(double, minTemperature, 20.);
     Input(double, maxTemperature, 80.);
     Input(double, maxTemperatureIncreaseRate, 2.); // K/min
-    InputRef(double, energyFlux, "heating/supply[value]");
+    InputRef(double, energyFluxTotal, "heating/supply[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     Output(double, temperature);
+    Output(double, energyFlux);
     Output(double, nextTemperatureMin);
     Output(double, nextTemperatureMax);
     Output(double, nextEnergyFluxMin);
     Output(double, nextEnergyFluxMax);
 }
 
+void Pipe::initialize() {
+    auto preceedingPipes = seekPrecedingSiblings();
+    for (Model *pipe : preceedingPipes) {
+        energyFluxFromPreceedingPipes << pipe->pullValuePtr<double>("energyFlux");
+    }
+}
+
+QList<Model *> Pipe::seekPrecedingSiblings() {
+    Model *parent = seekParent<Model*>("*");
+    auto siblings = parent->seekChildren<Model*>("*");
+    while (siblings.last() != this)
+        siblings.takeLast();
+    siblings.takeLast();
+    return siblings;
+}
+
 void Pipe::reset() {
     double d = minMax(26., diameter, 51.);
     slope = length*(0.0131*d + 0.105);
-    temperature = minTemperature;
+//    temperature = minTemperature;
+    update();
 }
 
 void Pipe::update() {
-    temperature = indoorsTemperature + calcTemperatureDifference(energyFlux);
-    nextTemperatureMax = temperature + maxTemperatureIncreaseRate*timeStep/60.;
-
-    double energyFlux = calcEnergyFlux(temperature - indoorsTemperature),
-           waterVolume = length*PI*sqr(diameter/1000./2.);
-    nextTemperatureMin = temperature - energyFlux*timeStep/CpWaterVol/waterVolume;    // K = W/m2 * s * K*m3/J * m2/m3
-
+    // Set temperature
+    temperature = minMax(minTemperature,
+                         indoorsTemperature +
+                         calcTemperatureDifference(energyFluxTotal - energyFluxFromPreceedingPipesSum()),
+                         maxTemperature);
+    nextTemperatureMax = minMax(minTemperature,
+                                temperature + maxTemperatureIncreaseRate*timeStep/60.,
+                                maxTemperature);
+    setNextTemperatureMin();
+    // Set energy flux
+    energyFlux = calcEnergyFlux(temperature - indoorsTemperature);
     nextEnergyFluxMax = calcEnergyFlux(nextTemperatureMax - indoorsTemperature);
     nextEnergyFluxMin = calcEnergyFlux(nextTemperatureMin - indoorsTemperature);
 }
@@ -85,16 +107,30 @@ void Pipe::update() {
 //! Heat flux from heat pipe [W/m<SUP>2</SUP>]
 double Pipe::calcEnergyFlux(double temperatureDifference) const {
     // flux = slope*Tdiff^1.25
-    return (temperatureDifference <= 0) ? 0. : slope*pow(temperatureDifference,exponent);
+    return TestNum::leZero(temperatureDifference) ? 0. : slope*pow(temperatureDifference,exponent);
 }
 
 //! Temperature difference to obtain a certain heat flux [K]
 double Pipe::calcTemperatureDifference(double energyFlux) const {
     // Tdiff = (flux/slope)^(1/1.25)
-    return pow(energyFlux/slope, 1./exponent);
+    return TestNum::leZero(energyFlux) ? 0. :pow(energyFlux/slope, 1./exponent);
 }
 
+void Pipe::setNextTemperatureMin() {
+    double energyFlux = calcEnergyFlux(temperature - indoorsTemperature),
+           waterVolume = length*PI*sqr(diameter/1000./2.);
+    nextTemperatureMin = minMax(minTemperature,
+                                temperature - energyFlux*timeStep/CpWaterVol/waterVolume,    // K = W/m2 * s * K*m3/J * m2/m3
+                                maxTemperature);
+}
 
+double Pipe::energyFluxFromPreceedingPipesSum() {
+    double sum{0};
+    for (const double *energyFlux : energyFluxFromPreceedingPipes) {
+        sum += (*energyFlux);
+    }
+    return sum;
+}
 
 
 } //namespace

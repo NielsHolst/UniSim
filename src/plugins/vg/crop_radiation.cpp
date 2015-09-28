@@ -47,10 +47,10 @@ CropRadiation::CropRadiation(Identifier name, QObject *parent)
     Output(double, directReflectivity);
     Output(double, reflectivity);
     Output(double, transmissivity);
-    Output(double, absorptivityIrTop);
-    Output(double, absorptivityIrMiddle);
-    Output(double, absorptivityIrBottom);
-    Output(double, transmissivityIr);
+    Output(double, absorptivityLwTop);
+    Output(double, absorptivityLwMiddle);
+    Output(double, absorptivityLwBottom);
+    Output(double, transmissivityLw);
 }
 
 void CropRadiation::reset() {
@@ -82,11 +82,11 @@ void CropRadiation::update() {
     transmissivity = max(1 - reflectivity - absorptivityTop - absorptivityMiddle - absorptivityBottom, 0.);
 
     // Absorptivity and transmissivity of IR coming from above; use in reverse order for IR coming from below
-    const double kIr{0.8};
-    absorptivityIrTop    = kIr*exp(-kIr*lai*xGauss3[0])*wGauss3[0];
-    absorptivityIrMiddle = kIr*exp(-kIr*lai*xGauss3[1])*wGauss3[1];
-    absorptivityIrBottom = kIr*exp(-kIr*lai*xGauss3[2])*wGauss3[2];
-    transmissivityIr = 1. - absorptivityIrTop - absorptivityIrMiddle - absorptivityIrBottom;
+    const double kLw{0.8};
+    absorptivityLwTop    = kLw*exp(-kLw*lai*xGauss3[0])*wGauss3[0];
+    absorptivityLwMiddle = kLw*exp(-kLw*lai*xGauss3[1])*wGauss3[1];
+    absorptivityLwBottom = kLw*exp(-kLw*lai*xGauss3[2])*wGauss3[2];
+    transmissivityLw = 1. - absorptivityLwTop - absorptivityLwMiddle - absorptivityLwBottom;
 }
 
 } //namespace

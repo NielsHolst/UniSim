@@ -78,6 +78,8 @@ void Vents::reset() {
     }
     if (totalLength>0.) averageHeight /= totalLength;
     proportionalEffectiveArea /= greenhouseArea;
+    if (proportionalEffectiveArea > 1.)
+        proportionalEffectiveArea = 1.;
 }
 
 

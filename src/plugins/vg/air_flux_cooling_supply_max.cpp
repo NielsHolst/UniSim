@@ -38,6 +38,7 @@ AirFluxCoolingSupplyMax::AirFluxCoolingSupplyMax(Identifier name, QObject *paren
 {
     InputRef(double, byWind, "./byWind[value]");
     InputRef(double, byTemp, "./byTemp[value]");
+    InputRef(double, givenAirflux, "given/airflux[value]");
     Output(double, value);
 }
 
@@ -46,7 +47,7 @@ void AirFluxCoolingSupplyMax::reset() {
 }
 
 void AirFluxCoolingSupplyMax::update() {
-    value = sqrt(sqr(byWind) + sqr(byTemp));
+    value = max(sqrt(sqr(byWind) + sqr(byTemp)) - givenAirflux, 0.);
 }
 
 } //namespace

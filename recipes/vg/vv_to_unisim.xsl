@@ -578,48 +578,46 @@
 	
 	<model name="indoors">
 		<model name="given">
-			<model name="airflux">
-				<model name="outdoors" type="AirFluxOutdoors">
-					<model name="infiltration" type="vg::AirFluxInfiltration">
-						<parameter name="leakage">
-							<xsl:attribute name="value">
-								<xsl:value-of select="$Leakage"/>
-							</xsl:attribute>
-						</parameter>
-					</model>
-					
-					<model name="crackVentilation" type="vg::PidControlElement">
-						<parameter name="signal" ref="./target[signal]"/>
-						<parameter name="Kprop" value="0.1"/>
-						<model name="target" type="vg::ProportionalSignal">
-							<model name="coldFactor" type="vg::ProportionalSignal"> 
-								<parameter name="input" ref ="outdoors[temperature]"/>
-								<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
-								<parameter name="thresholdBand" value="1"/>
-								<parameter name="increasingSignal" value="true"/>
-								<parameter name="maxSignal">
-									<xsl:attribute name="value">
-										<xsl:value-of select="$MaxCrackVentilation"/>
-									</xsl:attribute>
-								</parameter>
-								<parameter name="minSignal" value="0"/>
-							</model>
-							
-							<parameter name="input" ref="indoors/humidity[rh]"/>
-							<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
-							<parameter name="thresholdBand">
+			<model name="airflux" type="AirFluxOutdoors">
+				<model name="infiltration" type="vg::AirFluxInfiltration">
+					<parameter name="leakage">
+						<xsl:attribute name="value">
+							<xsl:value-of select="$Leakage"/>
+						</xsl:attribute>
+					</parameter>
+				</model>
+				
+				<model name="crackVentilation" type="vg::PidControlElement">
+					<parameter name="signal" ref="./target[signal]"/>
+					<parameter name="Kprop" value="0.1"/>
+					<model name="target" type="vg::ProportionalSignal">
+						<model name="coldFactor" type="vg::ProportionalSignal"> 
+							<parameter name="input" ref ="outdoors[temperature]"/>
+							<parameter name="threshold" value ="-5"/>    	<!-- sp.VentsspFrostProtection_alpha=-5  -->
+							<parameter name="thresholdBand" value="1"/>
+							<parameter name="increasingSignal" value="true"/>
+							<parameter name="maxSignal">
 								<xsl:attribute name="value">
-									<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+									<xsl:value-of select="$MaxCrackVentilation"/>
 								</xsl:attribute>
 							</parameter>
-							<parameter name="increasingSignal" value="true"/>
-							<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
 							<parameter name="minSignal" value="0"/>
 						</model>
+						
+						<parameter name="input" ref="indoors/humidity[rh]"/>
+						<parameter name="threshold" ref="setpoints/humidity/maximumRh[signal]"/>
+						<parameter name="thresholdBand">
+							<xsl:attribute name="value">
+								<xsl:value-of select="max(JobDataSet/Greenhouse/zone/Vents/Vent/Constants/Parameters[ParameterID='492']/Value)"/> <!--Hack-->
+							</xsl:attribute>
+						</parameter>
+						<parameter name="increasingSignal" value="true"/>
+						<parameter name="maxSignal" ref="./coldFactor[signal]"/>  
+						<parameter name="minSignal" value="0"/>
 					</model>
-					
-					<model name="gravitation" type="AirFluxGravitation"/>
 				</model>
+				
+				<model name="gravitation" type="AirFluxGravitation"/>
 			</model> <!-- airflux -->
 
 			<model name="vapourFlux" type="vg::VapourFluxSum"> 
@@ -633,7 +631,7 @@
 					<parameter name="surfaceTemperature" ref="energyFlux/shelter[screensTemperature]"/>
 				</model>
 				<model name="airFluxOutdoors"  type="vg::VapourFluxAir">
-					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
+					<parameter name="airFlux" ref="given/airflux[value]"/>
 				</model>
 			</model>
 			
@@ -648,7 +646,7 @@
 					<parameter name="vapourFlux" ref="../../vapourflux/condensationScreens[vapourFlux]"/>
 				</model>
 				<model name="airFlux" type="vg::EnergyFluxAir">
-					<parameter name="airFlux" ref="given/airflux/outdoors[value]"/>
+					<parameter name="airFlux" ref="given/airflux[value]"/>
 				</model>
 				<model name="growthLights" type="vg::PidControlElement">
 					<parameter name="Kprop" value="0.5"/>
@@ -711,13 +709,17 @@
 					<model name="demand" type="vg::EnergyFluxCoolingDemand"/>
 					<model name="airSupplyMax" type="vg::AirFluxCoolingSupplyMax">
 						<model name="byWind" type="vg::VentilationByWind">
-							<parameter name="baseRate" value="30"/>
+							<parameter name="baseRate" value="10"/>
 						</model>
-						<model name="byTemp" type="vg::VentilationByTemp"/>
+						<model name="byTemp" type="vg::VentilationByTemp">
+							<parameter name="dischargeCoefficient" value="0.3"/>
+						</model>
 					</model>
 					<model name="supply" type="vg::PidControlElement">
 						<parameter name="Kprop" value="0.5"/>
 						<parameter name="maximum" value="0"/>
+						<parameter name="maxSlope" value="5"/>
+						<parameter name="minSlope" value="-5"/>
 						<parameter name="signal" ref="./target[value]"/>
 						<model name="target" type="vg::EnergyFluxCoolingSupply">
 							<parameter name="airSupplyMax" ref="cooling/airSupplyMax[value]"/>
@@ -739,7 +741,7 @@
 		
 		<model name="total">
 			<model name="airFlux" type="Unisim::Sum">
-				<parameter name="toAdd" value="(given/airFlux/outdoors[value] cooling/airFlux[value])"/>
+				<parameter name="toAdd" value="(given/airFlux[value] cooling/airFlux[value])"/>
 			</model>
 			<model name="vapourFlux" type="vg::VapourFluxSum">
 				<parameter name="toAdd" value="(given/vapourFlux cooling/vapourFlux)"/>
@@ -1490,8 +1492,8 @@
 			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[heatingAbsorbed] layers/middle/radiationAbsorbed[heatingAbsorbed] layers/bottom/radiationAbsorbed[heatingAbsorbed])"/>
 		</model>
 
-		<model name="growthLightIrAbsorbed" type="Unisim::Sum">
-			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[growthLightIrAbsorbed] layers/middle/radiationAbsorbed[growthLightIrAbsorbed] layers/bottom/radiationAbsorbed[growthLightIrAbsorbed])"/>
+		<model name="growthLightLwAbsorbed" type="Unisim::Sum">
+			<parameter name="toAdd" value="(layers/top/radiationAbsorbed[growthLightLwAbsorbed] layers/middle/radiationAbsorbed[growthLightLwAbsorbed] layers/bottom/radiationAbsorbed[growthLightLwAbsorbed])"/>
 		</model>
 
 		<model name="radiationAbsorbed" type="Unisim::Sum">
@@ -1551,10 +1553,10 @@
 		<trace label="ref_can" ref="crop/radiation[reflectivity]"/>
 		<trace label="tra_can" ref="crop/radiation[transmissivity]"/>
 
-		<trace label="absy_ir_top" ref="crop/radiation[absorptivityIrTop]"/>
-		<trace label="absy_ir_mid" ref="crop/radiation[absorptivityIrMiddle]"/>
-		<trace label="absy_ir_bot" ref="crop/radiation[absorptivityIrBottom]"/>
-		<trace label="tray_ir_can" ref="crop/radiation[transmissivityIr]"/>
+		<trace label="absy_ir_top" ref="crop/radiation[absorptivityLwTop]"/>
+		<trace label="absy_ir_mid" ref="crop/radiation[absorptivityLwMiddle]"/>
+		<trace label="absy_ir_bot" ref="crop/radiation[absorptivityLwBottom]"/>
+		<trace label="tray_ir_can" ref="crop/radiation[transmissivityLw]"/>
 		
 		<trace label="abs_par_top" ref="layers/top/photosynthesis[parAbsorbed]"/>
 		<trace label="abs_par_mid" ref="layers/middle/photosynthesis[parAbsorbed]"/>
@@ -1568,9 +1570,9 @@
 		<trace label="abs_heat_mid" ref="layers/middle/radiationAbsorbed[heatingAbsorbed]"/>
 		<trace label="abs_heat_bot" ref="layers/bottom/radiationAbsorbed[heatingAbsorbed]"/>
 
-		<trace label="abs_gr_li_top" ref="layers/top/radiationAbsorbed[growthLightIrAbsorbed]"/>
-		<trace label="abs_gr_li_mid" ref="layers/middle/radiationAbsorbed[growthLightIrAbsorbed]"/>
-		<trace label="abs_gr_li_bot" ref="layers/bottom/radiationAbsorbed[growthLightIrAbsorbed]"/>
+		<trace label="abs_gr_li_top" ref="layers/top/radiationAbsorbed[growthLightLwAbsorbed]"/>
+		<trace label="abs_gr_li_mid" ref="layers/middle/radiationAbsorbed[growthLightLwAbsorbed]"/>
+		<trace label="abs_gr_li_bot" ref="layers/bottom/radiationAbsorbed[growthLightLwAbsorbed]"/>
 
 		<trace label="lost_cover_top" ref="layers/top/radiationAbsorbed[coverLoss]"/>
 		<trace label="lost_cover_mid" ref="layers/middle/radiationAbsorbed[coverLoss]"/>
@@ -1611,8 +1613,8 @@
 		<trace label="shl_cp_scr" ref="shelters[heatCapacityScreensPerGround]"/>
 		<trace label="shl_tra_air" ref="shelters[airTransmissivity]"/>
 
-		<trace label="shl_in_ir_abs" ref="construction/energyFlux[incomingIrAbsorptivity]"/>
-		<trace label="shl_out_ir_abs" ref="construction/energyFlux[outgoingIrAbsorptivity]"/>
+		<trace label="shl_in_ir_abs" ref="construction/energyFlux[incomingLwAbsorptivity]"/>
+		<trace label="shl_out_ir_abs" ref="construction/energyFlux[outgoingLwAbsorptivity]"/>
 		<trace label="shl_heat_out" ref="construction/energyFlux[heatFluxOutside]"/>
 		<trace label="shl_heat_in" ref="construction/energyFlux[heatFluxInside]"/>
 		<trace label="shl_heat_sky" ref="construction/energyFlux[radiationFluxSky]"/>
@@ -1625,9 +1627,9 @@
 		<trace label="shl_scr_temp" ref="construction/energyFlux[screensTemperature]"/>
 		
 		
-		<trace label="shl_in_ir_abs_screens" ref="roof1/screens[incomingIrAbsorptivity]"/>
-		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingIrAbsorptivity]"/>
-		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingIrAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_screens" ref="roof1/screens[incomingLwAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingLwAbsorptivity]"/>
+		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingLwAbsorptivity]"/>
 		
 		<trace label="max_state" value="construction/shelters[screensMaxState]"/>
 		
@@ -1687,15 +1689,19 @@
 		<trace label="botHeatingAbsorbed" ref="layers/bottom/radiationAbsorbed[heatingAbsorbed]"/>
 
 		<!-- Controlled -->
-		<trace label="airInfiltration" value="given/airFlux/outdoors/infiltration[value]"/>
-		<trace label="airHumCrack" value="given/airFlux/outdoors/crackVentilation[value]"/>
-		<trace label="airGravity" value="given/airFlux/outdoors/gravitation[value]"/>
-		<trace label="airGiven" value="given/airFlux/outdoors/[value]"/>
+		<trace label="airInfiltration" value="given/airFlux/infiltration[value]"/>
+		<trace label="airHumCrack" value="given/airFlux/crackVentilation[value]"/>
+		<trace label="airGravity" value="given/airFlux/gravitation[value]"/>
+		<trace label="airGiven" value="given/airFlux[value]"/>
+
+		<trace label="airCoolingMax" ref="cooling/airSupplyMax[value]"/>
+		<trace label="airCoolingMaxByWind" ref="cooling/airSupplyMax/byWind[value]"/>
+		<trace label="airCoolingMaxByTemp" ref="cooling/airSupplyMax/byTemp[value]"/>
 
 		<trace label="energyCoolingDemand" value="energyflux/cooling/demand[value]"/>
-		<trace label="airCoolingMax" ref="cooling/airSupplyMax[value]"/>
-		<trace label="airCoolingSupply" ref="cooling/airFlux[value]"/>
 		<trace label="energyCoolingSupply" value="energyflux/cooling/supply[value]"/>
+		<trace label="airCoolingSupply" ref="cooling/airFlux[value]"/>
+		<trace label="airCoolingSupplySlope" ref="cooling/supply[slope]"/>
 
 		<trace label="spHeating" value="setpoints/temperature/heating[value]"/>
 		<trace label="spVentilation" value="setpoints/temperature/ventilation[value]"/>

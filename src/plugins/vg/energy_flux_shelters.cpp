@@ -51,8 +51,8 @@ EnergyFluxShelters::EnergyFluxShelters(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
     InputRef(double, U, "construction/shelters[U]");
-    InputRef(double, incomingIrAbsorptivity, "construction/shelters[incomingIrAbsorptivity]");
-    InputRef(double, outgoingIrAbsorptivity, "construction/shelters[outgoingIrAbsorptivity]");
+    InputRef(double, incomingLwAbsorptivity, "construction/shelters[incomingLwAbsorptivity]");
+    InputRef(double, outgoingLwAbsorptivity, "construction/shelters[outgoingLwAbsorptivity]");
 
     InputRef(double, lightAbsorbedCover, "construction/shelters[lightAbsorbedCover]");
     InputRef(double, lightAbsorbedScreens, "construction/shelters[lightAbsorbedScreens]");
@@ -105,7 +105,7 @@ void EnergyFluxShelters::update() {
         // W/m2 ground = W/m2 cover * m2 cover / m2 ground
         heatFluxOutsideToCover = U*(outdoorsTemperature - coverTemperature)*coverPerGroundArea;;
         heatFluxInsideToCover = U*(indoorsTemperature2 - coverTemperature)*coverPerGroundArea;;
-        radiationFluxSkyToCover = incomingIrAbsorptivity*Sigma*(p4K(skyTemperature) - p4K(coverTemperature))*coverPerGroundArea;
+        radiationFluxSkyToCover = incomingLwAbsorptivity*Sigma*(p4K(skyTemperature) - p4K(coverTemperature))*coverPerGroundArea;
 
 
         radiationFluxSunToCover = lightAbsorbedCover;

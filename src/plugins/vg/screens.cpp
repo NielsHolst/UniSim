@@ -58,8 +58,8 @@ QVector<Screens::ScreenInfo> Screens::collectScreenInfos(QList<Model*> screenMod
         screenInfos << ScreenInfo {
             screen->pullValuePtr<bool>("isHorizontal"),
             screen->pullValuePtr<double>("transmissivityLightNet"),
-            screen->pullValuePtr<double>("absorptivityIrInnerNet"),
-            screen->pullValuePtr<double>("absorptivityIrOuterNet"),
+            screen->pullValuePtr<double>("absorptivityLwInnerNet"),
+            screen->pullValuePtr<double>("absorptivityLwOuterNet"),
             screen->pullValuePtr<double>("state"),
             screen->pullValuePtr<double>("unhazed"),
             screen->pullValuePtr<double>("transmissivityAirNet"),
@@ -102,7 +102,7 @@ void Screens::update() {
 
     SurfaceRadiation rad;
     for (ScreenInfo si: screenInfos) {
-        SurfaceRadiation &screenRad( SurfaceRadiation().asScreen(*si.transmissivityLightNet, *si.absorptivityIrOuterNet, *si.absorptivityIrInnerNet) );
+        SurfaceRadiation &screenRad( SurfaceRadiation().asScreen(*si.transmissivityLightNet, *si.absorptivityLwOuterNet, *si.absorptivityLwInnerNet) );
         rad *= screenRad;
     }
     set(rad);

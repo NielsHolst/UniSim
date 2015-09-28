@@ -20,7 +20,7 @@ public:
 private:
     // Inputs
     double indoorsLight, growthLightLight, lightAbsorbedByCrop,
-        growthLightIr, growthLightIrAbsorbedByCrop;
+        growthLightLw, growthLightLwAbsorbedByCrop;
 
     // Outputs
     double value;

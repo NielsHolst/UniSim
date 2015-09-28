@@ -32,7 +32,7 @@ private:
     // Outputs
     double
         transmissivityLightNet,
-        absorptivityIrInnerNet, absorptivityIrOuterNet,
+        absorptivityLwInnerNet, absorptivityLwOuterNet,
         unhazed, transmissivityAirNet, effectiveArea,
         resistance, heatCapacity;
     bool isHorizontal;

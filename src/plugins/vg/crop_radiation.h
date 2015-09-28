@@ -29,8 +29,8 @@ private:
         kDirect, kDirectDirect,
         diffuseReflectivity, directReflectivity,
         reflectivity, transmissivity,
-        absorptivityIrTop, absorptivityIrMiddle, absorptivityIrBottom,
-        transmissivityIr;
+        absorptivityLwTop, absorptivityLwMiddle, absorptivityLwBottom,
+        transmissivityLw;
 };
 } //namespace
 

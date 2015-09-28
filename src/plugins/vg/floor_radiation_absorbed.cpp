@@ -33,7 +33,7 @@ FloorRadiationAbsorbed::FloorRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, indoorsLight, "indoors/light[total]");
     InputRef(double, growthLightLight, "actuators/growthlights[shortWaveEmission]");
     InputRef(double, lightAbsorbedByCrop, "crop/lightAbsorbed[value]");
-    InputRef(double, growthLightIrAbsorbedByCrop, "crop/growthLightIrAbsorbed[value]");
+    InputRef(double, growthLightLwAbsorbedByCrop, "crop/growthLightLwAbsorbed[value]");
     Output(double, value);
 }
 
@@ -43,7 +43,7 @@ void FloorRadiationAbsorbed::reset() {
 
 void FloorRadiationAbsorbed::update() {
     value = max(indoorsLight + growthLightLight - lightAbsorbedByCrop, 0.) +
-            max(growthLightIr - growthLightIrAbsorbedByCrop, 0.);
+            max(growthLightLw - growthLightLwAbsorbedByCrop, 0.);
 }
 
 } //namespace

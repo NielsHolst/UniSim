@@ -27,7 +27,7 @@ private:
     struct ScreenInfo {
         const bool *isHorizontal;
         const double *transmissivityLightNet,
-            *absorptivityIrInnerNet, *absorptivityIrOuterNet,
+            *absorptivityLwInnerNet, *absorptivityLwOuterNet,
             *state,
             *unhazed, *airTransmissionNet,
             *resistance, *heatCapacity, *effectiveArea;

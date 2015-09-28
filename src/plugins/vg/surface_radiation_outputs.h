@@ -25,10 +25,10 @@ private:
     double lightTransmissivity, directLightTransmissivity, irTransmissivity,
            incomingLightAbsorptivity, incomingLightReflectivity,
            incomingDirectLightAbsorptivity, incomingDirectLightReflectivity,
-           incomingIrAbsorptivity, incomingIrReflectivity,
+           incomingLwAbsorptivity, incomingLwReflectivity,
            outgoingLightAbsorptivity, outgoingLightReflectivity,
            outgoingDirectLightAbsorptivity, outgoingDirectLightReflectivity,
-           outgoingIrAbsorptivity, outgoingIrReflectivity;
+           outgoingLwAbsorptivity, outgoingLwReflectivity;
     // Data
     SurfaceRadiation rad;
 

@@ -45,15 +45,15 @@ SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double direct
     return *this;
 }
 
-SurfaceRadiation& SurfaceRadiation::asScreen(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner) {
+SurfaceRadiation& SurfaceRadiation::asScreen(double transmissivity, double absorptivityLwOuter, double absorptivityLwInner) {
     light.tra = transmissivity;
     ir.tra = 0.;
     light.outer.abs =
-    ir.outer.abs = absorptivityIrOuter;
+    ir.outer.abs = absorptivityLwOuter;
     light.outer.setRef(light.tra);
     ir.outer.setRef(ir.tra);
 
-    ir.inner.abs = absorptivityIrInner;
+    ir.inner.abs = absorptivityLwInner;
     ir.inner.setRef(ir.tra);
     light.inner.ref = std::min(ir.inner.ref, 1. - light.tra);
     light.inner.setAbs(light.tra);

@@ -36,8 +36,8 @@ PUBLISH(Screen)
  * Outputs
  * ------
  * - _transmissivityLightNet_ is the proportion of light transmitted corrected for _state_ [0;1]
- * - _absorptivityIrInnerNet_ is the absorptivity (=emissivity) for thermal radiation on the inwards side corrected for _state_ [0;1]
- * - _absorptivityIrOuterNet_ is the absorptivity (=emissivity) for thermal radiation on the outwards side corrected for _state_ [0;1]
+ * - _absorptivityLwInnerNet_ is the absorptivity (=emissivity) for thermal radiation on the inwards side corrected for _state_ [0;1]
+ * - _absorptivityLwOuterNet_ is the absorptivity (=emissivity) for thermal radiation on the outwards side corrected for _state_ [0;1]
  * - _unhazed_ is the proportion of direct light passing remaining direct after passage corrected for _state_ [0;1]
  * - _resistance_ is the inverse the U-value corrected for _state_ [K m<SUP>2</SUP>/J]
  * - _heatCapacity_ is the heat capacity [J/K]
@@ -64,8 +64,8 @@ Screen::Screen(Identifier name, QObject *parent)
     Input(double, state, 0.);
 
     Output(double, transmissivityLightNet);
-    Output(double, absorptivityIrInnerNet);
-    Output(double, absorptivityIrOuterNet);
+    Output(double, absorptivityLwInnerNet);
+    Output(double, absorptivityLwOuterNet);
     Output(double, unhazed);
     Output(double, resistance);
     Output(double, heatCapacity);
@@ -87,8 +87,8 @@ void Screen::update() {
 
 void Screen::updateByState(double state) {
     transmissivityLightNet= 1. - state + state*transmissivityLight;
-    absorptivityIrInnerNet = state*emissivityInner;   // Absorptivity = Emissivity for IR
-    absorptivityIrOuterNet = state*emissivityOuter;   // do.
+    absorptivityLwInnerNet = state*emissivityInner;   // Absorptivity = Emissivity for IR
+    absorptivityLwOuterNet = state*emissivityOuter;   // do.
     unhazed =  1. - state*haze;
     transmissivityAirNet = std::min( pow(1.-state, transmissivityAirExponent) + state*transmissivityAir, 1. );
     resistance = state/U;

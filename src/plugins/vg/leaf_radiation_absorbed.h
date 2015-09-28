@@ -23,11 +23,11 @@ private:
     double
         xGaussLowerside, wGaussLowerside,
         xGaussUpperside, wGaussUpperside,
-        kIr, lai, indoorsLight, heating,
+        kLw, lai, indoorsLight, heating,
         lightAbsorptivity, emissivity,
         growthLightLight, growthLightLw, growthLightViewFactor,
         leafTemperature, coverTemperature, screensTemperature, screensMaxState,
-        shelterOutgoingIrAbsorptivity,
+        shelterOutgoingLwAbsorptivity,
         coverPerGroundArea;
 
     // Outputs

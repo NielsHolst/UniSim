@@ -32,7 +32,7 @@ PUBLISH(LeafRadiationAbsorbed)
 LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     : Model(name, parent)
 {
-    Input(double, kIr, 0.8);
+    Input(double, kLw, 0.8);
     Input(double, emissivity, 0.8);
     InputRef(double, xGaussLowerside, "..[xGaussLowerside]");
     InputRef(double, wGaussLowerside, "..[wGaussLowerside]");
@@ -50,7 +50,7 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, coverTemperature, "given/energyFlux/shelter[coverTemperature]");
     InputRef(double, screensTemperature, "given/energyFlux/shelter[screensTemperature]");
     InputRef(double, screensMaxState, "construction/shelters[screensMaxState]");
-    InputRef(double, shelterOutgoingIrAbsorptivity, "construction/shelters[outgoingIrAbsorptivity]");
+    InputRef(double, shelterOutgoingLwAbsorptivity, "construction/shelters[outgoingLwAbsorptivity]");
     InputRef(double, coverPerGroundArea, "construction/geometry[coverPerGroundArea]");
 
     Output(double, lightAbsorbed);
@@ -81,8 +81,8 @@ void LeafRadiationAbsorbed::reset() {
 }
 
 void LeafRadiationAbsorbed::update() {
-    irTransmissionLowerside = kIr*exp(-kIr*lai*xGaussLowerside)*wGaussLowerside*lai;
-    irTransmissionUpperside = kIr*exp(-kIr*lai*xGaussUpperside)*wGaussUpperside*lai;
+    irTransmissionLowerside = kLw*exp(-kLw*lai*xGaussLowerside)*wGaussLowerside*lai;
+    irTransmissionUpperside = kLw*exp(-kLw*lai*xGaussUpperside)*wGaussUpperside*lai;
     setLightAbsorbed();
     setGrowthLightLwAbsorbed();
     setShelterLoss();
@@ -101,7 +101,7 @@ void LeafRadiationAbsorbed::setGrowthLightLwAbsorbed() {
 
 void LeafRadiationAbsorbed::setShelterLoss() {
     double
-        em = jointEmissivity(emissivity, shelterOutgoingIrAbsorptivity),
+        em = jointEmissivity(emissivity, shelterOutgoingLwAbsorptivity),
         screensDiff = p4K(leafTemperature) - p4K(screensTemperature),
         coverDiff = p4K(leafTemperature) - p4K(coverTemperature);
     shelterLoss = Sigma*em*coverPerGroundArea*irTransmissionUpperside*

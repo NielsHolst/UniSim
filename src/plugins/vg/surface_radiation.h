@@ -29,7 +29,7 @@ struct SurfaceRadiation {
     // Methods
     void setToZero();
     SurfaceRadiation& asCover(double transmissivity, double directTransmissivity, double absorptivity, double emissivity);
-    SurfaceRadiation& asScreen(double transmissivity, double absorptivityIrOuter, double absorptivityIrInner);
+    SurfaceRadiation& asScreen(double transmissivity, double absorptivityLwOuter, double absorptivityLwInner);
     bool isOk();
 
     // Operators

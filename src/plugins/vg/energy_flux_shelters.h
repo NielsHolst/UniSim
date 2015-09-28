@@ -19,8 +19,8 @@ public:
     void update();
 private:
     // Inputs
-    double U, incomingIrAbsorptivity,
-        outgoingIrAbsorptivity,
+    double U, incomingLwAbsorptivity,
+        outgoingLwAbsorptivity,
         lightAbsorbedCover, lightAbsorbedScreens,
         heatCapacityCover, heatCapacityScreens,
         timeStep, averageHeight,

@@ -42,9 +42,9 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, indoorsLight, "indoors/light[total]");
     InputRef(double, lightAbsorptivity, "../photosynthesis[absorptivity]");
     InputRef(double, heating, "heating/supply[value]");
-//    InputRef(double, floorTemperature, "energyFlux/floor[temperature]");
-    InputRef(double, growthLightLight, "actuators/growthlights[shortWaveEmission]");
     InputRef(double, growthLightLw, "actuators/growthlights[longWaveEmission]");
+    InputRef(double, floorTemperature, "energyFlux/floor[temperature]");
+    InputRef(double, floorEmissivity, "energyFlux/floor[emissivity]");
     Input(double, growthLightViewFactor, 1.);
     InputRef(double, leafTemperature, "../temperature[value]");
     InputRef(double, coverTemperature, "given/energyFlux/shelter[coverTemperature]");
@@ -56,6 +56,7 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     Output(double, lightAbsorbed);
     Output(double, heatingAbsorbed);
     Output(double, growthLightLwAbsorbed);
+    Output(double, floorLwAbsorbed);
     Output(double, shelterLoss);
     Output(double, value);
 }
@@ -85,18 +86,24 @@ void LeafRadiationAbsorbed::update() {
     irTransmissionUpperside = kLw*exp(-kLw*lai*xGaussUpperside)*wGaussUpperside*lai;
     setLightAbsorbed();
     setGrowthLightLwAbsorbed();
+    setFloorLwAbsorbed();
     setShelterLoss();
     setHeatingAbsorbed();
-    value = lightAbsorbed + heatingAbsorbed + growthLightLwAbsorbed - shelterLoss;
+    value = lightAbsorbed + heatingAbsorbed + growthLightLwAbsorbed + floorLwAbsorbed - shelterLoss;
 }
 
 void LeafRadiationAbsorbed::setLightAbsorbed() {
-    lightAbsorbed = lightAbsorptivity*(indoorsLight + growthLightLight);
+    lightAbsorbed = lightAbsorptivity*indoorsLight;
 }
 
 void LeafRadiationAbsorbed::setGrowthLightLwAbsorbed() {
     // This is a shortcut. We should know the temperature and area of the lamps.
     growthLightLwAbsorbed = growthLightViewFactor*growthLightLw*irTransmissionUpperside*emissivity;
+}
+
+void LeafRadiationAbsorbed::setFloorLwAbsorbed() {
+    double em = jointEmissivity(emissivity, floorEmissivity);
+    floorLwAbsorbed = Sigma*em*(p4K(floorTemperature) - p4K(leafTemperature))*irTransmissionLowerside;
 }
 
 void LeafRadiationAbsorbed::setShelterLoss() {

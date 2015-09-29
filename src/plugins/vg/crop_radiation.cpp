@@ -46,17 +46,11 @@ CropRadiation::CropRadiation(Identifier name, QObject *parent)
     Output(double, diffuseReflectivity);
     Output(double, directReflectivity);
     Output(double, reflectivity);
-    Output(double, transmissivity);
-    Output(double, absorptivityLwTop);
-    Output(double, absorptivityLwMiddle);
-    Output(double, absorptivityLwBottom);
-    Output(double, transmissivityLw);
 }
 
 void CropRadiation::reset() {
-    kDirect = kDiffuse;
-    diffuseReflectivity = directReflectivity = 0;
-    transmissivity = 1;
+    kDirect = kDirectDirect = kDiffuse;
+    diffuseReflectivity = directReflectivity = reflectivity = 0;
 }
 
 void CropRadiation::update() {
@@ -77,16 +71,6 @@ void CropRadiation::update() {
     // Total light reflectivity weighted by diffuse vs. direct light
     double diffuse = div0(lightDiffuse, lightDiffuse+lightDirect);
     reflectivity = diffuse*diffuseReflectivity + (1-diffuse)*directReflectivity;
-
-    // At low sun elevation the radiation budget may not add up to 1, then transmissivity is set to zero
-    transmissivity = max(1 - reflectivity - absorptivityTop - absorptivityMiddle - absorptivityBottom, 0.);
-
-    // Absorptivity and transmissivity of IR coming from above; use in reverse order for IR coming from below
-    const double kLw{0.8};
-    absorptivityLwTop    = kLw*exp(-kLw*lai*xGauss3[0])*wGauss3[0];
-    absorptivityLwMiddle = kLw*exp(-kLw*lai*xGauss3[1])*wGauss3[1];
-    absorptivityLwBottom = kLw*exp(-kLw*lai*xGauss3[2])*wGauss3[2];
-    transmissivityLw = 1. - absorptivityLwTop - absorptivityLwMiddle - absorptivityLwBottom;
 }
 
 } //namespace

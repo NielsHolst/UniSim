@@ -1680,6 +1680,10 @@
 		<trace label="midGrowthLightLwAbsorbed" ref="layers/middle/radiationAbsorbed[growthLightLwAbsorbed]"/>
 		<trace label="botGrowthLightLwAbsorbed" ref="layers/bottom/radiationAbsorbed[growthLightLwAbsorbed]"/>
 
+		<trace label="topFloorLwAbsorbed" ref="layers/top/radiationAbsorbed[floorLwAbsorbed]"/>
+		<trace label="midFloorLwAbsorbed" ref="layers/middle/radiationAbsorbed[floorLwAbsorbed]"/>
+		<trace label="botFloorLwAbsorbed" ref="layers/bottom/radiationAbsorbed[floorLwAbsorbed]"/>
+
 		<trace label="topShelterLoss" ref="layers/top/radiationAbsorbed[shelterLoss]"/>
 		<trace label="midShelterLoss" ref="layers/middle/radiationAbsorbed[shelterLoss]"/>
 		<trace label="botShelterLoss" ref="layers/bottom/radiationAbsorbed[shelterLoss]"/>

@@ -25,7 +25,8 @@ private:
         xGaussUpperside, wGaussUpperside,
         kLw, lai, indoorsLight, heating,
         lightAbsorptivity, emissivity,
-        growthLightLight, growthLightLw, growthLightViewFactor,
+        growthLightLw, growthLightViewFactor,
+        floorTemperature, floorEmissivity,
         leafTemperature, coverTemperature, screensTemperature, screensMaxState,
         shelterOutgoingLwAbsorptivity,
         coverPerGroundArea;
@@ -33,6 +34,7 @@ private:
     // Outputs
     double value, lightAbsorbed, heatingAbsorbed,
         growthLightLwAbsorbed,
+        floorLwAbsorbed,
         shelterLoss;
 
     // Data
@@ -47,6 +49,7 @@ private:
     // Methods
     void setLightAbsorbed();
     void setGrowthLightLwAbsorbed();
+    void setFloorLwAbsorbed();
     void setShelterLoss();
     void setHeatingAbsorbed();
 };

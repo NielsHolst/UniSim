@@ -20,11 +20,14 @@ public:
     void update();
 
 private:
+    // Inputs
+    double outdoorsPropParRadiation, growthLighstPar;
+    // Outputs
+    double direct, diffuse, total,
+           parDirect, parDiffuse, parTotal;
     // Data
     QVector<const double*> pDirect, pDiffuse;
 
-    // Outputs
-    double direct, diffuse, total;
 };
 } //namespace
 

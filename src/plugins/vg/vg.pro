@@ -13,7 +13,6 @@ HEADERS += \
     air_flux_cooling_supply.h \
     air_flux_cooling_supply_max.h \
     air_flux_gravitation.h \
-    air_flux_indoors.h \
     air_flux_infiltration.h \
     air_flux_outdoors.h \
     base_control_element.h \
@@ -39,7 +38,6 @@ HEADERS += \
     energy_flux_growth_lights.h \
     energy_flux_heating_demand.h \
     energy_flux_heating_supply.h \
-    energy_flux_horizontal.h \
     energy_flux_shelters.h \
     energy_flux_sum.h \
     energy_flux_transpiration.h \
@@ -51,9 +49,9 @@ HEADERS += \
     fruit_factor.h \
     general.h \
     growth_light_base.h \
+    growth_light_controller.h \
     growth_light.h \
     growth_lights.h \
-    heat_buffer.h \
     indoors_co2.h \
     indoors_humidity.h \
     indoors_light.h \
@@ -66,7 +64,6 @@ HEADERS += \
     leaf_radiation_absorbed.h \
     leaf_temperature.h \
     leaf_transpiration.h \
-    growth_light_controller.h \
     outdoors.h \
     pid_control_element.h \
     pipe.h \
@@ -86,7 +83,6 @@ HEADERS += \
     surface_radiation.h \
     surface_radiation_outputs.h \
     threshold_signal.h \
-    variable_collection.h \
     vapour_flux_air.h \
     vapour_flux_base.h \
     vapour_flux_condensation.h \
@@ -105,7 +101,6 @@ SOURCES += \
     air_flux_cooling_supply.cpp \
     air_flux_cooling_supply_max.cpp \
     air_flux_gravitation.cpp \
-    air_flux_indoors.cpp \
     air_flux_infiltration.cpp \
     air_flux_outdoors.cpp \
     base_control_element.cpp \
@@ -131,7 +126,6 @@ SOURCES += \
     energy_flux_growth_lights.cpp \
     energy_flux_heating_demand.cpp \
     energy_flux_heating_supply.cpp \
-    energy_flux_horizontal.cpp \
     energy_flux_shelters.cpp \
     energy_flux_sum.cpp \
     energy_flux_transpiration.cpp \
@@ -143,9 +137,9 @@ SOURCES += \
     fruit_factor.cpp \
     general.cpp \
     growth_light_base.cpp \
+    growth_light_controller.cpp \
     growth_light.cpp \
     growth_lights.cpp \
-    heat_buffer.cpp \
     indoors_co2.cpp \
     indoors_humidity.cpp \
     indoors_light.cpp \
@@ -158,7 +152,6 @@ SOURCES += \
     leaf_radiation_absorbed.cpp \
     leaf_temperature.cpp \
     leaf_transpiration.cpp \
-    growth_light_controller.cpp \
     outdoors.cpp \
     pid_control_element.cpp \
     pipe.cpp \

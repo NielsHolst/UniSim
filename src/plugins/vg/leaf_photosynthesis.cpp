@@ -59,29 +59,22 @@ double LeafPhotosynthesis::laic() const {
 LeafPhotosynthesis::LeafPhotosynthesis(Identifier name, QObject *parent)
     : Model(name, parent)
 {
+    InputRef(double, parDiffuse, "indoors/light[parDiffuse]");
+    InputRef(double, parDirect, "indoors/light[parDirect]");
     InputRef(double, kDiffuse, "crop/radiation[kDiffuse]");
     InputRef(double, kDirect, "crop/radiation[kDirect]");
     InputRef(double, kDirectDirect, "crop/radiation[kDirectDirect]");
     InputRef(double, scattering, "crop/radiation[scattering]");
     InputRef(double, diffuseReflectivity, "crop/radiation[diffuseReflectivity]");
     InputRef(double, directReflectivity, "crop/radiation[directReflectivity]");
-
-    InputRef(double, sinB, "calendar[sinB]");
-    InputRef(double, lightDiffuse, "indoors/light[diffuse]");
-    InputRef(double, lightDirect, "indoors/light[direct]");
-    Input(double, parProportion, 0.47);
-    InputRef(double, growthLightPar, "growthLights[parEmission]");
     InputRef(double, lai, "crop/lai[value]");
+    InputRef(double, sinB, "calendar[sinB]");
+
     InputRef(double, xGauss, "..[xGaussUpperside]");
     InputRef(double, wGauss, "..[wGaussUpperside]");
     InputRef(double, LUE, "./lightResponse[LUE]");
     InputRef(double, Pgmax, "./lightResponse[Pgmax]");
     InputRef(double, Rd, "./lightResponse[Rd]");
-
-    InputRef(double, lat, "calendar[latitude]");
-    InputRef(int, day, "calendar[dayOfYear]");
-    InputRef(int, hour, "calendar[hour]");
-    InputRef(int, minute, "calendar[minute]");
 
     Output(double, absorptivity);
     Output(double, parAbsorbed);
@@ -94,9 +87,6 @@ void LeafPhotosynthesis::reset() {
 }
 
 void LeafPhotosynthesis::update() {
-    parDiffuse = parProportion*lightDiffuse;
-    parDirect = parProportion*lightDirect + growthLightPar;
-
     // Compute light absorned and gross assimilation
     double absorbedShaded = absorbedByShadedLeaves(),           // [J / m2 leaf / s]
            PgShade = grossAssimilation(absorbedShaded);         // [mg CO2 / m2 leaf / s]

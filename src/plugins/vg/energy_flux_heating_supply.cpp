@@ -6,7 +6,6 @@
 */
 #include <stdlib.h>
 #include "energy_flux_heating_supply.h"
-#include "heat_pipe.h"
 #include "publish.h"
 
 using std::min;

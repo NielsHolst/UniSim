@@ -48,7 +48,8 @@ PUBLISH(Outdoors)
 Outdoors::Outdoors(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    Input(double, co2, 350);
+    Input(double, propParRadiation, 0.47);
+    Input(double, co2, 400.);
     Input(double, soilTemperature, 10);
     InputRef(double, temperature, "./records[Tair]");
     InputRef(double, rh, "./records[RHair]");
@@ -56,6 +57,7 @@ Outdoors::Outdoors(Identifier name, QObject *parent)
     InputRef(double, diffuseRadiation, "./records[DifRad]");
     InputRef(double, windSpeed, "./records[WindSpeed]");
     InputRef(double, skyTemperature, "./records[Tsky]");
+    Output(double, parRadiation);
     Output(double, directRadiation);
     Output(double, propDirectRadiation);
     Output(double, ah);
@@ -66,8 +68,8 @@ void Outdoors::reset() {
     update();
 }
 
-
 void Outdoors::update() {
+    parRadiation = propParRadiation*radiation;
     directRadiation = radiation - diffuseRadiation;
     propDirectRadiation = div0(directRadiation, radiation);
     ah = ahFromRh(temperature, rh);

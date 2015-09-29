@@ -46,9 +46,14 @@ PUBLISH(IndoorsLight)
 IndoorsLight::IndoorsLight(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
+    InputRef(double, outdoorsPropParRadiation, "outdoors[propParRadiation]");
+    InputRef(double, growthLighstPar, "growthLights[parEmission]");
     Output(double, direct);
     Output(double, diffuse);
     Output(double, total);
+    Output(double, parDirect);
+    Output(double, parDiffuse);
+    Output(double, parTotal);
 }
 
 void IndoorsLight::initialize() {
@@ -63,7 +68,8 @@ void IndoorsLight::initialize() {
 }
 
 void IndoorsLight::reset() {
-    diffuse = direct = total = 0.;
+    diffuse = direct = total =
+    parDiffuse = parDirect = parTotal = 0.;
 }
 
 void IndoorsLight::update() {
@@ -71,6 +77,10 @@ void IndoorsLight::update() {
     for (auto p : pDiffuse) diffuse += (*p);
     for (auto p : pDirect) direct += (*p);
     total = direct + diffuse;
+    parDiffuse = outdoorsPropParRadiation*diffuse;
+    parDirect = outdoorsPropParRadiation*direct + growthLighstPar;
+    parTotal = parDiffuse + parDirect;
+
 }
 
 

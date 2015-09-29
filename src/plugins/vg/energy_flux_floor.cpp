@@ -37,6 +37,7 @@ EnergyFluxFloor::EnergyFluxFloor(Identifier name, QObject *parent)
     Input(double, Uindoors, 7.5);
     Input(double, Usoil, 7.5);
     Input(double, heatCapacity, 42000.);
+    Input(double, emissivity, 0.85);    // concrete
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, soilTemperature, "outdoors[soilTemperature]");
     InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");

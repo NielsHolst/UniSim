@@ -24,23 +24,16 @@ private:
     double
         kDiffuse, kDirect, kDirectDirect, scattering,
         diffuseReflectivity, directReflectivity,
-        lightDiffuse, lightDirect, parProportion,
-        growthLightPar,
+        parDiffuse, parDirect,
         Pgmax, LUE,
         xGauss, wGauss, lai, Rd, sinB;
 
-    // Test
-    double lat;
-    int day, hour, minute;
-
     // Outputs
     double absorptivity, parAbsorbed, Pg, Pn;
-    // Data
-    double parDiffuse, parDirect;
+
     // Methods
     double lad() const;
     double laic() const;
-
     double absorbedByShadedLeaves() const;
     QPair<double,double> absorbedBySunlitLeaves(double absorbedShaded) const;
     double grossAssimilation(double absorbed) const;

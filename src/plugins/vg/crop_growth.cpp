@@ -28,9 +28,9 @@ PUBLISH(CropGrowth)
  * - _massStem_ is stem dry mass [g/m<SUP>2</SUP>]
  * - _massLeaf_ is leaf dry mass [g/m<SUP>2</SUP>]
  * - _massFruit_ is fruit dry mass [g/m<SUP>2</SUP>]
- * - _timeStep_ is the integration time step [s]
  * - _Tcrop_ is crop temperature [<SUP>o</SUP>C]
  * - _Pg_ is crop assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP>/h]
+ * - _timeStep_ is the integration time step [s]
  *
  * Output
  * ------

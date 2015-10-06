@@ -17,12 +17,7 @@ PUBLISH(EnergyFluxGrowthLights)
  * \brief Flux of energy from growth lights
  * Inputs
  * ------
- * - _heatEmission_ is the convective heat emission [W/m<SUP>2</SUP>]
- * - _longWaveEmission_ is the long wave emission (thermal radiation, Bn) [W/m<SUP>2</SUP>]
- *
- * Output
- * ------
- * - _value_ is the energy flux per greenhouse area from the growth lights [W/m<SUP>2</SUP>]
+ * - _energyFlux_ is the total energy emitted by the growth lights [W/m<SUP>2</SUP>]
  */
 
 EnergyFluxGrowthLights::EnergyFluxGrowthLights(Identifier name, QObject *parent)

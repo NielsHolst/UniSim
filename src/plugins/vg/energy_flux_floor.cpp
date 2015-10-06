@@ -18,11 +18,13 @@ PUBLISH(EnergyFluxFloor)
  * \brief Greenhouse floor temperature and energy flux to greenhouse
  * Inputs
  * ------
- * - _U_ is the U-value from greenhouse air to floor [W/m<SUP>2</SUP>]/K]
+ * - _Uindoors_ is the U-value between greenhouse air and floor [W/m<SUP>2</SUP>]/K]
+ * - _Usoil_ is the U-value between outdoors soil and floor [W/m<SUP>2</SUP>]/K]
  * - _heatCapacity_ is the heat capacity of the floor [J/m<SUP>2</SUP>]/K]
+ * - _emissivity_ is the emissivity of thermal radiation from the floor [0;1]
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>oC</SUP>C]
- * - _soilTemperature_ is the outside soil temperature  [<SUP>oC</SUP>C]
- * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
+ * - _soilTemperature_ is the outdoors soil temperature  [<SUP>oC</SUP>C]
+ * - _height_ is the average height of the greenhouse (volume divided by ground area) [m]
  * - _timeStep_ is the integration time step [s]
  *
  * Output
@@ -40,7 +42,7 @@ EnergyFluxFloor::EnergyFluxFloor(Identifier name, QObject *parent)
     Input(double, emissivity, 0.85);    // concrete
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, soilTemperature, "outdoors[soilTemperature]");
-    InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
+    InputRef(double, height,"geometry[indoorsAverageHeight]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
     Output(double, temperature);
 }
@@ -55,7 +57,7 @@ void EnergyFluxFloor::update() {
     int n = int(timeStep/maxTimeStep) + 1;
     double dt = timeStep/n,
            Tin = indoorsTemperature,
-           Cair = averageHeight*RhoAir*CpAir;               // J/m2/K = m * kg/m3 * J/kg/K
+           Cair = height*RhoAir*CpAir;               // J/m2/K = m * kg/m3 * J/kg/K
 
     value = 0.;
     for (int i=0; i<n; ++i) {

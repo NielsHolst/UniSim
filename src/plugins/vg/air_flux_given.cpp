@@ -4,45 +4,45 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include "air_flux_outdoors.h"
+#include "air_flux_given.h"
 #include "publish.h"
 
 using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(AirFluxOutdoors)
+PUBLISH(AirFluxGiven)
 
-/*! \class AirFluxOutdoors
- * \brief The proportional air exchange rate with the outside
+/*! \class AirFluxGiven
+ * \brief  The air flux given, irrespective of temperature-regulated ventilation
+
  *
  * Inputs
  * ------
  * - _infiltration_ is the infiltration air exchange rate [h<SUP>-1</SUP>]
- * - _crackVentilation_ is the air exchange rate through the humidity-controlled ventilation crack [h<SUP>-1</SUP>]
- * - _proportion_ is the proportion of the crack ventilation that is effective in this compartment [0;1]
+ * - _crackVentilation_ is the air flux through the humidity-controlled ventilation crack [h<SUP>-1</SUP>]
  *
  * Output
  * ------
- * - _value_ is the proportional air exchange rate with the outside [h<SUP>-1</SUP>]
+ * - _value_ is the relative rate of air exchanged [h<SUP>-1</SUP>]
  */
 
-AirFluxOutdoors::AirFluxOutdoors(Identifier name, QObject *parent)
+AirFluxGiven::AirFluxGiven(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     InputRef(double, infiltration, "./infiltration[value]");
-    InputRef(double, ventilation, "./crackVentilation[value]");
+    InputRef(double, crackVentilation, "./crackVentilation[value]");
     InputRef(double, gravitation, "./gravitation[value]");
     InputRef(double, transmissivity, "construction/shelters[airTransmissivity]");
     Output(double, value);
 }
 
-void AirFluxOutdoors::reset() {
+void AirFluxGiven::reset() {
     value = 0.;
 }
 
-void AirFluxOutdoors::update() {
-    value = infiltration + transmissivity*ventilation + gravitation;
+void AirFluxGiven::update() {
+    value = infiltration + transmissivity*crackVentilation + gravitation;
 }
 
 

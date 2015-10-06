@@ -19,7 +19,7 @@ public:
 
 private:
     // Inputs
-    double passiveEnergyFlux, heatingSetpoint, indoorsTemperature, timeStep, averageHeight;
+    double givenEnergyFlux, heatingSetpoint, indoorsTemperature, timeStep, height;
 };
 } //namespace
 

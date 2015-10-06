@@ -21,9 +21,11 @@ public:
 private:
     // Inputs
     double heatingEnergyFlux, growthLightsEnergyFlux, co2Flux, dt;
-
+    QString energyUnit;
     // Outputs
     double heatingEnergyTotal, growthLightsEnergyTotal, co2Total;
+    // Data
+    double eUnit;
 
 };
 } //namespace

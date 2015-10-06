@@ -17,7 +17,7 @@ namespace vg {
  * Outputs
  * ------
  * - _conductance_ is the vapour flux (condensation) conductance [m/s]
- * - _vapourFlux_ is the condensation rate [kg/m<SUP>2</SUP>/s]
+ * - _vapourFlux_ is the vapour flux rate [kg/m<SUP>2</SUP>/s]
  * - _gain_ is used to integrate over all water vapour fluxes (GCC, p. 148) [kg/m<SUP>2</SUP>/s]
  *
  */

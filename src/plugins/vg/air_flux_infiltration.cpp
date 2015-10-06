@@ -14,18 +14,17 @@ namespace vg {
 PUBLISH(AirFluxInfiltration)
 
 /*! \class AirFluxInfiltration
- * \brief The rate of air entering the greenhouse uncontrolled
+ * \brief Air infiltration through greenhouse leakages
  *
  * Inputs
  * ------
- * - _leakage_ is infiltration through leakages [m<SUP>3</SUP> air/m<SUP>3</SUP> greenhouse/h]
- * - _averageHeight_ is the average height of the greenhouse [m<SUP>3</SUP>/m<SUP>2</SUP>]
+ * - _leakage_ is the infiltration at a windspeed of 4 m/s [h<SUP>-1</SUP>]
  * - _windspeed_ is the outdoors windspeed [m/s]
- * - _screensAirTransmission_ is the proportion of air led through the screens [0;1]
+ * - _airTransmissivity_ is the air transmissivity of the greenhouse shelter [0;1]
  *
  * Output
  * ------
- * - _value_ is the proportional air exchange [h<SUP>-1</SUP>]
+ * - _value_ is the relative rate of air exchanged [h<SUP>-1</SUP>]
  */
 
 AirFluxInfiltration::AirFluxInfiltration(Identifier name, QObject *parent)

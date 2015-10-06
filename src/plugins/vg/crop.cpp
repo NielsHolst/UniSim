@@ -20,11 +20,9 @@ PUBLISH(Crop)
  * ------
  * - _density_ is the number of plants per ground area [m<SUP>-2</SUP>]
  *
- * Output
- * ------
- *
- * Default dependencies
- * ------------
+ * Outputs
+ * -------
+ * - none
  */
 
 Crop::Crop(Identifier name, QObject *parent)

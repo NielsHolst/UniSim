@@ -16,12 +16,13 @@ namespace vg {
 PUBLISH(EnergyFluxHeatingDemand)
 
 /*! \class EnergyFluxHeatingDemand
- * \brief Flux of energy need to warm up to heating setpoint
+ * \brief Flux of energy needed to warm the greenhouse up to heating setpoint
  * Inputs
  * ------
- * - _passiveTemperature_ is the indoors tempeature reached, it not actively regulated [<SUP>o</SUP>C]
+ * - _givenEnergyFlux_ is the energy flux without any heating [W/m<SUP>2</SUP>]
  * - _heatingSetpoint_ is the heating setpoint [<SUP>oC</SUP>C]
- * - _averageHeight_ is the average height of the greenhouse [m]
+ * - _indoorsTemperature_ is the indoors temperature [<SUP>o</SUP>C]
+ * - _height_ is the average height of the greenhouse [m]
  * - _timeStep_ is the integration time step [s]
  *
  * Output
@@ -32,16 +33,16 @@ PUBLISH(EnergyFluxHeatingDemand)
 EnergyFluxHeatingDemand::EnergyFluxHeatingDemand(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)
 {
-    InputRef(double, passiveEnergyFlux, "given/energyFlux[value]");
+    InputRef(double, givenEnergyFlux, "given/energyFlux[value]");
     InputRef(double, heatingSetpoint, "setpoints/temperature/heating[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
-    InputRef(double, averageHeight, "geometry[indoorsAverageHeight]");
+    InputRef(double, height, "geometry[indoorsAverageHeight]");
     InputRef(double, timeStep,"calendar[timeStepSecs]");
 }
 
 void EnergyFluxHeatingDemand::update() {
     double dT = max(heatingSetpoint - indoorsTemperature, 0.);
-    value = max(dT*CpAir*RhoAir*averageHeight/timeStep - passiveEnergyFlux, 0.);
+    value = max(dT*CpAir*RhoAir*height/timeStep - givenEnergyFlux, 0.);
 }
 
 } //namespace

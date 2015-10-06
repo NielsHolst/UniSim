@@ -4,28 +4,28 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_AIR_FLUX_OUTDOORS_H
-#define VG_AIR_FLUX_OUTDOORS_H
+#ifndef VG_LEAF_WIND_SPEED_H
+#define VG_LEAF_WIND_SPEED_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class AirFluxOutdoors : public UniSim::Model
+class LeafWindSpeed : public UniSim::Model
 {
 public:
-    AirFluxOutdoors(UniSim::Identifier name, QObject *parent);
+    LeafWindSpeed(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
-private:
+protected:
     // Inputs
-    double infiltration, ventilation, gravitation, transmissivity;
-
+    double k ,indoorsWindSpeedMinimum, indoorsWindSpeed,
+        xGauss, lai;
     // Outputs
     double value;
 };
-} //namespace
 
+} //namespace
 
 #endif

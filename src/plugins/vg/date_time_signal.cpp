@@ -25,9 +25,9 @@ PUBLISH(DateTimeSignal)
  * - _endTime_ is the end of the time interval [hh:mm]
  * - _day_ is the actual date [1..365]
  * - _time_ is the actual time [hh:mm]
- * - _signalInside_ is the resulting _signal_ when _day_ and _time_ are inside the day and time intervals [R]
- * - _signalOutsideDate_ is the resulting _signal_ when _day_ is outside the date interval [R]
- * - _signalOutsideTime_ is the resulting _signal_ when _day_ is inside the date interval but _time_ is outside the time interval [R]
+ * - _signalInside_ is the resulting _signal_ when _day_ and _time_ are inside the day and time intervals [-]
+ * - _signalOutside_ is the resulting _signal_ when _day_ or _time_ is outside their respective intervals [-]
+ * - _signalOutsideTimeOnly_ is the resulting _signal_ when _day_ is inside the date interval but _time_ is outside the time interval [-]
  * - _circadian_ tells whether signal follows a daily rythm. See below. [true,false]
  *
  * Outputs

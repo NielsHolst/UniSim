@@ -4,18 +4,15 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#include <stdlib.h>
-#include "boundary_layer_resistance.h"
+
+#include "boundary_layer_resistance_base.h"
 #include "publish.h"
 
-using namespace std;
 using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(BoundaryLayerResistance)
-
-/*! \class BoundaryLayerResistance
+/*! \class BoundaryLayerResistanceBase
  * \brief Boundary layer resistance against H<SUB>2</SUB>O and CO<SUB>2</SUB>
  *
  * Inputs
@@ -29,29 +26,24 @@ PUBLISH(BoundaryLayerResistance)
  * - _rbCO2_ is the boundary layer resistance against CO<SUB>2</SUB> [s/m]
  */
 
-BoundaryLayerResistance::BoundaryLayerResistance(Identifier name, QObject *parent)
-	: Model(name, parent)
+BoundaryLayerResistanceBase::BoundaryLayerResistanceBase(Identifier name, QObject *parent)
+    : Model(name, parent)
 {
     Input(double, leafDimension, 25./1000.);
-    InputRef(double, indoorsWindSpeed, "indoors/windSpeed[value]");
+    InputRef(double, leafWindSpeed, "../windSpeed[value]");
     Output(double, rbH2O);
     Output(double, rbCO2);
 }
 
-void BoundaryLayerResistance::reset() {
-    updateValue(0.);
+void BoundaryLayerResistanceBase::reset() {
+    update();
 }
 
-void BoundaryLayerResistance::update() {
-    updateValue(indoorsWindSpeed);
-}
-
-void BoundaryLayerResistance::updateValue(double windSpeed) {
-    // (Stanghellini GCC p 146 modified)
-    const double windSpeedMinimum = 0.05;
-    rbH2O = 200.*sqrt( leafDimension/max(windSpeedMinimum, windSpeed) );
+void BoundaryLayerResistanceBase::update() {
+    setRbH2O();
     rbCO2 = rbH2O*1.37;
 }
+
 
 } //namespace
 

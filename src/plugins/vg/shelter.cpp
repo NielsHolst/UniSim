@@ -18,7 +18,7 @@ namespace vg {
 PUBLISH(Shelter)
 
 /*! \class Shelter
- * \brief A shelter consists of the cover and any screens below the cover
+ * \brief A shelter consists of the cover and any screens
  *
  * Inputs
  * ------

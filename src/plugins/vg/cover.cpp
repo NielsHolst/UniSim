@@ -32,21 +32,21 @@ PUBLISH(Cover)
  * - _chalk_ is the chalk efficacy [0;1]
  * - _directTransmissionFile_ is the name of a file with coefficients correcting the transmissivity for direct light,
  * according to latitude (rows) and sun azimuth (columns)
+ * - _latitude_ is geographical latitude of the greenhouse [-180;180]
+ * - _azimuth_ is the azimuth of the sun relative to north [-180;180]
+ * - _area_ is the area of the cover [m<SUP>2</SUP>]
+ * - _windSpeed_ is the outdoors wind speed [m/s]
  * - _U4_ is the heat transfer coefficient of the material at a windspeed of 4 m/s [W/m<SUP>2</SUP>/K]
  * - _emissivity_ is the effectiveness in emitting energy as thermal radiation [0;1].
  * - _absorptivity_ is the proportion of light absorbed [0;1]
  * - _transmissivity_ is the proportion of diffuse light transmitted through the material [0;1]
- * - _propDirectRadiation is the proportion of the direct component of the total sunlight [0;1]
- * - _heatCapacity_ is area-specific heat capacity [J/m<SUP>2</SUP>]/K]
  * - _haze_ is the proportion of direct light becoming dispersed on passage through the material [0;1]
- * - _antiReflection_ flags whether the material is anti-reflecting [true/false]
  * - _specificHeatCapacity_ is the area-specific heat capacity [J/m<SUP>2</SUP> cover/K]
- * - _windSpeed_ is the average wind speed [m/s]
 
  * Output
  * ------
  * - _U_ is the wind-corrected heat transfer coefficient of the material [W/m<SUP>2</SUP>/K]
- * - _heatCapacity_ is the heat capacity [J/K]
+ * - _heatCapacity_ is the heat capacity of the whole cover [J/K]
  */
 
 Cover::Cover(Identifier name, QObject *parent)

@@ -4,29 +4,26 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_BOUNDARY_LAYER_RESISTANCE_H
-#define VG_BOUNDARY_LAYER_RESISTANCE_H
+#ifndef VG_AIR_FLUX_GIVEN_H
+#define VG_AIR_FLUX_GIVEN_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class BoundaryLayerResistance : public UniSim::Model
+class AirFluxGiven : public UniSim::Model
 {
 public:
-    BoundaryLayerResistance(UniSim::Identifier name, QObject *parent);
+    AirFluxGiven(UniSim::Identifier name, QObject *parent);
     void reset();
     void update();
 
 private:
-    // Parameters
-    double leafDimension, indoorsWindSpeed;
+    // Inputs
+    double infiltration, crackVentilation, gravitation, transmissivity;
 
-    // Variables
-    double rbH2O, rbCO2;
-
-    // Methods
-    void updateValue(double windSpeed);
+    // Outputs
+    double value;
 };
 } //namespace
 

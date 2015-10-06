@@ -36,13 +36,8 @@ PUBLISH(LeafLightResponse)
  * - _Pnmax_ is the net assimilation rate [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
  * - _Pgmax_ is the gross assimilation rate [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
  * - _Rd_ is the dark respiration rate [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
+ * - _rtCO2_ is the total resistance against CO<SUB>2</SUB> [s/m]
  *
- * Default dependencies
- * ------------
- * - an _rsCO2_ cousin model with an _rsCO2_ port  [s/m]
- * - an _rbCO2_ cousin model with an _rbCO2_ port  [s/m]
- * - a _temperature_ cousin model with a _value_ port [<SUP>o</SUP>C]
- * - an _indoors/co2_ model with a _ppm_ port [ppm]
  */
 
 const double O2i = 210;     // [G94, p.80] O2 partial pressure inside stomata [ppm], [mbar], [ml/l]
@@ -62,6 +57,7 @@ LeafLightResponse::LeafLightResponse(Identifier name, QObject *parent)
     Output(double, Pnmax);
     Output(double, Pgmax);
     Output(double, Rd);
+    Output(double, rtCO2);
 }
 
 void LeafLightResponse::reset() {
@@ -157,8 +153,8 @@ double LeafLightResponse::darkRespirationRate() {
 double LeafLightResponse::maxNetAssimilation() {
     double RcCo2 = KM/VCmax/MCo2;     // carboxylation resistance [s/m]
     double RCo2 = rsCO2+rbCO2;
-    double RtotCo2 = RCo2+RcCo2;                  // [G94, p.79] total resistance to CO2 diffusion [s/m]
-    double PNC = (co2Air-gamma)*rhoCo2T/RtotCo2;
+    rtCO2 = RCo2+RcCo2;                  // [G94, p.79] total resistance to CO2 diffusion [s/m]
+    double PNC = (co2Air-gamma)*rhoCo2T/rtCO2;
     return (Jmax + PNC - sqrt(sqr(Jmax+PNC) - 4*theta*Jmax*PNC))/(2*theta);
 }
 

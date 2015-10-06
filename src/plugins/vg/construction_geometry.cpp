@@ -30,22 +30,22 @@ PUBLISH(ConstructionGeometry)
  * - _height_ is the height of the walls [m]
  * - _roofPitch_ is the degrees slope of the roof [0;180]
  * - _shade_ is the fraction of light caught by the greenhouse construction [0;1]
+ * - _screensMaxState_ is the maximum screen state [0;1]
+ * - _hasHorizontalScreens_ tells if greenhouse has horizontal screens
  *
  * Outputs
  * -------
  * - _width_ is the width of the greenhouse [m]
  * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
- * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
- * - _coverArea_ is the area of the green house cover (walls + roof) [m<SUP>2</SUP>]
- * - _coverPerGroundArea_ is _coverArea_ divided by _groundArea_ [m<SUP>2</SUP>/[m<SUP>2</SUP>]]
  * - _roofArea_ is the total area of the roof (the two sloping surfaces on top of each span) [m<SUP>2</SUP>]
- * - _roofHeight_ is the vertical height of the roof [m]
  * - _sideWallsArea_ is the total area of the two greenhouse side walls (facing the outside) [m<SUP>2</SUP>]
  * - _endWallsArea_ is the total area of the two greenhouse end walls (excluding the triangular gables) [m<SUP>2</SUP>]
  * - _gablesArea_ is the total area of the two triangular gables at the ends of each span [m<SUP>2</SUP>]
- * - _volume_ is the greenhouse total volume [m<SUP>3</SUP>]
- * - _volumeBelowRoof_ is the box-shaped volume on top of the ground area and enclosed by the four walls [m<SUP>3</SUP>]
- * - _volumeRoof_ is total of all the the prism-shaped volumes, one for each span, enclosed by roof and gables [m<SUP>3</SUP>]
+ * - _coverArea_ is the area of the green house cover (walls + roof) [m<SUP>2</SUP>]
+ * - _coverPerGroundArea_ is _coverArea_ divided by _groundArea_ [m<SUP>2</SUP>/[m<SUP>2</SUP>]]
+ * - _indoorsVolume_ is the greenhouse volume, reduced when horizontal screen is drawn [m<SUP>3</SUP>]
+ * - _averageHeight_ is the average height of the greenhouse (indoors volume divided by ground area),
+ *  reduced when horizontal screen is drawn [m]
  */
 
 ConstructionGeometry::ConstructionGeometry(Identifier name, QObject *parent)

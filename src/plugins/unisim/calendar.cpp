@@ -59,7 +59,7 @@ PUBLISH(Calendar)
  * - _dateAsReal_ is _date:_ as a real number measured in years [R]
  * - _dayLength_ is day length [h]
  * - _sinb_ is the sine of sun elevation [-1;1]
- * - _azimuth_ is th azimuth of the sun relative to north [-180;180]
+ * - _azimuth_ is the azimuth of the sun relative to north [-180;180]
  * - _sunrise_ is the time (needs adjustment to local/astronomic time!) of sunrise [QTime]
  * - _sunset_ is the time (needs adjustment to local/astronomic time!) of sunset [QTime]
  * - _solarConstant_ is the solar constant, i.e. irradiation at the top of the atmsphere [MJ/m<SUP>2</SUP>/d]

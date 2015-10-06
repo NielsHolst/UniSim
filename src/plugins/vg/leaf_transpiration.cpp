@@ -59,6 +59,7 @@ LeafTranspiration::LeafTranspiration(Identifier name, QObject *parent)
 }
 
 void LeafTranspiration::reset() {
+    VapourFluxBase::reset();
     leafAh = indoorsAh;
 }
 

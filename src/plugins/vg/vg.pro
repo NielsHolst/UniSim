@@ -12,13 +12,17 @@ include ($${US_ENGINE}/engine.pri)
 HEADERS += \
     air_flux_cooling_supply.h \
     air_flux_cooling_supply_max.h \
+    air_flux_given.h \
     air_flux_gravitation.h \
     air_flux_infiltration.h \
-    air_flux_outdoors.h \
     base_control_element.h \
     base_signal.h \
     budget.h \
-    boundary_layer_resistance.h \
+    boundary_layer_resistance_base.h \
+    boundary_layer_resistance_jones_a.h \
+    boundary_layer_resistance_jones_b.h \
+    boundary_layer_resistance_stangehellini.h \
+    boundary_layer_resistance_thornley_johnsen.h \
     co2_controller.h \
     construction_geometry.h \
     cover.h \
@@ -37,7 +41,6 @@ HEADERS += \
     energy_flux_floor.h \
     energy_flux_growth_lights.h \
     energy_flux_heating_demand.h \
-    energy_flux_heating_supply.h \
     energy_flux_shelters.h \
     energy_flux_sum.h \
     energy_flux_transpiration.h \
@@ -64,6 +67,7 @@ HEADERS += \
     leaf_radiation_absorbed.h \
     leaf_temperature.h \
     leaf_transpiration.h \
+    leaf_wind_speed.h \
     outdoors.h \
     pid_control_element.h \
     pipe.h \
@@ -100,12 +104,16 @@ HEADERS += \
 SOURCES += \
     air_flux_cooling_supply.cpp \
     air_flux_cooling_supply_max.cpp \
+    air_flux_given.cpp \
     air_flux_gravitation.cpp \
     air_flux_infiltration.cpp \
-    air_flux_outdoors.cpp \
     base_control_element.cpp \
     base_signal.cpp \
-    boundary_layer_resistance.cpp \
+    boundary_layer_resistance_base.cpp \
+    boundary_layer_resistance_jones_a.cpp \
+    boundary_layer_resistance_jones_b.cpp \
+    boundary_layer_resistance_stangehellini.cpp \
+    boundary_layer_resistance_thornley_johnsen.cpp \
     budget.cpp \
     co2_controller.cpp \
     construction_geometry.cpp \
@@ -125,7 +133,6 @@ SOURCES += \
     energy_flux_floor.cpp \
     energy_flux_growth_lights.cpp \
     energy_flux_heating_demand.cpp \
-    energy_flux_heating_supply.cpp \
     energy_flux_shelters.cpp \
     energy_flux_sum.cpp \
     energy_flux_transpiration.cpp \
@@ -152,6 +159,7 @@ SOURCES += \
     leaf_radiation_absorbed.cpp \
     leaf_temperature.cpp \
     leaf_transpiration.cpp \
+    leaf_wind_speed.cpp \
     outdoors.cpp \
     pid_control_element.cpp \
     pipe.cpp \

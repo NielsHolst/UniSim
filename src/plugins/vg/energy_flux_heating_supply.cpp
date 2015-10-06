@@ -16,17 +16,15 @@ namespace vg {
 PUBLISH(EnergyFluxHeatingSupply)
 
 /*! \class EnergyFluxHeatingSupply
- * \brief Flux of energy need to warm up to heating setpoint
+ * \brief Flux of energy supplied to heat the greenhouse
  * Inputs
  * ------
  * - _maxHeating_ is the maximum heating that can be supplied [W/m<SUP>2</SUP>]
  * - _demand_ is the heating needed [W/m<SUP>2</SUP>]
- * - _timeStep_ is the integration time step [s]
  *
  * Output
  * ------
  * - _value_ is the heating supplied [W/m<SUP>2</SUP>]
- * - _energyUsed_ is the accumuated energy used [MWh/m<SUP>2</SUP>]
  */
 
 EnergyFluxHeatingSupply::EnergyFluxHeatingSupply(Identifier name, QObject *parent)

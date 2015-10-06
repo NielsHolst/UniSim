@@ -21,7 +21,7 @@ public:
 
 private:
     // Inputs
-    double outdoorsPropParRadiation, growthLighstPar;
+    double outdoorsPropParRadiation, growthLigthtsPar;
     // Outputs
     double direct, diffuse, total,
            parDirect, parDiffuse, parTotal;

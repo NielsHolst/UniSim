@@ -19,8 +19,9 @@ PUBLISH(Outdoors)
  *
  * Inputs (also used as outputs)
  * -----------------------------
+ * - _propParRadiation_ is the proportion of PAR in sunlight irradiation [0;1]
  * - _co2_ is the CO<SUB>2</SUB> concentration [ppm]
- * - _temperature_ is ambient temperature [<SUP>o</SUP>C]
+ * - _temperature_ is ambient temperature outdoors [<SUP>o</SUP>C]
  * - _rh_ is the relative humidity of the air [0;100]
  * - _ah_ is the absolute humidity of the air [kg/m<SUP>3</SUP>]
  * - _sh_ is the specific humidity of the air [kg/kg]

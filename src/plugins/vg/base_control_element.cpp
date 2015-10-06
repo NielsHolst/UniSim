@@ -17,22 +17,24 @@ namespace vg {
 /*! \class BaseControlElement
  * \brief Base class for control elements which maintain a _state_ in response to a _signal_
  *
- * Depending on the logic implemented in the pure virtual _change_ method, _state_ will approach
+ * Depending on the logic implemented in the _change_ method, _state_ will approach
  * _signal_ with time
  *
  * Inputs
  * ------
- * - _initState_ is the initial value of state when control element is reset [R]
- * - _timeStepSecs_ is the integration time step [s]
- * - _signal_ is telling the desired state [R]
+ * - _initState_ is the initial state when the control element is reset [-]
+ * - _minimum_ is the minimum value that state can attain [-]
+ * - _maximum_ is the maximum value that state can attain [-]
+ * - _minSlope_ is the minimum slope that the rate of change in state can attain [min<SUP>-1</<SUP>]
+ * - _maxSlope_ is the maximum slope that the rate of change in state can attain [min<SUP>-1</<SUP>]
+ * - _timeStep_ is the integration time step [s]
+ * - _signal_ is the desired state [-]
  *
  * Outputs
  * ------
- * - _state_ is the current state according to the time integration of _signal_ [R]
- * - _value_ is synonumous with _state_ [R]
- * - _rateOfChange_ is the rate of change in _state_ during this time step [s<SUP>-1</SUP>]
- * - _course_ is the current course of the signal [0 (decreasing), 1 (stable), 2 (increasing)]
- * - _fulfilment_ is the current _state_:_signal_ ratio [R]
+ * - _state_ is the current state [-]
+ * - _value_ is synonumous with _state_ [-]
+ * - _slope_ is the rate of change in state [min<SUP>-1</<SUP>]
  */
 
 BaseControlElement::BaseControlElement(Identifier name, QObject *parent)
@@ -43,16 +45,15 @@ BaseControlElement::BaseControlElement(Identifier name, QObject *parent)
     Input(double, maximum, std::numeric_limits<double>::max());
     Input(double, minSlope, -std::numeric_limits<double>::max());
     Input(double, maxSlope, std::numeric_limits<double>::max());
-    InputRef(double, timeStepSecs, "calendar[timeStepSecs]");
+    InputRef(double, timeStep, "calendar[timeStepSecs]");
     InputRef(double, signal, "..[signal]");
     Output(double, state);
     Output2(double, state, value);
     Output(double, slope);
-    Output(double, predicted);
 }
 
 void BaseControlElement::reset() {
-    state = state0 = state1 = predicted = initState;
+    state = state0 = state1 = initState;
     slope = 0;
     tick = 0;
     localReset();
@@ -63,14 +64,15 @@ void BaseControlElement::update() {
     state1 = state2;
     state2 = state;
     state += change(signal - state);
-    slope = fitSlopePPP(state1, state2, state);
+    double dt = timeStep/60.;
+    slope = fitSlopePPP(state1, state2, state)/dt;
     if (tick++>10) {
         if (slope < minSlope) {
-            state = fitPointPPS(state1, state2, minSlope);
+            state = fitPointPPS(state1, state2, minSlope*dt);
             slope = minSlope;
         }
         else if (slope > maxSlope) {
-            state = fitPointPPS(state1, state2, maxSlope);
+            state = fitPointPPS(state1, state2, maxSlope*dt);
             slope = maxSlope;
         }
     }

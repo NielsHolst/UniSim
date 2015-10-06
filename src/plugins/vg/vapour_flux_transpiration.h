@@ -16,7 +16,6 @@ class VapourFluxTranspiration : public VapourFluxBase
 {
 public:
     VapourFluxTranspiration(UniSim::Identifier name, QObject *parent);
-    void reset();
     void update();
 
 private:

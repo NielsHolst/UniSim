@@ -21,17 +21,16 @@ PUBLISH(EnergyFluxCoolingSupply)
  * \brief Flux of energy supplied to cool the greenhouse down towards the ventilation setpoint
  * Inputs
  * ------
- * - _ventilationDemand_ is the flux of energy demanded to cool the greenhouse down to the ventilation setpoint [W/m<SUP>2</SUP>]
- * - _byWind_ is the air exchange rate that can be caused by outside wind alone [h<SUP>-1</SUP>]
- * - _byTemp_ is the air exchange rate that can be caused by the outside-inside temperature difference alone [h<SUP>-1</SUP>]
+ * - _airSupplyMax_ is the maximum possible air flux from outdoors to indoors [h<SUP>-1</SUP>]
+ * - _energyDemand_ is the flux of energy demanded to cool the greenhouse down to the ventilation setpoint [W/m<SUP>2</SUP>]
  * - _indoorsTemperature_ is the indoors temperature [<SUP>o</SUP>C]
  * - _outdoorsTemperature_ is the outdoors temperature [<SUP>o</SUP>C]
- * - _averageHeight_ is the average height of the greenhouse [m]
+ * - _height_ is the average height of the greenhouse [m]
+ * - _airTransmissivity_ is the transmissivity of air throught the greenhouse shelter and screens [0;1]
  *
  * Output
  * ------
  * - _value_ is the flux of energy supplied to cool the greenhouse down towards the ventilation setpoint [W/m<SUP>2</SUP>]
- * - _airFlux_ is the air flux that causes the energy flux [h<SUP>-1</SUP>]
  */
 
 EnergyFluxCoolingSupply::EnergyFluxCoolingSupply(Identifier name, QObject *parent)
@@ -41,21 +40,20 @@ EnergyFluxCoolingSupply::EnergyFluxCoolingSupply(Identifier name, QObject *paren
     InputRef(double, energyDemand, "cooling/demand[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
-    InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
+    InputRef(double, height,"geometry[indoorsAverageHeight]");
     InputRef(double, airTransmissivity, "construction/shelters[airTransmissivity]");
     Output(double, value);
-//    Output(double, airFlux);
 }
 
 void EnergyFluxCoolingSupply::reset() {
-    value = airFlux = 0.;
+    value =  0.;
 }
 
 void EnergyFluxCoolingSupply::update() {
     double dT = outdoorsTemperature - indoorsTemperature;
     if (dT < 0.) {
         // W/m2 = m * h-1 / (s/h) * K * J/kg/K * kg/m3
-        double energySupplyMax = averageHeight*airSupplyMax*airTransmissivity/3600*dT*CpAir*RhoAir;
+        double energySupplyMax = height*airSupplyMax*airTransmissivity/3600*dT*CpAir*RhoAir;
         value = max(energyDemand, energySupplyMax); // both are negative or zero
     }
     else {

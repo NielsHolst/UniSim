@@ -352,12 +352,13 @@
 </xsl:template>
 
 <xsl:template name="crop-layer">
-<!--	<model name="rs" type="vg::StomatalResistance"/> -->
+	<model name="windSpeed" type="vg::LeafWindSpeed">
+		<parameter name="k" value="0"/>
+	</model>
 	<xsl:call-template name="extract-crop-model">
 		<xsl:with-param name="modelName">rs</xsl:with-param>
 	</xsl:call-template>
-
-	<model name="rb" type="vg::BoundaryLayerResistance"/>
+	<model name="rb" type="vg::BoundaryLayerResistanceJonesB"/>
 	<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 	<model name="transpiration" type="vg::LeafTranspiration"/>
 	<model name="condensation">
@@ -578,7 +579,7 @@
 	
 	<model name="indoors">
 		<model name="given">
-			<model name="airflux" type="AirFluxOutdoors">
+			<model name="airflux" type="AirFluxGiven">
 				<model name="infiltration" type="vg::AirFluxInfiltration">
 					<parameter name="leakage">
 						<xsl:attribute name="value">
@@ -718,8 +719,8 @@
 					<model name="supply" type="vg::PidControlElement">
 						<parameter name="Kprop" value="0.5"/>
 						<parameter name="maximum" value="0"/>
-						<parameter name="maxSlope" value="5"/>
-						<parameter name="minSlope" value="-5"/>
+						<parameter name="maxSlope" value="1"/>
+						<parameter name="minSlope" value="-1"/>
 						<parameter name="signal" ref="./target[value]"/>
 						<model name="target" type="vg::EnergyFluxCoolingSupply">
 							<parameter name="airSupplyMax" ref="cooling/airSupplyMax[value]"/>
@@ -1529,130 +1530,9 @@
 	
 	<output name="output" type="table">
 		<parameter name="fileName" value="dvv_unisim_0001.txt"/>
-
+		<!-- Time axis -->
 		<trace label="date" value="calendar[dateAsReal]"/>
-			
-		<trace label="giv_eflux_sum" ref="given/energyFlux[value]"/>
-		<trace label="giv_eflux_trans" ref="given/energyFlux/transpiration[value]"/>
-		<trace label="giv_eflux_cond_cov" ref="given/energyFlux/condensationCover[value]"/>
-		<trace label="giv_eflux_cond_scr" ref="given/energyFlux/condensationScreens[value]"/>
-		<trace label="giv_eflux_lamp" ref="given/energyFlux/growthLights[value]"/>
-		<trace label="giv_eflux_out" ref="given/energyFlux/airFluxOutdoors[value]"/>
-		<trace label="giv_eflux_shelter" ref="given/energyFlux/shelter[value]"/>
-		<trace label="giv_eflux_crop" ref="given/energyFlux/crop[value]"/>
-		<trace label="giv_eflux_floor" ref="given/energyFlux/floor[value]"/>
-			
-		<trace label="abs_light_co" ref="energetics[lightAbsorbedCover]"/>
-		<trace label="abs_light_sc" ref="energetics[lightAbsorbedScreens]"/>
-		<trace label="ind_light_dir" ref="indoors/light[direct]"/>
-		<trace label="ind_light_dif" ref="indoors/light[diffuse]"/>
-
-		<trace label="abs_top" ref="crop/radiation[absorptivityTop]"/>
-		<trace label="abs_mid" ref="crop/radiation[absorptivityMiddle]"/>
-		<trace label="abs_bot" ref="crop/radiation[absorptivityBottom]"/>
-		<trace label="ref_can" ref="crop/radiation[reflectivity]"/>
-		<trace label="tra_can" ref="crop/radiation[transmissivity]"/>
-
-		<trace label="absy_ir_top" ref="crop/radiation[absorptivityLwTop]"/>
-		<trace label="absy_ir_mid" ref="crop/radiation[absorptivityLwMiddle]"/>
-		<trace label="absy_ir_bot" ref="crop/radiation[absorptivityLwBottom]"/>
-		<trace label="tray_ir_can" ref="crop/radiation[transmissivityLw]"/>
 		
-		<trace label="abs_par_top" ref="layers/top/photosynthesis[parAbsorbed]"/>
-		<trace label="abs_par_mid" ref="layers/middle/photosynthesis[parAbsorbed]"/>
-		<trace label="abs_par_bot" ref="layers/bottom/photosynthesis[parAbsorbed]"/>
-		
-		<trace label="abs_li_top" ref="layers/top/radiationAbsorbed[lightAbsorbed]"/>
-		<trace label="abs_li_mid" ref="layers/middle/radiationAbsorbed[lightAbsorbed]"/>
-		<trace label="abs_li_bot" ref="layers/bottom/radiationAbsorbed[lightAbsorbed]"/>
-	
-		<trace label="abs_heat_top" ref="layers/top/radiationAbsorbed[heatingAbsorbed]"/>
-		<trace label="abs_heat_mid" ref="layers/middle/radiationAbsorbed[heatingAbsorbed]"/>
-		<trace label="abs_heat_bot" ref="layers/bottom/radiationAbsorbed[heatingAbsorbed]"/>
-
-		<trace label="abs_gr_li_top" ref="layers/top/radiationAbsorbed[growthLightLwAbsorbed]"/>
-		<trace label="abs_gr_li_mid" ref="layers/middle/radiationAbsorbed[growthLightLwAbsorbed]"/>
-		<trace label="abs_gr_li_bot" ref="layers/bottom/radiationAbsorbed[growthLightLwAbsorbed]"/>
-
-		<trace label="lost_cover_top" ref="layers/top/radiationAbsorbed[coverLoss]"/>
-		<trace label="lost_cover_mid" ref="layers/middle/radiationAbsorbed[coverLoss]"/>
-		<trace label="lost_cover_bot" ref="layers/bottom/radiationAbsorbed[coverLoss]"/>
-		
-		<trace label="abs_tot_top" ref="layers/top/radiationAbsorbed[value]"/>
-		<trace label="abs_tot_mid" ref="layers/middle/radiationAbsorbed[value]"/>
-		<trace label="abs_tot_bot" ref="layers/bottom/radiationAbsorbed[value]"/>
-		
-		<trace label="Pg_top" ref="layers/top/photosynthesis[Pg]"/>
-		<trace label="Pg_mid" ref="layers/middle/photosynthesis[Pg]"/>
-		<trace label="Pg_bot" ref="layers/bottom/photosynthesis[Pg]"/>
-
-		
-		<trace label="scr_max" value="controllers/screens/maxDrawn[value]"/>
-		<trace label="test_horz_scr_en" value="horizontalScreens/energy[state]"/>
-		<trace label="act_scr_en" value="actuators/screens/energy/control[state]"/>
-		<trace label="act_scr_sh" value="actuators/screens/shade/control[state]"/>
-		<trace label="act_scr_bl" value="actuators/screens/blackout/control[state]"/>
-
-		<trace label="LAI" value="crop/lai[value]"/>
-		<trace label="flux_top" ref="layers/top/temperature[energyFlux]"/>
-		<trace label="flux_mid" ref="layers/middle/temperature[energyFlux]"/>
-		<trace label="flux_bot" ref="layers/bottom/temperature[energyFlux]"/>
-		<trace label="stem" ref="crop/mass[stem]"/>
-		<trace label="leaf" ref="crop/mass[leaf]"/>
-		<trace label="fruit" ref="crop/mass[fruit]"/>
-
-		
-		<trace label="shl_tra_dir" ref="shelters[diffuseLightTransmitted]"/>
-		<trace label="shl_tra_dif" ref="shelters[directLightTransmitted]"/>
-		<trace label="shl_tra_tot" ref="shelters[totalLightTransmitted]"/>
-		<trace label="shl_abs_cov" ref="shelters[lightAbsorbedCover]"/>
-		<trace label="shl_abs_scr" ref="shelters[lightAbsorbedScreens]"/>
-		<trace label="shl_haze" ref="shelters[haze]"/>
-		<trace label="shl_U" ref="shelters[U]"/>
-		<trace label="shl_cp_cov" ref="shelters[heatCapacityCoversPerGround]"/>
-		<trace label="shl_cp_scr" ref="shelters[heatCapacityScreensPerGround]"/>
-		<trace label="shl_tra_air" ref="shelters[airTransmissivity]"/>
-
-		<trace label="shl_in_ir_abs" ref="construction/energyFlux[incomingLwAbsorptivity]"/>
-		<trace label="shl_out_ir_abs" ref="construction/energyFlux[outgoingLwAbsorptivity]"/>
-		<trace label="shl_heat_out" ref="construction/energyFlux[heatFluxOutside]"/>
-		<trace label="shl_heat_in" ref="construction/energyFlux[heatFluxInside]"/>
-		<trace label="shl_heat_sky" ref="construction/energyFlux[radiationFluxSky]"/>
-		<trace label="shl_sun_cover" ref="construction/energyFlux[radiationFluxSunCover]"/>
-		<trace label="shl_sun_scr" ref="construction/energyFlux[radiationFluxSunScreens]"/>
-		<trace label="shl_crop_top" ref="construction/energyFlux[radiationFluxCropTop]"/>
-		<trace label="shl_crop_mid" ref="construction/energyFlux[radiationFluxCropMiddle]"/>
-		<trace label="shl_crop_bot" ref="construction/energyFlux[radiationFluxCropBottom]"/>
-		<trace label="shl_cov_temp" ref="construction/energyFlux[coverTemperature]"/>
-		<trace label="shl_scr_temp" ref="construction/energyFlux[screensTemperature]"/>
-		
-		
-		<trace label="shl_in_ir_abs_screens" ref="roof1/screens[incomingLwAbsorptivity]"/>
-		<trace label="shl_in_ir_abs_cover" ref="roof1/cover[incomingLwAbsorptivity]"/>
-		<trace label="shl_in_ir_abs_shelter" ref="roof1[incomingLwAbsorptivity]"/>
-		
-		<trace label="max_state" value="construction/shelters[screensMaxState]"/>
-		
-		<trace label="leaf_tra_cond_top" value="layers/top/transpiration[conductance]"/>
-		<trace label="leaf_tra_lah_top" value="layers/top/transpiration[leafAh]"/>
-		<trace label="leaf_tra_iah_top" value="layers/top/transpiration[indoorsAh]"/>
-		<trace label="leaf_tra_cond_mid" value="layers/middle/transpiration[conductance]"/>
-		<trace label="leaf_tra_lah_mid" value="layers/middle/transpiration[leafAh]"/>
-		<trace label="leaf_tra_iah_mid" value="layers/middle/transpiration[indoorsAh]"/>
-		<trace label="leaf_tra_cond_bot" value="layers/bottom/transpiration[conductance]"/>
-		<trace label="leaf_tra_lah_bot" value="layers/bottom/transpiration[leafAh]"/>
-		<trace label="leaf_tra_iah_bot" value="layers/bottom/transpiration[indoorsAh]"/>
-
-		<trace label="leaf_cond_top" value="layers/top/condensation/energyFlux[value]"/>
-		<trace label="leaf_cond_mid" value="layers/middle/condensation/energyFlux[value]"/>
-		<trace label="leaf_cond_bot" value="layers/bottom/condensation/energyFlux[value]"/>
-
-
-		<trace label="contr_cool_air" value="controlled/cooling/airflux[value]"/>
-		<trace label="contr_cool_en" value="controlled/cooling/energyflux[value]"/>
-
-		<trace label="scr_ground_area" value="construction/shelters[screensPerGroundArea]"/>
-
 		<!-- Climate -->
 		<trace label="outdoorsWindspeed" value="outdoors[windspeed]"/>
 		<trace label="indoorsWindspeed" value="indoors/windspeed[value]"/>
@@ -1780,25 +1660,11 @@
 		<trace label="bot_Rd" ref="bottom/photosynthesis/lightResponse[Rd]"/>
 
 		<trace label="airFluxTotal" ref="indoors/total/airflux[value]"/>
-	<!-- 			
-		<trace label="indoors_ah" value="indoors/humidity[ah]"/>
-		<trace label="top_ah" value="top/transpiration[leafAh]"/>
-		<trace label="top_rad" value="top/transpiration[absorbedRadiation]"/>
-		<trace label="top_temp" value="top/transpiration[Tleaf]"/>
-		<trace label="top_rb" value="top/transpiration[rbH2O]"/>
-		<trace label="top_rs" value="top/transpiration[rsH2O]"/>
-
-		<trace label="middle_rad" value="middle/transpiration[absorbedRadiation]"/>
-		<trace label="middle_temp" value="middle/transpiration[Tleaf]"/>
-		<trace label="middle_rb" value="middle/transpiration[rbH2O]"/>
-		<trace label="middle_rs" value="middle/transpiration[rsH2O]"/>
-
-		<trace label="bottom_ah" value="bottom/transpiration[leafAh]"/>
-		<trace label="bottom_rad" value="bottom/transpiration[absorbedRadiation]"/>
-		<trace label="bottom_temp" value="bottom/transpiration[Tleaf]"/>
-		<trace label="bottom_rb" value="bottom/transpiration[rbH2O]"/>
-		<trace label="bottom_rs" value="bottom/transpiration[rsH2O]"/>
- -->
+		
+		<!-- Wageningen (2015) poster -->
+		<trace label="topRtCO2" ref="top/photosynthesis/lightResponse[rtCO2]"/>
+		<trace label="midRtCO2" ref="middle/photosynthesis/lightResponse[rtCO2]"/>
+		<trace label="botRtCO2" ref="bottom/photosynthesis/lightResponse[rtCO2]"/>
 	</output>
 	
 		

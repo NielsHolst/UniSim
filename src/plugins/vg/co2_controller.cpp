@@ -16,23 +16,21 @@ namespace vg {
 PUBLISH(Co2Controller)
 
 /*! \class Co2Controller
- * \brief Sets the rate of CO2 enrichment
+ * \brief Sets the rate of CO<SUB>2</SUB> enrichment
+ * CO<SUB>2</SUB> injection begins, when the level falls below the minimum setpoint,
+ * and lasts until the level reaches the maximum setpoint.
  *
  * Inputs
  * ------
- * - _assimilation_ tells plant CO2 assimilation rate [g/m<SUP>2</SUP>/h]
- * - _ventilation_ tells the relative ventilation rate within a time step [0;1]
- * - _minCo2_ is the minimum set point for CO2 in the greenhouse [ppm]
- * - _indoorsCo2_ is the indoors CO2 level [ppm]
- * - _outdoorsCo2_ is the outdoors CO2 level [ppm]
- * - _indoorsTemperature_ is the indoors temperature [<SUP>o</SUP>C]
- * - _timeStep_ is the duration of one integration time step [s]
- * - _height_ is the average greenhouse height [m]
- * - _maxSignal_ is the maximum CO2 enrichment rate [g/m<SUP>2</SUP>/h]
+ * - _minCo2_ is the minimum setpoint for CO<SUB>2</SUB> in the greenhouse [ppm]
+ * - _maxCo2_ is the maximum setpoint for CO<SUB>2</SUB> in the greenhouse [ppm]
+ * - _indoorsCo2_ is the indoors CO<SUB>2</SUB> level [ppm]
+ * - _timeStep_ is the integration time step [s]
+ * - _injectionRate_ is the rate at which CO<SUB>2</SUB> can be injected [g/m<SUP>2</SUP>/h]
  *
  * Output
  * -----
- * - _signal_ is the desired CO2 enrichment rate [g/m<SUP>2</SUP>/h]
+ * - _signal_ is the set rate of CO<SUB>2</SUB> enrichment [g/m<SUP>2</SUP>/h]
  *
  */
 

@@ -20,7 +20,7 @@ public:
 
 private:
     // Inputs
-    double state, topTemperature, indoorsTemperature, indoorsVolume, groundArea;
+    double screensState, outdoorsTemperature, indoorsTemperature, indoorsVolume, groundArea;
 
     // Outputs
     double value;

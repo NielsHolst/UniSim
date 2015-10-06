@@ -22,7 +22,7 @@ private:
     // Inputs
     double Uindoors, Usoil, heatCapacity, emissivity,
         indoorsTemperature, soilTemperature,
-        averageHeight, timeStep;
+        height, timeStep;
     // Outputs
     double temperature;
 };

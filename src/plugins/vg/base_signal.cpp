@@ -18,7 +18,7 @@ namespace vg {
  *
  * Inputs
  * ------
- * - _resetSignal_ is the value that _signal_ is set to at reset [R]
+ * - _signalReset_ is the value that _signal_ is set to at reset [R]
  *
  * Output
  * ------

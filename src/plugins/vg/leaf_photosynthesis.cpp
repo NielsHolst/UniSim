@@ -36,6 +36,7 @@ PUBLISH(LeafPhotosynthesis)
  *
  * Outputs
  * ------
+ * - _absorptivity_ is the proportion of indoors light captured by this leaf layer [0;1]
  * - _Pn_ is the net assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> ground/h]
  * - _Pg_ is the gross assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> ground/h]
  */

@@ -19,14 +19,26 @@ PUBLISH(CropRadiation)
 
 
 /*! \class CropRadiation
- * \brief
+ * \brief Basic parameters for radiation in crop canopy
  *
  * Inputs
  * ------
-
+ * - _kDiffuse_ is the extinction coefficient for diffuse light [0;1]
+ * - _scattering_ is the scattering coefficent for direct light [0;1]
+ * - _sinb_ is the sine of sun elevation [-1;1]
+ * - _lightDiffuse_ is the intensity of diffuse light indoors [W/m<SUP>2</SUP>]
+ * - _lightDirect_ is the intensity of direct light indoors [W/m<SUP>2</SUP>]
+ * - _absorptivityTop_ is the proportion of indoors light captured by the top leaf layer [0;1]
+ * - _absorptivityMiddel_ is the proportion of indoors light captured by the middle leaf layer [0;1]
+ * - _absorptivityBottom_ is the proportion of indoors light captured by the bottom leaf layer [0;1]
+ *
  * Output
  * ------
- *
+ * - _kDirect_ is the extinction coefficient for direct light [0;1]
+ * - _kDirectDirect_ is the extinction coefficient for the direct component of direct light [0;1]
+ * - _diffuseReflectivity_ is the reflectivity of diffuse light [0;1]
+ * - _directReflectivity_ is the reflectivity of direct light [0;1]
+ * - _reflectivity_ is the reflectivity of diffuse and direct light combined [0;1]
  */
 
 CropRadiation::CropRadiation(Identifier name, QObject *parent)
@@ -62,10 +74,10 @@ void CropRadiation::update() {
     // Reflectivity of spherical leaf angle distribution
     directReflectivity = 2*diffuseReflectivity/(1+1.6*sinB);
 
-    // Extinction coefficient for direct component of direct PAR flux (KdirBL)
+    // Extinction coefficient for direct component of direct light (KdirBL)
     kDirectDirect = (sinB==0.) ? 0. : 0.5/sinB*kDiffuse/(0.8*sqv);
 
-    // Extinction coefficient for total direct PAR flux
+    // Extinction coefficient for total direct light
     kDirect = kDirectDirect*sqv;
 
     // Total light reflectivity weighted by diffuse vs. direct light

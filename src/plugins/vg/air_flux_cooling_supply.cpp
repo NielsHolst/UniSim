@@ -18,28 +18,29 @@ namespace vg {
 PUBLISH(AirFluxCoolingSupply)
 
 /*! \class AirFluxCoolingSupply
- * \brief Total air ventilation
+ * \brief Flux of air from the outdoors supplied for greenhouse ventilation
+ * Computed from the corresponding supplied cooling energy obtained by ventilation.
  *
  * Inputs
  * ------
- * - _averageHeight_ is the average height of the greenhouse [m]
- * - _active_ is the active ventilation [h<SUP>-1</SUP>]
+ * - _energyFlux_ is the supplied cooling energy [W/m<SUP>2</SUP>]
+ * - _airSupplyMax_ is the maximum possible air flux [h<SUP>-1</SUP>]
+ * - _indoorsHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
+ * - _indoorsTemperature_ is the indoors tempeature [<SUP>o</SUP>C]
+ * - _outdoorsTemperature_ is ambient temperature outdoors [<SUP>o</SUP>C]
  *
  * Outputs
  * ------
  * - _value_ is the relative rate of air exchanged [h<SUP>-1</SUP>]
  *
- * Default dependencies
- * ------------
- * - a _geometry_ model with an _averageHeight_ port [m]
  */
 
 AirFluxCoolingSupply::AirFluxCoolingSupply(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, energyFlux, "energyFlux/cooling/supply[state]");
+    InputRef(double, energyFlux, "energyFlux/cooling/supply[value]");
     InputRef(double, airSupplyMax, "cooling/airSupplyMax[value]");
-    InputRef(double, bottomHeight, "geometry[indoorsAverageHeight]");
+    InputRef(double, indoorsHeight, "geometry[indoorsAverageHeight]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, outdoorsTemperature, "outdoors[temperature]");
     Output(double, value);
@@ -53,7 +54,7 @@ void AirFluxCoolingSupply::update() {
     double dT = outdoorsTemperature - indoorsTemperature;
     if (dT < 0.) {
         // W*h/m2/K = m * J/kg/K * kg/m3 * h/s
-        double C = bottomHeight*CpAir*RhoAir/3600;
+        double C = indoorsHeight*CpAir*RhoAir/3600;
         // h-1 = W/m2 / (W*h/m2/K) / K = W/m2 * K*m2/(W*h) / K
         value = min(energyFlux/C/dT, airSupplyMax);
         Q_ASSERT(value >= 0.);

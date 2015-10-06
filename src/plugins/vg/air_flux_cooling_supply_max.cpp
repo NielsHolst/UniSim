@@ -18,19 +18,17 @@ namespace vg {
 PUBLISH(AirFluxCoolingSupplyMax)
 
 /*! \class AirFluxCoolingSupplyMax
- * \brief Flux of energy supplied to cool the greenhouse down towards the ventilation setpoint
+ * \brief Maximum possible air flux from outdoors to greenhouse indoors.
+ * This is the maximum air flux that can be effectuated by ventilation.
  * Inputs
  * ------
- * - _ventilationDemand_ is the flux of energy demanded to cool the greenhouse down to the ventilation setpoint [W/m<SUP>2</SUP>]
- * - _byWind_ is the air exchange rate that can be caused by outside wind alone [h<SUP>-1</SUP>]
- * - _byTemp_ is the air exchange rate that can be caused by the outside-inside temperature difference alone [h<SUP>-1</SUP>]
- * - _indoorsTemperature_ is the indoors temperature [<SUP>o</SUP>C]
- * - _outdoorsTemperature_ is the outdoors temperature [<SUP>o</SUP>C]
+ * - _byWind_ is the maximum possible air flux that can be caused by outdoors wind alone [h<SUP>-1</SUP>]
+ * - _byTemp_ is the maximum possible air flux that can be caused by the outdoors-indoors temperature difference alone [h<SUP>-1</SUP>]
+ * - _givenAirFlux_ is the air flux given, irrespective of temperature-regulated ventilation [h<SUP>-1</SUP>]
  *
  * Output
  * ------
- * - _value_ is the flux of energy supplied to cool the greenhouse down towards the ventilation setpoint [W/m<SUP>2</SUP>]
- * - _airFlux_ is the air flux that causes the energy flux [h<SUP>-1</SUP>]
+ * - _value_ is the maximum possible air flux from outdoors to indoors [h<SUP>-1</SUP>]
  */
 
 AirFluxCoolingSupplyMax::AirFluxCoolingSupplyMax(Identifier name, QObject *parent)

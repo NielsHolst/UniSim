@@ -16,15 +16,16 @@ namespace vg {
 PUBLISH(EnergyFluxAir)
 
 /*! \class EnergyFluxAir
- * \brief Flux of energy carried by air flux
+ * \brief Flux of energy carried by air from outdoors to indoors
  *
  * Inputs
  * ------
- * - _airFlux_ is the rate of air exchange between compartments [h<SUP>-1</SUP>]
- * - _receiverTemperature_ is the air temperature of the receiving compartment [<SUP>oC</SUP>C]
- * - _outdoorsTemperature_ is the air temperature of the donor compartment [<SUP>oC</SUP>C]
- * - _averageHeight_ is the average height of the receiving compartment [m]
- */
+ * - _airFlux_ is the rate of air exchange between outdoors to indoors [h<SUP>-1</SUP>]
+ * - _indoorsTemperature_ is the air temperature indoors [<SUP>oC</SUP>C]
+ * - _outdoorsTemperature_ is the air temperature outdoors [<SUP>oC</SUP>C]
+ * - _height_ is the average height of the greenhouse
+ * - _timeStep_ is the integration time step [s]
+*/
 
 EnergyFluxAir::EnergyFluxAir(Identifier name, QObject *parent)
     : EnergyFluxBase(name, parent)

@@ -19,7 +19,7 @@ public:
     void update();
 private:
     // Inputs;
-    double energyFlux, airSupplyMax, indoorsTemperature, outdoorsTemperature, bottomHeight;
+    double energyFlux, airSupplyMax, indoorsTemperature, outdoorsTemperature, indoorsHeight;
     // Outputs
     double value;
 };

@@ -19,11 +19,7 @@ PUBLISH(EnergyFluxCondensation)
  *
  * Input
  * ------
- * - _condensation_ is the condensation rate per greenhouse ground area [kg/m<SUP>2</SUP>/s]
- *
- * Output
- * ------
- * - _flux_ is the flux of energy produced by condensation [W/m<SUP>2</SUP>]
+ * - _vapourFlux_ is the condensation rate per greenhouse ground area [kg/m<SUP>2</SUP>/s]
  */
 
 EnergyFluxCondensation::EnergyFluxCondensation(Identifier name, QObject *parent)

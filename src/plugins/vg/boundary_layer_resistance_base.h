@@ -4,31 +4,29 @@
 ** Released under the terms of the GNU General Public License version 3.0 or later.
 ** See www.gnu.org/copyleft/gpl.html.
 */
-#ifndef VG_BOUNDARY_LAYER_RESISTANCE_H
-#define VG_BOUNDARY_LAYER_RESISTANCE_H
+#ifndef VG_BOUNDARY_LAYER_RESISTANCE_BASE_H
+#define VG_BOUNDARY_LAYER_RESISTANCE_BASE_H
 
 #include <usbase/model.h>
 
 namespace vg {
 
-class BoundaryLayerResistance : public UniSim::Model
+class BoundaryLayerResistanceBase : public UniSim::Model
 {
 public:
-    BoundaryLayerResistance(UniSim::Identifier name, QObject *parent);
+    BoundaryLayerResistanceBase(UniSim::Identifier name, QObject *parent);
     void reset();
-    void update();
-
-private:
-    // Parameters
-    double leafDimension, indoorsWindSpeed;
-
-    // Variables
+    void update() final;
+protected:
+    // Inputs
+    double leafDimension, leafWindSpeed;
+    // Outputs
     double rbH2O, rbCO2;
-
+private:
     // Methods
-    void updateValue(double windSpeed);
+    virtual void setRbH2O() = 0;
 };
-} //namespace
 
+} //namespace
 
 #endif

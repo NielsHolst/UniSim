@@ -20,8 +20,12 @@ public:
     void update();
 
 private:
-    double rsCO2, rbCO2, co2Air, Tleaf, Pnmax, Pgmax, LUE, Rd;
-    double rhoChl, theta, frParAbs, concEnzyme;
+    // Inputs
+    double rsCO2, rbCO2, Tleaf, co2Air,
+           rhoChl, theta, frParAbs, concEnzyme;
+    // Outputs
+    double rtCO2, Pnmax, Pgmax, LUE, Rd;
+    // Data
     double x25, TleafK, T25, rhoCo2T,
         VCmax, Jmax, KM, gamma;
     struct MichaelisMenten {
@@ -29,7 +33,7 @@ private:
         void update(double x25);
     };
     MichaelisMenten mm;
-
+    // Methods
     double darkRespirationRate();
     double maxCarboxylationRate();
     double maxPhotosyntheticCapacity();

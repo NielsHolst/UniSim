@@ -27,7 +27,7 @@ PUBLISH(IndoorsTemperature)
  *
  * Output
  * ------
- * - _value_ is the indoors tempeature reached, it not actively regulated [<SUP>o</SUP>C]
+ * - _value_ is the indoors tempeature [<SUP>o</SUP>C]
  *
  * Default dependencies
  * ------------

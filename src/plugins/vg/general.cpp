@@ -353,7 +353,7 @@ double fitSlopePPP(double y0, double y1, double y2) {
     double
         a = (y2 - 2*y1 + y0)/2,
         b = y1 - y0 - a;
-    // 2ax + b for x = 3
+    // 2ax + b for x = 2
     return a*4 + b;
 }
 

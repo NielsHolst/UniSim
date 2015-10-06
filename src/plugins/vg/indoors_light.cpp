@@ -15,39 +15,30 @@ namespace vg {
 PUBLISH(IndoorsLight)
 
 /*! \class IndoorsLight
- * \brief Computes indoors diffuse and direct light
+ * \brief Indoors diffuse and direct, light and PAR
  *
  * Inputs
  * ------
- * - _outdoorsDirectRadiation_ is the direct sunlight irradiation [W/m<SUP>2</SUP>]
- * - _outdoorsDiffuseRadiation_ is the diffuses sunlight irradiation [W/m<SUP>2</SUP>]
- * - _diffuseTransmission_ is the proportion of diffuse sunlight transmitted though the greenhouse surface [0;1]
- * - _directTransmissionAsDirect_ is the proportion of direct sunlight transmitted though the greenhouse cover and remaining surface [0;1]
- * - _directTransmissionAsDiffuse_ is the proportion of direct sunlight transmitted though the greenhouse surface and becoming dispersed as diffuse light [0;1]
+ * - _propParRadiation_ is the proportion of PAR in sunlight irradiation [0;1]
+ * - _growthLigthtsPar_ is the intensity of PAR supplied by growth lights [W/m<SUP>2</SUP>]
+ * - In addition, the model looks up the characteristics of the greenhouse shelter and screens.
  *
  * Outputs
  * ------
- * - _direct_ is the direct light transmitted directly through the greenhouse construction plus growth light [W/m<SUP>2</SUP>]
- * - _diffuse_ is the total diffuse light transmitted through and dispersed by the greenhouse construction [W/m<SUP>2</SUP>]
- * - _total_ is the total light transmitted through the greenhouse construction [W/m<SUP>2</SUP>]
+ * - _direct_ is the intensity of direct light indoors [W/m<SUP>2</SUP>]
+ * - _diffuse_ is the intensity of diffuse light indoors [W/m<SUP>2</SUP>]
+ * - _total_ is total the intensity of light indoors [W/m<SUP>2</SUP>]
+ * - _parDirect_ is the intensity of direct PAR indoors [W/m<SUP>2</SUP>]
+ * - _parDiffuse_ is the intensity of diffuse PAR indoors [W/m<SUP>2</SUP>]
+ * - _parTotal_ is the total intensity of PAR indoors [W/m<SUP>2</SUP>]
  *
- * Default dependencies
- * ------------
- * - an _outdoors_ model with two ports:
- *   + _directRadiation_ [W/m<SUP>2</SUP>]
- *   + _diffuseRadiation_ [W/m<SUP>2</SUP>]
- * - an _indoors/screens/transmission_ model with three ports:
- *   + _diffuse_ [0;1]
- *   + _directAsDirect_ [0;1]
- *   + _directAsDiffuse_ [0;1]
- * - an _actuators/growthLights_ model with a _shortWaveEmission_ port [W/m<SUP>2</SUP>]
  */
 
 IndoorsLight::IndoorsLight(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
     InputRef(double, outdoorsPropParRadiation, "outdoors[propParRadiation]");
-    InputRef(double, growthLighstPar, "growthLights[parEmission]");
+    InputRef(double, growthLigthtsPar, "growthLights[parEmission]");
     Output(double, direct);
     Output(double, diffuse);
     Output(double, total);
@@ -78,7 +69,7 @@ void IndoorsLight::update() {
     for (auto p : pDirect) direct += (*p);
     total = direct + diffuse;
     parDiffuse = outdoorsPropParRadiation*diffuse;
-    parDirect = outdoorsPropParRadiation*direct + growthLighstPar;
+    parDirect = outdoorsPropParRadiation*direct + growthLigthtsPar;
     parTotal = parDiffuse + parDirect;
 
 }

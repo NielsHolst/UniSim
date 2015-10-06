@@ -105,12 +105,25 @@ photosynthesis = function(U,from=0, to=366) {
 		ncol=5
 	)	
 }
+
+poster = function(U,from=0, to=366) {
+	windows(14,10)
+	grid.arrange( 
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "_rb_H2o")), 
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "RtCO2")), 
+		plot2(U, from, to, paste0(c("top", "mid", "bot"), "Temperature")),
+		plot2(U, from, to, c("assimilation", "yieldFreshWeight", "heatingEnergyTotal")),
+		ncol=2
+	)	
+}
  
 U = read_unisim("dvv_unisim_0001.txt")
-climate(U)
-controlled(U)
-production(U)
-photosynthesis(U)
+poster(U,1)
+
+# climate(U)
+# controlled(U)
+# production(U)
+# photosynthesis(U)
 # hist(U$pipe1NextTempMax-)
 
 # windows(14,10)

@@ -21,12 +21,12 @@ public:
 
     // Inputs
 protected:
-    double initState, signal, timeStepSecs;
+    double initState, signal, timeStep;
 private:
     double minimum, maximum, minSlope, maxSlope;
 
     // Outputs
-    double state, predicted, slope;
+    double state, slope;
 
     // Data
     double state0, state1, state2;

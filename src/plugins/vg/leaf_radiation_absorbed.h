@@ -23,7 +23,7 @@ private:
     double
         xGaussLowerside, wGaussLowerside,
         xGaussUpperside, wGaussUpperside,
-        kLw, lai, indoorsLight, heating,
+        kLw, lai, indoorsLight,
         lightAbsorptivity, emissivity,
         growthLightLw, growthLightViewFactor,
         floorTemperature, floorEmissivity,

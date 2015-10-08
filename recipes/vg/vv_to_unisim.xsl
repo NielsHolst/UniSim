@@ -353,12 +353,12 @@
 
 <xsl:template name="crop-layer">
 	<model name="windSpeed" type="vg::LeafWindSpeed">
-		<parameter name="k" value="0"/>
+		<parameter name="k" value="0.6"/>
 	</model>
 	<xsl:call-template name="extract-crop-model">
 		<xsl:with-param name="modelName">rs</xsl:with-param>
 	</xsl:call-template>
-	<model name="rb" type="vg::BoundaryLayerResistanceJonesB"/>
+	<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
 	<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 	<model name="transpiration" type="vg::LeafTranspiration"/>
 	<model name="condensation">

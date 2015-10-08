@@ -23,10 +23,34 @@ PUBLISH(LeafRadiationAbsorbed)
  *
  * Inputs
  * ------
-
- * Output
- * ------
+ * - _kLw_ is the extinction coefficent for long-waved radiation [0;1]
+ * - _emissivity_ is the emissivity of leaves for long-waved radiation [0;1]
+ * - _xGaussLowerside_ is the coefficient for Gaussian integration from the lower side of the canopy [0;1]
+ * - _wGaussLowerside_ is the weihgt for Gaussian integration from the lower side of the canopy [0;1]
+ * - _xGaussUpperside_ is the coefficient for Gaussian integration from the upper side of the canopy [0;1]
+ * - _wGaussUpperside_ is the weihgt for Gaussian integration from the upper side of the canopy [0;1]
+ * - _lai_ is the crop leaf area index [-]
+ * - _indoorsLight_ is total the intensity of light indoors [W/m<SUP>2</SUP>]
+ * - _lightAbsorptivity_ is the proportion of indoors light captured by this leaf layer [0;1]
+ * - _growthLightLw_ is the long wave emission from growth lights [W/m<SUP>2</SUP>]
+ * - _growthLightViewFactor_ is the view factor of growth lights as seen from this leaf layer [0;1]
+ * - _floorTemperature_ is the floor temperature [<SUP>o</SUP>C]
+ * - _floorEmissivity_ is floor emissivity [0;1]
+ * - _leafTemperature_ is the leaf temperature [<SUP>o</SUP>C]
+ * - _coverTemperature_ is the cover temperature [<SUP>o</SUP>C]
+ * - _screensTemperature_ is the temperature of screens [<SUP>o</SUP>C]
+ * - _screensMaxState_ is the maximum screen state [0;1]
+ * - _shelterOutgoingLwAbsorptivity_ is the absorptivity for long-waved radiation of the greenhouse shelter [0;1]
+ * - _coverPerGroundArea_ is the total cover area per ground area [m<SUP>2</SUP> cover/m<SUP>2</SUP> ground]
  *
+ * Outputs
+ * ------
+ *  - _lightAbsorbed_ is the flux of light absorbed by this leaf layer [W/m<SUP>2</SUP>]
+ *  - _heatingAbsorbed_ is the flux of heating absorbed by this leaf layer [W/m<SUP>2</SUP>]
+ *  - _growthLightLwAbsorbed_ is the flux of long-waved radiation absorbed by this leaf layer from the growth lights [W/m<SUP>2</SUP>]
+ *  - _floorLwAbsorbed_ is the flux of long-waved radiation absorbed by this leaf layer from the floor [W/m<SUP>2</SUP>]
+ *  - _shelterLoss_ is the flux of long-waved radiation lost from this leaf layer to the shelter [W/m<SUP>2</SUP>]
+ *  - _value_ is the energy flux absorbed by this leaf layer [W/m<SUP>2</SUP>]
  */
 
 LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
@@ -41,11 +65,10 @@ LeafRadiationAbsorbed::LeafRadiationAbsorbed(Identifier name, QObject *parent)
     InputRef(double, lai, "crop/lai[value]");
     InputRef(double, indoorsLight, "indoors/light[total]");
     InputRef(double, lightAbsorptivity, "../photosynthesis[absorptivity]");
-    InputRef(double, heating, "heating/supply[value]");
     InputRef(double, growthLightLw, "actuators/growthlights[longWaveEmission]");
+    Input(double, growthLightViewFactor, 1.);
     InputRef(double, floorTemperature, "energyFlux/floor[temperature]");
     InputRef(double, floorEmissivity, "energyFlux/floor[emissivity]");
-    Input(double, growthLightViewFactor, 1.);
     InputRef(double, leafTemperature, "../temperature[value]");
     InputRef(double, coverTemperature, "given/energyFlux/shelter[coverTemperature]");
     InputRef(double, screensTemperature, "given/energyFlux/shelter[screensTemperature]");

@@ -21,30 +21,34 @@ PUBLISH(EnergyFluxShelters)
  *
  * Inputs
  * ------
- * - _U_ is the heat transfer coefficient of the material  [W/m<SUP>2</SUP>/K]
- * - _emissivity_ is the effectiveness in emitting energy as thermal radiation [0;1].
- * - _absorptivity_ is the proportion of light absorbed [0;1]
- * - _heatCapacity_ is cover heat capacity [J/m<SUP>2</SUP>]/K]
+ * - _U_ is the overall heat transfer coefficient of the shelters [W/m<SUP>2</SUP>/K]
+ * - _incomingLwAbsorptivity_ is the absorptivity for long-waved radiation coming from the outdoors direction [0;1]
+ * - _outgoingLwAbsorptivity_ is the absorptivity for long-waved radiation going in the outdoors direction [0;1]
+ * - _lightAbsorbedCover_ is the intensity of sunlight absorbed by the cover [W/m<SUP>2</SUP> ground]
+ * - _lightAbsorbedScreens_ is the intensity of sunlight absorbed by the screens [W/m<SUP>2</SUP> ground]
+ * - _heatCapacityCoversPerGround_ is the total heat capacity of all covers [J/kg/m<SUP>2</SUP> ground]
+ * - _heatCapacityScreensPerGround_ is the total heat capacity of all screens [J/kg/m<SUP>2</SUP> ground]
  * - _timeStep_ is the integration time step [s]
+ * - _height_ is the average height of the greenhouse [m]
+ * - _coverPerGroundArea_ is the total cover area per ground area [m<SUP>2</SUP> cover/m<SUP>2</SUP> ground]
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
  * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
  * - _skyTemperature_ is the temperature of the sky [<SUP>o</SUP>C]
- * - _screenState_ is the max. state of the screens below this cover [0;1], where 0=Open and 1=Drawn
- * - _cropTemperature_ is the temperature of the top layer of the crop [<SUP>o</SUP>C]
- * - _sunlight_ is the outdoors radiation [W/m<SUP>2</SUP]
- * - _condensation_ is the condensation rate on the cover [kg/m<SUP>2</SUP>/s]
+ * - _radiationFluxCropTop_ is the flux of long-waved radiation going from the top leaf layer to the shelter [W/m<SUP>2</SUP>]
+ * - _radiationFluxCropMiddle_ is the flux of long-waved radiation going from the middle leaf layer to the shelter [W/m<SUP>2</SUP>]
+ * - _radiationFluxCropBottom_ is the flux of long-waved radiation going from the bottom leaf layer to the shelter [W/m<SUP>2</SUP>]
  *
  * Outputs
  * ------
- * All fluxes below are per greenhouse groubd area.
- * - _heatFluxOutside_ is the convective energy flux to the cover from the outside, usually negative [W/m<SUP>2</SUP>]
- * - _heatFluxInside_ is the convective energy flux to the cover from the inside, usually positive [W/m<SUP>2</SUP>]
- * - _radiationFluxSky_ is the radiative energy flux to the cover from the sky, always negative [W/m<SUP>2</SUP>]
- * - _radiationFluxSun_ is the radiative energy flux to the cover from the sun, positive in the day [W/m<SUP>2</SUP>]
- * - _radiationFluxScreen_ is the radiative energy flux to the cover from the screen [W/m<SUP>2</SUP>]
- * -
- * -
- * - _value_ is the net energy flux from cover to greenhouse air  [W/m<SUP>2</SUP>]
+ * All fluxes below are per greenhouse ground area.
+ * - _heatFluxOutsideToCover_ is the energy flux gained by the cover from the outside [W/m<SUP>2</SUP>]
+ * - _heatFluxInsideToCover_ is the energy flux gained by the cover from the inside [W/m<SUP>2</SUP>]
+ * - _radiationFluxSkyToCover_ is the energy flux gained by cover from the sky (negative) [W/m<SUP>2</SUP>]
+ * - _radiationFluxSunToCover_ is the energy flux gained by cover from the sun (positive) [W/m<SUP>2</SUP>]
+ * - _radiationFluxSunToScreens_ is the energy flux gained by the screens from the sun (positive) [W/m<SUP>2</SUP>]
+ * - _coverTemperature_ is the cover temperature [<SUP>o</SUP>C]
+ * - _screensTemperature_ is the screens temperature [<SUP>o</SUP>C]
+ * - _value_ is the net energy flux from shelters to the greenhouse air  [W/m<SUP>2</SUP>]
 
  */
 EnergyFluxShelters::EnergyFluxShelters(Identifier name, QObject *parent)
@@ -53,15 +57,13 @@ EnergyFluxShelters::EnergyFluxShelters(Identifier name, QObject *parent)
     InputRef(double, U, "construction/shelters[U]");
     InputRef(double, incomingLwAbsorptivity, "construction/shelters[incomingLwAbsorptivity]");
     InputRef(double, outgoingLwAbsorptivity, "construction/shelters[outgoingLwAbsorptivity]");
-
     InputRef(double, lightAbsorbedCover, "construction/shelters[lightAbsorbedCover]");
     InputRef(double, lightAbsorbedScreens, "construction/shelters[lightAbsorbedScreens]");
-
     InputRef(double, heatCapacityCover, "construction/shelters[heatCapacityCoversPerGround]");
     InputRef(double, heatCapacityScreens, "construction/shelters[heatCapacityScreensPerGround]");
 
     InputRef(double, timeStep, "calendar[timeStepSecs]");
-    InputRef(double, averageHeight,"geometry[indoorsAverageHeight]");
+    InputRef(double, height, "geometry[indoorsAverageHeight]");
     InputRef(double, coverPerGroundArea,"geometry[coverPerGroundArea]");
 
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
@@ -92,7 +94,7 @@ void EnergyFluxShelters::reset() {
 
 void EnergyFluxShelters::update() {
     const int maxTimeStep = 20;     // Use time steps no larger than this [s]
-    double Cair = averageHeight*RhoAir*CpAir;
+    double Cair = height*RhoAir*CpAir;
     int n = max(int(timeStep/maxTimeStep), 1);
     double dt = timeStep/n;
     value = 0.;

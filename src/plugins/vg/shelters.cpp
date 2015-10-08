@@ -18,6 +18,18 @@ PUBLISH(Shelters)
 
 /*! \class Shelters
  * \brief Collection of all greenhouse shelters
+ *
+ * Inputs
+ * ------
+ * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
+ *
+ * Outputs
+ * ------
+ * - _heatCapacityCoversPerGround_ is the total heat capacity of all covers [J/kg/m<SUP>2</SUP> ground]
+ * - _heatCapacityScreensPerGround_ is the total heat capacity of all screens [J/kg/m<SUP>2</SUP> ground]
+ * - _screensEffectiveArea_ is the total drawn of screens [m<SUP>2</SUP>]
+ * - _screensPerGroundArea_ is the _screensEffectiveArea_ per _ground area [m<SUP>2</SUP> screen/m<SUP>2</SUP> ground]
+ * - _screensMaxState_ is maximum state of all screens [0;1]
  */
 
 Shelters::Shelters(Identifier name, QObject *parent)

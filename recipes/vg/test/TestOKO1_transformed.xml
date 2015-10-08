@@ -751,11 +751,11 @@
 				<parameter name="xGaussLowerside" value="0.8873"/>
 				<parameter name="wGaussLowerside" value="0.2778"/>
 				<model name="windSpeed" type="vg::LeafWindSpeed">
-					<parameter name="k" value="0"/>
+					<parameter name="k" value="0.6"/>
 				</model>
 				<!--Tomato rs-->
 				<model name="rs" type="vg::StomatalResistanceRose"/>
-				<model name="rb" type="vg::BoundaryLayerResistanceJonesB"/>
+				<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
 				<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
 				<model name="condensation">
@@ -779,11 +779,11 @@
 				<parameter name="xGaussLowerside" value="0.5"/>
 				<parameter name="wGaussLowerside" value="0.4444"/>
 				<model name="windSpeed" type="vg::LeafWindSpeed">
-					<parameter name="k" value="0"/>
+					<parameter name="k" value="0.6"/>
 				</model>
 				<!--Tomato rs-->
 				<model name="rs" type="vg::StomatalResistanceRose"/>
-				<model name="rb" type="vg::BoundaryLayerResistanceJonesB"/>
+				<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
 				<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
 				<model name="condensation">
@@ -807,11 +807,11 @@
 				<parameter name="xGaussLowerside" value="0.1127"/>
 				<parameter name="wGaussLowerside" value="0.2778"/>
 				<model name="windSpeed" type="vg::LeafWindSpeed">
-					<parameter name="k" value="0"/>
+					<parameter name="k" value="0.6"/>
 				</model>
 				<!--Tomato rs-->
 				<model name="rs" type="vg::StomatalResistanceRose"/>
-				<model name="rb" type="vg::BoundaryLayerResistanceJonesB"/>
+				<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
 				<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
 				<model name="condensation">

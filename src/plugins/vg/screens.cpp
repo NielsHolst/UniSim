@@ -27,12 +27,13 @@ PUBLISH(Screens)
  *
  * Outputs
  * ------
+ * - _areHorizontal_ tells if these screens are horizontal [true/false]
+ * - _maxState_ is the maximum screen state [0;1]
+ * - _airTransmissivity_ is the proportion of air transmitted through the screens [0;1]
+ * - _haze_ is the proportion of direct light becoming dispersed on passage through the screens [0;1]
  * - _U_ is the combined U-value of all screens [W/m<SUP>2</SUP>/K]
  * - _heatCapacity_ is the heat capacity [J/K]
- * - _haze_ is the proportion of direct light becoming dispersed on passage through the screens [0;1]
- * - _transmissivityAir_ is the proportion of air transmitted through the screens [0;1]
- * - _maxState_ is the maximum screen state [0;1]
- * - _isHorizontal_ is any the screen in horizontal position ?
+ * - _effectiveArea_ is the draw area of the screens
  */
 
 Screens::Screens(Identifier name, QObject *parent)

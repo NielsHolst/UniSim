@@ -16,6 +16,21 @@ namespace vg {
  *
  * Outputs
  * ------
+ * - _lightTransmissivity_ is the transmissivity for diffuse light [0;1]
+ * - _directLightTransmissivity_ is the transmissivity for direct light [0;1]
+ * - _lwTransmissivity_ is the transmissivity for long-waved radiation [0;1]
+ * - _incomingLightAbsorptivity_ is the absorptivity for diffuse light coming from the outdoors direction [0;1]
+ * - _incomingLightReflectivity_ is the reflectivity for diffuse light coming from the outdoors direction [0;1]
+ * - _incomingDirectLightAbsorptivity_ is the absorptivity for direct light coming from the outdoors direction [0;1]
+ * - _incomingDirectLightReflectivity_ is the reflectivity for direct light coming from the outdoors direction [0;1]
+ * - _incomingLwAbsorptivity_ is the absorptivity for long-waved radiation coming from the outdoors direction [0;1]
+ * - _incomingLwReflectivity_ is the reflectivity for long-waved radiation coming from the outdoors direction [0;1]
+ * - _outgoingLightAbsorptivity_ is the absorptivity for diffuse light going in the outdoors direction [0;1]
+ * - _outgoingLightReflectivity_ is the reflectivity for diffuse light going in the outdoors direction [0;1]
+ * - _outgoingDirectLightAbsorptivity_ is the absorptivity for direct light going in the outdoors direction [0;1]
+ * - _outgoingDirectLightReflectivity_ is the reflectivity for direct light going in the outdoors direction [0;1]
+ * - _outgoingLwAbsorptivity_ is the absorptivity for long-waved radiation going in the outdoors direction [0;1]
+ * - _outgoingLwReflectivity_ is the reflectivity for long-waved radiation going in the outdoors direction [0;1]
  */
 
 SurfaceRadiationOutputs::SurfaceRadiationOutputs(Identifier name, QObject *parent)
@@ -23,7 +38,7 @@ SurfaceRadiationOutputs::SurfaceRadiationOutputs(Identifier name, QObject *paren
 {
     Output(double, lightTransmissivity);
     Output(double, directLightTransmissivity);
-    Output(double, irTransmissivity);
+    Output(double, lwTransmissivity);
     Output(double, incomingLightAbsorptivity);
     Output(double, incomingLightReflectivity);
     Output(double, incomingDirectLightAbsorptivity);
@@ -46,7 +61,7 @@ void SurfaceRadiationOutputs::set(const SurfaceRadiation &rad_) {
     rad = rad_;
     lightTransmissivity = rad.light.tra;
     directLightTransmissivity = rad.directLight.tra;
-    irTransmissivity = rad.ir.tra;
+    lwTransmissivity = rad.ir.tra;
     incomingLightAbsorptivity = rad.light.outer.abs;
     incomingLightReflectivity = rad.light.outer.ref;
     incomingDirectLightAbsorptivity = rad.directLight.outer.abs;

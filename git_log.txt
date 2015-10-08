@@ -1,0 +1,20 @@
+commit 39d7225d80af4f7514950e4d05bf0e97358bd846
+Author: Niels Holst <niels.holst@agrsci.dk>
+Date:   Tue Oct 6 16:26:44 2015 +0200
+
+    Rename shelter classes
+
+commit 5e77b9c333c1cb30d9a5e049e3a0a63218270d8b
+Author: Niels Holst <niels.holst@agrsci.dk>
+Date:   Tue Oct 6 09:36:15 2015 +0200
+
+    Add alternative boundary layer models
+    Begin updating Doxygen comments
+
+commit 744fbbbf3507c0da3e22f586afaa9be1524297bd
+Author: Niels Holst <niels.holst@agrsci.dk>
+Date:   Tue Sep 29 13:36:12 2015 +0200
+
+    Add growth lights to indoors light
+    Add floor long-wave radiation to radiation absorbed by leaves
+    Delete unused source files

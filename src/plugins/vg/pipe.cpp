@@ -37,13 +37,6 @@ PUBLISH(Pipe)
  * ------
  * - _temperature_ is the pipe temperature [<SUP>o</SUP>C]
  * - _effect_ is the energy emission per greenhouse area [W/m<SUP>2</SUP>]
-
- * Default dependencies
- * ------------
- * - a _controllers/heating/temperature_ model wit a _signal_ port [<SUP>o</SUP>C]
- * - an _indoors/temperature_ model with a _value_ port [<SUP>o</SUP>C]
- * - a _calendar_ model with a _timeStepSecs_ port [s]
- * - a _construction/geometry_ model with a _groundArea_ port [m<SUP>2</SUP>]
  */
 
 Pipe::Pipe(Identifier name, QObject *parent)

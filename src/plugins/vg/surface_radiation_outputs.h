@@ -22,7 +22,7 @@ public:
     const SurfaceRadiation* surfaceRadiation() const;
 private:
     // Outputs
-    double lightTransmissivity, directLightTransmissivity, irTransmissivity,
+    double lightTransmissivity, directLightTransmissivity, lwTransmissivity,
            incomingLightAbsorptivity, incomingLightReflectivity,
            incomingDirectLightAbsorptivity, incomingDirectLightReflectivity,
            incomingLwAbsorptivity, incomingLwReflectivity,

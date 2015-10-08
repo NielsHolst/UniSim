@@ -23,7 +23,7 @@ private:
         outgoingLwAbsorptivity,
         lightAbsorbedCover, lightAbsorbedScreens,
         heatCapacityCover, heatCapacityScreens,
-        timeStep, averageHeight,
+        timeStep, height,
         coverPerGroundArea,
         indoorsTemperature, skyTemperature, outdoorsTemperature,
         radiationFluxCropTop, radiationFluxCropMiddle, radiationFluxCropBottom;

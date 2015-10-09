@@ -25,10 +25,6 @@ PUBLISH(VapourFluxCondensation)
  * - _surfaceTemperature_ is the temperature of the surface [<SUP>o</SUP>C]
  * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
  * - _indoorsAh_ is the indoors absolute humidity [kg/m<SUP>3</SUP>]
- *
- * Outputs
- * ------
- * - see VapourFluxBase
  */
 
 VapourFluxCondensation::VapourFluxCondensation(Identifier name, QObject *parent)

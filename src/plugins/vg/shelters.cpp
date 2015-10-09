@@ -109,11 +109,11 @@ void Shelters::update() {
         AccumulateSr(directLight.outer.abs);
         AccumulateSr(directLight.outer.ref);
         AccumulateSr(directLight.tra);
-        AccumulateSr(ir.inner.abs);
-        AccumulateSr(ir.inner.ref);
-        AccumulateSr(ir.outer.abs);
-        AccumulateSr(ir.outer.ref);
-        AccumulateSr(ir.tra);
+        AccumulateSr(lw.inner.abs);
+        AccumulateSr(lw.inner.ref);
+        AccumulateSr(lw.outer.abs);
+        AccumulateSr(lw.outer.ref);
+        AccumulateSr(lw.tra);
 
         Accumulate(diffuseLightTransmitted);
         Accumulate(directLightTransmitted);

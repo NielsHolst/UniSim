@@ -21,22 +21,31 @@ namespace vg {
 PUBLISH(Pipe)
 
 /*! \class Pipe
- * \brief Computes heat pipe temperature and emittance
+ * \brief Heat pipe temperature and energy flux
+ *
+ * The model automatically looks up other Pipe models among its sibling models. This model aims to supply the energy flux,
+ * not provided by preceeding Pipe models, to meet the over all goal of _energyFluxTotal_.
  *
  * Inputs
  * ------
  * - _length_ is pipe length per greenhouse area [m/m<SUP>2</SUP>]
  * - _diameter_ is the pipe inner diameter [mm]
- * - _flowRate_ is the flow rate [m<SUP>3</SUP>/h]
- * - _inflowTemperature_ is the temperature of the water flowing into the pipe [<SUP>o</SUP>C]
- * - _indoorsTemperature_ is the ambient temperature of the greenhouse [<SUP>o</SUP>C]
+ * - _minTemperature_ is the minimum pipe temperature [<SUP>o</SUP>C]
+ * - _maxTemperature_ is the maximum pipe temperature [<SUP>o</SUP>C]
+ * - _maxTemperatureIncreaseRate_ is the maximum rate at which pipe temperature can increase[<SUP>o</SUP>C/min]
+ * - _emissivity_ is the emissivity of the heat pipe [0;1]
+ * - _energyFluxTotal_ is the total energy flux to be produced by all pipes [W/m<SUP>2</SUP>]
+ * - _indoorsTemperature_ is the indoors temperature [<SUP>o</SUP>C]
  * - _timeStep_ is the integration time step [s]
- * - _greenhouseArea_ is the ground area covered by the greenhouse [m<SUP>2</SUP>]
  *
  * Outputs
  * ------
  * - _temperature_ is the pipe temperature [<SUP>o</SUP>C]
- * - _effect_ is the energy emission per greenhouse area [W/m<SUP>2</SUP>]
+ * - _energyFlux_ is the energy flux coming from this pipe [W/m<SUP>2</SUP>]
+ * - _nextTemperatureMin_ is the minimum pipe temperature possible in the next time step [<SUP>o</SUP>C]
+ * - _nextTemperatureMax_ is the maximum pipe temperature possible in the next time step [<SUP>o</SUP>C]
+ * - _nextEnergyFluxMin_ is the minimum energyFLux possible in the next time step [W/m<SUP>2</SUP>]
+ * - _nextEnergyFluxMax_ is the maximum energyFLux possible in the next time step [W/m<SUP>2</SUP>]
  */
 
 Pipe::Pipe(Identifier name, QObject *parent)
@@ -46,11 +55,12 @@ Pipe::Pipe(Identifier name, QObject *parent)
     Input(double, diameter, 51.);
     Input(double, minTemperature, 20.);
     Input(double, maxTemperature, 80.);
-    Input(double, maxTemperatureIncreaseRate, 2.); // K/min
+    Input(double, maxTemperatureIncreaseRate, 2.);
     Input(double, emissivity, 0.9);
     InputRef(double, energyFluxTotal, "heating/supply[value]");
     InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
+
     Output(double, temperature);
     Output(double, energyFlux);
     Output(double, nextTemperatureMin);

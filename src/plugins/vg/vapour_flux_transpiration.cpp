@@ -20,19 +20,9 @@ PUBLISH(VapourFluxTranspiration)
  *
  * Inputs
  * ------
- * - _conductanceIn_ is the vapour flux (condensation) conductance [m/s]
- * - _vapourFluxIn_ is the condensation rate [kg/m<SUP>2</SUP>/s]
+ * - _conductanceIn_ is the transpiration conductance [m/s]
+ * - _vapourFluxIn_ is the transpiration rate [kg/m<SUP>2</SUP>/s]
  * - _gainIn_ is used to integrate over all water vapour fluxes (GCC, p. 148) [kg/m<SUP>2</SUP>/s]
- *
- * Outputs
- * ------
- * See VapourFlux
- *
- * Default dependencies
- * ------------
- * - a _crop/conductance_ model with a _value_ port [m/s]
- * - a _crop/vapourFlux model with a _value_ port [kg/m<SUP>2</SUP>/s]
- * - a _crop/gain model with a _value_ port [kg/m<SUP>2</SUP>/s]
 */
 
 VapourFluxTranspiration::VapourFluxTranspiration(Identifier name, QObject *parent)

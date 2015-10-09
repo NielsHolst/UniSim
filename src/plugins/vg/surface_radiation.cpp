@@ -17,57 +17,68 @@ using namespace UniSim;
 
 namespace vg {
 
+/*! \class SurfaceRadiation
+ * \brief Basic radiation characteristics of a surface
+ *
+ * This class manages the absortivity, emissivity, reflectivity and transmissivity of a surface.
+ * Short-waved diffuse (_light_) and direct radiation (_directLight_), and long-waved radiation (_lw_) are considered separately.
+ *
+*/
 SurfaceRadiation::SurfaceRadiation() {
     light =
     directLight =
-    ir = Spectrum(1);
+    lw = Spectrum(1);
 }
 
+//! Initialize from cover characteristics
 SurfaceRadiation& SurfaceRadiation::asCover(double transmissivity, double directTransmissivity,
                                             double absorptivity, double emissivity) {
     light.tra = transmissivity;
     directLight.tra = directTransmissivity;
-    ir.tra = 0.;
+    lw.tra = 0.;
 
     light.outer.abs =
     light.inner.abs =
     directLight.outer.abs =
     directLight.inner.abs = absorptivity;
-    ir.outer.abs =
-    ir.inner.abs = emissivity;
+    lw.outer.abs =
+    lw.inner.abs = emissivity;
 
     light.outer.setRef(light.tra);
     light.inner.setRef(light.tra);
     directLight.outer.setRef(directLight.tra);
     directLight.inner.setRef(directLight.tra);
-    ir.outer.setRef(ir.tra);
-    ir.inner.setRef(ir.tra);
+    lw.outer.setRef(lw.tra);
+    lw.inner.setRef(lw.tra);
     return *this;
 }
 
+//! Initialize from screen characteristics
 SurfaceRadiation& SurfaceRadiation::asScreen(double transmissivity, double absorptivityLwOuter, double absorptivityLwInner) {
     light.tra = transmissivity;
-    ir.tra = 0.;
+    lw.tra = 0.;
     light.outer.abs =
-    ir.outer.abs = absorptivityLwOuter;
+    lw.outer.abs = absorptivityLwOuter;
     light.outer.setRef(light.tra);
-    ir.outer.setRef(ir.tra);
+    lw.outer.setRef(lw.tra);
 
-    ir.inner.abs = absorptivityLwInner;
-    ir.inner.setRef(ir.tra);
-    light.inner.ref = std::min(ir.inner.ref, 1. - light.tra);
+    lw.inner.abs = absorptivityLwInner;
+    lw.inner.setRef(lw.tra);
+    light.inner.ref = std::min(lw.inner.ref, 1. - light.tra);
     light.inner.setAbs(light.tra);
 
     directLight = light;
     return *this;
 }
 
+//! Set transmissivity to 1
 void SurfaceRadiation::setToZero() {
     light =
     directLight =
-    ir = Spectrum(0);
+    lw = Spectrum(0);
 }
 
+//! Set reflectivity from transmissivity (assumes absorptivity already set)
 void SurfaceRadiation::Spectrum::Direction::setRef(double tra) {
     ref = 1. - abs - tra;
     TestNum::snapToZero(ref);
@@ -77,6 +88,7 @@ void SurfaceRadiation::Spectrum::Direction::setRef(double tra) {
     Q_ASSERT(ref>=0);
 }
 
+//! Set absorptivity from transmissivity (assumes reflectivity already set)
 void SurfaceRadiation::Spectrum::Direction::setAbs(double tra) {
     abs = 1. - ref - tra;
     TestNum::snapToZero(abs);
@@ -86,6 +98,7 @@ void SurfaceRadiation::Spectrum::Direction::setAbs(double tra) {
     Q_ASSERT(abs>=0.);
 }
 
+//! Obtained combined characteristics of this and another Spectrum object
 SurfaceRadiation::Spectrum& SurfaceRadiation::Spectrum::operator*=(const SurfaceRadiation::Spectrum &s2) {
     double k = 1. - inner.ref*s2.outer.ref,
            t12 = tra*s2.tra/k,
@@ -105,15 +118,17 @@ SurfaceRadiation::Spectrum& SurfaceRadiation::Spectrum::operator*=(const Surface
     return *this;
 }
 
+//! Obtained combined characteristics of this and another SurfaceRadiation object
 SurfaceRadiation& SurfaceRadiation::operator*=(const SurfaceRadiation &s2) {
     light *= s2.light;
     directLight *= s2.directLight;
-    ir *= s2.ir;
+    lw *= s2.lw;
     return *this;
 }
 
+//! Check that the object holds valid characteristics
 bool SurfaceRadiation::isOk() {
-    return !( std::isnan(ir.inner.abs) || std::isnan(ir.inner.ref) );
+    return !( std::isnan(lw.inner.abs) || std::isnan(lw.inner.ref) );
 }
 
 } //namespace

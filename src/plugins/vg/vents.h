@@ -19,7 +19,7 @@ public:
 
 private:
     // Inputs
-    double greenhouseArea;
+    double groundArea;
     // Outputs
     double totalLength, averageHeight, proportionalEffectiveArea;
 };

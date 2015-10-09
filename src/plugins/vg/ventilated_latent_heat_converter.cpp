@@ -17,20 +17,13 @@ namespace vg {
 PUBLISH(VentilatedLatentHeatConverter)
 
 /*! \class VentilatedLatentHeatConverter
- * \brief Condensation on greenhouse cover
+ * \brief A ventilated latent heat converter to control greenhouse huimidity
  *
  * Inputs
  * ------
  * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
  * - _indoorsAh_ is the indoors absolute humidity [kg/m<SUP>3</SUP>]
  * - _volumeFlowRate_ is the rate of air flow through the converter [m<SUP>3</SUP>/s]
- *
- * Outputs
- * ------
- * - see VapourFlux
- *
- * Default dependencies
- * ------------
  */
 
 VentilatedLatentHeatConverter::VentilatedLatentHeatConverter(Identifier name, QObject *parent)
@@ -39,6 +32,7 @@ VentilatedLatentHeatConverter::VentilatedLatentHeatConverter(Identifier name, QO
     InputRef(double, groundArea, "geometry[groundArea]");
     InputRef(double, indoorsAh, "indoors/humidity[ah]");
     Input(double, volumeFlowRate, 2.5);
+    // Additional outputs are needed to specify the flux of latent heat gain [W/m2]
 }
 
 void VentilatedLatentHeatConverter::update() {
@@ -48,7 +42,7 @@ void VentilatedLatentHeatConverter::update() {
 }
 
 double VentilatedLatentHeatConverter::dewRate() {
-    // interpolation...
+    // NB. Needs code for interpolated value...
     return 0.004; // kg/s
 }
 

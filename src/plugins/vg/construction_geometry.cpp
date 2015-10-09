@@ -44,7 +44,7 @@ PUBLISH(ConstructionGeometry)
  * - _coverArea_ is the area of the green house cover (walls + roof) [m<SUP>2</SUP>]
  * - _coverPerGroundArea_ is _coverArea_ divided by _groundArea_ [m<SUP>2</SUP>/[m<SUP>2</SUP>]]
  * - _indoorsVolume_ is the greenhouse volume, reduced when horizontal screen is drawn [m<SUP>3</SUP>]
- * - _averageHeight_ is the average height of the greenhouse (indoors volume divided by ground area),
+ * - _indoorsAverageHeight_ is the average height of the greenhouse (indoors volume divided by ground area),
  *  reduced when horizontal screen is drawn [m]
  */
 

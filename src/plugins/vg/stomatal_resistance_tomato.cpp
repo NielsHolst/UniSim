@@ -18,26 +18,17 @@ namespace vg {
 PUBLISH(StomatalResistanceTomato)
 
 /*! \class StomatalResistanceTomato
- * \brief Stomatal resistance against H<SUB>2</SUB>O and CO<SUB>2</SUB>
+ * \brief Stomatal resistance against H<SUB>2</SUB>O and CO<SUB>2</SUB> for tomato
  *
  * Inputs
  * ------
- * - _co2_ is the ambient CO<SUB>2</SUB> concentration [ppm]
+ * - _riH2Omin_ is the minimum resistance against H<SUB>2</SUB>O
+ * - _lai_ is the crop leaf area index [-]
+ * - _temperature_ is leaf temperature [<SUP>o</SUP>C]
+ * - _indoorsTemperature_ is indoors temperature [<SUP>o</SUP>C]
  * - _rh_ is indoors relative humidity [0;100]
- * - _Pg_ is gross assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/h]
- * - _rbCO2_ is the boundary layer resistance against CO<SUB>2</SUB> [s/m]
- *
- * Outputs
- * ------
- * - _rbH2O_ is the stomatal resistance against water vapour [s/m]
- * - _rbCO2_ is the stomatal resistance against CO<SUB>2</SUB> [s/m]
- *
- * Default dependencies
- * ------------
- * - an _indoors/co2_ model with a _ppm_ port [ppm]
- * - an _indoors/humidity_ model with an _rh_ port [0;100]");
- * - a _photosynthesis_ sibling model with a _Pg_ port [g CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/h]
- * - an _rb_ sibling model with an _rbCO2_ port [s/m]
+ * - _radiationAbsorbed_ is the flux of radiation absorbed by the leaves [W/m<SUP>2</SUP> ground]
+ * - _co2_ is indoors CO<SUB>2</SUB> concentration [ppm]
  */
 
 StomatalResistanceTomato::StomatalResistanceTomato(Identifier name, QObject *parent)
@@ -46,10 +37,10 @@ StomatalResistanceTomato::StomatalResistanceTomato(Identifier name, QObject *par
     Input(double, riH2Omin, 82.);
     InputRef(double, lai, "crop/lai[value]");
     InputRef(double, temperature, "../temperature[value]");
+    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
     InputRef(double, rh, "indoors/humidity[rh]");
     InputRef(double, radiationAbsorbed, "../radiationAbsorbed[value]");
     InputRef(double, co2, "indoors/co2[value]");
-    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
 }
 
 double StomatalResistanceTomato::resetRsH2O() {
@@ -62,7 +53,7 @@ double StomatalResistanceTomato::updateRsH2O() {
     // stomatal (internal) resistance to H2O [s/m] as a function of irrad, Temp, CO2, RH
     bool atNight = (radiationAbsorbed < 3);
     double vpd = vpdFromRh(indoorsTemperature, rh),
-           radAbs = max(radiationAbsorbed/(2*lai), 0.),
+           radAbs = max(radiationAbsorbed/(2*lai), 0.), // W/p2 leaf = W/m2 ground / (m2 leaf/m2 ground)
            fRadiation = (radAbs + 4.3)/(radAbs + 0.54),
            fTemperature = 1 + 2.2593e-2*sqr(temperature + T0 - 297.66),
            fCO2 = atNight ? 1 : min(1 + 6.08e-7*sqr(co2-200), 1.49),

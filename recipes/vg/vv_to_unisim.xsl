@@ -358,10 +358,10 @@
 	<xsl:call-template name="extract-crop-model">
 		<xsl:with-param name="modelName">rs</xsl:with-param>
 	</xsl:call-template>
-	<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
+	<model name="rb" type="vg::BoundaryLayerResistanceStanghellini"/>
 	<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 	<model name="transpiration" type="vg::LeafTranspiration"/>
-	
+	<!--
 	<model name="condensation">
 		<model name="vapourFlux" type="vg::VapourFluxCondensation">
 			<parameter name="surfaceAreaPerGroundArea" ref="./lai[value]"/>
@@ -372,7 +372,7 @@
 			<parameter name="vapourFlux" ref="../vapourflux[vapourFlux]"/>
 		</model>
 	</model>
-	
+	-->
 	<model name="temperature" type="vg::LeafTemperature"/>
 	<model name="photosynthesis" type="vg::LeafPhotosynthesis">
 		<model name="lightResponse" type="vg::LeafLightResponse"/>	

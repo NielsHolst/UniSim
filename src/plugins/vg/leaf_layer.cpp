@@ -14,7 +14,7 @@ namespace vg {
 PUBLISH(LeafLayer)
 
 /*! \class LeafLayer
- * \brief A crop canopy leaf layer
+ * \brief A layer of the crop canopy
  *
  * Inputs
  * ------

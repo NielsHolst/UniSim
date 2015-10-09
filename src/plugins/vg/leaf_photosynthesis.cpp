@@ -17,30 +17,38 @@ namespace vg {
 PUBLISH(LeafPhotosynthesis)
 
 /*! \class LeafPhotosynthesis
- * \brief Assimilation of a canopy layer
+ * \brief Calculates assimilation
  *
  * Inputs
  * ------
- * - _sinb_ is the sine of sun elevation [-1;1]
- * - _lightDif_ is the indoors diffuse light [W//m<SUP>2</SUP>]
- * - _lightDir_ is the indoors direct light [W//m<SUP>2</SUP>]
- * - _lai_ is leaf area index [m<SUP>2</SUP>/m<SUP>2</SUP>]
- * - _xGauss_ is the LAI coefficient [0;1]
- * - _wGauss_ is weighing coefficient [0;1]
+ * - _parDirect_ is the intensity of direct PAR indoors [W/m<SUP>2</SUP>]
+ * - _parDiffuse_ is the intensity of diffuse PAR indoors [W/m<SUP>2</SUP>]
+ * - _kDiffuse_ is the extinction coefficient for diffuse light [0;1]
+ * - _kDirect_ is the extinction coefficient for direct light [0;1]
+ * - _kDirectDirect_ is the extinction coefficient for the direct component of direct light [0;1]
+ * - _scattering_ is the scattering coefficent for direct light [0;1]
+ * - _diffuseReflectivity_ is the reflectivity of diffuse light [0;1]
+ * - _directReflectivity_ is the reflectivity of direct light [0;1]
+ * - _sinB_ is the sine of the sun elevation [0;1]
+ * - _lai_ is the crop leaf area index [-]
  * - _LUE_ is the light use efficiency [mg CO<SUB>2</SUB>/J]
- * - _Pnmax_ is the maximum net assimilation rate [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
- * - _Pgmax_ is the maximum gross assimilation rate [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
+ * - _Pgmax_ is the gross assimilation rate [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
  * - _Rd_ is the dark respiration rate [mg CO<SUB>2</SUB>/m<SUP>2</SUP> leaf/s]
- * - _Kdif_ is extinction coefficient for difuse light [0;1]
- * - _SCV_ is light scattering coefficient [0;1]
+ * - _xGauss_ is the LAI coefficient coming from above [0;1]
+ * - _wGauss_ is weighing coefficient coming from above[0;1]
  *
  * Outputs
  * ------
  * - _absorptivity_ is the proportion of indoors light captured by this leaf layer [0;1]
+ * - _parAbsorbed_ is the flux of PAR absorbed by this leaf layer [W/m<SUP>2</SUP> ground]
  * - _Pn_ is the net assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> ground/h]
  * - _Pg_ is the gross assimilation rate [g CO<SUB>2</SUB>/m<SUP>2</SUP> ground/h]
  */
 
+/* Canopy height (H) is arbitrarily set to 2 m.
+ * This will only have an effect, in case Gaussian integration is carried out over canopy height,
+ * rather than over LAI (current implementation).
+*/
 const double H{2};
 
 // Leaf area density (m2/m3) at the Gausian point; constant for a uniform vertival LAI distribution
@@ -71,11 +79,11 @@ LeafPhotosynthesis::LeafPhotosynthesis(Identifier name, QObject *parent)
     InputRef(double, lai, "crop/lai[value]");
     InputRef(double, sinB, "calendar[sinB]");
 
-    InputRef(double, xGauss, "..[xGaussUpperside]");
-    InputRef(double, wGauss, "..[wGaussUpperside]");
     InputRef(double, LUE, "./lightResponse[LUE]");
     InputRef(double, Pgmax, "./lightResponse[Pgmax]");
     InputRef(double, Rd, "./lightResponse[Rd]");
+    InputRef(double, xGauss, "..[xGaussUpperside]");
+    InputRef(double, wGauss, "..[wGaussUpperside]");
 
     Output(double, absorptivity);
     Output(double, parAbsorbed);

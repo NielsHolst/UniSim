@@ -747,19 +747,9 @@
 				</model>
 				<!--Tomato rs-->
 				<model name="rs" type="vg::StomatalResistanceRose"/>
-				<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
+				<model name="rb" type="vg::BoundaryLayerResistanceStanghellini"/>
 				<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
-				<model name="condensation">
-					<model name="vapourFlux" type="vg::VapourFluxCondensation">
-						<parameter name="surfaceAreaPerGroundArea" ref="./lai[value]"/>
-						<parameter name="surfaceTemperature" ref="../../temperature[value]"/>
-						<model name="lai" type="vg::LeafLai"/>
-					</model>
-					<model name="energyFlux" type="vg::EnergyFluxCondensation">
-						<parameter name="vapourFlux" ref="../vapourflux[vapourFlux]"/>
-					</model>
-				</model>
 				<model name="temperature" type="vg::LeafTemperature"/>
 				<model name="photosynthesis" type="vg::LeafPhotosynthesis">
 					<model name="lightResponse" type="vg::LeafLightResponse"/>
@@ -775,19 +765,9 @@
 				</model>
 				<!--Tomato rs-->
 				<model name="rs" type="vg::StomatalResistanceRose"/>
-				<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
+				<model name="rb" type="vg::BoundaryLayerResistanceStanghellini"/>
 				<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
-				<model name="condensation">
-					<model name="vapourFlux" type="vg::VapourFluxCondensation">
-						<parameter name="surfaceAreaPerGroundArea" ref="./lai[value]"/>
-						<parameter name="surfaceTemperature" ref="../../temperature[value]"/>
-						<model name="lai" type="vg::LeafLai"/>
-					</model>
-					<model name="energyFlux" type="vg::EnergyFluxCondensation">
-						<parameter name="vapourFlux" ref="../vapourflux[vapourFlux]"/>
-					</model>
-				</model>
 				<model name="temperature" type="vg::LeafTemperature"/>
 				<model name="photosynthesis" type="vg::LeafPhotosynthesis">
 					<model name="lightResponse" type="vg::LeafLightResponse"/>
@@ -803,19 +783,9 @@
 				</model>
 				<!--Tomato rs-->
 				<model name="rs" type="vg::StomatalResistanceRose"/>
-				<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
+				<model name="rb" type="vg::BoundaryLayerResistanceStanghellini"/>
 				<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 				<model name="transpiration" type="vg::LeafTranspiration"/>
-				<model name="condensation">
-					<model name="vapourFlux" type="vg::VapourFluxCondensation">
-						<parameter name="surfaceAreaPerGroundArea" ref="./lai[value]"/>
-						<parameter name="surfaceTemperature" ref="../../temperature[value]"/>
-						<model name="lai" type="vg::LeafLai"/>
-					</model>
-					<model name="energyFlux" type="vg::EnergyFluxCondensation">
-						<parameter name="vapourFlux" ref="../vapourflux[vapourFlux]"/>
-					</model>
-				</model>
 				<model name="temperature" type="vg::LeafTemperature"/>
 				<model name="photosynthesis" type="vg::LeafPhotosynthesis">
 					<model name="lightResponse" type="vg::LeafLightResponse"/>

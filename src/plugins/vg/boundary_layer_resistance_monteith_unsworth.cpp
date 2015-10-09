@@ -5,7 +5,7 @@
 ** See www.gnu.org/copyleft/gpl.html.
 */
 #include <stdlib.h>
-#include "boundary_layer_resistance_thornley_johnsen.h"
+#include "boundary_layer_resistance_monteith_unsworth.h"
 #include "publish.h"
 
 using namespace std;
@@ -13,15 +13,15 @@ using namespace UniSim;
 
 namespace vg {
 
-PUBLISH(BoundaryLayerResistanceThornleyJohnsen)
+PUBLISH(BoundaryLayerResistanceMonteithUnsworth)
 
 /*! \class BoundaryLayerResistance
  * \brief Boundary layer resistance against H<SUB>2</SUB>O and CO<SUB>2</SUB>
  *
- * According to Thornley and Johnsen (ref.)
+ * According to Monteith and Unsworth (1990).
  */
 
-BoundaryLayerResistanceThornleyJohnsen::BoundaryLayerResistanceThornleyJohnsen(Identifier name, QObject *parent)
+BoundaryLayerResistanceMonteithUnsworth::BoundaryLayerResistanceMonteithUnsworth(Identifier name, QObject *parent)
         : BoundaryLayerResistanceBase(name, parent)
 {
     InputRef(double, leafTemperature, "../temperature[value]");
@@ -30,12 +30,12 @@ BoundaryLayerResistanceThornleyJohnsen::BoundaryLayerResistanceThornleyJohnsen(I
     Output(double, gbH2Ofree);
 }
 
-void BoundaryLayerResistanceThornleyJohnsen::reset() {
+void BoundaryLayerResistanceMonteithUnsworth::reset() {
     leafTemperature = indoorsTemperature;
     BoundaryLayerResistanceBase::reset();
 }
 
-void BoundaryLayerResistanceThornleyJohnsen::setRbH2O() {
+void BoundaryLayerResistanceMonteithUnsworth::setRbH2O() {
     // Forced and free resistances are considered in parallel (i.e. as alternate pathways for water vapour)
     // Hence total resistance is found through addition of conductances
     double dTemp = fabs(leafTemperature - indoorsTemperature);

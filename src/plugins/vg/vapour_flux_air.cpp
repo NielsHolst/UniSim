@@ -20,19 +20,10 @@ PUBLISH(VapourFluxAir)
  *
  * Inputs
  * ------
- * - _airFlux_ is the rate of air exchange between compartments [m<SUP>3</SUP>]/m<SUP>3</SUP>/h]
- * - _donorAh_ is the ambient absolute humidity of the donor compartment [kg/m<SUP>3</SUP>]
- * - _receiverAhAh_ is the ambient absolute humidity of the receiver compartment [kg/m<SUP>3</SUP>]
- * - _averageHeight_ is the (average) height of the receiving compartment [m]
- *
- * Outputs
- * ------
- * - see VapourFlux
- *
- * Default dependencies
- * ------------
- * - an _indoors/humidity_ model with an _ah_ port [kg/m<SUP>3</SUP>]
- * - an _outdoors_ model with an _ah_ port [kg/m<SUP>3</SUP>]
+ * - _airFlux_ is the rate of air exchange [<SUP>h</SUP>]
+ * - _outdoorsAh_ is the outdoors absolute humidity [kg/m<SUP>3</SUP>]
+ * - _indoorsAh_ is the indoors absolute humidity [kg/m<SUP>3</SUP>]
+ * - _height_ is the average height of the greenhouse [m]
  */
 
 VapourFluxAir::VapourFluxAir(Identifier name, QObject *parent)

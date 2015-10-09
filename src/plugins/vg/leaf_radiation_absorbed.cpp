@@ -19,7 +19,9 @@ PUBLISH(LeafRadiationAbsorbed)
 
 
 /*! \class LeafRadiationAbsorbed
- * \brief
+ * \brief Calculates absorption of short- and long-waved radiation
+ *
+ * The model automatically looks up heating pipes.
  *
  * Inputs
  * ------

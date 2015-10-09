@@ -22,7 +22,7 @@ public:
 private:
     // Inputs
     double radiationAbsorbed, rsH2O, rbH2O,
-        value, indoorsAh, Tleaf, lai, fractionPlantArea;
+        value, indoorsAh, leafTemperature, lai, fractionPlantArea;
     // Outputs
     double leafAh;
 };

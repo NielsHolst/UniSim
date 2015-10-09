@@ -15,6 +15,10 @@ namespace vg {
 PUBLISH(VapourFluxSum)
 /*! \class VapourFluxSum
  * \brief Total vapour fluxes of child models
+ *
+ * Inputs
+ * ------
+ * - _toAdd_ is a list of VapourFluxBase model to add, in addition to the child VapourFluxBase models [string vector]
  */
 
 VapourFluxSum::VapourFluxSum(Identifier name, QObject *parent)

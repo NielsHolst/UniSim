@@ -21,44 +21,19 @@ PUBLISH(Vents)
  *
  * Inputs
  * ------
- * - _length_ is the length of a vents window [m]
- * - _width_ is the width of a vents window [m]
- * - _maxOpening_ is the maximum possible opening [0;180]
- * - _density_ is the number of vent windows per greenhouse area [m<SUP>-2</SUP>]
- * - _porosity_ is the efficacy of ventilation (can be reduced, for example, by insect net) [0;1]
- * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
- * - _outdoorsTemperature_ is the ambient temperature outdoors [<SUP>o</SUP>C]
- * - _windspeed_ is the outdoors windspeed [m/s]
- * - _roofPitch_ is the degrees slope of the roof [0;180]
- * - _ventilationLeeSide_ is the opening in the lee side [0;100]
- * - _ventilationWindSide_ is the opening in the wind side [0;100]
+ * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
  *
  * Outputs
  * ------
- * - _rate_ is rate of air exchange through vents per greenhouse area [m<SUP>3</SUP>/s/m<SUP>2</SUP>]
-
- * Default dependencies
- * ------------
- * - an _indoors/temperature_ model with a _value_ port
- * - an _outdoors_ model with two ports:
- *   + _temperature_ [<SUP>o</SUP>C]
- *   + _windspeed_ [m/s] [<SUP>o</SUP>C]
- * - a _construction/ventilation_ model with three ports:
- *   + _ventLength_ [m]
- *   + _ventWidth_ [m]
- *   + _ventDensity_ [m<SUP>-2</SUP>]
- *   + _ventMaxOpening_ [0;180]
- *   + _efficacy_ [0;1]
- * - a _geometry_ model with a _roofPitch_ port [0;180]
- * - an _actuators/vents_ model with two child models:
- *   + _leeside_ with a _state_ port [0;100]
- *   + _windside_ with a _state_ port [0;100]
+ * - _totalLength_ is the total length of all vents summed [m]
+ * - _averageHeight_ is the average height of all vents [m]
+ * - _proportionalEffectiveArea_ is the total effective ventilation area per ground area [m<SUP>2</SUP> ventilation/m<SUP>2</SUP> ground]
  */
 
 Vents::Vents(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, greenhouseArea, "geometry[groundArea]");
+    InputRef(double, groundArea, "geometry[groundArea]");
     Output(double, totalLength);
     Output(double, averageHeight);
     Output(double, proportionalEffectiveArea);
@@ -77,7 +52,7 @@ void Vents::reset() {
         proportionalEffectiveArea += vent->pullValue<double>("effectiveArea");
     }
     if (totalLength>0.) averageHeight /= totalLength;
-    proportionalEffectiveArea /= greenhouseArea;
+    proportionalEffectiveArea /= groundArea;
     if (proportionalEffectiveArea > 1.)
         proportionalEffectiveArea = 1.;
 }

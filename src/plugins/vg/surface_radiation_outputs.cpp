@@ -61,19 +61,19 @@ void SurfaceRadiationOutputs::set(const SurfaceRadiation &rad_) {
     rad = rad_;
     lightTransmissivity = rad.light.tra;
     directLightTransmissivity = rad.directLight.tra;
-    lwTransmissivity = rad.ir.tra;
+    lwTransmissivity = rad.lw.tra;
     incomingLightAbsorptivity = rad.light.outer.abs;
     incomingLightReflectivity = rad.light.outer.ref;
     incomingDirectLightAbsorptivity = rad.directLight.outer.abs;
     incomingDirectLightReflectivity = rad.directLight.outer.ref;
-    incomingLwAbsorptivity = rad.ir.outer.abs;
-    incomingLwReflectivity = rad.ir.outer.ref;
+    incomingLwAbsorptivity = rad.lw.outer.abs;
+    incomingLwReflectivity = rad.lw.outer.ref;
     incomingLightAbsorptivity = rad.light.outer.abs;
     incomingLightReflectivity = rad.light.outer.ref;
     incomingDirectLightAbsorptivity = rad.directLight.outer.abs;
     incomingDirectLightReflectivity = rad.directLight.outer.ref;
-    outgoingLwAbsorptivity = rad.ir.inner.abs;
-    outgoingLwReflectivity = rad.ir.inner.ref;
+    outgoingLwAbsorptivity = rad.lw.inner.abs;
+    outgoingLwReflectivity = rad.lw.inner.ref;
 }
 
 const SurfaceRadiation* SurfaceRadiationOutputs::surfaceRadiation() const {

@@ -18,10 +18,10 @@ PUBLISH(ThresholdSignal)
  *
  * Inputs
  * ------
- * - _threshold_ is the threshold that the _input_ is compard with [R]
- * - _input_ is the value compard with the _threshold_ [R]
- * - _signalBelow_ is the resulting _signal_ when _input_ < _threshold_ [R]
- * - _signalAbove_ is the resulting _signal_ when _input_ >= _threshold_ [R]
+ * - _input_ is the value determining the signal [-]
+ * - _threshold_ is the input threshold [-]
+ * - _signalBelow_ is the resulting _signal_ when _input_ < _threshold_ [-]
+ * - _signalAbove_ is the resulting _signal_ when _input_ >= _threshold_ [-]
  *
  */
 

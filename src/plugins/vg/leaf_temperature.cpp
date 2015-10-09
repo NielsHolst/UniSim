@@ -15,34 +15,26 @@ namespace vg {
 PUBLISH(LeafTemperature)
 
 /*! \class LeafTemperature
- * \brief Temperatures of leaves in a canopy layer
+ * \brief Temperature of canopy layer
  *
  * Inputs
  * ------
- * - _Tgh_ is the ambient indoors temperature [<SUP>o</SUP>C]
- * - _RHgh_ is the ambient indoors relative humidity [0;100]
+ * - _indoorsTemperature_ is the ambient indoors temperature [<SUP>o</SUP>C]
+ * - _indoorsRh_ is the ambient indoors relative humidity [0;100]
  * - _rsH2O_ is the stomatal resistance against water vapour [s/m]
  * - _rbH2O_ is the boundary layer resistance against water vapour [s/m]
- * - _rna_ is the absorbed radiation [W/m<SUP>2</SUP>]
+ * - _radiationAbsorbed_ is the absorbed radiation [W/m<SUP>2</SUP>]
  *
  * Output
  * ------
  * - _value_ is the leaf temperature [<SUP>o</SUP>C]
- *
- * Default dependencies
- * ------------
- * - an _indoors/temperature_ model with a _value_ port [<SUP>o</SUP>C]
- * - an _indoors/humidity_ model with an _rh_ port [0;100]
- * - an _rs_ sibling model with an _rsH2O_ port [s/m]
- * - an _rb_ sibling model with an _rbH2O_ port [s/m]
- * - an _rna_ sibling model with an _rna_ port [W/m<SUP>2</SUP>]
  */
 
 LeafTemperature::LeafTemperature(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, Tgh, "indoors/temperature[value]");
-    InputRef(double, RHgh, "indoors/humidity[rh]");
+    InputRef(double, indoorsTemperature, "indoors/temperature[value]");
+    InputRef(double, indoorsRh, "indoors/humidity[rh]");
     InputRef(double, rsH2O, "../rs[rsH2O]");
     InputRef(double, rbH2O, "../rb[rbH2O]");
     InputRef(double, radiationAbsorbed, "../radiationAbsorbed[value]");
@@ -50,27 +42,27 @@ LeafTemperature::LeafTemperature(Identifier name, QObject *parent)
 }
 
 void LeafTemperature::reset() {
-    value = Tgh;
+    value = indoorsTemperature;
 }
 
 void LeafTemperature::update() {
-    double s = svpSlope(Tgh),
-           psatu = svp(Tgh),
-           pgh = vpFromRh(Tgh, RHgh),
-           Tgh3 = p3(Tgh+T0);
+    double s = svpSlope(indoorsTemperature),
+           psatu = svp(indoorsTemperature),
+           pgh = vpFromRh(indoorsTemperature, indoorsRh),
+           Tgh3 = p3(indoorsTemperature+T0);
 
     value = (1/RhoAir/CpAir*(rsH2O+rbH2O)*radiationAbsorbed - 1/Psychr*(psatu-pgh))
             /
             (1+(s/Psychr+ rsH2O/rbH2O+ 1/(RhoAir*CpAir/4/Sigma*Tgh3)*(rsH2O+rbH2O)))
-            + Tgh;
+            + indoorsTemperature;
     if (std::isnan(value)) {
         throw Exception("LeafTemperature is not a number");
     }
 
     /* Thermal storage was neglible, max 1-2 W/m2
     double dt = 300,
-            sla = 30,
-            C = 300;
+           sla = 30,
+           C = 300;
     dT = value-prevValue;
     thermalStorage = dT*lai/sla*C/dt;
     */

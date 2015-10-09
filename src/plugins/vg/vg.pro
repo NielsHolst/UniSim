@@ -21,8 +21,8 @@ HEADERS += \
     boundary_layer_resistance_base.h \
     boundary_layer_resistance_jones_a.h \
     boundary_layer_resistance_jones_b.h \
-    boundary_layer_resistance_stangehellini.h \
-    boundary_layer_resistance_thornley_johnsen.h \
+    boundary_layer_resistance_stanghellini.h \
+    boundary_layer_resistance_monteith_unsworth.h \
     co2_controller.h \
     construction_geometry.h \
     cover.h \
@@ -60,7 +60,6 @@ HEADERS += \
     indoors_light.h \
     indoors_temperature.h \
     indoors_wind_speed.h \
-    leaf_lai.h \
     leaf_layer.h \
     leaf_light_response.h \
     leaf_photosynthesis.h \
@@ -96,7 +95,6 @@ HEADERS += \
     ventilated_latent_heat_converter.h \
     ventilation_by_temp.h \
     ventilation_by_wind.h \
-    ventilation_controller.h \
     vent.h \
     vents.h \
     vg_factory.h
@@ -112,8 +110,8 @@ SOURCES += \
     boundary_layer_resistance_base.cpp \
     boundary_layer_resistance_jones_a.cpp \
     boundary_layer_resistance_jones_b.cpp \
-    boundary_layer_resistance_stangehellini.cpp \
-    boundary_layer_resistance_thornley_johnsen.cpp \
+    boundary_layer_resistance_stanghellini.cpp \
+    boundary_layer_resistance_monteith_unsworth.cpp \
     budget.cpp \
     co2_controller.cpp \
     construction_geometry.cpp \
@@ -152,7 +150,6 @@ SOURCES += \
     indoors_light.cpp \
     indoors_temperature.cpp \
     indoors_wind_speed.cpp \
-    leaf_lai.cpp \
     leaf_layer.cpp \
     leaf_light_response.cpp \
     leaf_photosynthesis.cpp \
@@ -188,7 +185,6 @@ SOURCES += \
     ventilated_latent_heat_converter.cpp \
     ventilation_by_temp.cpp \
     ventilation_by_wind.cpp \
-    ventilation_controller.cpp \
     vent.cpp \
     vents.cpp \
     vg_factory.cpp

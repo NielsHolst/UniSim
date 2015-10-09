@@ -23,12 +23,12 @@ PUBLISH(LeafWindSpeed)
  * - _k_ is the extinction coefficient for wind down throught the canopy [-]
  * - _indoorsWindSpeedMinimum_ is the assumed minimum limit to wind speed indoors [m/s]
  * - _indoorsWindSpeed_ is the wind speed indoors [m/s]
- * - _xGauss_ is the caonpy integration point [0;1]
+ * - _xGauss_ is the coefficient for Gaussian integration from the upper side of the canopy [0;1]
  * - _lai_ is the crop leaf area index [m<SUP>2</SUP>/m<SUP>2</SUP>]
  *
  * Outputs
  * ------
- * - _value_ is the wind speed at the leaf level [m/s]
+ * - _value_ is the wind speed at leaf level [m/s]
  */
 
 LeafWindSpeed::LeafWindSpeed(Identifier name, QObject *parent)

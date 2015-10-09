@@ -24,7 +24,7 @@ struct SurfaceRadiation {
             void setAbs(double tra);
             double abs, ref;
         } inner, outer;
-    } light, directLight, ir;
+    } light, directLight, lw;
 
     // Methods
     void setToZero();

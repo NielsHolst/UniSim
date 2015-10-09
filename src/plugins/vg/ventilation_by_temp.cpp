@@ -17,24 +17,18 @@ namespace vg {
 PUBLISH(VentilationByTemp)
 
 /*! \class VentilationByTemp
- * \brief Flux of energy needed to cool down to ventilation setpoint
+ * \brief Maximum ventilation possible due to the temperature gradient between indoors and outdoors
  * Inputs
  * ------
- * - _passiveTemperature_ is the indoors tempeature reached, it not actively regulated [<SUP>o</SUP>C]
- * - _heatingSetpoint_ is the heating setpoint [<SUP>oC</SUP>C]
- * - _averageHeight_ is the average height of the greenhouse [m]
- * - _timeStep_ is the integration time step [s]
+ * - _indoorsTemperature_ is the indoors tempeature [<SUP>o</SUP>C]
+ * - _outdoorsTemperature_ is the outdoors tempeature [<SUP>o</SUP>C]
+ * - _windowLength_ is the total length of all vents summed [m]
+ * - _windowHeight_ is the average height of all vents [m]
+ * - _groundArea_ is the area covered by the greenhouse [m<SUP>2</SUP>]
  *
  * Output
  * ------
- * - _value_ is the energy flux needed to heat the greenhouse to the heating setpoint [W/m<SUP>2</SUP>]
- *
- * Default dependencies
- * ------------
- * - an _passive/temperature_ model with a _value_ port [<SUP>oC</SUP>C]
- * - a _setpoints/temperature/heating_ model with a _signal_ port [<SUP>oC</SUP>C]
- * - a _geometry_ model with an _averageHeight_ port [m]
- * - a _calendar_ model with a _timeStepSecs_ port [s]
+ * - _value_ is the maximum ventilation possible due to the temperature gradient between indoors and outdoors [h<SUP>-1</SUP>]
  */
 
 VentilationByTemp::VentilationByTemp(Identifier name, QObject *parent)

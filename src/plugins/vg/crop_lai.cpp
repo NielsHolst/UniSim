@@ -11,7 +11,7 @@ using namespace UniSim;
 namespace vg {
 
 /*! \class CropLai
- * \brief Base class for crop LAI
+ * \brief Base class for crop leaf area index
  *
  * Inputs
  * ------
@@ -20,7 +20,7 @@ namespace vg {
  *
  * Output
  * ------
- * - _lai_ is the crop LAI [m<SUP>2</SUP> leaf/m<SUP>2</SUP> planted area]
+ * - _lai_ is the crop leaf area index [m<SUP>2</SUP> leaf/m<SUP>2</SUP> planted area]
  *
  */
 

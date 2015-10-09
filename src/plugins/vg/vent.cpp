@@ -16,18 +16,18 @@ namespace vg {
 PUBLISH(Vent)
 
 /*! \class Vent
- * \brief Calculates air exchange through vents
+ * \brief Represents a number of similar vents
  *
  * Inputs
  * ------
- * - _length_ is the length of a vents window [m]
- * - _width_ is the width of a vents window [m]
- * - _number_ is the number of vent windows [N]
- * - _porosity_ is the efficacy of ventilation (can be reduced, for example, by insect net) [0;1]
+ * - _length_ is the length of a vent [m]
+ * - _height_ is the height of a vent [m]
+ * - _number_ is the number of vents [1,2,3,...]
+ * - _porosity_ is the efficacy of ventilation (can be reduced, for example, by an insect net) [0;1]
  *
  * Outputs
  * ------
- * - _effectiveArea_ is the total area of the vents corrected for porosity [m<SUP>2</SUP>]
+ * - _effectiveArea_ is the total area of the vents, corrected for porosity [m<SUP>2</SUP>]
 
  */
 
@@ -44,6 +44,7 @@ Vent::Vent(Identifier name, QObject *parent)
 void Vent::reset() {
     effectiveArea = length*height*number*porosity;
 }
+
 } //namespace
 
 

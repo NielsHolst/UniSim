@@ -120,7 +120,7 @@ poster = function(U,from=0, to=366) {
 U = read_unisim("dvv_unisim_0001.txt")
 # poster(U,1)
 
-# climate(U)
+climate(U)
 # controlled(U)
 production(U)
 # photosynthesis(U)

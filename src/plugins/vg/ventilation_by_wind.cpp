@@ -17,24 +17,16 @@ namespace vg {
 PUBLISH(VentilationByWind)
 
 /*! \class VentilationByWind
- * \brief Flux of energy needed to cool down to ventilation setpoint
+ * \brief Maximum ventilation possible due to outdoors wind
  * Inputs
  * ------
- * - _passiveTemperature_ is the indoors tempeature reached, it not actively regulated [<SUP>o</SUP>C]
- * - _heatingSetpoint_ is the heating setpoint [<SUP>oC</SUP>C]
- * - _averageHeight_ is the average height of the greenhouse [m]
- * - _timeStep_ is the integration time step [s]
+ * - _baseRate_ is the linear increase in ventilation rate with increasing wind speed [h<SUP>-1</SUP> s/m]
+ * - _windspeed_ is outdoors wind speed [m/s]
+ * - _ventsPoportionalEffectiveArea_ is the total effective ventilation area per ground area [m<SUP>2</SUP> ventilation/m<SUP>2</SUP> ground]
  *
  * Output
  * ------
- * - _value_ is the energy flux needed to heat the greenhouse to the heating setpoint [W/m<SUP>2</SUP>]
- *
- * Default dependencies
- * ------------
- * - an _passive/temperature_ model with a _value_ port [<SUP>oC</SUP>C]
- * - a _setpoints/temperature/heating_ model with a _signal_ port [<SUP>oC</SUP>C]
- * - a _geometry_ model with an _averageHeight_ port [m]
- * - a _calendar_ model with a _timeStepSecs_ port [s]
+ * - _value_ is the maximum ventilation possible due to outdoors wind [h<SUP>-1</SUP>]
  */
 
 VentilationByWind::VentilationByWind(Identifier name, QObject *parent)

@@ -16,11 +16,7 @@ namespace vg {
 PUBLISH(ProportionalSignal)
 
 /*! \class ProportionalSignal
- * \brief Provides proportional control towards a target value
- *
- * Proportional control provides a _signal_ to control the _actualValue_ towards the _targetValue_.
- * The size of the _signal_ depends on the size of the gap between the actual and the target value.
- * When the gap is in the range of the proportional bad [0;_pBand_], the signal is proportional to the gap.
+ * \brief Provides proportional control towards a signal
  *
  * For further details, see SlidingSignal
  *

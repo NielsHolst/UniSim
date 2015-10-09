@@ -19,7 +19,7 @@ public:
     void update();
 private:
     // Inputs
-    double height, timeStep, energyFlux, resetValue;
+    double height, timeStep, energyFlux, resetValue, baseTemperature;
     // Output
     double value;
     // Data

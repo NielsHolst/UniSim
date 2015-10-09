@@ -704,6 +704,7 @@
 						<parameter name="toAdd" value="(given/energyFlux[value] energyFlux/heating/supply[value])"/>
 					</model>
 					<parameter name="energyFlux" ref="./energyFlux[value]"/>
+					<parameter name="baseTemperature" ref="indoors/temperature[value]"/>
 				</model>
 
 				<model name="cooling"> 

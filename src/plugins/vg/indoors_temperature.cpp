@@ -34,6 +34,7 @@ IndoorsTemperature::IndoorsTemperature(Identifier name, QObject *parent)
 {
     Input(double, resetValue, 20.);
     Input(double, energyFlux, 0.);
+    InputRef(double, baseTemperature,".[value]");
     InputRef(double, height,"geometry[indoorsAverageHeight]");
     InputRef(double, timeStep,"calendar[timeStepSecs]");
     Output(double, value);
@@ -49,7 +50,7 @@ void IndoorsTemperature::update() {
     // Keep temperature constant for the first few time steps to stabilise overall model state
     if (tick++ < 10) return;
     double Cair = height*RhoAir*CpAir;               // J/m2/K = m * kg/m3 * J/kg/K
-    value += energyFlux*timeStep/Cair;  // K = W/m2 * s / (J/m2/K)
+    value = baseTemperature + energyFlux*timeStep/Cair;  // K = W/m2 * s / (J/m2/K)
 }
 
 } //namespace

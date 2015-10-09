@@ -38,7 +38,7 @@ private:
         shelterLoss;
 
     // Data
-    double irTransmissionLowerside, irTransmissionUpperside;
+    double lwTransmissionLowerside, lwTransmissionUpperside;
 
     struct PipeInfo {
         const double *length, *diameter, *temperature, *emissivity;

@@ -13,11 +13,10 @@ namespace vg {
 PUBLISH(GrowthLights)
 
 /*! \class GrowthLights
- * \brief A collection of GrowthLight models
+ * \brief The total output from all growth lights
  *
- * Optional dependencies
- * ------------
- * - some (0..n) GrowthLight child models
+ * Sums the outputs from all GrowthLightBase'ed child models.
+ *
  */
 
 GrowthLights::GrowthLights(Identifier name, QObject *parent)

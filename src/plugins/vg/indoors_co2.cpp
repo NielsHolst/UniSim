@@ -20,7 +20,7 @@ PUBLISH(IndoorsCo2)
  * Inputs
  * ------
  * - _outdoorsCo2_ is the CO<SUB>2</SUB> concentration outside the greenhouse [ppm]
- * - _airFlux_ is ventilation rate[h<SUP>-1</SUP>]
+ * - _airFlux_ is the ventilation rate [h<SUP>-1</SUP>]
  * - _injectionRate_ is the rate of CO<SUB>2</SUB> injection [g/m<SUP>2</SUP>/h]
  * - _assimilation_ is the rate of CO<SUB>2</SUB> uptake by the plants [g/m<SUP>2</SUP>/h]
  * - _averageHeight_ is the average height of the greenhouse [m]

@@ -20,11 +20,11 @@ PUBLISH(EnergyFluxSum)
  *
  * Output
  * ------
- * - _value_ is the sum of energy fluxes [W/m<SUP>2</SUP>]
+ * - _value_ is the sum of all children's _value_s [W/m<SUP>2</SUP>]
  *
  * Inputs
  * ------
- * - all EnergyFluxBase child model
+ * - all EnergyFluxBase child models
  */
 
 EnergyFluxSum::EnergyFluxSum(Identifier name, QObject *parent)

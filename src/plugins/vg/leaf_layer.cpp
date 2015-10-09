@@ -14,12 +14,14 @@ namespace vg {
 PUBLISH(LeafLayer)
 
 /*! \class LeafLayer
- * \brief Contains coefficients for Gaussian integration through crop canopy
+ * \brief A crop canopy leaf layer
  *
  * Inputs
  * ------
- * - _xGauss_ is the LAI coefficient [0;1]
- * - _wGauss_ is weighing coefficient [0;1]
+ * - _xGaussUpperside_ is the LAI coefficient coming from above [0;1]
+ * - _wGaussUpperside_ is weighing coefficient coming from above[0;1]
+ * - _xGaussLowerside_ is the LAI coefficient coming from below [0;1]
+ * - _wGaussLowerside_ is weighing coefficient coming from below[0;1]
  *
  */
 

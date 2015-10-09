@@ -17,16 +17,13 @@ namespace vg {
 PUBLISH(GrowthLightController)
 
 /*! \class GrowthLightController
- * \brief Flags whether lights are on or off
+ * \brief Controls growth lights on/off
+ *
+ * The control is based on the signals set by three child models named "period", "on" and "off".
  *
  * Outputs
  * ------
- * - _period_ is time lights have been on, or zero if they are switched off  [min]
  * - _signal_ is the on/off signal to lamps [true,false]
- *
- * Dependencies
- * ------------
- * - three child models, named _periods_, _on_ and _off_, all with a _flag_ port [true,false]
  */
 
 GrowthLightController::GrowthLightController(Identifier name, QObject *parent)

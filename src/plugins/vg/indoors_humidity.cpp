@@ -17,14 +17,16 @@ namespace vg {
 PUBLISH(IndoorsHumidity)
 
 /*! \class IndoorsHumidity
- * \brief Maintains indoors humidity
+ * \brief Computes indoors humidity
  *
  * Inputs
  * ------
- * - _indoorsTemperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
- * - _outdoorsRh_ is the outdoors absolute humidity [kg/m<SUP>3</SUP>]
+ * - _conductance_ is the vapour flux conductance [m/s]
+ * - _vapourFlux_ is the vapour flux rate [kg/m<SUP>2</SUP>/s]
+ * - _gain_ is used to integrate over all vapour fluxes (GCC, p. 148) [kg/m<SUP>2</SUP>/s]
+ * - _temperature_ is the ambient temperature indoors [<SUP>o</SUP>C]
+ * - _height_ is the average height of the greenhouse [m]
  * - _timeStep_ is the integration time step[s]
- * - _averageHeight_ is the average height of the greenhouse (volume divided by ground area) [m]
  *
  * Outputs
  * ------
@@ -34,24 +36,16 @@ PUBLISH(IndoorsHumidity)
  * - _timeConstant_ is the time constant used to integrate _netVapourFlux_ [s<SUP>-1</SUP>]
  * - _surplusAh_ is an integration inaccuracy that was rounded off [kg/m<SUP>3</SUP>]
  * - _netVapourFlux_ is the total flux of water vapour in/out (+/-) of the greenhouse [kg/m<SUP>2</SUP>/s]
- * - _simpleSumVapourFlux_ is the sum of all water vapour fluxes; an imprecise calculation of _netVapourFlux_ [kg/m<SUP>2</SUP>/s]
- *
- * Default dependencies
- * ------------
- * - an _indoors/temperature_ model with a _value_ port [<SUP>o</SUP>C]
- * - a _setpoints/humidity_ model with two ports:
- *   + maxRh [0;100]
- *   + minDeltaX [Pa]
  */
 
 IndoorsHumidity::IndoorsHumidity(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    Input(double, conductance, 0.);
-    Input(double, vapourFlux, 0.);
-    Input(double, gain, 0.);
-    Input(double, temperature, 0.);
-    Input(double, averageHeight, 0.);
+    InputRef(double, conductance, "indoors/total/vapourFlux[conductance]");
+    InputRef(double, vapourFlux, "indoors/total/vapourFlux[vapourFlux]");
+    InputRef(double, gain, "indoors/total/vapourFlux[gain]");
+    InputRef(double, temperature, "indoors/temperature[value]");
+    InputRef(double, height, "geometry[indoorsAverageHeight]");
     InputRef(double, timeStep, "calendar[timeStepSecs]");
 
     Output(double, rh);
@@ -75,7 +69,7 @@ void IndoorsHumidity::update() {
     double prevAh = ah;
     if (conductance > 0. && gain > 0.) {
         ahEq = gain/conductance;
-        timeConstant = averageHeight/gain;
+        timeConstant = height/gain;
         ah = ahEq - (ahEq-ah)*exp(-timeStep/timeConstant);
     }
     else {
@@ -93,7 +87,7 @@ void IndoorsHumidity::update() {
     }
 
     rh = rhFromAh(temperature, ah);
-    netVapourFlux = (ah - prevAh)*averageHeight/timeStep; // kg/m2/s = kg/m3 * m3/m2 / s
+    netVapourFlux = (ah - prevAh)*height/timeStep; // kg/m2/s = kg/m3 * m3/m2 / s
 }
 
 } //namespace

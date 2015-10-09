@@ -15,19 +15,17 @@ class IndoorsLight : public UniSim::Model
 {
 public:
     IndoorsLight(UniSim::Identifier name, QObject *parent);
-    void initialize();
     void reset();
     void update();
 
 private:
     // Inputs
-    double outdoorsPropParRadiation, growthLigthtsPar;
+    double sunlightDiffuse, sunlightDirect, sunlightPropPar,
+        growthLigthtsDirect, growthLigthtsPar;
+
     // Outputs
     double direct, diffuse, total,
            parDirect, parDiffuse, parTotal;
-    // Data
-    QVector<const double*> pDirect, pDiffuse;
-
 };
 } //namespace
 

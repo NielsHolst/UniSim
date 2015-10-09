@@ -19,9 +19,9 @@ public:
     void update();
 private:
     // Inputs
-    double baseTemperature, averageHeight, timeStep, energyFlux, initValue;
+    double height, timeStep, energyFlux, resetValue;
     // Output
-    double value, change;
+    double value;
     // Data
     int tick;
 };

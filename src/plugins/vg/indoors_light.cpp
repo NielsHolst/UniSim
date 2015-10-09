@@ -17,11 +17,15 @@ PUBLISH(IndoorsLight)
 /*! \class IndoorsLight
  * \brief Indoors diffuse and direct, light and PAR
  *
+ * Indoors light is the combination of incoming sunlight and growth lights
+ *
  * Inputs
  * ------
- * - _propParRadiation_ is the proportion of PAR in sunlight irradiation [0;1]
+ * - _sunlightDiffuse_ is the intensity of diffuse light resulting from transmitted sunlight [W/m<SUP>2</SUP>]
+ * - _sunlightDirect_ is the intensity of direct light resulting from transmitted sunlight [W/m<SUP>2</SUP>]
+ * - _sunlightPropPar_ is the proportion of PAR in sunlight irradiation [0;1]
+ * - _growthLigthtsDirect_ is the intensity of direct light supplied by growth lights [W/m<SUP>2</SUP>]
  * - _growthLigthtsPar_ is the intensity of PAR supplied by growth lights [W/m<SUP>2</SUP>]
- * - In addition, the model looks up the characteristics of the greenhouse shelter and screens.
  *
  * Outputs
  * ------
@@ -37,7 +41,10 @@ PUBLISH(IndoorsLight)
 IndoorsLight::IndoorsLight(Identifier name, QObject *parent)
 	: Model(name, parent)
 {
-    InputRef(double, outdoorsPropParRadiation, "outdoors[propParRadiation]");
+    InputRef(double, sunlightDiffuse, "construction/shelters[diffuseLightTransmitted]");
+    InputRef(double, sunlightDirect, "construction/shelters[directLightTransmitted]");
+    InputRef(double, sunlightPropPar, "outdoors[propParRadiation]");
+    InputRef(double, growthLigthtsDirect, "growthLights[shortWaveEmission]");
     InputRef(double, growthLigthtsPar, "growthLights[parEmission]");
     Output(double, direct);
     Output(double, diffuse);
@@ -47,29 +54,18 @@ IndoorsLight::IndoorsLight(Identifier name, QObject *parent)
     Output(double, parTotal);
 }
 
-void IndoorsLight::initialize() {
-    pDiffuse.clear();
-    pDirect.clear();
-    Model* sheltersModel = seekOne<Model*>("construction/shelters");
-    auto shelters = sheltersModel->seekDescendants<Shelter*>("*");
-    for (auto shelter : shelters) {
-        pDiffuse << shelter->pullValuePtr<double>("diffuseLightTransmitted");
-        pDirect << shelter->pullValuePtr<double>("directLightTransmitted");
-    }
-}
-
 void IndoorsLight::reset() {
     diffuse = direct = total =
     parDiffuse = parDirect = parTotal = 0.;
 }
 
 void IndoorsLight::update() {
-    diffuse = direct = 0.;
-    for (auto p : pDiffuse) diffuse += (*p);
-    for (auto p : pDirect) direct += (*p);
+    diffuse = sunlightDiffuse;
+    direct = sunlightDirect + growthLigthtsDirect;
     total = direct + diffuse;
-    parDiffuse = outdoorsPropParRadiation*diffuse;
-    parDirect = outdoorsPropParRadiation*direct + growthLigthtsPar;
+
+    parDiffuse = sunlightPropPar*diffuse;
+    parDirect = sunlightPropPar*direct + growthLigthtsPar;
     parTotal = parDiffuse + parDirect;
 
 }

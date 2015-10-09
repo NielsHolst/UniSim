@@ -105,8 +105,8 @@ void LeafRadiationAbsorbed::reset() {
 }
 
 void LeafRadiationAbsorbed::update() {
-    irTransmissionLowerside = kLw*exp(-kLw*lai*xGaussLowerside)*wGaussLowerside*lai;
-    irTransmissionUpperside = kLw*exp(-kLw*lai*xGaussUpperside)*wGaussUpperside*lai;
+    lwTransmissionLowerside = kLw*exp(-kLw*lai*xGaussLowerside)*wGaussLowerside*lai;
+    lwTransmissionUpperside = kLw*exp(-kLw*lai*xGaussUpperside)*wGaussUpperside*lai;
     setLightAbsorbed();
     setGrowthLightLwAbsorbed();
     setFloorLwAbsorbed();
@@ -121,12 +121,12 @@ void LeafRadiationAbsorbed::setLightAbsorbed() {
 
 void LeafRadiationAbsorbed::setGrowthLightLwAbsorbed() {
     // This is a shortcut. We should know the temperature and area of the lamps.
-    growthLightLwAbsorbed = growthLightViewFactor*growthLightLw*irTransmissionUpperside*emissivity;
+    growthLightLwAbsorbed = growthLightViewFactor*growthLightLw*lwTransmissionUpperside*emissivity;
 }
 
 void LeafRadiationAbsorbed::setFloorLwAbsorbed() {
     double em = jointEmissivity(emissivity, floorEmissivity);
-    floorLwAbsorbed = Sigma*em*(p4K(floorTemperature) - p4K(leafTemperature))*irTransmissionLowerside;
+    floorLwAbsorbed = Sigma*em*(p4K(floorTemperature) - p4K(leafTemperature))*lwTransmissionLowerside;
 }
 
 void LeafRadiationAbsorbed::setShelterLoss() {
@@ -134,7 +134,7 @@ void LeafRadiationAbsorbed::setShelterLoss() {
         em = jointEmissivity(emissivity, shelterOutgoingLwAbsorptivity),
         screensDiff = p4K(leafTemperature) - p4K(screensTemperature),
         coverDiff = p4K(leafTemperature) - p4K(coverTemperature);
-    shelterLoss = Sigma*em*coverPerGroundArea*irTransmissionUpperside*
+    shelterLoss = Sigma*em*coverPerGroundArea*lwTransmissionUpperside*
                   (screensDiff*screensMaxState + coverDiff*(1-screensMaxState));
 }
 
@@ -143,7 +143,7 @@ void LeafRadiationAbsorbed::setHeatingAbsorbed() {
     for (PipeInfo pi : pipeInfos) {
         if (*pi.temperature > leafTemperature) {
             double em = jointEmissivity(emissivity, *pi.emissivity);
-            heatingAbsorbed += Sigma*em*(p4K(*pi.temperature) - p4K(leafTemperature))*irTransmissionLowerside*pi.area();
+            heatingAbsorbed += Sigma*em*(p4K(*pi.temperature) - p4K(leafTemperature))*lwTransmissionLowerside*pi.area();
         }
     }
 }

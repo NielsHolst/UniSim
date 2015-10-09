@@ -16,35 +16,23 @@ UniSim::StringMap<GrowthLight::Type> GrowthLight::types;
 PUBLISH(GrowthLight)
 
 /*! \class GrowthLight
- * \brief Current growth light
+ * \brief Growth light
  *
+ * The characteristics of the lamps are set by the _type_.
  * Inputs
  * ------
- * - _lampType_ is the type of growth light[HPSL, LED]
+ * - _type_ is the type of growth light [HPSL, LED]
  * - _intensity_ is the power of installed lamps per greenhouse area [W/m<SUP>2</SUP>]
  * - _ballastCorrection_ is set to >1 (e.g, 1.15) if capacity includes ballast (>=1)
  * - _age_ is the age of the lamps at simulation start [h]
  * - _lifeTime_ is the age at which light output is reduced to 90% [h]
+ * - _on_ tells whether the light should be on [true/false]
  * - _timeStep_ is the integration time step [s]
  *
  * Outputs
  * ------
  * - _currentPeriod_ duration of the current period with light on [min]
  * - _totalPeriod_ total period with light on [h]
- *
- * Default dependencies
- * ------------
- * - a _controllers/growthLight model with a _signal_ port [true,false]
- * - a _construction/growthLight model with the eight ports:
- * + _heatEmission_ [W/m<SUP>2</SUP>]
- * + _longWaveEmission_ [W/m<SUP>2</SUP>]
- * + _shortWaveEmission_ [W/m<SUP>2</SUP>]
- * + _parEmission_ [W/m<SUP>2</SUP>]
- * + _energyUse_ is the energy used when light is on [W/m<SUP>2</SUP>]
- * + _minPeriod_ [min]
- * + _age_ [h]
- * + _lifeTime_  [h]
- * - a _calendar_ model with a _timeStepSecs_ port [s]
  */
 
 GrowthLight::GrowthLight(Identifier name, QObject *parent)

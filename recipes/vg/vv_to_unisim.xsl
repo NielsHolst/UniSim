@@ -361,6 +361,7 @@
 	<model name="rb" type="vg::BoundaryLayerResistanceJonesA"/>
 	<model name="radiationAbsorbed" type="vg::LeafRadiationAbsorbed"/>
 	<model name="transpiration" type="vg::LeafTranspiration"/>
+	
 	<model name="condensation">
 		<model name="vapourFlux" type="vg::VapourFluxCondensation">
 			<parameter name="surfaceAreaPerGroundArea" ref="./lai[value]"/>
@@ -371,6 +372,7 @@
 			<parameter name="vapourFlux" ref="../vapourflux[vapourFlux]"/>
 		</model>
 	</model>
+	
 	<model name="temperature" type="vg::LeafTemperature"/>
 	<model name="photosynthesis" type="vg::LeafPhotosynthesis">
 		<model name="lightResponse" type="vg::LeafLightResponse"/>	
@@ -702,8 +704,6 @@
 						<parameter name="toAdd" value="(given/energyFlux[value] energyFlux/heating/supply[value])"/>
 					</model>
 					<parameter name="energyFlux" ref="./energyFlux[value]"/>
-					<parameter name="baseTemperature" ref="indoors/temperature[value]"/>
-					<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/> 
 				</model>
 
 				<model name="cooling"> 
@@ -754,21 +754,14 @@
 
 		<model name="light" type="vg::IndoorsLight"/> 
 		<model name="temperature" type="vg::IndoorsTemperature">
-			<parameter name="initValue">
+			<parameter name="resetValue">
 				<xsl:attribute name="value">
 					<xsl:value-of select="//Setpoint[ParameterId='2']//SetpointValue"/>
 				</xsl:attribute>
 			</parameter> 
 			<parameter name="energyFlux" ref="total/energyFlux[value]"/>
-			<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/> 
 		</model>
-		<model name="humidity" type="vg::IndoorsHumidity">
-			<parameter name="conductance" ref="total/vapourFlux[conductance]"/>
-			<parameter name="vapourFlux" ref="total/vapourFlux[vapourFlux]"/>
-			<parameter name="gain" ref="total/vapourFlux[gain]"/>
-			<parameter name="temperature" ref="../temperature[value]"/>
-			<parameter name="averageHeight" ref="geometry[indoorsAverageHeight]"/>
-		</model>
+		<model name="humidity" type="vg::IndoorsHumidity"/>
 		<model name="co2" type="vg::IndoorsCo2"/>
 		<model name="windSpeed" type="vg::IndoorsWindSpeed"/>
 	</model> <!-- indoors -->
